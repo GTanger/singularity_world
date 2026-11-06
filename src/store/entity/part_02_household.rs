@@ -55,13 +55,35 @@ pub fn resolve_npc_person_name(
         "歐陽", "司馬", "諸葛", "上官", "司徒", "司空", "皇甫", "慕容",
         "宇文", "長孫", "聞人", "東方", "獨孤", "南宮", "萬俟", "尉遲",
     ];
-    match entity_id.trim() {
-        "wt_npc_ma_buxue" | "馬補靴" => return "馬守成".to_string(),
-        "wt_npc_zhou_yidao" | "周一刀" => return "周敬修".to_string(),
-        "wt_npc_zhao_guanxing" | "趙觀星" => return "趙衡宇".to_string(),
-        "馬行頭" => return "馬振遠".to_string(),
-        "田大犁" => return "田長耕".to_string(),
-        _ => {}
+    let trimmed = entity_id.trim();
+    if !trimmed.is_empty() {
+        if trimmed == "馬行頭" {
+            let found = crate::server::grid_manager::schedule::iter_resident_schedules()
+                .find(|def| def.id == "馬行頭" || def.id == "wt_npc_ma_buxue")
+                .and_then(|def| {
+                    if def.id == "馬行頭" {
+                        def.display_title.split(['|', '｜']).nth(1).map(str::trim)
+                    } else {
+                        None
+                    }
+                })
+                .filter(|p| !p.is_empty());
+            return found.unwrap_or("馬振遠").to_string();
+        }
+        if let Some(person) = crate::server::grid_manager::schedule::iter_resident_schedules()
+            .find(|def| {
+                def.id == trimmed
+                    || def.display_title.split(['|', '｜']).next() == Some(trimmed)
+                    || (def.id == "wt_npc_ma_buxue" && trimmed == "馬補靴")
+                    || (def.id == "wt_npc_zhou_yidao" && trimmed == "周一刀")
+                    || (def.id == "wt_npc_zhao_guanxing" && trimmed == "趙觀星")
+                    || (def.id == "田大犁" && trimmed == "田大犁")
+            })
+            .and_then(|def| def.display_title.split(['|', '｜']).nth(1).map(str::trim))
+            .filter(|p| !p.is_empty())
+        {
+            return person.to_string();
+        }
     }
     let check_candidate = |cand: &str| -> Option<String> {
         let r = cand.trim();
@@ -175,6 +197,130 @@ pub fn resolve_npc_person_name(
         }
     }
     deterministic_wenyao_full_name_with_gender(entity_id, resolved_gender.as_deref())
+}
+
+pub fn held_vessel(slot: &WenyaoHouseholdSlot) -> (&'static str, &'static str) {
+    let role_hint = if !slot.brief_tag.is_empty() {
+        slot.brief_tag
+    } else {
+        slot.work_name
+    };
+    let spec = crate::npc::causal_core::resolve_vocational_vessel(role_hint);
+    match spec.item_id {
+        "craft_wooden_tool_handle" => ("wt_cat_0954", "省力導能刨刀"),
+        "craft_bamboo_basket" => {
+            if role_hint.contains("行旅") || role_hint.contains("押貨") || role_hint.contains("挑夫") || role_hint.contains("採") {
+                ("wt_cat_0894", "內襯寒水玉保鮮採集背簍")
+            } else {
+                ("wt_cat_0895", "雙層竹編提籃")
+            }
+        }
+        "craft_copper_abacus" => ("wt_cat_0834", "漆金花梨木算籌組"),
+        "craft_kitchen_cleaver" => ("wt_cat_0564", "岑氏精鋼切片廚刀"),
+        "craft_peninsula_almanac" => ("wt_cat_0781", "竹綿紙牛皮記事手札"),
+        "craft_meridian_salve" => ("wt_cat_1057", "溫氏導能溫石百草溫灸盒"),
+        "wt_cat_0973" => ("wt_cat_0973", "平底石磨分粉篩架"),
+        "craft_iron_pickaxe" => {
+            if role_hint.contains("礦") || role_hint.contains("石") || role_hint.contains("坑") || role_hint.contains("鑿") {
+                ("wt_cat_0964", "雙刃碎石手鎬")
+            } else {
+                ("wt_cat_0945", "岑氏省力導能鍛錘")
+            }
+        }
+        "craft_steel_scissors" => {
+            if role_hint.contains("理髮") || role_hint.contains("剪剃") || role_hint.contains("剃") {
+                ("wt_cat_0642", "夾耳防脫修面剪刀")
+            } else {
+                ("wt_cat_0890", "熟鐵裁布大剪刀")
+            }
+        }
+        "wt_cat_1021" => ("wt_cat_1021", "岩羊角手柄折疊獵刀"),
+        "craft_pine_torch" => ("wt_cat_1006", "老青竹黃銅輪捲線釣竿"),
+        "craft_steel_hunting_knife" => ("wt_cat_1021", "岩羊角手柄折疊獵刀"),
+        other => {
+            if let Some(cat) = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS.iter().find(|o| o.id == other) {
+                (cat.id, cat.name)
+            } else {
+                ("wt_cat_0895", "雙層竹編提籃")
+            }
+        }
+    }
+}
+
+pub fn synthesize_grounded_venue_activity(
+    place_name: &str,
+    fallback_act: &str,
+    vessel_name: &str,
+    seed: u64,
+) -> String {
+    let place = place_name.trim();
+    if place.is_empty() {
+        return fallback_act.to_string();
+    }
+    let venue_opt = crate::grid::resolve_any_room_venue_object(place, "");
+    let fixture_name = match &venue_opt {
+        Some(v) => {
+            let k = v.venue_kind;
+            if k.contains("鍛造") || k.contains("鐵") {
+                "紅鐵高爐與砧台"
+            } else if k.contains("醫館") || k.contains("藥") || k.contains("診所") {
+                "百草藥櫃與煎藥爐"
+            } else if k.contains("食堂") || k.contains("飯") || k.contains("食") {
+                "大骨湯鍋與白案蒸籠"
+            } else if k.contains("茶") {
+                "老茶壺與臨窗茶案"
+            } else if k.contains("浴") || k.contains("溫水") {
+                "溫熱石砌泉池"
+            } else if k.contains("木作") || k.contains("傢俱") {
+                "木作刨台與工具架"
+            } else if k.contains("書") || k.contains("學") || k.contains("閣") {
+                "書案與善本卷宗架"
+            } else if k.contains("商行") || k.contains("契書") || k.contains("公議") {
+                "臨街櫃檯與帳冊案几"
+            } else {
+                "場地櫃檯與常備長凳"
+            }
+        }
+        None => {
+            if place.contains("橋") {
+                "青石雕花欄杆"
+            } else if place.contains("街") || place.contains("巷") {
+                "街角路燈與避風簷廊"
+            } else if place.contains("食堂") || place.contains("飯") {
+                "大骨湯鍋與白案蒸籠"
+            } else if place.contains("茶") {
+                "老茶壺與臨窗茶案"
+            } else {
+                "歇腳長凳"
+            }
+        }
+    };
+
+    if !fallback_act.is_empty()
+        && (fallback_act.contains(place) || fallback_act.contains(fixture_name))
+    {
+        return fallback_act.to_string();
+    }
+
+    if let Some(v) = &venue_opt {
+        let amb_opt = crate::grid::resolve_room_ambient_visitor_activity(place, (seed % 13) as usize);
+        if let Some(amb) = amb_opt {
+            return format!("正在{}，{}", place, amb);
+        }
+        let v_act = v.on_duty_fixture_activity.trim();
+        if !v_act.is_empty() && (seed % 2 == 0) {
+            return format!("正在{}，{}", place, v_act);
+        }
+        if !vessel_name.is_empty() && (seed % 4 == 0) {
+            return format!("正在{}的{}旁，隨身收好【{}】並歇息歇腳", place, fixture_name, vessel_name);
+        }
+        return format!("正在{}的{}旁歇腳整理，與鄰座街坊閒話家常", place, fixture_name);
+    }
+
+    if !fallback_act.is_empty() {
+        return fallback_act.to_string();
+    }
+    format!("正在{}的{}旁歇腳休憩", place, fixture_name)
 }
 
 pub fn clean_wilderness_place_label(name: &str) -> String {
@@ -497,31 +643,6 @@ pub fn resolve_wenyao_npc_schedule(
                 8,
             );
         }
-        if is_wenyao_slot && hour == 22 && slot_idx % 12 == 0 {
-            return match (slot_idx / 12) % 3 {
-                0 => (
-                    (0, -1),
-                    "文曜・三水口南街".to_string(),
-                    "夜市宵夜".to_string(),
-                    "正在三水口南街宵夜攤車前趁熱品嚐現煮切仔湯麵與黑糖薑汁熱豆花".to_string(),
-                    10,
-                ),
-                1 => (
-                    (0, 0),
-                    "文曜・三水匯流大石橋".to_string(),
-                    "晚間散步".to_string(),
-                    "正在三水匯流大石橋憑欄吹著晚風，遠眺三水川兩岸燈火".to_string(),
-                    10,
-                ),
-                _ => (
-                    resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
-                    "東橋旅社與山風茶屋".to_string(),
-                    "夜宿飲茶".to_string(),
-                    "正在東橋旅社大廳守著溫熱銅茶壺，與夜行商旅低聲交談".to_string(),
-                    12,
-                ),
-            };
-        }
         if is_wenyao_slot && slot_idx == 0 {
             return (
                 (0, 0),
@@ -555,134 +676,52 @@ pub fn resolve_wenyao_npc_schedule(
         );
     }
     if is_wenyao_slot && (18..=21).contains(&hour) && work_errand_toggle && ((h.wrapping_add(hour as u64)) % 3 == 0) {
-        return match (h.wrapping_add(hour as u64)) % 18 {
-            0 => (
-                (0, 0),
-                "三水匯流大石橋".to_string(),
-                "橋頭交會".to_string(),
-                "正在三水匯流大石橋燈火下與往來行商交談並眺望三水川水色".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(0)) % 11) as u8,
-            ),
-            1 => (
-                (0, 1),
-                "三水口北街".to_string(),
-                "街坊巡行".to_string(),
-                "正提著防風氣死風燈沿三水口北街石板道緩步穿行".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(1)) % 11) as u8,
-            ),
-            2 => (
-                (0, -1),
-                "文曜・三水口南街".to_string(),
-                "夜市宵夜".to_string(),
-                "正在三水口南街夜市攤位間品嚐現烤原牛肉串、貼爐胡椒餅與熱切仔麵".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(2)) % 11) as u8,
-            ),
-            3 => (
-                (1, 0),
-                "三水東街".to_string(),
-                "學院夜談".to_string(),
-                "正手捧書卷沿三水東街與同學好友漫步討論".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(3)) % 11) as u8,
-            ),
-            4 => (
-                (-1, 0),
-                "三水口西街".to_string(),
-                "街肆散步".to_string(),
-                "正沿著三水口西街石板道散步吹風，與街坊鄰居閒話家常".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(4)) % 11) as u8,
-            ),
-            5 => (
-                resolve_bldg_coord_or_fallback("三水大食堂", (-1, 2)),
-                "三水大食堂".to_string(),
-                "晚間聚膳".to_string(),
-                "正在三水大食堂大啖現煮原牛骨湯麵與蔥油烙餅".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(5)) % 11) as u8,
-            ),
-            6 => (
-                resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
-                "東橋旅社與山風茶屋".to_string(),
-                "茶屋夜敘".to_string(),
-                "正在東橋茶屋臨水窗邊品茗聽雨、暢談四方見聞".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(6)) % 11) as u8,
-            ),
-            7 => (
-                resolve_bldg_coord_or_fallback("三水總商行總部", (-1, 1)),
-                "三水總商行總部".to_string(),
-                "晚盤結算".to_string(),
-                "正在三水總商行燈下核對當日跨鎮通兌匯票與總帳".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(7)) % 11) as u8,
-            ),
-            8 => (
-                resolve_bldg_coord_or_fallback("學院主校區", (1, 1)),
-                "學院主校區".to_string(),
-                "講堂夜讀".to_string(),
-                "正在學院講堂貝母燈下抄錄會計與曆算與山海風物卷宗".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(8)) % 11) as u8,
-            ),
-            9 => (
-                resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
-                "岑氏第一鍛造工坊".to_string(),
-                "守爐夜鍛".to_string(),
-                "正在岑氏第一鍛造工坊紅鐵高爐旁照看夜間爐溫與火色".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(9)) % 11) as u8,
-            ),
-            10 => (
-                resolve_bldg_coord_or_fallback("北內門坊", (0, 10)),
-                "北內門坊".to_string(),
-                "內坊巡望".to_string(),
-                "正在北內門坊高大牌樓下檢視環城車馬路燈火與北向水道".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(10)) % 11) as u8,
-            ),
-            11 => (
-                resolve_bldg_coord_or_fallback("南內門坊", (0, -10)),
-                "南內門坊".to_string(),
-                "內門會商".to_string(),
-                "正在南內門坊石階前與南來車隊腳伕交接貨單印信".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(11)) % 11) as u8,
-            ),
-            12 => (
-                resolve_bldg_coord_or_fallback("東內門坊", (10, 0)),
-                "東內門坊".to_string(),
-                "東坊漫步".to_string(),
-                "正在東內門坊青石大道旁駐足觀看百工坊匠人運送新出爐器物".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(12)) % 11) as u8,
-            ),
-            13 => (
-                resolve_bldg_coord_or_fallback("西內門坊", (-10, 0)),
-                "西內門坊".to_string(),
-                "西關點卯".to_string(),
-                "正在西內門坊望樓下清點入城大車隊伍並核驗通行路引".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(13)) % 11) as u8,
-            ),
-            14 => (
-                resolve_bldg_coord_or_fallback("三水外坊・臨江水手茶飯館", (-13, 13)),
-                "三水外坊・臨江水手茶飯館".to_string(),
-                "水手茶敘".to_string(),
-                "正在臨江水手茶飯館靠窗木桌旁就著河風大啖熱騰騰的魚湯與麥餅".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(14)) % 11) as u8,
-            ),
-            15 => (
-                resolve_bldg_coord_or_fallback("講堂外坊・翰墨清茶書舍", (13, 13)),
-                "講堂外坊・翰墨清茶書舍".to_string(),
-                "書舍清談".to_string(),
-                "正在翰墨清茶書舍雅座間翻閱新印善本並與學士低聲論道".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(15)) % 11) as u8,
-            ),
-            16 => (
-                resolve_bldg_coord_or_fallback("百工外坊・紅爐烈酒大飯鋪", (13, -13)),
-                "百工外坊・紅爐烈酒大飯鋪".to_string(),
-                "烈酒暖身".to_string(),
-                "正在紅爐烈酒大飯鋪條凳上痛飲老燒酒、聽四方匠人高談闊論".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(16)) % 11) as u8,
-            ),
-            _ => (
-                resolve_bldg_coord_or_fallback("西門外坊・大碗羊肉湯餅鋪", (-13, -13)),
-                "西門外坊・大碗羊肉湯餅鋪".to_string(),
-                "湯餅飽腹".to_string(),
-                "正在大碗羊肉湯餅鋪熱氣中捧著大海碗大口喝著滾燙羊肉濃湯".to_string(),
-                18 + (((h.wrapping_add(hour as u64)).wrapping_add(17)) % 11) as u8,
-            ),
+        let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
+        let fallback_venues = [
+            ((2, -1), "東橋旅社與山風茶屋"),
+            ((-1, 2), "三水大食堂"),
+            ((-2, 1), "泉香溫水浴場"),
+        ];
+        let fallback_choice = fallback_venues[(h as usize) % fallback_venues.len()];
+        let (dest_coord, dest_name) = if let Some(g) = &grid_opt
+            && let Some((c, n)) = g.find_nearest_room_by_tags((slot.home_x, slot.home_y), 18, &["teahouse", "canteen", "bathhouse", "market"], h)
+        {
+            (c, n)
+        } else {
+            (fallback_choice.0, fallback_choice.1.to_string())
         };
+
+        let venue_fixture = match crate::grid::resolve_any_room_venue_object(&dest_name, "") {
+            Some(v) => {
+                let k = v.venue_kind;
+                if k.contains("茶") {
+                    "老茶壺與臨窗茶案"
+                } else if k.contains("食") || k.contains("飯") || k.contains("食堂") {
+                    "大骨湯鍋與白案蒸籠"
+                } else if k.contains("浴") || k.contains("溫水") || k.contains("溫泉") {
+                    "溫熱石砌泉池"
+                } else if k.contains("鍛造") || k.contains("鐵") {
+                    "紅鐵高爐與砧台"
+                } else {
+                    "臨街長凳"
+                }
+            }
+            None => {
+                if dest_name.contains("茶") {
+                    "老茶壺與臨窗茶案"
+                } else if dest_name.contains("食") || dest_name.contains("飯") {
+                    "大骨湯鍋與白案蒸籠"
+                } else if dest_name.contains("浴") {
+                    "溫熱石砌泉池"
+                } else {
+                    "臨街長凳"
+                }
+            }
+        };
+
+        let stay_act = format!("正在{}的{}旁歇腳用茶，與鄰座街坊閒話家常", dest_name, venue_fixture);
+        let ticks = 18 + (((h.wrapping_add(hour as u64)) % 11) as u8);
+        return (dest_coord, dest_name, "晚間休歇".to_string(), stay_act, ticks);
     }
     let is_home_window = (hour >= 5 && hour < slot.morning_hour)
         || (hour >= slot.evening_hour && hour < 22);
@@ -733,85 +772,55 @@ pub fn resolve_wenyao_npc_schedule(
                 ),
             };
         }
-        return match h % 12 {
-            0 => (
-                resolve_bldg_coord_or_fallback("三水大食堂", (-1, 2)),
-                "三水大食堂".to_string(),
-                "用膳歇腳".to_string(),
-                "正在三水大食堂木桌旁享用熱騰騰的現煮飯食與湯水".to_string(),
+        if h % 5 == 0 {
+            return (
+                (slot.errand_x, slot.errand_y),
+                slot.errand_name.to_string(),
+                "午間跑腿採買".to_string(),
+                slot.errand_stay_activity.to_string(),
                 20 + ((h % 8) as u8),
-            ),
-            1 => (
-                resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
-                "東橋旅社與山風茶屋".to_string(),
-                "品茗用膳".to_string(),
-                "正在東橋茶屋臨水座頭品茗享用糕點茶食".to_string(),
-                18 + ((h % 8) as u8),
-            ),
-            2 => (
-                (0, 1),
-                "文曜・三水口北街".to_string(),
-                "早市買熱食".to_string(),
-                "正在三水口北街早市攤車前挑選熱騰騰的荷葉糯米炊飯與現磨溫米漿".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            3 => (
-                (0, -1),
-                "文曜・三水口南街".to_string(),
-                "南街買麵點".to_string(),
-                "正在三水口南街熟食鋪旁享用現煮湯麵與小菜".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            4 => (
-                (2, 1),
-                "講堂外坊・翰墨清茶書舍".to_string(),
-                "書舍茶點".to_string(),
-                "正在清茶書舍廊下就著熱茶享用午間茶點".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            5 => (
-                (1, 0),
-                "文曜・三水口納涼棚廊".to_string(),
-                "棚廊午憩".to_string(),
-                "正在三水口納涼棚廊木椅上打開自備便當享用午餐".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            6 => (
-                (-3, -1),
-                "西門・車馬聯運總站".to_string(),
-                "站前茶棚".to_string(),
-                "正在聯運總站茶水棚旁吃碗熱湯麵歇腳".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            7 => (
-                (0, 2),
-                "文曜・鐘樓前街".to_string(),
-                "鐘樓午歇".to_string(),
-                "正在鐘樓前街樹蔭石凳上享用熱騰騰的酥皮胡椒餅與熱湯".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            8 => (
-                (-1, -1),
-                "文曜・公議堂東街".to_string(),
-                "街畔小憩".to_string(),
-                "正在公議堂東街長凳旁喝著溫茶歇息".to_string(),
-                20 + ((h % 8) as u8),
-            ),
-            9 | 10 => (
-                work_coord,
-                slot.work_name.to_string(),
-                "午間便當小憩".to_string(),
-                format!("正在{}工位旁打開木製便當盒享用熱飯菜，順道歇口氣", slot.work_name),
-                20 + ((h % 8) as u8),
-            ),
-            _ => (
-                home_coord,
-                slot.home_name.to_string(),
-                "返家午膳".to_string(),
-                format!("正在{}自家飯桌旁享用熱騰騰的午飯", slot.home_name),
-                20 + ((h % 8) as u8),
-            ),
+            );
+        }
+
+        let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
+        let (dest_coord, dest_name) = if let Some(g) = &grid_opt
+            && let Some((c, n)) = g.find_nearest_room_by_tags((slot.work_x, slot.work_y), 16, &["canteen", "hot_food", "teahouse"], h)
+        {
+            (c, n)
+        } else {
+            ((-1, 2), "三水大食堂".to_string())
         };
+
+        let venue_fixture = match crate::grid::resolve_any_room_venue_object(&dest_name, "") {
+            Some(v) => {
+                let k = v.venue_kind;
+                if k.contains("食") || k.contains("飯") || k.contains("食堂") {
+                    "大骨湯鍋與白案蒸籠"
+                } else if k.contains("茶") {
+                    "老茶壺與臨窗茶案"
+                } else {
+                    "木製餐桌與長凳"
+                }
+            }
+            None => {
+                if dest_name.contains("食") || dest_name.contains("飯") {
+                    "大骨湯鍋與白案蒸籠"
+                } else if dest_name.contains("茶") {
+                    "老茶壺與臨窗茶案"
+                } else {
+                    "木製餐桌與長凳"
+                }
+            }
+        };
+
+        let stay_act = format!("正在{}的{}旁享用熱騰騰的現煮飯食與湯水，歇腳小憩", dest_name, venue_fixture);
+        return (
+            dest_coord,
+            dest_name,
+            "午間聚膳".to_string(),
+            stay_act,
+            20 + ((h % 8) as u8),
+        );
     }
     if !work_errand_toggle {
         let mut work_coord = resolve_bldg_coord_or_fallback(slot.work_name, (slot.work_x, slot.work_y));
@@ -842,11 +851,12 @@ pub fn resolve_wenyao_npc_schedule(
                 }
             }
         }
+        let grounded_act = synthesize_grounded_venue_activity(&name, &stay_activity, held_vessel(slot).1, h);
         (
             work_coord,
             name,
             slot.work_purpose.to_string(),
-            stay_activity,
+            grounded_act,
             20 + ((h % 11) as u8),
         )
     } else {
@@ -879,11 +889,12 @@ pub fn resolve_wenyao_npc_schedule(
                 }
             }
         }
+        let grounded_act = synthesize_grounded_venue_activity(&name, &stay_activity, held_vessel(slot).1, h);
         (
             errand_coord,
             name,
             slot.errand_purpose.to_string(),
-            stay_activity,
+            grounded_act,
             16 + ((h % 9) as u8),
         )
     }

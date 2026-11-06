@@ -304,6 +304,15 @@ pub fn build_identity(entity_id: &str) -> String {
     if !s.is_empty() && (s.contains("開譜曆") || s.contains("白塔曆")) {
         result.push_str(&format!("\n近期交談摘要：{}", s));
     }
+    let slot = crate::store::wenyao_household_slot_for(entity_id);
+    let (vessel_id, vessel_name) = crate::store::held_vessel(slot);
+    result.push_str(&format!(
+        "\n【閉世界事實白名單（僅准引用以下真實外鍵，嚴禁無中生有）】住處：【{}】（{},{}）；本職場所：【{}】（{},{}）；常去採買／交接場所：【{}】（{},{}）；職司隨身器物：【{}】（{}）。對話提及之店鋪、街巷或器物必須 100% 限於上述白名單、隨身行囊或現場四鄰實景；未列於白名單之店鋪或物品代表不存在，必須回答「不曉得」或「這附近沒有」！",
+        slot.home_name, slot.home_x, slot.home_y,
+        slot.work_name, slot.work_x, slot.work_y,
+        slot.errand_name, slot.errand_x, slot.errand_y,
+        vessel_name, vessel_id
+    ));
     result
 }
 

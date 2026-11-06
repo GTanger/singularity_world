@@ -342,8 +342,8 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_20261106al')) return;
-				sessionStorage.setItem('sw_reloaded_20261106al', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261106al')) return;
+				sessionStorage.setItem('sw_reloaded_v20261106al', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});

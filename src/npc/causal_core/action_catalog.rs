@@ -645,7 +645,7 @@ pub const PREDEFINED_ACTION_CATALOG: &[ActionOptionDef] = &[
         code: "work_perform_steady_daily_vocation",
         image: DecisionImageKind::WorkOrTrade,
         margin_band: MarginBand::Subsistence,
-        min_mg: 0,
+        min_mg: 5,
         max_mg: None,
         cost_mg: 0,
         earn_mg: 7,

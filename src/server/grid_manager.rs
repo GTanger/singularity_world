@@ -12,3 +12,7 @@ include!("grid_manager/schedule_part1.rs");
 include!("grid_manager/schedule_part2.rs");
 include!("grid_manager/sync.rs");
 include!("grid_manager/simulation.rs");
+
+pub(crate) mod schedule {
+    pub(crate) use super::iter_resident_schedules;
+}

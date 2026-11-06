@@ -366,31 +366,12 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
 
     if let Some(v) = vendor_npc {
         let caller = get_display_name(v);
-        let bark = if v.id == "wt_vendor_roast_beef" || v.display_title.contains("牛肉") || v.current_activity.contains("牛肉") {
-            format!("{caller}一邊翻動炭火烤網上滋滋冒油的肉串，一邊高聲叫賣：「街角炭烤原牛肉串配焦蜜烤番薯喔——炭火現烤、焦香鮮嫩，來一串暖暖胃！」")
-        } else if v.id == "wt_vendor_noodle_soup" || v.display_title.contains("切仔麵") || v.current_activity.contains("切仔麵") {
-            format!("{caller}掀開大銅鍋蓋，伴著滾燙大骨白煙清脆招呼：「切仔湯麵配滷蛋熱騰騰出鍋喔！大骨高湯現點現煮，來坐吃麵！」")
-        } else if v.id == "wt_vendor_pepper_bun" || v.display_title.contains("胡椒餅") || v.current_activity.contains("胡椒餅") {
-            format!("{caller}用扁鐵鏟從鐵桶內壁鏟起金黃焦脆的熱餅，高聲吆喝：「現烤出爐的酥皮鮮肉胡椒餅！老麵貼爐、皮酥蔥香肉汁滿，小心燙口喔——」")
-        } else if v.id == "wt_vendor_herbal_tea" || v.display_title.contains("仙草") || v.current_activity.contains("烏梅") || v.current_activity.contains("仙草") {
-            format!("{caller}手搖清脆銅盞叮噹作響，笑著叫賣：「寒水玉冰鎮黑糖仙草凍來囉！慢熬仙草沁涼滑嫩、生津止渴，解膩消暑最對味喔！」")
-        } else if v.id == "wt_vendor_tofu_pudding" || v.display_title.contains("豆花") || v.current_activity.contains("豆花") {
-            format!("{caller}手持扁銅杓片出滑嫩豆花，朗聲招呼：「古早味黑糖薑汁熱豆花——井泉鹽滷、慢火黑糖粉圓配薑汁暖胃補氣，來坐喔！」")
-        } else if v.id == "wt_vendor_rice_roll" || v.display_title.contains("炊飯") || v.current_activity.contains("飯糰") || v.current_activity.contains("炊飯") {
-            format!("{caller}掀開大木甑散發出撲鼻荷葉香氣，清脆吆喝：「熱騰騰蒸好的荷葉糯米炊飯！粒粒糯米透著竹香，吃一顆飽足頂餓喔！」")
-        } else if v.id == "wt_vendor_soy_milk" || v.display_title.contains("米漿") || v.current_activity.contains("米漿") {
-            format!("{caller}攪拌著滾燙濃香的銅鍋，朗聲招呼：「老堰頭現磨溫米漿配現炸酥脆油條喔！石磨現磨香濃滑順，熱氣騰騰喝一碗神清氣爽！」")
-        } else if v.id == "wt_vendor_morning_produce" || v.display_title.contains("蔬果") || v.current_activity.contains("蔬果") || v.current_activity.contains("水芹") {
-            format!("{caller}往竹簍鮮菜灑了點清泉水，笑著吆喝：「老堰頭水芹菜脆嫩莖山泉現採下山喔！山泉灌溉、梗脆帶露清甜，隨便挑隨便選！」")
-        } else if v.id == "wt_vendor_morning_fish" || v.display_title.contains("河鮮") || v.current_activity.contains("河鮮") || v.current_activity.contains("河蝦") {
-            format!("{caller}指著木盆裡水花直濺的鮮活河蝦，大聲叫賣：「水尾寮淺澤青殼河蝦現撈上岸！隻隻鮮活生猛、殼薄肉甜，買回去煮湯下酒最鮮甜！」")
-        } else if v.id == "wt_npc_ma_buxue" || v.display_title.contains("補靴") || v.display_title.contains("修傘") || v.current_activity.contains("修補攤") {
-            format!("{caller}敲了敲硬木楦頭上的厚牛皮掌，朗聲招呼：「釘鞋底、換皮掌、修補韌竹骨桐油晴雨摺疊傘——現修現拿，耐走防雨喔！」")
-        } else if let Some(vo) = crate::grid::resolve_market_or_specialty_room_object(new_room, &v.display_title) {
-            format!("{caller}招呼著過往行人：「{}」", vo.trade_talk_pitch)
-        } else {
-            format!("{caller}招呼著過往行人：「走過路過來瞧瞧，新出爐的手藝，新鮮道地喔！」")
-        };
+        let bark = crate::server::action::trade::synthesize_vendor_bark_from_catalog(
+            &v.id,
+            &v.display_title,
+            new_room,
+            &caller,
+        );
 
         let other_customer = npcs.iter().find(|e| {
             e.id != v.id

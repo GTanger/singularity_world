@@ -70,81 +70,53 @@ fn canonical_or_venue_talk_reply(
             || target.current_activity.contains("歇息")
             || target.current_activity.contains("熟睡")
             || target.current_activity.contains("熄燈");
+        let is_actively_vending = !is_prepping_or_moving && !is_resting;
+        let (item_id, item_name, default_price, _) =
+            crate::server::action::trade::resolve_vendor_specialty(&target.id)
+                .or_else(|| crate::server::action::trade::vendor_stall_offer_for_npc(&target.id))
+                .unwrap_or(("wt_cat_0395", "招牌特色小吃", 3, ""));
+        let cat_obj = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+            .iter()
+            .find(|o| o.id == item_id);
 
-        let line = if is_prepping_or_moving || is_resting {
-            match target.id.as_str() {
-                "wt_vendor_roast_beef" => {
-                    if is_prepping_or_moving {
-                        "「炭火跟原牛肉串才備妥，我這正要推車前往三水口南街，稍後開火了再來嚐鮮啊！」"
+        let sensory_clause = cat_obj
+            .map(|o| {
+                let raw = o.look_text.trim();
+                let after_quote = if let Some(stripped) = raw.strip_prefix('「') {
+                    if let Some((_, rest)) = stripped.split_once('」') {
+                        rest.trim()
                     } else {
-                        "「今天火候差不多啦，炭爐封好了，肉串也都賣清收攤囉！明日午後南街見！」"
+                        raw
                     }
-                }
-                "wt_vendor_noodle_soup" => {
-                    if is_prepping_or_moving {
-                        "「大骨高湯才熬出濃白香氣，我正張羅著推車去南街開張，稍後見啊！」"
-                    } else {
-                        "「大湯鍋跟碗筷都洗刷乾淨收攤啦，眼下歇歇腿，想吃麵明日傍晚再來坐！」"
-                    }
-                }
-                "wt_vendor_pepper_bun" => {
-                    if is_prepping_or_moving {
-                        "「老麵醒好了、青蔥鮮肉餡也調足了黑胡椒，我這就推車前往南街開爐，稍等我生火啊！」"
-                    } else {
-                        "「今日的胡椒餅全貼爐賣光啦，炭桶餘燼封妥收攤了，想吃香酥胡椒餅明天請早！」"
-                    }
-                }
-                "wt_vendor_herbal_tea" => {
-                    if is_prepping_or_moving {
-                        "「仙草凍與黑糖才用井泉鎮涼裝甕，我正推著攤車過去南街，待會擺妥攤位再為您盛一盞。」"
-                    } else {
-                        "「冰甕與銅盞皆已洗淨收妥歇息了，夜涼了你也早些安歇，明日午後再來喝茶。」"
-                    }
-                }
-                "wt_vendor_tofu_pudding" => {
-                    if is_prepping_or_moving {
-                        "「豆漿才點好鹽滷成凍、黑糖薑汁正溫著呢，我正推車出門去南街，稍候就開賣囉。」"
-                    } else {
-                        "「桶裡的熱豆花賣完囉，木桶洗刷好在屋裡歇腳泡黃豆呢，想吃熱豆花明日再來找阿伯！」"
-                    }
-                }
-                "wt_vendor_rice_roll" => {
-                    if is_prepping_or_moving {
-                        "「荷葉糯米飯正悶著香氣呢，我這就推車前往北街早市，想吃早點稍後過去找我！」"
-                    } else {
-                        "「早市收攤啦，眼下挑選完明日的配料正歇著呢，想吃炊飯明日清早來北街！」"
-                    }
-                }
-                "wt_vendor_soy_milk" => {
-                    if is_prepping_or_moving {
-                        "「石磨才磨出兩大桶濃米漿，我正要推去北街架攤呢，稍後見！」"
-                    } else {
-                        "「銅壺跟石磨都擦拭妥當收攤休息啦，想喝香濃溫米漿明日趕早啊！」"
-                    }
-                }
-                "wt_vendor_morning_produce" => {
-                    if is_prepping_or_moving {
-                        "「鮮菜已從田裡引泉水沖洗乾淨裝簍，正準備推去早市，待會來挑鮮菜啊！」"
-                    } else {
-                        "「今天摘的鮮菜全都賣完收攤啦，眼下歇歇腳準備去理田，明早請早囉！」"
-                    }
-                }
-                "wt_vendor_morning_fish" => {
-                    if is_prepping_or_moving {
-                        "「清晨網到的青殼河蝦才分盆裝妥，正趕著推去早市，稍後來看生猛活蝦！」"
-                    } else {
-                        "「今日的生猛河蝦早已搶購一空收攤啦，木盆都沖乾淨了，想吃河鮮明日天亮早點來！」"
-                    }
-                }
-                _ => {
-                    if is_prepping_or_moving {
-                        "「手頭正張羅著攤車備料出門，待會攤位擺好歡迎來捧場啊！」"
-                    } else {
-                        "「今日攤頭上的東西都賣清收攤啦，眼下正歇腳呢，明日請早！」"
-                    }
-                }
+                } else {
+                    raw
+                };
+                after_quote
+                    .split(['，', '。'])
+                    .find(|seg| !seg.trim().is_empty())
+                    .unwrap_or("真材實料")
+                    .trim()
+            })
+            .unwrap_or("真材實料");
+
+        let action_clause = cat_obj
+            .map(|o| {
+                let raw = o.action_text.trim();
+                raw.split(['，', '。'])
+                    .find(|seg| !seg.trim().is_empty())
+                    .unwrap_or("滋味醇正道地")
+                    .trim()
+            })
+            .unwrap_or("滋味醇正道地");
+
+        let act = &target.current_activity;
+
+        let line = if !is_actively_vending {
+            if is_prepping_or_moving {
+                format!("「這批【{item_name}】（{sensory_clause}）才備妥，我眼下{act}，等到了攤位開張再來嚐鮮選購吧！」")
+            } else {
+                format!("「今日的【{item_name}】已經收攤歇息了（眼下{act}），待開市時段再來光顧吧！」")
             }
-            .to_string()
         } else {
             let mut h: i64 = 0;
             for c in target.id.chars() {
@@ -152,121 +124,23 @@ fn canonical_or_venue_talk_reply(
             }
             let now_idx = game::now_unix().saturating_add(h).unsigned_abs() as usize / 15;
 
-            let (_item_id, item_name, price_mg, stock) =
-                crate::server::action::trade::get_vendor_stall_stock(&target.id)
-                    .unwrap_or(("", "招牌小吃", 3, 5));
+            let settlement = crate::world::materials::infer_origin_settlement(room_name);
+            let (stock, price_mg) = crate::game::object_ecology::get_market_item_stock_and_price(
+                settlement,
+                item_id,
+                default_price,
+            );
 
-            match target.id.as_str() {
-                "wt_vendor_roast_beef" => match now_idx % 3 {
-                    0 => format!(
-                        "「來來來，走過路過別錯過！炭火正旺，這【{item_name}】烤得外焦裡嫩、肉汁直冒，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，趁熱吃最過癮！」"
-                    ),
-                    1 => format!(
-                        "「肚子餓了吧？我鄭火旺的烤肉串都是挑最新鮮的原肉現烤，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，來一串暖暖胃！」"
-                    ),
-                    _ => format!(
-                        "「聞到炭火香氣了嗎？才撒上粗鹽與香料，油脂滋滋作響！每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，要帶幾串趁手啊？」"
-                    ),
-                },
-                "wt_vendor_noodle_soup" => match now_idx % 3 {
-                    0 => format!(
-                        "「進來坐喔！大骨高湯熬了整整大半日，這【{item_name}】熱騰騰又順口，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，暖胃最踏實！」"
-                    ),
-                    1 => format!(
-                        "「吹著風餓了吧？來罔市這喝碗熱湯，現煮的【{item_name}】麵條Ｑ彈，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，現點現煮為你下鍋！」"
-                    ),
-                    _ => format!(
-                        "「在外奔波辛苦了！切仔麵配顆入味的滷蛋最對味，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，趁熱吃，湯不夠隨時跟我說！」"
-                    ),
-                },
-                "wt_vendor_pepper_bun" => match now_idx % 3 {
-                    0 => format!(
-                        "「小心燙手啊！初用鐵鏟從壁爐裡鏟起這【{item_name}】，酥皮脆、肉汁燙，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，趁熱咬一口滿嘴蔥香！」"
-                    ),
-                    1 => format!(
-                        "「我張阿發做餅講究老麵發酵、厚肉重黑胡椒，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，吃過就知道真材實料！」"
-                    ),
-                    _ => format!(
-                        "「新出爐這爐火候正頂！外皮烤得金黃酥脆，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，小心咬開燙嘴爆汁啊！」"
-                    ),
-                },
-                "wt_vendor_herbal_tea" => match now_idx % 3 {
-                    0 => format!(
-                        "「天氣燥熱心神難定吧？來嚐一盞【{item_name}】，滑嫩仙草配手炒黑糖，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，生津降火最是舒暢。」"
-                    ),
-                    1 => format!(
-                        "「客人請慢走，我這陶甕冰鎮的【{item_name}】清涼沁脾，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，喝一口解油膩又潤喉呢。」"
-                    ),
-                    _ => format!(
-                        "「以古法提煉的甘美仙草，沁涼滑順，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，喝一盅消消暑氣吧。」"
-                    ),
-                },
-                "wt_vendor_tofu_pudding" => match now_idx % 3 {
-                    0 => format!(
-                        "「慢慢來不著急。阿伯用老井泉沖的鹽滷豆花細緻滑嫩，這【{item_name}】每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，熱熱吃暖胃又補氣。」"
-                    ),
-                    1 => format!(
-                        "「老薑汁文火煨透黑糖，辛香帶甜，配上現舀的【{item_name}】，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，來一碗坐著歇歇腳吧。」"
-                    ),
-                    _ => format!(
-                        "「古法點出來的豆香最是純粹。這碗【{item_name}】每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，入口即化，嚐一碗定定心神。」"
-                    ),
-                },
-                "wt_vendor_rice_roll" => match now_idx % 3 {
-                    0 => format!(
-                        "「早啊年輕人！掀開荷葉撲鼻香，這【{item_name}】粒粒糯米透著竹香油亮，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，吃飽才有力氣幹活！」"
-                    ),
-                    1 => format!(
-                        "「我吳秀琴的炊飯用料最實在，荷葉裹著香菇蛋黃與油蔥，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，帶一份路上趁熱吃！」"
-                    ),
-                    _ => format!(
-                        "「清晨現出鍋的熱炊飯最頂飽！這【{item_name}】每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，要帶一顆路上墊肚子嗎？」"
-                    ),
-                },
-                "wt_vendor_soy_milk" => match now_idx % 3 {
-                    0 => format!(
-                        "「來碗濃淳溫熱的米漿潤潤嗓！老堰頭石磨磨出來的【{item_name}】，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，配油條最是享受！」"
-                    ),
-                    1 => format!(
-                        "「炒花生香氣全融進糙米漿裡了，香甜滑順，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，大清早喝一碗神清氣爽！」"
-                    ),
-                    _ => format!(
-                        "「聞香就知是好米漿！這【{item_name}】正在銅鍋文火溫熱著，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，買一碗暖胃吧！」"
-                    ),
-                },
-                "wt_vendor_morning_produce" => match now_idx % 3 {
-                    0 => format!(
-                        "「瞧瞧！透早從堰頭清泉畔採下的【{item_name}】，脆嫩帶露，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，清炒或煮湯都甜得很！」"
-                    ),
-                    1 => format!(
-                        "「自己地裡引山泉種的水芹菜，沒噴半點藥，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，抓一把回去加菜最健康！」"
-                    ),
-                    _ => format!(
-                        "「透早新拔的鮮蔬最嫩口！這【{item_name}】梗脆葉嫩，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，隨便挑隨便選，包你滿意！」"
-                    ),
-                },
-                "wt_vendor_morning_fish" => match now_idx % 3 {
-                    0 => format!(
-                        "「看過來！天未亮在水尾寮淺澤網到的【{item_name}】，隻隻青殼鮮活跳動，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，白灼鮮甜無比！」"
-                    ),
-                    1 => format!(
-                        "「活水養出來的河蝦最青！蝦殼薄肉質脆，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，買回去加點薑絲炒一下，下酒最對味！」"
-                    ),
-                    _ => format!(
-                        "「這盆河蝦生猛得很，水花直濺！每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，數量有限，晚來就只能看空盆囉！」"
-                    ),
-                },
-                _ => match now_idx % 3 {
-                    0 => format!(
-                        "「走過路過別錯過！這【{item_name}】現貨新鮮，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，來嚐嚐看吧！」"
-                    ),
-                    1 => format!(
-                        "「來看看喔，真材實料的【{item_name}】，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，保證新鮮！」"
-                    ),
-                    _ => format!(
-                        "「熱騰騰現備齊的【{item_name}】，每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，要帶一份嗎？」"
-                    ),
-                },
+            match now_idx % 3 {
+                0 => format!(
+                    "「走過路過別錯過！這【{item_name}】（{sensory_clause}），每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，趁熱品味最是地道！」"
+                ),
+                1 => format!(
+                    "「客官請看，招牌【{item_name}】現貨新鮮（{action_clause}），每份 {price_mg} 鎂，攤頭僅餘 {stock} 份，隨時為您備好！」"
+                ),
+                _ => format!(
+                    "「今日這批【{item_name}】用料實在（{sensory_clause}），每份 {price_mg} 鎂，目前攤上尚餘 {stock} 份，要帶一份嚐嚐嗎？」"
+                ),
             }
         };
 
@@ -571,7 +445,48 @@ pub fn select_deliverable_item(
             }
         }
     }
-    // 3. 依標準優先順序檢查身上持有的可交割物件
+    // 3. 全總典外鍵兜底：依玩家語句比對 PENINSULA_WORLD_OBJECTS（名稱、或截取後綴／末尾漢字）
+    for entry in crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS {
+        let matches_input = if player_input.contains(entry.name) {
+            true
+        } else if entry.name.len() >= 6 {
+            let suffix = if let Some((_, after_dot)) = entry.name.split_once('・') {
+                after_dot
+            } else {
+                ""
+            };
+            if !suffix.is_empty() && player_input.contains(suffix) {
+                true
+            } else {
+                let chars: Vec<char> = entry.name.chars().collect();
+                if chars.len() >= 3 {
+                    let last3: String = chars[chars.len() - 3..].iter().collect();
+                    let last2: String = chars[chars.len() - 2..].iter().collect();
+                    player_input.contains(&last3) || player_input.contains(&last2)
+                } else if chars.len() == 2 {
+                    let last2: String = chars.iter().collect();
+                    player_input.contains(&last2)
+                } else {
+                    false
+                }
+            }
+        } else {
+            false
+        };
+
+        if matches_input && has_item(entry.id) {
+            return Some((entry.id, entry.name));
+        }
+    }
+    // 4. 全總典外鍵兜底：依待辦提示比對 PENINSULA_WORLD_OBJECTS
+    if let Some(hint) = obligation_hint {
+        for entry in crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS {
+            if (hint.contains(entry.id) || hint.contains(entry.name)) && has_item(entry.id) {
+                return Some((entry.id, entry.name));
+            }
+        }
+    }
+    // 5. 依標準優先順序檢查身上持有的可交割物件
     for (item_id, item_name, _) in DELIVERABLE_ITEMS {
         if has_item(item_id) {
             return Some((item_id, item_name));

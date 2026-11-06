@@ -150,6 +150,63 @@ pub fn vendor_stall_offer_for_npc(
     }
 }
 
+/// 依攤販或攤位識別碼解析其正典招牌特色物品（物品 ID、物品名稱、基準價、正典販者 ID）
+pub fn resolve_vendor_specialty(
+    vendor_or_stall_id: &str,
+) -> Option<(&'static str, &'static str, i32, &'static str)> {
+    vendor_stall_offer_for_npc(vendor_or_stall_id)
+}
+
+/// 依總典（`PENINSULA_WORLD_OBJECTS`）外鍵與場域物件合成攤販／鋪主叫賣語，取代按特定 ID 硬編碼之罐頭台詞。
+pub fn synthesize_vendor_bark_from_catalog(
+    vendor_id: &str,
+    display_title: &str,
+    room_name: &str,
+    caller: &str,
+) -> String {
+    if let Some((item_id, item_name, _base_price, _)) = resolve_vendor_specialty(vendor_id) {
+        let cat_obj = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+            .iter()
+            .find(|o| o.id == item_id);
+        let look_clause = cat_obj
+            .map(|o| {
+                let raw = o.look_text.trim();
+                let after_quote = if let Some(stripped) = raw.strip_prefix('「') {
+                    if let Some((_, rest)) = stripped.split_once('」') {
+                        rest.trim()
+                    } else {
+                        raw
+                    }
+                } else {
+                    raw
+                };
+                after_quote
+                    .split(['，', '。'])
+                    .find(|s| !s.trim().is_empty())
+                    .unwrap_or("真材實料、現做現賣")
+                    .trim()
+            })
+            .unwrap_or("真材實料、現做現賣");
+        let action_clause = cat_obj
+            .map(|o| {
+                o.action_text
+                    .trim()
+                    .split(['，', '。'])
+                    .find(|s| !s.trim().is_empty())
+                    .unwrap_or("滋味醇厚道地")
+                    .trim()
+            })
+            .unwrap_or("滋味醇厚道地");
+        return format!(
+            "{caller}守在攤前照看【{item_name}】（{look_clause}），朗聲招呼過往街坊：「現備的【{item_name}】——{action_clause}，歡迎過來瞧瞧！」"
+        );
+    }
+    if let Some(vo) = crate::grid::resolve_market_or_specialty_room_object(room_name, display_title) {
+        return format!("{caller}招呼著過往行人：「{}」", vo.trade_talk_pitch);
+    }
+    format!("{caller}招呼著過往行人：「走過路過來瞧瞧，新出爐的手藝，新鮮道地喔！」")
+}
+
 pub(super) fn advance_room_event_pack_on_trade(room_name: &str, item_id: &str, item_name: &str) -> Option<String> {
     crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, item_name)
         .or_else(|| crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, item_id))

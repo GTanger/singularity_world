@@ -136,8 +136,8 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
     }
     for (bad, good) in [
         ("活兒才完", "活計方歇"),
-        ("活計才完", "活計方歇"),
-        ("差事才完", "差事方歇"),
+        ("活計才完", "活計才忙完"),
+        ("差事才完", "差事才忙完"),
         ("真帶勁", "真猛烈"),
         ("太帶勁", "太凌厲"),
         ("跟活的似的", "如同活物一般"),
@@ -165,7 +165,7 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("等會兒", "稍後"),
         ("一會兒", "片刻"),
         ("這會兒", "眼下"),
-        ("那會兒", "早先"),
+        ("那會兒", "那陣子"),
         ("歇了會兒", "歇了片刻"),
         ("歇會兒", "歇息片刻"),
         ("坐了會兒", "坐了片刻"),
@@ -379,6 +379,14 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("非本公司員工禁止進入區", "非本號夥計禁止入內區"),
         ("非員工禁止進入", "非夥計禁止入內"),
         ("員工", "夥計"),
+        ("牛角燈罩", "夜光貝母燈罩"),
+        ("牛角燈具", "夜光貝母燈具"),
+        ("牛角提燈", "夜光貝母提燈"),
+        ("牛角燈", "夜光貝母防風燈"),
+        ("牛角明瓦", "夜光貝母薄片"),
+        ("燈籠鋪", "銅錫器皿坊"),
+        ("聯運站前街", "三水渡埠街"),
+        ("西門東街", "西門聯運東口"),
     ] {
         if s.contains(bad) {
             s = s.replace(bad, good);
@@ -414,4 +422,17 @@ pub fn sanitize_npc_dialogue_line(line: &str) -> String {
         return String::new();
     }
     sanitize_npc_dialogue_part2(s)
+}
+
+/// 檢查台詞是否包含未登錄的幻影場所或非正典器物名稱。
+pub fn contains_unregistered_phantom_venue(text: &str) -> bool {
+    const FORBIDDEN_PHANTOM_VENUES: &[&str] = &[
+        "燈籠鋪",
+        "牛角燈",
+        "聯運站前街",
+        "西門東街",
+        "北津石板拱橋",
+        "西虹石板拱橋",
+    ];
+    FORBIDDEN_PHANTOM_VENUES.iter().any(|&phantom| text.contains(phantom))
 }

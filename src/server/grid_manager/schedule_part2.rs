@@ -577,7 +577,7 @@ static RESIDENT_SCHEDULES_PART2: [ResidentSchedule; 29] = [
         },
 ];
 
-fn iter_resident_schedules() -> impl Iterator<Item = &'static ResidentSchedule> {
+pub(crate) fn iter_resident_schedules() -> impl Iterator<Item = &'static ResidentSchedule> {
     RESIDENT_SCHEDULES_PART1.iter().chain(RESIDENT_SCHEDULES_PART2.iter())
 }
 

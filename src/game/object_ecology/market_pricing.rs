@@ -364,6 +364,16 @@ pub fn dynamic_settlement_market_quote(
     }
 }
 
+/// 查詢指定聚落市集特定物品之即時庫存與即時浮動價格
+pub fn get_market_item_stock_and_price(
+    settlement_or_room: &str,
+    item_id: &str,
+    base_price: i32,
+) -> (i32, i32) {
+    let quote = dynamic_settlement_market_quote(settlement_or_room, item_id, base_price);
+    (quote.local_stock, quote.unit_price)
+}
+
 /// 記錄聚落市集買賣交易後的庫存與需求動態反饋，即時調整庫存與 EMA 價格。
 pub fn record_settlement_market_trade(
     settlement_or_room: &str,

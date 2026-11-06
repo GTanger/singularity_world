@@ -278,11 +278,11 @@ where
 }
 
 /// 白塔半島 15 座聚落（八大家族＋文曜民生五坊＋四鎮九村當家）34 位排程住民作息定義。
-struct ResidentSchedule {
-    id: &'static str,
-    gender: &'static str,
-    display_title: &'static str,
-    resolve: fn(hour: i32) -> (&'static str, &'static str),
+pub(crate) struct ResidentSchedule {
+    pub(crate) id: &'static str,
+    pub(crate) gender: &'static str,
+    pub(crate) display_title: &'static str,
+    pub(crate) resolve: fn(hour: i32) -> (&'static str, &'static str),
 }
 
 pub static RESIDENT_MOVE_TARGETS: std::sync::LazyLock<

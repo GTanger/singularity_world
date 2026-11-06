@@ -784,6 +784,50 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
             }
         }
     }
+
+    // 5. 1,713-Slot Foreign-Key Referential Integrity Gate
+    let valid_item_ids: HashSet<&str> = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+        .iter()
+        .map(|entry| entry.id)
+        .collect();
+
+    for (idx, slot) in WENYAO_HOUSEHOLD_SLOTS.iter().chain(OUTER_HOUSEHOLD_SLOTS.iter()).enumerate() {
+        let (vessel_id, _vessel_name) = crate::store::held_vessel(slot);
+        if !valid_item_ids.contains(vessel_id) {
+            violations.push(format!(
+                "家庭槽位 #{idx} ({}) 綁定之職司器物 ID 不存在於 peninsula_catalog: {vessel_id}",
+                slot.home_name
+            ));
+        }
+
+        let coords = [
+            ("住處", slot.home_x, slot.home_y, slot.home_name),
+            ("工作", slot.work_x, slot.work_y, slot.work_name),
+            ("差事", slot.errand_x, slot.errand_y, slot.errand_name),
+        ];
+
+        for (kind, x, y, name) in coords {
+            match grid.get(SquareCoord::new(x, y)) {
+                None => {
+                    violations.push(format!(
+                        "家庭槽位 #{idx} ({}) 之{kind}「{name}」（{x}, {y}）不存在於大地圖網格中",
+                        slot.home_name
+                    ));
+                }
+                Some(cell) => {
+                    if matches!(
+                        cell.terrain,
+                        Terrain::Wall | Terrain::Mountain | Terrain::Water
+                    ) {
+                        violations.push(format!(
+                            "家庭槽位 #{idx} ({}) 之{kind}「{name}」（{x}, {y}）位於不可通行地形 {:?}",
+                            slot.home_name, cell.terrain
+                        ));
+                    }
+                }
+            }
+        }
+    }
     CodebaseAntiLoopingAuditReport {
         audited_text_surfaces,
         audited_core_modules: module_contracts.len(),
