@@ -24,6 +24,25 @@
 		if (!logEl) return;
 		var pending = logEl.querySelectorAll('.log-talk-pending');
 		for (var i = 0; i < pending.length; i++) pending[i].remove();
+		var pendingInputs = logEl.querySelectorAll('.log-talk-input.is-pending-reply');
+		for (var k = 0; k < pendingInputs.length; k++) {
+			var pWrap = pendingInputs[k];
+			pWrap.classList.remove('is-pending-reply');
+			var pInput = pWrap.querySelector('.log-talk-input-field');
+			if (pInput) pInput.disabled = false;
+			var pBtn = pWrap.querySelector('.log-talk-send');
+			if (pBtn) {
+				pBtn.disabled = false;
+				pBtn.textContent = '送出';
+			}
+			var pChips = pWrap.querySelectorAll('.log-talk-chip');
+			for (var ci = 0; ci < pChips.length; ci++) {
+				pChips[ci].disabled = false;
+			}
+			if (logEl.lastElementChild !== pWrap) {
+				logEl.appendChild(pWrap);
+			}
+		}
 	}
 
 	function appendLogPendingTrade() {
@@ -76,15 +95,56 @@
 		return parts[parts.length - 1].trim() || raw;
 	}
 
-	function appendTalkInputRow(entityId, targetName) {
+	function appendTalkInputRow(entityId, targetName, opts) {
+		opts = opts || {};
+		var autoFocus = (opts.autoFocus !== false);
 		targetName = resolveCleanTargetName(entityId, targetName);
 		var logEl = getLogEl();
 		if (!logEl) return;
-		var existing = logEl.querySelectorAll('.log-talk-input, .log-trade-input');
-		for (var ei = 0; ei < existing.length; ei++) existing[ei].remove();
 		var sName = shortEntityName(targetName, entityId);
+		var targetEntityStr = String(entityId);
+
+		var existingWrap = logEl.querySelector('.log-talk-input[data-entity-id="' + targetEntityStr + '"]');
+		var otherInputs = logEl.querySelectorAll('.log-talk-input, .log-trade-input');
+		for (var oi = 0; oi < otherInputs.length; oi++) {
+			if (otherInputs[oi] !== existingWrap) {
+				otherInputs[oi].remove();
+			}
+		}
+
+		if (existingWrap) {
+			existingWrap.classList.remove('is-pending-reply');
+			var exInput = existingWrap.querySelector('.log-talk-input-field');
+			if (exInput) {
+				exInput.disabled = false;
+				exInput.placeholder = '對 ' + sName + ' 說些什麼（直接送出即搭話）';
+			}
+			var exBtn = existingWrap.querySelector('.log-talk-send');
+			if (exBtn) {
+				exBtn.disabled = false;
+				exBtn.textContent = '送出';
+			}
+			var exChips = existingWrap.querySelectorAll('.log-talk-chip');
+			for (var chi = 0; chi < exChips.length; chi++) {
+				exChips[chi].disabled = false;
+			}
+			if (logEl.lastElementChild !== existingWrap) {
+				logEl.appendChild(existingWrap);
+			}
+			var scrollEl = logEl.closest && (logEl.closest('#sw-center-log') || logEl.closest('.sw-center-log') || logEl.closest('.sw-desc-panel')) || logEl;
+			if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
+			if (existingWrap.scrollIntoView) {
+				existingWrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+			}
+			if (autoFocus && exInput) {
+				exInput.focus();
+			}
+			return;
+		}
+
 		var wrap = document.createElement('div');
 		wrap.className = 'log-entry log-talk-input';
+		wrap.setAttribute('data-entity-id', targetEntityStr);
 
 		// 快捷話語按鈕（一鍵寒暄問候／打聽近況／請教差事）
 		var chipsWrap = document.createElement('div');
@@ -131,11 +191,27 @@
 		if (wrap.scrollIntoView) {
 			wrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 		}
-		input.focus();
+		if (autoFocus) {
+			input.focus();
+		}
+		input.addEventListener('focus', function () {
+			if (typeof window.SwResetPopoverIdleTimer === 'function') window.SwResetPopoverIdleTimer();
+		});
+		input.addEventListener('input', function () {
+			if (typeof window.SwResetPopoverIdleTimer === 'function') window.SwResetPopoverIdleTimer();
+		});
 		function sendTalk(customText) {
 			var text = (typeof customText === 'string') ? customText.trim() : (input.value || '').trim();
 			var sayText = text || '（搭話）';
-			wrap.remove();
+			input.value = '';
+			wrap.classList.add('is-pending-reply');
+			input.disabled = true;
+			btn.disabled = true;
+			btn.textContent = '候覆…';
+			var chipButtons = chipsWrap.querySelectorAll('.log-talk-chip');
+			for (var cbi = 0; cbi < chipButtons.length; cbi++) {
+				chipButtons[cbi].disabled = true;
+			}
 			var playerLine = '你對【' + (targetName || entityId) + '】說：「' + sayText + '」';
 			var fmt = window.gameFormatNarrative || function (t) { return t; };
 			var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
@@ -144,10 +220,18 @@
 				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Talk', player_input: sayText });
 				appendLogPendingTalk();
 			}
+			if (logEl.lastElementChild !== wrap) {
+				logEl.appendChild(wrap);
+			}
+			var sEl = logEl.closest && (logEl.closest('#sw-center-log') || logEl.closest('.sw-center-log') || logEl.closest('.sw-desc-panel')) || logEl;
+			if (sEl) sEl.scrollTop = sEl.scrollHeight;
+			if (wrap.scrollIntoView) {
+				wrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+			}
 		}
 		chipsWrap.addEventListener('click', function (e) {
 			var chip = e.target.closest && e.target.closest('.log-talk-chip');
-			if (chip) {
+			if (chip && !chip.disabled) {
 				e.preventDefault();
 				e.stopPropagation();
 				var topicText = chip.getAttribute('data-topic') || chip.textContent || '';
@@ -156,10 +240,12 @@
 		});
 		btn.addEventListener('click', function (e) {
 			if (e && e.stopPropagation) e.stopPropagation();
-			sendTalk();
+			if (!btn.disabled) {
+				sendTalk();
+			}
 		});
 		input.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter') {
+			if (e.key === 'Enter' && !input.disabled) {
 				e.preventDefault();
 				sendTalk();
 			}

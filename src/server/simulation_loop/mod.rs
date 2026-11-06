@@ -101,7 +101,7 @@ fn run_simulation_tick(
             if let Ok(bytes) = serde_json::to_vec(&msg) {
                 hub.broadcast(bytes);
             }
-            crate::server::grid_manager::sync_canonical_white_tower_npcs(hour);
+            crate::server::grid_manager::sync_white_tower_scheduled_residents(hour);
             let mut active_rooms = sessions.player_room_ids();
             for pid in sessions.all_player_ids() {
                 if let Ok(Some(ent)) = crate::db::get_entity(&pid)

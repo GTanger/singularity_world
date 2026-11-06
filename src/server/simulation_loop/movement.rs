@@ -350,13 +350,13 @@ pub(super) fn run_grid_npc_tick(
     };
     let events = mgr.tick(now_unix, hour, game_day);
     crate::npc::causal_core::ensure_circular_economy_normalized_if_needed();
-    let canon_moves = crate::server::grid_manager::advance_canonical_npcs_one_step();
+    let scheduled_moves = crate::server::grid_manager::advance_scheduled_residents_one_step();
     let household_moves = crate::store::get_store()
         .map(|s| s.read().advance_household_npcs_one_step())
         .unwrap_or_default();
     let _ = crate::npc::causal_core::drain_pending_arrival_effects();
     let _ = crate::npc::causal_core::step_offline_players_autonomy(crate::game::now_unix());
-    if events.is_empty() && canon_moves.is_empty() && household_moves.is_empty() {
+    if events.is_empty() && scheduled_moves.is_empty() && household_moves.is_empty() {
         return;
     }
     let mut player_rooms = sessions.player_room_ids();
@@ -375,7 +375,7 @@ pub(super) fn run_grid_npc_tick(
             all_moves.push((id, from_room, to_room));
         }
     }
-    for (id, from_room, to_room) in canon_moves {
+    for (id, from_room, to_room) in scheduled_moves {
         if seen_moved.insert(id.clone()) {
             all_moves.push((id, from_room, to_room));
         }

@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-<link rel="stylesheet" href="style.css?v=0.39.78">
-<link rel="stylesheet" href="game.css?v=0.39.78">
+<link rel="stylesheet" href="style.css?v=20261106al">
+<link rel="stylesheet" href="game.css?v=20261106al">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-<link rel="stylesheet" href="game-grid.css?v=0.39.78" id="game-grid-css" disabled>
+<link rel="stylesheet" href="game-grid.css?v=20261106al" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -114,12 +114,15 @@
 				</header>
 				<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
 				<div id="sw-room-canvas" class="sw-room-canvas" role="region" aria-label="當前房間物件空間">
-					<div id="sw-room-canvas-empty" class="sw-room-canvas-empty" hidden>此處空曠寂靜，暫無人事器物</div>
+					<div id="sw-room-canvas-empty" class="sw-room-canvas-empty" hidden>四下暫無旁人駐足</div>
 				</div>
-				<!-- 無捲軸「當下二息」墨韻區：第 1 行新墨 100%，第 2 行舊墨 42% -->
-				<div id="sw-breaths-zone" class="sw-breaths-zone" aria-live="polite" aria-label="當下二息墨韻">
+				<!-- 5-breath fading narrative scroll -->
+				<div id="sw-breaths-zone" class="sw-breaths-zone" aria-live="polite" aria-label="當下墨韻">
 					<p id="sw-breath-0" class="sw-breath-line sw-breath-0"></p>
 					<p id="sw-breath-1" class="sw-breath-line sw-breath-1"></p>
+					<p id="sw-breath-2" class="sw-breath-line sw-breath-2"></p>
+					<p id="sw-breath-3" class="sw-breath-line sw-breath-3"></p>
+					<p id="sw-breath-4" class="sw-breath-line sw-breath-4"></p>
 				</div>
 				<div id="sw-log" class="sw-log-stream" aria-live="polite" style="display:none;" hidden></div>
 				<!-- 戰鬥對峙空檔戰術決策按鈕 -->
@@ -150,11 +153,30 @@
 			</div>
 		</div>
 
-		<!-- 【下方空間導航區】：CSS Grid 32px 固定正方格無縫純符號大地圖 ＋ 私人客房收合 -->
-		<section id="sw-bottom-area" class="sw-bottom-area" aria-label="空間導航與大地圖">
-			<div id="sw-symbol-grid-wrap" class="sw-symbol-grid-wrap">
-				<nav id="sw-footstep-strip" class="sw-footstep-strip" aria-label="四向步履列"></nav>
-				<div id="sw-symbol-grid" class="sw-symbol-grid" role="grid" aria-label="純符號大地圖" hidden style="display:none;"></div>
+		<!-- 【下方空間導航區】：左自身・中方寸九宮・右輿圖近事 三欄合一 ＋ 私人客房收合 -->
+		<section id="sw-bottom-area" class="sw-bottom-area" aria-label="空間導航與自身輿圖">
+			<div id="sw-dock-triptych" class="sw-dock-triptych">
+				<div id="sw-wing-left" class="sw-dock-wing sw-wing-left">
+					<div class="grid-player-core">
+						<button id="player-name" class="grid-player-name" type="button" title="查看自身狀態">姓名</button>
+						<span id="player-vibe" class="sw-self-cue">氣息勻暢</span>
+						<span id="sw-status-seals" class="sw-status-seals"></span>
+					</div>
+					<button type="button" id="btn-open-inventory" class="sw-wing-btn" title="翻看隨身行囊">行囊</button>
+				</div>
+				<div id="sw-symbol-grid-wrap" class="sw-symbol-grid-wrap">
+					<nav id="sw-footstep-strip" class="sw-footstep-strip" aria-label="四向步履列"></nav>
+					<div id="sw-symbol-grid" class="sw-symbol-grid" role="grid" aria-label="方寸九宮步法印"></div>
+				</div>
+				<div id="sw-wing-right" class="sw-dock-wing sw-wing-right">
+					<div id="sw-grid-actions" class="sw-grid-actions">
+						<button type="button" id="btn-toggle-map" class="sw-grid-act-btn sw-map-toggle-btn sw-wing-btn" aria-expanded="false" title="點開查看走過的地圖">輿圖</button>
+						<button type="button" id="btn-toggle-recap" class="sw-grid-act-btn sw-recap-toggle-btn sw-wing-btn" title="翻閱近期搭話、探索與交鋒紀錄">近事<span id="sw-recap-unread" class="sw-recap-unread" hidden></span></button>
+						<button type="button" id="btn-explore" class="sw-grid-act-btn sw-wing-btn" hidden>探索</button>
+						<button type="button" id="btn-enter-room" class="sw-grid-act-btn" hidden>投宿／進客房（進）</button>
+						<span id="sw-pioneer-actions" class="sw-pioneer-actions"></span>
+					</div>
+				</div>
 			</div>
 			<!-- 「進／出」私人空間自動收合面板 -->
 			<div id="sw-private-room-panel" class="sw-private-room-panel" hidden>
@@ -170,30 +192,15 @@
 			</div>
 		</section>
 
-		<!-- 下區：玩家自身入口；體魄氣脈去數值化 -->
-		<footer id="bottom-bar" class="game-grid-footer sw-statusbar">
-			<div class="game-grid-footer-inner">
-				<div class="grid-player-core">
-					<button id="player-name" class="grid-player-name" type="button" title="查看自身">姓名</button>
-					<span id="player-vibe" class="sw-self-cue" aria-hidden="true">查看自身</span>
-					<span id="sw-status-seals" class="sw-status-seals"></span>
-				</div>
-				<div id="sw-grid-actions" class="sw-grid-actions">
-					<button type="button" id="btn-explore" class="sw-grid-act-btn" hidden>探索此處</button>
-					<button type="button" id="btn-enter-room" class="sw-grid-act-btn" hidden>投宿／進客房（進）</button>
-					<span id="sw-pioneer-actions" class="sw-pioneer-actions"></span>
-					<button type="button" id="btn-toggle-recap" class="sw-grid-act-btn sw-recap-toggle-btn" title="翻閱近期搭話、探索與交鋒紀錄">近事<span id="sw-recap-unread" class="sw-recap-unread" hidden></span></button>
-					<button type="button" id="btn-toggle-map" class="sw-grid-act-btn sw-map-toggle-btn" aria-expanded="false" title="點開查看走過的地圖">大地圖</button>
-				</div>
-				<div class="sw-hidden-meters" aria-hidden="true">
-					<div id="bar-hp"></div>
-					<div id="bar-stamina"></div>
-					<div id="bar-inner"></div>
-					<div id="bar-spirit"></div>
-				</div>
+		<!-- 相容隱藏計量條容器 -->
+		<footer id="bottom-bar" class="game-grid-footer sw-statusbar" hidden style="display:none;">
+			<div class="sw-hidden-meters" aria-hidden="true">
+				<div id="bar-hp"></div>
+				<div id="bar-stamina"></div>
+				<div id="bar-inner"></div>
+				<div id="bar-spirit"></div>
 			</div>
 		</footer>
-
 		<!-- 舊 log id 相容橋：sw-log.js 等模組仍寫 #log，用隱藏 div 承接再轉接到 #sw-log -->
 		<div id="log" style="display:none" aria-hidden="true"></div>
 
@@ -309,18 +316,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=0.39.78"></script>
-	<script src="grid-map.js?v=0.39.78"></script>
-	<script src="sw-room-desc.js?v=0.39.78"></script>
-	<script src="sw-object-list.js?v=0.39.78"></script>
-	<script src="sw-log.js?v=0.39.78"></script>
-	<script src="sw-panes.js?v=0.39.78"></script>
-	<script src="sw-modals.js?v=0.39.78"></script>
-	<script src="sw-interactions.js?v=0.39.78"></script>
-	<script src="sw-clock.js?v=0.39.78"></script>
-	<script src="sw-narrative.js?v=0.39.78"></script>
-	<script src="sw-auth.js?v=0.39.78"></script>
-	<script src="main.js?v=0.39.78"></script>
+	<script src="narrative-markdown.js?v=20261106al"></script>
+	<script src="grid-map.js?v=20261106al"></script>
+	<script src="sw-room-desc.js?v=20261106al"></script>
+	<script src="sw-object-list.js?v=20261106al"></script>
+	<script src="sw-log.js?v=20261106al"></script>
+	<script src="sw-panes.js?v=20261106al"></script>
+	<script src="sw-modals.js?v=20261106al"></script>
+	<script src="sw-interactions.js?v=20261106al"></script>
+	<script src="sw-clock.js?v=20261106al"></script>
+	<script src="sw-narrative.js?v=20261106al"></script>
+	<script src="sw-auth.js?v=20261106al"></script>
+	<script src="main.js?v=20261106al"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -335,13 +342,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v0.39.78')) return;
-				sessionStorage.setItem('sw_reloaded_v0.39.78', '1');
+				if (sessionStorage.getItem('sw_reloaded_20261106al')) return;
+				sessionStorage.setItem('sw_reloaded_20261106al', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.39.78', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261106al', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

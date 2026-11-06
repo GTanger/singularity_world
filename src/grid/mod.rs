@@ -12,7 +12,7 @@ pub use cell::{Freshness, GridObject, GridObjectKind, Terrain};
 pub use coord::{Direction, SquareCoord, grid_room_id_from_coord, parse_grid_room_id};
 pub use r#gen::generate_white_tower_grid;
 pub use grid::{
-    derive_room_tags, ExplicitExit, GridCell, RoomVenueObject, SquareGrid,
+    canonical_room_tag, derive_room_tags, ExplicitExit, GridCell, RoomVenueObject, SquareGrid,
     resolve_any_room_venue_object, resolve_market_or_specialty_room_object,
     resolve_room_ambient_visitor_activity, resolve_room_venue_object,
 };

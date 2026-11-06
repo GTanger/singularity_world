@@ -70,7 +70,8 @@ pub fn reset_freshness_for_vacant_cells(occupied_coords: &[(i32, i32)]) -> anyho
 
 pub use archival::{
     insert_archival, insert_npc_npc_dialogue_archival, pick_style_examples,
-    recent_npc_npc_archival_lines_for_entity, search_archival, search_archival_for_player_talk,
+    player_npc_temporal_acquaintance_stats, recent_npc_npc_archival_lines_for_entity,
+    search_archival, search_archival_for_player_talk, search_archival_for_player_talk_with_time,
     set_npc_summary,
 };
 pub use assignment::{
@@ -95,7 +96,7 @@ pub use favorability::{
     FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE, FAV_TALK, adjust_favorability,
     format_npc_memory_for_backstory, get_favorability,
 };
-pub use identity::build_identity;
+pub use identity::{build_identity, build_third_person_actor_card, is_routine_physiological_thought};
 pub use inventory::{
     active_trade_inventory_total_qty, add_item, add_to_inventory, clear_equipment_slot, default_trade_ask_mg,
     get_inventory, get_item_def, get_item_name, inventory_has_item, inventory_has_qty, inventory_total_qty,

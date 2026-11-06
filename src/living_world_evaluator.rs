@@ -20,6 +20,8 @@ use crate::grid::{
 };
 use crate::store::households::{WENYAO_HOUSEHOLD_SLOTS, WenyaoHouseholdSlot};
 use crate::store::outer_households::OUTER_HOUSEHOLD_SLOTS;
+pub const WENYAO_HOUSEHOLDS: &[WenyaoHouseholdSlot] = WENYAO_HOUSEHOLD_SLOTS;
+
 
 /// 萬人萬相居民與地標防撞衫重疊檢測報告（Evaluator 1）
 #[derive(Debug, Clone, PartialEq)]
@@ -133,6 +135,51 @@ pub fn audit_living_world_anti_template_overlap() -> AntiTemplateOverlapReport {
                     "文曜居民槽位 #{i} ({}) 與 #{j} ({}) 複合人設高度重疊 (Jaccard={sim:.2})",
                     wenyao_grams[i].1.home_name, wenyao_grams[j].1.home_name
                 ));
+            }
+        }
+    }
+
+    // 檢查文曜 324 戶居民槽位是否含有非正典幽靈店鋪／街巷／燈具詞彙
+    let forbidden_phantom_terms: &[&str] = &[
+        "牛角燈",
+        "牛角防風",
+        "牛角明瓦",
+        "燈籠鋪",
+        "聯運站前街",
+        "西門東街",
+        "北津石板拱橋",
+        "西虹石板拱橋",
+        "講堂街西口",
+        "學院前街",
+        "公議堂前街",
+        "三水匯流大石橋布莊",
+        "三水匯流大石橋金屬行",
+        "三水匯流大石橋線行",
+        "三水口南街藥行",
+        "三水口北街桐油雜貨行",
+        "三水口南街包子鋪",
+    ];
+
+    for (idx, slot) in WENYAO_HOUSEHOLDS.iter().enumerate() {
+        let fields = [
+            ("home_name", slot.home_name),
+            ("home_stay_activity", slot.home_stay_activity),
+            ("work_name", slot.work_name),
+            ("work_purpose", slot.work_purpose),
+            ("work_stay_activity", slot.work_stay_activity),
+            ("errand_name", slot.errand_name),
+            ("errand_purpose", slot.errand_purpose),
+            ("errand_stay_activity", slot.errand_stay_activity),
+            ("attire_line", slot.attire_line),
+        ];
+        for (field_name, text) in fields {
+            for &term in forbidden_phantom_terms {
+                if text.contains(term) {
+                    resident_overlap_violations.push(format!(
+                        "文曜居民槽位 #{idx} ({}) 欄位 {field_name} 含有非正典幽靈詞「{term}」",
+                        slot.home_name
+                    ));
+                }
             }
         }
     }
@@ -280,17 +327,17 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
 
     // 1. 正例需求路由驗算：從文曜中心與各聚落搜尋核心生活／百工需求標籤，必須命中非住宅地標並具備對應標籤
     let positive_demand_queries: &[(&str, (i32, i32), i32, &[&str], bool)] = &[
-        ("熱食膳食需求", (0, 0), 15, &["食堂", "熱食", "現煮飲品"], true),
-        ("醫館藥材需求", (0, 0), 15, &["藥圃", "藥材"], true),
-        ("鍛造鐵器需求", (0, 0), 15, &["鐵匠鋪", "工坊"], true),
-        ("布匹織染需求", (0, 0), 15, &["織坊", "布料"], true),
-        ("商鋪市集需求", (0, 0), 15, &["商鋪", "市集"], true),
-        ("溫水沐浴需求", (0, 0), 15, &["浴場"], false),
-        ("茶屋旅社歇宿需求", (0, 0), 15, &["茶屋", "旅社"], false),
-        ("車馬聯運碼頭需求", (0, 0), 15, &["聯運", "碼頭"], false),
-        ("大圳頭糧倉儲糧需求", (-180, -140), 15, &["糧倉", "穀物"], true),
-        ("霜林口林場木材需求", (190, 290), 15, &["林場", "木材"], false),
-        ("風舶角漁港海鹽需求", (-260, 160), 15, &["漁港", "海鹽"], true),
+        ("熱食膳食需求", (0, 0), 15, &["canteen", "hot_food", "fresh_drink"], true),
+        ("醫館藥材需求", (0, 0), 15, &["herb", "medicine"], true),
+        ("鍛造鐵器需求", (0, 0), 15, &["blacksmith", "workshop"], true),
+        ("布匹織染需求", (0, 0), 15, &["textile", "fabric"], true),
+        ("商鋪市集需求", (0, 0), 15, &["shop", "market"], true),
+        ("溫水沐浴需求", (0, 0), 15, &["bathhouse"], false),
+        ("茶屋旅社歇宿需求", (0, 0), 15, &["teahouse", "inn"], false),
+        ("車馬聯運碼頭需求", (0, 0), 15, &["courier", "dock"], false),
+        ("大圳頭糧倉儲糧需求", (-180, -140), 15, &["granary", "grain"], true),
+        ("霜林口林場木材需求", (190, 290), 15, &["lumber", "timber"], false),
+        ("風舶角漁港海鹽需求", (-260, 160), 15, &["fishing_port", "sea_salt"], true),
     ];
 
     for &(label, origin, radius, tags, require_counter_zone) in positive_demand_queries {
@@ -300,7 +347,7 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
                 let cell = grid.get(SquareCoord::new(coord.0, coord.1));
                 let is_house = cell.is_some_and(|c| c.terrain == Terrain::House);
                 let has_counter = cell.is_some_and(|c| {
-                    c.has_room_tag("櫃檯") && c.has_room_tag("非本店人員禁止進入區")
+                    c.has_room_tag("counter") && c.has_room_tag("restricted_staff_only")
                 });
                 if is_house {
                     positive_failures.push(format!(
@@ -365,7 +412,7 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
     let mut negative_false_positives = Vec::new();
 
     let forbidden_private_tags = [
-        "櫃檯", "非本店人員禁止進入區", "商鋪", "市集", "鐵匠鋪", "醫館", "藥圃", "織坊", "糧倉", "食堂",
+        "counter", "restricted_staff_only", "shop", "market", "blacksmith", "clinic", "herb", "textile", "granary", "canteen",
     ];
 
     for dx in -17..=17 {
@@ -434,7 +481,7 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
         let venue = resolve_any_room_venue_object(street_name, "");
         if tags
             .iter()
-            .any(|t| matches!(t.as_str(), "櫃檯" | "非本店人員禁止進入區" | "商鋪"))
+            .any(|t| matches!(t.as_str(), "counter" | "restricted_staff_only" | "shop"))
             || venue.is_some_and(|v| v.has_counter_restricted_zone)
         {
             negative_false_positive_count += 1;
@@ -466,8 +513,9 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
 /// 審計全島 1,713 戶家戶、49 類場域、千物總典、事件／劇本包與跨模組接線恆定契約（Evaluator 4）
 pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditReport {
     let forbidden_tokens = [
-        "剛才", "剛剛", "方才", "適才", "正典人物", "正典NPC", "一般居民", "普通居民",
+        "剛才", "剛剛", "方才", "適才", "正典人物", "正典NPC", "正典名宿", "正典核心", "正典住民", "正典自主", "實戰名宿", "一般居民", "普通居民",
         "處方", "本坊", "wt_cat_", "系統提示",
+        "事件包", "劇本包", "劇本演繹", "場上劇本", "對口協力", "事件包與劇本包聯動",
     ];
     let mut audited_text_surfaces = 0usize;
     let mut violations = Vec::new();
@@ -570,6 +618,169 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
         for anchor in required_anchors {
             if !src.contains(anchor) {
                 violations.push(format!("跨模組防退化契約缺口：{mod_name} 缺少關鍵接線 `{anchor}`"));
+            }
+        }
+    }
+    fn is_ascii_snake_case(s: &str) -> bool {
+        if s.is_empty() {
+            return false;
+        }
+        let bytes = s.as_bytes();
+        if bytes[0] == b'_' || bytes[bytes.len() - 1] == b'_' {
+            return false;
+        }
+        let mut prev_is_sep = false;
+        for &b in bytes {
+            if b.is_ascii_lowercase() || b.is_ascii_digit() {
+                prev_is_sep = false;
+            } else if b == b'_' {
+                if prev_is_sep {
+                    return false;
+                }
+                prev_is_sep = true;
+            } else {
+                return false;
+            }
+        }
+        true
+    }
+
+    // 1. Audit all items in PENINSULA_WORLD_OBJECTS (1,109 items)
+    const FORBIDDEN_NON_FOOD_ATTRS: &[&str] = &[
+        "shellfish", "hot_food", "fresh_drink", "grain", "edible", "drinkable", "food_ingredient",
+    ];
+    for entry in crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS {
+        if !is_ascii_snake_case(entry.object_tag) {
+            violations.push(format!("總典物件 {} ({}) object_tag `{}` 非合法 ASCII snake_case", entry.id, entry.name, entry.object_tag));
+        }
+        if !is_ascii_snake_case(entry.category_tag) {
+            violations.push(format!("總典物件 {} ({}) category_tag `{}` 非合法 ASCII snake_case", entry.id, entry.name, entry.category_tag));
+        }
+        if entry.attribute_tags.len() < 3 {
+            violations.push(format!("總典物件 {} ({}) attribute_tags 數量不足 3 個（現有 {} 個）", entry.id, entry.name, entry.attribute_tags.len()));
+        }
+        for &attr in entry.attribute_tags {
+            if !is_ascii_snake_case(attr) {
+                violations.push(format!("總典物件 {} ({}) attribute_tag `{}` 非合法 ASCII snake_case", entry.id, entry.name, attr));
+            }
+            if attr == entry.object_tag {
+                violations.push(format!("總典物件 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性", entry.id, entry.name, attr));
+            }
+            if attr == entry.category_tag {
+                violations.push(format!("總典物件 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性", entry.id, entry.name, attr));
+            }
+        }
+        let has_fixed = entry.attribute_tags.contains(&"fixed");
+        let has_portable = entry.attribute_tags.contains(&"portable");
+        if has_fixed && has_portable {
+            violations.push(format!("總典物件 {} ({}) 同時包含 fixed 與 portable 屬性衝突", entry.id, entry.name));
+        }
+        let has_interior = entry.attribute_tags.contains(&"interior_fixture");
+        let has_outdoor = entry.attribute_tags.contains(&"outdoor_fixture");
+        if has_interior && has_outdoor {
+            violations.push(format!("總典物件 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突", entry.id, entry.name));
+        }
+        if !matches!(entry.category_num, "04" | "05" | "06" | "07" | "08" | "09" | "10") {
+            for &forbidden in FORBIDDEN_NON_FOOD_ATTRS {
+                if entry.attribute_tags.contains(&forbidden) {
+                    violations.push(format!("總典非飲食類物件 {} (類別 {}) 包含食物屬性 `{}`", entry.id, entry.category_num, forbidden));
+                }
+            }
+        }
+    }
+
+    // 2. Audit all specs in SCENE_OBJECT_TAG_SPECS (118 items)
+    const OUTDOOR_INFRA_ARCHETYPES: &[&str] = &[
+        "railing", "stele", "bollard", "bench", "notice_board", "way_stele",
+    ];
+    for spec in crate::model::SCENE_OBJECT_TAG_SPECS {
+        for &attr in spec.attribute_tags {
+            if attr == spec.object_tag {
+                violations.push(format!("場景物件規格 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性", spec.id, spec.name_alias, attr));
+            }
+            if attr == spec.category_tag {
+                violations.push(format!("場景物件規格 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性", spec.id, spec.name_alias, attr));
+            }
+            if attr == spec.archetype_tag {
+                violations.push(format!("場景物件規格 {} ({}) attribute_tags 包含原型 archetype_tag `{}` 破壞正交性", spec.id, spec.name_alias, attr));
+            }
+        }
+        let has_fixed = spec.attribute_tags.contains(&"fixed");
+        let has_portable = spec.attribute_tags.contains(&"portable");
+        if has_fixed && has_portable {
+            violations.push(format!("場景物件規格 {} ({}) 同時包含 fixed 與 portable 屬性衝突", spec.id, spec.name_alias));
+        }
+        let has_interior = spec.attribute_tags.contains(&"interior_fixture");
+        let has_outdoor = spec.attribute_tags.contains(&"outdoor_fixture");
+        if has_interior && has_outdoor {
+            violations.push(format!("場景物件規格 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突", spec.id, spec.name_alias));
+        }
+        if spec.category_tag != "seafood_kelp" && spec.attribute_tags.contains(&"shellfish") {
+            violations.push(format!("場景物件規格 {} (分類 {}) 誤掛 shellfish 標籤", spec.id, spec.category_tag));
+        }
+        if OUTDOOR_INFRA_ARCHETYPES.contains(&spec.archetype_tag) && spec.category_tag != "public_fixture" {
+            violations.push(format!("場景物件規格 {} ({}) 原型 `{}` 屬於戶外公共設施，category_tag 應為 public_fixture，現為 `{}`", spec.id, spec.name_alias, spec.archetype_tag, spec.category_tag));
+        }
+    }
+
+    // 3. Audit all specs in GRID_OBJECT_TAG_SPECS (44 items)
+    for spec in crate::grid::cell::GRID_OBJECT_TAG_SPECS {
+        for &attr in spec.attribute_tags {
+            if attr == spec.object_tag {
+                violations.push(format!("地景物件規格 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性", spec.pattern, spec.name_alias, attr));
+            }
+            if attr == spec.category_tag {
+                violations.push(format!("地景物件規格 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性", spec.pattern, spec.name_alias, attr));
+            }
+            if attr == spec.archetype_tag {
+                violations.push(format!("地景物件規格 {} ({}) attribute_tags 包含原型 archetype_tag `{}` 破壞正交性", spec.pattern, spec.name_alias, attr));
+            }
+        }
+        if spec.attribute_tags.contains(&"fixed") && spec.attribute_tags.contains(&"portable") {
+            violations.push(format!("地景物件規格 {} ({}) 同時包含 fixed 與 portable 屬性衝突", spec.pattern, spec.name_alias));
+        }
+        if spec.attribute_tags.contains(&"interior_fixture") && spec.attribute_tags.contains(&"outdoor_fixture") {
+            violations.push(format!("地景物件規格 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突", spec.pattern, spec.name_alias));
+        }
+        if OUTDOOR_INFRA_ARCHETYPES.contains(&spec.archetype_tag) && spec.category_tag != "public_fixture" {
+            violations.push(format!("地景物件規格 {} ({}) 原型 `{}` 屬於戶外公共設施，category_tag 應為 public_fixture，現為 `{}`", spec.pattern, spec.name_alias, spec.archetype_tag, spec.category_tag));
+        }
+    }
+
+    // 4. Audit all slots in WENYAO_HOUSEHOLDS for forbidden phantom terms
+    const FORBIDDEN_PHANTOM_TERMS: &[&str] = &[
+        "牛角燈",
+        "牛角防風",
+        "牛角明瓦",
+        "燈籠鋪",
+        "聯運站前街",
+        "西門東街",
+        "北津石板拱橋",
+        "西虹石板拱橋",
+        "講堂街西口",
+        "學院前街",
+        "公議堂前街",
+    ];
+    for (idx, slot) in WENYAO_HOUSEHOLDS.iter().enumerate() {
+        let fields = [
+            ("home_name", slot.home_name),
+            ("home_stay_activity", slot.home_stay_activity),
+            ("work_name", slot.work_name),
+            ("work_purpose", slot.work_purpose),
+            ("work_stay_activity", slot.work_stay_activity),
+            ("errand_name", slot.errand_name),
+            ("errand_purpose", slot.errand_purpose),
+            ("errand_stay_activity", slot.errand_stay_activity),
+            ("attire_line", slot.attire_line),
+        ];
+        for (field_name, text) in fields {
+            for &term in FORBIDDEN_PHANTOM_TERMS {
+                if text.contains(term) {
+                    violations.push(format!(
+                        "文曜居民槽位 #{idx} ({}) 欄位 {field_name} 含有非正典幽靈詞「{term}」",
+                        slot.home_name
+                    ));
+                }
             }
         }
     }

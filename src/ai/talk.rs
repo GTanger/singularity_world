@@ -48,7 +48,9 @@ pub fn build_room_venue_and_event_pack_prompt_context(room_name: &str) -> String
         return String::new();
     }
     let mut out = String::new();
-    if let Some(venue) = crate::grid::resolve_any_room_venue_object(clean_room, "") {
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(clean_room, "")
+        .filter(|v| v.venue_kind != "街巷橋樑公共空地" && v.default_host_title != "街坊居民")
+    {
         let zone_desc = if venue.has_counter_restricted_zone {
             "設非本店人員禁止進入之當值櫃檯內側"
         } else {
@@ -66,10 +68,10 @@ pub fn build_room_venue_and_event_pack_prompt_context(room_name: &str) -> String
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap_or_default()
             .as_secs() as i64;
-        if let Some((ev, sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(clean_room, None, now_unix) {
+        if let Some((ev, sc)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(clean_room, None, now_unix) {
             out.push_str(&format!(
-                "【現場活躍事件包與劇本包】事件包[{}]「{}」｜關鍵器物：{}｜劇本包[{}]起念：{}｜交涉：{}\n",
-                ev.id, ev.event_title, ev.key_objects, sp.id, ev.trigger_and_causal_chain, sp.player_actions
+                "【現場當務與差事】「{}」（{}）｜現場氛圍與差事緣由：{}（僅作背景參考，若來客未問及此事，請自然回應來客話題，切勿強行背誦無關器物）\n",
+                ev.event_title, sc.title, ev.trigger_and_causal_chain
             ));
         }
     }
@@ -92,8 +94,12 @@ pub fn player_npc_talk_build_prompts(
         sb.push_str(&player_npc_sensitivity_prefix());
         sb.push_str(sensitivity_hint);
         sb.push('\n');
-        sb.push_str("回覆必須控制在 35 字以內，口語自然，嚴禁違背【已拍板決策】的立場。\n");
+        sb.push_str("回覆必須控制在 35 字以內，口語自然，直接回答來客本句話語，嚴禁違背【已拍板決策】的立場，嚴禁重複【先前對話】已說過的補貨或換物台詞。\n");
     }
+    let time_ctx = crate::store::current_game_time_prompt_context();
+    sb.push_str(&format!(
+        "當前遊戲時刻與天色：{time_ctx}（若來客問及現在幾點、早晚、天亮或天黑，必須嚴格依據此時刻與天色據實回答，嚴禁在黎明前或入夜後說「天還沒黑」或「天亮得透亮」）。\n"
+    ));
     let room_display_name = room_display_name.trim();
     if !room_display_name.is_empty() {
         let fmt_line_owned = player_npc_room_context_fmt();
@@ -126,11 +132,50 @@ pub fn player_npc_talk_build_prompts(
             sb.push('\n');
         }
     }
-    let user = if !npc_memory_snippets.is_empty() {
+    sb.push_str("提及身邊街景、器物或東西南北四鄰店鋪時，必須嚴格依據提示詞提供之現場器物與四鄰真名，嚴禁憑空捏造現場不存在的店鋪（如虛構燈籠鋪）或非正典材質（白塔半島街燈與提燈均採用夜光貝母薄片與黃銅防風罩，絕無牛角燈）。\n");
+    let mut live_turns: Vec<&str> = Vec::new();
+    let mut past_memories: Vec<&str> = Vec::new();
+    for snip in npc_memory_snippets {
+        let trimmed = snip.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        if trimmed.starts_with("【先前對話】") || trimmed.starts_with("【當場對話】") {
+            live_turns.push(trimmed);
+        } else {
+            past_memories.push(trimmed);
+        }
+    }
+    let user = if !live_turns.is_empty() {
+        let mut u = String::from(
+            "【正在進行的當場對話紀錄（按時間先後排列，請緊扣「👉 上一輪」的脈絡直接延續，嚴禁前後矛盾、失憶或重複已說過的台詞）】\n",
+        );
+        let total_live = live_turns.len();
+        for (idx, line) in live_turns.iter().enumerate() {
+            let clean_line = line
+                .trim_start_matches("【先前對話】")
+                .trim_start_matches("【當場對話】")
+                .trim();
+            if idx + 1 == total_live {
+                u.push_str(&format!("👉 上一輪（緊接本句前）：{clean_line}\n"));
+            } else {
+                u.push_str(&format!("- 第{}輪：{clean_line}\n", idx + 1));
+            }
+        }
+        if !past_memories.is_empty() {
+            u.push_str("\n（以下為往日背景記憶，僅在與當前話題相關時參考，無關則忽略）\n");
+            u.push_str(&past_memories.join("\n"));
+            u.push('\n');
+        }
+        u.push_str(&format!(
+            "\n來客本句接著說道：「{player_input}」\n請緊扣「👉 上一輪」你們上一句說過的話與你當前的差事處境，直接、自然地回一句 NPC 會說的話。若來客本句是簡短追問、反問或順接（如「去哪？」「不織線了？」「為什麼？」「跟老闆請假吧」「所以我問你啊」「蛤？」），必須順著上一輪的話合理接答，嚴禁突然失憶跳回無關的罐頭自介，也嚴禁逐字照抄前面已說過的台詞。"
+        ));
+        u
+    } else if !past_memories.is_empty() {
         sprintf_two_percent_s(
             &player_npc_user_with_memory_fmt(),
             player_input,
-            &npc_memory_snippets.join("\n"),
+            &past_memories.join("\n"),
         )
     } else {
         sprintf_one_percent_s(&player_npc_user_plain_fmt(), player_input)
@@ -527,13 +572,7 @@ pub fn parse_npc_npc_dialogue_json(
     if txt.is_empty() {
         return None;
     }
-    let start = txt.find('{')?;
-    let end = txt.rfind('}')?;
-    if end <= start {
-        return None;
-    }
-    let slice = &txt[start..=end];
-    let mut d: NpcNpcDialogue = serde_json::from_str(slice).ok()?;
+    let mut d: NpcNpcDialogue = crate::ai::jsonish::parse_jsonish(txt)?;
     d.a = collapse_nested_say_guillemets(&strip_leading_speaker_name(
         &strip_outer_guillemet_line(d.a.trim()),
         speaker_name,
@@ -548,7 +587,10 @@ pub fn parse_npc_npc_dialogue_json(
     let mut anchors = Vec::new();
     for mut a in std::mem::take(&mut d.anchors) {
         a = a.trim().to_string();
-        if a.is_empty() || is_npc_npc_meta_or_assistant_line(&a) {
+        if a.is_empty()
+            || is_npc_npc_meta_or_assistant_line(&a)
+            || a.chars().all(|c| c.is_ascii())
+        {
             continue;
         }
         let runes: Vec<char> = a.chars().collect();
@@ -649,7 +691,6 @@ pub fn call_ai_talk_npc_to_npc(
         room_name,
         time_label,
     ));
-    sb.push_str(&build_room_venue_and_event_pack_prompt_context(room_name));
     let mut room_description = room_description.trim().to_string();
     if !room_description.is_empty() {
         let runes: Vec<char> = room_description.chars().collect();
@@ -836,6 +877,15 @@ mod tests {
     }
 
     #[test]
+    fn parse_npc_npc_jsonish_fault_tolerant() {
+        let raw = "```json\n{\n  // 發言者台詞\n  \"a\": \"老王嘆道：\"這酒真香！\"\",\n  'b': '先乾為敬。',\n  anchors: ['客棧',],\n}\n```";
+        let d = parse_npc_npc_dialogue_json(raw, "", "").expect("ok");
+        assert_eq!(d.a, "老王嘆道：\"這酒真香！\"");
+        assert_eq!(d.b, "先乾為敬。");
+        assert_eq!(d.anchors, vec!["客棧".to_string()]);
+    }
+
+    #[test]
     fn is_meta_line_dash() {
         assert!(is_npc_npc_meta_or_assistant_line("---"));
         assert!(is_npc_npc_meta_or_assistant_line("——開頭"));
@@ -848,7 +898,8 @@ mod tests {
         assert!(prompt.contains("水輪石磨工坊"));
         assert!(prompt.contains("當值石磨匠師"));
         assert!(prompt.contains("設非本店人員禁止進入之當值櫃檯內側"));
-        assert!(prompt.contains("【現場活躍事件包與劇本包】"));
+        assert!(prompt.contains("【現場當務與差事】"));
+        assert!(!prompt.contains("事件包") && !prompt.contains("劇本包"));
 
         let empty_prompt = build_room_venue_and_event_pack_prompt_context("荒蕪礫石空地");
         assert_eq!(empty_prompt, "");

@@ -145,8 +145,14 @@ pub(super) fn inject_event_seed(now_unix: i64) {
                 for r in expired_rows {
                     let eid: String = r.get(0);
                     let okind: String = r.get(1);
-                    if map.get(&eid).map_or(false, |(k, _)| k == &okind) {
-                        map.remove(&eid);
+                    if okind == "repay_debt" || okind == "stranded_cargo" {
+                        continue;
+                    }
+                    if let Some(list) = map.get_mut(&eid) {
+                        list.retain(|(k, _)| k != &okind);
+                        if list.is_empty() {
+                            map.remove(&eid);
+                        }
                     }
                 }
             }
@@ -309,11 +315,12 @@ pub(super) fn inject_event_seed(now_unix: i64) {
                     .any(|k| venue_leaf.contains(k));
                 if let Some(v) = &venue_opt {
                     let tags = v.semantic_tags();
-                    is_workshop = is_workshop || tags.contains(&"工坊") || tags.contains(&"鐵匠鋪");
+                    is_workshop =
+                        is_workshop || tags.contains(&"workshop") || tags.contains(&"blacksmith");
                     is_shop_or_commercial = is_shop_or_commercial
                         || v.has_counter_restricted_zone
-                        || tags.contains(&"市集")
-                        || tags.contains(&"商鋪");
+                        || tags.contains(&"market")
+                        || tags.contains(&"shop");
                 }
                 let is_residential = [
                     "居", "宅", "舍", "宿", "值房", "別院", "內室", "客房",

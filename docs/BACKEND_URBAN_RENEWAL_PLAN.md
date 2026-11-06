@@ -1,0 +1,134 @@
+# 《奇點世界》後端鋼骨都更計畫與結構審計紀錄（Backend Urban Renewal Plan）
+
+- **建立日期**：2026-11-05
+- **架構總則**：45 年 MUD / RPI / IF 黃金正典 × Rust 型別與標籤驅動鋼骨（「木造蓋不出台北 101，要用鋼骨」）
+- **基線規模（都更前 `code_guard_rs source-size` 實測）**：
+  - 總檔案數：`249` 個 `.rs` 檔
+  - 總行數：`192,517` 行
+  - `hard` 級超大單體檔（`> 1,200` 行）：`29` 檔（最大檔 `peninsula_catalog.rs` 達 `18,771` 行、`causal_core.rs` `10,924` 行、`object.rs` `10,343` 行、`player_scene.rs` `8,368` 行、`outer_households.rs` `8,339` 行）
+  - `warn` 級偏大檔（`600–1,200` 行）：`39` 檔
+
+- **都更後驗收實測（2026-11-05 `code_guard_rs source-size` ＋ `tra-sw-gate --deploy`）**：
+  - 總檔案數：`454` 個 `.rs` 檔（模組化拆分新增 `205` 個高內聚子模組檔）
+  - `hard` 級超大單體檔（`> 1,200` 行）：**`0` 檔**（由 `29` 檔全面清零！全倉最大檔由 `18,771` 行降至 `1,150` 行）
+  - 狀態評級：由 `status=debt` 提升為 `status=warn ok=true`
+  - 全鏈路守衛：`tra-sw-gate --deploy` 六道關卡、`white_tower_living_world_check --live` 四大驗算器（`violations=0`、`conservation_gap=0`）與 `causal_core::tests` 43 項守衛測試全數 `PASS`
+---
+
+## 一、 六大「木造違建（Wooden-Shack）」結構斷層診斷
+
+經平行四路結構審計（`ScoutNpcAndHouseholds`、`ScoutSceneAndObjects`、`ScoutEcologyAndWorld`、`ScoutCombatAiAndActions`）逐行盤點，定位出後端六大木造違建根源：
+
+### 斷層 1：場景感知表面（Perceptual Surface）僅半套特例化，缺乏全島伺服端固定陳設編織器
+- **現況病灶**：
+  - `src/server/handler/movement.rs:3126-3133` 僅為早期里程碑 `M3_027`（半嶺水岸渡口）手寫 `north_bank_object_surface`，將蘆叢、貨擔、熱湯攤寫死在靜態字串；其餘 300 餘間房間之固定陳設（`ViewObject`：水輪石磨、鍛爐鐵砧、當值櫃檯、井台、牌坊、石碑）未被伺服端織入 `final_room_desc`。
+  - `src/game/room.rs:1136-1160`（`get_grid_room_view`）與 `src/server/handler/movement.rs:2219-2263` 對 `RoomVenueObject`（當值櫃檯與外借工具）的組裝邏輯分叉，導致 REST/內部視圖與 WebSocket 進場視圖不一致。
+- **鋼骨都更方案（Stage 1）**：
+  - 於 `src/server/handler/movement.rs` 實作全島統一之伺服端場景編織器 `weave_scene_fixtures_into_desc(desc, room_name, objects)`：依據正交三維標籤（`category_tag`、`attribute_tags` 之 `"immovable"` / `"public_fixture"` / `"venue_counter"`）將房間內不可搬移之核心陳設自然織入 `final_room_desc` 結尾，使後端輸出的 `room_enter` / `grid_view` 原生即為完整文學空間描寫，不依賴前端 JS 事後補丁。
+
+### 斷層 2：物件觀察（`Examine` / `Look`）充斥千篇一律的百科全書前綴與產地括號傾倒
+- **現況病灶**：
+  - `src/game/peninsula_catalog.rs` 中共 `1,109` 筆 `PeninsulaCatalogEntry.look_text` 全部以機械式模板 `"這是白塔半島常見的「{name}」，取材自…"` 開頭，違反 45 年 MUD 正典「觀察即第一人稱感官體驗、非博物館說明牌」原則。
+  - `src/server/action/object.rs:2348-2351` 於玩家執行 `Look` 時，機械式硬塞 `\n【產地溯源：{}】` 資料庫欄位標籤。
+- **鋼骨都更方案（Stage 1）**：
+  - 全面洗除 `peninsula_catalog.rs` 1,109 筆 `"這是白塔半島常見的「X」，"` 百科前綴，直接以器物形制、材質肌理與工藝用途起筆（`"「X」取材自…"`）。
+  - 拔除 `src/server/action/object.rs:2348-2351` 之 `\n【產地溯源：{}】` 括號傾倒（`peninsula_catalog.rs` 描寫本身已自然蘊含原料與工坊脈絡）。
+
+### 斷層 3：座標房間（`grid:x:y`）向舊 P0 地標（`wt-physical-0086`）的木造硬編碼退化
+- **現況病灶**：
+  - `src/pg/living_world.rs:928-932`（`record_player_world_action`）在遇到 `place_id.starts_with("grid:")` 且實體無舊式 `place_id` 時，硬編碼 fallback 至 `"wt-physical-0086"`（文曜東側水澤林），導致全島網格行動收據座標失真。
+- **鋼骨都更方案（Stage 1）**：
+  - 改由 `crate::grid::parse_grid_room_id(place_id)` 解析 `SquareCoord`，並透過 `crate::world::place::legacy_place_id(coord)` 映射為正典拓撲地點 ID（`legacy:grid:{x}:{y}`）。
+
+### 斷層 4：里程碑代號（`M3_020_*` / `M3_027_*`）與長鏈 `if/else` 散落於核心動作派發器
+- **現況病灶**：
+  - `src/server/action/object.rs`（10,343 行）將通用器物解析（`resolve_room_object`、`resolve_grid_scene_object`）、千物總典效果（`apply_peninsula_world_object_effects`）、`M3_020` 石壘門排隊特例（6892–7196 行）、`M3_027` 渡口蘆草特例（7197–8440 行）與 1,557 行測試全部塞進單一萬行巨檔。
+  - `src/game/player_scene.rs`（8,368 行）內含長達 4,547 行的 `white_tower_peninsula_objects_for_room` 巨型地名分支與 840 行測試。
+- **鋼骨都更方案（Stage 2 & 3）**：
+  - 將 `object.rs` 按職責拆分為 `resolve`、`effects`、`m3_milestones`、`followup`、`tests` 子模組；將 `player_scene.rs` 拆分為場景常數、房間器物派發、公眾觀察行、動態攤位與測試子模組。
+
+### 斷層 5：巨型靜態資料表（千物總典 18,771 行、外圍家戶 8,339 行、文曜家戶 3,840 行、NPC 排程 1,245 行）與引擎邏輯混裝
+- **現況病灶**：
+  - `src/game/peninsula_catalog.rs`（18,771 行）、`src/store/outer_households.rs`（8,339 行）、`src/store/households.rs`（3,840 行）與 `src/server/grid_manager.rs`（2,940 行）將數千至上萬行靜態結構體常數與業務方法寫在同一檔案，造成編譯單元臃腫與閱讀困難。
+- **鋼骨都更方案（Stage 2）**：
+  - 保持原 `.rs` 檔作為模組門面與型別／方法定義，將巨型常數表按類別／地理聚落切分為緊湊子資料檔（每檔 `< 1,000` 行）。
+
+### 斷層 6：四大核心引擎單體（`causal_core.rs` 10,924 行、`pg/living_world.rs` 6,168 行、`grid/gen.rs` 6,089 行、`object_ecology.rs` 6,041 行、`movement.rs` 6,042 行、`entity.rs` 4,788 行、`sanitize.rs` 4,217 行、`wordplate.rs` 3,934 行、`talk.rs` 3,886 行、`room.rs` 3,642 行、`grid.rs` 3,619 行、`inventory.rs` 3,182 行、`human_phase.rs` 2,939 行）職責過度集中
+- **鋼骨都更方案（Stage 2 & 3）**：
+  - 依正交領域邊界拆分為高內聚子模組（每個子模組嚴格控制在 `< 1,000` 行），父檔保留公開型別匯出（`pub use`）與 `living_world_evaluator.rs` / `causal_core.rs` 所需之 `include_str!` 契約錨點。
+
+---
+
+## 二、 契約守衛（`include_str!` 零退化鐵律）
+
+1. **禁止刪除被 `include_str!` 引用的父 `.rs` 路徑**：
+   - `src/living_world_evaluator.rs:540-569` 與 `src/npc/causal_core.rs:8614-9620` 使用編譯期 `include_str!(...)` 讀取固定相對路徑（如 `src/pg/living_world.rs`、`src/npc/causal_core.rs`、`src/grid/grid.rs`、`src/game/peninsula_catalog.rs`、`src/store/households.rs`、`src/store/outer_households.rs` 等）。
+   - Rust 2021 支援在保持 `src/foo/bar.rs` 檔案存在的同時，於 `src/foo/bar/` 目錄放置子模組 `sub.rs` 並於 `src/foo/bar.rs` 內直接宣告 `mod sub; pub use sub::*;`（無須將 `bar.rs` 刪改為 `bar/mod.rs`）。
+2. **保留 `living_world_evaluator.rs` 6 大模組必檢錨點字串**：
+   - `src/pg/living_world.rs` 保留 `"is_recognizable_room_staff_or_counter_holder"`、`"resolve_nearest_room_by_tag"`、`"ALL_RESIDENTS_SEEDED.call_once"`。
+   - `src/npc/causal_core.rs` 保留 `"is_recognizable_room_staff_or_counter_holder_entity"`、`"resolve_nearest_room_by_tag"`。
+   - `src/grid/grid.rs` 保留 `"find_nearest_room_by_tags"`、`"is_private_residence_room_name"`、`"is_street_or_gate_room_name"`。
+3. **禁詞守衛測試全覆蓋**：
+   - 凡自母檔抽離之資料或業務子模組，於 `causal_core.rs` 禁詞守衛測試中同步納入檢查或由母檔一併涵蓋，確保防仙俠／防現代詞／防時間「剛／方」守衛 100% 有效。
+
+---
+
+## 三、 三階段執行藍圖（Phased Execution Blueprint）
+
+### Stage 1：伺服端感官敘事鋼骨化（Perceptual & Narrative Steel Frame）
+1. **`src/game/peninsula_catalog.rs`**：清除 1,109 筆 `"這是白塔半島常見的「X」，"` 百科模板前綴，改為直接器物感官描寫。
+2. **`src/server/action/object.rs`**：移除 `Look` 動作末尾硬塞之 `\n【產地溯源：{}】`。
+3. **`src/server/handler/movement.rs`**：實作 `weave_scene_fixtures_into_desc`，於伺服端自動將房間內不可搬移之場景陳設織入 `final_room_desc`。
+4. **`src/pg/living_world.rs`**：修正 `record_player_world_action` 中 `grid:x:y` 至 `legacy_place_id(coord)` 之正典座標解析，拔除 `"wt-physical-0086"` 硬編碼。
+5. **`src/npc/causal_core.rs`**：同步 `test_frontend_sw_and_index_version_sync_v0_39_57` 快取版本檢查至最新前端版本。
+
+### Stage 2：巨型靜態表與生態／世界單體拆解（Data & World Monolith Decomposition）
+1. **`src/game/peninsula_catalog.rs`（18,771 行）** $\to$ 拆分為 `src/game/peninsula_catalog/` 分類子片（`part_01.rs`..`part_20.rs` + `methods.rs` + `tests.rs`），母檔降至 `< 300` 行。
+2. **`src/store/outer_households.rs`（8,339 行）& `src/store/households.rs`（3,840 行）** $\to$ 拆分為 `src/store/outer_households/` 與 `src/store/households/` 區域家戶子片，母檔降至 `< 150` 行。
+3. **`src/pg/living_world.rs`（6,168 行）、`src/grid/gen.rs`（6,089 行）、`src/game/object_ecology.rs`（6,041 行）、`src/game/room.rs`（3,642 行）、`src/grid/grid.rs`（3,619 行）** $\to$ 依領域邊界拆分為 `< 1,000` 行之子模組。
+
+### Stage 3：核心行為、因果大腦、移動與戰鬥單體拆解（Action, Brain & Combat Decomposition）
+1. **`src/npc/causal_core.rs`（10,924 行）** $\to$ 拆分為 `src/npc/causal_core/`（`vessel`, `arrival`, `personality`, `catalog`, `economy`, `planning`, `state`, `somatic`, `ripple`, `stranded_cargo`, `relational`, `kotodama`, `offline_autonomy`, `crop_plots`, `bank_stash`, `gazette`, `tests`）。
+2. **`src/server/action/object.rs`（10,343 行）& `src/game/player_scene.rs`（8,368 行）& `src/server/handler/movement.rs`（6,042 行）** $\to$ 拆分為各自領域子模組。
+3. **`src/store/entity.rs`（4,788 行）、`src/ai/sanitize.rs`（4,217 行）、`src/combat/wordplate.rs`（3,934 行）、`src/server/action/talk.rs`（3,886 行）、`src/server/handler/inventory.rs`（3,182 行）、`src/server/grid_manager.rs`（2,940 行）、`src/combat/human_phase.rs`（2,939 行）** $\to$ 拆分為 `< 1,000` 行之子模組。
+
+### Stage 4：全鏈路驗算、部署與雙視口實機視覺驗收
+1. 執行 `/home/tanger/.local/bin/code_guard_rs source-size -- --root /home/tanger/Projects/singularity_world/src --top 30` 驗證巨型單體消除成果。
+2. 執行 `/home/tanger/.local/bin/tra-sw-gate --deploy` 通過六道關卡與線上四大驗算器。
+3. 透過 `laptop_browser` 於 `https://sw.ygggt.com/` 進行 `390×844` 與 `1440×900` 實機走訪驗收。
+
+---
+
+## 四、 第二期：NPC 認知、身分、義務、記憶與清洗管線「釘子區」SSOT 鋼骨都更計畫（Phase II Urban Renewal）
+
+### 1. 四大結構性分裂（釘子區病根審計紀錄）
+
+1. **分裂一：身分、住家、職場與外顯稱謂之四頭馬車 ＋ 7 套平行稱謂函式**
+   - **病灶實證**：PostgreSQL `entities` 共 `1,808` 名 NPC，但 `assignments` 僅 `571` 筆（且多為千篇一律之 `服務生`），排程表 `RESIDENT_SCHEDULES`（59 人）先前殘留舊階級符號且與家戶槽位 `wenyao_household_slot_for` 脫鉤、其餘仰賴 FNV-1a 雜湊兜底。`src/db/identity.rs:59-76` 同時拼接 `assignments` 與雜湊家戶槽，導致同一角色被賦予雙重矛盾職場。未結識外顯稱謂散落於 `grid_view_2.rs`、`scene_desc.rs`、`observation_1.rs`、`server/action/mod.rs`、`look/details.rs` 與前端 `sw-object-list.js` 各自計算。
+2. **分裂二：自主行為「五腦無鎖踩踏」與「單槽記憶體 vs 多行資料庫」義務斷鏈**
+   - **病灶實證**：`LIVE_NPC_OBLIGATIONS`（`src/store/entity/part_01_state.rs:100`）僅為單槽 `HashMap<String, (String, String)>`，新差事直接覆寫舊債務；`grid_manager/simulation.rs:195, 257` 每 25～40 秒無條件清空離駐點 NPC 之義務；`idle/banter.rs:265` 傳入空字串 `""` 無差別刪除所有義務；`npc/grid_ai.rs:565` 於單人完成 `Work`/`Trade` 時隔空自動結清 `repay_debt`，導致 PostgreSQL 中 `repay_debt` 為 `0` 筆，當面還債與追討劇本（`dyadic_kotodama_and_mutation.rs:86`）淪為死碼。
+3. **分裂三：記憶與社交圖譜「九表孤島」、67.5% 應聲蟲與 `180s > 90s` 話題死鎖**
+   - **病灶實證**：
+     - `resident_knowledge`（`7,873` 筆個人親歷知識）與 `data/templates/dialogues/*.json`（19 檔 `716` 行職業語料）在雙人對話中讀取次數為 `0`；
+     - `npc_threads`（`2,920` 筆）100% 卡在 `turn_count = 1`，因 `pair_picker.rs:97` 強制配對冷卻 `180s` 大於 `simulation.rs:289` 之 `thread_stale_sec = 90s`（數學交集為 $\emptyset$）；
+     - `dyadic_kotodama_and_mutation.rs:269`（`co_enact_script_pack`）在無欠款時（95% 情況）強制覆寫日常話題並塞入 4 件寫死道具；
+     - `dialogue.rs:38, 245` 對 A、B 均使用第二人稱 `"你是..."` 且僅計算 A 的立場（不計算 B 的立場），造成角色自稱錯置（吳姨叫豆花伯吳姨）與 67.5% 無條件順從（Yes-Man）。
+4. **分裂四：550+ 條正則補丁組成的「清洗怪獸（Sanitizer Swamp）」反噬語義**
+   - **病灶實證**：`src/ai/talk.rs:71` 自源頭將 `[WT-XXXX]` 內部代號塞入 Prompt，下游再於 `src/ai/sanitize/`（`dialogue_1.rs`、`dialogue_2.rs`、`grammar.rs`）堆疊 550+ 條替換規則，將所有「剛／才＋動詞」暴力改為「早先＋動詞」（全庫洗出 `1,748` 次「早先」並篡改條件句），且 `dialogue_2.rs:373` 無差別抹除含中文字句子內的所有 ASCII 英文字母。
+
+### 2. 四大單一真相源（SSOT）都更施工切片
+
+- **都更工程 1（SSOT 身分、戶籍、知識接線與第三人稱劇本卡）**：
+  - 落實「沒有所謂正典，所有人都是自己的正典」平權公理，拔除 `grid_manager`、`store`、`pg/living_world`、`look` 殘留之階級符號與寫死人名分支，透過 `resident_schedule_home_and_work` 與 `wenyao_household_slot_for` 統一 `src/db/identity.rs` 之住所與職場解析（消除 `assignments` 通用標籤與家戶槽位之雙重職場衝突），接入 `resident_knowledge`（`7,873` 筆）與 `npc_npc_summaries`；
+  - 新增 `build_third_person_actor_card()` 供 `NPC↔NPC` 雙人對話使用（徹底隔離玩家專屬 `npc_summaries`「來客」污染與第二人稱 `"你是..."` 角色糾纏）；
+  - 對齊 `scene_desc.rs` 與 `look/details.rs` 之未結識外顯稱謂守衛（街巷與民宅絕不顯示「街坊居民」）。
+- **都更工程 2（SSOT 多槽義務帳本與人際契約保護鎖）**：
+  - 升級 `LIVE_NPC_OBLIGATIONS` 為一人多槽 `HashMap<String, Vec<(String, String)>>`（優先保留與檢索 `repay_debt` / `stranded_cargo`）；
+  - 移除 `grid_manager/simulation.rs`、`idle/banter.rs` 與 `npc/grid_ai.rs` 對人際債務 `repay_debt` 之隔空自動抹除，強制人際債務須由債務人與債主同房當面觸發 `settle_debt` 或 `default_extend_debt` 結算。
+- **都更工程 3（SSOT 社交記憶匯流排、雙向立場 `Stance A × Stance B` 與話題多輪推進）**：
+  - 解除 `180s > 90s` 時序死鎖：將 `thread_stale_sec` 提升至 `1800` 秒、`thread_cooldown_sec` 設為 `600` 秒，並提高未完話題配對權重；
+  - 收斂 `co_enact_script_pack`（僅限同工坊當值且 $\le 20\%$ 機率觸發，不強餵 4 件無關道具），支援 `(A 欠 B)` 與 `(B 欠 A)` 雙向當面還債／追討；
+  - 於 `dialogue.rs` 與 `llm_prompts.json` 實裝雙向立場 `Stance A × Stance B`（聽話者 B 具獨立 `Accept / Bargain / Deflect / Refuse` 態度），並於 `outcome.rs` 同步更新 `resident_relationships` 與 `npc_dyads`。
+- **都更工程 4（SSOT 源頭乾淨輸入與 Sanitizer 拆違建＋DB 舊記憶排毒）**：
+  - 於 `src/ai/talk.rs` 源頭停止注入 `[WT-XXXX]` 內部編號與全街 4 件寫死道具；
+  - 拆除 `dialogue_1.rs`、`dialogue_2.rs`、`grammar.rs` 將「剛／才＋動詞」全數壓成「早先」之規則（改為自然無贅詞動補結構，消滅「早先」癌），移除無差別刪 ASCII 英文字母規則，並補齊 `grammar.rs` 稱謂詞尾（`"姨"`、`"掌櫃"`、`"大夫"` 等）。

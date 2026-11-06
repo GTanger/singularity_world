@@ -788,7 +788,8 @@
       "tradable": true,
       "trade_priority": 72,
       "trade_price_anchor_mg": 6,
-      "description": "可編、可墊、可束貨的長蘆草。水尾寮河霧與水氣讓草莖韌硬，適合做臨時繩材、包紮與貨墊。"
+      "description": "可編、可墊、可束貨的長蘆草。水尾寮河霧與水氣讓草莖韌硬，適合做臨時繩材、包紮與貨墊。",
+      "category_tag": "regional_specialty"
     },
     {
       "id": "mat_hemp_rope_roll",
@@ -805,7 +806,8 @@
       "tradable": true,
       "trade_priority": 86,
       "trade_price_anchor_mg": 8,
-      "description": "粗麻繩重新捲成的可用繩材，可綁箱、固定船纜、牽引小車，也是水尾寮與各聚落運貨修補的基礎耗材。"
+      "description": "粗麻繩重新捲成的可用繩材，可綁箱、固定船纜、牽引小車，也是水尾寮與各聚落運貨修補的基礎耗材。",
+      "category_tag": "fiber_rope"
     },
     {
       "id": "mat_sackcloth_bolt",
@@ -822,7 +824,8 @@
       "tradable": true,
       "trade_priority": 76,
       "trade_price_anchor_mg": 7,
-      "description": "拆洗後仍能剪裁的粗麻袋布，可作包布、墊貨、補袋與臨時遮蓋，是水尾寮與倉棚反覆流通的包裝料。"
+      "description": "拆洗後仍能剪裁的粗麻袋布，可作包布、墊貨、補袋與臨時遮蓋，是水尾寮與倉棚反覆流通的包裝料。",
+      "category_tag": "packaging"
     },
     {
       "id": "mat_sealing_pitch",
@@ -839,7 +842,8 @@
       "tradable": true,
       "trade_priority": 82,
       "trade_price_anchor_mg": 10,
-      "description": "可加熱封水縫的黏性膠料，來源可能是松脂、瀝青或混好的船縫料。船板、油布與木器修補都會消耗它。"
+      "description": "可加熱封水縫的黏性膠料，來源可能是松脂、瀝青或混好的船縫料。船板、油布與木器修補都會消耗它。",
+      "category_tag": "ship_repair"
     },
     {
       "id": "mat_wet_grass_bundle",
@@ -856,7 +860,8 @@
       "tradable": true,
       "trade_priority": 32,
       "trade_price_anchor_mg": 4,
-      "description": "帶水氣的草束，價值不高，但可墊貨、餵牲口或作臨時覆蓋。它保留牛埔產地濕度差異，不作核心商品兜售。"
+      "description": "帶水氣的草束，價值不高，但可墊貨、餵牲口或作臨時覆蓋。它保留牛埔產地濕度差異，不作核心商品兜售。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_rice_straw_bundle",
@@ -873,7 +878,8 @@
       "tradable": true,
       "trade_priority": 36,
       "trade_price_anchor_mg": 5,
-      "description": "大圳頭收割與整理稻穀後留下的稻草，可作墊料、覆蓋、粗纖維或燃引物。"
+      "description": "大圳頭收割與整理稻穀後留下的稻草，可作墊料、覆蓋、粗纖維或燃引物。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_water_moss_sheet",
@@ -890,7 +896,8 @@
       "tradable": true,
       "trade_priority": 22,
       "trade_price_anchor_mg": 4,
-      "description": "保水性強的濕水苔，可包根、塞縫或作濕料墊層。它只適合作副料，不該佔據主要交易畫面。"
+      "description": "保水性強的濕水苔，可包根、塞縫或作濕料墊層。它只適合作副料，不該佔據主要交易畫面。",
+      "category_tag": "building_material"
     },
     {
       "id": "mat_kindling_bundle",
@@ -907,7 +914,8 @@
       "tradable": true,
       "trade_priority": 66,
       "trade_price_anchor_mg": 6,
-      "description": "削短後綁好的柴枝與木邊料，可直接引火、烘乾濕物或供小爐使用。"
+      "description": "削短後綁好的柴枝與木邊料，可直接引火、烘乾濕物或供小爐使用。",
+      "category_tag": "fuel"
     },
     {
       "id": "mat_rice_husk_sack",
@@ -924,7 +932,8 @@
       "tradable": true,
       "trade_priority": 28,
       "trade_price_anchor_mg": 6,
-      "description": "大圳頭稻穀脫殼後裝袋的副料，可墊牲口、混入草料，也能作低價燃引物。"
+      "description": "大圳頭稻穀脫殼後裝袋的副料，可墊牲口、混入草料，也能作低價燃引物。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_wrapping_paper_pack",
@@ -941,7 +950,8 @@
       "tradable": true,
       "trade_priority": 48,
       "trade_price_anchor_mg": 6,
-      "description": "成束整理的粗包裝紙，用於包貨、標記與隔開細碎物件。"
+      "description": "成束整理的粗包裝紙，用於包貨、標記與隔開細碎物件。",
+      "category_tag": "packaging"
     },
     {
       "id": "mat_charcoal_sack",
@@ -958,7 +968,8 @@
       "tradable": true,
       "trade_priority": 78,
       "trade_price_anchor_mg": 9,
-      "description": "霜林口悶製可穩定供熱的白炭木炭袋，鍛造、烘乾與夜間取暖都會用到。"
+      "description": "霜林口悶製可穩定供熱的白炭木炭袋，鍛造、烘乾與夜間取暖都會用到。",
+      "category_tag": "fuel"
     },
     {
       "id": "mat_hay_bundle",
@@ -975,7 +986,8 @@
       "tradable": true,
       "trade_priority": 62,
       "trade_price_anchor_mg": 6,
-      "description": "晾乾後可存放的草束，是牛埔車馬、牲口與臨時鋪墊常用物。"
+      "description": "晾乾後可存放的草束，是牛埔車馬、牲口與臨時鋪墊常用物。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_plank_board",
@@ -992,7 +1004,8 @@
       "tradable": true,
       "trade_priority": 80,
       "trade_price_anchor_mg": 8,
-      "description": "可再裁切的板料，來源可能是鋸木板、墊木或鹽濕木板；能用於修橋、補船、封箱與臨時搭架。"
+      "description": "可再裁切的板料，來源可能是鋸木板、墊木或鹽濕木板；能用於修橋、補船、封箱與臨時搭架。",
+      "category_tag": "timber_plank"
     },
     {
       "id": "mat_wood_offcut_bundle",
@@ -1009,7 +1022,8 @@
       "tradable": true,
       "trade_priority": 26,
       "trade_price_anchor_mg": 5,
-      "description": "形狀不整的木料邊材，可作楔子、墊塊、引火或小修補料。它保留工地感，但不作核心商品命名。"
+      "description": "形狀不整的木料邊材，可作楔子、墊塊、引火或小修補料。它保留工地感，但不作核心商品命名。",
+      "category_tag": "timber_plank"
     },
     {
       "id": "mat_fishing_line_bundle",
@@ -1026,7 +1040,8 @@
       "tradable": true,
       "trade_priority": 46,
       "trade_price_anchor_mg": 6,
-      "description": "烏石鼻從破網拆出的細線，可補網、縫袋或作細綁繩。"
+      "description": "烏石鼻從破網拆出的細線，可補網、縫袋或作細綁繩。",
+      "category_tag": "fiber_rope"
     },
     {
       "id": "mat_fish_scale_sack",
@@ -1043,7 +1058,8 @@
       "tradable": true,
       "trade_priority": 18,
       "trade_price_anchor_mg": 4,
-      "description": "風舶角整理漁獲後留下的魚鱗副料，可作膠料、肥料或低階加工物。"
+      "description": "風舶角整理漁獲後留下的魚鱗副料，可作膠料、肥料或低階加工物。",
+      "category_tag": "aquatic_byproduct"
     },
     {
       "id": "mat_bamboo_slats",
@@ -1060,7 +1076,8 @@
       "tradable": true,
       "trade_priority": 56,
       "trade_price_anchor_mg": 6,
-      "description": "水尾寮削好的竹片，適合編籃、補欄、墊貨或作輕型支架。"
+      "description": "水尾寮削好的竹片，適合編籃、補欄、墊貨或作輕型支架。",
+      "category_tag": "building_material"
     },
     {
       "id": "mat_fish_bone_sack",
@@ -1077,7 +1094,8 @@
       "tradable": true,
       "trade_priority": 16,
       "trade_price_anchor_mg": 4,
-      "description": "烏石鼻分揀魚貨後留下的魚骨副料，可磨粉、熬膠或混入肥料。"
+      "description": "烏石鼻分揀魚貨後留下的魚骨副料，可磨粉、熬膠或混入肥料。",
+      "category_tag": "aquatic_byproduct"
     },
     {
       "id": "mat_rough_ore",
@@ -1094,7 +1112,8 @@
       "tradable": true,
       "trade_priority": 88,
       "trade_price_anchor_mg": 11,
-      "description": "尚未洗選的粗礦與含礦碎石，是下營與紅土崁礦場最基本的可交易產物。"
+      "description": "尚未洗選的粗礦與含礦碎石，是下營與紅土崁礦場最基本的可交易產物。",
+      "category_tag": "mineral_ore"
     },
     {
       "id": "mat_washed_ore",
@@ -1111,7 +1130,8 @@
       "tradable": true,
       "trade_priority": 86,
       "trade_price_anchor_mg": 12,
-      "description": "半嶺溪谷初步洗選後的礦料，比粗礦穩定，適合送往鍛造棚或貨場。"
+      "description": "半嶺溪谷初步洗選後的礦料，比粗礦穩定，適合送往鍛造棚或貨場。",
+      "category_tag": "mineral_ore"
     },
     {
       "id": "mat_stone_powder_sack",
@@ -1128,7 +1148,8 @@
       "tradable": true,
       "trade_priority": 42,
       "trade_price_anchor_mg": 7,
-      "description": "石料加工後的粉料，可混灰、填縫、鋪地或作低階建材副料。"
+      "description": "石料加工後的粉料，可混灰、填縫、鋪地或作低階建材副料。",
+      "category_tag": "building_material"
     },
     {
       "id": "mat_iron_scrap_box",
@@ -1145,7 +1166,8 @@
       "tradable": true,
       "trade_priority": 54,
       "trade_price_anchor_mg": 9,
-      "description": "收在盒裡的鐵片、鐵屑與小金屬料，可重熔、補釘或作修具耗材。"
+      "description": "收在盒裡的鐵片、鐵屑與小金屬料，可重熔、補釘或作修具耗材。",
+      "category_tag": "mineral_ore"
     },
     {
       "id": "mat_coarse_salt_pack",
@@ -1162,7 +1184,8 @@
       "tradable": true,
       "trade_priority": 90,
       "trade_price_anchor_mg": 8,
-      "description": "容易理解也容易轉手的粗鹽包，可保存食物、補給旅隊，也能進入市集與倉場流通。"
+      "description": "容易理解也容易轉手的粗鹽包，可保存食物、補給旅隊，也能進入市集與倉場流通。",
+      "category_tag": "salt"
     },
     {
       "id": "mat_grain_sack",
@@ -1179,7 +1202,8 @@
       "tradable": true,
       "trade_priority": 94,
       "trade_price_anchor_mg": 13,
-      "description": "大圳頭裝袋的稻穀，是糧倉與市場最直接的食糧商品。"
+      "description": "大圳頭裝袋的稻穀，是糧倉與市場最直接的食糧商品。",
+      "category_tag": "food_grain"
     },
     {
       "id": "mat_metal_rim_strip",
@@ -1196,7 +1220,8 @@
       "tradable": true,
       "trade_priority": 52,
       "trade_price_anchor_mg": 9,
-      "description": "分家巷整理出的弧形輪箍鐵片，可補輪、箍桶或當小型加固件。"
+      "description": "分家巷整理出的弧形輪箍鐵片，可補輪、箍桶或當小型加固件。",
+      "category_tag": "building_material"
     },
     {
       "id": "mat_oilcloth_roll",
@@ -1213,7 +1238,8 @@
       "tradable": true,
       "trade_priority": 72,
       "trade_price_anchor_mg": 8,
-      "description": "防水處理過的布卷，可遮貨、補船篷或包住怕潮的物件。"
+      "description": "防水處理過的布卷，可遮貨、補船篷或包住怕潮的物件。",
+      "category_tag": "ship_repair"
     },
     {
       "id": "mat_pasture_seed_sack",
@@ -1230,7 +1256,8 @@
       "tradable": true,
       "trade_priority": 44,
       "trade_price_anchor_mg": 7,
-      "description": "牛埔牧地留出的草籽袋，可補播草場或混入畜產料。它是牧地來源的區域性小商品。"
+      "description": "牛埔牧地留出的草籽袋，可補播草場或混入畜產料。它是牧地來源的區域性小商品。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_mane_hair_bundle",
@@ -1247,7 +1274,8 @@
       "tradable": true,
       "trade_priority": 20,
       "trade_price_anchor_mg": 6,
-      "description": "牛埔整理馬匹後收成束的鬃毛，可作刷具、線材或填料。"
+      "description": "牛埔整理馬匹後收成束的鬃毛，可作刷具、線材或填料。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_feed_mix_sack",
@@ -1264,7 +1292,8 @@
       "tradable": true,
       "trade_priority": 70,
       "trade_price_anchor_mg": 9,
-      "description": "牛埔已混好的牲口草料，能直接供車隊、牧場與馬欄使用。"
+      "description": "牛埔已混好的牲口草料，能直接供車隊、牧場與馬欄使用。",
+      "category_tag": "livestock_byproduct"
     },
     {
       "id": "mat_leather_strip",
@@ -1281,7 +1310,8 @@
       "tradable": true,
       "trade_priority": 58,
       "trade_price_anchor_mg": 9,
-      "description": "牛埔修馱具留下但仍可裁用的皮帶料，可作繫帶、補片或小型連接件。"
+      "description": "牛埔修馱具留下但仍可裁用的皮帶料，可作繫帶、補片或小型連接件。",
+      "category_tag": "building_material"
     },
     {
       "id": "mat_canvas_roll",
@@ -1298,7 +1328,8 @@
       "tradable": true,
       "trade_priority": 78,
       "trade_price_anchor_mg": 8,
-      "description": "風舶角厚實帆布整理成卷，可遮貨、補棚、包船料或做大件包裝。"
+      "description": "風舶角厚實帆布整理成卷，可遮貨、補棚、包船料或做大件包裝。",
+      "category_tag": "packaging"
     },
     {
       "id": "mat_shell_sack",
@@ -1315,7 +1346,8 @@
       "tradable": true,
       "trade_priority": 24,
       "trade_price_anchor_mg": 5,
-      "description": "烏石鼻潮泥裡分出的貝殼，可燒灰、磨粉或作低階建材副料。"
+      "description": "烏石鼻潮泥裡分出的貝殼，可燒灰、磨粉或作低階建材副料。",
+      "category_tag": "aquatic_byproduct"
     },
     {
       "id": "mat_hardtack_sack",
@@ -1332,7 +1364,8 @@
       "tradable": true,
       "trade_priority": 84,
       "trade_price_anchor_mg": 10,
-      "description": "耐放、易搬的乾餅袋，是南哨船港、車隊與旅人補給的食糧商品。"
+      "description": "耐放、易搬的乾餅袋，是南哨船港、車隊與旅人補給的食糧商品。",
+      "category_tag": "food_grain"
     }
   ],
   "legacy_item_remaps": [

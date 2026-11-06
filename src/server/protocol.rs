@@ -141,6 +141,13 @@ pub struct ViewObject {
     pub object_type: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub actions: Vec<String>,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub tag: String,
+    #[serde(default)]
+    pub category_tag: String,
+    #[serde(default)]
+    pub attribute_tags: Vec<String>,
+    pub tags: Vec<String>,
 }
 
 /// 當前房間視野（對齊 `RoomViewMsg`）。
@@ -237,6 +244,10 @@ pub struct MeMsg {
     pub offline_directive_label: String,
     #[serde(default)]
     pub offline_directive_desc: String,
+    #[serde(default)]
+    pub has_openrouter_key: bool,
+    #[serde(default)]
+    pub openrouter_model: String,
 }
 
 /// 狀態查詢訊息（別名對齊 StatusMsg）
@@ -329,6 +340,13 @@ pub struct InventoryItemView {
     pub slot: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub origin: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub tag: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub category_tag: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub attribute_tags: Vec<String>,
+    pub tags: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -459,6 +477,10 @@ pub struct EntityStatusMsg {
     pub offline_directive_label: String,
     #[serde(default)]
     pub offline_directive_desc: String,
+    #[serde(default)]
+    pub has_openrouter_key: bool,
+    #[serde(default)]
+    pub openrouter_model: String,
 }
 
 /// 正方格地圖視野（傳送玩家附近的多格資訊）。
@@ -691,6 +713,8 @@ mod tests {
             offline_directive: String::new(),
             offline_directive_label: String::new(),
             offline_directive_desc: String::new(),
+            has_openrouter_key: false,
+            openrouter_model: String::new(),
         };
         let s = serde_json::to_string(&e).unwrap();
         assert!(!s.contains("magnesium"));

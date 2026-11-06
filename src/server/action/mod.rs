@@ -19,15 +19,14 @@ use super::protocol::{ActionResultMsg, ClientMsg};
 
 /// 與目標是否在同一可互動位置（place_id 優先，舊資料才使用相容鏡像）。
 fn entities_share_playable_cell(player: &Character, target: &Character, player_room: &str) -> bool {
-    if let (Some(px), Some(py), Some(tx), Some(ty)) =
-        (player.grid_x, player.grid_y, target.grid_x, target.grid_y)
-        && (px - tx).abs() + (py - ty).abs() <= 1
-    {
-        return true;
-    }
     if let (Some(px), Some(py)) = (player.grid_x, player.grid_y) {
         if let Some(state) = crate::store::LIVE_NPC_GRID_STATES.read().get(&target.id)
-            && (px - state.current.0).abs() + (py - state.current.1).abs() <= 1
+            && (px - state.current.0).abs() + (py - state.current.1).abs() <= 2
+        {
+            return true;
+        }
+        if let (Some(tx), Some(ty)) = (target.grid_x, target.grid_y)
+            && (px - tx).abs() + (py - ty).abs() <= 2
         {
             return true;
         }
@@ -243,6 +242,9 @@ fn try_entity_branch(
         }
         return false;
     };
+    if let (Some(px), Some(py)) = (player.grid_x, player.grid_y) {
+        crate::store::try_grace_latch_npc_to_player_cell(target_id, px, py, 3);
+    }
     if !entities_share_playable_cell(player, &target, player_room) {
         conn.send_json(&ActionResultMsg {
             msg_type: "action_result".into(),
@@ -260,7 +262,7 @@ fn try_entity_branch(
         push_refresh(conn, pid);
         return true;
     }
-    crate::store::pause_npc_for_interaction(target_id, 45);
+    crate::store::pause_npc_for_interaction(target_id, 180);
     if !entity_socket_ok(conn, pid, &target, target_id, player_room, action) {
         return true;
     }
@@ -621,9 +623,17 @@ pub fn format_unacquainted_target_label(
     if !is_staff || (!has_uniform && !in_counter_zone) {
         return "陌生人".to_string();
     }
+    if crate::grid::grid::is_street_or_gate_room_name(room_name.trim())
+        || crate::grid::grid::is_private_residence_room_name(room_name.trim())
+    {
+        return "陌生人".to_string();
+    }
     let host_title = crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
         .map(|v| v.default_host_title)
         .unwrap_or("當值主事");
+    if host_title == "街坊居民" {
+        return "陌生人".to_string();
+    }
     if in_counter_zone && has_uniform {
         format!("櫃檯內場身著工作服的{host_title}")
     } else if in_counter_zone {
@@ -866,6 +876,14 @@ mod tests {
         assert_eq!(
             format_unacquainted_target_label("荒蕪礫石空地", "巡山者", true, true, false),
             "身著工作服的當值主事"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("三水口・浴場西巷", "西門車馬聯運總站長|韓鐵山", true, true, false),
+            "陌生人"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("三水口・陳氏庖廚居", "三水食堂當家大廚|陳萬福", true, true, false),
+            "陌生人"
         );
     }
 

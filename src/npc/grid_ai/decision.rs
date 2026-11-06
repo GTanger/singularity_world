@@ -308,7 +308,7 @@ fn event_pack_work_intent(
                     return Some(PlaceIntent {
                         ty: IntentType::Work,
                         target: Some(cand_id),
-                        reason: format!("響應事件包【{}】與劇本包【{}】現場協作需求", ep.pack_id, sp.title),
+                        reason: format!("響應場內急務【{}】與現場差事【{}】協作需求", ep.pack_id, sp.title),
                     });
                 }
             }
@@ -750,7 +750,8 @@ mod tests {
         let intent = intent.unwrap();
         assert_eq!(intent.ty, IntentType::Work);
         assert_eq!(intent.target.as_deref(), Some("wt_mill"));
-        assert!(intent.reason.contains("響應事件包"));
-        assert!(intent.reason.contains("劇本包"));
+        assert!(intent.reason.contains("響應場內急務"));
+        assert!(intent.reason.contains("現場差事"));
+        assert!(!intent.reason.contains("事件包") && !intent.reason.contains("劇本包"));
     }
 }

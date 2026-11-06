@@ -46,6 +46,8 @@ pub struct MaterialDef {
     pub name: String,
     pub item_type: String,
     pub category: String,
+    #[serde(default)]
+    pub category_tag: String,
     pub commodity_role: String,
     #[allow(dead_code)]
     pub commodity_group: String,

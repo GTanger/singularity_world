@@ -248,6 +248,8 @@ fn send_me_with_status(
             let dir = crate::npc::causal_core::get_player_offline_directive(player_id);
             dir.desc().to_string()
         },
+        has_openrouter_key: crate::ai::get_player_openrouter_key(player_id).is_some(),
+        openrouter_model: crate::ai::DEFAULT_OPENROUTER_TALK_MODEL.to_string(),
     };
     if let Some(ent) = ent {
         if !ent.display_title.is_empty() {

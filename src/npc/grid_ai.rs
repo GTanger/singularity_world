@@ -533,6 +533,9 @@ fn finish_intent(
                     .map(|e| e.magnesium)
                     .unwrap_or(0);
                 for ob in open_obs {
+                    if ob.obligation_kind == "repay_debt" {
+                        continue;
+                    }
                     if matches!(
                         ob.obligation_kind.as_str(),
                         "repair_tool" | "stranded_cargo" | "repay_debt" | "restock_goods" | "supply_shortage" | "craft_material" | "fuel_shortage" | "treat_injury"

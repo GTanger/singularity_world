@@ -38,7 +38,7 @@ pub struct RoomCandidate {
 fn strip_generic_role_affixes(s: &str) -> String {
     let mut out = s.trim().to_string();
     for affix in [
-        "當值", "首席", "駐場", "匠師", "掌櫃", "主事", "掌事", "師傅", "執事", "學徒", "工坊",
+        "當值", "首席", "駐場", "匠師", "行首", "主事", "掌事", "師傅", "執事", "學徒", "工坊",
         "商鋪", "店鋪",
     ] {
         out = out.replace(affix, "");
@@ -118,7 +118,7 @@ pub fn occupation_keywords(occupation: &str) -> Vec<&'static str> {
         || occ.contains("店")
         || occ.contains("買")
         || occ.contains("賣")
-        || occ.contains("掌櫃")
+        || occ.contains("掌事")
     {
         kws.extend_from_slice(&["商鋪", "市集", "商行", "店鋪"]);
     }
@@ -138,11 +138,87 @@ pub fn occupation_keywords(occupation: &str) -> Vec<&'static str> {
     out
 }
 
+/// 依職業提取對應之標準英文房間分類標籤
+#[must_use]
+pub fn occupation_room_tags(occupation: &str) -> Vec<&'static str> {
+    let occ = occupation.trim();
+    let mut tags = Vec::new();
+    if occ.contains("磨") || occ.contains("石磨") || occ.contains("水輪") {
+        tags.extend_from_slice(&["grindstone", "workshop"]);
+    }
+    if occ.contains("織")
+        || occ.contains("染")
+        || occ.contains("繡")
+        || occ.contains("服")
+        || occ.contains("布")
+    {
+        tags.extend_from_slice(&["textile", "fabric", "workshop"]);
+    }
+    if occ.contains("茶") || occ.contains("旅") || occ.contains("宿") {
+        tags.extend_from_slice(&["teahouse", "inn"]);
+    }
+    if occ.contains("浴") || occ.contains("湯") || occ.contains("泉") {
+        tags.extend_from_slice(&["bathhouse"]);
+    }
+    if occ.contains("車") || occ.contains("聯運") || occ.contains("腳夫") || occ.contains("貨運") {
+        tags.extend_from_slice(&["courier", "dock"]);
+    }
+    if occ.contains("船") || occ.contains("渡") || occ.contains("港") || occ.contains("海") {
+        tags.extend_from_slice(&["dock", "fishing_port", "shipyard"]);
+    }
+    if occ.contains("牧") || occ.contains("牛") || occ.contains("乳酪") {
+        tags.extend_from_slice(&["pasture", "ranch"]);
+    }
+    if occ.contains("窯") || occ.contains("陶") || occ.contains("磚") {
+        tags.extend_from_slice(&["kiln", "workshop"]);
+    }
+    if occ.contains("算") || occ.contains("契") || occ.contains("公議") || occ.contains("執事") {
+        tags.extend_from_slice(&["council_hall", "bank", "shop"]);
+    }
+    if occ.contains("武") || occ.contains("巡") || occ.contains("哨") || occ.contains("衛") {
+        tags.extend_from_slice(&["guard_post", "gate"]);
+    }
+    if occ.contains("鐵") || occ.contains("鍛") || occ.contains("鑄") {
+        tags.extend_from_slice(&["blacksmith", "forge", "workshop"]);
+    } else if occ.contains("匠") && tags.is_empty() {
+        tags.extend_from_slice(&["blacksmith", "forge", "workshop"]);
+    }
+    if occ.contains("醫") || occ.contains("藥") || occ.contains("診") {
+        tags.extend_from_slice(&["clinic", "herb", "medicine"]);
+    }
+    if occ.contains("食") || occ.contains("廚") || occ.contains("伙") || occ.contains("飯") {
+        tags.extend_from_slice(&["canteen", "hot_food", "fresh_drink"]);
+    }
+    if occ.contains("商")
+        || occ.contains("販")
+        || occ.contains("店")
+        || occ.contains("買")
+        || occ.contains("賣")
+        || occ.contains("掌事")
+    {
+        tags.extend_from_slice(&["shop", "market", "bank"]);
+    }
+    if occ.contains("學") || occ.contains("書") || occ.contains("講") || occ.contains("生") {
+        tags.extend_from_slice(&["academy", "library"]);
+    }
+    if occ.contains("服務") || occ.contains("侍") {
+        tags.extend_from_slice(&["teahouse", "canteen", "inn"]);
+    }
+    tags
+}
+
 /// 判斷場所房間是否契合特定職業
 #[must_use]
 pub fn room_matches_occupation(occupation: &str, room_name: &str, tags: &[String]) -> bool {
     let occ = occupation.trim();
     let keywords = occupation_keywords(occ);
+    let expected_tags = occupation_room_tags(occ);
+
+    for et in &expected_tags {
+        if tags.iter().any(|t| t == et || crate::grid::canonical_room_tag(t) == *et) {
+            return true;
+        }
+    }
 
     for kw in &keywords {
         if room_name.contains(kw) {
@@ -154,7 +230,6 @@ pub fn room_matches_occupation(occupation: &str, room_name: &str, tags: &[String
             }
         }
     }
-
     if !occ.is_empty() {
         if room_name.contains(occ) || occ.contains(room_name) {
             return true;
@@ -168,6 +243,11 @@ pub fn room_matches_occupation(occupation: &str, room_name: &str, tags: &[String
 
     if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, "") {
         let venue_tags = venue.semantic_tags();
+        for et in &expected_tags {
+            if venue_tags.contains(et) {
+                return true;
+            }
+        }
         for kw in &keywords {
             if venue.venue_kind.contains(kw)
                 || kw.contains(venue.venue_kind)

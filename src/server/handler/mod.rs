@@ -100,6 +100,7 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         }
         "get_entity_status" | "get_status" => query::handle_get_status(conn, &msg),
         "set_offline_directive" => query::handle_set_offline_directive(conn, &msg),
+        "set_openrouter_key" => query::handle_set_openrouter_key(conn, &msg),
         "get_inventory" => inventory::handle_get_inventory(conn),
         "equip_item" => inventory::handle_equip_item(conn, &msg),
         "unequip_item" => inventory::handle_unequip_item(conn, &msg),
@@ -115,7 +116,13 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         "observe" => handle_observe(conn, &msg),
         "focus_entity" => {
             if !msg.entity_id.is_empty() {
-                crate::store::pause_npc_for_interaction(&msg.entity_id, 45);
+                crate::store::pause_npc_for_interaction(&msg.entity_id, 180);
+                if let Some(pid) = player_id(conn)
+                    && let Ok(Some(player)) = crate::db::get_entity(&pid)
+                    && let (Some(px), Some(py)) = (player.grid_x, player.grid_y)
+                {
+                    crate::store::try_grace_latch_npc_to_player_cell(&msg.entity_id, px, py, 3);
+                }
             }
         }
         "unfocus_entity" => {
@@ -144,7 +151,12 @@ fn handle_observe(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error("npc_id required");
         return;
     }
-    crate::store::pause_npc_for_interaction(&msg.entity_id, 45);
+    crate::store::pause_npc_for_interaction(&msg.entity_id, 180);
+    if let Ok(Some(player)) = crate::db::get_entity(&player_id)
+        && let (Some(px), Some(py)) = (player.grid_x, player.grid_y)
+    {
+        crate::store::try_grace_latch_npc_to_player_cell(&msg.entity_id, px, py, 3);
+    }
     if let Err(e) = crate::db::set_observed(&player_id, &msg.entity_id) {
         tracing::warn!("[observe] set_observed 失敗：{e}");
     }

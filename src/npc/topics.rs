@@ -142,7 +142,10 @@ pub struct TopicWeightDebug {
 
 #[must_use]
 pub fn room_has_tag(room_tags: &[String], want: &str) -> bool {
-    room_tags.iter().any(|v| v == want)
+    let canon_want = crate::grid::canonical_room_tag(want);
+    room_tags.iter().any(|v| {
+        v == want || (!canon_want.is_empty() && crate::grid::canonical_room_tag(v) == canon_want)
+    })
 }
 
 /// 依情境與房間 tag 計算基礎權重（對齊既有 `topicMaskBaseWeight`）。
@@ -159,7 +162,7 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
         w += 2;
     }
     let is_outdoor = room_has_tag(&mask.room_tags, "outdoor")
-        || ["石橋", "水井", "碼頭", "礦場", "林場", "農田"]
+        || ["bridge", "well", "dock", "mine", "lumber", "farm"]
             .iter()
             .any(|k| room_has_tag(&mask.room_tags, k));
     if is_outdoor {
@@ -171,13 +174,13 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
         }
     }
     let is_social = room_has_tag(&mask.room_tags, "social")
-        || ["茶屋", "浴場", "旅社", "廣場", "食堂", "市集"]
+        || ["teahouse", "bathhouse", "inn", "plaza", "canteen", "market"]
             .iter()
             .any(|k| room_has_tag(&mask.room_tags, k));
     if is_social && t.id == "閒聊" {
         w += 2;
     }
-    if ["工坊", "鐵匠鋪", "磨石", "商鋪", "聯運", "藥材"]
+    if ["workshop", "blacksmith", "grindstone", "shop", "courier", "herb"]
         .iter()
         .any(|k| room_has_tag(&mask.room_tags, k))
         && t.requires_work
@@ -406,7 +409,7 @@ mod tests {
     #[test]
     fn test_topic_mask_base_weight_chinese_semantic_tags() {
         let mask_tea = NpcTopicMask {
-            room_tags: vec!["茶屋".to_string()],
+            room_tags: vec!["teahouse".to_string()],
             ..Default::default()
         };
         let topic_chat = NpcNpcTopic {
@@ -416,7 +419,7 @@ mod tests {
         assert_eq!(topic_mask_base_weight(&mask_tea, &topic_chat), 1 + 2);
 
         let mask_bridge = NpcTopicMask {
-            room_tags: vec!["石橋".to_string()],
+            room_tags: vec!["bridge".to_string()],
             ..Default::default()
         };
         let topic_outside = NpcNpcTopic {
@@ -432,7 +435,7 @@ mod tests {
         assert_eq!(topic_mask_base_weight(&mask_bridge, &topic_weather), 1 + 3);
 
         let mask_workshop = NpcTopicMask {
-            room_tags: vec!["工坊".to_string()],
+            room_tags: vec!["workshop".to_string()],
             ..Default::default()
         };
         let topic_work = NpcNpcTopic {

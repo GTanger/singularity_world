@@ -47,7 +47,8 @@
 		var currentIsSelf = false;
 		if (!overlay || !modal || !playerName) return;
 
-		function openModal(displayName, entityId) {
+		function openModal(displayName, entityId, defaultTab) {
+			var activeTabName = defaultTab || 'status';
 			if (titleEl) titleEl.textContent = (displayName && displayName.trim()) ? displayName.trim() : '角色';
 			var st = window.gameState ? window.gameState() : {};
 			var id = (entityId && entityId.trim()) ? entityId.trim() : (st.me && st.me.player_id ? st.me.player_id : '');
@@ -69,11 +70,34 @@
 			}
 			if (id && window.gameIsConnected && window.gameIsConnected() && window.gameSend) {
 				window.gameSend({ type: 'get_entity_status', entity_id: id });
-				if (currentIsSelf) window.gameSend({ type: 'get_inventory' });
+				if (currentIsSelf && (activeTabName === 'inventory' || activeTabName === 'status')) {
+					window.gameSend({ type: 'get_inventory' });
+				}
 			} else {
 				var wrap = document.getElementById('status-content');
 				if (wrap) wrap.innerHTML = '<p class="text-muted">請先登入</p>';
 			}
+
+			tabs.forEach(function (x) {
+				var on = x.getAttribute('data-tab') === activeTabName;
+				x.classList.toggle('active', on);
+				x.setAttribute('aria-selected', on ? 'true' : 'false');
+			});
+			panes.forEach(function (p) {
+				var on = p.getAttribute('data-tab') === activeTabName;
+				p.classList.toggle('active', on);
+				p.hidden = !on;
+			});
+
+			if (activeTabName === 'settings' && window.SwPanes && window.SwPanes.renderSettingsPane) {
+				window.SwPanes.renderSettingsPane();
+			} else if (activeTabName === 'equip' && window.SwPanes && window.SwPanes.renderEquipmentPane) {
+				var eqMsg = window.lastEquipMsg || {};
+				window.SwPanes.renderEquipmentPane(eqMsg);
+			} else if (activeTabName === 'starplate' && window.SwPanes && window.SwPanes.renderStarplatePane) {
+				window.SwPanes.renderStarplatePane(st.me || {});
+			}
+
 			overlay.removeAttribute('hidden');
 			overlay.setAttribute('aria-hidden', 'false');
 			document.body.style.overflow = 'hidden';
@@ -100,10 +124,17 @@
 
 		playerName.addEventListener('click', handleSelfClick);
 		playerName.addEventListener('keydown', handleSelfClick);
-
 		var playerVibe = document.getElementById('player-vibe');
 		if (playerVibe) {
 			playerVibe.addEventListener('click', handleSelfClick);
+		}
+		var openInvBtn = document.getElementById('btn-open-inventory');
+		if (openInvBtn) {
+			openInvBtn.addEventListener('click', function () {
+				var st = window.gameState ? window.gameState() : {};
+				var myId = st.me && st.me.player_id;
+				openModal(playerName.textContent || myId || '', myId || '', 'inventory');
+			});
 		}
 		var playerCore = document.querySelector('.grid-player-core');
 		if (playerCore) {

@@ -7,8 +7,12 @@ pub mod sanitize;
 pub mod scorer;
 pub mod talk;
 pub mod narrative;
+pub mod jsonish;
 
-pub use openai_chat::call_openai_compatible_chat;
+pub use openai_chat::{
+    DEFAULT_OPENROUTER_BASE_URL, DEFAULT_OPENROUTER_TALK_MODEL, call_openai_compatible_chat,
+    call_openai_compatible_chat_with_history, get_player_openrouter_key, set_player_openrouter_key,
+};
 pub use decision_scorer::{
     NpcDecisionInput, NpcStanceChoice, NpcStanceDecision, build_decision_prompt,
     score_npc_interaction_stance,
@@ -45,4 +49,7 @@ pub use narrative::{
     synthesize_skill_from_data, verify_combat_bout_output, verify_craft_output,
     verify_skill_output, CombatBoutFactPacket, CraftActionFactPacket, SkillDataPacket,
     SynthesizedSkillProse,
+};
+pub use jsonish::{
+    parse_jsonish, parse_jsonish_with_meta, repair_jsonish_str, JsonishFix, JsonishMeta,
 };

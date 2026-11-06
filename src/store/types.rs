@@ -153,6 +153,58 @@ pub struct Item {
     pub origin: String,
 }
 
+impl Item {
+    /// 物品的專屬英文規範標籤（dedicated English snake_case tag）。
+    pub fn tag(&self) -> String {
+        crate::model::canonical_object_tag(&self.id, &self.name)
+    }
+
+    /// 物品的分類標籤（category tag）。
+    pub fn category_tag(&self) -> &'static str {
+        crate::model::object_category_tag(&self.id, &self.name)
+    }
+
+    /// 物品的功能原型標籤（functional archetype tag）。
+    pub fn archetype_tag(&self) -> &'static str {
+        crate::model::object_archetype_tag(&self.id, &self.name)
+    }
+
+    /// 物品的屬性標籤清單（attribute tags）。
+    pub fn attribute_tags(&self) -> Vec<String> {
+        crate::model::object_attribute_tags(&self.id, &self.name)
+            .into_iter()
+            .map(str::to_string)
+            .collect()
+    }
+
+    /// 取得物品的所有語意標籤清單（包含專屬 tag、category tag、archetype tag、超分類標籤等）。
+    pub fn tags(&self) -> Vec<String> {
+        crate::model::object_semantic_tags(&self.id, &self.name, &[])
+    }
+
+    /// 檢查物品是否具備指定標籤（比對專屬 tag、category tag、archetype tag 或語意標籤清單）。
+    pub fn has_tag(&self, wanted: &str) -> bool {
+        if wanted.is_empty() {
+            return false;
+        }
+        let clean_wanted = wanted.trim().to_ascii_lowercase();
+        let dedicated = self.tag();
+        if dedicated == clean_wanted {
+            return true;
+        }
+        let cat = self.category_tag();
+        if cat == clean_wanted {
+            return true;
+        }
+        let arch = self.archetype_tag();
+        if arch == clean_wanted {
+            return true;
+        }
+        let all_tags = self.tags();
+        all_tags.iter().any(|t| t == &clean_wanted)
+    }
+}
+
 /// 事件日誌一筆。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EventEntry {
@@ -392,4 +444,35 @@ pub(crate) struct NpcRumorsFile {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct NpcRumorDigestFile {
     pub(crate) digest: NpcRumorDigest,
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_item_tag_category_and_semantics() {
+        let item = Item {
+            id: "wt_cat_0001".to_string(),
+            name: "赤鐵重礦".to_string(),
+            slot: "".to_string(),
+            item_type: "mineral".to_string(),
+            weight: 1.0,
+            stackable: 99,
+            denomination: 10,
+            description: "".to_string(),
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: "".to_string(),
+        };
+
+        assert_eq!(item.category_tag(), "mineral_jade");
+        assert!(!item.attribute_tags().is_empty());
+        assert!(item.attribute_tags().contains(&"mineral".to_string()) || item.attribute_tags().contains(&"raw_material".to_string()) || item.attribute_tags().contains(&"iron".to_string()));
+        assert!(item.has_tag("mineral_jade"));
+        assert!(item.has_tag("raw_material"));
+        assert!(item.has_tag("mineral"));
+        assert!(item.tags().contains(&"mineral_jade".to_string()));
+        assert!(item.tags().contains(&"raw_material".to_string()));
+    }
 }

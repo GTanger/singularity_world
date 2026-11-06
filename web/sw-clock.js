@@ -70,12 +70,12 @@
 
 	// 六段天色：拂曉、晝前、正晝、黃昏、夜段、黎明前
 	function getSixPhase(hour) {
-		var h = Math.floor(hour);
-		if (h >= 4 && h < 8) return '拂曉';
-		if (h >= 8 && h < 12) return '晝前';
-		if (h >= 12 && h < 16) return '正晝';
-		if (h >= 16 && h < 20) return '黃昏';
-		if (h >= 20 && h < 24) return '夜段';
+		const h = ((Math.floor(hour) % 24) + 24) % 24;
+		if (h >= 4 && h <= 7) return '拂曉';
+		if (h >= 8 && h <= 10) return '晝前';
+		if (h >= 11 && h <= 14) return '正晝';
+		if (h >= 15 && h <= 17) return '黃昏';
+		if (h >= 18 && h <= 22) return '夜段';
 		return '黎明前';
 	}
 
@@ -379,11 +379,6 @@
 				} else {
 					applyTideAttr(pal.tideKey);
 				}
-			}
-		}
-		if (phaseLabel && _lastAppliedPhase && _lastAppliedPhase !== phaseLabel) {
-			if (appEl && !appEl.hidden && typeof window.SwPushBreath === 'function') {
-				window.SwPushBreath('天光微移，時序入【' + phaseLabel + '】・' + (weatherLabel || '天朗') + '。', { byPlayer: false });
 			}
 		}
 		if (phaseLabel) _lastAppliedPhase = phaseLabel;

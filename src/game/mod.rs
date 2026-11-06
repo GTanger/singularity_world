@@ -15,15 +15,22 @@ mod zone;
 
 pub use crate::model::RoomObject;
 pub use chunk_view::{ChunkView, get_chunk_and_entities_in_view};
-pub use gametime::{TimePeriod, game_time_now, time_period, time_period_label};
+pub use gametime::{
+    TimePeriod, current_game_clock_full, current_game_hour, current_game_hour_and_min,
+    current_game_time_prompt_context, format_elapsed_duration_zh, format_game_calendar_stamp,
+    format_game_time_prompt_context, format_kaipu_date_label, format_memory_temporal_anchor,
+    format_schedule_window_sense, format_short_relative_time, game_clock_at_unix,
+    game_season_label, game_time_cfg, game_time_now, kaipu_calendar_parts, time_period,
+    time_period_label,
+};
 pub use movement_tick::{MovedResult, advance_movement, entity_at};
 pub use observe::{Observed, Observer, collapse, now_unix, observe_room};
 pub use player_scene::{
     final_map_crowd_label_for_room, final_map_entry_log_for_room,
     final_map_observation_template_for_room, final_map_public_role_for_room,
     final_map_reentry_log_for_room, is_final_map_public_role, is_wenyao_residential_or_study,
-    micro_interaction_lines_for_room, player_layer_scene_objects_for_room,
-    public_person_label_for_room,
+    micro_interaction_lines_for_room, player_layer_scene_objects_for_cell,
+    player_layer_scene_objects_for_room, public_person_label_for_room,
 };
 pub use room::{
     CANONICAL_HUNTING_ZONES, LIVE_ZONE_TROPHIC_WEB, RecentHuntKillSite, RoomView,

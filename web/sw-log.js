@@ -339,7 +339,8 @@
 		var kind = (options && options.kind) ? String(options.kind).toLowerCase() : 'system';
 		var isHtml = !!(options && options.isHtml);
 		if (!isOverlayOpen && typeof SwPushBreath === 'function') {
-			SwPushBreath(htmlOrText, { byPlayer: kind !== 'ambient' });
+			if (kind === 'ambient') return;
+			SwPushBreath(htmlOrText, { byPlayer: true });
 			return;
 		}
 		layer.classList.toggle('is-modal-above', isOverlayOpen);
@@ -452,7 +453,9 @@
 		} else {
 			hideTopCallout();
 		}
-		if (typeof SwPushBreath === 'function') {
+		var popoverBackdrop = document.getElementById('sw-object-popover-backdrop');
+		var isPopoverOpen = !!(popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none');
+		if (!isPopoverOpen && typeof SwPushBreath === 'function') {
 			var breathSpeaker = (npcName.indexOf('一名') === 0 || npcName.indexOf('【') === 0) ? npcName : ('【' + npcName + '】');
 			var breathText = (cleanText.indexOf(npcName) !== 0 && cleanText.indexOf('【') !== 0 && cleanText.indexOf('一名') !== 0)
 				? (breathSpeaker + cleanText)
@@ -694,25 +697,18 @@
 		}
 	}
 
-	var _breath0 = { text: '', byPlayer: false };
-	var _breath1 = { text: '', byPlayer: false };
+	var _breaths = [];
 	var _playerFocusUntil = 0;
 
 	function renderBreathsDom() {
-		var b0 = document.getElementById('sw-breath-0');
-		var b1 = document.getElementById('sw-breath-1');
-		if (b0) {
-			b0.textContent = _breath0.text || '';
-			b0.title = _breath0.text || '';
-			if (_breath0.byPlayer) {
-				b0.classList.add('is-player-breath');
-			} else {
-				b0.classList.remove('is-player-breath');
-			}
-		}
-		if (b1) {
-			b1.textContent = _breath1.text || '';
-			b1.title = _breath1.text || '';
+		for (var i = 0; i <= 4; i++) {
+			var el = document.getElementById('sw-breath-' + i);
+			if (!el) continue;
+			var item = _breaths[i];
+			el.textContent = item ? item.text : '';
+			el.title = item ? item.text : '';
+			el.hidden = !(item && item.text);
+			el.classList.toggle('is-player-breath', !!(item && item.byPlayer && i === 0));
 		}
 	}
 
@@ -722,32 +718,47 @@
 		var byPlayer = !!options.byPlayer;
 		var plain = getPlainText(htmlOrText)
 			.replace(/【正在交談】\s*/g, '')
+			.replace(/^【[^】]*・當值協作】\s*/g, '')
+			.replace(/\s*【產地溯源：[^】]*】/g, '')
+			.replace(/^這是白塔半島常見的「([^」]+)」[，、]\s*/g, '$1，')
+			.replace(/吐納起落[^。]*。/g, '')
+			.replace(/手頭器物已歷[^。]*。/g, '')
+			.replace(/隨身攜有[^。]*。/g, '')
+			.replace(/身著明顯的當值工作制服，正於場內料理店務與百工差事。/g, '')
 			.replace(/\s+/g, ' ')
 			.trim();
 		if (!plain) return;
 		if (/^往「.+」移動$|^連線|^重新連線|^心跳超時/.test(plain)) return;
 
 		var now = Date.now();
-		if (plain === _breath0.text) {
+		if (_breaths.length > 0 && plain === _breaths[0].text) {
 			if (byPlayer) {
-				_breath0.byPlayer = true;
+				_breaths[0].byPlayer = true;
 				_playerFocusUntil = now + 6500;
 			}
 			renderBreathsDom();
 			return;
 		}
 
+		// Remove any older duplicate of plain so it doesn't appear twice
+		for (var d = _breaths.length - 1; d >= 0; d--) {
+			if (_breaths[d].text === plain) {
+				_breaths.splice(d, 1);
+			}
+		}
+
 		if (byPlayer) {
 			_playerFocusUntil = now + 6500;
-			_breath1 = { text: _breath0.text, byPlayer: _breath0.byPlayer };
-			_breath0 = { text: plain, byPlayer: true };
+			_breaths.unshift({ text: plain, byPlayer: true });
 		} else {
-			if (now < _playerFocusUntil && _breath0.text) {
-				_breath1 = { text: plain, byPlayer: false };
+			if (now < _playerFocusUntil && _breaths.length > 0 && _breaths[0].byPlayer) {
+				_breaths.splice(1, 0, { text: plain, byPlayer: false });
 			} else {
-				_breath1 = { text: _breath0.text, byPlayer: _breath0.byPlayer };
-				_breath0 = { text: plain, byPlayer: false };
+				_breaths.unshift({ text: plain, byPlayer: false });
 			}
+		}
+		if (_breaths.length > 5) {
+			_breaths.length = 5;
 		}
 		renderBreathsDom();
 	}
@@ -805,7 +816,9 @@
 			});
 		}
 
-		SwPushBreath(html, { byPlayer: actionType !== 'ambient' });
+		if (actionType !== 'ambient' && typeof SwPushBreath === 'function') {
+			SwPushBreath(html, { byPlayer: true });
+		}
 		if (actionType !== 'ambient') {
 			var modalOverlay = document.getElementById('player-modal-overlay');
 			var isModalOpen = !!(modalOverlay && !modalOverlay.hidden && modalOverlay.style.display !== 'none');

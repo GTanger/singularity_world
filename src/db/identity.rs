@@ -1,3 +1,32 @@
+pub fn is_routine_physiological_thought(flavor: &str) -> bool {
+    const ROUTINE_PATTERNS: &[&str] = &[
+        "飲過清冽甘水",
+        "飲過茶酒歇腳",
+        "用過熱騰騰的茶飯",
+        "買碗清湯粗麵",
+        "買兩個粗麥餅",
+        "買碗草木涼茶",
+        "灌大碗解暑粗茶",
+        "灌滿隨身竹水筒",
+        "採買米菜自炊熱粥",
+        "取用清冽涼水",
+        "掬清泉冷水",
+        "舀半瓢涼水",
+        "舀了半瓢",
+        "閉目歇腳喘口氣",
+        "坐街邊樹蔭木椅擦汗歇腿",
+        "在屋舍吹燈安穩睡一覺",
+        "於居所木榻和衣閉目歇息",
+        "洗淨擦拭、重新紮緊",
+        "在案頭做常規修整校準",
+        "請醫工切脈調理氣息",
+        "順口向路過街坊打聽",
+        "和熟人應對幾句日常瑣務",
+        "同熟識的鄰里寒暄幾句家常",
+    ];
+    ROUTINE_PATTERNS.iter().any(|p| flavor.contains(p))
+}
+
 // NPC identity 字串組裝（對齊既有 `db/backstory` `BuildIdentity`）。
 
 use crate::store;
@@ -9,6 +38,8 @@ use super::{
 /// 組裝 NPC 給 LLM 用的身份描述：真名、職稱、場所、性格、心境、最近事件、摘要（對齊既有 `BuildIdentity`）。
 #[must_use]
 pub fn build_identity(entity_id: &str) -> String {
+    let now_unix = crate::game::now_unix();
+    let (_, game_h, game_m, _, _) = crate::store::current_game_clock_full();
     let mut person = get_npc_person_display_name(entity_id).unwrap_or_default();
     if person.is_empty() {
         person = entity_id.to_string();
@@ -47,42 +78,63 @@ pub fn build_identity(entity_id: &str) -> String {
         let is_female = crate::store::npc_effective_is_female(entity_id, Some(&ent.gender));
         let gender = if is_female { "女性" } else { "男性" };
         person = crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
+        let slot = crate::store::wenyao_household_slot_for(entity_id);
         let role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
         let role = if !role_label.is_empty() {
             role_label
-        } else if !occ.is_empty() {
+        } else if !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
+            slot.brief_tag.to_string()
+        } else if !occ.is_empty() && !occ.contains("服務生") {
             occ.clone()
         } else {
             "居民".to_string()
         };
         effective_occupation = role.clone();
-        if let Some(v_name) = venue_name_opt {
-            result = format!("你是{person}，{gender}，職稱為{role}，在{v_name}工作。");
+
+        let work_name = if !slot.work_name.is_empty() {
+            slot.work_name.to_string()
+        } else if let Some(v_name) = venue_name_opt.as_ref() {
+            if !role.contains("服務生") && !occ.contains("服務生") {
+                v_name.clone()
+            } else {
+                String::new()
+            }
+        } else {
+            String::new()
+        };
+
+        if !work_name.is_empty() {
+            result = format!("你是{person}，{gender}，職稱為{role}，在{work_name}任事。");
         } else {
             result = format!("你是{person}，{gender}，職稱為{role}。");
         }
 
-        let slot = crate::store::wenyao_household_slot_for(entity_id);
         result.push_str(&format!(
-            "你的穿著外觀：{}。住所為【{}】。職務為【{}】（目的：{}；常駐行為：{}）。日常雜務往來【{}】（目的：{}；常駐動靜：{}）。",
+            "你的穿著外觀：{}。平日住所為【{}】，任職單位為【{}】（職司：{}）。",
             slot.attire_line,
             slot.home_name,
             slot.work_name,
             slot.work_purpose,
-            slot.work_stay_activity,
-            slot.errand_name,
-            slot.errand_purpose,
-            slot.errand_stay_activity,
         ));
 
         if !live_act.is_empty() {
             result.push_str(&format!("你當前的具體活動：{}。", live_act));
+            let (start_hour, end_hour) = if game_h >= slot.morning_hour && game_h < slot.evening_hour {
+                (slot.morning_hour.clamp(0, 23) as u8, slot.evening_hour.clamp(0, 24) as u8)
+            } else {
+                (slot.evening_hour.clamp(0, 23) as u8, slot.morning_hour.clamp(0, 24) as u8)
+            };
+            result.push_str(&format!("{}。", crate::store::format_schedule_window_sense(start_hour, end_hour, game_h, game_m)));
+            if let Some(spatial_sense) = crate::store::describe_npc_spatial_temporal_state(entity_id) {
+                result.push_str(&spatial_sense);
+            }
         }
 
         let inv_snap = super::get_inventory(&ent.inventory, ent.vit);
         let inv_desc: Vec<String> = inv_snap
             .items
             .iter()
+            .filter(|it| it.item_id != "blank_manual" && it.item_id != "wt_blank_manual")
             .map(|it| {
                 let stage = crate::game::object_ecology::classify_item_stage(&it.item_id);
                 let stage_label = match stage {
@@ -147,10 +199,25 @@ pub fn build_identity(entity_id: &str) -> String {
             ));
         }
     } else if let Some(v_name) = venue_name_opt {
-        if !occ.is_empty() {
-            result = format!("你是{person}，職稱是{occ}，在{v_name}工作。");
+        let slot = crate::store::wenyao_household_slot_for(entity_id);
+        let effective_occ = if !occ.is_empty() && !occ.contains("服務生") {
+            occ.clone()
+        } else if !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
+            slot.brief_tag.to_string()
         } else {
-            result = format!("你是{person}，在{v_name}相關場合活動。");
+            "居民".to_string()
+        };
+        let effective_work = if !slot.work_name.is_empty() {
+            slot.work_name
+        } else if !effective_occ.contains("服務生") {
+            &v_name
+        } else {
+            ""
+        };
+        if !effective_work.is_empty() {
+            result = format!("你是{person}，職稱是{effective_occ}，在{effective_work}工作。住所為【{}】。", slot.home_name);
+        } else {
+            result = format!("你是{person}，住所為【{}】。", slot.home_name);
         }
     }
 
@@ -172,18 +239,30 @@ pub fn build_identity(entity_id: &str) -> String {
     if !myriad_phase.is_empty() {
         result.push_str(&myriad_phase);
     }
-    let thoughts = get_active_thoughts(entity_id, 5);
+    let thoughts = get_active_thoughts(entity_id, 25);
     if !thoughts.is_empty() {
-        result.push_str("你最近的心境念頭：");
+        let mut added = 0usize;
+        let mut buf = String::new();
         for t in &thoughts {
-            if let Some(f) = &t.flavor
-                && !f.is_empty()
-                && !f.contains("青籠關")
-                && !f.contains("林緣聚地")
-            {
-                result.push_str(f);
-                result.push('；');
+            if let Some(f) = &t.flavor {
+                let trimmed = f.trim();
+                if !trimmed.is_empty()
+                    && !trimmed.contains("青籠關")
+                    && !trimmed.contains("林緣聚地")
+                    && !is_routine_physiological_thought(trimmed)
+                {
+                    let tag = crate::store::format_short_relative_time(t.created_at, now_unix);
+                    buf.push_str(&format!("{tag}{trimmed}；"));
+                    added += 1;
+                    if added >= 3 {
+                        break;
+                    }
+                }
             }
+        }
+        if !buf.is_empty() {
+            result.push_str("你最近的心境念頭：");
+            result.push_str(&buf);
         }
     }
     let evts = get_recent_events(entity_id, 5);
@@ -206,8 +285,8 @@ pub fn build_identity(entity_id: &str) -> String {
                 continue;
             }
             let sanitized = e.payload.replace(['|', '｜'], "・");
-            result.push_str(&sanitized);
-            result.push('；');
+            let tag = crate::store::format_short_relative_time(e.at, now_unix);
+            result.push_str(&format!("{tag}{sanitized}；"));
         }
         if result.len() == header_len {
             result.truncate(mark);
@@ -217,15 +296,18 @@ pub fn build_identity(entity_id: &str) -> String {
     if !pulse.is_empty() {
         result.push_str(&format!("當前坊市經濟脈動：{}。", pulse));
     }
-    if !npc_summary.is_empty() && !npc_summary.contains("青籠關") {
-        result.push_str("與來客過往互動印象：");
-        result.push_str(&npc_summary);
+    let facts = crate::pg::living_world::recent_resident_knowledge_facts(entity_id, 3);
+    if !facts.is_empty() {
+        result.push_str(&format!("\n【個人親歷與坊間熟知】：{}", facts.join("；")));
+    }
+    let s = npc_summary.trim();
+    if !s.is_empty() && (s.contains("開譜曆") || s.contains("白塔曆")) {
+        result.push_str(&format!("\n近期交談摘要：{}", s));
     }
     result
 }
 
-
-fn personality_to_sentence(p: &super::Personality) -> String {
+fn personality_descriptors(p: &super::Personality) -> (&'static str, &'static str, &'static str, &'static str) {
     let bold_desc = if p.boldness < 0.28 {
         "行事極度沉斂慎重、戒備心重"
     } else if p.boldness < 0.42 {
@@ -262,7 +344,6 @@ fn personality_to_sentence(p: &super::Personality) -> String {
         "心神極其敏銳洞察、口吻溫暖熱絡"
     };
 
-    // 主次張力平衡描述
     let tension = if p.boldness >= p.sensitivity && p.boldness >= p.orderliness {
         if p.sensitivity >= p.orderliness {
             "在勇毅任事與敏銳體察間相輔相成，不拘泥於死板條規"
@@ -283,5 +364,208 @@ fn personality_to_sentence(p: &super::Personality) -> String {
         }
     };
 
+    (bold_desc, ord_desc, sens_desc, tension)
+}
+
+fn personality_to_sentence(p: &super::Personality) -> String {
+    let (bold_desc, ord_desc, sens_desc, tension) = personality_descriptors(p);
     format!("你的性格秉性為：{}，{}，{}。心性維度守衡，{}。", bold_desc, ord_desc, sens_desc, tension)
+}
+
+fn personality_to_third_person_sentence(p: &super::Personality) -> String {
+    let (bold_desc, ord_desc, sens_desc, tension) = personality_descriptors(p);
+    format!("性格秉性：{}，{}，{}。心性維度守衡，{}。", bold_desc, ord_desc, sens_desc, tension)
+}
+
+/// 為 NPC↔NPC 雙人對話組裝嚴格第三人稱角色卡（徹底隔離玩家專屬來客印象與第二人稱角色糾纏）。
+#[must_use]
+pub fn build_third_person_actor_card(
+    entity_id: &str,
+    role_tag: &str,
+    peer_name: &str,
+) -> String {
+    let mut name = get_npc_person_display_name(entity_id).unwrap_or_default();
+    if name.is_empty() {
+        name = entity_id.to_string();
+    }
+    let occ = super::assignment::get_npc_title_from_assignments(entity_id);
+
+    let (ent_opt, live_act, npc_summary) = if let Some(arc) = store::get_store() {
+        let s = arc.read();
+        let ent_opt = s.get_entity(entity_id);
+        let live_act = ent_opt
+            .as_ref()
+            .map(|e| s.effective_npc_activity(e))
+            .unwrap_or_default();
+        let summary = s.get_npc_summary(entity_id);
+        (ent_opt, live_act, summary)
+    } else {
+        (None, String::new(), String::new())
+    };
+
+    let mut gender = "男";
+    let mut soul_seed_val = None;
+    let mut role_label = String::new();
+    if let Some(ent) = &ent_opt {
+        soul_seed_val = ent.soul_seed;
+        let is_female = crate::store::npc_effective_is_female(entity_id, Some(&ent.gender));
+        gender = if is_female { "女性" } else { "男性" };
+        name = crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
+        role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
+    }
+
+    let slot = crate::store::wenyao_household_slot_for(entity_id);
+    let job_label = if !role_label.is_empty() {
+        role_label
+    } else if !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
+        slot.brief_tag.to_string()
+    } else if !occ.is_empty() && !occ.contains("服務生") {
+        occ
+    } else {
+        "居民".to_string()
+    };
+
+    let clothing_desc = slot.attire_line;
+    let home_name = slot.home_name;
+    let work_name = slot.work_name;
+    let work_purpose = slot.work_purpose;
+
+    let mut card = format!(
+        "【{role_tag}：{name}】（只可自稱「我」，不可自呼「{name}」或自身外號；對面交談對象是「{peer_name}」）｜性別：{gender}｜職稱：{job_label}｜穿戴：{clothing_desc}｜住所：【{home_name}】｜任事場所：【{work_name}】（{work_purpose}）"
+    );
+
+    let personality_opt = get_personality_for_entity(entity_id).or_else(|| {
+        if let Some(seed) = soul_seed_val
+            && seed != 0
+        {
+            Some(super::expand_soul_seed_to_personality(seed))
+        } else {
+            None
+        }
+    });
+    if let Some(p) = personality_opt {
+        card.push('\n');
+        card.push_str(&personality_to_third_person_sentence(&p));
+    }
+
+    let seed = crate::npc::causal_core::deterministic_resident_seed(
+        entity_id,
+        soul_seed_val,
+    );
+    let myriad_phase = crate::npc::causal_core::describe_npc_myriad_personality_phase(
+        entity_id,
+        &job_label,
+        seed,
+    );
+    if !myriad_phase.is_empty() {
+        card.push('\n');
+        card.push_str(&format!("心性相貌：{}。", myriad_phase));
+    }
+
+    if let Some((ob_kind, ob_subject)) = crate::store::get_active_npc_obligation(entity_id) {
+        let ob_label = match ob_kind.as_str() {
+            "restock_goods" => "鋪子補貨",
+            "repair_tool" | "maintenance_recovery" | "tool_repair" => "器物修整",
+            "stranded_cargo" | "market_delivery" | "delivery" => "貨件調度",
+            "craft_material" | "material_shortage" | "MaterialShortage" | "supply_shortage" => {
+                "資材補備"
+            }
+            "fuel_shortage" => "爐灶柴炭添補",
+            "treat_injury" | "medical_help" | "MedicalHelp" => "傷病調理",
+            "repay_debt" | "debt_settlement" => "帳目結清",
+            "rest_recovery" => "歇息養神",
+            _ => "手頭差事",
+        };
+        card.push('\n');
+        card.push_str(&format!(
+            "當前手頭待辦義務或牽掛：{}（{}）。",
+            ob_label, ob_subject
+        ));
+    }
+
+    let facts = crate::pg::living_world::recent_resident_knowledge_facts(entity_id, 2);
+    if !facts.is_empty() {
+        card.push('\n');
+        card.push_str(&format!("個人親歷與坊間熟知：{}。", facts.join("；")));
+    }
+
+    let thoughts = get_active_thoughts(entity_id, 25);
+    let mut clean_thoughts = Vec::new();
+    let card_now_unix = crate::game::now_unix();
+    for t in &thoughts {
+        if let Some(f) = &t.flavor {
+            let trimmed = f.trim();
+            if !trimmed.is_empty()
+                && !trimmed.contains("青籠關")
+                && !trimmed.contains("林緣聚地")
+                && !trimmed.contains("早先")
+                && !is_routine_physiological_thought(trimmed)
+            {
+                let tag = crate::store::format_short_relative_time(t.created_at, card_now_unix);
+                clean_thoughts.push(format!("{tag}{trimmed}"));
+                if clean_thoughts.len() >= 3 {
+                    break;
+                }
+            }
+        }
+    }
+    if !clean_thoughts.is_empty() {
+        card.push('\n');
+        card.push_str(&format!("近期心境念頭：{}。", clean_thoughts.join("；")));
+    }
+    let s = npc_summary.trim();
+    if !s.is_empty() && (s.contains("開譜曆") || s.contains("白塔曆")) {
+        card.push_str(&format!("\n近期交談摘要：{}", s));
+    }
+
+    let effective_live_act = if live_act.is_empty() || is_routine_physiological_thought(&live_act) {
+        slot.work_stay_activity
+    } else {
+        live_act.as_str()
+    };
+    if !effective_live_act.is_empty() {
+        card.push('\n');
+        card.push_str(&format!(
+            "當前手頭活計：{}（嚴守本職【{}】，切勿自稱在其他診所或非自身場所當差）。",
+            effective_live_act, work_name
+        ));
+    }
+    card
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_routine_physiological_thoughts_but_keeps_expedition_and_work() {
+        assert!(is_routine_physiological_thought(
+            "在文曜・三水口水岸公井飲過清冽甘水，喉間乾渴頓消，精神一振"
+        ));
+        assert!(is_routine_physiological_thought(
+            "在南哨・脈絡解毒診所飲過茶酒歇腳，喉間舒爽，燥意盡消"
+        ));
+        assert!(is_routine_physiological_thought(
+            "在南哨・脈絡解毒診所把隨身的「紫竹家常提籃」洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了"
+        ));
+        assert!(!is_routine_physiological_thought(
+            "隨領隊【廖佩玉】合社獵團將圍獵所獲之【深潭野生老鱉】運抵風舶角・海事總商行與船貨契據所過磅交割，分得紅利 36 枚鎂幣"
+        ));
+        assert!(!is_routine_physiological_thought(
+            "手頭鎂幣漸緊，得盤算多接幾趟差事"
+        ));
+    }
+
+    #[test]
+    fn test_build_identity_filters_blank_manual_from_npc_inventory() {
+        let inv_raw = r#"[{"item_id":"blank_manual","qty":2},{"item_id":"wt_blank_manual","qty":1},{"item_id":"mat_pine_plank","qty":5}]"#;
+        let snap = super::super::get_inventory(inv_raw, 10);
+        let filtered: Vec<_> = snap
+            .items
+            .iter()
+            .filter(|it| it.item_id != "blank_manual" && it.item_id != "wt_blank_manual")
+            .map(|it| it.item_id.clone())
+            .collect();
+        assert_eq!(filtered, vec!["mat_pine_plank"]);
+    }
 }

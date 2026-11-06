@@ -26,17 +26,20 @@
 
     // ── 觀察態 → 顯示標籤 ────────────────────────────────────────────
     function labelOf(obj) {
+        if (!obj) return '';
         var state = obj.observation_state;
-        if (!state && obj.name && !obj.tag) {
+        if (!state && obj.name) {
             return obj.name;
         }
+        var isAsciiTag = obj.tag && /^[a-z0-9_]+$/.test(obj.tag);
+        var displayTag = isAsciiTag ? '' : (obj.tag || '');
         if (state === 'named') {
-            return (obj.tag || '') + (obj.name ? obj.name : '');
+            return displayTag + (obj.name ? obj.name : '');
         } else if (state === 'identified') {
-            return obj.tag || '行人';
+            return displayTag || obj.name || '行人';
         } else {
             // stranger 或未定義
-            return obj.tag || '行人';
+            return displayTag || obj.name || '行人';
         }
     }
 
@@ -347,7 +350,7 @@
         return html;
     }
 
-    // 判斷物件是否具備「可離開當前格」或「可隨身攜帶」性質
+    // 判斷物件是否屬於掉在地上的散落物品或跨房轉場點（房間常設陳設一律留在 #sw-l3-terrain 場景內容內）
     function isMovableOrPortableObject(obj) {
         if (!obj) return false;
         // NPC 或玩家不歸於隨行通道物件欄（已有專門的人物理論欄位）
@@ -356,12 +359,15 @@
         if (obj.move_to_room_id) return true;
         var actions = obj.actions || obj.sockets || [];
         if (Array.isArray(actions)) {
-            for (var i = 0; i < actions.length; i++) {
-                var a = actions[i];
-                if (a === 'Move' || a === 'Take') return true;
+            if (actions.indexOf('Move') !== -1 || actions.indexOf('Take') !== -1) {
+                return true;
             }
         }
         return false;
+    }
+
+    function resolveSocketActionLabel(act, obj) {
+        return resolveActionLabelZh(act, obj);
     }
 
     function isFacility(obj) {
@@ -455,7 +461,12 @@
             '松香木彈力大床與儲食石櫃': '床榻・冰鑑櫃',
             '止血水苔與避瘴清心丸架': '水苔・丸架',
             '青鹽海貝薄荷潔牙粉': '海貝潔牙粉',
-            '煅燒海貝薄荷潔牙粉': '海貝潔牙粉'
+            '煅燒海貝薄荷潔牙粉': '海貝潔牙粉',
+            '薄層重礦烏木膽隨身保溫瓶': '隨身保溫瓶',
+            '烏木膽隨身保溫瓶': '隨身保溫瓶',
+            '順時針環島海運商船': '環島商船',
+            '溫氏導能溫石百草溫灸盒': '百草溫灸盒',
+            '校準隨身黃銅懷錶': '黃銅懷錶'
         };
         if (knownMap[str]) {
             return knownMap[str];
@@ -471,9 +482,9 @@
                 }
             }
         }
-        var prefixRegex = /^(?:青鹽海貝|煅燒海貝|重礦包邊|薄層重礦|三號坑口|三號坑|老堰頭|霜林口|築港頭|文曜城|文曜|大圳頭|半嶺鎮|半嶺|風櫃尾|烏石鼻|水尾寮|紅土崁|黑沼|北嶺|南哨|外澳|牛埔|風舶角|風舶|黃銅鑲邊|雕花青石|防蛀樟木|夜光貝母|寒水玉雙層|寒水玉|松香木|老青竹黃銅輪|老青竹|紅土光學黃銅|紅土光學|自來活水黃銅|自來活水|三水川雕花|文曜青石|防雨竹筒|防雨竹編|黃銅|青石|石雕|雕花|生鐵|熟鐵|精鋼|樟木|松木|烏木|紅木|鐵木|楠木|粗陶|白磁|竹編|單筒|捲線|貝母)/;
+        var prefixRegex = /^(?:青鹽海貝|煅燒海貝|重礦包邊|薄層重礦|三號坑口|三號坑|老堰頭|霜林口|築港頭|文曜城|文曜|大圳頭|半嶺鎮|半嶺|風櫃尾|烏石鼻|水尾寮|紅土崁|黑沼|北嶺|南哨|外澳|牛埔|風舶角|風舶|黃銅鑲邊|雕花青石|防蛀樟木|夜光貝母|寒水玉雙層|寒水玉|松香木|老青竹黃銅輪|老青竹|紅土光學黃銅|紅土光學|自來活水黃銅|自來活水|三水川雕花|文曜青石|防雨竹筒|防雨竹編|烏木內膽|烏木膽|(?:黃銅|青石|石雕|雕花|生鐵|熟鐵|精鋼|樟木|松木|烏木|紅木|鐵木|楠木|粗陶|白磁|竹編|單筒|捲線|貝母|木|竹|鐵|銅|石|陶)製?)/;
         for (var pi = 0; pi < 2; pi++) {
-            var stripped = str.replace(prefixRegex, '').trim();
+            var stripped = str.replace(prefixRegex, '').replace(/^[製式膽]/, '').trim();
             if (stripped.length >= 2 && stripped !== str) {
                 str = stripped;
                 if (knownMap[str]) {
@@ -506,7 +517,8 @@
             var rawLabel = labelOf(obj);
             var displayLabel = conciseObjectLabel(rawLabel);
             var icon = facilityIcon(obj);
-            html += '<button type="button" class="sw-obj-card sw-facility-card sw-obj-item-card" data-obj-id="' + _esc(obj.id) + '" title="' + _esc(rawLabel) + '">';
+            var catAttr = (obj && obj.category_tag) ? ' data-obj-category="' + _esc(obj.category_tag) + '"' : '';
+            html += '<button type="button" class="sw-obj-card sw-facility-card sw-obj-item-card"' + catAttr + ' data-obj-id="' + _esc(obj.id) + '" title="' + _esc(rawLabel) + '">';
             html += '<span class="sw-facility-icon">' + icon + '</span> ';
             html += '<span class="sw-facility-name">' + _esc(displayLabel) + '</span>';
             html += '</button>';
@@ -541,7 +553,8 @@
                 cls += ' sw-obj-item-card';
                 icon = '📦';
             }
-            html += '<button type="button" class="' + cls + '" data-obj-id="' + _esc(obj.id) + '" title="' + _esc(rawLabel) + '">';
+            var catAttr = (obj && obj.category_tag) ? ' data-obj-category="' + _esc(obj.category_tag) + '"' : '';
+            html += '<button type="button" class="' + cls + '"' + catAttr + ' data-obj-id="' + _esc(obj.id) + '" title="' + _esc(rawLabel) + '">';
             html += '<span class="sw-discovery-icon">' + icon + '</span> ';
             html += '<span class="sw-discovery-name">' + _esc(displayLabel) + '</span>';
             html += '</button>';
@@ -567,7 +580,8 @@
             if (obj.type === 'npc')      cls += ' sw-obj-npc';
             else if (obj.type === 'item') cls += ' sw-obj-item-card';
             else if (obj.type === 'resource') cls += ' sw-obj-resource';
-            html += '<button type="button" class="' + cls + '" data-obj-id="' + _esc(obj.id) + '">' +
+            var catAttr = (obj && obj.category_tag) ? ' data-obj-category="' + _esc(obj.category_tag) + '"' : '';
+            html += '<button type="button" class="' + cls + '"' + catAttr + ' data-obj-id="' + _esc(obj.id) + '">' +
                     _esc(display) + '</button>';
             if (i < items.length - 1) html += '<span class="sw-object-punctuation" aria-hidden="true">、</span>';
         }
@@ -712,6 +726,10 @@
     var _activePopoverToken = null;
     var _activeNpcCallouts = {};
     var _activeNpcChats = {};
+    var _allLiveNpcIdsInRoom = {};
+    var _prevAllLiveNpcIdsInRoom = {};
+    var _totalLiveNpcCount = 0;
+    var _npcBreathCooldownById = {};
     function hashStr(str) {
         var h = 0x811c9dc5;
         var s = String(str || '');
@@ -767,63 +785,8 @@
         return minClearance;
     }
 
-    function computeStablePosition(roomId, tokenKey, labelLen, placedPositions, isAnchored) {
-        var box = estimateTokenHalfBox(labelLen);
-        var cacheRoomKey = roomId + ':' + box.bucket;
-        if (!_tokenPositionsByRoom[cacheRoomKey]) {
-            _tokenPositionsByRoom[cacheRoomKey] = {};
-        }
-        var minX = Math.min(46, Math.ceil(box.halfW + 3));
-        var maxX = Math.max(54, Math.floor(97 - box.halfW));
-        var spanX = Math.max(8, maxX - minX);
-        var minY = Math.ceil(box.halfH + 10);
-        var maxY = Math.floor(88 - box.halfH);
-        var spanY = Math.max(10, maxY - minY);
-
-        var cached = _tokenPositionsByRoom[cacheRoomKey][tokenKey];
-        if (cached) {
-            var cx = Math.max(minX, Math.min(maxX, cached.x));
-            var cy = Math.max(minY, Math.min(maxY, cached.y));
-            if (isAnchored || checkCollisionWithPlaced(cx, cy, box, placedPositions) >= 0.85) {
-                var cPos = { x: cx, y: cy, halfW: box.halfW, halfH: box.halfH };
-                _tokenPositionsByRoom[cacheRoomKey][tokenKey] = cPos;
-                placedPositions[tokenKey] = cPos;
-                return cPos;
-            }
-        }
-        var h = hashStr(roomId + '|' + tokenKey);
-        var bestX = minX + (h % spanX);
-        var bestY = minY + (Math.floor(h / 97) % spanY);
-        var bestClearance = -1;
-
-        for (var attempt = 0; attempt < 160; attempt++) {
-            var x, y;
-            if (attempt === 0) {
-                x = bestX;
-                y = bestY;
-            } else {
-                var u = ((h % 997) / 997 + attempt * 0.61803398875) % 1;
-                var v = (((Math.floor(h / 997) % 991) / 991) + attempt * 0.7548776662) % 1;
-                x = Math.round(minX + u * spanX);
-                y = Math.round(minY + v * spanY);
-            }
-            var clearance = checkCollisionWithPlaced(x, y, box, placedPositions);
-            if (clearance >= 1.0) {
-                bestX = x;
-                bestY = y;
-                break;
-            }
-            if (clearance > bestClearance) {
-                bestClearance = clearance;
-                bestX = x;
-                bestY = y;
-            }
-        }
-
-        var pos = { x: bestX, y: bestY, halfW: box.halfW, halfH: box.halfH };
-        _tokenPositionsByRoom[cacheRoomKey][tokenKey] = pos;
-        placedPositions[tokenKey] = pos;
-        return pos;
+    function computeStablePosition(roomId, tokenKey, labelLen, placedPositions, isAnchored, kind) {
+        return { x: 50, y: 50, halfW: 10, halfH: 10 };
     }
 
     function getEdgeCoords(dir, targetPos, placedPositions, tokenKey) {
@@ -895,7 +858,18 @@
 
     function conciseMicroState(rawAct, kind, label, isBeast, tokenKey) {
         if (kind === 'npc') {
-            if (label && /櫃檯當值|當值|掌櫃|掌事|主廚|醫師|匠師|鐵匠|木匠|教席/.test(label)) {
+            if (label && _transitHints[label] && (Date.now() - _transitHints[label].time <= 9000)) {
+                var th = _transitHints[label];
+                if (th.dir) {
+                    if (th.kind === 'enter' || th.type === 'enter') {
+                        return '自' + th.dir + '步入';
+                    }
+                    if (th.kind === 'leave' || th.type === 'leave') {
+                        return '往' + th.dir + '行去';
+                    }
+                }
+            }
+            if (label && /櫃檯當值|當值|掌事|主廚|醫師|匠師|鐵匠|木匠|教席/.test(label)) {
                 return '櫃檯當值';
             }
             if (label && /（當值）/.test(label)) {
@@ -960,6 +934,12 @@
     var _inlineOpenTokenKey = null;
 
     function closeAllInlineTokens(canvasEl) {
+        if (_inlineOpenTokenKey && _inlineOpenTokenKey.indexOf('npc:') === 0) {
+            var npcId = _inlineOpenTokenKey.slice(4);
+            if (!(_activePopoverToken && _activePopoverToken.id === npcId) && typeof window.gameSend === 'function') {
+                window.gameSend({ type: 'unfocus_entity', entity_id: npcId });
+            }
+        }
         _inlineOpenTokenKey = null;
         var root = canvasEl || document.getElementById('sw-room-canvas');
         if (!root) return;
@@ -971,9 +951,44 @@
 
     function populateInlineActionChips(chipsContainer, token) {
         if (!chipsContainer || !token) return;
-        chipsContainer.innerHTML = '';
         var targetId = token.id;
         var targetName = token.label || token.name || targetId;
+        var rawActs = (token.data && (token.data.actions || token.data.sockets)) || [];
+        var actionsSigList = [];
+
+        if (token.kind === 'npc' || token.kind === 'player') {
+            if (isWildBeastToken(targetId, targetName)) {
+                actionsSigList = [{ code: 'Subdue', label: '生擒制伏' }, { code: 'Slay', label: '出手獵殺' }];
+            } else {
+                actionsSigList = [
+                    { code: 'Greet', label: '寒暄' },
+                    { code: 'Ask', label: '打聽' },
+                    { code: 'Trade', label: '交易' },
+                    { code: 'Chat', label: '詳談…' }
+                ];
+            }
+        } else {
+            var nonLook = filterObjectSockets(rawActs);
+            var maxInline = Math.min(3, nonLook.length);
+            for (var si = 0; si < maxInline; si++) {
+                var actCode = nonLook[si];
+                var obj = token.data;
+                var objTag = (obj && obj.tag) || '';
+                var objTags = (obj && obj.tags) || [];
+                var actLabel = resolveActionLabelZh(actCode, obj || targetName, targetId, objTag, objTags);
+                actionsSigList.push({ code: actCode, label: actLabel });
+            }
+            if (nonLook.length > 3) {
+                actionsSigList.push({ code: 'More', label: '更多…' });
+            }
+        }
+
+        var sig = String(token.id || '') + '|' + actionsSigList.map(function (a) { return a.code + ':' + a.label; }).join(',');
+        if (chipsContainer.getAttribute('data-chips-sig') === sig && chipsContainer.children.length > 0) {
+            return;
+        }
+        chipsContainer.setAttribute('data-chips-sig', sig);
+        chipsContainer.innerHTML = '';
 
         function addChip(label, onClickFn, titleText) {
             var chip = document.createElement('button');
@@ -988,7 +1003,6 @@
             });
             chipsContainer.appendChild(chip);
         }
-
         if (token.kind === 'npc' || token.kind === 'player') {
             if (isWildBeastToken(targetId, targetName)) {
                 addChip('生擒制伏', function () {
@@ -1011,7 +1025,17 @@
                         }
                     }
                     token.microState = '駐足交談';
-                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Talk', player_input: '寒暄問候' });
+                    SwOpenObjectPopover(token);
+                    var playerLine = '你對【' + (targetName || targetId) + '】說：「寒暄問候」';
+                    var fmt = window.gameFormatNarrative || function (t) { return t; };
+                    var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
+                    appendNarr(fmt(playerLine), 'Talk');
+                    if (window.gameSend) {
+                        window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Talk', player_input: '寒暄問候' });
+                        if (window.SwInteractions && window.SwInteractions.appendLogPendingTalk) {
+                            window.SwInteractions.appendLogPendingTalk();
+                        }
+                    }
                 }, '直接搭話寒暄');
                 addChip('打聽', function () {
                     closeAllInlineTokens(document.getElementById('sw-room-canvas'));
@@ -1026,7 +1050,17 @@
                         }
                     }
                     token.microState = '駐足交談';
-                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Talk', player_input: '打聽近況' });
+                    SwOpenObjectPopover(token);
+                    var playerLine = '你對【' + (targetName || targetId) + '】說：「打聽近況」';
+                    var fmt = window.gameFormatNarrative || function (t) { return t; };
+                    var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
+                    appendNarr(fmt(playerLine), 'Talk');
+                    if (window.gameSend) {
+                        window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Talk', player_input: '打聽近況' });
+                        if (window.SwInteractions && window.SwInteractions.appendLogPendingTalk) {
+                            window.SwInteractions.appendLogPendingTalk();
+                        }
+                    }
                 }, '打聽當地近況');
                 addChip('交易', function () {
                     if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Trade', player_input: '' });
@@ -1044,10 +1078,13 @@
             var maxInline = Math.min(3, nonLook.length);
             for (var i = 0; i < maxInline; i++) {
                 (function (actCode) {
-                    var actLabel = resolveActionLabelZh(actCode, targetName, targetId);
+                    var obj = token.data;
+                    var objTag = (obj && obj.tag) || '';
+                    var objTags = (obj && obj.tags) || [];
+                    var actLabel = resolveActionLabelZh(actCode, obj || targetName, targetId, objTag, objTags);
                     addChip(actLabel, function () {
                         if (window.gameSend) {
-                            var moveRoomId = token.data && token.data.move_to_room_id;
+                            var moveRoomId = obj && obj.move_to_room_id;
                             var entId = (actCode === 'Move' && moveRoomId) ? moveRoomId : targetId;
                             window.gameSend({ type: 'do_action', entity_id: entId, action: actCode });
                         }
@@ -1067,19 +1104,48 @@
         tokenEl.setAttribute('data-token-key', token.key);
         tokenEl.setAttribute('data-obj-id', token.id);
         tokenEl.setAttribute('data-entity-id', token.id);
-        var lblSpan = tokenEl.querySelector('.sw-token-label');
+        tokenEl.setAttribute('data-obj-tag', (token.data && token.data.tag) || '');
+        var obj = token.data;
+        if (obj && obj.category_tag) {
+            tokenEl.dataset.objCategory = String(obj.category_tag);
+            tokenEl.setAttribute('data-obj-category', String(obj.category_tag));
+        } else {
+            tokenEl.removeAttribute('data-obj-category');
+            if (tokenEl.dataset) {
+                delete tokenEl.dataset.objCategory;
+            }
+        }
+        if (obj && Array.isArray(obj.attribute_tags) && obj.attribute_tags.length > 0) {
+            tokenEl.dataset.objAttributes = obj.attribute_tags.join(',');
+            tokenEl.setAttribute('data-obj-attributes', obj.attribute_tags.join(','));
+        } else {
+            tokenEl.removeAttribute('data-obj-attributes');
+            if (tokenEl.dataset) {
+                delete tokenEl.dataset.objAttributes;
+            }
+        }
+        if (token.data && Array.isArray(token.data.tags)) {
+            tokenEl.setAttribute('data-obj-tags', token.data.tags.join(','));
+        } else {
+            tokenEl.removeAttribute('data-obj-tags');
+        }
+        var lblSpan = tokenEl.querySelector('.sw-token-label, .sw-token-title');
         if (!lblSpan) {
             lblSpan = document.createElement('span');
-            lblSpan.className = 'sw-token-label';
+            lblSpan.className = 'sw-token-label sw-token-title';
             tokenEl.appendChild(lblSpan);
+        } else if (!lblSpan.classList.contains('sw-token-title')) {
+            lblSpan.classList.add('sw-token-title');
         }
         lblSpan.textContent = token.label;
 
-        var microSpan = tokenEl.querySelector('.sw-token-micro-state');
+        var microSpan = tokenEl.querySelector('.sw-token-micro-state, .sw-token-sub');
         if (!microSpan) {
             microSpan = document.createElement('span');
-            microSpan.className = 'sw-token-micro-state';
+            microSpan.className = 'sw-token-micro-state sw-token-sub';
             tokenEl.appendChild(microSpan);
+        } else if (!microSpan.classList.contains('sw-token-sub')) {
+            microSpan.classList.add('sw-token-sub');
         }
         microSpan.textContent = token.microState || '';
         microSpan.hidden = !token.microState;
@@ -1181,6 +1247,9 @@
             if (seenKeys[rawKey]) continue;
             seenKeys[rawKey] = true;
             var rawName = rawNpc.display_name || '行人';
+            if (rawNpc.card_state !== 'named' && rawName.indexOf('街坊居民') !== -1) {
+                rawName = '陌生人';
+            }
             var rawLabel = concisePersonLabel(rawName, rawNpc.card_state);
             npcLabelCounts[rawLabel] = (npcLabelCounts[rawLabel] || 0) + 1;
             validNpcs.push({ npc: rawNpc, id: rawId, key: rawKey, name: rawName, label: rawLabel });
@@ -1283,6 +1352,9 @@
             if (obj.move_to_room_id && currentRoomId && obj.move_to_room_id === currentRoomId) {
                 continue;
             }
+            if (!isMovableOrPortableObject(obj)) {
+                continue;
+            }
             var oId = obj.id;
             var oKey = 'obj:' + oId;
             if (seenKeys[oKey]) continue;
@@ -1293,8 +1365,7 @@
             var fac = isFacility(obj);
             var kind = fac ? 'facility' : 'item';
             var sub = '';
-            var tokClass = fac ? 'sw-token-facility' : 'sw-token-item';
-
+            var tokClass = (fac ? 'sw-token-facility' : 'sw-token-item') + ' sw-token-object';
             tokens.push({
                 key: oKey,
                 id: oId,
@@ -1305,28 +1376,6 @@
                 kind: kind,
                 tokenClass: tokClass,
                 data: obj
-            });
-        }
-        var harvs = mapData.harvestables || [];
-        for (var hi = 0; hi < harvs.length; hi++) {
-            var hObj = harvs[hi];
-            if (!hObj) continue;
-            var hId = hObj.id || hObj.name || ('harv_' + hi);
-            var hKey = 'harv:' + hId;
-            if (seenKeys[hKey]) continue;
-            seenKeys[hKey] = true;
-            var hName = hObj.name || hObj.label || '可採集物';
-            var hLabel = conciseObjectLabel(hName);
-            tokens.push({
-                key: hKey,
-                id: hId,
-                name: hName,
-                label: hLabel,
-                subtitle: '',
-                microState: conciseMicroState('', 'facility', hLabel, false),
-                kind: 'facility',
-                tokenClass: 'sw-token-item',
-                data: { id: hId, name: hName, actions: ['Look', 'Gather'] }
             });
         }
         tokens.sort(function (a, b) {
@@ -1341,6 +1390,11 @@
     }
 
     function renderRoomCanvas() {
+        if (window.SwRoomDesc && typeof window.SwRoomDesc.syncL3Objects === 'function') {
+            var G0 = window.SwGrid;
+            var md0 = (G0 && G0.mapData) ? G0.mapData : {};
+            window.SwRoomDesc.syncL3Objects(_currentObjects, md0.harvestables || []);
+        }
         var canvasEl = document.getElementById('sw-room-canvas');
         if (!canvasEl) return;
         var emptyEl = document.getElementById('sw-room-canvas-empty');
@@ -1371,7 +1425,25 @@
         _roomId = currentRoomId;
         var tokens = collectCurrentTokens();
         if (emptyEl) {
-            emptyEl.hidden = (tokens.length > 0);
+            emptyEl.hidden = true;
+        }
+        canvasEl.classList.toggle('is-empty-canvas', tokens.length === 0);
+        canvasEl.hidden = false;
+
+        // ── 空間空場提示（.sw-canvas-empty-hint）與擁擠徽章（.sw-canvas-crowd-badge）──
+        var existingEmptyHint = canvasEl.querySelector('.sw-canvas-empty-hint');
+        if (tokens.length === 0) {
+            var appEl = document.getElementById('app') || document.getElementById('app-grid');
+            var isNight = (appEl && appEl.getAttribute('data-tide') === 'night');
+            var emptyText = isNight ? '夜色靜謐，四下暫無行旅駐足' : '街面清朗，四下暫無駐足行人';
+            if (!existingEmptyHint) {
+                existingEmptyHint = document.createElement('div');
+                existingEmptyHint.className = 'sw-canvas-empty-hint';
+                canvasEl.appendChild(existingEmptyHint);
+            }
+            existingEmptyHint.textContent = emptyText;
+        } else if (existingEmptyHint) {
+            existingEmptyHint.remove();
         }
 
         if (!canvasEl._bgDismissBound) {
@@ -1387,6 +1459,10 @@
             var oldNodes = canvasEl.querySelectorAll('.sw-canvas-token');
             for (var oi = 0; oi < oldNodes.length; oi++) {
                 oldNodes[oi].remove();
+            }
+            var oldCrowdBadges = canvasEl.querySelectorAll('.sw-canvas-crowd-badge');
+            for (var cbi = 0; cbi < oldCrowdBadges.length; cbi++) {
+                oldCrowdBadges[cbi].remove();
             }
             _prevTokensMap = {};
             _tokenEnterTime = {};
@@ -1414,8 +1490,8 @@
         var posByKey = {};
         for (var pi = 0; pi < placementOrder.length; pi++) {
             var pTok = placementOrder[pi];
-            var isAnchoredTok = (pTok.kind === 'facility' || pTok.kind === 'item') || (isSameRoom && !!_prevTokensMap[pTok.key]);
-            posByKey[pTok.key] = computeStablePosition(currentRoomId, pTok.key, (pTok.label || '').length, placedPositions, isAnchoredTok);
+            var isAnchoredTok = (pTok.kind === 'facility' || pTok.kind === 'item' || pTok.kind === 'object') || (isSameRoom && !!_prevTokensMap[pTok.key]);
+            posByKey[pTok.key] = computeStablePosition(currentRoomId, pTok.key, (pTok.label || '').length, placedPositions, isAnchoredTok, pTok.kind);
         }
         if (isSameRoom) {
             for (var oldKey in _prevTokensMap) {
@@ -1423,32 +1499,25 @@
                     var leavingToken = _prevTokensMap[oldKey];
                     var existingEl = canvasEl.querySelector('[data-token-key="' + leavingToken.key + '"]');
                     var isMovableKind = (leavingToken.kind === 'npc' || leavingToken.kind === 'player');
-                    if (existingEl && allowTransitAnim && isMovableKind) {
-                        var leaveDir = resolveTransitDirection(leavingToken, 'leave');
-                        var oldPos = _tokenPositionsByRoom[currentRoomId][leavingToken.key] || { x: 50, y: 50 };
-                        var departPos = getEdgeCoords(leaveDir, oldPos, placedPositions, leavingToken.key);
-                        placedPositions['leave:' + leavingToken.key] = { x: departPos.x, y: departPos.y, halfW: 10, halfH: 6 };
-                        var leaveMicro = existingEl.querySelector('.sw-token-micro-state');
-                        if (leaveMicro) {
-                            leaveMicro.textContent = '往' + leaveDir + '離去';
+                    if (leavingToken.kind === 'npc' && _allLiveNpcIdsInRoom[leavingToken.id]) {
+                        // 仍在場內，僅因 top-5 輪替移出視圖：直接移除 DOM，絕不觸發假離場動畫與廣播
+                        if (existingEl) {
+                            existingEl.remove();
                         }
-                        var isNamedDeparture = (leavingToken.kind === 'player') || (leavingToken.data && leavingToken.data.card_state === 'named');
-                        if (isNamedDeparture && window.SwPushBreath) {
-                            window.SwPushBreath(leavingToken.label + '邁步往' + leaveDir + '離去。', { byPlayer: false });
+                    } else {
+                        if (allowTransitAnim && isMovableKind) {
+                            var leaveDir = resolveTransitDirection(leavingToken, 'leave');
+                            var isPlayerDeparture = (leavingToken.kind === 'player');
+                            var nowMs = Date.now();
+                            var cooldownOk = (nowMs - (_npcBreathCooldownById[leavingToken.id] || 0) > 20000);
+                            if (isPlayerDeparture && cooldownOk && window.SwPushBreath) {
+                                _npcBreathCooldownById[leavingToken.id] = nowMs;
+                                window.SwPushBreath(leavingToken.label + '邁步往' + leaveDir + '離去。', { byPlayer: false });
+                            }
                         }
-                        existingEl.classList.add('is-leaving');
-                        (function (node, dx, dy) {
-                            requestAnimationFrame(function () {
-                                node.style.left = dx + '%';
-                                node.style.top = dy + '%';
-                                node.style.opacity = '0';
-                            });
-                            setTimeout(function () {
-                                if (node && node.parentNode) node.remove();
-                            }, 650);
-                        })(existingEl, departPos.x, departPos.y);
-                    } else if (existingEl) {
-                        existingEl.remove();
+                        if (existingEl) {
+                            existingEl.remove();
+                        }
                     }
                 }
             }
@@ -1469,6 +1538,19 @@
                 tokenEl.setAttribute('data-obj-id', token.id);
                 tokenEl.setAttribute('data-entity-id', token.id);
                 tokenEl.setAttribute('data-token-kind', token.kind);
+                tokenEl.setAttribute('data-obj-tag', (token.data && token.data.tag) || '');
+                var obj = token.data;
+                if (obj && obj.category_tag) {
+                    tokenEl.dataset.objCategory = String(obj.category_tag);
+                    tokenEl.setAttribute('data-obj-category', String(obj.category_tag));
+                }
+                if (obj && Array.isArray(obj.attribute_tags) && obj.attribute_tags.length > 0) {
+                    tokenEl.dataset.objAttributes = obj.attribute_tags.join(',');
+                    tokenEl.setAttribute('data-obj-attributes', obj.attribute_tags.join(','));
+                }
+                if (token.data && Array.isArray(token.data.tags)) {
+                    tokenEl.setAttribute('data-obj-tags', token.data.tags.join(','));
+                }
                 syncTokenDomContent(tokenEl, token);
                 tokenEl.addEventListener('click', function (e) {
                     if (e.target && e.target.closest && e.target.closest('.sw-inline-act-chip, .sw-token-speech-pill')) return;
@@ -1486,35 +1568,17 @@
                 if (isNewToken) {
                     _tokenEnterTime[token.key] = Date.now();
                     var enterDir = resolveTransitDirection(token, 'enter');
-                    token.microState = '自' + enterDir + '走入';
-                    syncTokenDomContent(tokenEl, token);
-                    var startPos = getEdgeCoords(enterDir, pos, placedPositions, token.key);
-                    placedPositions['enter:' + token.key] = { x: startPos.x, y: startPos.y, halfW: 10, halfH: 6 };
-                    tokenEl.classList.add('is-entering');
-                    tokenEl.style.left = startPos.x + '%';
-                    tokenEl.style.top = startPos.y + '%';
-                    tokenEl.style.opacity = '0';
-
+                    tokenEl.style.left = pos.x + '%';
+                    tokenEl.style.top = pos.y + '%';
+                    tokenEl.style.opacity = '1';
                     canvasEl.appendChild(tokenEl);
-                    var isNamedArrival = (token.kind === 'player') || (token.data && token.data.card_state === 'named');
-                    if (isNamedArrival && window.SwPushBreath) {
+                    var isPlayerArrival = (token.kind === 'player');
+                    var arrNowMs = Date.now();
+                    var arrCooldownOk = (arrNowMs - (_npcBreathCooldownById[token.id] || 0) > 20000);
+                    if (isPlayerArrival && arrCooldownOk && window.SwPushBreath) {
+                        _npcBreathCooldownById[token.id] = arrNowMs;
                         window.SwPushBreath(token.label + '自' + enterDir + '走入此處。', { byPlayer: false });
                     }
-                    (function (node, posRef, tokRef) {
-                        requestAnimationFrame(function () {
-                            node.classList.remove('is-entering');
-                            node.style.left = posRef.x + '%';
-                            node.style.top = posRef.y + '%';
-                            node.style.opacity = '1';
-                        });
-                        setTimeout(function () {
-                            if (!node || !node.parentNode) return;
-                            var mSpan = node.querySelector('.sw-token-micro-state');
-                            if (mSpan && /^自.+走入$/.test(mSpan.textContent || '')) {
-                                mSpan.textContent = '邁步穿行';
-                            }
-                        }, 2200);
-                    })(tokenEl, pos, token);
                 } else {
                     tokenEl.style.left = pos.x + '%';
                     tokenEl.style.top = pos.y + '%';
@@ -1522,6 +1586,8 @@
                     canvasEl.appendChild(tokenEl);
                 }
             } else {
+                tokenEl.classList.remove('is-leaving', 'is-entering');
+                tokenEl.style.opacity = '1';
                 tokenEl.style.left = pos.x + '%';
                 tokenEl.style.top = pos.y + '%';
                 syncTokenDomContent(tokenEl, token);
@@ -1554,10 +1620,9 @@
                     var chatTime = _activeNpcChats[token.id];
                     if (chatTime && (Date.now() - chatTime <= 12000)) {
                         tokenEl.classList.add('is-chatting');
-                        var chatDot = document.createElement('span');
-                        chatDot.className = 'sw-token-chat-dot' + ((pos && pos.y < 24) ? ' is-pill-below' : '');
-                        chatDot.textContent = '「…」';
-                        tokenEl.appendChild(chatDot);
+                        if (microNode && microNode.textContent && microNode.textContent.indexOf('低語') === -1) {
+                            microNode.textContent = microNode.textContent + ' · 低語';
+                        }
                     } else if (chatTime) {
                         delete _activeNpcChats[token.id];
                     }
@@ -1597,90 +1662,25 @@
             }
         }
 
-        // 依據實際 DOM 像素尺寸做 AABB 防重疊與防裁切微調，並回寫穩定快取
-        var cw = canvasEl.clientWidth || 0;
-        var ch = canvasEl.clientHeight || 0;
-        if (cw > 100 && ch > 100 && tokens.length > 1) {
-            var bucket = (cw <= 520) ? 'm' : 'd';
-            var cacheRoomKey = currentRoomId + ':' + bucket;
-            if (!_tokenPositionsByRoom[cacheRoomKey]) {
-                _tokenPositionsByRoom[cacheRoomKey] = {};
+        // 管理擁擠溢出徽章（.sw-canvas-crowd-badge）
+        var existingCrowdBadge = canvasEl.querySelector('.sw-canvas-crowd-badge');
+        if (_totalLiveNpcCount > 5) {
+            var extraCount = _totalLiveNpcCount - 5;
+            if (!existingCrowdBadge) {
+                existingCrowdBadge = document.createElement('div');
+                existingCrowdBadge.className = 'sw-canvas-crowd-badge';
+                canvasEl.appendChild(existingCrowdBadge);
+            } else {
+                canvasEl.appendChild(existingCrowdBadge); // 確保在尾端
             }
-            var items = [];
-            for (var ti = 0; ti < tokens.length; ti++) {
-                var tk = tokens[ti];
-                var el = canvasEl.querySelector('[data-token-key="' + tk.key + '"]');
-                var p = posByKey[tk.key];
-                if (!el || !p || el.classList.contains('is-leaving')) continue;
-                var hw = Math.min(44, Math.max(5.5, ((el.offsetWidth || 72) / 2 / cw) * 100));
-                var hh = Math.min(18, Math.max(5.0, ((el.offsetHeight || 42) / 2 / ch) * 100));
-                var isAnchored = isSameRoom && allowTransitAnim && ((tk.kind === 'facility' || tk.kind === 'item') || !!_prevTokensMap[tk.key]);
-                items.push({ key: tk.key, el: el, pRef: p, x: p.x, y: p.y, hw: hw, hh: hh, anchored: isAnchored });
-            }
-            var moved = false;
-            for (var iter = 0; iter < 48; iter++) {
-                var anyOverlap = false;
-                for (var a = 0; a < items.length; a++) {
-                    var ia = items[a];
-                    if (!ia.anchored) {
-                        ia.x = Math.max(ia.hw + 2, Math.min(98 - ia.hw, ia.x));
-                        ia.y = Math.max(ia.hh + 9, Math.min(89 - ia.hh, ia.y));
-                    }
-                    for (var b = a + 1; b < items.length; b++) {
-                        var ib = items[b];
-                        if (ia.anchored && ib.anchored) continue;
-                        var reqX = ia.hw + ib.hw + 2.2;
-                        var reqY = ia.hh + ib.hh + 2.2;
-                        var dx = ia.x - ib.x;
-                        var dy = ia.y - ib.y;
-                        var adx = Math.abs(dx);
-                        var ady = Math.abs(dy);
-                        if (adx < reqX && ady < reqY) {
-                            anyOverlap = true;
-                            moved = true;
-                            var penX = reqX - adx;
-                            var penY = reqY - ady;
-                            var wA = ia.anchored ? 0 : (ib.anchored ? 1.08 : 0.58);
-                            var wB = ib.anchored ? 0 : (ia.anchored ? 1.08 : 0.58);
-                            if (penY <= penX) {
-                                var sy = (dy > 0.1) ? 1 : ((dy < -0.1) ? -1 : ((a % 2 === 0) ? 1 : -1));
-                                ia.y += sy * (penY * wA);
-                                ib.y -= sy * (penY * wB);
-                                if (!ia.anchored) ia.x += ((b % 2 === 0) ? 0.6 : -0.6);
-                                if (!ib.anchored) ib.x -= ((b % 2 === 0) ? 0.6 : -0.6);
-                            } else {
-                                var sx = (dx > 0.1) ? 1 : ((dx < -0.1) ? -1 : ((a % 2 === 0) ? 1 : -1));
-                                ia.x += sx * (penX * wA);
-                                ib.x -= sx * (penX * wB);
-                                if (!ia.anchored) ia.y += ((b % 2 === 0) ? 0.6 : -0.6);
-                                if (!ib.anchored) ib.y -= ((b % 2 === 0) ? 0.6 : -0.6);
-                            }
-                        }
-                    }
-                }
-                if (!anyOverlap) break;
-            }
-            if (moved) {
-                for (var mi = 0; mi < items.length; mi++) {
-                    var it = items[mi];
-                    if (it.anchored) continue;
-                    it.x = Math.round(Math.max(it.hw + 2, Math.min(98 - it.hw, it.x)) * 10) / 10;
-                    it.y = Math.round(Math.max(it.hh + 9, Math.min(89 - it.hh, it.y)) * 10) / 10;
-                    if (it.pRef) {
-                        it.pRef.x = it.x;
-                        it.pRef.y = it.y;
-                    }
-                    if (!it.el.classList.contains('is-entering')) {
-                        it.el.style.left = it.x + '%';
-                        it.el.style.top = it.y + '%';
-                    }
-                    _tokenPositionsByRoom[cacheRoomKey][it.key] = { x: it.x, y: it.y, halfW: it.hw, halfH: it.hh };
-                }
-            }
+            existingCrowdBadge.innerHTML = '<span class="sw-token-title">＋ 另有 ' + extraCount + ' 人</span>';
+        } else if (existingCrowdBadge) {
+            existingCrowdBadge.remove();
         }
 
         _prevRoomId = currentRoomKey;
         _prevTokensMap = newTokensMap;
+        _prevAllLiveNpcIdsInRoom = Object.assign({}, _allLiveNpcIdsInRoom);
     }
     var SW_ACTION_LABELS = {
         // Core
@@ -1780,32 +1780,67 @@
         return filtered;
     }
 
-    function resolveActionLabelZh(act, targetName, targetId) {
-        var nameStr = String(targetName || '');
-        var idStr = String(targetId || '');
+    function resolveActionLabelZh(act, targetName, targetId, targetTag, targetTags) {
+        var obj = (typeof targetName === 'object' && targetName !== null) ? targetName : null;
+        var nameStr = String((obj ? (obj.name || obj.label) : targetName) || '');
+        var idStr = String((obj ? obj.id : targetId) || '');
+        var tag = String((obj ? obj.tag : targetTag) || '');
+        var categoryTag = String((obj ? obj.category_tag : (typeof targetTags === 'object' && !Array.isArray(targetTags) && targetTags ? targetTags.category_tag : '')) || '');
+        var attributeTags = Array.isArray(obj ? obj.attribute_tags : (typeof targetTags === 'object' && !Array.isArray(targetTags) && targetTags ? targetTags.attribute_tags : null)) ? (obj ? obj.attribute_tags : targetTags.attribute_tags) : [];
+        var tags = Array.isArray(obj ? obj.tags : targetTags) ? (obj ? obj.tags : targetTags) : [];
+
+        function hasTag(t) {
+            return tag === t || categoryTag === t || attributeTags.indexOf(t) !== -1 || tags.indexOf(t) !== -1;
+        }
+
+        var hasExplicitTags = !!(tag || categoryTag || attributeTags.length > 0 || tags.length > 0);
+
         if (act === 'Read') {
-            if (/日晷|指路/.test(nameStr) || /sundial/.test(idStr)) return '觀晷認路';
+            if (hasTag('sundial') || hasTag('way_stele') || hasTag('timekeeping') || /sundial/.test(idStr)) return '觀晷認路';
+            if (!hasExplicitTags && /日晷|指路/.test(nameStr)) return '觀晷認路';
             return '細閱';
         }
         if (act === 'Rest' || act === 'Sit') {
-            if (/欄|橋|廊|亭/.test(nameStr)) return '憑欄小憩';
-            if (/椅|凳|榻|席|床/.test(nameStr)) return '落座歇腳';
+            if (hasTag('railing')) return '憑欄小憩';
+            if (hasTag('bench') || hasTag('bed') || hasTag('seating') || hasTag('bedding')) return '落座歇腳';
+            if (!hasExplicitTags) {
+                if (/欄|橋|廊|亭/.test(nameStr)) return '憑欄小憩';
+                if (/椅|凳|榻|席|床/.test(nameStr)) return '落座歇腳';
+            }
             return '小憩歇腳';
         }
         if (act === 'Use' || act === 'Operate' || !act) {
-            if (/望遠鏡|瞭望|觀測/.test(nameStr) || /telescope/.test(idStr)) return '極目遠眺';
-            if (/釣竿|釣/.test(nameStr) || /angling/.test(idStr)) return '甩竿垂釣';
-            if (/告示|公佈|榜|碑|牌|帖|書|卷|冊|曆|誌/.test(nameStr)) return '細閱';
-            if (/日晷|晷|星盤|羅盤|風向|更漏/.test(nameStr)) return '觀測校刻';
-            if (/欄|亭|椅|凳|榻|席/.test(nameStr)) return '憑欄小憩';
-            if (/井|泉|水|茶|湯|飲/.test(nameStr)) return '掬水飲用';
-            if (/燈|燭|火把/.test(nameStr)) return '撥亮燈火';
-            if (/爐|灶|炭|鍋/.test(nameStr)) return '添火溫煦';
-            if (/鐘|鈴|鼓|鑼|磬/.test(nameStr)) return '輕叩聽音';
-            if (/琴|笛|瑟|琵琶/.test(nameStr)) return '撫弄試音';
-            if (/藥|臼|碾|篩/.test(nameStr)) return '分揀炮製';
-            if (/砧|錘|鍛|磨|刀|劍/.test(nameStr)) return '試手錘鍊';
-            if (/車|筏|船|舟|索|纜/.test(nameStr)) return '檢視舟車';
+            if (hasTag('telescope') || hasTag('optical') || /telescope/.test(idStr)) return '極目遠眺';
+            if (hasTag('fishing_rod') || hasTag('angling') || /angling/.test(idStr)) return '甩竿垂釣';
+            if (hasTag('notice_board') || hasTag('way_stele') || hasTag('stationery')) return '細閱';
+            if (hasTag('sundial') || hasTag('astrolabe') || hasTag('timekeeping')) return '觀測校刻';
+            if (hasTag('railing')) return '憑欄小憩';
+            if (hasTag('bench') || hasTag('bed') || hasTag('seating') || hasTag('bedding')) return '憑欄小憩';
+            if (hasTag('hygiene') || hasTag('plumbing_bath_hygiene') || /洗衣|浴|盥洗|皂|牙粉/.test(nameStr)) return '盥洗滌淨';
+            if (hasTag('mountain_spring') || hasTag('water_tap') || hasTag('water_supply')) return '掬水飲用';
+            if (hasTag('street_lamp') || hasTag('desk_lamp') || hasTag('illuminating')) return '撥亮燈火';
+            if (hasTag('camp_stove') || hasTag('cauldron') || hasTag('campfire') || hasTag('heating')) return '添火溫煦';
+            if (hasTag('bell') || hasTag('musical_instrument')) return '輕叩聽音';
+            if (hasTag('zither')) return '撫弄試音';
+            if (hasTag('herb_mortar') || hasTag('medical') || hasTag('grindstone')) return '分揀炮製';
+            if (hasTag('anvil') || hasTag('forging')) return '試手錘鍊';
+            if (hasTag('raft') || hasTag('cargo_ship') || hasTag('transport') || hasTag('sailing')) return '檢視舟車';
+
+            if (!hasExplicitTags) {
+                if (/望遠鏡|瞭望|觀測/.test(nameStr)) return '極目遠眺';
+                if (/釣竿|釣/.test(nameStr)) return '甩竿垂釣';
+                if (/告示|公佈|榜|碑|牌|帖|書|卷|冊|曆|誌/.test(nameStr)) return '細閱';
+                if (/日晷|晷|星盤|羅盤|風向|更漏/.test(nameStr)) return '觀測校刻';
+                if (/欄|亭|椅|凳|榻|席/.test(nameStr)) return '憑欄小憩';
+                if (/井|泉|水|茶|湯|飲/.test(nameStr)) return '掬水飲用';
+                if (/燈|燭|火把/.test(nameStr)) return '撥亮燈火';
+                if (/爐|灶|炭|鍋/.test(nameStr)) return '添火溫煦';
+                if (/鐘|鈴|鼓|鑼|磬/.test(nameStr)) return '輕叩聽音';
+                if (/琴|笛|瑟|琵琶/.test(nameStr)) return '撫弄試音';
+                if (/藥|臼|碾|篩/.test(nameStr)) return '分揀炮製';
+                if (/砧|錘|鍛|磨|刀|劍/.test(nameStr)) return '試手錘鍊';
+                if (/車|筏|船|舟|索|纜/.test(nameStr)) return '檢視舟車';
+            }
             return '觸探端詳';
         }
         if (SW_ACTION_LABELS[act]) return SW_ACTION_LABELS[act];
@@ -1898,6 +1933,8 @@
                 return;
             }
             actionsEl.hidden = false;
+            var targetTag = (token.data && token.data.tag) || '';
+            var targetTags = (token.data && token.data.tags) || [];
             for (var bi = 0; bi < nonLookActs.length; bi++) {
                 var act = nonLookActs[bi];
                 var oBtn = document.createElement('button');
@@ -1907,7 +1944,8 @@
                 oBtn.setAttribute('data-action', act);
                 oBtn.setAttribute('data-target-name', targetName);
                 oBtn.setAttribute('data-target-type', 'object');
-                oBtn.textContent = resolveActionLabelZh(act, targetName, targetId);
+                var obj = token.data;
+                oBtn.textContent = resolveActionLabelZh(act, obj || targetName, targetId, targetTag, targetTags);
                 actionsEl.appendChild(oBtn);
             }
         }
@@ -1986,9 +2024,12 @@
                 return;
             }
             actionsEl.hidden = false;
+            var activeTok = window.__currentPopoverTarget;
+            var activeTag = (activeTok && activeTok.data && activeTok.data.tag) || '';
+            var activeTags = (activeTok && activeTok.data && activeTok.data.tags) || [];
             for (var i = 0; i < nonLook.length; i++) {
                 var act = nonLook[i];
-                var label = resolveActionLabelZh(act, targetName, targetId);
+                var label = resolveActionLabelZh(act, (activeTok && activeTok.data) || targetName, targetId, activeTag, activeTags);
                 var idForAct = (act === 'Move' && moveTargetId) ? moveTargetId : targetId;
                 var oBtn = document.createElement('button');
                 oBtn.type = 'button';
@@ -2006,7 +2047,7 @@
 
     var _popoverIdleTimer = null;
     var _lastFocusSendTime = 0;
-    var POPOVER_IDLE_TIMEOUT_MS = 20000;
+    var POPOVER_IDLE_TIMEOUT_MS = 60000;
 
     function SwResetPopoverIdleTimer() {
         if (_popoverIdleTimer) {
@@ -2016,6 +2057,13 @@
         if (!_activePopoverToken) return;
         var timeoutMs = window.__SW_POPOVER_IDLE_MS || POPOVER_IDLE_TIMEOUT_MS;
         _popoverIdleTimer = setTimeout(function () {
+            var popoverEl = document.getElementById('sw-object-popover');
+            var isFocusInside = !!(popoverEl && document.activeElement && popoverEl.contains(document.activeElement));
+            var isPendingTalk = !!document.querySelector('#sw-popover-log .log-pending-talk');
+            if (isPendingTalk || isFocusInside) {
+                SwResetPopoverIdleTimer();
+                return;
+            }
             SwCloseObjectPopover();
         }, timeoutMs);
     }
@@ -2244,9 +2292,6 @@
         if (npcA) _activeNpcChats[npcA] = Date.now();
         if (npcB) _activeNpcChats[npcB] = Date.now();
         renderRoomCanvas();
-        if (window.SwPushBreath) {
-            window.SwPushBreath(rawText, { byPlayer: false });
-        }
         setTimeout(function () {
             renderRoomCanvas();
         }, 12100);
@@ -2645,8 +2690,7 @@
     }
 
     // ── renderV5NpcCards（後端已算好安全顯示名、觀察態與真實活動）─────
-    function renderV5NpcCards(npcs, objects) {
-        _strangerSlotById = {};
+    function renderV5NpcCards(npcs, objects, meta) {
         var prevVisible = {};
         for (var pvi = 0; pvi < _currentNpcs.length; pvi++) {
             if (_currentNpcs[pvi] && _currentNpcs[pvi].npc_id) {
@@ -2680,6 +2724,21 @@
             }
         }
         var VISIBLE_LIMIT = 5;
+        var currentLiveIds = {};
+        for (var lidi = 0; lidi < nonCrowd.length; lidi++) {
+            var lid = nonCrowd[lidi].npc_id || nonCrowd[lidi].id;
+            if (lid) currentLiveIds[lid] = true;
+        }
+        if (meta && typeof meta.totalLiveCount === 'number') {
+            _totalLiveNpcCount = meta.totalLiveCount;
+            _allLiveNpcIdsInRoom = meta.liveIdsMap || currentLiveIds;
+        } else {
+            var G0 = window.SwGrid;
+            var md0 = (G0 && G0.mapData) ? G0.mapData : null;
+            var hintTotal = (md0 && typeof md0.total_npc_count === 'number') ? md0.total_npc_count : 0;
+            _totalLiveNpcCount = Math.max(nonCrowd.length, hintTotal);
+            _allLiveNpcIdsInRoom = Object.assign({}, _allLiveNpcIdsInRoom || {}, currentLiveIds);
+        }
         if (nonCrowd.length > VISIBLE_LIMIT) {
             nonCrowd.sort(function (a, b) {
                 var aCall = (_activeNpcCallouts && a.npc_id && _activeNpcCallouts[a.npc_id]) ? 1 : 0;
@@ -2704,12 +2763,8 @@
         var strangerCards = _currentNpcs.filter(function (c) {
             return c.kind !== 'crowd' && c.card_state !== 'named' && /^陌生人/.test(c.display_name || '');
         });
-        if (strangerCards.length === 1) {
-            strangerCards[0].display_name = '陌生人';
-        } else if (strangerCards.length > 1) {
-            for (var sci = 0; sci < strangerCards.length; sci++) {
-                strangerCards[sci].display_name = '陌生人' + String(sci + 1);
-            }
+        for (var sci = 0; sci < strangerCards.length; sci++) {
+            strangerCards[sci].display_name = '陌生人';
         }
         _currentObjects = objects || [];
         var el = document.getElementById('sw-l4-objects');
@@ -2785,12 +2840,15 @@
         }
         var source = entities || [];
         var live = {};
+        var syncLiveIds = {};
         for (var ei = 0; ei < source.length; ei++) {
             var ent = source[ei];
             if (ent.kind !== 'npc' && ent.kind !== 'Npc') continue;
             live[ent.id] = ent;
+            syncLiveIds[ent.id] = true;
         }
-
+        _allLiveNpcIdsInRoom = syncLiveIds;
+        _totalLiveNpcCount = Object.keys(syncLiveIds).length;
         var next = [];
         var selected = {};
         var VISIBLE_LIMIT = 5;
@@ -2810,10 +2868,14 @@
                     ? safeRecord.display_name
                     : (entity.display_title || entity.display_name || '生靈');
             }
-            if (safeRecord && safeRecord.card_state === 'named' && safeRecord.display_name && !isPlaceholderName(safeRecord.display_name)) {
-                return safeRecord.display_name;
+            if (entity && entity.display_name && !isPlaceholderName(entity.display_name)) {
+                var cleanEntName = concisePersonLabel(entity.display_name, 'named');
+                if (eid && cleanEntName && !isPlaceholderName(cleanEntName)) {
+                    _knownNpcNames[eid] = cleanEntName;
+                }
+                return cleanEntName || entity.display_name;
             }
-            if (safeRecord && safeRecord.display_name && !/^陌生人/.test(safeRecord.display_name)) {
+            if (safeRecord && safeRecord.card_state === 'named' && safeRecord.display_name && !isPlaceholderName(safeRecord.display_name)) {
                 return safeRecord.display_name;
             }
             return '陌生人';
@@ -2827,6 +2889,9 @@
                 return (safeRecord && safeRecord.card_state && safeRecord.card_state !== 'stranger')
                     ? safeRecord.card_state
                     : 'observed';
+            }
+            if (entity && entity.display_name && !isPlaceholderName(entity.display_name)) {
+                return 'named';
             }
             return safeRecord ? safeRecord.card_state : 'stranger';
         }
@@ -2848,11 +2913,12 @@
         for (var pri = 0; pri < source.length && next.length < VISIBLE_LIMIT; pri++) {
             var priorityEntity = source[pri];
             if (priorityEntity.kind !== 'npc' && priorityEntity.kind !== 'Npc') continue;
+            var prioritySafe = previous[priorityEntity.id];
+            var priCardState = resolveCardState(priorityEntity, prioritySafe);
             var isCalling = !!(_activeNpcCallouts && _activeNpcCallouts[priorityEntity.id]);
             var isInlineOpen = (_inlineOpenTokenKey === 'npc:' + priorityEntity.id);
             var isPopoverOpen = !!(_activePopoverToken && _activePopoverToken.id === priorityEntity.id);
-            if (!priorityEntity.interaction_priority && !isCalling && !isInlineOpen && !isPopoverOpen) continue;
-            var prioritySafe = previous[priorityEntity.id];
+            if (!priorityEntity.interaction_priority && !isCalling && !isInlineOpen && !isPopoverOpen && priCardState !== 'named') continue;
             var priName = resolveDisplayName(priorityEntity, prioritySafe);
             next.push({
                 kind: 'npc',
@@ -2985,7 +3051,10 @@
         if (Object.keys(live).length > next.length) {
             next.push(crowd || { kind: 'crowd', display_name: '其餘人影', card_state: 'crowd' });
         }
-        renderV5NpcCards(next, objects || _currentObjects);
+        renderV5NpcCards(next, objects || _currentObjects, {
+            totalLiveCount: Object.keys(live).length,
+            liveIdsMap: syncLiveIds
+        });
     }
 
     window.SwObjectList = {
@@ -3005,8 +3074,78 @@
         resetIdleTimer: SwResetPopoverIdleTimer,
         recordNpcDialogue: SwRecordNpcDialogue,
         recordNpcAddress: recordNpcAddress,
-        openPopoverByEntityId: openPopoverByEntityId
+        openPopoverByEntityId: openPopoverByEntityId,
+        conciseObjectLabel: conciseObjectLabel,
+        isMovableOrPortableObject: isMovableOrPortableObject,
+        resolveSocketActionLabel: resolveSocketActionLabel
     };
+    function cleanDiegeticBreathText(raw, isPlayerBreath) {
+        var s = String(raw || '').trim();
+        if (!s) return '';
+        // 1. 剝除偶發之設計/架構標註（如【事件包...】、【劇本演繹...】）
+        s = s.replace(/^【[^】]*(?:事件包|劇本包|劇本演繹|聯動)[^】]*】\s*/g, '');
+        s = s.replace(/\s*\n+\s*/g, ' ').trim();
+        // 2. 若為環境氣息（非玩家主動操作），過濾多句冗長段落，取第一句完整敘述（≤ 56 字），避免呼吸墨韻區文字臃塞
+        if (!isPlayerBreath) {
+            var firstSentenceMatch = s.match(/^[^。！？\n]+[。！？][」』”]*/);
+            if (firstSentenceMatch && firstSentenceMatch[0]) {
+                var firstSen = firstSentenceMatch[0].trim();
+                if (firstSen.length <= 56) {
+                    s = firstSen;
+                } else {
+                    s = firstSen.slice(0, 56) + '…';
+                }
+            } else if (s.length > 56) {
+                var sub = s.slice(0, 56);
+                var lastPunctIdx = -1;
+                for (var pi = 55; pi >= 14; pi--) {
+                    var ch = sub.charAt(pi);
+                    if (ch === '。' || ch === '！' || ch === '？' || ch === '；' || ch === '，') {
+                        lastPunctIdx = pi;
+                        break;
+                    }
+                }
+                if (lastPunctIdx >= 14) {
+                    s = sub.slice(0, lastPunctIdx + 1).replace(/[，；]$/, '。');
+                } else {
+                    s = sub + '…';
+                }
+            }
+            var openQuotes = (s.match(/「/g) || []).length;
+            var closeQuotes = (s.match(/」/g) || []).length;
+            if (openQuotes > closeQuotes) {
+                s = s + '」';
+            }
+            if (s.replace(/[。！？…\s]/g, '').length < 6) {
+                return '';
+            }
+        }
+        return s;
+    }
+    window.cleanDiegeticBreathText = cleanDiegeticBreathText;
+
+    function installBreathSanitizer() {
+        if (typeof window === 'undefined') return;
+        if (typeof window.SwPushBreath === 'function' && !window.SwPushBreath._sanitized) {
+            var origPush = window.SwPushBreath;
+            var sanitizedPush = function (htmlOrText, options) {
+                var byPlayer = !!(options && options.byPlayer);
+                var cleaned = cleanDiegeticBreathText(htmlOrText, byPlayer);
+                if (!cleaned) return;
+                return origPush(cleaned, options);
+            };
+            sanitizedPush._sanitized = true;
+            window.SwPushBreath = sanitizedPush;
+        }
+    }
+    installBreathSanitizer();
+    if (typeof document !== 'undefined') {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', installBreathSanitizer);
+        } else {
+            setTimeout(installBreathSanitizer, 0);
+        }
+    }
     function cleanPlaceDisplayName(name) {
         var s = String(name || '').trim();
         if (!s) return '';

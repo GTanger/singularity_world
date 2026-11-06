@@ -196,7 +196,7 @@
 		var vibeCueEl = document.getElementById('player-vibe') || document.getElementById('sw-vibe-cue');
 		if (vibeCueEl) {
 			var shortHp = String(hpDesc || '').split('、')[0] || '氣息勻暢';
-			vibeCueEl.textContent = shortHp + ' · 查看自身';
+			vibeCueEl.textContent = shortHp;
 		}
 
 		var html = '<dl class="status-dl">';
@@ -976,6 +976,12 @@
 
 		var currentFont = localStorage.getItem('sw_font_scale') || 'normal';
 		var defaultMapExpand = localStorage.getItem('sw_map_default_expand') !== 'false';
+		var savedOrKey = '';
+		try {
+			savedOrKey = (localStorage.getItem('sw_openrouter_api_key') || '').trim();
+		} catch (e) {}
+		var hasOrKey = !!(savedOrKey || window.__hasOpenRouterKey);
+		var orModel = window.__openRouterModel || 'qwen/qwen3.5-flash-02-23';
 
 		var html = '<div class="settings-panel">';
 
@@ -989,7 +995,25 @@
 		html += '</div>';
 		html += '</div>';
 
-		// 2. 輿圖預設視野
+		// 2. 對話模型與 OpenRouter 金鑰
+		html += '<div class="settings-section">';
+		html += '<div class="settings-section-title">【 對話模型與 OpenRouter 金鑰 】</div>';
+		if (hasOrKey) {
+			html += '<p id="setting-openrouter-status" class="settings-desc settings-llm-status is-openrouter">目前生效：<strong>OpenRouter 雲端模型（' + esc(orModel) + '）</strong></p>';
+		} else {
+			html += '<p id="setting-openrouter-status" class="settings-desc settings-llm-status is-local">目前生效：<strong>本機模型（Gemma-4-26B-A4B）</strong></p>';
+		}
+		html += '<p class="settings-desc">貼上 OpenRouter API Key（以 *** 遮罩保護）即可將玩家對談切換至雲端推薦模型；未填或清除則使用本機 26B-A4B 模型：</p>';
+		html += '<div class="settings-key-row">';
+		html += '<input type="password" id="setting-openrouter-key" class="settings-key-input" autocomplete="new-password" spellcheck="false" placeholder="貼上 sk-or-v1-...（以 *** 遮罩顯示）" value="' + (hasOrKey ? '************' : '') + '">';
+		html += '</div>';
+		html += '<div class="settings-key-actions">';
+		html += '<button type="button" id="setting-btn-save-or-key" class="settings-act-btn settings-btn-primary">儲存金鑰</button>';
+		html += '<button type="button" id="setting-btn-clear-or-key" class="settings-act-btn">清除並改回本機模型</button>';
+		html += '</div>';
+		html += '</div>';
+
+		// 3. 輿圖預設視野
 		html += '<div class="settings-section">';
 		html += '<div class="settings-section-title">【 輿圖視野偏好 】</div>';
 		html += '<label class="settings-checkbox-label">';
@@ -997,14 +1021,14 @@
 		html += '</label>';
 		html += '</div>';
 
-		// 3. 敘事歷程管理
+		// 4. 敘事歷程管理
 		html += '<div class="settings-section">';
 		html += '<div class="settings-section-title">【 敘事動態管理 】</div>';
 		html += '<p class="settings-desc">清除當前畫面累積的歷程動態，重整視野：</p>';
 		html += '<button type="button" id="setting-btn-clear-log" class="settings-act-btn">清除當前動態紀錄</button>';
 		html += '</div>';
 
-		// 4. 角色與帳號
+		// 5. 角色與帳號
 		html += '<div class="settings-section">';
 		html += '<div class="settings-section-title">【 角色與帳號 】</div>';
 		html += '<p class="settings-desc">暫別此身，返回登入與切換角色介面：</p>';
@@ -1023,6 +1047,54 @@
 				applyFontScale(val);
 			});
 		});
+
+		var orKeyInput = wrap.querySelector('#setting-openrouter-key');
+		var saveOrBtn = wrap.querySelector('#setting-btn-save-or-key');
+		var clearOrBtn = wrap.querySelector('#setting-btn-clear-or-key');
+		if (orKeyInput) {
+			orKeyInput.addEventListener('focus', function () {
+				if (orKeyInput.value === '************') {
+					orKeyInput.value = '';
+				}
+			});
+			orKeyInput.addEventListener('blur', function () {
+				if (!orKeyInput.value.trim() && (window.__hasOpenRouterKey || localStorage.getItem('sw_openrouter_api_key'))) {
+					orKeyInput.value = '************';
+				}
+			});
+		}
+		if (saveOrBtn) {
+			saveOrBtn.addEventListener('click', function () {
+				var rawVal = orKeyInput ? orKeyInput.value.trim() : '';
+				if (rawVal === '************') {
+					var existing = '';
+					try { existing = (localStorage.getItem('sw_openrouter_api_key') || '').trim(); } catch (e) {}
+					if (existing) {
+						_send({ type: 'set_openrouter_key', player_input: existing, action: 'save' });
+					}
+					return;
+				}
+				if (!rawVal) {
+					try { localStorage.removeItem('sw_openrouter_api_key'); } catch (e) {}
+					window.__hasOpenRouterKey = false;
+					_send({ type: 'set_openrouter_key', player_input: '', action: 'clear' });
+					renderSettingsPane();
+					return;
+				}
+				try { localStorage.setItem('sw_openrouter_api_key', rawVal); } catch (e) {}
+				window.__hasOpenRouterKey = true;
+				_send({ type: 'set_openrouter_key', player_input: rawVal, action: 'save' });
+				renderSettingsPane();
+			});
+		}
+		if (clearOrBtn) {
+			clearOrBtn.addEventListener('click', function () {
+				try { localStorage.removeItem('sw_openrouter_api_key'); } catch (e) {}
+				window.__hasOpenRouterKey = false;
+				_send({ type: 'set_openrouter_key', player_input: '', action: 'clear' });
+				renderSettingsPane();
+			});
+		}
 
 		var mapCheck = wrap.querySelector('#setting-map-expand');
 		if (mapCheck) {

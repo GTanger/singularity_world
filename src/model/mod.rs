@@ -19,39 +19,99 @@ pub struct RoomObject {
     pub move_to_room_id: String,
 }
 
-/// 單一房間節點。
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Room {
-    pub id: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub tags: Vec<String>,
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub zone: String,
-    #[serde(default)]
-    pub description: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub objects: Vec<RoomObject>,
+impl RoomObject {
+    /// 房間物件的專屬英文規範標籤（dedicated English snake_case tag）。
+    pub fn tag(&self) -> String {
+        canonical_object_tag(&self.id, &self.name)
+    }
+
+    /// 房間物件的分類標籤（category tag）。
+    pub fn category_tag(&self) -> &'static str {
+        object_category_tag(&self.id, &self.name)
+    }
+
+    /// 房間物件的功能原型標籤（functional archetype tag）。
+    pub fn archetype_tag(&self) -> &'static str {
+        object_archetype_tag(&self.id, &self.name)
+    }
+
+    /// 房間物件的屬性標籤清單（attribute tags）。
+    pub fn attribute_tags(&self) -> Vec<String> {
+        object_attribute_tags(&self.id, &self.name)
+            .into_iter()
+            .map(str::to_string)
+            .collect()
+    }
+
+    /// 取得物件的所有語意標籤清單（包含專屬 tag、category tag、archetype tag、超分類標籤、目錄房間 tag、sockets 標籤，去重）。
+    pub fn tags(&self) -> Vec<String> {
+        object_semantic_tags(&self.id, &self.name, &self.sockets)
+    }
+
+    /// 檢查物件是否包含指定標籤（比對專屬 tag、category tag、archetype tag 或語意標籤清單）。
+    pub fn has_tag(&self, wanted: &str) -> bool {
+        if wanted.is_empty() {
+            return false;
+        }
+        let clean_wanted = wanted.trim().to_ascii_lowercase();
+        let dedicated = self.tag();
+        if dedicated == clean_wanted {
+            return true;
+        }
+        let cat = self.category_tag();
+        if cat == clean_wanted {
+            return true;
+        }
+        let arch = self.archetype_tag();
+        if arch == clean_wanted {
+            return true;
+        }
+        let all_tags = self.tags();
+        all_tags.iter().any(|t| t == &clean_wanted)
+    }
 }
 
-/// 單一出口：方向 → 目標房間。
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Exit {
-    pub direction: String,
-    pub to_room_id: String,
-    #[serde(default)]
-    pub to_room_name: String,
-    /// 正式世界路線 id；舊房間出口留空。
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub route_id: String,
-    /// walk / road / ferry / passage。
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub mode: String,
-    /// 人物共用的通行耗時；舊房間出口為 0。
-    #[serde(default, skip_serializing_if = "is_zero_i32")]
-    pub travel_cost: i32,
+/// 將字串轉換為合法的純英文數字 snake_case 標籤 fallback。
+fn slugify_identifier(id_str: &str) -> String {
+    let mut slug = String::with_capacity(id_str.len() + 4);
+    let mut prev_is_sep = false;
+    for ch in id_str.chars() {
+        if ch.is_ascii_alphanumeric() {
+            slug.push(ch.to_ascii_lowercase());
+            prev_is_sep = false;
+        } else if ch == '_' || ch == '-' || ch == ':' || ch == '.' || ch.is_whitespace() {
+            if !prev_is_sep && !slug.is_empty() {
+                slug.push('_');
+                prev_is_sep = true;
+            }
+        }
+    }
+    let trimmed = slug.trim_matches('_');
+    if trimmed.is_empty() {
+        return "scene_object".to_string();
+    }
+    if trimmed.starts_with(|c: char| c.is_ascii_digit()) {
+        format!("obj_{}", trimmed)
+    } else {
+        trimmed.to_string()
+    }
 }
 
-fn is_zero_i32(value: &i32) -> bool {
-    *value == 0
+/// 取得物件的專屬英文規範標籤（dedicated canonical English tag）。
+///
+/// 1. 優先查白塔半島千物總典（若命中則回傳其專屬 `object_tag`）。
+/// 2. 比對已知常見動態/場景物件與名稱。
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SceneObjectTagSpec {
+    pub id: &'static str,
+    pub name_alias: &'static str,
+    pub object_tag: &'static str,
+    pub category_tag: &'static str,
+    pub archetype_tag: &'static str,
+    pub attribute_tags: &'static [&'static str],
 }
+
+
+include!("scene_object_specs.rs");
+include!("model_tests.rs");

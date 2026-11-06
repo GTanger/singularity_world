@@ -347,5 +347,14 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
+    // 玩家個人 OpenRouter API 金鑰設定（未設定或空字串時走本機 Gemma-4-26B-A4B）
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS player_llm_keys (
+            player_id TEXT PRIMARY KEY,
+            openrouter_key TEXT NOT NULL DEFAULT ''
+        )",
+        &[],
+    )?;
+
     Ok(())
 }

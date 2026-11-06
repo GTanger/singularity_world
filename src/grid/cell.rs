@@ -58,6 +58,18 @@ pub enum GridObjectKind {
     Other,
 }
 
+impl GridObjectKind {
+    /// 格上物件種類的原型資源標籤（resource category tag）。
+    pub fn category_tag(self) -> &'static str {
+        match self {
+            GridObjectKind::Flora => "flora_resource",
+            GridObjectKind::Mineral => "mineral_resource",
+            GridObjectKind::WaterSource => "water_source",
+            GridObjectKind::Other => "wilderness_feature",
+        }
+    }
+}
+
 /// 格子上的可採集物件。
 ///
 /// 與 `model::RoomObject` 不同：此結構帶資源量與回復速率，
@@ -76,427 +88,498 @@ pub struct GridObject {
     pub regrowth_per_tick: u32,
 }
 
-/// 地形類型
-///
-/// 決定預設通行性與移動成本。
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum Terrain {
-    #[default]
-    Plain,
-    Forest,
-    ForestHeavy,
-    ForestLight,
-    Mountain,
-    Hills,
-    Water,
-    WaterDeep,
-    Desert,
-    Swamp,
-    Tundra,
-    Grassland,
-    Jungle,
-    Urban,
-    Road,
-    Bridge,
-    Wall,
-    FarmField,
-    Farmhouse,
-    Inn,
-    Tavern,
-    Blacksmith,
-    GeneralStore,
-    Clinic,
-    Workshop,
-    Market,
-    GuildHall,
-    Temple,
-    Academy,
-    Library,
-    Barracks,
-    GuardPost,
-    Warehouse,
-    Granary,
-    Dock,
-    Bathhouse,
-    Courthouse,
-    Jail,
-    TownHall,
-    Bank,
-    Mint,
-    Stables,
-    Caravanserai,
-    Theater,
-    Arena,
-    Observatory,
-    Alchemist,
-    MageTower,
-    Embassy,
-    PrisonYard,
-    Beach,
-    MinePass,
-    HolyTower,
-    EmptyFurrow,
-    DryField,
-    HerbGarden,
-    Fence,
-    House,
-}
+impl GridObject {
+    /// 格上物件的專屬英文規範標籤（dedicated English snake_case tag）。
+    pub fn tag(&self) -> &'static str {
+        self.tag_and_archetype().0
+    }
 
-impl Terrain {
-    /// 序列化標記（snake_case），送前端用。
-    ///
-    /// 對齊 `#[serde(rename_all = "snake_case")]` 的 JSON 表示。
-    pub fn kind_str(self) -> &'static str {
-        match self {
-            Terrain::Plain => "plain",
-            Terrain::Forest => "forest",
-            Terrain::ForestHeavy => "forest_heavy",
-            Terrain::ForestLight => "forest_light",
-            Terrain::Mountain => "mountain",
-            Terrain::Hills => "hills",
-            Terrain::Water => "water",
-            Terrain::WaterDeep => "water_deep",
-            Terrain::Desert => "desert",
-            Terrain::Swamp => "swamp",
-            Terrain::Tundra => "tundra",
-            Terrain::Grassland => "grassland",
-            Terrain::Jungle => "jungle",
-            Terrain::Urban => "urban",
-            Terrain::Road => "road",
-            Terrain::Bridge => "bridge",
-            Terrain::Wall => "wall",
-            Terrain::FarmField => "farm_field",
-            Terrain::Farmhouse => "farmhouse",
-            Terrain::Inn => "inn",
-            Terrain::Tavern => "tavern",
-            Terrain::Blacksmith => "blacksmith",
-            Terrain::GeneralStore => "general_store",
-            Terrain::Clinic => "clinic",
-            Terrain::Workshop => "workshop",
-            Terrain::Market => "market",
-            Terrain::GuildHall => "guild_hall",
-            Terrain::Temple => "temple",
-            Terrain::Academy => "academy",
-            Terrain::Library => "library",
-            Terrain::Barracks => "barracks",
-            Terrain::GuardPost => "guard_post",
-            Terrain::Warehouse => "warehouse",
-            Terrain::Granary => "granary",
-            Terrain::Dock => "dock",
-            Terrain::Bathhouse => "bathhouse",
-            Terrain::Courthouse => "courthouse",
-            Terrain::Jail => "jail",
-            Terrain::TownHall => "town_hall",
-            Terrain::Bank => "bank",
-            Terrain::Mint => "mint",
-            Terrain::Stables => "stables",
-            Terrain::Caravanserai => "caravanserai",
-            Terrain::Theater => "theater",
-            Terrain::Arena => "arena",
-            Terrain::Observatory => "observatory",
-            Terrain::Alchemist => "alchemist",
-            Terrain::MageTower => "mage_tower",
-            Terrain::Embassy => "embassy",
-            Terrain::PrisonYard => "prison_yard",
-            Terrain::Beach => "beach",
-            Terrain::MinePass => "mine_pass",
-            Terrain::HolyTower => "holy_tower",
-            Terrain::EmptyFurrow => "empty_furrow",
-            Terrain::DryField => "dry_field",
-            Terrain::HerbGarden => "herb_garden",
-            Terrain::Fence => "fence",
-            Terrain::House => "house",
+    /// 格上物件的分類標籤（category tag）。
+    pub fn category_tag(&self) -> &'static str {
+        if let Some(spec) = find_grid_object_spec(&self.id, &self.name) {
+            return spec.category_tag;
+        }
+        match self.kind {
+            GridObjectKind::Mineral => "mineral_jade",
+            GridObjectKind::WaterSource => "plumbing_bath_hygiene",
+            GridObjectKind::Flora => {
+                let arch = self.archetype_tag();
+                let tag = self.tag();
+                if arch == "firewood_pile"
+                    || tag.contains("wood")
+                    || tag.contains("pine")
+                    || tag.contains("bamboo")
+                {
+                    "timber_bamboo_fungi"
+                } else {
+                    "herbs_flora_spices"
+                }
+            }
+            GridObjectKind::Other => match self.archetype_tag() {
+                "bench" | "bollard" | "stele" | "railing" | "notice_board" | "way_stele" => "public_fixture",
+                _ => "maritime_transport_outdoor",
+            },
         }
     }
 
-    /// 從 snake_case 字串解析 Terrain。
-    pub fn from_kind_str(s: &str) -> Option<Self> {
-        match s {
-            "plain" => Some(Terrain::Plain),
-            "forest" => Some(Terrain::Forest),
-            "forest_heavy" => Some(Terrain::ForestHeavy),
-            "forest_light" => Some(Terrain::ForestLight),
-            "mountain" => Some(Terrain::Mountain),
-            "hills" => Some(Terrain::Hills),
-            "water" => Some(Terrain::Water),
-            "water_deep" => Some(Terrain::WaterDeep),
-            "desert" => Some(Terrain::Desert),
-            "swamp" => Some(Terrain::Swamp),
-            "tundra" => Some(Terrain::Tundra),
-            "grassland" => Some(Terrain::Grassland),
-            "jungle" => Some(Terrain::Jungle),
-            "urban" => Some(Terrain::Urban),
-            "road" => Some(Terrain::Road),
-            "bridge" => Some(Terrain::Bridge),
-            "wall" => Some(Terrain::Wall),
-            "farm_field" => Some(Terrain::FarmField),
-            "farmhouse" => Some(Terrain::Farmhouse),
-            "inn" => Some(Terrain::Inn),
-            "tavern" => Some(Terrain::Tavern),
-            "blacksmith" => Some(Terrain::Blacksmith),
-            "general_store" => Some(Terrain::GeneralStore),
-            "clinic" => Some(Terrain::Clinic),
-            "workshop" => Some(Terrain::Workshop),
-            "market" => Some(Terrain::Market),
-            "guild_hall" => Some(Terrain::GuildHall),
-            "temple" => Some(Terrain::Temple),
-            "academy" => Some(Terrain::Academy),
-            "library" => Some(Terrain::Library),
-            "barracks" => Some(Terrain::Barracks),
-            "guard_post" => Some(Terrain::GuardPost),
-            "warehouse" => Some(Terrain::Warehouse),
-            "granary" => Some(Terrain::Granary),
-            "dock" => Some(Terrain::Dock),
-            "bathhouse" => Some(Terrain::Bathhouse),
-            "courthouse" => Some(Terrain::Courthouse),
-            "jail" => Some(Terrain::Jail),
-            "town_hall" => Some(Terrain::TownHall),
-            "bank" => Some(Terrain::Bank),
-            "mint" => Some(Terrain::Mint),
-            "stables" => Some(Terrain::Stables),
-            "caravanserai" => Some(Terrain::Caravanserai),
-            "theater" => Some(Terrain::Theater),
-            "arena" => Some(Terrain::Arena),
-            "observatory" => Some(Terrain::Observatory),
-            "alchemist" => Some(Terrain::Alchemist),
-            "mage_tower" => Some(Terrain::MageTower),
-            "embassy" => Some(Terrain::Embassy),
-            "prison_yard" => Some(Terrain::PrisonYard),
-            "beach" => Some(Terrain::Beach),
-            "mine_pass" => Some(Terrain::MinePass),
-            "holy_tower" => Some(Terrain::HolyTower),
-            "empty_furrow" => Some(Terrain::EmptyFurrow),
-            "dry_field" => Some(Terrain::DryField),
-            "herb_garden" => Some(Terrain::HerbGarden),
-            "fence" => Some(Terrain::Fence),
-            "house" => Some(Terrain::House),
-            _ => None,
-        }
+    /// 格上物件的功能原型標籤（functional archetype tag）。
+    pub fn archetype_tag(&self) -> &'static str {
+        self.tag_and_archetype().1
     }
 
-    /// 分類：terrain（自然）／landmark（人造地標）／infra（通行建設）。
-    pub fn category(self) -> &'static str {
-        match self {
-            Terrain::Plain
-            | Terrain::Forest
-            | Terrain::ForestLight
-            | Terrain::ForestHeavy
-            | Terrain::Mountain
-            | Terrain::Hills
-            | Terrain::Water
-            | Terrain::WaterDeep
-            | Terrain::Desert
-            | Terrain::Swamp
-            | Terrain::Tundra
-            | Terrain::Grassland
-            | Terrain::Jungle
-            | Terrain::Beach
-            | Terrain::MinePass
-            | Terrain::EmptyFurrow
-            | Terrain::FarmField
-            | Terrain::DryField
-            | Terrain::HerbGarden => "terrain",
-
-            Terrain::Urban
-            | Terrain::Inn
-            | Terrain::Tavern
-            | Terrain::Blacksmith
-            | Terrain::GeneralStore
-            | Terrain::Clinic
-            | Terrain::Workshop
-            | Terrain::Market
-            | Terrain::GuildHall
-            | Terrain::Temple
-            | Terrain::Farmhouse
-            | Terrain::Academy
-            | Terrain::Library
-            | Terrain::Barracks
-            | Terrain::GuardPost
-            | Terrain::Warehouse
-            | Terrain::Granary
-            | Terrain::Dock
-            | Terrain::Bathhouse
-            | Terrain::Courthouse
-            | Terrain::Jail
-            | Terrain::TownHall
-            | Terrain::Bank
-            | Terrain::Mint
-            | Terrain::Stables
-            | Terrain::Caravanserai
-            | Terrain::Theater
-            | Terrain::Arena
-            | Terrain::Observatory
-            | Terrain::Alchemist
-            | Terrain::MageTower
-            | Terrain::Embassy
-            | Terrain::PrisonYard
-            | Terrain::HolyTower
-            | Terrain::House => "landmark",
-
-            Terrain::Road | Terrain::Bridge | Terrain::Wall | Terrain::Fence => "infra",
-        }
-    }
-    /// 此地形是否預設可步行通過
-    pub fn walkable(self) -> bool {
-        !matches!(
-            self,
-            Terrain::Mountain | Terrain::WaterDeep | Terrain::Wall | Terrain::Fence
-        )
-    }
-
-    /// 移動成本倍率（1.0 = 正常，越高越慢）
-    pub fn move_cost(self) -> f64 {
-        match self {
-            Terrain::Road | Terrain::Bridge => 0.5,
-            Terrain::Plain
-            | Terrain::Grassland
-            | Terrain::Urban
-            | Terrain::Farmhouse
-            | Terrain::Inn
-            | Terrain::Tavern
-            | Terrain::Blacksmith
-            | Terrain::GeneralStore
-            | Terrain::Clinic
-            | Terrain::Workshop
-            | Terrain::Market
-            | Terrain::GuildHall
-            | Terrain::Temple
-            | Terrain::Academy
-            | Terrain::Library
-            | Terrain::Barracks
-            | Terrain::GuardPost
-            | Terrain::Warehouse
-            | Terrain::Granary
-            | Terrain::Dock
-            | Terrain::Bathhouse
-            | Terrain::Courthouse
-            | Terrain::Jail
-            | Terrain::TownHall
-            | Terrain::Bank
-            | Terrain::Mint
-            | Terrain::Stables
-            | Terrain::Caravanserai
-            | Terrain::Theater
-            | Terrain::Arena
-            | Terrain::Observatory
-            | Terrain::Alchemist
-            | Terrain::MageTower
-            | Terrain::Embassy
-            | Terrain::PrisonYard
-            | Terrain::HolyTower
-            | Terrain::House
-            | Terrain::EmptyFurrow
-            | Terrain::HerbGarden => 1.0,
-            Terrain::Forest | Terrain::ForestLight | Terrain::Hills => 1.5,
-            Terrain::Desert | Terrain::Tundra | Terrain::FarmField | Terrain::DryField | Terrain::Beach | Terrain::MinePass => 1.5,
-            Terrain::Water => 1.8,
-            Terrain::ForestHeavy | Terrain::Jungle | Terrain::Swamp => 2.0,
-            Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall | Terrain::Fence => {
-                f64::INFINITY
+    /// 格上物件的屬性標籤清單（attribute tags）。
+    pub fn attribute_tags(&self) -> &'static [&'static str] {
+        if let Some(spec) = find_grid_object_spec(&self.id, &self.name) {
+            spec.attribute_tags
+        } else {
+            match self.kind {
+                GridObjectKind::Mineral => &["raw_material", "mineral", "ore_and_stone", "gatherable"],
+                GridObjectKind::WaterSource => &["facility", "water_source", "water_supply", "fresh_drink"],
+                GridObjectKind::Flora => &["raw_material", "flora", "gatherable"],
+                GridObjectKind::Other => &["facility", "outdoor_and_maritime", "wilderness_feature"],
             }
         }
     }
 
-    /// 取得地形對應之 23 個定案純圖樣符號
-    pub fn display_char(self) -> &'static str {
-        match self {
-            Terrain::WaterDeep => "≋",
-            Terrain::Beach => "⋯",
-            Terrain::Water => "≈",
-            Terrain::Bridge => "≍",
-            Terrain::Swamp => "⋍",
-            Terrain::Plain | Terrain::Grassland | Terrain::Desert | Terrain::Tundra => "𐡚",
-            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle => "Φ",
-            Terrain::Mountain => "⛰︎",
-            Terrain::Hills | Terrain::MinePass => "△",
-            Terrain::HolyTower | Terrain::MageTower => "∆",
-            Terrain::EmptyFurrow => "≡",
-            Terrain::FarmField => "▦",
-            Terrain::DryField => "▤",
-            Terrain::HerbGarden => "☷",
-            Terrain::Wall => "■",
-            Terrain::Fence => "≠",
-            Terrain::Road => "::",
-            Terrain::House
-            | Terrain::Farmhouse
-            | Terrain::Warehouse
-            | Terrain::Granary
-            | Terrain::Courthouse
-            | Terrain::Jail
-            | Terrain::PrisonYard
-            | Terrain::Urban => "𖠿",
-            Terrain::Market
-            | Terrain::GeneralStore
-            | Terrain::Bank
-            | Terrain::Mint
-            | Terrain::Dock
-            | Terrain::Caravanserai => "$",
-            Terrain::Blacksmith | Terrain::Workshop => "⚒︎",
-            Terrain::Clinic => "+",
-            Terrain::Inn | Terrain::Tavern | Terrain::Bathhouse => "⌂",
-            Terrain::Academy
-            | Terrain::Library
-            | Terrain::Barracks
-            | Terrain::GuardPost
-            | Terrain::Temple
-            | Terrain::GuildHall
-            | Terrain::TownHall
-            | Terrain::Theater
-            | Terrain::Arena
-            | Terrain::Observatory
-            | Terrain::Alchemist
-            | Terrain::Embassy
-            | Terrain::Stables => "⚑",
-        }
-    }
-
-    /// `display_char` 的別名方法，回傳 23 個定案純符號之一
-    pub fn symbol(self) -> &'static str {
-        self.display_char()
-    }
-
-    /// 取得地形對應的輔助顏色（簡化版，取第一個候選色）
-    pub fn color(self) -> &'static str {
-        match self {
-            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle => {
-                "#a0d080"
+    /// 取得格上物件的所有語意標籤清單（包含專屬 tag、category tag、kind category tag、archetype tag、attribute tags，去重）。
+    pub fn tags(&self) -> Vec<&'static str> {
+        let mut result = Vec::with_capacity(8);
+        let base_candidates = [
+            self.tag(),
+            self.category_tag(),
+            self.kind.category_tag(),
+            self.archetype_tag(),
+        ];
+        for tag in base_candidates {
+            if !tag.is_empty() && !result.contains(&tag) {
+                result.push(tag);
             }
-            Terrain::Mountain => "#98af9d",
-            Terrain::Hills => "#d3d3d3",
-            Terrain::Swamp => "#507050",
-            Terrain::Water => "#70b0e0",
-            Terrain::WaterDeep => "#204090",
-            Terrain::Beach => "#e8d8b8",
-            Terrain::Grassland => "#c2d6a4",
-            Terrain::Plain | Terrain::Desert => "#e3d5ca",
-            Terrain::Road | Terrain::Bridge => "#c4b8a8",
-            Terrain::Tundra => "#e0f2f1",
-            Terrain::FarmField => "#9ef01a",
-            Terrain::DryField => "#d4c49a",
-            Terrain::EmptyFurrow => "#c8b090",
-            Terrain::HerbGarden => "#a8d5ba",
-            Terrain::Wall => "#8c8c8c",
-            Terrain::Fence => "#a08060",
-            Terrain::MinePass => "#706860",
-            Terrain::HolyTower => "#e0d8ff",
-            Terrain::House => "#d8c8b8",
-            _ => "#c4b8a8", // 其他建築或都市地形預設色
         }
-    }
-    /// 地形字顏色（None 表示依底色亮度自動選黑/白）
-    pub fn text_color(self) -> Option<&'static str> {
-        match self {
-            Terrain::Grassland => Some("#3a6b35"),
-            _ => None,
+        for &attr in self.attribute_tags() {
+            if !attr.is_empty() && !result.contains(&attr) {
+                result.push(attr);
+            }
         }
+        result
     }
 
-    /// 地形字字型（None 表示使用預設字型）
-    pub fn text_font(self) -> Option<&'static str> {
-        match self {
-            Terrain::Grassland => Some("FZJiaGuWen"),
-            _ => None,
-        }
+    /// 檢查格上物件是否具備指定標籤（比對 tags 清單）。
+    pub fn has_tag(&self, wanted: &str) -> bool {
+        self.tags().contains(&wanted)
+    }
+
+    fn tag_and_archetype(&self) -> (&'static str, &'static str) {
+        grid_object_tag_and_archetype(&self.id, &self.name)
     }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct GridObjectTagSpec {
+    pub pattern: &'static str,
+    pub name_alias: &'static str,
+    pub object_tag: &'static str,
+    pub category_tag: &'static str,
+    pub archetype_tag: &'static str,
+    pub attribute_tags: &'static [&'static str],
+}
+
+pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
+    GridObjectTagSpec {
+        pattern: "tracks",
+        name_alias: "獸徑足印",
+        object_tag: "beast_tracks",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "beast_tracks",
+        attribute_tags: &["fixed", "outdoor_gear", "fauna", "hunting", "wild"],
+    },
+    GridObjectTagSpec {
+        pattern: "niche",
+        name_alias: "避風岩龕",
+        object_tag: "rock_niche",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "rock_niche",
+        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "cairn_niche",
+        name_alias: "石壘岩龕",
+        object_tag: "rock_niche",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "rock_niche",
+        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "cape_cairn",
+        name_alias: "海角石壘",
+        object_tag: "rock_niche",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "rock_niche",
+        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "sailing", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "snow_cairn",
+        name_alias: "雪線石壘",
+        object_tag: "rock_niche",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "rock_niche",
+        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "forest_sign",
+        name_alias: "林間避風石",
+        object_tag: "rock_niche",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "rock_niche",
+        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "spring",
+        name_alias: "山澗清泉眼",
+        object_tag: "mountain_spring",
+        category_tag: "plumbing_bath_hygiene",
+        archetype_tag: "mountain_spring",
+        attribute_tags: &["fixed", "facility", "water_source", "water_supply", "cooling", "healing"],
+    },
+    GridObjectTagSpec {
+        pattern: "stepping_logs",
+        name_alias: "墊步木墩",
+        object_tag: "stepping_logs",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "stepping_logs",
+        attribute_tags: &["fixed", "facility", "timber", "footing", "marsh", "outdoor_fixture"],
+    },
+    GridObjectTagSpec {
+        pattern: "marsh_post",
+        name_alias: "沼澤踏木",
+        object_tag: "stepping_logs",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "stepping_logs",
+        attribute_tags: &["fixed", "facility", "timber", "footing", "marsh", "outdoor_fixture"],
+    },
+    GridObjectTagSpec {
+        pattern: "tide_step",
+        name_alias: "潮間墊步",
+        object_tag: "stepping_logs",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "stepping_logs",
+        attribute_tags: &["fixed", "facility", "timber", "footing", "marine", "outdoor_fixture"],
+    },
+    GridObjectTagSpec {
+        pattern: "waymark",
+        name_alias: "指路石碑",
+        object_tag: "way_stele",
+        category_tag: "public_fixture",
+        archetype_tag: "stele",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "wayfinding", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "signpost",
+        name_alias: "界標石碑",
+        object_tag: "way_stele",
+        category_tag: "public_fixture",
+        archetype_tag: "stele",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "wayfinding", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "stele",
+        name_alias: "道路里程碑",
+        object_tag: "way_stele",
+        category_tag: "public_fixture",
+        archetype_tag: "stele",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "wayfinding", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "snow_cairn_mark",
+        name_alias: "雪路程碑",
+        object_tag: "way_stele",
+        category_tag: "public_fixture",
+        archetype_tag: "stele",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "wayfinding", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "pass_sign",
+        name_alias: "隘口指路碑",
+        object_tag: "way_stele",
+        category_tag: "public_fixture",
+        archetype_tag: "stele",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "wayfinding", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "boundary_stone",
+        name_alias: "林界石碑",
+        object_tag: "forest_boundary_stone",
+        category_tag: "public_fixture",
+        archetype_tag: "stele",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "boundary", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "campfire",
+        name_alias: "野地營火",
+        object_tag: "wilderness_campfire",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "campfire",
+        attribute_tags: &["fixed", "facility", "heating", "illuminating", "camping", "outdoor_gear"],
+    },
+    GridObjectTagSpec {
+        pattern: "hunter_post",
+        name_alias: "巡山木樁",
+        object_tag: "hunter_post",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "hunter_post",
+        attribute_tags: &["fixed", "facility", "timber", "wayfinding", "patrol", "outdoor_gear"],
+    },
+    GridObjectTagSpec {
+        pattern: "stone",
+        name_alias: "路旁護路樁",
+        object_tag: "road_guard_stake",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "hunter_post",
+        attribute_tags: &["fixed", "facility", "stone", "wayfinding", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "slope_post",
+        name_alias: "陡坡防滑木樁",
+        object_tag: "anti_skid_road_stake",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "hunter_post",
+        attribute_tags: &["fixed", "facility", "timber", "outdoor_fixture", "slope"],
+    },
+    GridObjectTagSpec {
+        pattern: "fog_post",
+        name_alias: "霧林哨樁",
+        object_tag: "hunter_post",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "hunter_post",
+        attribute_tags: &["fixed", "facility", "timber", "wayfinding", "patrol", "outdoor_gear"],
+    },
+    GridObjectTagSpec {
+        pattern: "peak_post",
+        name_alias: "山頂哨樁",
+        object_tag: "hunter_post",
+        category_tag: "maritime_transport_outdoor",
+        archetype_tag: "hunter_post",
+        attribute_tags: &["fixed", "facility", "timber", "wayfinding", "patrol", "outdoor_gear"],
+    },
+    GridObjectTagSpec {
+        pattern: "horse_trough",
+        name_alias: "飲馬石槽",
+        object_tag: "horse_drinking_stone_trough",
+        category_tag: "plumbing_bath_hygiene",
+        archetype_tag: "scene_fixture",
+        attribute_tags: &["fixed", "utensil", "stone", "water_supply", "trough", "fauna", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "bridge_trough",
+        name_alias: "石橋繫馬環",
+        object_tag: "horse_mooring_ring",
+        category_tag: "public_fixture",
+        archetype_tag: "bollard",
+        attribute_tags: &["fixed", "outdoor_fixture", "iron", "stone", "horse_ring", "bridge_fixture"],
+    },
+    GridObjectTagSpec {
+        pattern: "bridge_plank",
+        name_alias: "備換橋木板",
+        object_tag: "spare_bridge_plank",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "repair_plank",
+        attribute_tags: &["portable", "timber", "wood", "repair", "heavy", "bridge_material"],
+    },
+    GridObjectTagSpec {
+        pattern: "rest_stone",
+        name_alias: "路側歇腳石",
+        object_tag: "roadside_rest_stone",
+        category_tag: "public_fixture",
+        archetype_tag: "bench",
+        attribute_tags: &["fixed", "outdoor_fixture", "stone", "seating", "rest_spot", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "fruit",
+        name_alias: "野果",
+        object_tag: "wild_forest_fruit",
+        category_tag: "herbs_flora_spices",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "fruit", "flora", "gatherable", "food_ingredient", "sweet"],
+    },
+    GridObjectTagSpec {
+        pattern: "herb",
+        name_alias: "草藥",
+        object_tag: "medicinal_herb",
+        category_tag: "herbs_flora_spices",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "herb", "flora", "gatherable", "medical", "healing"],
+    },
+    GridObjectTagSpec {
+        pattern: "creek_herb",
+        name_alias: "溪邊水芹",
+        object_tag: "creek_water_celery",
+        category_tag: "herbs_flora_spices",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "herb", "flora", "gatherable", "food_ingredient", "waterfront"],
+    },
+    GridObjectTagSpec {
+        pattern: "pine_wood",
+        name_alias: "乾燥松木柴",
+        object_tag: "dried_pine_firewood",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "firewood_pile",
+        attribute_tags: &["portable", "raw_material", "flora", "timber", "heating", "gatherable", "fuel"],
+    },
+    GridObjectTagSpec {
+        pattern: "fallen_wood",
+        name_alias: "林下落枯枝",
+        object_tag: "fallen_dry_wood",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "firewood_pile",
+        attribute_tags: &["portable", "raw_material", "flora", "timber", "heating", "gatherable", "wood"],
+    },
+    GridObjectTagSpec {
+        pattern: "timber",
+        name_alias: "原木",
+        object_tag: "wild_timber_log",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "firewood_pile",
+        attribute_tags: &["portable", "raw_material", "flora", "timber", "woodworking", "gatherable", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "resin",
+        name_alias: "天然松脂塊",
+        object_tag: "natural_pine_resin_block",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "flora", "resin", "gatherable", "fuel", "adhesive"],
+    },
+    GridObjectTagSpec {
+        pattern: "jade_ore",
+        name_alias: "溪畔水磨青卵石",
+        object_tag: "creek_blue_pebble",
+        category_tag: "mineral_jade",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "mineral", "jade", "gatherable", "stone", "quartz"],
+    },
+    GridObjectTagSpec {
+        pattern: "road_ore",
+        name_alias: "道旁碎紅石",
+        object_tag: "roadside_red_gravel",
+        category_tag: "mineral_jade",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "mineral", "gravel", "gatherable", "stone", "masonry"],
+    },
+    GridObjectTagSpec {
+        pattern: "copper_sand",
+        name_alias: "伴生銅砂",
+        object_tag: "associated_copper_sand",
+        category_tag: "mineral_jade",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "mineral", "copper", "gatherable", "metal", "sand"],
+    },
+    GridObjectTagSpec {
+        pattern: "bamboo",
+        name_alias: "防風青竹枝",
+        object_tag: "windbreak_bamboo_branch",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "flora", "bamboo", "gatherable", "green", "crafting"],
+    },
+    GridObjectTagSpec {
+        pattern: "bay_post",
+        name_alias: "灣口繫船木樁",
+        object_tag: "mooring_post",
+        category_tag: "public_fixture",
+        archetype_tag: "bollard",
+        attribute_tags: &["fixed", "outdoor_fixture", "timber", "sailing", "marine"],
+    },
+    GridObjectTagSpec {
+        pattern: "coast_post",
+        name_alias: "海灘繫纜樁",
+        object_tag: "mooring_post",
+        category_tag: "public_fixture",
+        archetype_tag: "bollard",
+        attribute_tags: &["fixed", "outdoor_fixture", "timber", "sailing", "marine"],
+    },
+    GridObjectTagSpec {
+        pattern: "water_post",
+        name_alias: "水岸繫船柱",
+        object_tag: "mooring_post",
+        category_tag: "public_fixture",
+        archetype_tag: "bollard",
+        attribute_tags: &["fixed", "outdoor_fixture", "timber", "sailing", "marine"],
+    },
+    GridObjectTagSpec {
+        pattern: "cliff_railing",
+        name_alias: "斷崖防護木欄",
+        object_tag: "cliff_guard_railing",
+        category_tag: "public_fixture",
+        archetype_tag: "railing",
+        attribute_tags: &["fixed", "outdoor_fixture", "timber", "safety", "heavy"],
+    },
+    GridObjectTagSpec {
+        pattern: "meadow_grass",
+        name_alias: "長風牧草",
+        object_tag: "long_wind_pasture_grass",
+        category_tag: "herbs_flora_spices",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "pasture_grass", "flora", "gatherable", "fauna", "feed"],
+    },
+    GridObjectTagSpec {
+        pattern: "grain_wood",
+        name_alias: "向陽木枝",
+        object_tag: "sun_grain_wood_branch",
+        category_tag: "timber_bamboo_fungi",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "flora", "timber", "gatherable", "wood", "fuel"],
+    },
+    GridObjectTagSpec {
+        pattern: "ore",
+        name_alias: "野生礦石",
+        object_tag: "wild_mineral_ore",
+        category_tag: "mineral_jade",
+        archetype_tag: "resource_node",
+        attribute_tags: &["portable", "raw_material", "mineral", "gatherable", "iron", "stone", "metal"],
+    },
+];
+
+
+pub fn find_grid_object_spec(id: &str, name: &str) -> Option<&'static GridObjectTagSpec> {
+    let clean_id = id.strip_prefix("grid:").unwrap_or(id).trim();
+    let clean_name = name.trim();
+
+    // 1. 完全相符名稱比對
+    if !clean_name.is_empty() {
+        for spec in GRID_OBJECT_TAG_SPECS {
+            if spec.name_alias == clean_name {
+                return Some(spec);
+            }
+        }
+    }
+
+    // 2. ID 前綴比對
+    if !clean_id.is_empty() {
+        for spec in GRID_OBJECT_TAG_SPECS {
+            if clean_id.starts_with(spec.pattern) {
+                return Some(spec);
+            }
+        }
+    }
+
+    // 3. 名稱包含比對
+    if !clean_name.is_empty() {
+        for spec in GRID_OBJECT_TAG_SPECS {
+            if clean_name.contains(spec.name_alias) || spec.name_alias.contains(clean_name) {
+                return Some(spec);
+            }
+        }
+    }
+
+    None
+}
+
+
+/// 映射 GridObject 的 ID 與名稱至專屬英文標籤與語意原型標籤。
+pub fn grid_object_tag_and_archetype(id: &str, name: &str) -> (&'static str, &'static str) {
+    if let Some(spec) = find_grid_object_spec(id, name) {
+        return (spec.object_tag, spec.archetype_tag);
+    }
+    ("grid_resource_node", "resource_node")
+}
+
+include!("cell/terrain.rs");

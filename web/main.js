@@ -349,6 +349,15 @@
 							equipment_names: msg.equipment_names || {},
 							equipment_descs: msg.equipment_descs || {}
 						};
+						window.__hasOpenRouterKey = !!msg.has_openrouter_key;
+						if (msg.openrouter_model) window.__openRouterModel = msg.openrouter_model;
+						try {
+							var savedOrKey = (localStorage.getItem('sw_openrouter_api_key') || '').trim();
+							if (savedOrKey && !/^[•*·]+$/.test(savedOrKey)) {
+								window.__hasOpenRouterKey = true;
+								send({ type: 'set_openrouter_key', player_input: savedOrKey, action: 'sync' });
+							}
+						} catch (e) {}
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
 						window.myPlayerId = msg.player_id;
 						// myPlayerId 到齊後，重新渲染 grid 物件欄/描述欄以過濾自己
@@ -405,6 +414,8 @@
 								state.me.equipment_names = msg.equipment_names || {};
 								state.me.equipment_descs = msg.equipment_descs || {};
 							}
+							window.__hasOpenRouterKey = !!msg.has_openrouter_key;
+							if (msg.openrouter_model) window.__openRouterModel = msg.openrouter_model;
 							renderStarplatePane(state.me);
 						}
 						break;
@@ -470,7 +481,13 @@
 									window.SwInteractions.appendTradeInputRow(talkTargetId, talkTargetName);
 								}
 							} else if (talkTargetId) {
-								appendObjectActionsLine(renderEntityActionButtonsHtml(talkTargetId, talkTargetName));
+								var popoverBackdrop = document.getElementById('sw-object-popover-backdrop');
+								var isPopoverOpen = popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none';
+								if (isPopoverOpen && window.SwInteractions && window.SwInteractions.appendTalkInputRow) {
+									window.SwInteractions.appendTalkInputRow(talkTargetId, talkTargetName, { autoFocus: false });
+								} else {
+									appendObjectActionsLine(renderEntityActionButtonsHtml(talkTargetId, talkTargetName));
+								}
 							}
 						}
 					} else if (msg.action === 'Trade') {
@@ -669,10 +686,10 @@
 								'DeliberateCivicPact': '參議鄉約',
 								'DrawSpringWell': '汲水潤嗓'
 							};
-							var resolveActionLabelZh = function (act) {
+							var resolveActionLabelZh = function (act, targetObj) {
 								if (!act) return '操作';
 								if (actionLabels && actionLabels[act]) return actionLabels[act];
-								if (window.SwResolveActionLabelZh) return window.SwResolveActionLabelZh(act);
+								if (window.SwResolveActionLabelZh) return window.SwResolveActionLabelZh(act, targetObj);
 								if (/^[A-Za-z_]+$/.test(act)) return '操作';
 								return act;
 							};
@@ -720,12 +737,31 @@
 									}
 								}
 							}
+							if (!isPerson && window.__currentPopoverTarget && window.__currentPopoverTarget.id === targetId && (window.__currentPopoverTarget.kind === 'npc' || window.__currentPopoverTarget.kind === 'player')) {
+								isPerson = true;
+							}
+							if (!isPerson && window.SwGrid && window.SwGrid.mapData && Array.isArray(window.SwGrid.mapData.npcs)) {
+								for (var nj = 0; nj < window.SwGrid.mapData.npcs.length; nj++) {
+									var nItem = window.SwGrid.mapData.npcs[nj];
+									if (nItem && (nItem.npc_id === targetId || nItem.id === targetId)) {
+										isPerson = true;
+										break;
+									}
+								}
+							}
 							if (!isPerson && others.some(function (a) { return a === 'Subdue' || a === 'Slay' || a === 'Talk'; })) {
 								isPerson = true;
 							}
 							var sTargetId = String(targetId || '');
-							if (!isPerson && (sTargetId.indexOf('ambient_') === 0 || sTargetId.indexOf('shanhai_') === 0)) {
+							if (!isPerson && (sTargetId.indexOf('npc_') === 0 || sTargetId.indexOf('wt_npc_') === 0 || sTargetId.indexOf('wt_vendor_') === 0 || sTargetId.indexOf('ambient_') === 0 || sTargetId.indexOf('shanhai_') === 0)) {
 								isPerson = true;
+							}
+							if (!isPerson && targetId) {
+								try {
+									if (document.querySelector('#sw-room-canvas .sw-canvas-token.sw-token-npc[data-entity-id="' + targetId + '"], .sw-obj-npc[data-entity-id="' + targetId + '"]')) {
+										isPerson = true;
+									}
+								} catch (e) {}
 							}
 							var popoverBackdrop = document.getElementById('sw-object-popover-backdrop');
 							var isPopoverOpen = popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none';
@@ -743,7 +779,7 @@
 									}
 									if (!isPopoverOpen && others.length) {
 										var parts = others.map(function (act) {
-											var label = resolveActionLabelZh(act);
+											var label = resolveActionLabelZh(act, obj);
 											var idForAction = (act === 'Move' && msg.move_target_id) ? msg.move_target_id : targetId;
 											return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(idForAction) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(targetName) + '">' + escapeHtml(label) + '</span>】';
 										});

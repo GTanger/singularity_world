@@ -265,6 +265,92 @@ pub fn search_archival_for_player_talk(entity_id: &str, query: &str, top_k: usiz
     }
     out
 }
+/// 玩家↔NPC Talk 專用記憶檢索（附帶時間戳 `(content, at_unix)`）；寒暄零命中時不做 fallback。
+#[must_use]
+pub fn search_archival_for_player_talk_with_time(
+    entity_id: &str,
+    query: &str,
+    top_k: usize,
+) -> Vec<(String, i64)> {
+    let Some(arc) = store::get_store() else {
+        return Vec::new();
+    };
+    let s = arc.read();
+    let mut entries = s.get_archival_by_entity(entity_id);
+    if entries.is_empty() || top_k == 0 {
+        return Vec::new();
+    }
+    entries.sort_by_key(|b| std::cmp::Reverse(b.created_at));
+    let query = query.trim();
+    if query.is_empty() {
+        return entries
+            .into_iter()
+            .take(top_k)
+            .map(|e| (e.content, e.created_at))
+            .collect();
+    }
+    let ranked = rank_archival_for_query(&entries, query);
+    let mut out: Vec<(String, i64)> = ranked
+        .into_iter()
+        .filter(|r| r.score > 0)
+        .take(top_k)
+        .map(|r| (r.content, r.at))
+        .collect();
+    if out.is_empty() && should_omit_archival_fallback_for_talk_query(query) {
+        return Vec::new();
+    }
+    if out.is_empty() {
+        out = entries
+            .into_iter()
+            .take(top_k)
+            .map(|e| (e.content, e.created_at))
+            .collect();
+    }
+    out
+}
+
+/// 統計玩家與 NPC 的時間結識情況：
+/// 掃描 `archival` 中 `entity_id == npc_id && tag == "player_talk" && (content.contains(player_id) || content.contains("來客"))`
+/// - `first_met_at`: 最早結識時間
+/// - `last_prior_session_at`: 前一次（半小時 / 1800 秒前）會話的最後時間
+/// - `prior_session_turn_count`: 前期會話的累計輪數
+#[must_use]
+pub fn player_npc_temporal_acquaintance_stats(
+    npc_id: &str,
+    player_id: &str,
+    now_unix: i64,
+) -> (Option<i64>, Option<i64>, usize) {
+    let Some(arc) = store::get_store() else {
+        return (None, None, 0);
+    };
+    let s = arc.read();
+    let entries = s.get_archival_by_entity(npc_id);
+    let mut first_met_at: Option<i64> = None;
+    let mut last_prior_session_at: Option<i64> = None;
+    let mut prior_session_turn_count = 0usize;
+
+    for e in entries {
+        if e.tag == "player_talk"
+            && (e.content.contains(player_id) || e.content.contains("來客"))
+            && e.created_at > 0
+        {
+            first_met_at = Some(match first_met_at {
+                Some(old_min) => old_min.min(e.created_at),
+                None => e.created_at,
+            });
+
+            if (now_unix - e.created_at) >= 1800 {
+                last_prior_session_at = Some(match last_prior_session_at {
+                    Some(old_max) => old_max.max(e.created_at),
+                    None => e.created_at,
+                });
+                prior_session_turn_count += 1;
+            }
+        }
+    }
+
+    (first_met_at, last_prior_session_at, prior_session_turn_count)
+}
 
 #[derive(Debug, Deserialize)]
 struct OccupationsFile {

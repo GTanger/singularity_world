@@ -150,6 +150,10 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
                 "object".to_string()
             },
             actions: o.sockets.clone(),
+            tag: o.tag(),
+            category_tag: o.category_tag().to_string(),
+            attribute_tags: o.attribute_tags(),
+            tags: o.tags(),
         })
         .collect();
     let now = game::now_unix();

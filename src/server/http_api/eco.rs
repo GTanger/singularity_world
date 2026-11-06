@@ -320,7 +320,7 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
         } else {
             format!("{} {}", slot.brief_tag, e.display_title)
         };
-        let settlement = store::canonical_npc_macro_settlement(&e.id, &e.display_title)
+        let settlement = store::resident_macro_settlement(&e.id, &e.display_title)
             .unwrap_or_else(|| store::normalize_household_home_settlement(slot.home_name))
             .to_string();
 

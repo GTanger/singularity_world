@@ -286,8 +286,8 @@ impl Default for RoomEventCfg {
 impl Default for NpcNpcPairPickCfg {
     fn default() -> Self {
         Self {
-            thread_stale_sec: 90,
-            thread_cooldown_sec: 300,
+            thread_stale_sec: 1800,
+            thread_cooldown_sec: 600,
             score_base_noise: 4,
             dyad_sentiment_penalty_threshold: -30,
             dyad_sentiment_penalty: 2,

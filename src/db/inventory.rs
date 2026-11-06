@@ -41,12 +41,8 @@ fn is_raw_material_item_id(item_id: &str) -> bool {
     if item_id.starts_with("mat_") || item_id.starts_with("harvest_") || item_id.starts_with("ore_") || item_id.starts_with("wood_") {
         return true;
     }
-    if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
-        if let Ok(num) = num_str.parse::<u32>() {
-            if (1..=387).contains(&num) {
-                return true;
-            }
-        }
+    if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
+        return cat.has_tag("raw_material");
     }
     false
 }
@@ -63,7 +59,14 @@ pub fn normalize_npc_inventory_entries(entries: &mut Vec<InventoryEntry>) -> boo
 
     // 1. 移除無效或特定過期物品
     entries.retain(|e| {
-        if e.qty <= 0 || e.item_id.is_empty() || e.item_id == "manual_854b8035e7134512" {
+        if e.qty <= 0
+            || e.item_id.is_empty()
+            || e.item_id == "manual_854b8035e7134512"
+            || e.item_id == "blank_manual"
+            || e.item_id == "wt_blank_manual"
+            || e.item_id.starts_with("mut_blank_manual")
+            || e.item_id.starts_with("mut_wt_blank_manual")
+        {
             changed = true;
             false
         } else {
@@ -508,11 +511,11 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
                 let itype = if !eco_def.item_type.is_empty() {
                     eco_def.item_type.clone()
                 } else {
-                    cat.category_name.to_string()
+                    cat.category_tag.to_string()
                 };
                 (itype, eco_def.slot.clone())
             } else {
-                (cat.category_name.to_string(), String::new())
+                (cat.category_tag.to_string(), String::new())
             };
             (
                 cat.name.to_string(),
@@ -659,11 +662,11 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
             let itype = if !eco_def.item_type.is_empty() {
                 eco_def.item_type
             } else {
-                cat.category_name.to_string()
+                cat.category_tag.to_string()
             };
             (itype, eco_def.slot, eco_def.vit_bonus, eco_def.dex_bonus, eco_def.atk_bonus)
         } else {
-            (cat.category_name.to_string(), String::new(), 0, 0, 0)
+            (cat.category_tag.to_string(), String::new(), 0, 0, 0)
         };
         return Some(ItemDefBrief {
             name: cat.name.to_string(),

@@ -384,8 +384,12 @@ mod tests {
         );
         let note = note_opt.unwrap();
         assert!(
-            note.contains("【事件包與劇本包聯動・"),
-            "advanced note must contain linkage header: {note}"
+            note.contains("一同落實手頭要務"),
+            "advanced note must contain diegetic linkage description: {note}"
+        );
+        assert!(
+            !note.contains("事件包") && !note.contains("劇本包") && !note.contains("劇本演繹"),
+            "advanced note must not contain meta-terms: {note}"
         );
     }
 }

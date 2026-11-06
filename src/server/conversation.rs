@@ -71,7 +71,12 @@ fn consolidate_turns(turns: &[ConversationTurn]) -> Vec<String> {
         .map(|t| {
             let clean_p = sanitize_talk_text(&t.player_input);
             let clean_r = sanitize_talk_text(&t.npc_reply);
-            format!("來客言：「{}」；回應道：「{}」", clean_p, clean_r)
+            format!(
+                "【{}】來客言：「{}」；回應道：「{}」",
+                crate::store::format_game_calendar_stamp(t.at),
+                clean_p,
+                clean_r
+            )
         })
         .collect()
 }
@@ -109,9 +114,15 @@ fn summary_from_turns(turns: &[ConversationTurn]) -> String {
     } else {
         r_snippets.join("／")
     };
+    let last_at = turns.last().map(|t| t.at).unwrap_or(0);
+    let stamp = if last_at > 0 {
+        format!("（{}）", crate::store::format_game_calendar_stamp(last_at))
+    } else {
+        String::new()
+    };
 
     format!(
-        "曾與來客交談（共 {} 輪）：來客提及「{}」，回應「{}」。",
+        "曾與來客交談{stamp}（共 {} 輪）：來客提及「{}」，回應「{}」。",
         turns.len(),
         p_snip,
         r_snip
@@ -134,6 +145,49 @@ pub fn get_recent_turns(player_id: &str, npc_id: &str, limit: usize) -> Vec<(Str
     } else {
         Vec::new()
     }
+}
+/// 讀取 (player_id, npc_id) 最近 `limit` 輪對話紀錄 (player_input, npc_reply, at_unix)。
+pub fn get_recent_turns_with_time(
+    player_id: &str,
+    npc_id: &str,
+    limit: usize,
+) -> Vec<(String, String, i64)> {
+    if limit == 0 {
+        return Vec::new();
+    }
+    let key = buffer_key(player_id, npc_id);
+    let g = BUFFERS.lock().expect("conversation buffers poisoned");
+    if let Some(buf) = g.get(&key) {
+        let start = buf.len().saturating_sub(limit);
+        buf[start..]
+            .iter()
+            .map(|t| (t.player_input.clone(), t.npc_reply.clone(), t.at))
+            .collect()
+    } else {
+        Vec::new()
+    }
+}
+
+/// 取得當前對話 sitting 的跨度 (first_turn_at, last_turn_at, turn_count)。
+/// 若緩衝非空且距離最後一輪在 `CONVERSATION_GAP_SEC` 內，回傳 `Some`，否則回傳 `None`。
+pub fn get_current_session_span(
+    player_id: &str,
+    npc_id: &str,
+    now_unix: i64,
+) -> Option<(i64, i64, usize)> {
+    let key = buffer_key(player_id, npc_id);
+    let g = BUFFERS.lock().expect("conversation buffers poisoned");
+    if let Some(buf) = g.get(&key) {
+        if let Some(last) = buf.last() {
+            if now_unix - last.at <= CONVERSATION_GAP_SEC {
+                let first_at = buf.first().unwrap().at;
+                let last_at = last.at;
+                let count = buf.len();
+                return Some((first_at, last_at, count));
+            }
+        }
+    }
+    None
 }
 
 /// 若上一場已逾時：先 consolidation 寫 archival(tag=event)+summary；再 append 本輪。
@@ -160,9 +214,10 @@ pub fn flush_conversation_and_append(
         }
         buf.clear();
     }
+    let clean_reply_for_store = sanitize_talk_text(npc_reply);
     buf.push(ConversationTurn {
         player_input: player_input.to_string(),
-        npc_reply: npc_reply.to_string(),
+        npc_reply: clean_reply_for_store.clone(),
         at: now,
     });
     if buf.len() > MAX_TURNS_PER_BUFFER {
@@ -171,13 +226,12 @@ pub fn flush_conversation_and_append(
     }
 
     let trimmed_input = player_input.trim();
-    let trimmed_reply = npc_reply.trim();
+    let trimmed_reply = clean_reply_for_store.trim();
     if !trimmed_input.is_empty() && !trimmed_reply.is_empty() {
         let clean_p = sanitize_talk_text(trimmed_input);
-        let clean_r = sanitize_talk_text(trimmed_reply);
         let archival_line = format!(
             "與來客({})交談：對方說「{}」，我回應「{}」",
-            player_id, clean_p, clean_r
+            player_id, clean_p, trimmed_reply
         );
         let _ = db::insert_archival(npc_id, &archival_line, "player_talk");
         let sum = summary_from_turns(&buf);
