@@ -480,6 +480,12 @@ fn inventory_msg_for_character(ent: &Character) -> InventoryMsg {
                 let attribute_tags = crate::model::object_attribute_tags(&it.item_id, &it.name).into_iter().map(str::to_string).collect();
                 let tags = crate::model::object_semantic_tags(&it.item_id, &it.name, &[]);
                 let is_edible = is_item_edible(&it.item_id, &insc_name, &it.item_type);
+                let (item_stage, can_craft, craft_label) = classify_inventory_item_capabilities(
+                    &it.item_id,
+                    &insc_name,
+                    &it.item_type,
+                    &it.slot,
+                );
                 InventoryItemView {
                     item_id: it.item_id,
                     name: insc_name,
@@ -495,6 +501,9 @@ fn inventory_msg_for_character(ent: &Character) -> InventoryMsg {
                     attribute_tags,
                     tags,
                     is_edible,
+                    item_stage,
+                    can_craft,
+                    craft_label,
                 }
             })
             .collect(),

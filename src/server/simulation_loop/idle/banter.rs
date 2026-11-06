@@ -63,10 +63,23 @@ fn resolve_caller_name(player_id: &str, npc_id: &str, ent: &crate::store::Entity
 fn generate_vendor_banter(caller_a: &str, caller_b: &str, id_a: &str, id_b: &str, hour: i32) -> String {
     let specialty_a = crate::server::action::trade::resolve_vendor_specialty_with_title(id_a, caller_a);
     let specialty_b = crate::server::action::trade::resolve_vendor_specialty_with_title(id_b, caller_b);
+    let settlement_hint = {
+        let combined = format!("{caller_a} {caller_b}");
+        let inferred = crate::world::materials::infer_origin_settlement(&combined);
+        if !inferred.is_empty() {
+            inferred.to_string()
+        } else if let Ok(r) = crate::db::get_entity_room(id_a)
+            && !r.is_empty()
+        {
+            r
+        } else {
+            "文曜".to_string()
+        }
+    };
 
     let resolve_offer_details = |spec: Option<(&'static str, &'static str, i32, &'static str)>| {
         spec.map(|(item_id, item_name, base_price, _)| {
-            let quote = crate::game::object_ecology::dynamic_settlement_market_quote("文曜", item_id, base_price);
+            let quote = crate::game::object_ecology::dynamic_settlement_market_quote(&settlement_hint, item_id, base_price);
             let cat_obj = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
                 .iter()
                 .find(|o| o.id == item_id);

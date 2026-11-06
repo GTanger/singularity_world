@@ -10,8 +10,28 @@ pub struct VocationalVesselSpec {
     pub maintenance_stay_verb: &'static str,
 }
 
+/// 剝離職銜字串末尾的個人姓名（如「合社獵手・林山海」→「合社獵手」），
+/// 避免姓名中的「林、木、石、海、鐵、墨」字元誤觸其他職司分支。
+pub fn strip_trailing_person_name_from_role(role_hint: &str) -> &str {
+    if let Some((prefix, tail)) = role_hint.rsplit_once('・') {
+        let tail_is_role = [
+            "匠", "師", "夫", "手", "戶", "工", "主", "長", "事", "員", "生", "徒", "頭",
+            "家", "商", "販", "醫", "廚", "衛", "哨", "卒", "客", "人", "官", "老", "婆",
+            "嬸", "伯", "叔", "姑", "娘", "坊", "館", "行", "局", "堂", "所", "店", "攤",
+            "站", "舍", "屋", "社", "隊",
+        ]
+        .iter()
+        .any(|kw| tail.contains(kw));
+        if !tail_is_role && !prefix.trim().is_empty() {
+            return prefix.trim();
+        }
+    }
+    role_hint
+}
+
 /// 依住民職銜與身分解析其真實隨身器物與保養場所（涵蓋全島 18 類職司，直接錨定 PENINSULA_WORLD_OBJECTS 總典外鍵）
 pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
+    let role_hint = strip_trailing_person_name_from_role(role_hint);
     if role_hint.contains("學徒") {
         VocationalVesselSpec {
             item_id: "craft_wooden_tool_handle",

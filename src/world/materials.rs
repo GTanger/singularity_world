@@ -235,14 +235,28 @@ pub fn material_item_defs() -> Vec<Item> {
 
 #[must_use]
 pub fn infer_origin_settlement(origin_text: &str) -> &'static str {
+    let resolved_room;
+    let text = if origin_text.starts_with("grid:") {
+        if let Some(coord) = crate::grid::parse_grid_room_id(origin_text)
+            && let Some(cell) = crate::server::grid_manager::get_runtime_square_grid()
+                .and_then(|g| g.get(coord).cloned())
+        {
+            resolved_room = format!("{} {}", cell.zone, cell.name);
+            resolved_room.as_str()
+        } else {
+            origin_text
+        }
+    } else {
+        origin_text
+    };
     for s in [
-        "霜林口", "紅土崁", "三號坑口", "下營", "青籠關", "半嶺鎮", "半嶺", "分家巷", "水尾寮",
-        "大圳頭", "牛埔", "烏石鼻", "風舶角", "風舶嶼", "北嶺腳",
+        "霜林口", "紅土崁", "三號坑口", "下營", "黑沼關隘", "半嶺鎮", "半嶺", "分家巷", "水尾寮",
+        "大圳頭", "牛埔", "烏石鼻", "鹽田澳", "風舶角", "風舶嶼", "北嶺腳", "樟木驛", "竹林寨",
         "老堰頭", "風櫃尾", "白茫洲", "南哨", "文曜", "黑石灣", "赤石坡", "長風草甸", "翠冠巨木林", "青竹坪",
         "古河巨木林", "落日岬", "驚濤岩岸", "巨藻淺灣", "清泉溪谷", "北坡雲杉林", "西麓林道",
         "淺澤泥口", "貼山深潭", "西嶺礦谷", "東海峭壁", "雲腰雪林", "白塔雪巔",
     ] {
-        if origin_text.contains(s) {
+        if text.contains(s) {
             return s;
         }
     }

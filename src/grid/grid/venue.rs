@@ -1,7 +1,7 @@
 /// 房間物件化契約（RoomVenueObject）：
 /// 將每個房間視為具備自身語意標籤、固定設施狀態、常備外借器物插座與當值職司的一等物件，
 /// 避免各子系統（借物、移動視野、事件劇本）各自散落字串猜測。
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct RoomVenueObject {
     pub venue_kind: &'static str,
     pub default_host_title: &'static str,
@@ -60,23 +60,57 @@ impl RoomVenueObject {
 }
 
 
-/// 依據房間名稱與補充提示（如分區），確定性解析房間物件契約
+static ROOM_VENUE_CACHE: std::sync::LazyLock<
+    std::sync::RwLock<std::collections::HashMap<(String, String), Option<RoomVenueObject>>>,
+> = std::sync::LazyLock::new(|| {
+    std::sync::RwLock::new(std::collections::HashMap::with_capacity(2048))
+});
+
+static ANY_ROOM_VENUE_CACHE: std::sync::LazyLock<
+    std::sync::RwLock<std::collections::HashMap<(String, String), Option<RoomVenueObject>>>,
+> = std::sync::LazyLock::new(|| {
+    std::sync::RwLock::new(std::collections::HashMap::with_capacity(2048))
+});
+
+/// 依據房間名稱與補充提示（如分區），確定性解析房間物件契約（具備 O(1) 執行期記憶化快取）
 pub fn resolve_room_venue_object(room_name: &str, extra_hint: &str) -> Option<RoomVenueObject> {
     if is_private_residence_room_name(room_name) || is_street_or_gate_room_name(room_name) {
         return None;
     }
+    let key = (room_name.to_string(), extra_hint.to_string());
+    if let Ok(guard) = ROOM_VENUE_CACHE.read()
+        && let Some(&cached) = guard.get(&key)
+    {
+        return cached;
+    }
     let combined = format!("{room_name} {extra_hint}");
     let room_tags = derive_room_tags(Terrain::Road, room_name, extra_hint);
-    if let Some(venue) = resolve_room_venue_object_p1(&combined, &room_tags) {
-        return Some(venue);
+    let resolved = resolve_room_venue_object_p1(&combined, &room_tags)
+        .or_else(|| resolve_room_venue_object_p2(&combined, &room_tags));
+    if let Ok(mut guard) = ROOM_VENUE_CACHE.write() {
+        if guard.len() < 16_384 {
+            guard.insert(key, resolved);
+        }
     }
-    resolve_room_venue_object_p2(&combined, &room_tags)
+    resolved
 }
 
-/// 統一查詢房間一等物件（涵蓋 37 類作坊政務場域與 28 類市集專賣攤位）
+/// 統一查詢房間一等物件（涵蓋 37 類作坊政務場域與 28 類市集專賣攤位，具備 O(1) 執行期記憶化快取）
 pub fn resolve_any_room_venue_object(room_name: &str, hint: &str) -> Option<RoomVenueObject> {
-    resolve_room_venue_object(room_name, hint)
-        .or_else(|| resolve_market_or_specialty_room_object(room_name, hint))
+    let key = (room_name.to_string(), hint.to_string());
+    if let Ok(guard) = ANY_ROOM_VENUE_CACHE.read()
+        && let Some(&cached) = guard.get(&key)
+    {
+        return cached;
+    }
+    let resolved = resolve_room_venue_object(room_name, hint)
+        .or_else(|| resolve_market_or_specialty_room_object(room_name, hint));
+    if let Ok(mut guard) = ANY_ROOM_VENUE_CACHE.write() {
+        if guard.len() < 16_384 {
+            guard.insert(key, resolved);
+        }
+    }
+    resolved
 }
 
 /// 統一解析房間訪客／顧客／路人等候與參訪環境行為描述（涵蓋全半島文曜及各鄉村據點特色場域）

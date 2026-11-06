@@ -355,6 +355,12 @@ pub struct InventoryItemView {
     pub tags: Vec<String>,
     #[serde(default, rename = "is_edible")]
     pub is_edible: bool,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "item_stage")]
+    pub item_stage: String,
+    #[serde(default, rename = "can_craft")]
+    pub can_craft: bool,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "craft_label")]
+    pub craft_label: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -796,5 +802,37 @@ mod tests {
         let decoded_no_intent: NpcAddressMsg = serde_json::from_str(&out_no_intent).unwrap();
         assert_eq!(decoded_no_intent.intent, "");
         assert_eq!(decoded_no_intent, msg_no_intent);
+    }
+
+    #[test]
+    fn inventory_item_capabilities_classification_test() {
+        use crate::server::handler::inventory::classify_inventory_item_capabilities;
+
+        let (stage_ore, can_ore, label_ore) =
+            classify_inventory_item_capabilities("wt_cat_0001", "赤鐵重礦", "material", "");
+        assert_eq!(stage_ore, "raw");
+        assert!(can_ore);
+        assert_eq!(label_ore, "加工煉製");
+
+        let (stage_fish, can_fish, label_fish) =
+            classify_inventory_item_capabilities("mat_fresh_shrimp", "水尾寮鮮沼蝦", "material", "");
+        assert_eq!(stage_fish, "raw");
+        assert!(can_fish);
+        assert_eq!(label_fish, "烹調炙烤");
+
+        let (stage_tool, can_tool, label_tool) =
+            classify_inventory_item_capabilities("wt_cat_0956", "柯氏松木家用工具箱", "tool", "");
+        assert_eq!(stage_tool, "finished");
+        assert!(!can_tool);
+        assert!(label_tool.is_empty());
+
+        let (stage_mut, can_mut, _) = classify_inventory_item_capabilities(
+            "mut_craft_iron_pickaxe_thunder",
+            "雷紋・精鍛開山鐵鎬",
+            "equipment",
+            "hold_r",
+        );
+        assert_eq!(stage_mut, "mutated");
+        assert!(!can_mut);
     }
 }

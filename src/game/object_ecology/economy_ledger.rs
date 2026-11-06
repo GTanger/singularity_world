@@ -97,21 +97,35 @@ pub struct SettlementMarketQuote {
 }
 
 pub fn normalize_canonical_settlement(raw_settlement: &str) -> &'static str {
-    if raw_settlement.contains("烏石鼻") || raw_settlement.contains("鹽田澳") || raw_settlement.contains("黑石灣") {
+    let resolved_room;
+    let s = if raw_settlement.starts_with("grid:") {
+        if let Some(coord) = crate::grid::parse_grid_room_id(raw_settlement)
+            && let Some(cell) = crate::server::grid_manager::get_runtime_square_grid()
+                .and_then(|g| g.get(coord).cloned())
+        {
+            resolved_room = format!("{} {}", cell.zone, cell.name);
+            resolved_room.as_str()
+        } else {
+            raw_settlement
+        }
+    } else {
+        raw_settlement
+    };
+    if s.contains("烏石鼻") || s.contains("鹽田澳") || s.contains("黑石灣") || s.contains("東海峭壁") {
         "烏石鼻"
-    } else if raw_settlement.contains("風舶") || raw_settlement.contains("巨藻淺灣") || raw_settlement.contains("驚濤岩岸") {
+    } else if s.contains("風舶") || s.contains("巨藻淺灣") || s.contains("驚濤岩岸") || s.contains("落日岬") {
         "風舶角"
-    } else if raw_settlement.contains("水尾寮") || raw_settlement.contains("淺澤泥口") || raw_settlement.contains("水尾澤") || raw_settlement.contains("黑沼林") || raw_settlement.contains("黑沼林澤") || raw_settlement.contains("黑沼") {
+    } else if s.contains("水尾寮") || s.contains("淺澤泥口") || s.contains("水尾澤") || s.contains("黑沼林") || s.contains("黑沼林澤") || s.contains("黑沼") {
         "水尾寮"
-    } else if raw_settlement.contains("半嶺") || raw_settlement.contains("牛埔") || raw_settlement.contains("白塔") {
+    } else if s.contains("半嶺") || s.contains("牛埔") || s.contains("白塔") || s.contains("分家巷") || s.contains("西麓林道") || s.contains("長風草甸") {
         "半嶺鎮"
-    } else if raw_settlement.contains("紅土崁") || raw_settlement.contains("大圳頭") || raw_settlement.contains("老堰頭") || raw_settlement.contains("西南原") || raw_settlement.contains("赤石坡") {
+    } else if s.contains("紅土崁") || s.contains("大圳頭") || s.contains("老堰頭") || s.contains("西南原") || s.contains("赤石坡") || s.contains("西嶺礦谷") {
         "紅土崁"
-    } else if raw_settlement.contains("霜林口") || raw_settlement.contains("翠冠") || raw_settlement.contains("北嶺腳") {
+    } else if s.contains("霜林口") || s.contains("翠冠") || s.contains("北嶺腳") || s.contains("樟木驛") || s.contains("竹林寨") || s.contains("青竹坪") || s.contains("古河巨木林") || s.contains("北坡雲杉林") || s.contains("雲腰雪林") {
         "霜林口"
-    } else if raw_settlement.contains("下營") || raw_settlement.contains("黑沼關隘") || raw_settlement.contains("青籠") || raw_settlement.contains("三號坑") {
+    } else if s.contains("下營") || s.contains("黑沼關隘") || s.contains("三號坑") {
         "下營"
-    } else if raw_settlement.contains("南哨") || raw_settlement.contains("風櫃尾") || raw_settlement.contains("白茫洲") || raw_settlement.contains("貼山深潭") {
+    } else if s.contains("南哨") || s.contains("風櫃尾") || s.contains("白茫洲") || s.contains("貼山深潭") || s.contains("清泉溪谷") {
         "南哨"
     } else {
         "文曜"

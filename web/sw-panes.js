@@ -809,10 +809,9 @@
 				if (rawId.indexOf('crystal_') === 0 || it.item_type === 'word_crystal' || /crystal|\u8a5e\u5143\u7d50\u6676/.test(String(it.name || ''))) return;
 				var itemId = it.item_id || it.id || '';
 				var itemName = it.name || '';
-				var isMutated = itemId.indexOf('mut_') === 0 || itemName.indexOf('【異變') !== -1;
-				var isCraftedFinished = itemId.indexOf('craft_') === 0 || itemId.indexOf('manual_') === 0 || itemId.indexOf('item_') === 0 || itemName.indexOf('精鍛') !== -1;
-				var isRaw = !isMutated && !isCraftedFinished && (itemId.indexOf('mat_') === 0 || itemId.indexOf('harvest_') === 0 || (itemId.indexOf('wt_cat_') === 0 && !it.slot && it.item_type !== 'tool' && it.item_type !== 'equipment') || itemId === 'wt_beast_bone' || itemId === 'wt_down_feather' || it.item_type === 'material' || it.item_type === 'raw_material' || /礦|砂|原木|蘆草|竹竿|草藥|水苔|紙刀|墨坯|麻繩|袋布|原牛皮|河蝦|水芹|絨羽|獸骨|老鱉|毛皮|鱗片|獠牙|彩羽|尾翎|香皮|鹿茸|山茶籽|白鮮草|藥草|漿果|獸皮|獸筋/.test(itemName));
-				var isCulinaryRaw = isRaw && !/魚骨|魚鱗|魚皮|釣魚線|魚線|漁線|魚網|漁網|螺殼|貝殼|茶籽/.test(itemName) && !/fishing_line|fish_bone|fish_scale|shell_sack/.test(itemId) && (/蝦|魚|蟹|鮑|蛤|蜆|螺|肉|熊掌|鹿腱|牛蛙|老鱉|稻穀|穀糧|漿果|鮮果|茶|水芹/.test(itemName) || /shrimp|fish|meat|grain|berries/.test(itemId));
+				var itemStage = it.item_stage || (itemId.indexOf('mut_') === 0 ? 'mutated' : (it.item_type === 'material' || it.item_type === 'raw_material' ? 'raw' : 'finished'));
+				var isMutated = itemStage === 'mutated';
+				var isRaw = itemStage === 'raw';
 				var stageBadge = isMutated ? '[異變奇珍]' : (isRaw ? '[原料]' : '[成品]');
 				var qtyStr = it.qty > 1 ? (' \u00d7' + it.qty) : '';
 				var wTag = '[' + describeItemWeight(it.sub_total) + ']';
@@ -872,12 +871,12 @@
 						var useLabel = isFoodOrDrink ? '食用' : '使用';
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + useLabel + '</button>';
 					}
-					if (isRaw) {
-						if (isCulinaryRaw && /蝦|魚|肉|漿果|鮮果/.test(nameStr) && itemId !== 'raw_meat' && !nameStr.includes('生獸肉')) {
+					if (Boolean(it.can_craft) || isRaw) {
+						if (Boolean(it.is_edible)) {
 							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">食用</button>';
 						}
-						var craftLabel = isCulinaryRaw ? '烹調炙烤' : '加工煉製';
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">' + craftLabel + '</button>';
+						var craftLabel = it.craft_label || '加工煉製';
+						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">' + esc(craftLabel) + '</button>';
 					}
 					actionsHtml += '<button type="button" class="inv-action-btn" data-action="sell" data-sell-mode="one">售出</button>';
 					if (it.qty && it.qty > 1) {

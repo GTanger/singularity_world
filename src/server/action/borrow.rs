@@ -28,10 +28,17 @@ pub(super) fn do_entity_borrow(
     let room_title = db::get_room_name(&player_room).unwrap_or_else(|_| player_room.clone());
 
     let target_true_name = crate::store::resolve_npc_person_name(&target.id, &target.display_title, None);
-    let match_name = if !target_true_name.is_empty() && target_true_name != "陌生人" {
+    let match_name = if !target.display_title.is_empty() {
+        if !target_true_name.is_empty()
+            && target_true_name != "陌生人"
+            && !target.display_title.contains(&target_true_name)
+        {
+            format!("{}・{}", target.display_title, target_true_name)
+        } else {
+            target.display_title.clone()
+        }
+    } else if !target_true_name.is_empty() && target_true_name != "陌生人" {
         target_true_name
-    } else if !target.display_title.is_empty() {
-        target.display_title.clone()
     } else {
         target.id.clone()
     };
@@ -146,15 +153,43 @@ pub(super) fn do_entity_borrow(
             orderliness: 0.5,
         });
 
-    let (rel, obligations) = if let Some(pool) = &pool_opt {
+    let (rel, obligations, player_obligations) = if let Some(pool) = &pool_opt {
         let r = crate::pg::living_world::get_relationship_summary(pool, target_id, pid)
             .unwrap_or_default();
         let o = crate::pg::living_world::list_open_obligations_for_entity(pool, target_id)
             .unwrap_or_default();
-        (r, o)
+        let po = crate::pg::living_world::list_open_obligations_for_entity(pool, pid)
+            .unwrap_or_default();
+        (r, o, po)
     } else {
-        (crate::pg::living_world::RelationshipSummary::default(), Vec::new())
+        (
+            crate::pg::living_world::RelationshipSummary::default(),
+            Vec::new(),
+            Vec::new(),
+        )
     };
+
+    let has_unreturned_borrow_from_target = player_obligations
+        .iter()
+        .any(|o| o.obligation_kind == "repay_debt" && o.subject_ref == target_id);
+    if has_unreturned_borrow_from_target {
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: "Borrow".into(),
+            target_id: target.id.clone(),
+            target_name: borrow_name.clone(),
+            narrative: format!(
+                "【{borrow_name}】搖了搖頭，溫言提醒道：「上次借你的器物還沒歸還呢，等物歸原主之後，有需要再借不遲。」"
+            ),
+            success: false,
+            actions: vec![],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        return;
+    }
 
     let obligation_descs: Vec<String> = obligations
         .iter()
@@ -505,7 +540,32 @@ pub(super) fn canonical_or_venue_borrow_item(
         ));
     }
 
-    // 3. 聚落通用品 (Fallback)
+    // 3. 戶外／街巷行進中之職司人物：依其真實職銜對接 VocationalVesselSpec 之千物總典 catalog_id
+    let clean_role = crate::npc::causal_core::strip_trailing_person_name_from_role(target_name);
+    let has_explicit_vocation = [
+        "學徒", "家眷", "內當家", "持家", "執事", "主事", "帳房", "商行", "公所", "調撥",
+        "食堂", "廚", "茶", "膳", "掌事", "麵", "攤", "書", "學院", "講", "印", "學者",
+        "學子", "觀星", "藥", "醫", "草", "丹", "診", "水輪", "石磨", "磨坊", "碾",
+        "鐵", "鍛", "爐", "鑄", "礦", "石", "坑", "鑿", "木", "竹", "鋸", "船", "刨",
+        "織", "布", "服", "染", "縫", "靴", "鞋", "傘", "皮", "革", "理髮", "剪剃", "剃",
+        "漁", "港", "渡", "海", "舵", "巡", "衛", "哨", "武", "教頭", "獵", "採", "樵",
+        "行旅", "押貨", "挑夫",
+    ]
+    .iter()
+    .any(|kw| clean_role.contains(kw));
+    if has_explicit_vocation {
+        let vessel = crate::npc::causal_core::resolve_vocational_vessel(clean_role);
+        if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(vessel.catalog_id) {
+            let quote = if vessel.is_bladed {
+                "「這件隨身刃器是我平日趁手之物，借你應急使喚，切莫磕碰捲了刃口，用畢早些歸還。」"
+            } else {
+                "「這件隨身器物是我當差常備之物，你先拿去應急，用完記得完好歸還。」"
+            };
+            return Some((cat.id, cat.name, quote));
+        }
+    }
+
+    // 4. 尋常街坊通用品 (Fallback)
     Some((
         "wt_cat_0781",
         "竹綿紙牛皮記事手札",
@@ -541,8 +601,10 @@ mod tests {
             ("成衣裁縫", "織造服飾坊", "wt_cat_0835"),
             ("車隊夥計", "西門・車馬聯運總站", "wt_cat_0891"),
             ("無名路人", "尋常巷弄", "wt_cat_0781"),
+            ("合社獵手・林山海", "尋常巷弄", "wt_cat_1021"),
+            ("紅土崁礦工", "尋常巷弄", "wt_cat_0964"),
+            ("水尾寮漁夫", "尋常巷弄", "wt_cat_1006"),
         ];
-
         for (target, room, expected_id) in test_cases {
             let result = canonical_or_venue_borrow_item(target, room);
             assert!(result.is_some(), "Borrow target {} in {} should yield item", target, room);

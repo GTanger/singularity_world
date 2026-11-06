@@ -1,4 +1,13 @@
 pub fn is_item_edible(item_id: &str, item_name: &str, item_type: &str) -> bool {
+    if item_id == "raw_meat"
+        || item_id == "wt_down_feather"
+        || item_id == "wt_beast_bone"
+        || item_name.contains("生獸肉")
+        || item_name.contains("絨羽")
+        || item_name.contains("獸骨")
+    {
+        return false;
+    }
     if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
         if cat.socket == "Taste"
             || cat.attribute_tags.contains(&"food")
@@ -18,6 +27,10 @@ pub fn is_item_edible(item_id: &str, item_name: &str, item_type: &str) -> bool {
         || item_id.starts_with("meal_")
         || item_id.starts_with("tea_")
         || item_id.starts_with("drink_")
+        || matches!(
+            item_id,
+            "mat_fresh_shrimp" | "mat_salted_fish" | "mat_wild_berries"
+        )
         || item_name.contains("茶")
         || item_name.contains("湯")
         || item_name.contains("麵")
@@ -29,6 +42,75 @@ pub fn is_item_edible(item_id: &str, item_name: &str, item_type: &str) -> bool {
         || item_name.contains("蝦串")
 }
 
+/// 依千物總典類別碼與百工資料源，結構化判定行囊物品之階段（`mutated` / `raw` / `finished`）、可否手作與手作按鈕標籤。
+pub fn classify_inventory_item_capabilities(
+    item_id: &str,
+    item_name: &str,
+    item_type: &str,
+    slot: &str,
+) -> (String, bool, String) {
+    let is_mutated = item_id.starts_with("mut_")
+        || item_name.contains("【異變")
+        || crate::game::object_ecology::classify_item_stage(item_id) == "mutated";
+    if is_mutated {
+        return ("mutated".to_string(), false, String::new());
+    }
+    let is_crafted_finished = item_id.starts_with("craft_")
+        || item_id.starts_with("manual_")
+        || item_id.starts_with("item_")
+        || item_id == "blank_manual"
+        || item_id == "wt_blank_manual"
+        || item_id.starts_with("corpse_")
+        || !slot.is_empty()
+        || item_type == "tool"
+        || item_type == "equipment"
+        || item_type == "manual"
+        || item_type == "corpse"
+        || item_name.contains("精鍛");
+    let is_catalog_raw = crate::game::peninsula_catalog::find_catalog_entry(item_id).is_some_and(|cat| {
+        matches!(
+            cat.category_num.trim(),
+            "01" | "1" | "02" | "2" | "03" | "3" | "04" | "4" | "05" | "5" | "06" | "6" | "07" | "7"
+        )
+    });
+    let is_raw = !is_crafted_finished
+        && (is_catalog_raw
+            || item_type == "material"
+            || item_type == "raw_material"
+            || crate::game::object_ecology::classify_item_stage(item_id) == "raw");
+    if !is_raw {
+        return ("finished".to_string(), false, String::new());
+    }
+
+    let is_non_culinary_part = [
+        "魚骨", "魚鱗", "魚皮", "釣魚線", "魚線", "漁線", "魚網", "漁網", "螺殼", "貝殼", "茶籽",
+    ]
+    .iter()
+    .any(|kw| item_name.contains(kw))
+        || ["fishing_line", "fish_bone", "fish_scale", "shell_sack"]
+            .iter()
+            .any(|kw| item_id.contains(kw));
+    let is_culinary_raw = !is_non_culinary_part
+        && (crate::game::peninsula_catalog::find_catalog_entry(item_id).is_some_and(|cat| {
+            matches!(cat.category_num.trim(), "05" | "5" | "06" | "6" | "07" | "7")
+                || cat.attribute_tags.contains(&"food")
+                || cat.attribute_tags.contains(&"edible")
+        }) || ["shrimp", "fish", "meat", "grain", "berries"]
+            .iter()
+            .any(|kw| item_id.contains(kw))
+            || [
+                "蝦", "魚", "蟹", "鮑", "蛤", "蜆", "螺", "肉", "熊掌", "鹿腱", "牛蛙", "老鱉",
+                "稻穀", "穀糧", "漿果", "鮮果", "茶", "水芹",
+            ]
+            .iter()
+            .any(|kw| item_name.contains(kw)));
+    let craft_label = if is_culinary_raw {
+        "烹調炙烤".to_string()
+    } else {
+        "加工煉製".to_string()
+    };
+    ("raw".to_string(), true, craft_label)
+}
 pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     let Some(pid) = player_id(conn) else {
         conn.send_error(gametext::client("need_login"));
