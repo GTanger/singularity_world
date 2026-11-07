@@ -64,8 +64,11 @@ impl Store {
             for (z_idx, &(zone_name, cx, cy)) in HUNTING_PARTY_ZONES.iter().enumerate() {
                 let mut core_ids = Vec::new();
                 let mut rally_coord = (cx - 5, cy - 4);
-                let mut market_coord = (0, 0);
-                let mut market_name = "文曜・西門車馬聯運總站".to_string();
+                let (default_m_coord, default_m_name) = grid
+                    .find_nearest_room_by_tags((cx, cy), 60, &["market", "shop", "canteen"], (z_idx as u64).wrapping_mul(37))
+                    .unwrap_or(((0, 0), "文曜・西門車馬聯運總站".to_string()));
+                let mut market_coord = default_m_coord;
+                let mut market_name = default_m_name;
 
                 for s_idx in 0..total_household_slots_len() {
                     let slot = household_slot_at(s_idx);

@@ -36,10 +36,13 @@ pub fn ignite_or_stoke_campfire(
     let fuel_candidates = [
         "mat_kindling_bundle",
         "mat_timber_log",
+        "wt_timber_cedar",
         "mat_charcoal_sack",
         "mat_wood_offcut_bundle",
         "mat_reed_bundle",
-        "wt-good-001",
+        "wt_cat_0089",
+        "wt_cat_0090",
+        "wt_cat_0091",
     ];
 
     let mut consumed_item = None;
@@ -325,12 +328,14 @@ pub fn refine_wood_multi_socket(
     let inv = db::get_inventory(&ent.inventory, ent.vit);
     let wood_candidates = [
         "mat_timber_log",
+        "wt_timber_cedar",
         "mat_kindling_bundle",
         "mat_plank_board",
         "mat_wood_offcut_bundle",
-        "mat_repair_strip",
         "harvest_wood",
-        "wt-good-001",
+        "wt_cat_0089",
+        "wt_cat_0090",
+        "wt_cat_0091",
     ];
     let mut consumed = false;
     for w in wood_candidates {
@@ -474,7 +479,9 @@ pub fn repair_room_structure(
         }
     }
 
-    let _ = db::transfer_magnesium("world_market", pid, 8).or_else(|_| db::add_magnesium(pid, 8));
+    let inferred = crate::world::materials::infer_origin_settlement(room_id);
+    let settlement = if inferred.is_empty() { "文曜" } else { inferred };
+    let _ = crate::npc::causal_core::settle_player_with_settlement_treasury(pid, &settlement, 8);
     db::log_npc_event(now_unix, pid, "repair_structure", target_name);
 
     Ok(format!(

@@ -332,7 +332,8 @@ fn apply_catalog_effects_part1(
     {
         const TRANSIT_STOPS: &[(&str, i32, i32, &str)] = &[
             ("文曜", 0, -1, "三水交匯的學風重鎮，車馬喧囂，書香與市井氣息交融"),
-            ("水尾寮", 0, 125, "白塔北境清泉奔湧的堰頭樞紐，水汽氤氳，農人引水灌田"),
+            ("老堰頭", 0, 125, "白塔北境清泉奔湧的堰頭樞紐，水汽氤氳，農人引水灌田"),
+            ("水尾寮", -75, -280, "半島南端水運良澳與百草集散渡頭，漁舟與藥簍交錯"),
             ("半嶺鎮", 160, 210, "半島東北地勢起伏的丘陵山鎮，茶香撲鼻，山徑蜿蜒"),
             ("紅土崁", -180, -140, "西南灌溉渠網縱橫的沃土農莊，桑麻遍野，機杼聲聲"),
             ("南哨", 0, -220, "半島最南端風蝕礁岩林立的哨所防線，海風呼嘯，崗樓巍峨"),
@@ -721,12 +722,16 @@ fn apply_catalog_effects_part1(
                 push_refresh(conn, pid);
                 return true;
             }
-            let _ = crate::npc::causal_core::settle_player_with_settlement_treasury(pid, "風舶角", -6);
+            let port_settlement = {
+                let s = crate::world::materials::infer_origin_settlement(&room_name);
+                if s.is_empty() { "風舶角" } else { s }
+            };
+            let _ = crate::npc::causal_core::settle_player_with_settlement_treasury(pid, port_settlement, -6);
             let _ = db::add_to_inventory(pid, "wt_cat_0792", 1);
             let _ = event::append(now, pid, types::SCENE_OBJECT_ACTION, &format!("{}|buy_marine_insurance", obj.id));
             narrative.push_str(&format!(
-                "\n【簽立海事水險】你在掌事{}面前交付 6 鎂契費，於防水桐油麻布保單上簽章畫押，將一份「築港頭分級海事保單」妥善收妥入囊。\n{}蓋上硃砂大印叮嚀道：「若出海途中遭遇狂風暴雨造成海損，抵港憑單可自風舶角公庫領取 12 鎂理賠撫卹。」",
-                host_label, host_label
+                "\n【簽立海事水險】你在掌事{}面前交付 6 鎂契費，於防水桐油麻布保單上簽章畫押，將一份「築港頭分級海事保單」妥善收妥入囊。\n{}蓋上硃砂大印叮嚀道：「若出海途中遭遇狂風暴雨造成海損，抵港憑單可自{}公庫領取 12 鎂理賠撫卹。」",
+                host_label, host_label, port_settlement
             ));
             push_refresh(conn, pid);
             return true;
@@ -862,13 +867,17 @@ fn apply_catalog_effects_part1(
             let has_insurance = db::inventory_has_item(pid, "wt_cat_0792");
 
             let insurance_note = if is_stormy && has_insurance {
+                let port_settlement = {
+                    let s = crate::world::materials::infer_origin_settlement(&room_name);
+                    if s.is_empty() { "風舶角" } else { s }
+                };
                 let _ = db::remove_from_inventory(pid, "wt_cat_0792", 1);
-                let _ = crate::npc::causal_core::settle_player_with_settlement_treasury(pid, "風舶角", 12);
-                "\n【海事水險理賠】航程中突遇狂浪顛簸，部分隨身貨裝受潮海損；所幸你備有「築港頭分級海事保單」，抵埠時掌事核銷單據，由風舶角公庫如數給付 12 鎂海事水險理賠撫卹！"
+                let _ = crate::npc::causal_core::settle_player_with_settlement_treasury(pid, port_settlement, 12);
+                format!("\n【海事水險理賠】航程中突遇狂浪顛簸，部分隨身貨裝受潮海損；所幸你備有「築港頭分級海事保單」，抵埠時掌事核銷單據，由{port_settlement}公庫如數給付 12 鎂海事水險理賠撫卹！")
             } else if is_stormy {
-                "\n【風浪顛簸】途中遭遇驟雨海霧，風浪顛簸，所幸掌舵老水手經驗老道，商船化險為夷安抵新港。"
+                "\n【風浪顛簸】途中遭遇驟雨海霧，風浪顛簸，所幸掌舵老水手經驗老道，商船化險為夷安抵新港。".to_string()
             } else {
-                "\n【順流航行】商船揚帆順流破浪，一路碧波萬頃，海風徐徐，十分順遂平穩。"
+                "\n【順流航行】商船揚帆順流破浪，一路碧波萬頃，海風徐徐，十分順遂平穩。".to_string()
             };
 
             narrative.push_str(&format!(

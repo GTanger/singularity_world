@@ -878,11 +878,15 @@
             if (tokenKey && _tokenEnterTime[tokenKey] && (Date.now() - _tokenEnterTime[tokenKey] < 9000)) {
                 return '邁步穿行';
             }
-            var placeEl = document.getElementById('place-name') || document.querySelector('h1');
-            var roomName = placeEl ? String(placeEl.textContent || '') : '';
-            var isBridgeOrWater = window.__swRoomTerrain === 'Bridge' || window.__swRoomTerrain === 'Water' || (/(橋|水岸|河|溪|渠|灣|潭|埠|碼頭|亭|觀星|瞭望)/.test(roomName) && !/(食堂|大食堂|旅社|茶屋|商行|工坊|鐵坊|診所|藥房|書閣|民宅|居|齋|鋪|店)/.test(roomName));
-            var isIndoorPublic = typeof window.__swRoomIsIndoor === 'boolean' ? window.__swRoomIsIndoor : /(食堂|旅社|茶屋|茶樓|商行|工坊|鐵坊|木作|診所|藥房|書閣|講堂|蒙學|學院|鋪|店|堂|館|閣)/.test(roomName);
-            var isIndoorRoom = typeof window.__swRoomIsIndoor === 'boolean' ? window.__swRoomIsIndoor : /客房|旅社|宅|院|居|舍|房|閣|樓|堂|館|鋪|室/.test(roomName);
+            var meta = window.SwCurrentRoomMeta || {
+                terrain: window.__swRoomTerrain,
+                venue_kind: window.__swRoomVenueKind,
+                is_indoor: window.__swRoomIsIndoor
+            };
+            var terrainStr = String(meta.terrain || window.__swRoomTerrain || '').toLowerCase();
+            var isBridgeOrWater = terrainStr === 'bridge' || terrainStr === 'water';
+            var isIndoorPublic = Boolean(meta.venue_kind) || Boolean(meta.is_indoor) || Boolean(window.__swRoomVenueKind) || Boolean(window.__swRoomIsIndoor);
+            var isIndoorRoom = typeof meta.is_indoor === 'boolean' ? meta.is_indoor : Boolean(window.__swRoomIsIndoor);
             var dayPool;
             var nightOutdoorPool;
             if (isIndoorPublic) {

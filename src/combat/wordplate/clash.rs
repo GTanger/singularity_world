@@ -36,6 +36,45 @@ pub fn resolve_bout(
 /// 帶入架勢狀態與殘留氣場之單序位完整交鋒判定
 pub fn resolve_bout_with_state(
     slot: TacticalSlot,
+    phase: usize,
+    tech_a: Option<&SynthesizedTechnique>,
+    tech_b: Option<&SynthesizedTechnique>,
+    momentum_a: f64,
+    momentum_b: f64,
+    weight_a: f64,
+    weight_b: f64,
+    def_mit_a: f64,
+    def_mit_b: f64,
+    a_flawed_prior: bool,
+    b_flawed_prior: bool,
+    a_prior_posture: PostureState,
+    b_prior_posture: PostureState,
+    active_residue: Option<BattlefieldResidue>,
+) -> BoutClashOutcome {
+    resolve_bout_with_state_and_carriers(
+        slot,
+        phase,
+        tech_a,
+        tech_b,
+        momentum_a,
+        momentum_b,
+        weight_a,
+        weight_b,
+        def_mit_a,
+        def_mit_b,
+        a_flawed_prior,
+        b_flawed_prior,
+        a_prior_posture,
+        b_prior_posture,
+        active_residue,
+        None,
+        None,
+    )
+}
+
+/// 帶入架勢狀態、殘留氣場與武器載體之單序位完整交鋒判定
+pub fn resolve_bout_with_state_and_carriers(
+    slot: TacticalSlot,
     _phase: usize,
     tech_a: Option<&SynthesizedTechnique>,
     tech_b: Option<&SynthesizedTechnique>,
@@ -50,6 +89,8 @@ pub fn resolve_bout_with_state(
     a_prior_posture: PostureState,
     b_prior_posture: PostureState,
     active_residue: Option<BattlefieldResidue>,
+    a_weapon_carrier: Option<CarrierAffinity>,
+    b_weapon_carrier: Option<CarrierAffinity>,
 ) -> BoutClashOutcome {
     let name_a = tech_a.map(|t| t.effective_name.clone()).unwrap_or_else(|| "隨風拂袖".to_string());
     let name_b = tech_b.map(|t| t.effective_name.clone()).unwrap_or_else(|| "凝神自守".to_string());
@@ -166,25 +207,33 @@ pub fn resolve_bout_with_state(
         }
     }
 
-    let a_carrier = tech_a
-        .map(|t| t.primary_carrier)
-        .unwrap_or(CarrierAffinity::Unarmed);
-    let b_carrier = tech_b
-        .map(|t| t.primary_carrier)
-        .unwrap_or(CarrierAffinity::Unarmed);
+    let a_carrier = match a_weapon_carrier {
+        Some(wc) if wc != CarrierAffinity::Unarmed => wc,
+        _ => tech_a
+            .map(|t| t.primary_carrier)
+            .unwrap_or(CarrierAffinity::Unarmed),
+    };
+    let b_carrier = match b_weapon_carrier {
+        Some(wc) if wc != CarrierAffinity::Unarmed => wc,
+        _ => tech_b
+            .map(|t| t.primary_carrier)
+            .unwrap_or(CarrierAffinity::Unarmed),
+    };
     let a_target_part = tech_a
         .map(|t| t.primary_target)
         .unwrap_or(TargetPart::Torso);
     let b_target_part = tech_b
         .map(|t| t.primary_target)
         .unwrap_or(TargetPart::Torso);
+    let a_carrier_override = a_weapon_carrier.filter(|&wc| wc != CarrierAffinity::Unarmed);
+    let b_carrier_override = b_weapon_carrier.filter(|&wc| wc != CarrierAffinity::Unarmed);
     let a_motions = tech_a
-        .map(|t| t.derive_elementary_motions_for_carrier(None))
+        .map(|t| t.derive_elementary_motions_for_carrier(a_carrier_override))
         .unwrap_or_else(|| {
             derive_elementary_motions_from_chars(&[], a_carrier, a_target_part)
         });
     let b_motions = tech_b
-        .map(|t| t.derive_elementary_motions_for_carrier(None))
+        .map(|t| t.derive_elementary_motions_for_carrier(b_carrier_override))
         .unwrap_or_else(|| {
             derive_elementary_motions_from_chars(&[], b_carrier, b_target_part)
         });
@@ -516,16 +565,20 @@ pub fn resolve_bout_with_state(
     }
 }
 
-/// 帶入雙方攻防權重之田忌賽馬時序對決判定
-pub fn resolve_tianji_matchup_with_weights(
+pub type MatchupResult = Result<TacticalClashReport, WordPlateError>;
+
+/// 帶入雙方攻防權重與裝備載體之田忌賽馬時序對決判定
+pub fn resolve_tianji_matchup_with_weights_and_carriers(
     side_a: &TacticalLoadout,
     side_a_hp: i32,
     side_b: &TacticalLoadout,
     side_b_hp: i32,
     weight_a: f64,
     weight_b: f64,
+    a_weapon_carrier: Option<CarrierAffinity>,
+    b_weapon_carrier: Option<CarrierAffinity>,
     registry: &WordRegistry,
-) -> Result<TacticalClashReport, WordPlateError> {
+) -> MatchupResult {
     let mut current_hp_a = side_a_hp.max(1);
     let mut current_hp_b = side_b_hp.max(1);
     let mut rounds = Vec::with_capacity(3);
@@ -544,7 +597,7 @@ pub fn resolve_tianji_matchup_with_weights(
     let op_a = side_a.opening.as_ref().map(|s| s.synthesize(registry)).transpose()?;
     let op_b = side_b.opening.as_ref().map(|s| s.synthesize(registry)).transpose()?;
 
-    let bout_1 = resolve_bout_with_state(
+    let bout_1 = resolve_bout_with_state_and_carriers(
         TacticalSlot::Opening,
         1,
         op_a.as_ref(),
@@ -560,6 +613,8 @@ pub fn resolve_tianji_matchup_with_weights(
         posture_a,
         posture_b,
         active_residue,
+        a_weapon_carrier,
+        b_weapon_carrier,
     );
     current_hp_a = (current_hp_a - bout_1.damage_to_a).max(0);
     current_hp_b = (current_hp_b - bout_1.damage_to_b).max(0);
@@ -613,7 +668,7 @@ pub fn resolve_tianji_matchup_with_weights(
     let a_flawed = (bout_1.winner_side == "side_b" && (bout_1.b_initiative_score - bout_1.a_initiative_score > 0.4)) || bout_1.a_posture_after == PostureState::Broken;
     let b_flawed = (bout_1.winner_side == "side_a" && (bout_1.a_initiative_score - bout_1.b_initiative_score > 0.4)) || bout_1.b_posture_after == PostureState::Broken;
 
-    let bout_2 = resolve_bout_with_state(
+    let bout_2 = resolve_bout_with_state_and_carriers(
         TacticalSlot::Midgame,
         2,
         mid_a.as_ref(),
@@ -629,6 +684,8 @@ pub fn resolve_tianji_matchup_with_weights(
         posture_a,
         posture_b,
         active_residue,
+        a_weapon_carrier,
+        b_weapon_carrier,
     );
     current_hp_a = (current_hp_a - bout_2.damage_to_a).max(0);
     current_hp_b = (current_hp_b - bout_2.damage_to_b).max(0);
@@ -682,7 +739,7 @@ pub fn resolve_tianji_matchup_with_weights(
     let a_flawed_fin = (bout_2.winner_side == "side_b" && (bout_2.b_initiative_score - bout_2.a_initiative_score > 0.5)) || bout_2.a_posture_after == PostureState::Broken;
     let b_flawed_fin = (bout_2.winner_side == "side_a" && (bout_2.a_initiative_score - bout_2.b_initiative_score > 0.5)) || bout_2.b_posture_after == PostureState::Broken;
 
-    let bout_3 = resolve_bout_with_state(
+    let bout_3 = resolve_bout_with_state_and_carriers(
         TacticalSlot::Finisher,
         3,
         fin_a.as_ref(),
@@ -698,6 +755,8 @@ pub fn resolve_tianji_matchup_with_weights(
         posture_a,
         posture_b,
         active_residue,
+        a_weapon_carrier,
+        b_weapon_carrier,
     );
     current_hp_a = (current_hp_a - bout_3.damage_to_a).max(0);
     current_hp_b = (current_hp_b - bout_3.damage_to_b).max(0);
@@ -754,6 +813,29 @@ pub fn resolve_tianji_matchup_with_weights(
         side_b_final_hp: current_hp_b,
         summary,
     })
+}
+
+/// 帶入雙方攻防權重之田忌賽馬時序對決判定
+pub fn resolve_tianji_matchup_with_weights(
+    side_a: &TacticalLoadout,
+    side_a_hp: i32,
+    side_b: &TacticalLoadout,
+    side_b_hp: i32,
+    weight_a: f64,
+    weight_b: f64,
+    registry: &WordRegistry,
+) -> MatchupResult {
+    resolve_tianji_matchup_with_weights_and_carriers(
+        side_a,
+        side_a_hp,
+        side_b,
+        side_b_hp,
+        weight_a,
+        weight_b,
+        None,
+        None,
+        registry,
+    )
 }
 
 /// 執行田忌賽馬時序對決判定（保證零自殺判定、傷害單向承載與受控反衝）

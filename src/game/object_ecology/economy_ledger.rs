@@ -20,8 +20,9 @@ pub struct FieldFacilityState {
     pub expires_at: i64,
 }
 
-pub const CANONICAL_SETTLEMENTS: [&str; 9] = [
-    "文曜", "風舶角", "水尾寮", "半嶺鎮", "紅土崁", "霜林口", "下營", "南哨", "烏石鼻",
+pub const CANONICAL_SETTLEMENTS: [&str; 18] = [
+    "文曜", "老堰頭", "大圳頭", "半嶺鎮", "風舶角", "風舶嶼", "風櫃尾", "烏石鼻", "南哨",
+    "水尾寮", "樟木驛", "三號坑", "鋸木溪", "竹林寨", "分家巷", "紅土崁", "霜林口", "下營",
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -111,21 +112,39 @@ pub fn normalize_canonical_settlement(raw_settlement: &str) -> &'static str {
     } else {
         raw_settlement
     };
-    if s.contains("烏石鼻") || s.contains("鹽田澳") || s.contains("黑石灣") || s.contains("東海峭壁") {
+    if s.contains("老堰頭") {
+        "老堰頭"
+    } else if s.contains("大圳頭") {
+        "大圳頭"
+    } else if s.contains("風舶嶼") {
+        "風舶嶼"
+    } else if s.contains("風櫃尾") {
+        "風櫃尾"
+    } else if s.contains("樟木驛") {
+        "樟木驛"
+    } else if s.contains("三號坑") {
+        "三號坑"
+    } else if s.contains("鋸木溪") {
+        "鋸木溪"
+    } else if s.contains("竹林寨") {
+        "竹林寨"
+    } else if s.contains("分家巷") {
+        "分家巷"
+    } else if s.contains("烏石鼻") || s.contains("鹽田澳") || s.contains("黑石灣") || s.contains("東海峭壁") {
         "烏石鼻"
     } else if s.contains("風舶") || s.contains("巨藻淺灣") || s.contains("驚濤岩岸") || s.contains("落日岬") {
         "風舶角"
     } else if s.contains("水尾寮") || s.contains("淺澤泥口") || s.contains("水尾澤") || s.contains("黑沼林") || s.contains("黑沼林澤") || s.contains("黑沼") {
         "水尾寮"
-    } else if s.contains("半嶺") || s.contains("牛埔") || s.contains("白塔") || s.contains("分家巷") || s.contains("西麓林道") || s.contains("長風草甸") {
+    } else if s.contains("半嶺") || s.contains("牛埔") || s.contains("白塔") || s.contains("西麓林道") || s.contains("長風草甸") {
         "半嶺鎮"
-    } else if s.contains("紅土崁") || s.contains("大圳頭") || s.contains("老堰頭") || s.contains("西南原") || s.contains("赤石坡") || s.contains("西嶺礦谷") {
+    } else if s.contains("紅土崁") || s.contains("西南原") || s.contains("赤石坡") || s.contains("西嶺礦谷") {
         "紅土崁"
-    } else if s.contains("霜林口") || s.contains("翠冠") || s.contains("北嶺腳") || s.contains("樟木驛") || s.contains("竹林寨") || s.contains("青竹坪") || s.contains("古河巨木林") || s.contains("北坡雲杉林") || s.contains("雲腰雪林") {
+    } else if s.contains("霜林口") || s.contains("翠冠") || s.contains("北嶺腳") || s.contains("青竹坪") || s.contains("古河巨木林") || s.contains("北坡雲杉林") || s.contains("雲腰雪林") {
         "霜林口"
-    } else if s.contains("下營") || s.contains("黑沼關隘") || s.contains("三號坑") {
+    } else if s.contains("下營") || s.contains("黑沼關隘") {
         "下營"
-    } else if s.contains("南哨") || s.contains("風櫃尾") || s.contains("白茫洲") || s.contains("貼山深潭") || s.contains("清泉溪谷") {
+    } else if s.contains("南哨") || s.contains("白茫洲") || s.contains("貼山深潭") || s.contains("清泉溪谷") {
         "南哨"
     } else {
         "文曜"
@@ -148,7 +167,7 @@ pub fn is_high_demand_in_settlement(settlement: &str, item_id: &str) -> bool {
                 || item_id == "craft_calming_tea_pack"
                 || item_id == "craft_meridian_salve"
         }
-        "風舶角" | "水尾寮" => {
+        "風舶角" | "水尾寮" | "風舶嶼" | "風櫃尾" => {
             item_id.starts_with("mat_timber")
                 || item_id.starts_with("mat_plank")
                 || item_id.starts_with("mat_wood_offcut")
@@ -162,7 +181,7 @@ pub fn is_high_demand_in_settlement(settlement: &str, item_id: &str) -> bool {
                 || item_id == "craft_caulking_sealant"
                 || item_id == "mat_cedar_plank"
         }
-        "下營" | "南哨" => {
+        "下營" | "南哨" | "三號坑" => {
             item_id.starts_with("mat_repair_strip")
                 || item_id.starts_with("mat_metal_rim")
                 || item_id.starts_with("mat_iron")
@@ -176,7 +195,7 @@ pub fn is_high_demand_in_settlement(settlement: &str, item_id: &str) -> bool {
                 || item_id == "craft_patched_work_boots"
                 || item_id == "mat_salted_fish"
         }
-        "紅土崁" | "霜林口" | "半嶺鎮" | "烏石鼻" => {
+        "紅土崁" | "霜林口" | "半嶺鎮" | "烏石鼻" | "老堰頭" | "大圳頭" | "樟木驛" | "鋸木溪" | "竹林寨" | "分家巷" => {
             item_id == "craft_steel_hunting_knife"
                 || item_id == "craft_iron_pickaxe"
                 || item_id == "craft_heavy_leather_boots"

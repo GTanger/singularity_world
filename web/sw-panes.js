@@ -447,19 +447,21 @@
 		function isRawMaterialItem(it) {
 			if (!it) return false;
 			var itemId = String(it.item_id || it.id || '');
+			if (typeof it.item_stage === 'string' && it.item_stage.length > 0) {
+				return it.item_stage === 'raw' || Boolean(it.can_craft);
+			}
 			var itemName = String(it.name || '');
 			var isFinishedOrMutated = itemId.indexOf('mut_') === 0 || itemId.indexOf('craft_') === 0 || itemId.indexOf('manual_') === 0 || itemId.indexOf('item_') === 0 || itemName.indexOf('【異變') !== -1 || itemName.indexOf('精鍛') !== -1;
 			if (isFinishedOrMutated) return false;
-			return itemId.indexOf('mat_') === 0 ||
+			return Boolean(it.can_craft) ||
+				itemId.indexOf('mat_') === 0 ||
 				itemId.indexOf('harvest_') === 0 ||
-				(itemId.indexOf('wt_cat_') === 0 && !it.slot && it.item_type !== 'tool' && it.item_type !== 'equipment') ||
 				itemId === 'wt_beast_bone' ||
 				itemId === 'wt_down_feather' ||
 				itemId === 'shanhai_fresh_fish' ||
 				itemId === 'shanhai_beast_meat' ||
 				it.item_type === 'material' ||
-				it.item_type === 'raw_material' ||
-				/礦|砂|原木|蘆草|竹竿|草藥|水苔|紙刀|墨坯|麻繩|袋布|原牛皮|河蝦|水芹|絨羽|獸骨|老鱉|毛皮|鱗片|獠牙|彩羽|尾翎|香皮|鹿茸|山茶籽|白鮮草|藥草|漿果|獸皮|獸筋|鮮蝦|鮮魚|獸肉|魚乾|米糧|牧草|白炭|松脂|石粉|海貝|牛樟芝|黃金蜆/.test(itemName);
+				it.item_type === 'raw_material';
 		}
 
 		var bagItems = (lastInventoryMsg && Array.isArray(lastInventoryMsg.items)) ? lastInventoryMsg.items : [];
@@ -474,8 +476,8 @@
 				var rmRawName = rm.name || rmId;
 				var rmName = formatItemName(rmRawName, rmId);
 				var rmQty = Number(rm.qty) || 1;
-				var isCulinary = !/魚骨|魚鱗|魚皮|釣魚線|魚線|漁線|魚網|漁網|螺殼|貝殼|茶籽/.test(rmName) && !/fishing_line|fish_bone|fish_scale|shell_sack/.test(rmId) && (/蝦|魚|蟹|鮑|蛤|蜆|螺|肉|稻穀|穀糧|漿果|鮮果|茶|水芹/.test(rmName) || /蝦|魚|蟹|鮑|蛤|蜆|螺|肉|稻穀|穀糧|漿果|鮮果|茶|水芹/.test(rmRawName));
-				var btnLabel = isCulinary ? '烹調炙烤' : '加工煉製';
+				var craftLabel = rm.craft_label || '加工煉製';
+				var btnLabel = craftLabel;
 				craftBodyHtml += '<div class="craft-material-row" style="display:flex;justify-content:space-between;align-items:center;padding:4px 6px;background:rgba(0,0,0,0.03);border-radius:4px;">' +
 					'<span>' + esc(rmName) + (rmQty > 1 ? ' <small style="opacity:0.8;">\u00d7' + rmQty + '</small>' : '') + '</span>' +
 					'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="' + esc(rmId) + '">' + btnLabel + '</button>' +
@@ -850,9 +852,9 @@
 					var desc = it.description || '';
 					var descHtml = desc ? '<div class="inventory-item-desc">\u2503 ' + esc(desc) + '</div>' : '';
 					var actionsHtml = '<div class="inventory-item-actions">';
-					var isCorpse = /^corpse_/.test(it.item_id) || it.item_type === 'corpse';
+					var isCorpse = it.item_type === 'corpse' || /^corpse_/.test(it.item_id || '');
 					var isBlankManual = it.item_id === 'blank_manual' || it.item_id === 'wt_blank_manual';
-					var isManual = /^manual_/.test(it.item_id) || it.item_type === 'manual' || isBlankManual;
+					var isManual = it.item_type === 'manual' || isBlankManual || /^manual_/.test(it.item_id || '');
 					if (it.slot) {
 						if (it.slot === 'hold' || it.slot === 'hold_r' || it.slot === 'hold_l') {
 							actionsHtml += '<button type="button" class="inv-action-btn" data-action="equip" data-target="hold_l">\u5de6\u624b</button>';

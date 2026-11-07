@@ -23,12 +23,28 @@ pub fn get_or_init_entity_combat_word_casket(entity_id: &str, display_title: &st
             if !display_title.trim().is_empty() {
                 crate::server::handler::inventory::populate_resident_vocational_casket(display_title, &mut casket, registry);
             }
+            let clue = if !display_title.trim().is_empty() {
+                display_title
+            } else {
+                entity_id
+            };
+            let vessel_spec = crate::npc::causal_core::resolve_vocational_vessel(clue);
             if casket.inscribed_words_of(vessel_id).is_empty() {
                 for ch in ["巧", "堅"] {
                     if let Some(wids) = registry.get_by_char(ch) {
                         if let Some(wid) = wids.first() {
                             casket.add(wid.as_str(), 1);
                             let _ = casket.inscribe_item(vessel_id, wid.as_str());
+                        }
+                    }
+                }
+            }
+            if !vessel_spec.catalog_id.is_empty() && casket.inscribed_words_of(vessel_spec.catalog_id).is_empty() {
+                for ch in ["巧", "堅"] {
+                    if let Some(wids) = registry.get_by_char(ch) {
+                        if let Some(wid) = wids.first() {
+                            casket.add(wid.as_str(), 1);
+                            let _ = casket.inscribe_item(vessel_spec.catalog_id, wid.as_str());
                         }
                     }
                 }
@@ -45,12 +61,27 @@ pub fn calculate_entity_inscribed_combat_bonus(
     casket: &WordCasket,
     registry: &WordRegistry,
 ) -> (f64, f64, f64) {
-    let (atk, pen, def) = calculate_inscribed_combat_bonus(equipment_slots, casket, registry);
+    let clue = if !display_title.trim().is_empty() {
+        display_title
+    } else {
+        entity_id
+    };
+    let (atk, pen, def) = calculate_inscribed_combat_bonus(equipment_slots, clue, casket, registry);
     if atk > 0.0 || pen > 0.0 || def > 0.0 {
         return (atk, pen, def);
     }
     if let Some((vessel_id, _)) = resolve_entity_signature_vessel(entity_id, display_title) {
-        return casket.inscribed_combat_bonus(vessel_id, registry);
+        let (v_atk, v_pen, v_def) = casket.inscribed_combat_bonus(vessel_id, registry);
+        if v_atk > 0.0 || v_pen > 0.0 || v_def > 0.0 {
+            return (v_atk, v_pen, v_def);
+        }
+        let vessel = crate::npc::causal_core::resolve_vocational_vessel(clue);
+        if !vessel.catalog_id.is_empty() {
+            let (c_atk, c_pen, c_def) = casket.inscribed_combat_bonus(vessel.catalog_id, registry);
+            if c_atk > 0.0 || c_pen > 0.0 || c_def > 0.0 {
+                return (c_atk, c_pen, c_def);
+            }
+        }
     }
     (0.0, 0.0, 0.0)
 }
@@ -101,6 +132,7 @@ pub fn resolve_entity_weapon_affinity_with_inscriptions(
 
 fn calculate_inscribed_combat_bonus(
     equipment_slots: &str,
+    clue: &str,
     casket: &WordCasket,
     registry: &WordRegistry,
 ) -> (f64, f64, f64) {
@@ -113,9 +145,24 @@ fn calculate_inscribed_combat_bonus(
     let mut total_atk = 0.0;
     let mut total_pen = 0.0;
     let mut total_def = 0.0;
+    let vessel_opt = if !clue.trim().is_empty() {
+        Some(crate::npc::causal_core::resolve_vocational_vessel(clue))
+    } else {
+        None
+    };
     for (_slot, item_id) in slots {
         if !item_id.is_empty() {
-            let (atk, pen, def) = casket.inscribed_combat_bonus(&item_id, registry);
+            let (mut atk, mut pen, mut def) = casket.inscribed_combat_bonus(&item_id, registry);
+            if atk == 0.0 && pen == 0.0 && def == 0.0 && item_id.starts_with("wt_cat_") {
+                if let Some(vessel) = vessel_opt {
+                    if vessel.catalog_id == item_id {
+                        let (fb_atk, fb_pen, fb_def) = casket.inscribed_combat_bonus(vessel.item_id, registry);
+                        atk = fb_atk;
+                        pen = fb_pen;
+                        def = fb_def;
+                    }
+                }
+            }
             total_atk += atk;
             total_pen += pen;
             total_def += def;
@@ -296,13 +343,15 @@ fn execute_tianji_wordplate_combat_internal(
         (((a_atk as f64 + extra_a_atk) * 0.55) + (cur_a_hp as f64) * 0.45 + effective_a_pen * 0.35) * penalty_a;
     let weight_b =
         (((d_atk as f64 + extra_d_atk) * 0.55) + (cur_d_hp as f64) * 0.45 + effective_d_pen * 0.35) * penalty_d;
-    let matchup_result = resolve_tianji_matchup_with_weights(
+    let matchup_result = crate::combat::wordplate::resolve_tianji_matchup_with_weights_and_carriers(
         &a_loadout,
         cur_a_hp,
         &d_loadout,
         cur_d_hp,
         weight_a,
         weight_b,
+        Some(a_weapon_carrier),
+        Some(d_weapon_carrier),
         registry,
     );
 
@@ -424,7 +473,7 @@ fn execute_tianji_wordplate_combat_internal(
 
     if let Some(weapon_id) = weapon_id_opt {
         let w_name = a_weapon_name.as_deref().unwrap_or("");
-        if crate::pg::living_world::is_bladed_vessel_item(&weapon_id, w_name) {
+        if crate::pg::living_world::is_weapon_or_tool_item(&weapon_id, w_name) {
             let mut vstate = crate::pg::living_world::record_vessel_use(pid, &weapon_id, 1, 1, now);
             let weapon_clashed = rounds.iter().any(|r| {
                 r.b_target_part == TargetPart::Weapon
@@ -433,15 +482,35 @@ fn execute_tianji_wordplate_combat_internal(
             if weapon_clashed {
                 vstate = crate::pg::living_world::record_vessel_use(pid, &weapon_id, 2, 1, now);
             }
-            match vstate.condition {
-                crate::pg::living_world::VesselCondition::SlightlyDull => {
-                    prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已顯「刃口微鈍」，戰後宜尋街邊青石磨刀槽推磨開鋒。");
+            if crate::pg::living_world::is_bladed_vessel_item(&weapon_id, w_name) {
+                match vstate.condition {
+                    crate::pg::living_world::VesselCondition::SlightlyDull => {
+                        prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已顯「刃口微鈍」，戰後宜尋街邊青石磨刀槽推磨開鋒。");
+                    }
+                    crate::pg::living_world::VesselCondition::RolledEdge => {
+                        prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已現「捲刃待修」，宜赴鍛造工坊回火修整。");
+                    }
+                    crate::pg::living_world::VesselCondition::Sharp => {}
                 }
-                crate::pg::living_world::VesselCondition::RolledEdge => {
-                    prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已現「捲刃待修」，宜赴鍛造工坊回火修整。");
-                }
-                crate::pg::living_world::VesselCondition::Sharp => {}
             }
+        }
+    }
+
+    let def_weapon_id_opt: Option<String> = if !defender.equipment_slots.is_empty() {
+        if let Ok(slots) = serde_json::from_str::<HashMap<String, String>>(&defender.equipment_slots) {
+            let check_slots = ["weapon", "hold_r", "main_hand", "hold", "tool", "hold_l"];
+            check_slots.iter().find_map(|s| slots.get(*s).cloned().filter(|id| !id.is_empty()))
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
+    if let Some(def_weapon_id) = def_weapon_id_opt {
+        let def_w_name = d_weapon_name.as_deref().unwrap_or("");
+        if crate::pg::living_world::is_weapon_or_tool_item(&def_weapon_id, def_w_name) {
+            let _ = crate::pg::living_world::record_vessel_use(&defender.id, &def_weapon_id, 1, 1, now);
         }
     }
     let a_posture_broken = rounds

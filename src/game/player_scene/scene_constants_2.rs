@@ -61,10 +61,9 @@ fn player_layer_scene_objects_inner(
             })
         })
     };
-    let is_m3_020 = M3_020_SCENE_OBJECTS.iter().any(|obj| room_name.contains(obj.room));
     let mut objects: Vec<RoomObject> = M3_020_SCENE_OBJECTS
         .iter()
-        .filter(|obj| room_name.contains(obj.room))
+        .filter(|obj| room_name == obj.room || room_name == format!("文曜・{}", obj.room))
         .map(|obj| {
             let mut responses = HashMap::new();
             responses.insert("Look".to_string(), obj.look.to_string());
@@ -93,21 +92,14 @@ fn player_layer_scene_objects_inner(
         })
         .collect();
 
-    if is_m3_020 {
+    if !objects.is_empty() {
         return objects;
     }
 
     objects.extend(
         M3_027_LIFE_OBJECTS
             .iter()
-            .filter(|obj| {
-                room_name.contains(obj.room)
-                    || (obj.room == "半嶺水岸渡口"
-                        && (room_name.contains("水岸渡口")
-                            || room_name.contains("水尾寮渡口")
-                            || room_name.contains("水尾寮渡頭")))
-                    || (obj.room == "水尾寮渡頭市集" && (room_name.contains("水尾寮渡頭市集") || room_name.contains("渡頭市集")))
-            })
+            .filter(|obj| room_name.contains(obj.room))
             .map(|obj| {
                 let mut responses = HashMap::new();
                 responses.insert("Look".to_string(), obj.look.to_string());

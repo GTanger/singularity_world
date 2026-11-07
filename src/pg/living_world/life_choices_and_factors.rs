@@ -527,7 +527,19 @@ impl ResidentIntrinsicFactors {
         let settlement = if has_mill_factor {
             "老堰頭".to_string()
         } else {
-            sched_bldg.split('・').next().unwrap_or("文曜").to_string()
+            let slot = crate::store::wenyao_household_slot_for(&ent.id);
+            if ent.id == slot.name() || ent.display_title.contains(slot.name()) {
+                "文曜".to_string()
+            } else {
+                let s = crate::world::materials::infer_origin_settlement(&format!("grid:{}:{}", ent.x, ent.y));
+                if !s.is_empty() {
+                    s.to_string()
+                } else if !sched_bldg.is_empty() && sched_bldg.contains('・') {
+                    sched_bldg.split('・').next().unwrap_or("文曜").to_string()
+                } else {
+                    "文曜".to_string()
+                }
+            }
         };
 
         let secondary_tool_id = if !hold_l.is_empty() && hold_l != tool_id {
@@ -719,7 +731,7 @@ impl ResidentIntrinsicFactors {
                 vec![("wt_cat_0835".to_string(), "細棉麻透氣常服".to_string(), "件", 2)],
                 "fabric",
                 "shop",
-                "文曜織坊".to_string(),
+                format!("{settlement}織坊"),
                 if sched_act.is_empty() {
                     format!("在{}運使{}裁切粗麻布匹，走線縫綴衣物", sched_bldg, tool_name)
                 } else {
@@ -779,14 +791,22 @@ impl ResidentIntrinsicFactors {
             sched_bldg.to_string()
         };
 
-        let fb_deliver_coord = (-4, 4);
-        let fb_deliver_bldg = "文曜・三水大食堂";
+        let fb_deliver_coord = if has_mill_factor || settlement == "文曜" || settlement.is_empty() {
+            (-4, 4)
+        } else {
+            cur_pos
+        };
+        let fb_deliver_bldg = if has_mill_factor || settlement == "文曜" || settlement.is_empty() {
+            "文曜・三水大食堂".to_string()
+        } else {
+            format!("{settlement}・市集鋪面")
+        };
         let (deliver_coord, deliver_bldg) = resolve_nearest_room_by_tag(
             cur_pos,
             &[need_buyer_tag, "canteen", "shop", "market"],
             None,
             fb_deliver_coord,
-            fb_deliver_bldg,
+            &fb_deliver_bldg,
         );
 
         let fb_floodgate_coord = if settlement == "老堰頭" { (-1, 124) } else { (sched_x, sched_y) };
@@ -808,24 +828,38 @@ impl ResidentIntrinsicFactors {
         } else {
             format!("{}周邊溝渠分洪閘板與排水道", sched_bldg)
         };
-        let fb_canteen_coord = if settlement == "老堰頭" { (1, 124) } else { (-4, 4) };
-        let fb_canteen_bldg = if settlement == "老堰頭" {
-            "老堰頭・堰渠水畔食堂"
+        let fb_canteen_coord = if settlement == "老堰頭" {
+            (1, 124)
+        } else if settlement != "文曜" && !settlement.is_empty() {
+            cur_pos
         } else {
-            "文曜・三水大食堂"
+            (-4, 4)
+        };
+        let fb_canteen_bldg = if settlement == "老堰頭" {
+            "老堰頭・堰渠水畔食堂".to_string()
+        } else if settlement != "文曜" && !settlement.is_empty() {
+            format!("{settlement}・食堂")
+        } else {
+            "文曜・三水大食堂".to_string()
         };
         let (canteen_coord, canteen_bldg) = resolve_nearest_room_by_tag(
             cur_pos,
             &["canteen", "hot_food", "fresh_drink"],
             None,
             fb_canteen_coord,
-            fb_canteen_bldg,
+            &fb_canteen_bldg,
         );
         let (home_coord, home_bldg) = if has_mill_factor {
             ((-3, 124), "老堰頭・秦氏水輪石磨傳承老宅".to_string())
         } else {
             let slot = crate::store::wenyao_household_slot_for(&ent.id);
-            ((slot.home_x, slot.home_y), slot.home_name.to_string())
+            if ent.id == slot.name() || ent.display_title.contains(slot.name()) {
+                ((slot.home_x, slot.home_y), slot.home_name.to_string())
+            } else if settlement != "文曜" && !settlement.is_empty() {
+                (cur_pos, format!("{settlement}・居民居所"))
+            } else {
+                ((slot.home_x, slot.home_y), slot.home_name.to_string())
+            }
         };
 
         Self {

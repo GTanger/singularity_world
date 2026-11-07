@@ -723,11 +723,26 @@ pub fn co_enact_script_pack(
     let (ev, sp) = active_dyadic_event_and_script_pack_for_room(room_name, Some(caller_a), Some(caller_b), now_unix)?;
     let step = (((now_unix.unsigned_abs() as usize) / 20) % 3) + 1;
     let line = match step {
-        1 => ev.trigger_and_causal_chain,
-        2 => sp.player_actions,
-        _ => sp.outcome_and_world_change,
+        1 => ev.trigger_and_causal_chain.to_string(),
+        2 => {
+            let pa = sp.player_actions.trim();
+            if pa.starts_with("協助")
+                || pa.starts_with("向")
+                || pa.starts_with("與")
+                || pa.starts_with("幫")
+                || pa.starts_with("請")
+                || pa.starts_with("替")
+            {
+                format!(
+                    "{caller_a}與{caller_b}圍在{}旁協同料理「{}」，一人掌器調校、一人覆核成色，手腳俐落。",
+                    ev.key_objects, sp.title
+                )
+            } else {
+                pa.to_string()
+            }
+        }
+        _ => sp.outcome_and_world_change.to_string(),
     };
-    let formatted = line.to_string();
-    Some((ev.event_title, step, formatted))
+    Some((ev.event_title, step, line))
 }
 

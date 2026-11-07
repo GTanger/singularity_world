@@ -196,6 +196,38 @@ fn apply_catalog_effects_part5(
                 10,
                 "你旋動重型千斤頂將雙輪貨車大架頂升懸空，手持大鐵錘校正包鐵車軸並塗抹潤滑桐油脂，車輪轉動平穩無阻。",
             ),
+            _ if obj.name.contains("鐵錘")
+                || obj.name.contains("鍛")
+                || obj.name.contains("淬火")
+                || obj.id.contains("forge")
+                || obj.id.contains("anvil") =>
+            (
+                5,
+                11,
+                "你掄起重錘奮力鍛打燒紅的精鐵料件，火花四濺間反覆折疊鍛打並浸入冷槽淬火，淬煉出質地緊密的器刃胚材。",
+            ),
+            _ if obj.name.contains("字盤")
+                || obj.name.contains("排架")
+                || obj.name.contains("壓平")
+                || obj.name.contains("紙")
+                || obj.id.contains("print")
+                || obj.id.contains("paper") =>
+            (
+                4,
+                9,
+                "你專注於活字木盤檢字排版、上墨覆紙並旋緊壓桿壓平，勻墨揭起一張張墨香撲鼻、字跡清麗規整的紙張。",
+            ),
+            _ if obj.name.contains("鋸")
+                || obj.name.contains("石")
+                || obj.name.contains("磨")
+                || obj.id.contains("saw")
+                || obj.id.contains("stone")
+                || obj.id.contains("mill") =>
+            (
+                5,
+                10,
+                "你推拉粗齒排鋸剖切厚重原材並引水澆淋磨石修平稜角，粉塵飛揚間將石木構件修整得尺寸分明、榫接嚴密。",
+            ),
             _ => (
                 4,
                 8,
@@ -822,20 +854,28 @@ fn apply_peninsula_world_object_effects(
     now: i64,
     narrative: &mut String,
 ) {
+    let is_herbal = (obj.name.contains("藥草")
+        || obj.name.contains("百草")
+        || obj.name.contains("草藥")
+        || obj.name.contains("艾草")
+        || obj.id.contains("herb"))
+        && !obj.name.contains("糧草")
+        && !obj.name.contains("枯草")
+        && !obj.name.contains("野草")
+        && !obj.name.contains("除草");
+
     let is_medical_or_rest = obj.name.contains("診")
         || obj.name.contains("醫")
         || obj.name.contains("病榻")
         || obj.name.contains("藥")
-        || obj.name.contains("草")
+        || is_herbal
         || obj.name.contains("榻")
         || obj.name.contains("床")
         || obj.name.contains("蒲團")
         || obj.name.contains("坐墊");
 
     if matches!(action, "Use" | "Operate" | "Rest" | "Meditate" | "Acquire") && is_medical_or_rest {
-        let include_miasma = obj.name.contains("藥")
-            || obj.name.contains("草")
-            || obj.id.contains("herb");
+        let include_miasma = obj.name.contains("藥") || is_herbal;
         let cured = crate::pg::living_world::clear_entity_afflictions(pid, include_miasma, now);
         if !cured.is_empty() {
             if let Some(arc) = crate::store::get_store() {

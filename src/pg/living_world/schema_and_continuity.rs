@@ -6,12 +6,21 @@ pub fn is_weapon_or_tool_item(item_id: &str, item_name: &str) -> bool {
     let id_lower = item_id.to_lowercase();
     let name_lower = item_name.to_lowercase();
 
-    // 排除名單：消耗品、食品、茶、藥、生肉、素材殘渣、空白手札
+    // 先查物品定義與千物總典推導之穿戴槽位（hold_r/hold_l 為手持兵刃或工器具，body/head/feet/accessory 為衣帽護具配飾）
+    if let Some(def) = crate::db::get_item_def(item_id) {
+        if def.slot.starts_with("hold") || def.item_type == "weapon" || def.item_type == "tool" {
+            return true;
+        }
+        if !def.slot.is_empty() {
+            return false;
+        }
+    }
+    // 排除名單：消耗品、食品、茶、藥、生肉、素材殘渣、空白手札、服飾等
     const EXCLUDE_SUBSTRINGS: &[&str] = &[
-        "茶", "湯", "肉", "餅", "果", "藥", "散", "膏", "水", "漿", "手札",
-        "傘", "火把", "長柄", "靴", "匣", "斗篷", "燈", "曆",
+        "手札", "茶", "湯", "肉", "餅", "果", "藥", "散", "膏", "水", "漿", "燈", "曆", "袍", "衫", "襖",
+        "火把", "匣", "斗篷",
         "corpse_", "mat_", "blank_manual", "food", "potion", "herb", "ingot",
-        "umbrella", "torch", "handle", "boots", "box", "cloak", "lantern", "almanac",
+        "torch", "box", "cloak", "lantern", "almanac",
     ];
     for &ex in EXCLUDE_SUBSTRINGS {
         if id_lower.contains(ex) || name_lower.contains(ex) {
@@ -22,6 +31,7 @@ pub fn is_weapon_or_tool_item(item_id: &str, item_name: &str) -> bool {
     // 包含名單：刀、劍、匕、斧、鎬、槍、錘、杖、針、刃、弓、盾、鑿、鋸、鏟等武器或工器具
     const WEAPON_TOOL_KEYWORDS: &[&str] = &[
         "刀", "劍", "匕", "斧", "鎬", "槍", "錘", "杖", "針", "刃", "弓", "盾", "鑿", "鋸", "鏟", "鏨", "篩架", "旋鑿", "刨",
+        "竿", "剪", "鐮", "鍘", "槳", "篙", "扁擔", "算盤", "尺", "墨斗", "鉗", "傘", "杵", "臼", "網", "叉", "耙",
         "knife", "blade", "sword", "axe", "pick", "hammer", "spear", "rod", "staff", "bow", "shield", "weapon",
     ];
     WEAPON_TOOL_KEYWORDS.iter().any(|&kw| id_lower.contains(kw) || name_lower.contains(kw))

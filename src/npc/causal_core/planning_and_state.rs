@@ -608,6 +608,7 @@ fn seed_hooks_for_resident(
     settlement: &str,
     seed: u64,
 ) -> Vec<RelationalHook> {
+    let role_hint = crate::npc::causal_core::strip_trailing_person_name_from_role(role_hint);
     let s = clean_settlement_name(settlement);
     let peer_a = HOOK_PEER_NAMES[(seed as usize) % HOOK_PEER_NAMES.len()];
     let peer_b = HOOK_PEER_NAMES[((seed as usize) + 5) % HOOK_PEER_NAMES.len()];

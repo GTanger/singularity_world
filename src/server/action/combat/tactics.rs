@@ -259,10 +259,6 @@ fn inspect_carrier_resonance(
             }
         });
 
-    if !resonates && weapon_affinity == CarrierAffinity::Unarmed {
-        return Some("身形空靈，雙掌氣韻流轉，勁力透骨化有形為無形！".to_string());
-    }
-
     if resonates {
         let clean_w = weapon_name.map(crate::ai::narrative::clean_vessel_name);
         let w_ref = clean_w.as_deref().filter(|s| !s.is_empty()).or(weapon_name);
@@ -304,7 +300,7 @@ fn inspect_carrier_resonance(
                 }
             }
             CarrierAffinity::Unarmed => {
-                Some("拳掌通達返璞歸真，舉手投足俱是純陽氣勁！".to_string())
+                Some("身形空靈，雙掌氣韻流轉，勁力透骨化有形為無形！".to_string())
             }
             CarrierAffinity::Footwork => {
                 Some("步法神妙飄逸，踏風而行，身影虛實交錯！".to_string())

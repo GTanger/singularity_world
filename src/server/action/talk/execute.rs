@@ -270,9 +270,9 @@ pub(super) fn do_entity_talk(
     };
     let mut decision = score_npc_interaction_stance(&decision_input);
     if !is_trade_topic && decision.choice == NpcStanceChoice::Bargain {
-        decision.choice = NpcStanceChoice::Accept;
+        decision.choice = NpcStanceChoice::Deflect;
         decision.prompt_directive =
-            "【已拍板決策：A 正面自然應對】請直接、自然地針對來客本句的提問或話語回答（切合當前時刻天色與自身處境）。若來客邀你離開現場合作、去別處泡茶、去你家或叫你跟老闆請假，請以手頭還有當下活計要忙為由自然婉拒離開（或邀請就在原地順口聊兩句），嚴禁盲目答應「好呀，走吧」卻留在原地，更不可前後自相矛盾；嚴禁強行索討物品或重複提補貨差事；台詞限 35 字內。".to_string();
+            "【已拍板決策：C 劃定邊界／有條件往來】請切合當前時刻與自身手頭差事回應。若非交易話題，不可盲從應允，應講究情理邊界或提出對等互惠條件（如要求出示信物、打聽特定消息或先協助手頭差事）；若來客邀你離開現場，請以差事在身為由婉拒；台詞限 35 字內。".to_string();
     }
     let resolved_room_for_stance = db::get_room_name(player_room).unwrap_or_else(|_| player_room.to_string());
     let (eval_stance, eval_stance_desc) = if let Ok(Some(player_ent)) = db::get_entity(pid) {
@@ -288,6 +288,10 @@ pub(super) fn do_entity_talk(
     };
     if eval_stance == NegotiationStance::Refuse {
         decision.choice = NpcStanceChoice::Refuse;
+    } else if eval_stance == NegotiationStance::Deflect {
+        decision.choice = NpcStanceChoice::Deflect;
+    } else if eval_stance == NegotiationStance::Bargain && decision.choice == NpcStanceChoice::Accept {
+        decision.choice = NpcStanceChoice::Bargain;
     }
     let mentorship_note = handle_three_baton_mentorship_and_obligation(
         pid,
@@ -586,6 +590,10 @@ pub(super) fn do_entity_talk(
         let live_talk_ctx = build_universal_entity_live_talk_context(target);
         if !live_talk_ctx.is_empty() {
             bs.push_str(&live_talk_ctx);
+        }
+        let knowledge_facts = crate::pg::living_world::recent_resident_knowledge_facts(&target.id, 3);
+        if !knowledge_facts.is_empty() {
+            bs.push_str(&format!("\n【近期親歷見聞】：{}（若來客問及近況、物資或鄰里，可自然帶出這些親歷見聞）", knowledge_facts.join("；")));
         }
         if is_trade_topic {
             if let Ok(Some(player_ent)) = db::get_entity(pid) {

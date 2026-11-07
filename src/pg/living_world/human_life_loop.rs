@@ -377,7 +377,7 @@ pub fn step_resident_human_life_loop(
     let activity: String;
     let thought_src: crate::db::ThoughtSource;
     let thought_text: String;
-    let mut knowledge_update: Option<(String, &'static str, String)> = None;
+    let mut knowledge_update: Option<(String, String, String)> = None;
     let intent: &str;
 
     match chosen {
@@ -411,7 +411,7 @@ pub fn step_resident_human_life_loop(
             );
             knowledge_update = Some((
                 factors.work_bldg.clone(),
-                "chisel_maintenance_state",
+                "chisel_maintenance_state".to_string(),
                 format!(
                     "{}已於石台精礪完畢（狀態：{}，累計運使 {} 次），隨時可投產",
                     factors.tool_name,
@@ -543,9 +543,35 @@ pub fn step_resident_human_life_loop(
                 payment_mg,
                 remaining_str
             );
+            let cp_settlement = store
+                .get_entity(&factors.counterparty_id)
+                .map(|cp| crate::world::materials::infer_origin_settlement(&format!("grid:{}:{}", cp.x, cp.y)))
+                .filter(|s| !s.is_empty())
+                .unwrap_or_else(|| {
+                    if !factors.settlement.is_empty() {
+                        factors.settlement.as_str()
+                    } else {
+                        crate::world::materials::infer_origin_settlement(&format!("grid:{}:{}", ent.x, ent.y))
+                    }
+                });
+            let contract_tag = factors
+                .delivery_items
+                .first()
+                .map(|(item_id, _, _, _)| {
+                    let clean = item_id
+                        .trim_start_matches("wt_cat_")
+                        .trim_start_matches("wt-good-")
+                        .trim_start_matches("mat_");
+                    if clean.is_empty() {
+                        "settlement_supply_contract".to_string()
+                    } else {
+                        format!("{clean}_supply_contract")
+                    }
+                })
+                .unwrap_or_else(|| "settlement_supply_contract".to_string());
             knowledge_update = Some((
-                format!("文曜・{}", cp_person),
-                "morning_ricemilk_contract",
+                format!("{cp_settlement}・{cp_person}"),
+                contract_tag,
                 format!(
                     "今日已親赴{}向{}交割{}（實收 {} 枚鎂幣，隨身尚存{}）",
                     deliver_bldg_plain,
@@ -666,7 +692,7 @@ pub fn step_resident_human_life_loop(
                 } else {
                     format!("{}・{}", factors.supplier_place_label, factors.supplier_id)
                 },
-                "upstream_grain_supply",
+                "upstream_grain_supply".to_string(),
                 format!(
                     "因工坊{}存量見底，已向{}支付 {} 枚鎂幣補入 {} {}{}，目前隨身存量 {} {}",
                     factors.raw_item_name,
@@ -705,7 +731,7 @@ pub fn step_resident_human_life_loop(
             );
             knowledge_update = Some((
                 factors.floodgate_bldg.clone(),
-                "hydrology_and_weather_omen",
+                "hydrology_and_weather_omen".to_string(),
                 format!(
                     "北坡雨霧漲水之際已親赴{}落下{}（當前體力 {}、內息 {}），水勢恢復平穩",
                     floodgate_bldg_plain, factors.floodgate_facility, ent.vit, ent.qi
@@ -834,7 +860,7 @@ pub fn step_resident_human_life_loop(
             };
             knowledge_update = Some((
                 factors.work_bldg.clone(),
-                "millstone_and_sluice_state",
+                "millstone_and_sluice_state".to_string(),
                 format!(
                     "今日已耗{}產出{}（待用{}餘 {} {}）；{}{}已運使 {} 次（磨損點數 {}・{}）",
                     factors.raw_item_name,

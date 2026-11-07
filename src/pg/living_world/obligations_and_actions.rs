@@ -380,7 +380,22 @@ pub fn record_player_world_action(
             crate::grid::parse_grid_room_id(place_id)
                 .map(crate::world::place::legacy_place_id)
         })
-        .unwrap_or_else(|| "wt-physical-0086".to_string())
+        .unwrap_or_else(|| {
+            let act_room = crate::store::get_store()
+                .and_then(|s| {
+                    s.read()
+                        .entities
+                        .get(actor_id)
+                        .map(|e| format!("grid:{}:{}", e.x, e.y))
+                })
+                .unwrap_or_default();
+            let s = crate::world::materials::infer_origin_settlement(if act_room.is_empty() { place_id } else { &act_room });
+            if !s.is_empty() {
+                format!("{s}・公共場所")
+            } else {
+                "文曜・公共場所".to_string()
+            }
+        })
     } else {
         place_id.to_string()
     };

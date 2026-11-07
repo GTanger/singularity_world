@@ -5,9 +5,9 @@ use std::sync::{LazyLock, RwLock};
 
 use crate::ai::narrative::{CombatBoutFactPacket, compose_combat_bouts_concurrent};
 use crate::combat::wordplate::{
-    derive_elementary_motions_from_chars, infer_item_carrier_affinity,
-    resolve_tianji_matchup_with_weights, CarrierAffinity, PostureState, StarInlay, StarSentence,
-    TacticalLoadout, TacticalSlot, TargetPart, WordCasket, WordRegistry,
+    derive_elementary_motions_from_chars, infer_item_carrier_affinity, CarrierAffinity,
+    PostureState, StarInlay, StarSentence, TacticalLoadout, TacticalSlot, TargetPart, WordCasket,
+    WordRegistry,
 };
 use crate::pg::living_world::AfflictionKind;
 use crate::db::{

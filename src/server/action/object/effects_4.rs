@@ -70,7 +70,11 @@ fn apply_catalog_effects_part4(
             now,
         );
         let _ = event::append(now, pid, types::SCENE_OBJECT_ACTION, "kitchen_assisted");
-        narrative.push_str("【幫廚備膳・市井炊煙】你挽起衣袖在紅鐵燉肉大釜與溫米漿桶前添柴調羹、分盛熱湯，熱氣騰騰的香氣溢滿三水大食堂。掌廚師傅依例自文曜公庫支領 4 鎂幫廚津貼交予你，並盛了一盅熱氣滾滾的「慢燉原牛肉湯陶盅」，爐火重息隨之凝練。");
+        let raw_settlement = crate::world::materials::infer_origin_settlement(player_room);
+        let settlement = if raw_settlement.is_empty() { "文曜" } else { raw_settlement };
+        narrative.push_str(&format!(
+            "【幫廚備膳・市井炊煙】你挽起衣袖在紅鐵燉肉大釜與溫米漿桶前添柴調羹、分盛熱湯，熱氣騰騰的香氣溢滿{settlement}食堂。掌廚師傅依例自{settlement}公庫支領 4 鎂幫廚津貼交予你，並盛了一盅熱氣滾滾的「慢燉原牛肉湯陶盅」，爐火重息隨之凝練。"
+        ));
         push_refresh(conn, pid);
         return true;
     }
@@ -507,7 +511,11 @@ fn apply_catalog_effects_part4(
             });
         }
         let _ = event::append(now, pid, types::SCENE_OBJECT_STATE, "registry_checked");
-        narrative.push_str("\n【查閱地籍戶譜】你仔細翻閱公議堂案几上的地籍總圖與落籍戶譜。各坊街屋坐標界石標註分明，田畝產權清晰可稽，令人對文曜建置井然肅然起敬。");
+        let raw_settlement = crate::world::materials::infer_origin_settlement(player_room);
+        let settlement = if raw_settlement.is_empty() { "文曜" } else { raw_settlement };
+        narrative.push_str(&format!(
+            "\n【查閱地籍戶譜】你仔細翻閱公議堂案几上的地籍總圖與落籍戶譜。各坊街屋坐標界石標註分明，田畝產權清晰可稽，令人對{settlement}建置井然肅然起敬。"
+        ));
         push_refresh(conn, pid);
         return true;
     }

@@ -217,6 +217,7 @@ fn format_held_vessel_outside_store(
 
 fn derive_eco_inner_thought(
     e: &store::Entity,
+    settlement: &str,
     title: &str,
     activity: &str,
     hunting_party: &str,
@@ -232,11 +233,15 @@ fn derive_eco_inner_thought(
     }
     let seed = e.soul_seed.unwrap_or(0).unsigned_abs();
     let role = format!("{} {}", title, e.display_title);
-    let settlement = title.split('・').next().unwrap_or("文曜");
+    let effective_settlement = if !settlement.is_empty() {
+        settlement
+    } else {
+        title.split('・').next().unwrap_or("文曜")
+    };
     crate::npc::causal_core::render_somatic_10layer_thought(
         &e.id,
         &role,
-        settlement,
+        effective_settlement,
         seed,
         activity,
         "",
@@ -299,6 +304,7 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
             .unwrap_or(&role_raw)
             .trim()
             .to_string();
+        let role_clean = crate::npc::causal_core::strip_trailing_person_name_from_role(&role_clean).to_string();
         let final_title = if role_clean != person {
             role_clean
         } else {
@@ -458,6 +464,7 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
         };
         let thought = derive_eco_inner_thought(
             &e,
+            &settlement,
             &final_title,
             &activity,
             "",
@@ -703,6 +710,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                 .unwrap_or(&role_raw)
                 .trim()
                 .to_string();
+            let role_clean = crate::npc::causal_core::strip_trailing_person_name_from_role(&role_clean).to_string();
             let final_title = if role_clean != person {
                 role_clean
             } else {
@@ -757,7 +765,9 @@ pub async fn eco_entities() -> impl IntoResponse {
             .cloned()
             .unwrap_or_else(|| (String::new(), None));
         let eff_mg = e.magnesium;
-        let thought = derive_eco_inner_thought(&e, &title, &activity, &hunting_party, eff_mg);
+        let settlement = store::resident_macro_settlement(&e.id, &e.display_title)
+            .unwrap_or_else(|| store::normalize_household_home_settlement(store::wenyao_household_slot_for(&e.id).home_name));
+        let thought = derive_eco_inner_thought(&e, settlement, &title, &activity, &hunting_party, eff_mg);
         let magnesium = Some(eff_mg);
 
         entities.push(EcoEntity {
@@ -912,11 +922,12 @@ pub async fn eco_pulse() -> impl IntoResponse {
     let stranded_cargo_orders =
         crate::npc::causal_core::list_active_stranded_cargo_orders(now_unix);
     let mut active_ripples = Vec::new();
+    let mut seen_fact_ids = std::collections::HashSet::new();
     if let Ok(guard) = crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES.read() {
         for state in guard.values() {
             for rip in &state.active_ripples {
                 if rip.origin_tick + 5400 >= now_unix
-                    && !active_ripples.iter().any(|r: &crate::npc::causal_core::WorldRippleFact| r.fact_id == rip.fact_id)
+                    && seen_fact_ids.insert(rip.fact_id.clone())
                 {
                     active_ripples.push(rip.clone());
                 }

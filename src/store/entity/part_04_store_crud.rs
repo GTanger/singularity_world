@@ -817,7 +817,8 @@ fn resolve_venue_for_requirement(
             crate::game::object_ecology::scarcest_item_for_settlement(settlement_name)
                 .map(|(_id, nm, _cur, _max, _pr)| nm);
         let res_seed = crate::npc::causal_core::deterministic_resident_seed(&e.id, e.soul_seed);
-        let role_combined = format!("{} {}", slot.brief_tag, e.display_title);
+        let clean_title = crate::npc::causal_core::strip_trailing_person_name_from_role(&e.display_title);
+        let role_combined = format!("{} {}", slot.brief_tag, clean_title);
         let (causal, chosen) = crate::npc::causal_core::plan_next_causal_action(
             &e.id,
             &role_combined,

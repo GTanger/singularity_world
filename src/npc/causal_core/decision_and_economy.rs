@@ -203,7 +203,8 @@ pub fn normalize_and_seed_circular_economy_once(store: &mut crate::store::Store)
             if e.kind == "npc" {
                 let seed = deterministic_resident_seed(&e.id, e.soul_seed);
                 let slot = crate::store::wenyao_household_slot_for(&e.id);
-                let role_hint = format!("{} {}", slot.brief_tag, e.display_title);
+                let clean_title = crate::npc::causal_core::strip_trailing_person_name_from_role(&e.display_title);
+                let role_hint = format!("{} {}", slot.brief_tag, clean_title);
                 let starting_wallet = compute_starting_wallet(seed, &role_hint);
                 e.magnesium = starting_wallet;
                 if let Some((before_tag, _)) = e.current_activity.split_once("（【") {

@@ -293,10 +293,31 @@ pub(super) fn handle_sell_item(conn: &WsConnection, msg: &ClientMsg) {
         .unwrap_or(3)
         .max(3);
 
-    let player_room = db::get_entity_room(&pid)
-        .ok()
-        .and_then(|r| db::get_room_name(&r).ok())
-        .unwrap_or_else(|| "文曜".to_string());
+    let raw_room = db::get_entity_room(&pid).unwrap_or_default();
+    let player_room = if raw_room.starts_with("grid:") {
+        let inf = crate::world::materials::infer_origin_settlement(&raw_room);
+        if !inf.is_empty() {
+            inf.to_string()
+        } else {
+            db::get_room_name(&raw_room).unwrap_or_else(|_| raw_room.clone())
+        }
+    } else {
+        db::get_room_name(&raw_room).unwrap_or_else(|_| {
+            let inf = crate::world::materials::infer_origin_settlement(&raw_room);
+            if !inf.is_empty() {
+                inf.to_string()
+            } else if !raw_room.is_empty() {
+                raw_room.clone()
+            } else {
+                "文曜".to_string()
+            }
+        })
+    };
+    let player_room = if player_room.trim().is_empty() {
+        "文曜".to_string()
+    } else {
+        player_room
+    };
     let initial_quote = crate::game::object_ecology::dynamic_settlement_market_quote(
         &player_room,
         &msg.item_id,

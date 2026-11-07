@@ -231,4 +231,44 @@ mod tests {
             "隨身器物應具備銘文刻字後綴，實際為：{weapon_name}"
         );
     }
+
+    #[test]
+    fn test_is_weapon_or_tool_item_and_unarmed_carrier_resonance_guard() {
+        // 1. 驗證釣竿與裁布剪刀等百工器物被正確判定為武器或工器具
+        assert!(
+            crate::pg::living_world::is_weapon_or_tool_item("wt_cat_1006", "老青竹黃銅輪捲線釣竿"),
+            "釣竿應被判定為武器或工器具"
+        );
+        assert!(
+            crate::pg::living_world::is_weapon_or_tool_item("wt_cat_0890", "裁布大剪刀"),
+            "裁布大剪刀應被判定為武器或工器具"
+        );
+
+        // 2. 驗證空手在戰術句法無空手親和詞時返回 None，不得獲取未共鳴增益
+        let registry = WordRegistry::global();
+        let empty_loadout = TacticalLoadout::new();
+        let res_empty = inspect_carrier_resonance(&empty_loadout, CarrierAffinity::Unarmed, None, registry);
+        assert!(
+            res_empty.is_none(),
+            "空手無對應詞盤時必須返回 None"
+        );
+
+        if let Some(wids) = registry.get_by_char("斬") {
+            if let Some(wid) = wids.first() {
+                let mut loadout_blade = TacticalLoadout::new();
+                let sent = StarSentence::new(vec![
+                    StarInlay::new("N001", wid.as_str()),
+                    StarInlay::new("N002", wid.as_str()),
+                    StarInlay::new("N003", wid.as_str()),
+                ])
+                .expect("valid 3-word sentence");
+                loadout_blade.set_slot(TacticalSlot::Opening, sent);
+                let res_blade = inspect_carrier_resonance(&loadout_blade, CarrierAffinity::Unarmed, None, registry);
+                assert!(
+                    res_blade.is_none(),
+                    "裝備刀劍親和詞彙時，空手判定必須返回 None"
+                );
+            }
+        }
+    }
 }

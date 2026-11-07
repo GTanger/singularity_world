@@ -66,14 +66,21 @@ pub fn strip_wt_catalog_codes(input: &str) -> String {
     let mut i = 0;
     let n = chars.len();
     while i < n {
-        if i + 3 <= n && chars[i] == 'W' && chars[i + 1] == 'T' && chars[i + 2] == '-' {
-            let mut j = i + 3;
+        let is_wt = i + 2 <= n
+            && (chars[i] == 'W' || chars[i] == 'w')
+            && (chars[i + 1] == 'T' || chars[i + 1] == 't');
+        if is_wt {
+            let mut j = i + 2;
+            let had_wt_prefix = true;
+            if j < n && chars[j] == '-' {
+                j += 1;
+            }
             let mut digit_count = 0;
             while j < n && chars[j].is_ascii_digit() {
                 digit_count += 1;
                 j += 1;
             }
-            if (3..=4).contains(&digit_count) {
+            if had_wt_prefix && (3..=4).contains(&digit_count) {
                 while j < n && (chars[j] == ' ' || chars[j] == '\t') {
                     j += 1;
                 }
@@ -81,7 +88,7 @@ pub fn strip_wt_catalog_codes(input: &str) -> String {
                 continue;
             }
         }
-        if chars[i] == '-' && i + 1 < n && chars[i + 1].is_ascii_digit() {
+        if chars[i] == '-' && i + 1 < n && chars[i + 1] == '0' {
             let prev_is_digit = i > 0 && chars[i - 1].is_ascii_digit();
             if !prev_is_digit {
                 let mut j = i + 1;
@@ -90,7 +97,7 @@ pub fn strip_wt_catalog_codes(input: &str) -> String {
                     digit_count += 1;
                     j += 1;
                 }
-                if (3..=4).contains(&digit_count) {
+                if digit_count == 4 {
                     while j < n && (chars[j] == ' ' || chars[j] == '\t') {
                         j += 1;
                     }

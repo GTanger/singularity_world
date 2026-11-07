@@ -289,21 +289,30 @@ pub fn populate_resident_vocational_casket(pid: &str, casket: &mut WordCasket, r
 
     // 3. 解析本職隨身器物並刻銘
     let vessel = crate::npc::causal_core::resolve_vocational_vessel(&clue);
+    let inscribe_pair: &[&str] = if vessel.is_bladed
+        || clue.contains("鍛")
+        || clue.contains("鐵")
+        || clue.contains("木")
+        || clue.contains("石")
+    {
+        &["巧", "堅"]
+    } else {
+        &["純", "流"]
+    };
     if casket.inscribed_words_of(vessel.item_id).is_empty() {
-        let inscribe_pair: &[&str] = if vessel.is_bladed
-            || clue.contains("鍛")
-            || clue.contains("鐵")
-            || clue.contains("木")
-            || clue.contains("石")
-        {
-            &["巧", "堅"]
-        } else {
-            &["純", "流"]
-        };
         for &ch in inscribe_pair {
             if let Some(wid) = resolve_word_id(registry, ch) {
                 casket.add(&wid, 1);
                 let _ = casket.inscribe_item(vessel.item_id, &wid);
+                mutated = true;
+            }
+        }
+    }
+    if !vessel.catalog_id.is_empty() && casket.inscribed_words_of(vessel.catalog_id).is_empty() {
+        for &ch in inscribe_pair {
+            if let Some(wid) = resolve_word_id(registry, ch) {
+                casket.add(&wid, 1);
+                let _ = casket.inscribe_item(vessel.catalog_id, &wid);
                 mutated = true;
             }
         }

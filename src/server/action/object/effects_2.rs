@@ -205,18 +205,38 @@ fn apply_catalog_effects_part2(
     if (obj.id == "wt_bridge_sundial_pillar" || obj.name.contains("日晷") || obj.name.contains("指路石柱"))
         && (action == "Read" || action == "Use")
     {
+        let raw_settlement = crate::world::materials::infer_origin_settlement(player_room);
+        let settlement = if raw_settlement.is_empty() { "文曜" } else { raw_settlement };
         let hour = current_game_hour(&conn.cfg);
-        let (period, shadow_desc) = match hour {
-            23 | 0..=3 => ("深宵", "此時夜闌更深，日晷無日影，青石底座刻痕藉鐘樓燈火依稀可辨"),
-            4..=6 => ("晨曉", "旭日初昇，晨霞薄染，細長晷影斜斜投向正西方「西門聯運」刻度"),
-            7..=10 => ("晝前", "朝陽高照，長街人聲初起，晷影清晰轉向西北方「三水總商行」刻度"),
-            11..=14 => ("正晝", "日輪當空正中，晷針短影端正直指正北「三水口北街」刻度"),
-            15..=18 => ("黃昏", "午後陽光漸暖，車馬絡繹，晷影斜長投向東南「東橋旅社與分家巷」刻度"),
-            _ => ("入夜", "暮色四合，燈火初上，晷影隨殘陽斂入石台，正對夜市人流"),
+        let (period, shadow_desc) = if settlement == "文曜" {
+            match hour {
+                23 | 0..=3 => ("深宵", "此時夜闌更深，日晷無日影，青石底座刻痕藉鐘樓燈火依稀可辨".to_string()),
+                4..=6 => ("晨曉", "旭日初昇，晨霞薄染，細長晷影斜斜投向正西方「西門聯運」刻度".to_string()),
+                7..=10 => ("晝前", "朝陽高照，長街人聲初起，晷影清晰轉向西北方「三水總商行」刻度".to_string()),
+                11..=14 => ("正晝", "日輪當空正中，晷針短影端正直指正北「三水口北街」刻度".to_string()),
+                15..=18 => ("黃昏", "午後陽光漸暖，車馬絡繹，晷影斜長投向東南「東橋旅社與分家巷」刻度".to_string()),
+                _ => ("入夜", "暮色四合，燈火初上，晷影隨殘陽斂入石台，正對夜市人流".to_string()),
+            }
+        } else {
+            match hour {
+                23 | 0..=3 => ("深宵", format!("此時夜闌更深，日晷無日影，青石底座刻痕藉{settlement}燈火依稀可辨")),
+                4..=6 => ("晨曉", format!("旭日初昇，晨霞薄染，細長晷影斜斜投向{settlement}西面聯運道刻度")),
+                7..=10 => ("晝前", format!("朝陽高照，長街人聲初起，晷影清晰轉向{settlement}坊市集散刻度")),
+                11..=14 => ("正晝", format!("日輪當空正中，晷針短影端正直指{settlement}正北通衢刻度")),
+                15..=18 => ("黃昏", format!("午後陽光漸暖，車馬絡繹，晷影斜長投向{settlement}東南驛道刻度")),
+                _ => ("入夜", format!("暮色四合，燈火初上，晷影隨殘陽斂入石台，正對{settlement}市面人流")),
+            }
+        };
+        let inscription = if settlement == "文曜" {
+            "石柱四面銘文刻印分明：北指「三水口北街、三水總商行與大食堂」、東指「講堂街文曜學院與東橋旅社」、南指「三水口南街、公議堂與分家巷百工」、西指「傳訊鐘樓與西門聯運總站」。".to_string()
+        } else {
+            format!(
+                "石柱四面銘文指引分明：通衢貫穿「{settlement}大街」、外連「{settlement}碼頭驛站與物資總棧」，並指引周遭半島幹道與山海林野要衝。"
+            )
         };
         narrative.push_str(&format!(
-            "\n【日晷報時】當前半島時間為【{} {:02}:00 左右】。{}。\n石柱四面銘文刻印分明：北指「三水口北街、三水總商行與大食堂」、東指「講堂街文曜學院與東橋旅社」、南指「三水口南街、公議堂與分家巷百工」、西指「傳訊鐘樓與西門聯運總站」。",
-            period, hour, shadow_desc
+            "\n【日晷報時】當前半島時間為【{} {:02}:00 左右】。{}。\n{}",
+            period, hour, shadow_desc, inscription
         ));
         push_refresh(conn, pid);
         return true;

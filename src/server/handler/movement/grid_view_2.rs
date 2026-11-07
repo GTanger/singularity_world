@@ -111,7 +111,19 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
     let final_exits = if in_private_room {
         grid_exits.clone()
     } else {
-        base.exits
+        let mut exits = base.exits;
+        if let Some(in_exit) = grid_exits
+            .iter()
+            .find(|e| e.direction == "進" || e.direction == "in")
+        {
+            if !exits
+                .iter()
+                .any(|e| e.direction == "進" || e.direction == "in")
+            {
+                exits.push(in_exit.clone());
+            }
+        }
+        exits
     };
         // ── L4 NPC 觀察態：查 acquaintance 表，計算 display_name + card_state + 甲乙編號 ──
         let npc_entities: Vec<&crate::server::protocol::ViewEntity> = entities

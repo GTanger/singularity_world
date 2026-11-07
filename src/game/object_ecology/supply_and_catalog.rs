@@ -3,7 +3,7 @@ pub fn supply_settlement_commodity_from_work(
     settlement_or_room: &str,
     work_kind: &str,
     actor_name: &str,
-) -> (String, i32, f32) {
+) -> Option<(String, i32, f32)> {
     let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
     let settlement = if raw_settlement.is_empty() {
         normalize_canonical_settlement(settlement_or_room)
@@ -77,14 +77,17 @@ pub fn supply_settlement_commodity_from_work(
         };
 
         let from_key = (from_s.to_string(), chosen_item.to_string());
-        let mut transferred = 2;
+        let mut transferred = 0;
         if let Some(from_cell) = ledger.settlement_markets.get_mut(&from_key) {
             transferred = from_cell.stock.min(2).max(0);
             from_cell.stock -= transferred;
             from_cell.demand_ema = (from_cell.demand_ema * 1.03).clamp(0.75, 1.45);
         }
 
-        let add_qty = if transferred > 0 { transferred } else { 1 };
+        if transferred <= 0 {
+            return None;
+        }
+        let add_qty = transferred;
         let mut new_stock = 0;
         if let Some(to_cell) = ledger.settlement_markets.get_mut(&dest_key) {
             to_cell.stock = (to_cell.stock + add_qty).min(to_cell.target_stock * 4);
@@ -107,7 +110,7 @@ pub fn supply_settlement_commodity_from_work(
         }
         // 由模擬迴圈背景統一持久化帳本快照
 
-        (clean_name, new_stock, ratio_before.clamp(0.65, 2.20))
+        Some((clean_name, new_stock, ratio_before.clamp(0.65, 2.20)))
     } else {
         let candidates: &'static [&'static str] = if work_kind == "forage" || work_kind == "peddle" {
             &["mat_kindling_bundle", "mat_foraged_herb", "mat_reed_bundle", "mat_rough_ore"]
@@ -146,8 +149,29 @@ pub fn supply_settlement_commodity_from_work(
         };
 
         if work_kind == "craft" || work_kind == "restock" {
-            let raw_inputs = ["mat_rough_ore", "mat_timber_log", "mat_foraged_herb"];
-            for &raw_id in &raw_inputs {
+            let raw_candidates: &[&str] = if chosen_item.contains("herb")
+                || chosen_item.contains("salve")
+                || chosen_item.contains("tea")
+                || chosen_item.contains("藥")
+                || chosen_item.contains("草")
+                || chosen_item.contains("膏")
+                || chosen_item.contains("茶")
+            {
+                &["mat_foraged_herb"]
+            } else if chosen_item.contains("plank")
+                || chosen_item.contains("timber")
+                || chosen_item.contains("wood")
+                || chosen_item.contains("paper")
+                || chosen_item.contains("木")
+                || chosen_item.contains("板")
+                || chosen_item.contains("紙")
+            {
+                &["mat_timber_log"]
+            } else {
+                &["mat_rough_ore", "mat_iron_scrap"]
+            };
+
+            for &raw_id in raw_candidates {
                 let raw_key = (settlement.to_string(), raw_id.to_string());
                 if let Some(raw_cell) = ledger.settlement_markets.get_mut(&raw_key) {
                     if raw_cell.stock > 1 {
@@ -234,7 +258,7 @@ pub fn supply_settlement_commodity_from_work(
         }
         // 由模擬迴圈背景統一持久化帳本快照
 
-        (clean_name, new_stock, ratio_before.clamp(0.65, 2.20))
+        Some((clean_name, new_stock, ratio_before.clamp(0.65, 2.20)))
     }
 }
 

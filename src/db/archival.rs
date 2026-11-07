@@ -403,19 +403,41 @@ pub fn pick_style_examples(entity_id: &str, n: usize) -> Vec<String> {
     if n == 0 {
         return Vec::new();
     }
-    let Ok(assignments) = get_assignments_for_entity(entity_id) else {
-        return Vec::new();
-    };
-    let Some(a) = assignments.first() else {
-        return Vec::new();
-    };
-    let Some(occs) = load_occupations_file() else {
-        return Vec::new();
-    };
-    let Some(occ) = occs.occupations.get(&a.occupation_id) else {
-        return Vec::new();
-    };
-    let Some(pool) = load_dialogue_file(&occ.dialogue_file) else {
+    let title = crate::store::get_store()
+        .and_then(|arc| arc.read().get_entity(entity_id).map(|e| e.display_title.clone()))
+        .unwrap_or_default();
+    let slot_tag = crate::store::wenyao_household_slot_for(entity_id).brief_tag;
+    let combined_hint = format!("{entity_id} {title} {slot_tag}");
+
+    const KEYWORD_MAP: &[(&[&str], &str)] = &[
+        (&["鐵", "鍛", "打鐵"], "dialogues/blacksmith.json"),
+        (&["醫", "藥", "診"], "dialogues/herbalist.json"),
+        (&["農", "田", "耕"], "dialogues/farmer.json"),
+        (&["學", "書", "講"], "dialogues/scholar.json"),
+        (&["哨", "巡", "衛"], "dialogues/scout.json"),
+        (&["木", "鋸", "樵"], "dialogues/logger.json"),
+        (&["車", "驛", "運"], "dialogues/driver.json"),
+    ];
+
+    let mut mapped_file: Option<&'static str> = None;
+    for (kws, file) in KEYWORD_MAP {
+        if kws.iter().any(|kw| combined_hint.contains(kw)) {
+            mapped_file = Some(*file);
+            break;
+        }
+    }
+
+    let dialogue_pool = mapped_file
+        .and_then(load_dialogue_file)
+        .or_else(|| {
+            let assignments = get_assignments_for_entity(entity_id).ok()?;
+            let a = assignments.first()?;
+            let occs = load_occupations_file()?;
+            let occ = occs.occupations.get(&a.occupation_id)?;
+            load_dialogue_file(&occ.dialogue_file)
+        });
+
+    let Some(pool) = dialogue_pool else {
         return Vec::new();
     };
     let mut lines: Vec<String> = Vec::new();

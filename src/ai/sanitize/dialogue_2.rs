@@ -26,6 +26,8 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("剛修完", "修完"),
         ("剛修好", "修好"),
         ("剛修", "修好"),
+        ("剛打算", "正打算"),
+        ("剛打聽", "才打聽"),
         ("剛打完", "打完"),
         ("剛打好", "打好"),
         ("剛打", "打好"),
@@ -54,6 +56,8 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("剛盤完", "盤完"),
         ("剛盤好", "盤好"),
         ("剛盤", "盤好"),
+        ("剛點頭", "才點頭"),
+        ("剛點燈", "才點燈"),
         ("剛清點完", "清點完"),
         ("剛點完", "清點完"),
         ("剛點", "清點完"),
@@ -87,12 +91,17 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("剛磨完", "磨完"),
         ("剛磨好", "磨好"),
         ("剛磨", "磨好"),
+        ("剛補充", "才補充"),
         ("剛修補完", "修補完"),
         ("剛修補好", "修補好"),
         ("剛補完", "修補完"),
         ("剛補好", "修補好"),
         ("剛補", "修補好"),
+        ("剛見到", "才見到"),
+        ("剛見面", "才見面"),
         ("剛見", "見過"),
+        ("剛聽見", "才聽見"),
+        ("剛聽到", "才聽到"),
         ("剛聽說", "聽說"),
         ("剛聽", "聽說"),
         ("剛問", "問過"),
@@ -140,6 +149,10 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
     s = replace_clause_initial_temporal_cai(&s);
     while s.contains("早先在早先在") {
         s = s.replace("早先在早先在", "早先在");
+    }
+    let has_ox_mg = s.contains("氧化鎂");
+    if has_ox_mg {
+        s = s.replace("氧化鎂", "\u{E000}OXIDIZED_MAGNESIUM\u{E000}");
     }
     for (bad, good) in [
         ("活兒才完", "活計方歇"),
@@ -398,6 +411,9 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         if s.contains(bad) {
             s = s.replace(bad, good);
         }
+    }
+    if has_ox_mg {
+        s = s.replace("\u{E000}OXIDIZED_MAGNESIUM\u{E000}", "氧化鎂");
     }
     for (bad, good) in [
         ("吃完面", "吃完麵"),

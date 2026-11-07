@@ -132,3 +132,24 @@
 - **都更工程 4（SSOT 源頭乾淨輸入與 Sanitizer 拆違建＋DB 舊記憶排毒）**：
   - 於 `src/ai/talk.rs` 源頭停止注入 `[WT-XXXX]` 內部編號與全街 4 件寫死道具；
   - 拆除 `dialogue_1.rs`、`dialogue_2.rs`、`grammar.rs` 將「剛／才＋動詞」全數壓成「早先」之規則（改為自然無贅詞動補結構，消滅「早先」癌），移除無差別刪 ASCII 英文字母規則，並補齊 `grammar.rs` 稱謂詞尾（`"姨"`、`"掌櫃"`、`"大夫"` 等）。
+
+---
+
+## 五、 第三期：全棧「去便宜行事、去紙紮化、去文曜霸權與千物總典 `wt_cat_*` 貫通」22 刀深層根治紀錄（Phase III Deep Structural Renewal）
+
+1. **第一～十刀（`v0.39.115`～`v0.39.116`）**：
+   - 拔除家戶日程寫死字串表與攤商 10 分支兜底台詞，將 `1,713` 戶家戶座標與 `59` 名排程居民座標 100% 落實至 `SquareGrid` 真實格位；
+   - 將 `DELIVERABLE_ITEMS` 與職司隨身器物 `VocationalVesselSpec.catalog_id` 對接至 `PENINSULA_WORLD_OBJECTS`（`wt_cat_*`）；
+   - `simulation.rs` 工資發放按各聚落公庫動態扣減並建立 `BLDG_COORD_CACHE`；`InventoryItemView` 與 `RoomEnterMsg` 下發 `is_edible`、`terrain`、`venue_kind`、`is_indoor`。
+2. **第十一～十四刀（`v0.39.117`）**：
+   - `borrow.rs` 對接 `VocationalVesselSpec.catalog_id` 並攔截未結清 `repay_debt` 重複借物；實裝 `strip_trailing_person_name_from_role` 根除人名漢字（如姓「林」誤判鋸木坊、名帶「海」誤判漁港釣客）污染場域標籤與職司器物；
+   - `infer_origin_settlement` 與 `normalize_canonical_settlement` 支援 `"grid:x:y"` 座標直解；`InventoryItemView` 下發 `item_stage / can_craft / craft_label`；`venue.rs` 建立 `ROOM_VENUE_CACHE` 與 `ANY_ROOM_VENUE_CACHE`。
+3. **第十五～十八刀（`v0.39.118`）**：
+   - 嚴格區分「在場值守人員 vs 入內歇腳過客」，拔除 `residents_seed.rs`「口袋有 8 鎂即視為櫃檯掌事」與未核對 `equipment_slots` 即硬套家戶制服之便宜行事；
+   - `db/inventory.rs` 實裝 `derive_catalog_item_equip_profile` 打通 `wt_cat_*` 穿戴槽位與加成，並打通 `use_item.rs`、`can_mutate_item`、`campfires_and_refining.rs` 之 `wt_cat_*` 食用、淬火、磨刀與添柴；
+   - 修正 `borrow.rs` `rel.balance_score >= 1`（原 `>= 0` 恆真短路），並於 `effects_3.rs / effects_4.rs` 濾除 `shanhai_* / ambient_*` 野獸入席對弈、圍爐與參議鄉約。
+4. **第十九～二十二刀（`v0.39.119`）**：
+   - **第十九刀（戰鬥載體、銘文與磨損去紙紮化）**：擴充 `is_weapon_or_tool_item` 納入千物總典工具與釣竿／剪刀／傘／算盤／木尺；將手持兵刃 `CarrierAffinity` 真實傳入 `clash.rs` 三相交鋒物理；修復徒手未共鳴白送 `+15%` 傷害倒掛；同步刻印 `vessel.catalog_id`（`wt_cat_*`）並為攻守雙方全類兵刃工器具記錄磨損與熟稔度。
+   - **第二十刀（器物生態守恆、地標聚落化與偽醫館漏洞根治）**：拔除 `campfires_and_refining.rs` 燒鐵片（`mat_repair_strip`）當柴與修繕憑空印鈔 8 鎂；拔除 `supply_and_catalog.rs` 零庫存憑空生貨與泡茶扣鐵礦；擴充 `CANONICAL_SETTLEMENTS` 至全島 15 聚落；修正 `effects_1.rs` 水尾寮客運座標 `(-75, -280)` 與海事水險在地公庫清算；修正 `effects_2.rs / effects_4.rs` 日晷、幫廚、地籍圖之文曜硬編碼；修正 `effects_5.rs` `obj.name.contains("草")` 將馬料箱當醫榻秒消瘴氣滿血之漏洞；補齊 `grid_view_2.rs` 旅社「進」出入口。
+   - **第二十一刀（活世界迴圈、AI 對話語料、Sanitizer 防誤傷與 Eco 端點修復）**：修正 `human_life_loop.rs / life_choices_and_factors.rs` 全島外送與食堂寫死文曜；修正 `dialogue_1.rs / dialogue_2.rs` 負數座標誤刪與「打算$\to$打好算、點燈$\to$清點完燈、氧化鎂$\to$受潮走色鎂」語義反噬；接通 `talk/execute.rs` 之 `resident_knowledge` 與 `db/archival.rs` 12 份職業語料 JSON；修復 `co_enact_script_pack` 誤拿玩家指令當 NPC 台詞；修復 `eco.rs` 思緒聚落誤傳職稱與 `O(N^2)` 微瀾去重。
+   - **第二十二刀（前端 `web/*.js` 殘留正則清零）**：移除 `web/sw-panes.js` 裝備欄殘留之百字原材／食材正則與 `web/sw-object-list.js` 房間名稱猜謎，全面改用後端結構化欄位（SW 快取推進至 `20261106ap`）。

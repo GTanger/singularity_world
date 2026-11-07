@@ -344,7 +344,8 @@ impl Store {
                 crate::game::object_ecology::scarcest_item_for_settlement(home_settlement_for_causal)
                     .map(|(_id, nm, _cur, _max, _pr)| nm);
             let res_seed = crate::npc::causal_core::deterministic_resident_seed(entity_id, e.soul_seed);
-            let role_combined = format!("{} {}", slot.brief_tag, e.display_title);
+            let clean_title = crate::npc::causal_core::strip_trailing_person_name_from_role(&e.display_title);
+            let role_combined = format!("{} {}", slot.brief_tag, clean_title);
             let time_bucket = (now_unix / 20) as u64;
 
             // (A0) 若此人正參與「合社獵團／自主圍獵小隊（`LIVE_HUNTING_PARTIES`）」，直接由小隊共識板同步四面合圍戰術站位與階段行動！
