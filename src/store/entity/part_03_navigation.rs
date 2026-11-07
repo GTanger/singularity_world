@@ -90,14 +90,22 @@ pub fn npc_sensory_appearance_line(entity_id: &str, display_title: &str) -> Stri
     if combined.contains("wood_craft") || combined.contains("木器") {
         return "穿著灰布工裝衫，肩扛刨平木料，腰間插著木工鋸與角尺，滿面憨厚笑容".to_string();
     }
-    if let Some((_, person_name)) = display_title.split_once(['|', '｜']) {
+    let raw_attire = if let Some((_, person_name)) = display_title.split_once(['|', '｜']) {
         let p = person_name.trim();
         if let Some(&idx) = HOUSEHOLD_NAME_TO_SLOT_IDX.get(p) {
-            return household_slot_at(idx).attire_line.to_string();
+            household_slot_at(idx).attire_line
+        } else {
+            wenyao_household_slot_for(entity_id).attire_line
         }
-    }
-    let slot = wenyao_household_slot_for(entity_id);
-    slot.attire_line.to_string()
+    } else {
+        wenyao_household_slot_for(entity_id).attire_line
+    };
+    raw_attire
+        .split('（')
+        .next()
+        .unwrap_or(raw_attire)
+        .trim()
+        .to_string()
 }
 
 pub fn npc_brief_appearance_tag(entity_id: &str, display_title: &str) -> String {

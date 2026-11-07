@@ -755,12 +755,57 @@ mod tests {
             "when hold_r is occupied, static attire_line held item must be stripped to prevent three-hands conflict: {narrative}"
         );
         assert!(
-            !narrative.contains("步態乾脆俐落"),
-            "static gait clause in attire_line must be deduplicated against posture: {narrative}"
+            !narrative.contains("身材勻稱，步履平穩，精神飽滿"),
+            "sensory_line NPC must NOT prepend redundant canned build_bearing sentence: {narrative}"
         );
         assert!(
-            !narrative.contains("】・") && !narrative.contains("】】") && narrative.contains("只見其身穿淺黛色棉布套裝長裙。"),
-            "mutated cloak and attire_line must be clean: {narrative}"
+            !narrative.contains("】・")
+                && !narrative.contains("】】")
+                && narrative.contains("只見其身穿淺黛色棉布套裝長裙，步態乾脆俐落。"),
+            "mutated cloak and attire_line must be clean single-source bearing: {narrative}"
         );
+
+        // 驗證三水匯流大石橋吟詩仕女（slot 62）不再出現雙體態拼接、內場禁區掌事錯置、霞帔分類連寫與雨傘／鋒利誤植
+        if let Some(poet_idx) = crate::store::WENYAO_HOUSEHOLD_SLOTS
+            .iter()
+            .position(|s| s.attire_line.contains("杏白灑金合身短衫"))
+        {
+            let poet_slot = &crate::store::WENYAO_HOUSEHOLD_SLOTS[poet_idx];
+            let (v_cat, v_name) = crate::store::entity::held_vessel(poet_slot);
+            assert_eq!(
+                (v_cat, v_name),
+                ("wt_cat_0781", "竹綿紙牛皮記事手札"),
+                "poet slot must hold 竹綿紙牛皮記事手札 instead of umbrella"
+            );
+            assert_eq!(
+                crate::pg::living_world::VesselCondition::Sharp.label_for_item(v_cat, v_name),
+                "完好趁手"
+            );
+            crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS
+                .write()
+                .insert("npc_bridge_poet_test".to_string(), poet_idx);
+            let mut poet = test_character();
+            poet.id = "npc_bridge_poet_test".to_string();
+            poet.kind = crate::entity::EntityKind::Npc;
+            poet.display_title = "大石橋賞景仕女".to_string();
+            poet.current_activity = "駐足青石橋欄旁，迎著河面晚風凝望三水川夜色".to_string();
+            let poet_look = build_look_narrative(
+                &poet,
+                "陌生人",
+                "文曜・三水口・三水匯流大石橋",
+                Some("viewer_p"),
+            );
+            assert!(
+                poet_look.contains("只見其身穿杏白灑金合身短衫，腰束明黃絲帶，舉手投足風姿綽約。"),
+                "poet look must preserve authentic attire and bearing: {poet_look}"
+            );
+            assert!(
+                !poet_look.contains("身材勻稱")
+                    && !poet_look.contains("櫃檯與內場禁區")
+                    && !poet_look.contains("此刻正當值料理")
+                    && !poet_look.contains("織造服飾大紅錦繡霞帔"),
+                "poet look on stone bridge must NOT contain canned bearing, counter zone, or wedding event-pack stitch: {poet_look}"
+            );
+        }
     }
 }

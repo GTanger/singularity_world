@@ -314,6 +314,12 @@ impl Store {
                 }
                 e.gender = g;
                 e.display_title = resolved;
+                super::entity::sanitize_npc_equipment_and_inventory(e);
+            }
+        }
+        for e in self.entities.values_mut() {
+            if e.kind == "npc" && !e.id.starts_with("npc_") {
+                super::entity::sanitize_npc_equipment_and_inventory(e);
             }
         }
         Ok(())

@@ -378,10 +378,24 @@ impl Store {
                 }
                 e.gender = g;
                 e.display_title = resolved;
+                let eq_inv_changed = super::entity::sanitize_npc_equipment_and_inventory(e);
                 if let Some((raw_g, raw_t)) = raw_meta.get(&e.id)
-                    && (&e.gender != raw_g || &e.display_title != raw_t)
+                    && (&e.gender != raw_g || &e.display_title != raw_t || eq_inv_changed)
                 {
-                    crate::pg::entity::upsert_async(e.clone());
+                    let _ = conn.execute(
+                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4 WHERE id = $5",
+                        &[&e.gender, &e.display_title, &e.equipment_slots, &e.inventory, &e.id],
+                    );
+                }
+            }
+        }
+        for e in self.entities.values_mut() {
+            if e.kind == "npc" && !e.id.starts_with("npc_") {
+                if super::entity::sanitize_npc_equipment_and_inventory(e) {
+                    let _ = conn.execute(
+                        "UPDATE entities SET equipment_slots = $1, inventory = $2 WHERE id = $3",
+                        &[&e.equipment_slots, &e.inventory, &e.id],
+                    );
                 }
             }
         }

@@ -51,16 +51,6 @@ impl ItemPhysicalClass {
         }
         let clean_name = clean_name.trim_matches(|c| c == '【' || c == '】').trim();
 
-        if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(base_id) {
-            let is_fixture = ["箱", "櫃", "架", "車", "台", "檯", "爐", "砧", "磨", "機", "缸"]
-                .iter()
-                .any(|k| cat.name.contains(k))
-                && crate::game::peninsula_catalog::catalog_entry_weight_kg(cat) > 15.0;
-            if is_fixture {
-                return Self::HeavyFixture;
-            }
-        }
-        // 纖維束綑 / 柴草束：必須優先於液體檢查，避免「水澤老蘆草綑」被誤判為 LiquidBeverage
         if base_id.ends_with("_bundle")
             || clean_name.contains("草綑")
             || clean_name.contains("柴綑")
@@ -76,9 +66,24 @@ impl ItemPhysicalClass {
         if clean_name.contains('傘')
             || clean_name.contains('扇')
             || base_id.contains("umbrella")
-            || base_id == "wt_cat_0954"
         {
             return Self::UmbrellaOrFan;
+        }
+
+        if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(base_id) {
+            let is_fixture = ["箱", "櫃", "架", "車", "台", "檯", "爐", "砧", "磨", "機", "缸"]
+                .iter()
+                .any(|k| cat.name.contains(k))
+                && crate::game::peninsula_catalog::catalog_entry_weight_kg(cat) > 15.0;
+            if is_fixture {
+                return Self::HeavyFixture;
+            }
+            if cat.has_tag("sharp") {
+                return Self::BladedWeaponOrTool;
+            }
+            if cat.has_tag("tool") {
+                return Self::BluntCraftTool;
+            }
         }
 
         if clean_name.contains("斗篷")

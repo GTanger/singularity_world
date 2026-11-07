@@ -28,12 +28,17 @@ impl WenyaoHouseholdSlot {
 
     #[inline]
     pub fn held_vessel(&self) -> &'static str {
-        let role_hint = if !self.brief_tag.is_empty() {
-            self.brief_tag
+        let spec = if !self.work_name.is_empty() {
+            let s1 = crate::npc::causal_core::resolve_vocational_vessel(self.work_name);
+            if s1.item_id != "craft_woven_basket" || self.work_purpose.is_empty() {
+                s1
+            } else {
+                crate::npc::causal_core::resolve_vocational_vessel(self.work_purpose)
+            }
         } else {
-            self.work_name
+            crate::npc::causal_core::resolve_vocational_vessel(self.work_purpose)
         };
-        crate::npc::causal_core::resolve_vocational_vessel(role_hint).item_id
+        spec.item_id
     }
 }
 

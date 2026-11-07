@@ -204,40 +204,7 @@ fn build_look_narrative(
         };
         format!("你仔細打量了【{name}】。{final_resident_desc}")
     } else if !sensory_line.trim().is_empty() {
-        let build_bearing = if sensory_line.contains("溫婉")
-            || sensory_line.contains("靈秀")
-            || sensory_line.contains("裙")
-            || sensory_line.contains("纖細")
-            || sensory_line.contains("素雅")
-            || sensory_line.contains("秀氣")
-        {
-            "身段勻稱，步履輕巧從容"
-        } else if sensory_line.contains("書卷")
-            || sensory_line.contains("斯文")
-            || sensory_line.contains("防墨")
-            || sensory_line.contains("算盤")
-            || sensory_line.contains("長衫")
-            || sensory_line.contains("輕柔")
-        {
-            "身形修長，舉止沉穩有度"
-        } else if sensory_line.contains("雷厲風行")
-            || sensory_line.contains("勁裝")
-            || sensory_line.contains("皮靴")
-            || sensory_line.contains("磨刀")
-            || sensory_line.contains("短打")
-        {
-            "體態精悍，步履矯健利落"
-        } else if sensory_line.contains("鐵")
-            || sensory_line.contains("鎚")
-            || sensory_line.contains("石")
-            || sensory_line.contains("木")
-            || sensory_line.contains("壯")
-        {
-            "體格健壯，步履沉穩有力"
-        } else {
-            "身材勻稱，步履平穩，精神飽滿"
-        };
-        format!("你仔細打量了【{name}】。{pronoun}{build_bearing}。")
+        format!("你仔細打量了【{name}】。")
     } else {
         let physique = match target.vit {
             v if v >= 115 => "體格異常魁梧",
@@ -521,18 +488,7 @@ fn build_look_narrative(
                 }
             }
         }
-        for gait_prefix in ["，步態", "、步態", "，步履", "、步履", "，步伐", "、步伐"] {
-            if let Some(start_idx) = clean_sensory.find(gait_prefix) {
-                let clause_after = &clean_sensory[start_idx + gait_prefix.len()..];
-                if let Some(comma_rel) = clause_after.find('，') {
-                    clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
-                } else if let Some(comma_rel) = clause_after.find('、') {
-                    clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
-                } else {
-                    clean_sensory = clean_sensory[..start_idx].to_string();
-                }
-            }
-        }
+        // sensory_line 本身即為單一外貌與步態真相源，不再於前綴硬塞重複體態句
         if raw_act.is_some() {
             for act_prefix in ["，正", "、正"] {
                 if let Some(start_idx) = clean_sensory.find(act_prefix) {
@@ -849,44 +805,79 @@ fn append_universal_living_entity_details(
     }
 
     if target.kind == crate::entity::EntityKind::Npc {
-        let mut probe = character_to_store_entity_probe(target);
-        if probe.current_activity.trim().is_empty() && !room_name.is_empty() {
-            probe.current_activity = room_name.to_string();
-        }
-        let coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
-        let (has_visible_uniform, in_staff_only_counter_zone) =
-            crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(&probe, coord, "");
+        let is_public_street_or_bridge = room_name.contains('橋')
+            || room_name.contains('街')
+            || room_name.contains('巷')
+            || room_name.contains('弄')
+            || room_name.contains("廣場")
+            || room_name.contains("石坪")
+            || room_name.contains("天井")
+            || room_name.contains("碼頭")
+            || room_name.contains("渡口")
+            || room_name.contains('宅')
+            || room_name.contains('居');
+        if !is_public_street_or_bridge {
+            let mut probe = character_to_store_entity_probe(target);
+            if probe.current_activity.trim().is_empty() && !room_name.is_empty() {
+                probe.current_activity = room_name.to_string();
+            }
+            let coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
+            let (has_visible_uniform, in_staff_only_counter_zone) =
+                crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(
+                    &probe, coord, "",
+                );
 
-        if !has_visible_uniform
-            && in_staff_only_counter_zone
-            && !desc.contains("櫃檯與內場禁區")
-        {
-            desc.push_str("雖著尋常便服，卻能自由出入非外客可入之櫃檯與內場禁區，顯係此處主事之人。");
-        } else if has_visible_uniform
-            && in_staff_only_counter_zone
-            && !desc.contains("櫃檯與內場禁區")
-        {
-            desc.push_str("身穿當值裝束、正立於櫃檯與內場禁區之內當值主事。");
-        } else if has_visible_uniform
-            && !in_staff_only_counter_zone
-            && !desc.contains("身著當值制服")
-        {
-            desc.push_str("身著明顯的當值工作制服，正於場內料理店務與百工差事。");
-        }
+            if !has_visible_uniform
+                && in_staff_only_counter_zone
+                && !desc.contains("櫃檯與內場禁區")
+            {
+                desc.push_str("雖著尋常便服，卻能自由出入非外客可入之櫃檯與內場禁區，顯係此處主事之人。");
+            } else if has_visible_uniform
+                && in_staff_only_counter_zone
+                && !desc.contains("櫃檯與內場禁區")
+            {
+                desc.push_str("身穿當值裝束、正立於櫃檯與內場禁區之內當值主事。");
+            } else if has_visible_uniform
+                && !in_staff_only_counter_zone
+                && !desc.contains("身著當值制服")
+            {
+                desc.push_str("身著明顯的當值工作制服，正於場內料理店務與百工差事。");
+            }
 
-        if (has_visible_uniform || in_staff_only_counter_zone) && !room_name.trim().is_empty() {
-            if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
-                room_name,
-                None,
-                crate::game::now_unix() as i64,
-            ) {
-                if !desc.contains(&ev.event_title) {
-                    let primary_obj = ev.key_objects.split('、').next().unwrap_or(ev.key_objects).trim();
-                    desc.push_str(&format!(
-                        "此刻正當值料理「{}」，手頭備有{}。",
-                        ev.event_title,
-                        primary_obj
-                    ));
+            if !is_stranger && (has_visible_uniform || in_staff_only_counter_zone) && !room_name.trim().is_empty() {
+                if let Some((ev, _sp)) =
+                    crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                        room_name,
+                        None,
+                        crate::game::now_unix() as i64,
+                    )
+                {
+                    if !desc.contains(&ev.event_title) {
+                        let raw_obj = ev
+                            .key_objects
+                            .split('、')
+                            .next()
+                            .unwrap_or(ev.key_objects)
+                            .trim();
+                        let primary_obj = [
+                            "織造服飾",
+                            "百工器物",
+                            "歲時風物",
+                            "山海物產",
+                            "飲食茶點",
+                            "醫藥養生",
+                            "文房書冊",
+                            "舟車索具",
+                            "茶酒飲品",
+                            "礦冶五金",
+                        ]
+                        .iter()
+                        .fold(raw_obj, |acc, pfx| acc.strip_prefix(pfx).unwrap_or(acc));
+                        desc.push_str(&format!(
+                            "此刻正當值料理「{}」，手頭備有{}。",
+                            ev.event_title, primary_obj
+                        ));
+                    }
                 }
             }
         }

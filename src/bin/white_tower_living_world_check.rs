@@ -226,6 +226,40 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
         conservation.blocked_nonruntime_trades == 0,
         "新市場採用後仍有退役或非現行商品進入主動交易"
     );
+    {
+        let mut conn = pool.get()?;
+        let polluted_umbrella_or_cloak: i64 = conn
+            .query_one(
+                "SELECT count(*) FROM entities WHERE kind = 'npc' AND (equipment_slots LIKE '%craft_bamboo_oil_umbrella%' OR equipment_slots LIKE '%craft_storm_canvas_cloak%')",
+                &[],
+            )?
+            .get(0);
+        ensure!(
+            polluted_umbrella_or_cloak == 0,
+            "entities 表仍有 {} 名 NPC 殘留雨傘或風暴斗篷裝備污染",
+            polluted_umbrella_or_cloak
+        );
+        for slot in singularity_world::store::WENYAO_HOUSEHOLD_SLOTS {
+            let (cat_id, vname) = singularity_world::store::entity::held_vessel(slot);
+            ensure!(
+                !cat_id.contains("umbrella") && !vname.contains("晴雨傘") && !vname.contains("雨傘"),
+                "家戶職司器物仍誤映射為晴雨傘：{} -> ({}, {})",
+                slot.work_name,
+                cat_id,
+                vname
+            );
+            let cond = singularity_world::pg::living_world::VesselCondition::Sharp;
+            let cond_label = cond.label_for_item(cat_id, vname);
+            if !singularity_world::game::object_ecology::ItemPhysicalClass::classify(cat_id, vname).is_bladed() {
+                ensure!(
+                    cond_label != "鋒利",
+                    "非刃具器物仍顯示『鋒利』狀態標籤：{} ({})",
+                    vname,
+                    cat_id
+                );
+            }
+        }
+    }
     println!("white_tower_living_world_check: live ok");
     println!(
         "characters={} npc={} continuity={} autonomous={} obligations={} relationships={} knowledge={} actions={} source_records={} activities={} gathering={} trades={} trade_receipts={} work={} work_receipts={}",

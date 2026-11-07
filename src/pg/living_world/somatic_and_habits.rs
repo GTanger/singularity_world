@@ -479,7 +479,9 @@ impl VesselStateRecord {
     }
 
     pub fn status_badge(&self) -> String {
-        format!("{}・{}", self.familiarity().label(), self.condition.label())
+        let item_name = crate::db::get_item_name(&self.item_id);
+        let cond_lbl = self.condition.label_for_item(&self.item_id, &item_name);
+        format!("{}・{}", self.familiarity().label(), cond_lbl)
     }
 }
 

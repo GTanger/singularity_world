@@ -21,7 +21,7 @@
 
         let apprentice = resolve_vocational_vessel("風舶角・船塢年輕學徒");
         assert_eq!(apprentice.item_id, "craft_wooden_tool_handle");
-        assert_eq!(apprentice.catalog_id, "wt_cat_0954");
+        assert_eq!(apprentice.catalog_id, "wt_cat_0989");
         assert_eq!(apprentice.display_name, "百工學徒手用小木尺");
 
         let bamboo_weaver = resolve_vocational_vessel("分家巷・竹器巧編院匠人");

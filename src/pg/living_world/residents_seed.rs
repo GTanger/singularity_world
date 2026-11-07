@@ -414,8 +414,11 @@ pub fn is_recognizable_room_staff_or_counter_holder_entity(
         || ent.display_title.contains("食客")
         || ent.display_title.contains("香客")
         || ent.display_title.contains("過客")
-        || ent.display_title.contains("外地商旅");
-
+        || ent.display_title.contains("外地商旅")
+        || ent.current_activity.contains("挑選")
+        || ent.current_activity.contains("選購")
+        || ent.current_activity.contains("採買")
+        || ent.current_activity.contains("購買");
     let mut has_counter_zone_marker = ent.display_title.contains("櫃檯")
         || ent.display_title.contains("櫃台")
         || ent.display_title.contains("非夥計禁止入內")
@@ -427,8 +430,15 @@ pub fn is_recognizable_room_staff_or_counter_holder_entity(
         || ent.display_title.contains("當值")
         || ent.display_title.contains("首座");
 
-    if !has_counter_zone_marker {
-        if let Some(v) = crate::grid::resolve_any_room_venue_object(&ent.current_activity, &ent.display_title) {
+    let is_outdoor_bridge_or_street = ent.current_activity.contains("大石橋")
+        || ent.current_activity.contains("石橋")
+        || ent.current_activity.contains("橋欄")
+        || ent.current_activity.contains("凝望")
+        || ent.current_activity.contains("漫步")
+        || ent.current_activity.contains("穿行");
+
+    if !has_counter_zone_marker && !is_passerby_customer && !is_outdoor_bridge_or_street {
+        if let Some(v) = crate::grid::resolve_any_room_venue_object(&ent.current_activity, "") {
             if v.has_counter_restricted_zone
                 && (ent.current_activity.contains("櫃")
                     || ent.current_activity.contains("爐")
@@ -437,12 +447,14 @@ pub fn is_recognizable_room_staff_or_counter_holder_entity(
                     || ent.current_activity.contains("磨")
                     || ent.current_activity.contains("藥")
                     || ent.current_activity.contains("算")
-                    || ent.current_activity.contains("帳")
-                    || ent.current_activity.contains("攤"))
+                    || ent.current_activity.contains("帳"))
             {
                 has_counter_zone_marker = true;
             }
         }
+    }
+    if is_outdoor_bridge_or_street || is_passerby_customer {
+        has_counter_zone_marker = false;
     }
 
     let stock_count = if !needed_item_id.is_empty() {

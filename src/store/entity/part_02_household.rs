@@ -200,12 +200,16 @@ pub fn resolve_npc_person_name(
 }
 
 pub fn held_vessel(slot: &WenyaoHouseholdSlot) -> (&'static str, &'static str) {
-    let role_hint = if !slot.brief_tag.is_empty() {
-        slot.brief_tag
+    let spec = if !slot.work_name.is_empty() {
+        let s1 = crate::npc::causal_core::resolve_vocational_vessel(slot.work_name);
+        if s1.item_id != "craft_woven_basket" || slot.work_purpose.is_empty() {
+            s1
+        } else {
+            crate::npc::causal_core::resolve_vocational_vessel(slot.work_purpose)
+        }
     } else {
-        slot.work_name
+        crate::npc::causal_core::resolve_vocational_vessel(slot.work_purpose)
     };
-    let spec = crate::npc::causal_core::resolve_vocational_vessel(role_hint);
     if let Some(cat) = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
         .iter()
         .find(|o| o.id == spec.catalog_id)

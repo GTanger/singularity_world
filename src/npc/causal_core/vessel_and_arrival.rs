@@ -46,7 +46,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     if role_hint.contains("學徒") {
         VocationalVesselSpec {
             item_id: "craft_wooden_tool_handle",
-            catalog_id: "wt_cat_0954",
+            catalog_id: "wt_cat_0989",
             display_name: "百工學徒手用小木尺",
             is_bladed: false,
             maintenance_venue_keyword: "工坊",
@@ -179,6 +179,22 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
             maintenance_venue_keyword: "鐵",
             maintenance_purpose_prefix: "入坊淬火修整手鎬",
             maintenance_stay_verb: "正就著鍛爐火色重新淬硬手中",
+        }
+    } else if role_hint.contains("詩")
+        || role_hint.contains("唱和")
+        || role_hint.contains("講堂")
+        || role_hint.contains("曬書")
+        || role_hint.contains("書院")
+        || role_hint.contains("藏書")
+    {
+        VocationalVesselSpec {
+            item_id: "craft_peninsula_almanac",
+            catalog_id: "wt_cat_0890",
+            display_name: "青銅鎮紙尺",
+            is_bladed: false,
+            maintenance_venue_keyword: "書",
+            maintenance_purpose_prefix: "入館拭淨鎮紙銅尺",
+            maintenance_stay_verb: "正以細絨軟布拭淨尺面微塵並擦拭手中",
         }
     } else if role_hint.contains("木")
         || role_hint.contains("竹")
