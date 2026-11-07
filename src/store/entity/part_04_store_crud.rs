@@ -482,6 +482,14 @@ impl Store {
     } else {
         current
     };
+    let is_public_cell = |c: &crate::grid::GridCell| {
+        c.terrain != crate::grid::Terrain::House
+            && !c.has_room_tag("residence")
+            && !c.name.ends_with('居')
+            && !c.name.ends_with('宅')
+            && !c.name.ends_with('舍')
+            && !c.name.contains("天井")
+    };
     match req {
         crate::npc::causal_core::VenueRequirement::HomeOrKitchen => {
             ((slot.home_x, slot.home_y), slot.home_name.to_string())
@@ -512,6 +520,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 24
+                            && is_public_cell(c)
                             && (c.has_room_tag("canteen")
                                 || c.name.contains("食堂")
                                 || c.name.contains("飯")
@@ -540,6 +549,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 24
+                            && is_public_cell(c)
                             && (c.has_room_tag("teahouse")
                                 || c.has_room_tag("inn")
                                 || c.name.contains("茶")
@@ -567,6 +577,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 24
+                            && is_public_cell(c)
                             && (c.has_room_tag("well")
                                 || c.name.contains('井')
                                 || c.name.contains("山泉")
@@ -591,6 +602,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 24
+                            && is_public_cell(c)
                             && (c.has_room_tag("bathhouse")
                                 || c.name.contains("浴")
                                 || c.name.contains("湯"))
@@ -617,6 +629,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 24
+                            && is_public_cell(c)
                             && (c.has_room_tag("inn")
                                 || c.name.contains("旅社")
                                 || c.name.contains("歇舍"))
@@ -647,6 +660,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 28
+                            && is_public_cell(c)
                             && (c.has_room_tag("herb") || c.has_room_tag("medicine"))
                             && (c.name.contains("診")
                                 || c.name.contains("醫")
@@ -680,6 +694,7 @@ impl Store {
                         .filter(|c| {
                             let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                             d <= 28
+                                && is_public_cell(c)
                                 && (c.has_room_tag("blacksmith")
                                     || c.name.contains("鍛造")
                                     || c.name.contains("鐵器"))
@@ -718,6 +733,7 @@ impl Store {
                     .filter(|c| {
                         let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                         d <= 24
+                            && is_public_cell(c)
                             && (c.has_room_tag("market")
                                 || c.has_room_tag("shop")
                                 || c.name.contains("市集")

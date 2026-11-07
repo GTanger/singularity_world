@@ -423,7 +423,10 @@ pub fn drain_pending_arrival_effects() -> usize {
                     "mat_hemp_rope_roll",
                 ];
                 let picked = item_choices[(*streak as usize) % item_choices.len()];
-                let _ = crate::db::add_to_inventory(entity_id, picked, 1);
+                if !entity_id.starts_with("npc_") {
+                    let _ = crate::db::add_to_inventory(entity_id, picked, 1);
+                }
+                record_settlement_market_production("文曜", picked, 1);
             }
             ArrivalEffect::CompletedWorkShift {
                 entity_id,
@@ -478,10 +481,9 @@ pub fn drain_pending_arrival_effects() -> usize {
                     now_unix,
                 } => {
                     let _ = s.update_entity(&entity_id, |ent| {
-                        let thought_text = if dest_name.contains("井")
-                            || dest_name.contains("泉")
-                            || dest_name.contains("溪")
-                            || ["籃", "簍", "袋", "桶", "網"].iter().any(|k| vessel_name.contains(k))
+                        let thought_text = if ["籃", "簍", "袋", "桶", "網"]
+                            .iter()
+                            .any(|k| vessel_name.contains(k))
                         {
                             format!(
                                 "在{}把隨身的「{}」洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了",

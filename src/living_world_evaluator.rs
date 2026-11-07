@@ -926,6 +926,48 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
     if include_str!("game/object_ecology/crafting_and_mutation.rs").contains(".replace(\"【異變・") {
         violations.push("crafting_and_mutation.rs 仍使用 .replace 硬剝異變詞綴".to_string());
     }
+    let mut transit_probe: crate::entity::Character =
+        serde_json::from_str(r#"{"id":"npc_transit_probe","kind":"npc"}"#).expect("probe char");
+    transit_probe.display_title = "蘇曉萱".to_string();
+    transit_probe.current_activity =
+        "正動身前往【岑氏第一鍛造工坊】，準備陰涼角落閉目歇腳喘口氣".to_string();
+    let talk_line = crate::server::action::talk::format_npc_talk_line(
+        &transit_probe,
+        "蘇曉萱",
+        "我正趕回工坊歇腳。",
+        "你在這裡敲打？",
+        "",
+    );
+    if talk_line.contains("停下手中敲打構件的錘子") {
+        violations.push(format!(
+            "在途趕路 NPC 誤套用打鐵錘擊動作前綴: {talk_line}"
+        ));
+    }
+    for (req, bad_dest) in [
+        (
+            crate::npc::causal_core::VenueRequirement::CanteenOrStall,
+            "文曜・三水口・陳氏庖廚居",
+        ),
+        (
+            crate::npc::causal_core::VenueRequirement::WellOrStream,
+            "文曜・三水口・石板弄堂天井",
+        ),
+        (
+            crate::npc::causal_core::VenueRequirement::Bathhouse,
+            "文曜・三水口・白氏湯屋居",
+        ),
+        (
+            crate::npc::causal_core::VenueRequirement::Market,
+            "大圳頭・修耙補犁鋪居",
+        ),
+    ] {
+        let resolved_place = crate::npc::causal_core::coherent_place_for_venue_req(req, bad_dest);
+        if resolved_place.ends_with('居') || resolved_place.contains("天井") {
+            violations.push(format!(
+                "公共場域需求 {req:?} 誤放行私宅或天井 `{bad_dest}` -> `{resolved_place}`"
+            ));
+        }
+    }
     CodebaseAntiLoopingAuditReport {
         audited_text_surfaces,
         audited_core_modules: module_contracts.len(),

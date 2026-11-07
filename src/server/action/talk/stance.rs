@@ -750,9 +750,39 @@ pub fn format_npc_talk_line(target: &Character, talk_name: &str, reply: &str, pl
         h = h.wrapping_add(c as i64);
     }
     let seed = crate::game::now_unix().wrapping_add(h);
+    let is_in_transit = crate::store::LIVE_NPC_GRID_STATES
+        .read()
+        .get(&target.id)
+        .is_some_and(|st| st.current != st.dest)
+        || [
+            "推車", "趕往", "沿街前往", "動身前往", "前往", "漫步", "穿行", "行走", "運送",
+            "返回", "回返", "踏著夜色", "結伴前往", "推進目標",
+        ]
+        .iter()
+        .any(|k| act.contains(k));
+    let is_resting_or_dining = !is_in_transit
+        && [
+            "用膳", "用餐", "吃", "飲", "休憩", "睡", "歇", "閉目", "泡湯", "沐浴",
+        ]
+        .iter()
+        .any(|k| act.contains(k));
     let is_cook_or_vendor = target.id.starts_with("wt_vendor_")
         || ["廚", "攤", "食堂", "茶館"].iter().any(|k| target.display_title.contains(k));
-    let action_desc = if is_cook_or_vendor && (act.contains("磨刀") || act.contains("廚刀") || act.contains("刃")) {
+    let action_desc = if is_in_transit {
+        let p = [
+            "稍稍放緩了趕路的步伐，側過身望向你道：",
+            "停下腳步抹了一把額角的微汗，和氣地開口道：",
+            "整了整隨身攜帶的物件，駐足看向你道：",
+        ];
+        p[(seed.unsigned_abs() as usize) % p.len()]
+    } else if is_resting_or_dining {
+        let p = [
+            "合著衣衫側過身來，略顯倦意地看向你道：",
+            "揉了揉微酸的眉心，神色平和地開口道：",
+            "稍稍挪正了身子，神情放鬆地看向你道：",
+        ];
+        p[(seed.unsigned_abs() as usize) % p.len()]
+    } else if is_cook_or_vendor && (act.contains("磨刀") || act.contains("廚刀") || act.contains("刃")) {
         let p = [
             "按住腰間的磨刀皮蕩帶，停下腳步抬眼望向你道：",
             "試了試手裡青灰油石的刃面，神色爽利地開口道：",
@@ -779,21 +809,6 @@ pub fn format_npc_talk_line(target: &Character, talk_name: &str, reply: &str, pl
         "停下手中敲打構件的錘子，擦拭著掌心老繭打量你道："
     } else if act.contains("帳") || act.contains("算盤") || act.contains("核算") {
         "擱下手邊的竹管毛筆，核對了帳目抬頭道："
-    } else if ["推車", "趕往", "沿街前往", "動身前往", "前往", "漫步", "穿行", "行走", "運送", "用膳", "用餐", "吃", "飲", "茶", "麵", "湯", "粥", "餅", "休憩", "返回", "踏著夜色", "睡", "歇"].iter().any(|k| act.contains(k)) {
-        let p = if act.contains("睡") || act.contains("歇") || act.contains("休憩") {
-            [
-                "合著衣衫側過身來，略顯倦意地看向你道：",
-                "揉了揉微酸的眉心，神色平和地開口道：",
-                "在椅榻上稍稍挪正了身子，神情放鬆地看向你道：",
-            ]
-        } else {
-            [
-                "稍稍放緩了趕路的步伐，側過身望向你道：",
-                "停下腳步抹了一把額角的微汗，和氣地開口道：",
-                "整了整隨身攜帶的物件，駐足看向你道：",
-            ]
-        };
-        p[(seed.unsigned_abs() as usize) % p.len()]
     } else if act.contains("巡") || act.contains("衛") {
         "扶了扶腰間佩具，神色嚴肅警醒地注視著你道："
     } else if disp < -20 {
@@ -819,14 +834,13 @@ pub fn format_npc_talk_line(target: &Character, talk_name: &str, reply: &str, pl
             "停下手邊正忙著的活計，抬眼朝你微微頷首道：",
             "拍了拍衣袖上的塵屑，神色溫和從容地看著你道：",
             "將手邊才理好的物料收整入盒，側過身來開口道：",
-            "手上的活計未停，只側過身斜睨了你一眼，神情淡定道：",
-            "端起桌旁的涼茶潤了潤喉，從容好整以暇地望向你道：",
-            "目光在你身上停留了片刻，雙手搭在膝頭平靜地道：",
-            "將手頭的零件順手歸位，轉過身沉穩地看著你道：",
-            "雙手在擦布上抹了抹，眼神中帶著市井特有的精明笑道：",
+            "將手邊的物件妥善收攏，側過身神情淡定道：",
+            "神色平靜地迎向你的目光，語調沉穩地開口道：",
+            "目光在你身上停留了片刻，語氣平和地應道：",
+            "將手頭的器物順手歸位，轉過身沉穩地看著你道：",
+            "雙手在衣角輕輕抹了抹，眼神中帶著市井特有的熟稔笑道：",
             "抬手拂開額前碎髮，迎著微風神情自若地道：",
-            "靠在廊柱旁神色平和地望著你，唇角噙著一絲淡笑道：",
-            "神情專注地打量著你，若有所思地沉吟片刻道：",
+            "駐足神色平和地望著你，唇角噙著一絲淡笑道：",
             "神態閒適地點了點頭，語調平和從容地接過話道：",
             "順手理了理衣襟，目光澄澈地看著你開口道：",
             "稍微挪動了一下身位騰出空隙，和氣地看著你道：",

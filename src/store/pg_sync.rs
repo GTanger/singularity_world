@@ -382,9 +382,11 @@ impl Store {
                 if let Some((raw_g, raw_t)) = raw_meta.get(&e.id)
                     && (&e.gender != raw_g || &e.display_title != raw_t || eq_inv_changed)
                 {
+                    let thoughts_json =
+                        serde_json::to_string(&e.thoughts).unwrap_or_else(|_| "[]".to_string());
                     let _ = conn.execute(
-                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4 WHERE id = $5",
-                        &[&e.gender, &e.display_title, &e.equipment_slots, &e.inventory, &e.id],
+                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4, thoughts = $5 WHERE id = $6",
+                        &[&e.gender, &e.display_title, &e.equipment_slots, &e.inventory, &thoughts_json, &e.id],
                     );
                 }
             }
@@ -392,9 +394,11 @@ impl Store {
         for e in self.entities.values_mut() {
             if e.kind == "npc" && !e.id.starts_with("npc_") {
                 if super::entity::sanitize_npc_equipment_and_inventory(e) {
+                    let thoughts_json =
+                        serde_json::to_string(&e.thoughts).unwrap_or_else(|_| "[]".to_string());
                     let _ = conn.execute(
-                        "UPDATE entities SET equipment_slots = $1, inventory = $2 WHERE id = $3",
-                        &[&e.equipment_slots, &e.inventory, &e.id],
+                        "UPDATE entities SET equipment_slots = $1, inventory = $2, thoughts = $3 WHERE id = $4",
+                        &[&e.equipment_slots, &e.inventory, &thoughts_json, &e.id],
                     );
                 }
             }

@@ -138,6 +138,12 @@ pub fn npc_autonomous_word_and_equip_step(
     crafted_item_id: &str,
     crafted_item_name: &str,
 ) -> Option<String> {
+    if npc_id.starts_with("npc_")
+        || crafted_item_id.contains("umbrella")
+        || crafted_item_id.contains("cloak")
+    {
+        return None;
+    }
     ensure_player_initialized(npc_id);
     let ent_opt = db::get_entity(npc_id).ok().flatten();
     let (vocation_hint, activity_hint) = if let Some(e) = &ent_opt {

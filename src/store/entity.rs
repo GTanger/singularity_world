@@ -131,5 +131,75 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
         }
     }
 
+    let home_name = if is_household_npc {
+        wenyao_household_slot_for(&e.id).home_name
+    } else {
+        ""
+    };
+    let work_name = if is_household_npc {
+        let w = wenyao_household_slot_for(&e.id).work_name;
+        if w.is_empty() { "文曜・百工修繕坊" } else { w }
+    } else {
+        "文曜・百工修繕坊"
+    };
+    let mut thoughts_modified = false;
+    for t in &mut e.thoughts {
+        if let Some(flavor) = t.flavor.as_mut() {
+            let orig = flavor.clone();
+            if flavor.contains("陳氏庖廚居") && !home_name.contains("陳氏庖廚居") {
+                *flavor = flavor
+                    .replace("文曜・三水口・陳氏庖廚居", "文曜・三水大食堂")
+                    .replace("三水口・陳氏庖廚居", "文曜・三水大食堂")
+                    .replace("陳氏庖廚居", "文曜・三水大食堂");
+            }
+            if flavor.contains("海風麵點鋪居") && !home_name.contains("海風麵點鋪居") {
+                *flavor = flavor
+                    .replace("風舶角・海風麵點鋪居", "風舶角・海風熱食攤")
+                    .replace("海風麵點鋪居", "風舶角・海風熱食攤");
+            }
+            if flavor.contains("修耙補犁鋪居") && !home_name.contains("修耙補犁鋪居") {
+                *flavor = flavor
+                    .replace("大圳頭・修耙補犁鋪居", "大圳頭・農具百工坊")
+                    .replace("修耙補犁鋪居", "大圳頭・農具百工坊");
+            }
+            if flavor.contains("白氏湯屋居") && !home_name.contains("白氏湯屋居") {
+                *flavor = flavor
+                    .replace("文曜・三水口・白氏湯屋居", "文曜・泉香溫水浴場")
+                    .replace("三水口・白氏湯屋居", "文曜・泉香溫水浴場")
+                    .replace("白氏湯屋居", "文曜・泉香溫水浴場");
+            }
+            if flavor.contains("石板弄堂天井") {
+                if flavor.contains("清冽甘水") || flavor.contains("竹水筒") {
+                    *flavor = flavor
+                        .replace("文曜・三水口・石板弄堂天井", "文曜・三水口水岸公井")
+                        .replace("三水口・石板弄堂天井", "文曜・三水口水岸公井")
+                        .replace("石板弄堂天井", "文曜・三水口水岸公井");
+                } else if !home_name.contains("石板弄堂天井")
+                    || flavor.contains("重新紮緊")
+                    || flavor.contains("修整校準")
+                {
+                    *flavor = flavor
+                        .replace("文曜・三水口・石板弄堂天井", work_name)
+                        .replace("三水口・石板弄堂天井", work_name)
+                        .replace("石板弄堂天井", work_name);
+                }
+            }
+            if flavor.contains("洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了")
+                && !["籃", "簍", "袋", "桶", "網"].iter().any(|k| flavor.contains(k))
+            {
+                *flavor = flavor.replace(
+                    "洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了",
+                    "細細修整校準，器況煥然一新，幹起活來順手多了",
+                );
+            }
+            if *flavor != orig {
+                thoughts_modified = true;
+            }
+        }
+    }
+    if thoughts_modified {
+        changed = true;
+    }
+
     changed
 }

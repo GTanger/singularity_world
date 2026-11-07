@@ -330,7 +330,9 @@ pub fn run_npc_autonomous_production_step(
             ));
         }
 
-        let _ = db::add_to_inventory(npc_id, raw_id, 1);
+        if !npc_id.starts_with("npc_") {
+            let _ = db::add_to_inventory(npc_id, raw_id, 1);
+        }
         {
             let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
             if let Some(entry) = ledger.items.get_mut(raw_id) {
@@ -358,7 +360,9 @@ pub fn run_npc_autonomous_production_step(
         } else {
             ("wt_cat_0279", "特級在來米粉")
         };
-        let _ = db::add_to_inventory(npc_id, prod_id, 1);
+        if !npc_id.starts_with("npc_") {
+            let _ = db::add_to_inventory(npc_id, prod_id, 1);
+        }
         let mill_s = crate::world::materials::infer_origin_settlement(room_name);
         let mill_settlement = if mill_s.is_empty() { "老堰頭" } else { mill_s };
         crate::npc::causal_core::record_settlement_market_production(mill_settlement, prod_id, 1);
@@ -491,13 +495,15 @@ pub fn run_npc_autonomous_production_step(
                 origin: finished_def.origin.to_string(),
             };
             ensure_item_in_store(item);
-            let _ = db::add_to_inventory(npc_id, &mut_id, 1);
-            let _ = crate::server::handler::npc_autonomous_word_and_equip_step(
-                npc_id,
-                &npc_name,
-                &mut_id,
-                &mut_name,
-            );
+            if !npc_id.starts_with("npc_") {
+                let _ = db::add_to_inventory(npc_id, &mut_id, 1);
+                let _ = crate::server::handler::npc_autonomous_word_and_equip_step(
+                    npc_id,
+                    &npc_name,
+                    &mut_id,
+                    &mut_name,
+                );
+            }
 
             {
                 let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
@@ -555,7 +561,9 @@ pub fn run_npc_autonomous_production_step(
                 origin: finished_def.origin.to_string(),
             };
             ensure_item_in_store(item);
-            let _ = db::add_to_inventory(npc_id, finished_def.id, 1);
+            if !npc_id.starts_with("npc_") {
+                let _ = db::add_to_inventory(npc_id, finished_def.id, 1);
+            }
 
             {
                 let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
@@ -615,14 +623,16 @@ pub fn run_npc_autonomous_production_step(
                 format!("{npc_name}按部就班操持工具，耐心地將【{raw_name}】切磋琢磨，片刻後一件結實耐用的【{}】順利完工。", finished_def.name)
             };
             let mut msg = craft_narrative;
-            if let Some(note) = crate::server::handler::npc_autonomous_word_and_equip_step(
-                npc_id,
-                &npc_name,
-                &finished_def.id,
-                finished_def.name,
-            ) {
-                msg.push(' ');
-                msg.push_str(&note);
+            if !npc_id.starts_with("npc_") {
+                if let Some(note) = crate::server::handler::npc_autonomous_word_and_equip_step(
+                    npc_id,
+                    &npc_name,
+                    &finished_def.id,
+                    finished_def.name,
+                ) {
+                    msg.push(' ');
+                    msg.push_str(&note);
+                }
             }
             let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, finished_def.name);
             return Some(msg);
