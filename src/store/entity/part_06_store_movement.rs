@@ -48,13 +48,25 @@ impl Store {
         }
         // 作息與日間／夜間返家均由下方正向因果引擎（plan_next_causal_action）統一驅動
         let game_hour = crate::game::current_game_hour();
-        if !(6..=21).contains(&game_hour)
-            && state.current != (slot.home_x, slot.home_y)
-            && (state.purpose.contains("拾柴") || state.purpose.contains("野草") || state.dest_name.contains("西麓林道"))
+        let is_night_duty_role = ["巡夜", "守更", "更夫", "夜歸", "巡防", "哨", "值夜", "鐘樓"]
+            .iter()
+            .any(|k| e.display_title.contains(k) || slot.brief_tag.contains(k) || slot.work_name.contains(k));
+        let is_daytime_errand_or_trade = state.dest == (slot.errand_x, slot.errand_y)
+            || ["採買", "購辦", "挑選", "挑揀", "展售", "兜售", "交割", "過磅", "拍賣", "圍獵", "拾柴", "野草", "尋溪邊青石", "打磨", "鍛打", "刨削", "拉鋸"]
+                .iter()
+                .any(|k| state.purpose.contains(k) || state.stay_activity.contains(k) || state.dest_name.contains("西麓林道"));
+        if !(6..=19).contains(&game_hour)
+            && !is_night_duty_role
+            && (state.current != (slot.home_x, slot.home_y) || is_daytime_errand_or_trade)
+            && (is_daytime_errand_or_trade
+                || state.purpose.contains("拾柴")
+                || state.purpose.contains("野草")
+                || state.dest_name.contains("西麓林道"))
         {
             state.dest = (slot.home_x, slot.home_y);
             state.dest_name = slot.home_name.to_string();
             state.purpose = "回居所木榻安歇養神".to_string();
+            state.stay_activity = slot.home_stay_activity.to_string();
             state.stay_ticks_remaining = 0;
         }
         if state.current == state.dest {
@@ -349,7 +361,9 @@ impl Store {
             let time_bucket = (now_unix / 20) as u64;
 
             // (A0) 若此人正參與「合社獵團／自主圍獵小隊（`LIVE_HUNTING_PARTIES`）」，直接由小隊共識板同步四面合圍戰術站位與階段行動！
-            if let Some(parties) = LIVE_HUNTING_PARTIES.try_read() {
+            if (6..=19).contains(&game_hour)
+                && let Some(parties) = LIVE_HUNTING_PARTIES.try_read()
+            {
                 for party in parties.values() {
                     if let Some(m_idx) = party.member_ids.iter().position(|id| id == entity_id) {
                         apply_party_directive_to_state(party, m_idx, grid, state);

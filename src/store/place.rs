@@ -168,6 +168,9 @@ impl Store {
         entity.place_id = Some(place_id);
         entity.grid_x = Some(x);
         entity.grid_y = Some(y);
+        if entity.kind != "npc" && entity.current_activity.contains("於客舍內閉門靜養") {
+            entity.current_activity = "漫步穿行於街坊之間".to_string();
+        }
         self.entity_rooms.insert(entity_id.to_string(), room_id);
         Ok(())
     }
@@ -207,6 +210,9 @@ impl Store {
         entity.place_id = Some(place.id.clone());
         entity.grid_x = grid_x;
         entity.grid_y = grid_y;
+        if entity.kind != "npc" && entity.current_activity.contains("於客舍內閉門靜養") {
+            entity.current_activity = "漫步穿行於街坊之間".to_string();
+        }
         self.entity_rooms.insert(entity_id.to_string(), room_id);
         Ok(())
     }

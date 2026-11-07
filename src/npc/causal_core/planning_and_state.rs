@@ -142,7 +142,7 @@ pub fn plan_next_causal_action(
         DecisionImageKind::Eat
     } else if state.thirst >= 62 || (matches!(hour, 10 | 15) && state.thirst >= 38) {
         DecisionImageKind::Drink
-    } else if state.fatigue >= 68 || state.stress >= 76 || !(6..=21).contains(&hour) {
+    } else if state.fatigue >= 68 || state.stress >= 76 || !(6..=19).contains(&hour) {
         DecisionImageKind::SleepOrRest
     } else if vessel_worn {
         DecisionImageKind::MendOrEquip
@@ -153,7 +153,7 @@ pub fn plan_next_causal_action(
         && (7..=19).contains(&hour)
     {
         DecisionImageKind::WorkOrTrade
-    } else if effective_mg <= 4 || (8..=17).contains(&hour) {
+    } else if (effective_mg <= 4 && (6..=19).contains(&hour)) || (8..=17).contains(&hour) {
         DecisionImageKind::WorkOrTrade
     } else {
         DecisionImageKind::InteractOrUnwind

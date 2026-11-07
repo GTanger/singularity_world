@@ -185,6 +185,34 @@ fn build_spatial_navigation_guide(
     )
 }
 
+fn build_temporal_and_skepticism_grounding_note(room_display_name: &str) -> String {
+    let (hour, _minute) = crate::game::current_game_hour_and_min();
+    let shichen = match hour {
+        23 | 0 => "子時（23:00–00:59，三更深夜）",
+        1 | 2 => "丑時（01:00–02:59，四更殘夜）",
+        3 | 4 => "寅時（03:00–04:59，五更黎明前）",
+        5 | 6 => "卯時（05:00–06:59，晨光破曉）",
+        7 | 8 => "辰時（07:00–08:59，早市開張）",
+        9 | 10 => "巳時（09:00–10:59，白日正忙）",
+        11 | 12 => "午時（11:00–12:59，日正當中）",
+        13 | 14 => "未時（13:00–14:59，午後當值）",
+        15 | 16 => "申時（15:00–16:59，晡時將晚）",
+        17 | 18 => "酉時（17:00–18:59，日落收工）",
+        19 | 20 => "戌時（19:00–20:59，入夜初更）",
+        _ => "亥時（21:00–22:59，二更夜深）",
+    };
+    let mut note = String::new();
+    if !(6..=19).contains(&hour) {
+        note.push_str(&format!(
+            "\n【時辰與夜間打烊硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須精確使用該時辰，未滿 22:30 嚴禁訛稱「快子時了」）。眼下為夜段收市時分，全城露天攤販、白日商號與工坊均已打烊收攤，石橋與街巷上絕無任何營業中的藥商攤頭、絲織攤或五金攤！你此刻是在返家歇息或夜間散步途中，嚴禁宣稱自己正在石橋或街頭攤位買賣挑貨！"
+        ));
+    }
+    note.push_str(&format!(
+        "\n【面對來客質疑或反諷之誠實校準】若來客質疑地點或時間（如問「這裡？」、「這時間？」或反諷「夜市啊」），必須立即核對當前地標【{room_display_name}】之【現場可見器物】與當前時辰：若現場是石橋／街道且無攤位，或眼下已是夜間收市時段，必須坦率承認此處並無攤位／夜間早已收攤（例如說明是白天採買的物料、此刻正要返家歇息，或順著話意自嘲夜間確實沒攤子），嚴禁硬拗「就這石橋攤頭正挑貨」或順著反諷瞎附和「夜裡比白日還亮堂好挑料」！"
+    ));
+    note
+}
+
 pub(super) fn do_entity_talk(
     conn: &WsConnection,
     msg: &ClientMsg,
@@ -680,6 +708,10 @@ pub(super) fn do_entity_talk(
         let nav_guide = build_spatial_navigation_guide(target, gx, gy);
         if !nav_guide.is_empty() {
             bs.push_str(&nav_guide);
+        }
+        let temporal_skepticism_note = build_temporal_and_skepticism_grounding_note(&room_display_name);
+        if !temporal_skepticism_note.is_empty() {
+            bs.push_str(&temporal_skepticism_note);
         }
         let venue_ctx = extract_venue_and_role_talk_context(target, &room_display_name);
         if !venue_ctx.is_empty() {

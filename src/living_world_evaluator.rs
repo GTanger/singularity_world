@@ -837,6 +837,22 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
                                 slot.home_name, cell.name
                             ));
                         }
+                        if kind == "差事" && cell.is_pure_street_or_courtyard() {
+                            const FORBIDDEN_STREET_SHOP_WORDS: &[&str] = &[
+                                "攤位", "攤商", "貨攤", "商鋪", "麻織鋪", "老茶樓", "醬菜鋪",
+                                "豆腐作坊", "漆行", "肉案", "建材行", "建材貨場", "麻行大庫",
+                                "器皿鋪", "刻字鋪", "老鐵匠鋪", "雜貨鋪", "藥鋪", "五金攤",
+                                "雜貨棧", "箍桶作坊",
+                            ];
+                            for word in FORBIDDEN_STREET_SHOP_WORDS {
+                                if slot.errand_stay_activity.contains(word) {
+                                    violations.push(format!(
+                                        "文曜家庭槽位 #{idx} ({}) 差事地點「{name}」屬純街道/橋樑，但 errand_stay_activity 包含非法的店鋪/攤位文字「{word}」: {}",
+                                        slot.home_name, slot.errand_stay_activity
+                                    ));
+                                }
+                            }
+                        }
                     }
                 }
             }
