@@ -361,6 +361,20 @@ pub use super::households::{WenyaoHouseholdSlot, WENYAO_HOUSEHOLD_SLOTS};
 pub static HOUSEHOLD_MEMBER_ASSIGNMENTS: std::sync::LazyLock<
     parking_lot::RwLock<std::collections::HashMap<String, usize>>,
 > = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+pub static HOUSEHOLD_NAME_TO_SLOT_IDX: std::sync::LazyLock<
+    std::collections::HashMap<String, usize>,
+> = std::sync::LazyLock::new(|| {
+    let total = total_household_slots_len();
+    let mut map = std::collections::HashMap::with_capacity(total);
+    for idx in 0..total {
+        let slot = household_slot_at(idx);
+        let name = slot.name();
+        if !name.is_empty() {
+            map.entry(name.to_string()).or_insert(idx);
+        }
+    }
+    map
+});
 
 pub fn total_household_slots_len() -> usize {
     WENYAO_HOUSEHOLD_SLOTS.len() + super::outer_households::OUTER_HOUSEHOLD_SLOTS.len()
@@ -482,6 +496,12 @@ pub fn resident_macro_settlement(entity_id: &str, display_title: &str) -> Option
         }
         return Some("文曜");
     }
+    if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
+        return Some(normalize_household_home_settlement(household_slot_at(idx).home_name));
+    }
+    if let Some(&idx) = HOUSEHOLD_NAME_TO_SLOT_IDX.get(entity_id) {
+        return Some(normalize_household_home_settlement(household_slot_at(idx).home_name));
+    }
     if crate::server::grid_manager::resident_schedule_display_title(entity_id).is_some() {
         return Some("文曜");
     }
@@ -489,6 +509,12 @@ pub fn resident_macro_settlement(entity_id: &str, display_title: &str) -> Option
 }
 
 pub fn wenyao_household_slot_for(entity_id: &str) -> &'static WenyaoHouseholdSlot {
+    if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
+        return household_slot_at(idx);
+    }
+    if let Some(&idx) = HOUSEHOLD_NAME_TO_SLOT_IDX.get(entity_id) {
+        return household_slot_at(idx);
+    }
     let mut h: u64 = 0xcbf2_9ce4_8422_2325;
     for b in entity_id.as_bytes() {
         h ^= u64::from(*b);
