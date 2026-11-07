@@ -91,6 +91,100 @@ fn build_one_hop_spatial_grounding_note(
     )
 }
 
+fn format_relative_grid_direction(from_x: i32, from_y: i32, to_x: i32, to_y: i32) -> String {
+    let dx = to_x - from_x;
+    let dy = to_y - from_y;
+    if dx == 0 && dy == 0 {
+        return format!("就在當前原地（座標 {to_x}, {to_y}）");
+    }
+    let ew = if dx > 0 {
+        format!("往東 {} 步", dx)
+    } else if dx < 0 {
+        format!("往西 {} 步", -dx)
+    } else {
+        String::new()
+    };
+    let ns = if dy > 0 {
+        format!("往北 {} 步", dy)
+    } else if dy < 0 {
+        format!("往南 {} 步", -dy)
+    } else {
+        String::new()
+    };
+    let compass = match (dx.signum(), dy.signum()) {
+        (1, 0) => "正東向",
+        (-1, 0) => "正西向",
+        (0, 1) => "正北向",
+        (0, -1) => "正南向",
+        (1, 1) => "東北向",
+        (1, -1) => "東南向",
+        (-1, 1) => "西北向",
+        (-1, -1) => "西南向",
+        _ => "原地",
+    };
+    let steps_desc = match (!ew.is_empty(), !ns.is_empty()) {
+        (true, true) => format!("{ew}、{ns}"),
+        (true, false) => ew,
+        (false, true) => ns,
+        (false, false) => "0 步".to_string(),
+    };
+    format!("{compass}（{steps_desc}，座標 {to_x}, {to_y}）")
+}
+
+fn build_spatial_navigation_guide(
+    target: &Character,
+    gx: Option<i32>,
+    gy: Option<i32>,
+) -> String {
+    let (Some(cx), Some(cy)) = (gx, gy) else {
+        return String::new();
+    };
+    let slot = crate::store::wenyao_household_slot_for(&target.id);
+    let work_dir = format_relative_grid_direction(cx, cy, slot.work_x, slot.work_y);
+    let home_dir = format_relative_grid_direction(cx, cy, slot.home_x, slot.home_y);
+    let errand_dir = format_relative_grid_direction(cx, cy, slot.errand_x, slot.errand_y);
+    let mut landmark_parts = vec![
+        format!("你的任事場所【{}】：{}", slot.work_name, work_dir),
+        format!("你的住處【{}】：{}", slot.home_name, home_dir),
+        format!("常去差事地點【{}】：{}", slot.errand_name, errand_dir),
+    ];
+    if cx.abs() <= 18 && cy.abs() <= 18 {
+        let wenyao_inns_and_hubs = [
+            ("文曜・三水外坊・北灣臨水旅社", -4, 11),
+            ("文曜・東橋旅社與山風茶屋", 2, -1),
+            ("文曜・西門・行商長途歇舍", -7, -4),
+            ("文曜・西門外坊・風塵客商大旅社", -11, -4),
+            ("文曜・講堂外坊・青雲求學客舍", 11, 6),
+            ("文曜・百工外坊・四方匠師行館", 6, -11),
+            ("文曜・三水大食堂", -1, 2),
+            ("文曜・三水外坊・臨江水手茶飯館", -11, 4),
+        ];
+        for (name, lx, ly) in wenyao_inns_and_hubs {
+            landmark_parts.push(format!(
+                "【{name}】：{}",
+                format_relative_grid_direction(cx, cy, lx, ly)
+            ));
+        }
+    } else if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
+        if let Some(((ix, iy), iname)) = grid.find_nearest_room_by_tags((cx, cy), 20, &["inn", "teahouse"], 0) {
+            landmark_parts.push(format!(
+                "本聚落旅社茶屋【{iname}】：{}",
+                format_relative_grid_direction(cx, cy, ix, iy)
+            ));
+        }
+        if let Some(((fx, fy), fname)) = grid.find_nearest_room_by_tags((cx, cy), 20, &["canteen", "hot_food"], 0) {
+            landmark_parts.push(format!(
+                "本聚落食堂【{fname}】：{}",
+                format_relative_grid_direction(cx, cy, fx, fy)
+            ));
+        }
+    }
+    format!(
+        "\n【精確指路與地標方位表（當前所在座標：{cx}, {cy}）】{}。若來客詢問「旅社在哪」、「某處怎麼走」或打聽你的任事場所／住處方位，必須 100% 依據上述真實方向與步數指路（例如從 -12, 11 去北灣臨水旅社 -4, 11 應回答「往正東走八步便是北灣臨水旅社」），嚴禁瞎編「過引水石橋再走兩步」等與真實座標不符的假路線！",
+        landmark_parts.join("；")
+    )
+}
+
 pub(super) fn do_entity_talk(
     conn: &WsConnection,
     msg: &ClientMsg,
@@ -582,6 +676,10 @@ pub(super) fn do_entity_talk(
         let spatial_note = build_one_hop_spatial_grounding_note(player_room, gx, gy);
         if !spatial_note.is_empty() {
             bs.push_str(&spatial_note);
+        }
+        let nav_guide = build_spatial_navigation_guide(target, gx, gy);
+        if !nav_guide.is_empty() {
+            bs.push_str(&nav_guide);
         }
         let venue_ctx = extract_venue_and_role_talk_context(target, &room_display_name);
         if !venue_ctx.is_empty() {

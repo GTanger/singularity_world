@@ -167,9 +167,22 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         } else if room_name.contains("青竹苑")
             || room_name.contains("藥圃")
             || room_name.contains("苗圃")
+            || room_name.contains("花圃")
+            || room_name.contains("草圃")
+            || room_name.contains("水芹圃")
+            || room_name.contains("修性圃")
+            || room_name.contains("本草園")
+            || room_name.contains("收曬園")
             || room_name.contains("藥草")
             || room_name.contains("竹苑")
+            || room_name.contains("垂柳苑")
+            || room_name.contains("草廬苑")
+            || room_name.contains("石池苑")
             || room_name.contains("竹林")
+            || room_name.contains("桂花林")
+            || room_name.contains("杏壇林")
+            || room_name.contains("印池")
+            || room_name.contains("清水池")
         {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_garden",
@@ -211,7 +224,38 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
                     ("Operate", "你拉動生鐵栓馬石環試了試牢固度，鐵環嵌合緊密，堅不可摧。"),
                 ],
             ))
-        } else if room_name.contains("街") || room_name.contains("巷") || room_name.contains("道") || room_name.contains("橋") {
+        } else if room_name.contains("街")
+            || room_name.contains("巷")
+            || room_name.contains("道")
+            || room_name.contains("橋")
+            || room_name.contains("廣場")
+            || room_name.contains("平坪")
+            || room_name.contains("草坪")
+            || room_name.contains("石坪")
+            || room_name.contains("曬網坪")
+            || room_name.contains("草料坪")
+            || room_name.contains("試刀坪")
+            || room_name.contains("聚工坪")
+            || room_name.contains("平波坪")
+            || room_name.contains("迴舟坪")
+            || room_name.contains("整隊坪")
+            || room_name.contains("石台")
+            || room_name.contains("石階")
+            || room_name.contains("石磯")
+            || room_name.contains("棚廊")
+            || room_name.contains("草亭苑")
+            || room_name.contains("牧草甸")
+            || room_name.contains("清草塘")
+            || room_name.contains("望遠坡")
+            || room_name.contains("晾木場")
+            || room_name.contains("放牧場")
+            || room_name.contains("堆疊場")
+            || room_name.contains("過磅台")
+            || room_name.contains("外環")
+            || room_name.contains("內環")
+            || room_name.ends_with("隅")
+            || room_name.ends_with("口")
+        {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_street",
                 "告示欄",

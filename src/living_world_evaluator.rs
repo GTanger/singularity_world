@@ -824,6 +824,19 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
                             "家庭槽位 #{idx} ({}) 之{kind}「{name}」（{x}, {y}）位於不可通行地形 {:?}",
                             slot.home_name, cell.terrain
                         ));
+                    } else if idx < WENYAO_HOUSEHOLD_SLOTS.len() {
+                        let stripped_cell = cell.name.strip_prefix("文曜・").unwrap_or(&cell.name);
+                        let stripped_name = name.strip_prefix("文曜・").unwrap_or(name);
+                        let name_matches = stripped_cell == stripped_name
+                            || (stripped_name == "三水總商行" && stripped_cell == "三水總商行總部")
+                            || (stripped_name == "文曜學院主校區" && stripped_cell == "學院主校區")
+                            || (stripped_name == "分家巷習武堂" && stripped_cell == "分家巷習武堂試招院");
+                        if !name_matches {
+                            violations.push(format!(
+                                "文曜家庭槽位 #{idx} ({}) 之{kind}「{name}」（{x}, {y}）與網格實際地標「{}」不符",
+                                slot.home_name, cell.name
+                            ));
+                        }
                     }
                 }
             }

@@ -652,11 +652,20 @@ fn extract_venue_and_role_talk_context(target: &Character, room_name: &str) -> S
         }
         parts.push(venue_line);
     } else {
-        let work_place = crate::store::wenyao_household_slot_for(&target.id).work_name;
-        parts.push(format!(
-            "你平時在【{}】任事（職務為【{}】），此刻身在【{}】，當前手頭動靜：{}。",
-            work_place, target.display_title, room_name, target.current_activity
-        ));
+        let slot = crate::store::wenyao_household_slot_for(&target.id);
+        let work_place = slot.work_name;
+        let stripped_work = work_place.strip_prefix("文曜・").unwrap_or(work_place);
+        if !stripped_work.is_empty() && !room_name.contains(stripped_work) {
+            parts.push(format!(
+                "你平時在【{}】（座標 {}, {}）任事（職務為【{}】），但你此刻人不在【{}】店內，而是身在外頭的【{}】，當前手頭動靜：{}（切勿把【{}】現場的器物當成【{}】店內的設施）。",
+                work_place, slot.work_x, slot.work_y, target.display_title, work_place, room_name, target.current_activity, room_name, work_place
+            ));
+        } else {
+            parts.push(format!(
+                "你平時在【{}】（座標 {}, {}）任事（職務為【{}】），此刻身在【{}】，當前手頭動靜：{}。",
+                work_place, slot.work_x, slot.work_y, target.display_title, room_name, target.current_activity
+            ));
+        }
     }
 
     let _ = &target.id;

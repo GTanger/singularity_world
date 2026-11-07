@@ -347,15 +347,15 @@ pub struct NpcDestinationTarget {
 #[allow(dead_code)]
 pub const WENYAO_TARGETS: &[NpcDestinationTarget] = &[
     NpcDestinationTarget { x: -1, y: 2, name: "三水大食堂", purpose: "用餐休息", stay_activity: "正在木桌旁享用熱湯麵與現磨米漿" },
-    NpcDestinationTarget { x: -1, y: 1, name: "三水總商行", purpose: "交割貨單", stay_activity: "正在櫃檯前核對山海貨單與鎂幣帳目" },
-    NpcDestinationTarget { x: 1, y: 3, name: "印行書局", purpose: "採買書冊", stay_activity: "正在翻閱新印好的竹綿紙書冊與旬報" },
-    NpcDestinationTarget { x: 1, y: -1, name: "第一鐵坊", purpose: "修整器物", stay_activity: "正在爐火旁查看鍛鐵器物與工具刃口" },
-    NpcDestinationTarget { x: 2, y: 3, name: "溫氏百草診所", purpose: "抓藥調理", stay_activity: "正在藥櫃前等候秤量草藥" },
-    NpcDestinationTarget { x: 1, y: 1, name: "文曜學院", purpose: "旁聽課程", stay_activity: "正在講堂廊下研討數學與會計與專業教材" },
+    NpcDestinationTarget { x: -1, y: 1, name: "三水總商行總部", purpose: "交割貨單", stay_activity: "正在櫃檯前核對山海貨單與鎂幣帳目" },
+    NpcDestinationTarget { x: 1, y: 4, name: "講堂街書局與印行館", purpose: "採買書冊", stay_activity: "正在翻閱新印好的竹綿紙書冊與旬報" },
+    NpcDestinationTarget { x: 1, y: -1, name: "岑氏第一鍛造工坊", purpose: "修整器物", stay_activity: "正在爐火旁查看鍛鐵器物與工具刃口" },
+    NpcDestinationTarget { x: 1, y: -4, name: "溫氏脈絡診所", purpose: "抓藥調理", stay_activity: "正在藥櫃前等候秤量草藥" },
+    NpcDestinationTarget { x: 1, y: 1, name: "學院主校區", purpose: "旁聽課程", stay_activity: "正在講堂廊下研討數學與會計與專業教材" },
     NpcDestinationTarget { x: -1, y: -1, name: "公議堂", purpose: "查閱告示", stay_activity: "正在公議堂前核對近期政令與委託" },
     NpcDestinationTarget { x: -2, y: 0, name: "三水渡埠街", purpose: "探問船期", stay_activity: "正在渡埠街邊打聽往來貨船班次" },
-    NpcDestinationTarget { x: -1, y: 3, name: "三水口乾貨海味行", purpose: "挑選乾貨", stay_activity: "正在挑選風乾海味與遠行乾糧" },
-    NpcDestinationTarget { x: 2, y: 0, name: "茶屋巷口", purpose: "喝茶聊天", stay_activity: "正在茶屋竹椅上啜飲熱茶歇息" },
+    NpcDestinationTarget { x: -1, y: 4, name: "三水口乾貨海味行", purpose: "挑選乾貨", stay_activity: "正在挑選風乾海味與遠行乾糧" },
+    NpcDestinationTarget { x: 2, y: -1, name: "東橋旅社與山風茶屋", purpose: "喝茶聊天", stay_activity: "正在茶屋竹椅上啜飲熱茶歇息" },
     NpcDestinationTarget { x: -1, y: 6, name: "三水口・老水夫舍", purpose: "返家歇息", stay_activity: "正在屋內整理隨身行囊與衣物" },
     NpcDestinationTarget { x: 1, y: 7, name: "講堂街・研墨小齋", purpose: "閱讀資料", stay_activity: "正在案前整理筆記" },
 ];
