@@ -135,7 +135,7 @@
 
 ---
 
-## 五、 第三期：全棧「去便宜行事、去紙紮化、去文曜霸權與千物總典 `wt_cat_*` 貫通」22 刀深層根治紀錄（Phase III Deep Structural Renewal）
+## 五、 第三期：全棧「去便宜行事、去紙紮化、去文曜霸權與千物總典 `wt_cat_*` 貫通」26 刀深層根治紀錄（Phase III Deep Structural Renewal）
 
 1. **第一～十刀（`v0.39.115`～`v0.39.116`）**：
    - 拔除家戶日程寫死字串表與攤商 10 分支兜底台詞，將 `1,713` 戶家戶座標與 `59` 名排程居民座標 100% 落實至 `SquareGrid` 真實格位；
@@ -153,3 +153,8 @@
    - **第二十刀（器物生態守恆、地標聚落化與偽醫館漏洞根治）**：拔除 `campfires_and_refining.rs` 燒鐵片（`mat_repair_strip`）當柴與修繕憑空印鈔 8 鎂；拔除 `supply_and_catalog.rs` 零庫存憑空生貨與泡茶扣鐵礦；擴充 `CANONICAL_SETTLEMENTS` 至全島 15 聚落；修正 `effects_1.rs` 水尾寮客運座標 `(-75, -280)` 與海事水險在地公庫清算；修正 `effects_2.rs / effects_4.rs` 日晷、幫廚、地籍圖之文曜硬編碼；修正 `effects_5.rs` `obj.name.contains("草")` 將馬料箱當醫榻秒消瘴氣滿血之漏洞；補齊 `grid_view_2.rs` 旅社「進」出入口。
    - **第二十一刀（活世界迴圈、AI 對話語料、Sanitizer 防誤傷與 Eco 端點修復）**：修正 `human_life_loop.rs / life_choices_and_factors.rs` 全島外送與食堂寫死文曜；修正 `dialogue_1.rs / dialogue_2.rs` 負數座標誤刪與「打算$\to$打好算、點燈$\to$清點完燈、氧化鎂$\to$受潮走色鎂」語義反噬；接通 `talk/execute.rs` 之 `resident_knowledge` 與 `db/archival.rs` 12 份職業語料 JSON；修復 `co_enact_script_pack` 誤拿玩家指令當 NPC 台詞；修復 `eco.rs` 思緒聚落誤傳職稱與 `O(N^2)` 微瀾去重。
    - **第二十二刀（前端 `web/*.js` 殘留正則清零）**：移除 `web/sw-panes.js` 裝備欄殘留之百字原材／食材正則與 `web/sw-object-list.js` 房間名稱猜謎，全面改用後端結構化欄位（SW 快取推進至 `20261106ap`）。
+5. **第二十三～二十六刀（`v0.39.120`）**：
+   - **第二十三刀（拔除事後 `.replace("A","B")` 擦屁股鏈與修正 `normalize_archaic_clothing` 語義污染）**：移除 `part_01_state.rs` 與 `eco.rs` 共 5 處每輪重複配置字串之 6 階 `.replace("買米菜回屋自炊熱粥", ...)` 廢棄補丁鏈；修正 `part_03_navigation.rs:241-276` 之 `normalize_archaic_clothing`，停止將千物總典正典物產（`十三檔烏木竹骨算盤` `wt_cat_0834`、`竹骨摺扇`、`硃筆` `wt_cat_0836`、`毛筆`）篡改為禁用現代詞（`隨身懷錶`、`鋼尖蘸水硬筆`、`計數板`）；於 `disposition.rs` 增設 `normalize_legacy_region_text` 零配置快速通道。
+   - **第二十四刀（以結構化協定欄位拔除前端中文敘事正則爬蟲）**：於 `server/action/mod.rs` 目標離開同格時回傳 `suggested_action: "target_departed"`，並於 `trade/quote.rs` 與 `trade/settlement.rs` 議價待出價分支回傳 `open_trade: true`；更新 `web/main.js` 優先讀取 `msg.suggested_action === 'target_departed'` 與 `Boolean(msg.open_trade)`，更新 `web/sw-panes.js` 優先檢驗 `blank_manual / wt_blank_manual` 與 `category_tag === 'desk'`（SW 快取推進至 `20261106aq`）。
+   - **第二十五刀（拔除 `resolve_venue_for_requirement` 文曜跳過網格檢索與 `db/identity.rs` 排程住民文曜兜底）**：移除 `part_04_store_crud.rs:509-778` 所有場域需求分支之 `if !is_wenyao` 網格檢索繞過，使全島 15 聚落（含文曜多井、多橋、多茶屋、多食堂）一律先於 `SquareGrid` 半徑 24～28 格內就近檢索；修正 `part_02_household.rs` 新增 `HOUSEHOLD_NAME_TO_SLOT_IDX` 解決 1,389 名外圍家戶住民按姓名反查落入文曜之臭蟲，並於 `db/identity.rs` 優先查驗 `resident_schedule_home_and_work` 與 `resolve_vocational_vessel`。
+   - **第二十六刀（打通 `mut_wt_cat_*` 千物總典異變定義遞迴解析與基底產地溯源）**：修正 `item_definitions.rs` 之 `lookup_ecology_item_def`，解析 `mut_<base>_<arch>` 時遞迴查詢 `lookup_ecology_item_def(base_part)`，根除千物總典器物異變後被 `.unwrap_or(&STANDARD_FINISHED_GOODS[0])` 靜默洗成獵刀之臭蟲；修正 `crafting_and_mutation.rs` 依 `item_base_price_mg` 計算異變基底價，並於 `market_pricing.rs` 剝除 `mut_` 前後綴溯源真實產地聚落。

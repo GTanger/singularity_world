@@ -297,10 +297,30 @@ pub fn dynamic_settlement_market_quote(
         normalize_canonical_settlement(raw_settlement)
     };
 
-    let origin_str = lookup_item_origin(item_id);
+    let mut origin_lookup_id = item_id;
+    let mut base_id_buf = String::new();
+    if let Some(rest) = item_id.strip_prefix("mut_") {
+        for arch in MUTATION_ARCHETYPES {
+            let suffix = format!("_{}", arch.key);
+            if let Some(base_part) = rest.strip_suffix(&suffix) {
+                base_id_buf = base_part.to_string();
+                break;
+            }
+        }
+        if !base_id_buf.is_empty() {
+            origin_lookup_id = &base_id_buf;
+        }
+    }
+
+    let mut origin_str = lookup_item_origin(origin_lookup_id);
+    if origin_str.is_empty() {
+        if let Some(def) = lookup_ecology_item_def(origin_lookup_id) {
+            origin_str = def.origin;
+        }
+    }
     let raw_origin = crate::world::materials::infer_origin_settlement(&origin_str);
     let origin_settlement = if raw_origin.is_empty() {
-        if item_id == "mat_rough_ore" {
+        if origin_lookup_id == "mat_rough_ore" {
             "紅土崁".to_string()
         } else {
             String::new()

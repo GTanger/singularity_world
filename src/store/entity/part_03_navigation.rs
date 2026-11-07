@@ -7,7 +7,7 @@ pub fn npc_sensory_appearance_line(entity_id: &str, display_title: &str) -> Stri
         return "穿著沉穩的墨色立領外套，束著精緻皮帶，氣度雍容，舉止端雅".to_string();
     }
     if combined.contains("總商行") {
-        return "身穿寶藍色正裝外套，腰間掛著隨身懷錶與核算夾，指尖圓潤，氣度沉著圓融".to_string();
+        return "身穿寶藍色正裝外套，腰間掛著黃銅日晷羅盤與核算夾，指尖圓潤，氣度沉著圓融".to_string();
     }
     if combined.contains("第一鐵坊") || combined.contains("鍛造總匠") {
         return "身形如鐵塔般魁梧，赤臂外罩厚重牛皮防護圍兜，臂膀青筋虯結，滿身精金炭火氣息".to_string();
@@ -37,7 +37,7 @@ pub fn npc_sensory_appearance_line(entity_id: &str, display_title: &str) -> Stri
         return "面龐黝黑硬朗，穿著厚皮革背心與長靴，手握皮鞭，嗓音渾厚有力".to_string();
     }
     if combined.contains("蒙學") || combined.contains("講舍") {
-        return "身著潔淨淺青短衫，面容溫和清瘦，懷抱啟蒙教材與一束鋼尖蘸水硬筆".to_string();
+        return "身著潔淨淺青短衫，面容溫和清瘦，懷抱啟蒙教材與一束竹管狼毫筆".to_string();
     }
     if combined.contains("商算") || combined.contains("會計") {
         return "身穿整潔洗白的藏青色短襖，右手拿著計數板，手指不時點算".to_string();
@@ -55,7 +55,7 @@ pub fn npc_sensory_appearance_line(entity_id: &str, display_title: &str) -> Stri
         return "穿著洗得泛黃的紅花布圍裙，兜裡裝滿五彩糖球，神情親切可親".to_string();
     }
     if combined.contains("東橋旅社") || combined.contains("茶屋") {
-        return "身著淺茶色休閒外套，手握隨身懷錶，笑容溫厚周到，語調從容不迫".to_string();
+        return "身著淺茶色休閒外套，手握黃銅日晷羅盤，笑容溫厚周到，語調從容不迫".to_string();
     }
     if combined.contains("修傘") || combined.contains("補靴") {
         return "鼻樑架著黃銅圓框助視鏡，圍著滿是蠟痕與針孔的厚牛皮圍兜，指節粗大粗糙，身邊擺滿硬木鞋楦".to_string();
@@ -151,7 +151,7 @@ pub fn npc_brief_appearance_tag(entity_id: &str, display_title: &str) -> String 
         return "圍著紅花布圍裙".to_string();
     }
     if combined.contains("東橋旅社") || combined.contains("茶屋") {
-        return "手握隨身懷錶".to_string();
+        return "手握黃銅日晷羅盤".to_string();
     }
     if combined.contains("修傘") || combined.contains("補靴") {
         return "鼻架圓框水晶明目鏡".to_string();
@@ -244,7 +244,6 @@ pub fn normalize_archaic_clothing(s: &str) -> String {
     }
     let mut res = s.to_string();
     res = res.replace("童生布衫", "學子青衫");
-    res = res.replace("十三檔烏木竹骨算盤", "烏木便攜計數板");
     res = res.replace("銀票", "通兌匯票");
     res = res.replace("粗布短褂", "棉麻短衫");
     res = res.replace("粗布長褲", "耐磨長褲");
@@ -270,12 +269,9 @@ pub fn normalize_archaic_clothing(s: &str) -> String {
     res = res.replace("墨色長衫", "墨色立領外套");
     res = res.replace("寶藍錦袍", "寶藍色正裝外套");
     res = res.replace("桐木屐", "防滑木底便履");
-    res = res.replace("烏木算盤", "便攜計數板");
-    res = res.replace("金絲算盤", "隨身懷錶與核算夾");
-    res = res.replace("算盤", "計數板");
-    res = res.replace("竹骨摺扇", "隨身懷錶");
-    res = res.replace("摺扇", "隨身懷錶");
-    res = res.replace("硃筆", "鋼尖蘸水硬筆");
+    res = res.replace("金絲算盤", "黃銅日晷羅盤與核算夾");
+    res = res.replace("隨身懷錶", "黃銅日晷羅盤");
+    res = res.replace("鋼尖蘸水硬筆", "竹管狼毫筆");
     res
 }
 

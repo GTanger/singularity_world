@@ -427,7 +427,8 @@
 						break;
 				case 'action_result':
 					var departedId = msg.target_id || (window.__currentPopoverTarget && window.__currentPopoverTarget.id);
-					if (departedId && msg.narrative && (msg.narrative.indexOf('對方卻已邁步離開此處') !== -1 || msg.narrative.indexOf('已不在此處') !== -1)) {
+					var targetGone = msg.suggested_action === 'target_departed' || (msg.success === false && /邁步離開此處|已離開此處|不在附近|已不在此處/.test(String(msg.narrative || '')));
+					if (departedId && targetGone) {
 						var canvasEl = document.getElementById('sw-room-canvas');
 						if (canvasEl) {
 							var staleTokens = canvasEl.querySelectorAll('.sw-canvas-token[data-entity-id="' + departedId + '"], .sw-canvas-token[data-obj-id="' + departedId + '"]');
@@ -521,18 +522,31 @@
 						}
 						var tradeTargetId = msg.target_id || '';
 						var tradeTargetName = msg.target_name || tradeTargetId;
-						if (!isMismatchedTradePopover && tradeTargetId && tradeTargetName) {
-							var shouldOpenTradeInput = Boolean(msg.open_trade) || /請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
-							if (shouldOpenTradeInput) {
-								if (!window.__currentPopoverTarget && window.SwOpenObjectPopover) {
-									var cTokenEl = document.querySelector('#sw-room-canvas [data-entity-id="' + tradeTargetId + '"]');
-									if (cTokenEl && cTokenEl._swToken) {
-										window.SwOpenObjectPopover(cTokenEl._swToken);
-										appendNarrative(tHtml, 'Trade');
+						if (!isMismatchedTradePopover && tradeTargetId) {
+							var shouldOpenTrade = Boolean(msg.open_trade) && msg.suggested_action !== 'Trade';
+							if (shouldOpenTrade) {
+								if (window.SwInteractions && window.SwInteractions.openTradeInput) {
+									window.SwInteractions.openTradeInput(tradeTargetId, tradeTargetName || tradeTargetId);
+								} else if (tradeTargetName) {
+									if (!window.__currentPopoverTarget && window.SwOpenObjectPopover) {
+										var cTokenEl = document.querySelector('#sw-room-canvas [data-entity-id="' + tradeTargetId + '"]');
+										if (cTokenEl && cTokenEl._swToken) {
+											window.SwOpenObjectPopover(cTokenEl._swToken);
+											appendNarrative(tHtml, 'Trade');
+										}
+									}
+									if (window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
+										window.SwInteractions.appendTradeInputRow(tradeTargetId, tradeTargetName);
 									}
 								}
-								window.SwInteractions.appendTradeInputRow(tradeTargetId, tradeTargetName);
-							} else {
+							} else if (msg.open_trade === false) {
+								if (window.SwInteractions && window.SwInteractions.closeTradeInput) {
+									window.SwInteractions.closeTradeInput();
+								}
+								if (tradeTargetName) {
+									appendObjectActionsLine(renderEntityActionButtonsHtml(tradeTargetId, tradeTargetName));
+								}
+							} else if (tradeTargetName) {
 								appendObjectActionsLine(renderEntityActionButtonsHtml(tradeTargetId, tradeTargetName));
 							}
 						}

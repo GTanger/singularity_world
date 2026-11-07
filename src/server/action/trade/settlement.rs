@@ -18,7 +18,7 @@ fn handle_trade_settlement(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
-            open_trade: false,
+            open_trade: true,
             suggested_action: String::new(),
             tactical_choices: vec![],
         });
@@ -34,7 +34,7 @@ fn handle_trade_settlement(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
-            open_trade: false,
+            open_trade: true,
             suggested_action: String::new(),
             tactical_choices: vec![],
         });
@@ -50,7 +50,7 @@ fn handle_trade_settlement(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
-            open_trade: false,
+            open_trade: true,
             suggested_action: String::new(),
             tactical_choices: vec![],
         });
@@ -77,7 +77,7 @@ fn handle_trade_settlement(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
-            open_trade: false,
+            open_trade: true,
             suggested_action: String::new(),
             tactical_choices: vec![],
         });

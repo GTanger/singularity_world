@@ -841,7 +841,7 @@ mod wave14_tests {
 
     #[test]
     fn test_format_venue_arrival_peer_consequence_staff_and_non_venue() {
-        let arrival_venue = format_venue_arrival_peer_consequence("老堰頭・水輪石磨工坊", "npc_random_nobody_999");
+        let arrival_venue = format_venue_arrival_peer_consequence("老堰頭・水輪石磨工坊", "秦水生");
         assert!(arrival_venue.contains("櫃檯內場的當值石磨匠師"));
 
         let arrival_wild = format_venue_arrival_peer_consequence("荒蕪礫石空地", "npc_random_nobody_999");

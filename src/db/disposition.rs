@@ -154,30 +154,62 @@ fn is_misclassified_thought_flavor(f: &str) -> bool {
         .iter()
         .any(|kw| f.contains(kw))
 }
-
-pub fn normalize_thought_flavor(f: &str) -> String {
-    let mut s = f
-        .replace("大圳頭・西南原", "大圳頭・圳頭")
+pub fn normalize_legacy_region_text(s: &str) -> String {
+    const LEGACY_TOKENS: &[&str] = &[
+        "西南原", "東境", "南嶺", "中州", "北境", "西荒", "大荒",
+    ];
+    if !LEGACY_TOKENS.iter().any(|&token| s.contains(token)) {
+        return s.to_string();
+    }
+    s.replace("大圳頭・西南原", "大圳頭・圳頭")
         .replace("西門外坊・西南原", "西門外坊・西門")
         .replace("西南原農具與百工坊", "大圳頭農具與百工坊")
         .replace("西南原", "大圳頭")
-        .replace("防爆防風", "防風")
-        .replace("陽春粗麵", "清湯粗麵")
-        .replace("陽春麵", "清湯粗麵")
-        .replace("冷開水", "山泉涼茶")
-        .replace("白開水", "熱茶水")
-        .replace("黑沼關隘", "下營")
-        .replace("鹽田澳", "烏石鼻")
-        .replace("青籠關", "下營")
-        .replace("黑沼林澤", "水尾寮")
-        .replace("黑沼林", "水尾寮")
-        .replace("白塔山麓", "半嶺鎮")
-        .replace("北聖山", "北嶺腳")
-        .replace("西北礦帶", "紅土崁");
-    if ["巨藻淺灣", "驚濤岩岸", "黑石灣", "落日岬", "淺澤泥口", "白茫洲", "貼山深潭"]
+        .replace("東境", "東海岸")
+        .replace("南嶺", "南嶺山道")
+        .replace("中州", "白塔腹地")
+        .replace("北境", "北嶺")
+        .replace("西荒", "西海岸")
+        .replace("大荒", "山海荒野")
+}
+
+pub fn normalize_thought_flavor(f: &str) -> String {
+    const REGION_TOKENS: &[&str] = &[
+        "西南原", "黑沼關隘", "鹽田澳", "黑沼林澤", "黑沼林", "白塔山麓", "北聖山", "西北礦帶",
+    ];
+    const OTHER_TOKENS: &[&str] = &[
+        "防爆防風", "陽春粗麵", "陽春麵", "冷開水", "白開水",
+    ];
+    let has_region = REGION_TOKENS.iter().any(|&t| f.contains(t));
+    let has_other = OTHER_TOKENS.iter().any(|&t| f.contains(t));
+    let has_eco = ["巨藻淺灣", "驚濤岩岸", "黑石灣", "落日岬", "淺澤泥口", "白茫洲", "貼山深潭"]
         .iter()
-        .any(|z| s.contains(z))
-    {
+        .any(|z| f.contains(z));
+
+    if !has_region && !has_other && !has_eco {
+        return f.to_string();
+    }
+
+    let mut s = f.to_string();
+    if has_region {
+        s = normalize_legacy_region_text(&s)
+            .replace("黑沼關隘", "下營")
+            .replace("鹽田澳", "烏石鼻")
+            .replace("黑沼林澤", "水尾寮")
+            .replace("黑沼林", "水尾寮")
+            .replace("白塔山麓", "半嶺鎮")
+            .replace("北聖山", "北嶺腳")
+            .replace("西北礦帶", "紅土崁");
+    }
+    if has_other {
+        s = s
+            .replace("防爆防風", "防風")
+            .replace("陽春粗麵", "清湯粗麵")
+            .replace("陽春麵", "清湯粗麵")
+            .replace("冷開水", "山泉涼茶")
+            .replace("白開水", "熱茶水");
+    }
+    if has_eco {
         s = s
             .replace("的林木因連日採擷正逢封山休養", "的漁場因連日採擷正逢休漁養息")
             .replace("林木亟待休養，正親手培土護苗、修整山場", "漁場亟待休養，正親手修整礁岸、養護藻床")

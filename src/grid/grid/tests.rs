@@ -524,6 +524,6 @@ mod tests {
 
         // 預設通用場域
         let default_act = resolve_room_ambient_visitor_activity("尋常林間小道", 0);
-        assert_eq!(default_act, Some("提著竹編提籃在三水口商號間採辦日用雜貨"));
+        assert_eq!(default_act, Some("背著隨身行囊在附近駐足歇腳，打量四周風物"));
     }
 }

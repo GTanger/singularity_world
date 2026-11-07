@@ -381,11 +381,11 @@ mod tests {
     fn find_topic_id_by_hint_matches_legacy() {
         try_load_npc_npc_topics(&topics_path()).expect("load topics");
         assert_eq!(
-            find_npc_npc_topic_id_by_hint("換班、交接時的情境，簡短交代或叮囑"),
+            find_npc_npc_topic_id_by_hint("換班、交接時的情境，核對水門刻度、工坊器具、帳冊與當值交接"),
             "交班"
         );
         assert_eq!(
-            find_npc_npc_topic_id_by_hint("隨口閒聊，天氣、見聞、抱怨（路人在旁，兩句務必極短。）"),
+            find_npc_npc_topic_id_by_hint("圍繞各聚落百工器物、水輪石磨、鹽坪結晶、山茶烘焙與日常差事自然交流"),
             "閒聊"
         );
         assert_eq!(
@@ -401,7 +401,7 @@ mod tests {
     fn get_by_id_after_load() {
         try_load_npc_npc_topics(&topics_path()).expect("load");
         assert_eq!(
-            get_npc_npc_topic_by_id("閒聊").map(|t| t.hint.contains("隨口")),
+            get_npc_npc_topic_by_id("閒聊").map(|t| t.hint.contains("百工器物")),
             Some(true)
         );
     }

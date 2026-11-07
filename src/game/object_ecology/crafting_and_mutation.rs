@@ -631,10 +631,11 @@ pub fn mutate_finished_item(
         "{}（{}，器物成色與質理俱臻上乘。）",
         base_desc, arch.desc_note
     );
+    let real_base_price = item_base_price_mg(&chosen_item_id).max(15);
     let (slot, item_type, weight, base_price, base_vit, base_dex, base_atk) = if let Some(d) = &base_def {
-        (d.slot.clone(), d.item_type.clone(), d.weight, 25, d.vit_bonus, d.dex_bonus, d.atk_bonus)
+        (d.slot.clone(), d.item_type.clone(), d.weight, real_base_price, d.vit_bonus, d.dex_bonus, d.atk_bonus)
     } else {
-        ("hold_r".to_string(), "equipment".to_string(), 1.0, 25, 0, 0, 0)
+        ("hold_r".to_string(), "equipment".to_string(), 1.0, real_base_price, 0, 0, 0)
     };
 
     let item = Item {

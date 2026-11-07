@@ -234,7 +234,7 @@ fn try_entity_branch(
                 actions: vec![],
                 move_target_id: String::new(),
                 open_trade: false,
-                suggested_action: String::new(),
+                suggested_action: "target_departed".into(),
                 tactical_choices: vec![],
             });
             push_refresh(conn, pid);
@@ -256,7 +256,7 @@ fn try_entity_branch(
             actions: vec![],
             move_target_id: String::new(),
             open_trade: false,
-            suggested_action: String::new(),
+            suggested_action: "target_departed".into(),
             tactical_choices: vec![],
         });
         push_refresh(conn, pid);

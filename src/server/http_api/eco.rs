@@ -112,13 +112,7 @@ impl CellExt for crate::grid::GridCell {
 }
 
 fn sanitize_eco_activity(act: &str) -> String {
-    let normalized = act
-        .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
-        .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
-        .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
-        .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
-        .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
-        .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
+    let normalized = act;
     let mut result = String::with_capacity(normalized.len());
     let mut chars = normalized.char_indices().peekable();
     while let Some((idx, ch)) = chars.next() {
@@ -335,15 +329,7 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
             res_seed,
         );
         crate::npc::causal_core::sync_causal_state_with_magnesium(&mut cstate, eff_mg, res_seed);
-        let cleaned_raw_owned = raw_act
-            .trim()
-            .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
-            .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
-            .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
-            .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
-            .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
-            .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
-        let cleaned_raw = cleaned_raw_owned.as_str();
+        let cleaned_raw = raw_act.trim();
         let is_moving = cleaned_raw.starts_with("正動身前往")
             || cleaned_raw.starts_with("正踏著夜色返回")
             || cleaned_raw.starts_with("正返回【")
@@ -364,21 +350,14 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
                 {
                     return true;
                 }
-                let opt_title_norm = opt
-                    .action_title
-                    .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
-                    .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
-                    .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
-                    .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
-                    .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
-                    .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
-                if cleaned_raw.contains(&opt_title_norm) {
+                let opt_title_norm = opt.action_title;
+                if cleaned_raw.contains(opt_title_norm) {
                     return true;
                 }
                 let prefixes = [
                     "回屋舍", "回居所", "在攤前", "在旅社", "在茶屋", "在貨站", "在案頭", "去", "到", "在",
                 ];
-                let mut trimmed_title = opt_title_norm.as_str();
+                let mut trimmed_title = opt_title_norm;
                 let mut changed = true;
                 while changed {
                     changed = false;
@@ -407,15 +386,7 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
                     &live_dest_name,
                 );
                 let dest_label = format!("{settlement}・{place}");
-                let title_norm = opt
-                    .action_title
-                    .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
-                    .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
-                    .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
-                    .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
-                    .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
-                    .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
-                let title = title_norm.as_str();
+                let title = opt.action_title;
                 let is_sleep_rest = title.contains("安歇")
                     || title.contains("睡")
                     || title.contains("歇息")

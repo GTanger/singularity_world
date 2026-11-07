@@ -142,18 +142,29 @@ pub fn is_recognizable_room_staff_or_counter_holder(
         && !npc_id.is_empty()
         && !display_title.contains("便服")
     {
-        let slot = crate::store::wenyao_household_slot_for(npc_id);
-        let is_matched_slot = npc_id == slot.name()
-            || display_title.contains(slot.name())
-            || (!slot.work_name.is_empty() && current_activity.contains(slot.work_name));
-        let work_matches_room = room_name.trim().is_empty()
-            || (!slot.work_name.is_empty()
-                && (room_name.contains(slot.work_name) || slot.work_name.contains(room_name)));
-        if is_matched_slot
-            && work_matches_room
-            && crate::game::peninsula_catalog::is_work_uniform_item_id_or_name(slot.attire_line)
-        {
-            has_visible_uniform = true;
+        if let Some((_, sched_work)) = crate::server::grid_manager::resident_schedule_home_and_work(npc_id) {
+            if !sched_work.is_empty()
+                && (room_name.trim().is_empty()
+                    || room_name.contains(sched_work)
+                    || sched_work.contains(room_name.trim()))
+            {
+                has_visible_uniform = true;
+            }
+        }
+        if !has_visible_uniform {
+            let slot = crate::store::wenyao_household_slot_for(npc_id);
+            let is_matched_slot = npc_id == slot.name()
+                || display_title.contains(slot.name())
+                || (!slot.work_name.is_empty() && current_activity.contains(slot.work_name));
+            let work_matches_room = room_name.trim().is_empty()
+                || (!slot.work_name.is_empty()
+                    && (room_name.contains(slot.work_name) || slot.work_name.contains(room_name)));
+            if is_matched_slot
+                && work_matches_room
+                && crate::game::peninsula_catalog::is_work_uniform_item_id_or_name(slot.attire_line)
+            {
+                has_visible_uniform = true;
+            }
         }
     }
 

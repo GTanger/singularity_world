@@ -467,14 +467,14 @@ impl Store {
         }
     }
 
-fn resolve_venue_for_requirement(
-    req: crate::npc::causal_core::VenueRequirement,
-    slot: &WenyaoHouseholdSlot,
-    grid: Option<&crate::grid::SquareGrid>,
-    current: (i32, i32),
-    is_bladed: bool,
-    seed: u64,
-) -> ((i32, i32), String) {
+    fn resolve_venue_for_requirement(
+        req: crate::npc::causal_core::VenueRequirement,
+        slot: &WenyaoHouseholdSlot,
+        grid: Option<&crate::grid::SquareGrid>,
+        current: (i32, i32),
+        is_bladed: bool,
+        seed: u64,
+    ) -> ((i32, i32), String) {
     let is_wenyao = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
     let settlement = slot.home_name.split('・').next().unwrap_or("文曜");
     let ref_pt = if !is_wenyao && current == (0, 0) {
@@ -507,66 +507,76 @@ fn resolve_venue_for_requirement(
             }
         }
         crate::npc::causal_core::VenueRequirement::CanteenOrStall => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("canteen")
+                                || c.name.contains("食堂")
+                                || c.name.contains("飯")
+                                || c.name.contains("麵")
+                                || c.name.contains("廚"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 (
                     resolve_bldg_coord_or_fallback("三水大食堂", (-1, 2)),
                     "文曜・三水大食堂".to_string(),
                 )
             } else {
-                let found = grid.and_then(|g| {
-                    g.cells()
-                        .filter(|c| {
-                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
-                            d <= 24
-                                && (c.has_room_tag("canteen")
-                                    || c.name.contains("食堂")
-                                    || c.name.contains("飯")
-                                    || c.name.contains("麵")
-                                    || c.name.contains("廚"))
-                        })
-                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
-                });
-                if let Some(c) = found {
-                    ((c.coord.x, c.coord.y), c.name.clone())
-                } else {
-                    (
-                        (slot.errand_x, slot.errand_y),
-                        format!("{settlement}・街角熱食攤"),
-                    )
-                }
+                (
+                    (slot.errand_x, slot.errand_y),
+                    format!("{settlement}・街角熱食攤"),
+                )
             }
         }
         crate::npc::causal_core::VenueRequirement::TeahouseOrTavern => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("teahouse")
+                                || c.has_room_tag("inn")
+                                || c.name.contains("茶")
+                                || c.name.contains("旅社"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 (
                     resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
                     "文曜・東橋旅社與山風茶屋".to_string(),
                 )
             } else {
-                let found = grid.and_then(|g| {
-                    g.cells()
-                        .filter(|c| {
-                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
-                            d <= 24
-                                && (c.has_room_tag("teahouse")
-                                    || c.has_room_tag("inn")
-                                    || c.name.contains("茶")
-                                    || c.name.contains("旅社"))
-                        })
-                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
-                });
-                if let Some(c) = found {
-                    ((c.coord.x, c.coord.y), c.name.clone())
-                } else {
-                    (
-                        (slot.errand_x, slot.errand_y),
-                        format!("{settlement}・路邊茶寮"),
-                    )
-                }
+                (
+                    (slot.errand_x, slot.errand_y),
+                    format!("{settlement}・路邊茶寮"),
+                )
             }
         }
         crate::npc::causal_core::VenueRequirement::WellOrStream => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("well")
+                                || c.name.contains('井')
+                                || c.name.contains("山泉")
+                                || c.name.contains("清泉"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 ((1, 0), "文曜・三水口水岸公井".to_string())
             } else {
                 (
@@ -576,35 +586,46 @@ fn resolve_venue_for_requirement(
             }
         }
         crate::npc::causal_core::VenueRequirement::Bathhouse => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("bathhouse")
+                                || c.name.contains("浴")
+                                || c.name.contains("湯"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 (
                     resolve_bldg_coord_or_fallback("泉香溫水浴場", (2, -2)),
                     "文曜・泉香溫水浴場".to_string(),
                 )
             } else {
-                let found = grid.and_then(|g| {
-                    g.cells()
-                        .filter(|c| {
-                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
-                            d <= 24
-                                && (c.has_room_tag("bathhouse")
-                                    || c.name.contains("浴")
-                                    || c.name.contains("湯"))
-                        })
-                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
-                });
-                if let Some(c) = found {
-                    ((c.coord.x, c.coord.y), c.name.clone())
-                } else {
-                    (
-                        (slot.home_x, slot.home_y),
-                        format!("{settlement}・溫水石湯屋"),
-                    )
-                }
+                (
+                    (slot.home_x, slot.home_y),
+                    format!("{settlement}・溫水石湯屋"),
+                )
             }
         }
         crate::npc::causal_core::VenueRequirement::InnOrHome => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("inn")
+                                || c.name.contains("旅社")
+                                || c.name.contains("歇舍"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 (
                     resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
                     "文曜・東橋旅社與山風茶屋".to_string(),
@@ -617,65 +638,61 @@ fn resolve_venue_for_requirement(
             }
         }
         crate::npc::causal_core::VenueRequirement::Clinic => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 28
+                            && (c.has_room_tag("herb") || c.has_room_tag("medicine"))
+                            && (c.name.contains("診")
+                                || c.name.contains("醫")
+                                || c.name.contains("藥鋪")
+                                || c.name.contains("藥局"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 (
                     resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
                     "文曜・溫氏脈絡診所".to_string(),
                 )
+            } else if slot.home_y < -220 {
+                ((0, -320), "南哨・南哨脈絡解毒診所".to_string())
+            } else if slot.home_x < -200 {
+                ((-263, 158), "風舶角・港務脈絡診所".to_string())
             } else {
+                (
+                    (slot.errand_x, slot.errand_y),
+                    format!("{settlement}・草木藥鋪"),
+                )
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::ForgeOrWorkshop => {
+            if is_bladed {
                 let found = grid.and_then(|g| {
                     g.cells()
                         .filter(|c| {
                             let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
                             d <= 28
-                                && (c.has_room_tag("herb") || c.has_room_tag("medicine"))
-                                && (c.name.contains("診")
-                                    || c.name.contains("醫")
-                                    || c.name.contains("藥鋪")
-                                    || c.name.contains("藥局"))
+                                && (c.has_room_tag("blacksmith")
+                                    || c.name.contains("鍛造")
+                                    || c.name.contains("鐵器"))
                         })
                         .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
                 });
                 if let Some(c) = found {
                     ((c.coord.x, c.coord.y), c.name.clone())
-                } else if slot.home_y < -220 {
-                    ((0, -320), "南哨・南哨脈絡解毒診所".to_string())
-                } else if slot.home_x < -200 {
-                    ((-263, 158), "風舶角・港務脈絡診所".to_string())
-                } else {
-                    (
-                        (slot.errand_x, slot.errand_y),
-                        format!("{settlement}・草木藥鋪"),
-                    )
-                }
-            }
-        }
-        crate::npc::causal_core::VenueRequirement::ForgeOrWorkshop => {
-            if is_bladed {
-                if is_wenyao {
+                } else if is_wenyao {
                     (
                         resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
                         "文曜・岑氏第一鍛造工坊".to_string(),
                     )
+                } else if slot.home_x > 40 {
+                    ((95, 95), "半嶺鎮・百工鐵器鍛造坊".to_string())
                 } else {
-                    let found = grid.and_then(|g| {
-                        g.cells()
-                            .filter(|c| {
-                                let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
-                                d <= 28
-                                    && (c.has_room_tag("blacksmith")
-                                        || c.name.contains("鍛造")
-                                        || c.name.contains("鐵器"))
-                            })
-                            .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
-                    });
-                    if let Some(c) = found {
-                        ((c.coord.x, c.coord.y), c.name.clone())
-                    } else if slot.home_x > 40 {
-                        ((95, 95), "半嶺鎮・百工鐵器鍛造坊".to_string())
-                    } else {
-                        ((slot.work_x, slot.work_y), slot.work_name.to_string())
-                    }
+                    ((slot.work_x, slot.work_y), slot.work_name.to_string())
                 }
             } else {
                 ((slot.work_x, slot.work_y), slot.work_name.to_string())
@@ -692,7 +709,23 @@ fn resolve_venue_for_requirement(
             }
         }
         crate::npc::causal_core::VenueRequirement::Market => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("market")
+                                || c.has_room_tag("shop")
+                                || c.name.contains("市集")
+                                || c.name.contains("商行")
+                                || c.name.contains("市")
+                                || c.name.contains("鋪"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 (
                     resolve_bldg_coord_or_fallback("三水總商行", (-1, 1)),
                     "文曜・三水總商行".to_string(),
@@ -718,7 +751,22 @@ fn resolve_venue_for_requirement(
             (c, clean_wilderness_place_label(&format!("{actual_zone}・{sub}")))
         }
         crate::npc::causal_core::VenueRequirement::BridgeOrPlaza => {
-            if is_wenyao {
+            let found = grid.and_then(|g| {
+                g.cells()
+                    .filter(|c| {
+                        let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                        d <= 24
+                            && (c.has_room_tag("bridge")
+                                || c.has_room_tag("plaza")
+                                || c.name.contains('橋')
+                                || c.name.contains("廣場")
+                                || c.name.contains("石坪"))
+                    })
+                    .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+            });
+            if let Some(c) = found {
+                ((c.coord.x, c.coord.y), c.name.clone())
+            } else if is_wenyao {
                 ((0, 0), "文曜・三水匯流大石橋".to_string())
             } else {
                 (

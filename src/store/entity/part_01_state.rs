@@ -15,23 +15,9 @@ impl NpcGridState {
     pub fn current_activity(&self) -> String {
         let hour = current_game_hour();
         if self.current == self.dest {
-            self.stay_activity
-                .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
-                .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
-                .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
-                .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
-                .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
-                .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣")
+            self.stay_activity.clone()
         } else {
-            let normalized_purpose = self
-                .purpose
-                .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
-                .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
-                .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
-                .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
-                .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
-                .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
-            let purpose = normalized_purpose.as_str();
+            let purpose = self.purpose.as_str();
             if purpose.contains("安歇")
                 || purpose.contains("睡")
                 || purpose.contains("歇息")

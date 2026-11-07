@@ -543,7 +543,7 @@
 			for (var k = 0; k < lastInventoryMsg.items.length; k++) {
 				var it = lastInventoryMsg.items[k];
 				if (!it) continue;
-				if (it.item_id === 'manual_blank' || (it.name && (it.name.indexOf('空白圖譜') !== -1 || it.name.indexOf('無字殘卷') !== -1 || it.name.indexOf('空白書冊') !== -1))) {
+				if (it.item_id === 'blank_manual' || it.item_id === 'wt_blank_manual' || it.item_id === 'manual_blank' || it.item_type === 'blank_manual' || (it.name && (it.name.indexOf('空白圖譜') !== -1 || it.name.indexOf('無字殘卷') !== -1 || it.name.indexOf('空白書冊') !== -1 || it.name.indexOf('空白手札') !== -1))) {
 					return true;
 				}
 			}
@@ -551,7 +551,12 @@
 		var st = (window.gameState ? window.gameState() : null) || {};
 		var objs = st.objects || [];
 		for (var j = 0; j < objs.length; j++) {
-			var oName = (objs[j] && (objs[j].name || objs[j].id)) || '';
+			var obj = objs[j];
+			if (!obj) continue;
+			if (obj.category_tag === 'desk' || obj.tag === 'desk' || (Array.isArray(obj.tags) && obj.tags.indexOf('desk') !== -1)) {
+				return true;
+			}
+			var oName = obj.name || obj.id || '';
 			if (oName.indexOf('書案') !== -1 || oName.indexOf('書桌') !== -1 || oName.indexOf('案几') !== -1 || oName.indexOf('筆墨') !== -1) {
 				return true;
 			}
@@ -589,7 +594,7 @@
 				html += '<div class="sw-accordion-body"' + (isMartialOpen ? '' : ' hidden') + '>';
 				for (var i = 0; i < martial.length; i++) {
 					var ms = martial[i];
-					var isBreathHabit = (ms.category_label || '').indexOf('內息底色') !== -1 || ms.category === 'inner_breath';
+					var isBreathHabit = ms.category === 'inner_breath' || (ms.category_label || '').indexOf('內息底色') !== -1;
 					var slotKey = (ms.category === 'opening' || ms.category === 'midgame' || ms.category === 'finisher' || ms.category === 'defense') ? ms.category : 'opening';
 					var isSubOpen = (i === activeMartialSkillIdx);
 					html += '<div class="sw-sub-accordion-card' + (isSubOpen ? ' is-open' : '') + '" data-sub-group="martial" data-sub-idx="' + i + '">';

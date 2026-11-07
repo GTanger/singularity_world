@@ -759,24 +759,56 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
         for arch in MUTATION_ARCHETYPES {
             let suffix = format!("_{}", arch.key);
             if let Some(base_part) = rest.strip_suffix(&suffix) {
-                let base_good = STANDARD_FINISHED_GOODS
+                let base_def = if let Some(base_good) = STANDARD_FINISHED_GOODS
                     .iter()
                     .find(|g| g.id == base_part || g.id.starts_with(base_part))
-                    .unwrap_or(&STANDARD_FINISHED_GOODS[0]);
+                {
+                    Some(crate::db::ItemDefBrief {
+                        name: base_good.name.to_string(),
+                        item_type: base_good.item_type.to_string(),
+                        slot: base_good.slot.to_string(),
+                        description: base_good.description.to_string(),
+                        weight: base_good.weight,
+                        vit_bonus: base_good.vit_bonus,
+                        dex_bonus: base_good.dex_bonus,
+                        atk_bonus: base_good.atk_bonus,
+                        origin: base_good.origin.to_string(),
+                    })
+                } else if base_part != item_id && !base_part.starts_with("mut_") {
+                    lookup_ecology_item_def(base_part)
+                } else {
+                    None
+                };
+
+                let base_def = base_def.unwrap_or_else(|| {
+                    let base_good = &STANDARD_FINISHED_GOODS[0];
+                    crate::db::ItemDefBrief {
+                        name: base_good.name.to_string(),
+                        item_type: base_good.item_type.to_string(),
+                        slot: base_good.slot.to_string(),
+                        description: base_good.description.to_string(),
+                        weight: base_good.weight,
+                        vit_bonus: base_good.vit_bonus,
+                        dex_bonus: base_good.dex_bonus,
+                        atk_bonus: base_good.atk_bonus,
+                        origin: base_good.origin.to_string(),
+                    }
+                });
+
                 return Some(crate::db::ItemDefBrief {
-                    name: format!("{}・{}", arch.name_prefix, base_good.name),
-                    item_type: base_good.item_type.to_string(),
-                    slot: base_good.slot.to_string(),
+                    name: format!("{}・{}", arch.name_prefix, base_def.name),
+                    item_type: base_def.item_type,
+                    slot: base_def.slot,
                     description: format!(
                         "{}（{}，器物成色與質理俱臻上乘。）",
-                        base_good.description,
+                        base_def.description,
                         arch.desc_note
                     ),
-                    weight: base_good.weight,
-                    vit_bonus: base_good.vit_bonus + arch.vit_bonus,
-                    dex_bonus: base_good.dex_bonus + arch.dex_bonus,
-                    atk_bonus: base_good.atk_bonus + arch.atk_bonus,
-                    origin: base_good.origin.to_string(),
+                    weight: base_def.weight,
+                    vit_bonus: base_def.vit_bonus + arch.vit_bonus,
+                    dex_bonus: base_def.dex_bonus + arch.dex_bonus,
+                    atk_bonus: base_def.atk_bonus + arch.atk_bonus,
+                    origin: base_def.origin,
                 });
             }
         }
@@ -821,4 +853,32 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
         });
     }
     None
+}
+
+#[cfg(test)]
+mod item_definitions_tests {
+    use super::*;
+
+    #[test]
+    fn test_lookup_ecology_item_def_mutated_catalog_item() {
+        // wt_cat_1021 is "岩羊角手柄折疊獵刀", category 19, hold_r
+        let base = lookup_ecology_item_def("wt_cat_1021").expect("base catalog item should exist");
+        assert_eq!(base.name, "岩羊角手柄折疊獵刀");
+        assert_eq!(base.slot, "hold_r");
+        assert_eq!(base.item_type, "equipment");
+
+        // Test mutation with arch "star_resonance" (MUTATION_ARCHETYPES[0])
+        let arch = &MUTATION_ARCHETYPES[0];
+        let mut_id = format!("mut_wt_cat_1021_{}", arch.key);
+        let mutated = lookup_ecology_item_def(&mut_id).expect("mutated catalog item should resolve");
+
+        // Name must be prefixed with mutation prefix and retain true catalog name
+        assert_eq!(mutated.name, format!("{}・{}", arch.name_prefix, base.name));
+        assert_eq!(mutated.slot, "hold_r");
+        assert_eq!(mutated.item_type, "equipment");
+        assert_eq!(mutated.atk_bonus, base.atk_bonus + arch.atk_bonus);
+        assert_eq!(mutated.vit_bonus, base.vit_bonus + arch.vit_bonus);
+        assert_eq!(mutated.dex_bonus, base.dex_bonus + arch.dex_bonus);
+        assert_eq!(mutated.origin, base.origin);
+    }
 }
