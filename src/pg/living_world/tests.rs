@@ -836,5 +836,51 @@ mod tests {
             "outer resident {outer_name} must receive lineage imprints"
         );
     }
+    #[test]
+    fn test_non_miller_vocations_never_hijacked_into_rice_milk_or_umbrella_tool() {
+        let mut acct = crate::store::Entity::new_npc("秦明誠", "秦");
+        acct.display_title = "文曜商算核契師|秦明誠".to_string();
+        acct.equipment_slots = r#"{"hold_r":"wt_cat_0954"}"#.to_string();
+        acct.inventory = r#"[{"item_id":"wt-good-009","qty":3},{"item_id":"wt_cat_0781","qty":4}]"#.to_string();
+        let factors_acct = ResidentIntrinsicFactors::resolve(&acct, 0, 0, "文曜・百工商算館", "核對商契");
+        assert!(
+            !factors_acct.tool_name.contains("傘") && !factors_acct.tool_name.contains("膏"),
+            "umbrella or ointment must never be selected as vocational tool: {}",
+            factors_acct.tool_name
+        );
+        assert!(
+            factors_acct.outputs.iter().all(|(_, name, _, _)| !name.contains("米漿")),
+            "accountant must never produce rice milk: {:?}",
+            factors_acct.outputs
+        );
+
+        let mut mason = crate::store::Entity::new_npc("鄭烏石", "鄭");
+        mason.display_title = "三號坑鑿石工匠|鄭烏石".to_string();
+        let factors_mason = ResidentIntrinsicFactors::resolve(&mason, -18, 22, "三號坑・鑿石切石場", "鑿切玄武岩");
+        assert_eq!(factors_mason.raw_item_name, "玄武岩原石");
+        assert!(
+            factors_mason.outputs.iter().any(|(_, name, _, _)| name.contains("玄武岩基石")),
+            "mason must produce basalt foundation stones: {:?}",
+            factors_mason.outputs
+        );
+
+        assert!(
+            crate::grid::resolve_any_room_venue_object("雲腰雪林", "").is_none(),
+            "wilderness forest must not resolve to a counter sawmill venue"
+        );
+        assert!(
+            crate::grid::resolve_any_room_venue_object("翠冠巨木林", "").is_none(),
+            "wilderness forest must not resolve to a counter sawmill venue"
+        );
+        assert!(
+            crate::game::peninsula_scripts::scripts_for_room("文曜・分家巷百工石道").is_empty(),
+            "streets without an explicit script must not inherit unrelated settlement workshop scripts"
+        );
+        assert_eq!(
+            crate::game::peninsula_scripts::scripts_for_room("文曜・三水匯流大石橋").len(),
+            1,
+            "bridge must only match its own explicit script, never settlement-wide workshop scripts"
+        );
+    }
 
 }

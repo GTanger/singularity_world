@@ -310,8 +310,8 @@ pub(super) fn resolve_npc_real_name(target: &Character) -> String {
     crate::store::resolve_npc_full_label(&target.id, &target.display_title, gender_str)
 }
 fn format_obligation_subject_zh(kind: &str, subj: &str) -> Option<String> {
-    if kind == "employment" {
-        return None;
+    if kind == "employment" || subj == "employment" {
+        return Some("尋覓合適差事與活計".to_string());
     }
     let trimmed_subj = subj.trim();
     let trimmed_subj = trimmed_subj.trim_start_matches("急需").trim();
@@ -500,6 +500,11 @@ fn build_cognitive_talk_reply(
                 let subj: String = r.get(1);
                 let created_at: i64 = r.get(2);
                 let due_at: i64 = r.get(3);
+                if format_obligation_subject_zh(&kind, &subj).is_none()
+                    && subj.chars().any(|c| c.is_ascii_alphabetic())
+                {
+                    return None;
+                }
                 let base_desc = format_obligation_subject_zh(&kind, &subj).unwrap_or(subj);
                 let now = crate::game::now_unix();
                 let time_tag = if created_at > 0 {
@@ -616,7 +621,7 @@ fn build_cognitive_talk_reply(
             })
             .take(3)
             .map(|i| {
-                let display_name = if i.name == "精碾白米" {
+                let display_name = if i.name == "精碾白米" && (room_name.contains("石磨") || room_name.contains("水輪")) {
                     "待磨精碾白米"
                 } else {
                     &i.name
@@ -650,11 +655,21 @@ fn build_cognitive_talk_reply(
             let held_id = slots_map.as_ref().and_then(|m| {
                 m.get("hold_r").or_else(|| m.get("hold_l")).filter(|s| !s.is_empty())
             });
+            let vspec = crate::npc::causal_core::resolve_vocational_vessel(&target.display_title);
             if let Some(tid) = held_id {
                 let tname = crate::db::get_item_name(tid);
-                (tid.clone(), tname)
+                let is_non_tool = [
+                    "傘", "扇", "膏", "散", "丸", "丹", "藥", "米", "漿", "湯", "餅", "茶", "麵",
+                    "粥", "果", "肉", "魚", "衫", "袍", "襖", "衣", "褲", "靴", "鞋", "提籃",
+                ]
+                .iter()
+                .any(|kw| tname.contains(kw));
+                if is_non_tool {
+                    (vspec.item_id.to_string(), vspec.display_name.to_string())
+                } else {
+                    (tid.clone(), tname)
+                }
             } else {
-                let vspec = crate::npc::causal_core::resolve_vocational_vessel(&target.display_title);
                 (vspec.item_id.to_string(), vspec.display_name.to_string())
             }
         };
@@ -680,10 +695,12 @@ fn build_cognitive_talk_reply(
                 NpcStanceChoice::Refuse => {
                     if has_worn_tool {
                         let (t_name, wear, cond) = live_tool_info.as_ref().unwrap();
-                        format!(
-                            "「我現下手頭這件【{}】磨損達 {}/3（器況{}），正忙著料理活計，沒工夫多聊。」",
-                            t_name, wear, cond
-                        )
+                        let wear_desc = match *wear {
+                            0 => format!("手頭這件【{t_name}】器況{cond}"),
+                            1 => format!("手頭這件【{t_name}】已有些許磨耗（器況{cond}）"),
+                            _ => format!("手頭這件【{t_name}】磨損頗重（器況{cond}）"),
+                        };
+                        format!("「我現下{wear_desc}，正忙著料理活計，沒工夫多聊。」")
                     } else if let Some((_, subj)) = &ob_opt {
                         format!("「手頭正忙著{act_phrase}，還得趕緊料理【{subj}】的差事，請自便吧。」")
                     } else {
@@ -697,16 +714,15 @@ fn build_cognitive_talk_reply(
                         parts.push(format!("隨身收納有{}", live_stock_items.join("、")));
                     }
                     if let Some((t_name, wear, cond)) = live_tool_info.as_ref() {
+                        let wear_desc = match *wear {
+                            0 => format!("手頭這件【{t_name}】器況{cond}"),
+                            1 => format!("手頭這件【{t_name}】已有些許磨耗（器況{cond}）"),
+                            _ => format!("手頭這件【{t_name}】磨損頗重（器況{cond}）"),
+                        };
                         if has_worn_tool {
-                            parts.push(format!(
-                                "手頭這件【{}】磨損已至 {}/3（器況{}），需抽空打磨修整",
-                                t_name, wear, cond
-                            ));
+                            parts.push(format!("{wear_desc}，需抽空打磨修整"));
                         } else {
-                            parts.push(format!(
-                                "手頭這件【{}】磨損 {}/3（器況{}）",
-                                t_name, wear, cond
-                            ));
+                            parts.push(wear_desc);
                         }
                     }
                     if let Some((_, subj)) = &ob_opt {
@@ -720,10 +736,12 @@ fn build_cognitive_talk_reply(
                 NpcStanceChoice::Refuse => {
                     if has_worn_tool {
                         let (t_name, wear, cond) = live_tool_info.as_ref().unwrap();
-                        format!(
-                            "「手頭【{}】磨耗 {}/3（器況{}）我自己料理便成，不勞外人掛心。」",
-                            t_name, wear, cond
-                        )
+                        let wear_desc = match *wear {
+                            0 => format!("手頭這件【{t_name}】器況{cond}"),
+                            1 => format!("手頭這件【{t_name}】已有些許磨耗（器況{cond}）"),
+                            _ => format!("手頭這件【{t_name}】磨損頗重（器況{cond}）"),
+                        };
+                        format!("「{wear_desc}我自己料理便成，不勞外人掛心。」")
                     } else if let Some((_, subj)) = &ob_opt {
                         format!("「【{subj}】是我自己的差事，不便假手於人，請回吧。」")
                     } else {
@@ -733,9 +751,13 @@ fn build_cognitive_talk_reply(
                 _ => {
                     if has_worn_tool {
                         let (t_name, wear, cond) = live_tool_info.as_ref().unwrap();
+                        let wear_desc = match *wear {
+                            0 => format!("手頭這件【{t_name}】器況{cond}"),
+                            1 => format!("手頭這件【{t_name}】已有些許磨耗（器況{cond}）"),
+                            _ => format!("手頭這件【{t_name}】磨損頗重（器況{cond}）"),
+                        };
                         format!(
-                            "「要說難處，手頭這件【{}】磨耗已至 {}/3（器況{}），若你得空代為送往鐵坊整修，或是覓得砥石打磨，當真幫了大忙。」",
-                            t_name, wear, cond
+                            "「要說難處，{wear_desc}，若你得空代為送往鐵坊整修，或是覓得砥石打磨，當真幫了大忙。」"
                         )
                     } else if let Some((_, subj)) = &ob_opt {
                         format!("「實不相瞞，我眼下正為【{subj}】費神。你若肯代為周全跑一趟，酬勞自不會少。」")
@@ -752,10 +774,12 @@ fn build_cognitive_talk_reply(
                 format!("「我隨身正收存有{}，你若有意互通有無，照著市面公道規矩交割自是便宜。」", live_stock_items.join("、"))
             } else if has_worn_tool {
                 let (t_name, wear, cond) = live_tool_info.as_ref().unwrap();
-                format!(
-                    "「我手頭這件【{}】磨損達 {}/3（器況{}），若有工坊物材或修整門道，倒真想向你討教一二。」",
-                    t_name, wear, cond
-                )
+                let wear_desc = match *wear {
+                    0 => format!("手頭這件【{t_name}】器況{cond}"),
+                    1 => format!("手頭這件【{t_name}】已有些許磨耗（器況{cond}）"),
+                    _ => format!("手頭這件【{t_name}】磨損頗重（器況{cond}）"),
+                };
+                format!("「我{wear_desc}，若有工坊物材或修整門道，倒真想向你討教一二。」")
             } else if let Some((_, subj)) = &ob_opt {
                 format!("「你有心相助那是再好不過，若能在【{subj}】上一展身手，我自當備辦酬謝。」")
             } else {

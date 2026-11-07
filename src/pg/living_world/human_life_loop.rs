@@ -535,14 +535,23 @@ pub fn step_resident_human_life_loop(
                 cp_person
             );
             thought_src = crate::db::ThoughtSource::Trade;
-            thought_text = format!(
-                "趁熱將{}送到{}交給{}，入帳 {} 枚鎂幣，手頭尚餘{}",
-                delivered_str,
-                deliver_bldg_plain,
-                cp_person,
-                payment_mg,
-                remaining_str
-            );
+            let is_hot_food = delivered_str.contains("米漿")
+                || delivered_str.contains("湯")
+                || delivered_str.contains("餅")
+                || delivered_str.contains("茶")
+                || delivered_str.contains("粥")
+                || delivered_str.contains("麵");
+            thought_text = if is_hot_food {
+                format!(
+                    "趁熱將{}送到{}交給{}，入帳 {} 枚鎂幣，手頭尚餘{}",
+                    delivered_str, deliver_bldg_plain, cp_person, payment_mg, remaining_str
+                )
+            } else {
+                format!(
+                    "將新製妥的{}送到{}交給{}，入帳 {} 枚鎂幣，手頭尚餘{}",
+                    delivered_str, deliver_bldg_plain, cp_person, payment_mg, remaining_str
+                )
+            };
             let cp_settlement = store
                 .get_entity(&factors.counterparty_id)
                 .map(|cp| crate::world::materials::infer_origin_settlement(&format!("grid:{}:{}", cp.x, cp.y)))
@@ -713,30 +722,51 @@ pub fn step_resident_human_life_loop(
             let habit = get_or_derive_breath_habit(entity_id, &ent.display_title, seed_u64 as i64).dominant;
             let _ = record_breath_activity(entity_id, habit, 2, now_unix);
 
-            reason = format!(
-                "觀測到北坡雨霧伴隨水脈漲潮，依水文經驗趕赴{}（{}, {}）落下{}",
-                floodgate_bldg_plain,
-                factors.floodgate_coord.0,
-                factors.floodgate_coord.1,
-                factors.floodgate_facility
-            );
-            activity = format!(
-                "冒雨在{}落下{}",
-                floodgate_bldg_plain, factors.floodgate_facility
-            );
-            thought_src = crate::db::ThoughtSource::WorkDone;
-            thought_text = format!(
-                "北坡雨霧水位漲起三寸，好在及時趕赴{}落下{}，保住了工坊器物與產出細度",
-                floodgate_bldg_plain, factors.floodgate_facility
-            );
-            knowledge_update = Some((
-                factors.floodgate_bldg.clone(),
-                "hydrology_and_weather_omen".to_string(),
-                format!(
-                    "北坡雨霧漲水之際已親赴{}落下{}（當前體力 {}、內息 {}），水勢恢復平穩",
-                    floodgate_bldg_plain, factors.floodgate_facility, ent.vit, ent.qi
-                ),
-            ));
+            let is_watermill_worker = factors.work_bldg.contains("水輪") || factors.work_bldg.contains("石磨") || entity_id == "秦水生";
+            if is_watermill_worker {
+                reason = format!(
+                    "觀測到北坡雨霧伴隨水脈漲潮，依水文經驗趕赴{}（{}, {}）落下{}",
+                    floodgate_bldg_plain,
+                    factors.floodgate_coord.0,
+                    factors.floodgate_coord.1,
+                    factors.floodgate_facility
+                );
+                activity = format!(
+                    "冒雨在{}落下{}",
+                    floodgate_bldg_plain, factors.floodgate_facility
+                );
+                thought_src = crate::db::ThoughtSource::WorkDone;
+                thought_text = format!(
+                    "北坡雨霧水位漲起三寸，好在及時趕赴{}落下{}，保住了工坊器物與產出細度",
+                    floodgate_bldg_plain, factors.floodgate_facility
+                );
+                knowledge_update = Some((
+                    factors.floodgate_bldg.clone(),
+                    "hydrology_and_weather_omen".to_string(),
+                    format!(
+                        "北坡雨霧漲水之際已親赴{}落下{}（當前體力 {}、內息 {}），水勢恢復平穩",
+                        floodgate_bldg_plain, factors.floodgate_facility, ent.vit, ent.qi
+                    ),
+                ));
+            } else {
+                reason = format!(
+                    "觀測到風雨將至，巡視{}（{}, {}）檢視防風門栓與案頭物料",
+                    work_bldg_plain,
+                    factors.work_coord.0,
+                    factors.work_coord.1
+                );
+                activity = format!("在{}巡檢防風門栓與案頭器物，防備風雨受潮", work_bldg_plain);
+                thought_src = crate::db::ThoughtSource::WorkDone;
+                thought_text = format!("天色風起，及時巡視{}門窗與案頭器物，將手頭物資收攏妥當", work_bldg_plain);
+                knowledge_update = Some((
+                    factors.work_bldg.clone(),
+                    "wind_and_rain_defense".to_string(),
+                    format!(
+                        "天色風雨將至已在{}巡檢門窗物料（當前體力 {}、內息 {}），器物收存妥善",
+                        work_bldg_plain, ent.vit, ent.qi
+                    ),
+                ));
+            }
         }
         ResidentLifeActionChoice::DineParley => {
             intent = "dine_and_parley";
@@ -751,19 +781,30 @@ pub fn step_resident_human_life_loop(
             ent.vit = (ent.vit + 18).min(100);
             ent.qi = (ent.qi + 15).min(100);
 
-            reason = format!(
-                "勞作後赴{}（{}, {}）用膳回補體力（體力恢復至 {}），並與鄰里核對明日引水與工坊時刻",
-                canteen_bldg_plain, factors.canteen_coord.0, factors.canteen_coord.1, ent.vit
-            );
-            activity = format!(
-                "在{}喝著現磨米漿與熱麵湯，與北郊鄰里商議明日引水與工務時刻",
-                canteen_bldg_plain
-            );
-            thought_src = crate::db::ThoughtSource::Ate;
-            thought_text = format!(
-                "在{}喝過熱米漿與麵湯，一身勞作的疲乏舒展開來，順道與鄰里敲定了明日工務時刻",
-                canteen_bldg_plain
-            );
+            let is_watermill_worker = factors.work_bldg.contains("水輪") || factors.work_bldg.contains("石磨") || entity_id == "秦水生";
+            if is_watermill_worker {
+                reason = format!(
+                    "勞作後赴{}（{}, {}）用膳回補體力（體力恢復至 {}），並與鄰里核對明日引水與工坊時刻",
+                    canteen_bldg_plain, factors.canteen_coord.0, factors.canteen_coord.1, ent.vit
+                );
+                activity = format!(
+                    "在{}喝著現磨米漿與熱麵湯，與北郊鄰里商議明日引水與工務時刻",
+                    canteen_bldg_plain
+                );
+                thought_src = crate::db::ThoughtSource::Ate;
+                thought_text = format!(
+                    "在{}喝過熱米漿與麵湯，一身勞作的疲乏舒展開來，順道與鄰里敲定了明日工務時刻",
+                    canteen_bldg_plain
+                );
+            } else {
+                reason = format!(
+                    "勞作後赴{}（{}, {}）用膳回補體力（體力恢復至 {}），並與坊間鄰里交流明日差事",
+                    canteen_bldg_plain, factors.canteen_coord.0, factors.canteen_coord.1, ent.vit
+                );
+                activity = format!("在{}用過熱騰騰的膳食，與同坊街坊閒話今日行市與差事", canteen_bldg_plain);
+                thought_src = crate::db::ThoughtSource::Ate;
+                thought_text = format!("在{}用過熱騰騰的湯飯，一身勞作的疲乏舒展開來，順道與鄰里交流了明日差事", canteen_bldg_plain);
+            }
         }
         ResidentLifeActionChoice::NightRest => {
             intent = "night_rest";
@@ -772,19 +813,30 @@ pub fn step_resident_human_life_loop(
             let habit = get_or_derive_breath_habit(entity_id, &ent.display_title, seed_u64 as i64).dominant;
             let _ = record_breath_activity(entity_id, habit, 1, now_unix);
 
-            reason = format!(
-                "返抵{}（{}, {}）巡看門板插板後安歇，體力回補至 {}、內息回補至 {}",
-                home_bldg_plain, factors.home_coord.0, factors.home_coord.1, ent.vit, ent.qi
-            );
-            activity = format!(
-                "在{}檢查水門與門栓插板，伴著規律水聲歇息養神",
-                home_bldg_plain
-            );
-            thought_src = crate::db::ThoughtSource::Rested;
-            thought_text = format!(
-                "檢查完{}門栓插板，聽著窗外規律水聲安穩養神",
-                home_bldg_plain
-            );
+            let is_watermill_worker = factors.work_bldg.contains("水輪") || factors.work_bldg.contains("石磨") || entity_id == "秦水生";
+            if is_watermill_worker {
+                reason = format!(
+                    "返抵{}（{}, {}）巡看門板插板後安歇，體力回補至 {}、內息回補至 {}",
+                    home_bldg_plain, factors.home_coord.0, factors.home_coord.1, ent.vit, ent.qi
+                );
+                activity = format!(
+                    "在{}檢查水門與門栓插板，伴著規律水聲歇息養神",
+                    home_bldg_plain
+                );
+                thought_src = crate::db::ThoughtSource::Rested;
+                thought_text = format!(
+                    "檢查完{}門栓插板，聽著窗外規律水聲安穩養神",
+                    home_bldg_plain
+                );
+            } else {
+                reason = format!(
+                    "返抵{}（{}, {}）掩好門戶後安歇，體力回補至 {}、內息回補至 {}",
+                    home_bldg_plain, factors.home_coord.0, factors.home_coord.1, ent.vit, ent.qi
+                );
+                activity = format!("在{}檢視門戶插銷與窗扇，吹熄案頭燈火歇息養神", home_bldg_plain);
+                thought_src = crate::db::ThoughtSource::Rested;
+                thought_text = format!("掩好{}門戶插銷，褪去一日奔波疲乏安穩養神", home_bldg_plain);
+            }
         }
         ResidentLifeActionChoice::MillGrain => {
             intent = "work";
@@ -842,18 +894,29 @@ pub fn step_resident_human_life_loop(
                 v_primary.wear_points,
                 v_primary.condition.label(),
             );
-            activity = factors.work_activity_desc.clone();
             thought_src = crate::db::ThoughtSource::WorkDone;
-            thought_text = format!(
-                "在{}將 {} {}{}化作{}，手中{}已運使 {} 次",
-                work_bldg_plain,
-                factors.raw_consume_qty,
-                factors.raw_item_unit,
-                factors.raw_item_name,
-                produced_str,
-                factors.tool_name,
-                v_primary.use_count
-            );
+            if factors.raw_item_id == "wt_cat_0781" {
+                activity = format!(
+                    "在{}運用{}（{}），專注料理手頭差事",
+                    work_bldg_plain, factors.tool_name, factors.work_activity_desc
+                );
+                thought_text = format!(
+                    "在{}運用{}踏實完成一輪差事與卷宗核驗，手頭事務井然有序",
+                    work_bldg_plain, factors.tool_name
+                );
+            } else {
+                activity = factors.work_activity_desc.clone();
+                thought_text = format!(
+                    "在{}將 {} {}{}化作{}，手中{}已運使 {} 次",
+                    work_bldg_plain,
+                    factors.raw_consume_qty,
+                    factors.raw_item_unit,
+                    factors.raw_item_name,
+                    produced_str,
+                    factors.tool_name,
+                    v_primary.use_count
+                );
+            }
             let sec_note = match (&factors.secondary_tool_name, v_secondary_use) {
                 (Some(sname), Some(scount)) => format!("{}已運使 {} 次，", sname, scount),
                 _ => String::new(),

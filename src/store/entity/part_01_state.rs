@@ -320,7 +320,16 @@ fn pick_live_shanhai_prey_for_zone(
         .min_by_key(|(_, (_, zx, zy))| (zx - cx).pow(2) + (zy - cy).pow(2))
         .map(|(idx, _)| idx)
         .unwrap_or(0);
-    let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
+    let is_aquatic = |tag: &str| {
+        ["魚", "蝦", "蟹", "貝", "鰻", "鯇", "苦花", "龜", "鱉"]
+            .iter()
+            .any(|k| tag.contains(k))
+    };
+    let raw_slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
+    let slots: Vec<_> = raw_slots
+        .into_iter()
+        .filter(|s| !is_aquatic(s.tier_tag))
+        .collect();
 
     let trophic_opt = crate::game::get_zone_trophic_state(z_idx);
 
@@ -388,17 +397,21 @@ fn pick_live_shanhai_prey_for_zone(
     if let Some(sl) = target_slot
         && let Some(amb) = crate::game::ensure_ambient_npc_at_grid(sl.x, sl.y, sl.tier_tag)
     {
-        let (loot_id, loot_name) = crate::game::ambient_creature_loot(&amb.display_title)
-            .map(|(id, name, _)| (id.to_string(), name.to_string()))
-            .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海毛皮獵物".to_string()));
-        return (
-            (sl.x, sl.y),
-            sl.slot_idx,
-            amb.display_title,
-            sl.tier,
-            loot_id,
-            loot_name,
-        );
+        if !is_aquatic(&amb.display_title) {
+            let (loot_id, loot_name) = crate::game::ambient_creature_loot(&amb.display_title)
+                .map(|(id, name, _)| (id.to_string(), name.to_string()))
+                .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海毛皮獵物".to_string()));
+            if !loot_name.contains("魚") && !is_aquatic(&loot_name) {
+                return (
+                    (sl.x, sl.y),
+                    sl.slot_idx,
+                    amb.display_title,
+                    sl.tier,
+                    loot_id,
+                    loot_name,
+                );
+            }
+        }
     }
 
     (

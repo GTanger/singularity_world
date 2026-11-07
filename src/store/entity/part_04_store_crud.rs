@@ -632,8 +632,12 @@ impl Store {
                 )
             } else {
                 (
-                    (slot.errand_x, slot.errand_y),
-                    format!("{settlement}・旅社通鋪"),
+                    (slot.home_x, slot.home_y),
+                    if !slot.home_name.is_empty() {
+                        slot.home_name.to_string()
+                    } else {
+                        format!("{settlement}・居所")
+                    },
                 )
             }
         }

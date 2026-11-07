@@ -158,7 +158,8 @@ impl Store {
                     }
                     let slot_idx_global = WENYAO_HOUSEHOLD_SLOTS.len() + s_idx;
                     let cand_slot = household_slot_at(slot_idx_global);
-                    if !cand_slot.brief_tag.starts_with("合社獵團・")
+                    if (cand_slot.home_x - cx).abs() + (cand_slot.home_y - cy).abs() <= 90
+                        && !cand_slot.brief_tag.starts_with("合社獵團・")
                         && !cand_slot.brief_tag.starts_with("入山百工・")
                         && !cand_slot.brief_tag.starts_with("古道行旅・")
                         && let Some(cand_id) = slot_to_id.get(&slot_idx_global)

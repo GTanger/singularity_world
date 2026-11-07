@@ -186,65 +186,49 @@ pub fn scripts_for_room(room_name: &str) -> Vec<&'static PeninsulaScriptEntry> {
         .iter()
         .filter(|t| !is_umbrella_tag(t.as_str()))
         .collect();
+    let is_settlement_only = !room_name.contains('・');
     let tail_room = room_name.rsplit('・').next().unwrap_or(room_name).trim();
-    let loc_matched: Vec<&'static PeninsulaScriptEntry> = PENINSULA_DAILY_SCRIPTS
+    let exact_match: Vec<&'static PeninsulaScriptEntry> = PENINSULA_DAILY_SCRIPTS
         .iter()
         .filter(|s| {
-            (!settlement.is_empty() && s.location_and_npc.contains(settlement))
-                || s.location_and_npc.contains(room_name)
+            s.location_and_npc.contains(room_name)
                 || (!tail_room.is_empty() && s.location_and_npc.contains(tail_room))
         })
         .collect();
-    if !loc_matched.is_empty() {
-        let exact_match: Vec<&'static PeninsulaScriptEntry> = loc_matched
-            .iter()
-            .copied()
-            .filter(|s| {
-                s.location_and_npc.contains(room_name)
-                    || (!tail_room.is_empty() && s.location_and_npc.contains(tail_room))
-            })
-            .collect();
-        if !exact_match.is_empty() {
-            return exact_match;
-        }
-        let domain_matched: Vec<&'static PeninsulaScriptEntry> = loc_matched
-            .iter()
-            .copied()
-            .filter(|s| {
-                !specific_room_tags.is_empty()
-                    && infer_script_room_tags(s)
-                        .iter()
-                        .any(|st| specific_room_tags.iter().any(|rt| *rt == st))
-            })
-            .collect();
-        if !domain_matched.is_empty() {
-            return domain_matched;
-        }
+    if !exact_match.is_empty() {
+        return exact_match;
     }
-    let mut matched: Vec<&'static PeninsulaScriptEntry> = PENINSULA_DAILY_SCRIPTS
-        .iter()
-        .filter(|s| {
-            if specific_room_tags.is_empty() {
-                false
-            } else {
+    if tail_room.ends_with('橋') || crate::grid::grid::is_street_or_gate_room_name(room_name) {
+        return Vec::new();
+    }
+    let domain_matched: Vec<&'static PeninsulaScriptEntry> = if !specific_room_tags.is_empty() {
+        PENINSULA_DAILY_SCRIPTS
+            .iter()
+            .filter(|s| {
                 let s_tags = infer_script_room_tags(s);
-                s_tags.iter().any(|st| specific_room_tags.iter().any(|rt| *rt == st))
-            }
-        })
-        .collect();
-    if matched.is_empty() {
-        let hash = room_name.bytes().fold(17usize, |acc, b| acc.wrapping_mul(31).wrapping_add(b as usize));
-        if !loc_matched.is_empty() {
-            let total = loc_matched.len();
-            matched.push(loc_matched[hash % total]);
-            matched.push(loc_matched[(hash + 37) % total]);
-        } else {
-            let total = PENINSULA_DAILY_SCRIPTS.len();
-            matched.push(&PENINSULA_DAILY_SCRIPTS[hash % total]);
-            matched.push(&PENINSULA_DAILY_SCRIPTS[(hash + 37) % total]);
-        }
+                specific_room_tags.iter().any(|rt| s_tags.iter().any(|st| *rt == st))
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
+    if !domain_matched.is_empty() {
+        return domain_matched;
     }
-    matched
+
+    if !is_settlement_only {
+        return Vec::new();
+    }
+
+    let loc_matched: Vec<&'static PeninsulaScriptEntry> = PENINSULA_DAILY_SCRIPTS
+        .iter()
+        .filter(|s| !settlement.is_empty() && s.location_and_npc.contains(settlement))
+        .collect();
+    if !loc_matched.is_empty() {
+        return loc_matched;
+    }
+
+    Vec::new()
 }
 
 /// 依據場所名稱解析當值主事（host）與協力鄰坊主事（partner）
@@ -299,10 +283,6 @@ pub fn resolve_on_duty_actors_for_room(room_name: &str) -> (Option<String>, Opti
             host_idx = Some(i);
             break;
         }
-    }
-    if host_opt.is_none() && !room_entities.is_empty() {
-        host_opt = Some(room_entities[0].0.clone());
-        host_idx = Some(0);
     }
     if host_opt.is_none() {
         host_opt = crate::grid::resolve_any_room_venue_object(room_name, "")
@@ -733,15 +713,17 @@ pub fn co_enact_script_pack(
                 || pa.starts_with("請")
                 || pa.starts_with("替")
             {
-                format!(
-                    "{caller_a}與{caller_b}圍在{}旁協同料理「{}」，一人掌器調校、一人覆核成色，手腳俐落。",
-                    ev.key_objects, sp.title
-                )
+                let first_obj = ev.key_objects.split('、').next().unwrap_or("案頭器物");
+                format!("{caller_a}與{caller_b}在{first_obj}旁默契配合，一人掌器調校、一人覆核成色，手腳俐落。")
             } else {
-                pa.to_string()
+                pa.replace("你獲得", "街坊食客獲得")
+                    .replace("招待你", "招待四方來客")
             }
         }
-        _ => sp.outcome_and_world_change.to_string(),
+        _ => sp
+            .outcome_and_world_change
+            .replace("你獲得", "街坊食客獲得")
+            .replace("招待你", "招待四方來客"),
     };
     Some((ev.event_title, step, line))
 }

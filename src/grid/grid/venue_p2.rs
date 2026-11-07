@@ -323,9 +323,7 @@ fn resolve_room_venue_object_p2(combined: &str, room_tags: &[String]) -> Option<
     }
 
     // 31. 水動鋸木坊
-    if room_tags.iter().any(|t| canonical_room_tag(t) == "lumber")
-        || ["鋸木"].iter().any(|k| combined.contains(k))
-    {
+    if ["鋸木", "剖木", "木場"].iter().any(|k| combined.contains(k)) {
         return Some(RoomVenueObject {
             venue_kind: "水動鋸木坊",
             default_host_title: "水車鋸木匠",
@@ -432,7 +430,7 @@ fn resolve_room_venue_object_p2(combined: &str, room_tags: &[String]) -> Option<
     }
 
     // 35. 水尾寮竹筏渡口
-    if ["高腳屋", "竹筏", "水尾寮"].iter().any(|k| combined.contains(k)) {
+    if ["高腳屋", "竹筏"].iter().any(|k| combined.contains(k)) {
         return Some(RoomVenueObject {
             venue_kind: "竹筏渡口坊",
             default_host_title: "竹筏匠師",

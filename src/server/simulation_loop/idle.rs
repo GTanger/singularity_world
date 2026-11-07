@@ -244,56 +244,6 @@ pub(super) fn run_idle_wander_section(
                                     }
                                 }
                             }
-                            if !presence_reflex_done {
-                                if let Some(artisan_id) = awake_present.iter().find(|id| {
-                                    id.starts_with("wt_vendor_")
-                                        || id.contains("smith")
-                                        || id.contains("carpenter")
-                                        || npc_snapshots.get(id.as_str()).is_some_and(|(e, act)| {
-                                            crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
-                                                &room_name,
-                                                id,
-                                                &e.display_title,
-                                                act,
-                                                &e.equipment_slots,
-                                            )
-                                            .0
-                                        })
-                                }) {
-                                    if let Some((ea, _)) = npc_snapshots.get(artisan_id.as_str()) {
-                                        let caller = resolve_caller_name(&s.player_id, artisan_id, ea);
-                                        let soul = ea
-                                            .soul_seed
-                                            .map(crate::db::expand_soul_seed_to_personality)
-                                            .unwrap_or(crate::db::Personality {
-                                                boldness: 0.5,
-                                                sensitivity: 0.5,
-                                                orderliness: 0.5,
-                                            });
-                                        let act_now = ea.current_activity.clone();
-                                        let stance = crate::ai::decision_scorer::score_npc_interaction_stance(
-                                            &crate::ai::decision_scorer::NpcDecisionInput {
-                                                npc_name: &caller,
-                                                boldness: soul.boldness,
-                                                sensitivity: soul.sensitivity,
-                                                orderliness: soul.orderliness,
-                                                familiarity_score: 20,
-                                                balance_score: 1,
-                                                open_obligations: &[],
-                                                current_activity: &act_now,
-                                                action_kind: "workshop_presence_reflex",
-                                                player_utterance: "行旅者攜帶原料與器物步入工坊",
-                                            },
-                                        );
-                                        if stance.choice != crate::ai::decision_scorer::NpcStanceChoice::Refuse {
-                                            let reflex = format!("{caller}留意到你在旁端詳，善意地提醒道：「客友若有採集得來的草木金石原料，或想將隨身器具百工煉製、催動氣脈異變，爐前台案隨時可用。」");
-                                            crate::server::send_narrate_to_player(&s, &reflex);
-                                            presence_reflex_done = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -348,7 +298,7 @@ pub(super) fn run_idle_wander_section(
                     let id_b = &awake_npcs[1];
                     let pair_entities = npc_snapshots.get(id_a.as_str()).zip(npc_snapshots.get(id_b.as_str()));
                     if let Some(((ea, _), (eb, _))) = pair_entities {
-                        let ecology_tick = ((now_ts as usize) / 45) + id_a.len();
+                        let _ecology_tick = ((now_ts as usize) / 45) + id_a.len();
                         let _ = crate::game::object_ecology::run_npc_autonomous_production_step(room_id, &room_name, &awake_npcs, now_ts);
                         let exchange_action: Option<String> = None;
 
@@ -544,21 +494,7 @@ pub(super) fn run_idle_wander_section(
                                     };
                                     (line, thought_opt, ob_opt)
                                 };
-                                let dialogue_narrate = if ecology_tick % 3 == 0 {
-                                    if let Some((_pack_id, _step, script_line)) = crate::game::peninsula_scripts::co_enact_script_pack(&room_name, &caller_a, &caller_b, now_ts) {
-                                        Some(script_line)
-                                    } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(&room_name, "") {
-                                        if !room_name.contains("石磨") && !room_name.contains("鐵坊") && !room_name.contains("診所") && !room_name.contains("蒙學") && !room_name.contains("商行") {
-                                            Some(format!("【{}・當值協作】{caller_a}（{}）與{caller_b}在{}默契配合，一邊巡檢案頭器物，一邊核對手頭交割的活計。", venue.venue_kind, venue.on_duty_fixture_activity, venue.venue_kind))
-                                        } else {
-                                            None
-                                        }
-                                    } else {
-                                        None
-                                    }
-                                } else {
-                                    None
-                                }.unwrap_or_else(|| {
+                                let dialogue_narrate = {
                                     let (dlg_a, used_th_a, used_ob_a) = project_npc_utterance(id_a, ea, false, seq_idx, None, None);
                                     let (dlg_b, _, _) = project_npc_utterance(id_b, eb, true, seq_idx.wrapping_add(1), used_th_a.as_deref(), used_ob_a.as_deref());
 
@@ -579,7 +515,7 @@ pub(super) fn run_idle_wander_section(
                                         4 => format!("{action_prefix}手頭活計未停，對{caller_b}言道：{dlg_a}\n{caller_b}語調平穩地回道：{dlg_b}"),
                                         _ => format!("{action_prefix}向{caller_b}問道：{dlg_a}\n{caller_b}略一思索，溫聲回道：{dlg_b}"),
                                     }
-                                });
+                                };
                                 crate::store::record_active_npc_dialogue(room_id, id_a, id_b, &dialogue_narrate);
                                 crate::server::send_npc_dialogue_to_player(&s, id_a, id_b, &dialogue_narrate);
                             }
@@ -668,8 +604,6 @@ pub(super) fn run_idle_wander_section(
                                             "仔細封妥陶罐木塞，低聲道：「防潮封口做紮實些，藥效才能留得長久。」",
                                         ];
                                         lines[seq_idx % lines.len()].to_string()
-                                    } else if let Some((ep, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(&room_name, Some(&caller), now_ts) {
-                                        format!("{caller}一邊忙碌一邊低聲道：「{}」", ep.trigger_and_causal_chain.replace("{當值主事}", &caller).replace("{協力對口}", "同僚"))
                                     } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(&room_name, "")
                                         && crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(&room_name, npc_id, &ent.display_title, &activity, &ent.equipment_slots).0
                                         && !venue.on_duty_talk_lines.is_empty() {

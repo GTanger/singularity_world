@@ -98,7 +98,7 @@ pub fn player_npc_talk_build_prompts(
     }
     let time_ctx = crate::store::current_game_time_prompt_context();
     sb.push_str(&format!(
-        "當前遊戲時刻與天色：{time_ctx}（若來客問及現在幾點、早晚、天亮或天黑，必須嚴格依據此時刻與天色據實回答，嚴禁在黎明前或入夜後說「天還沒黑」或「天亮得透亮」）。\n"
+        "當前遊戲時刻與天色：{time_ctx}（必須嚴格依據此時刻與天色寒暄回應；若在黎明前、入夜或深夜，嚴禁說「早啊」「早安」「天還沒黑」或「大白天」）。\n"
     ));
     let room_display_name = room_display_name.trim();
     if !room_display_name.is_empty() {

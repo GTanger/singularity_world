@@ -592,4 +592,24 @@ mod tests {
         assert!(!card.contains("你是"));
         assert!(!card.contains("與來客過往互動印象"));
     }
+
+    #[test]
+    fn test_strip_immediate_temporal_words_and_sky_time_sanitization() {
+        // 驗證 strip_immediate_temporal_words 不會產生疊詞或非正典冗贅短語
+        let input = "我剛吃完麵，剛檢查完門栓，剛巡完索具，剛吃飽";
+        let stripped = strip_immediate_temporal_words(input);
+        assert_eq!(stripped, "我吃完麵，檢查完門栓，巡完索具，吃飽");
+        assert!(!stripped.contains("吃過完"));
+        assert!(!stripped.contains("吃過飽"));
+        assert!(!stripped.contains("檢視過查"));
+        assert!(!stripped.contains("巡過完"));
+
+        // 驗證夜深時段問候對齊
+        let late_greeting = align_dialogue_sky_time("早啊！請問你這批貨怎麼賣？", 2);
+        assert_eq!(late_greeting, "夜深了！請問你這批貨怎麼賣？");
+        let early_greeting = align_dialogue_sky_time("早安！路上小心。", 20);
+        assert_eq!(early_greeting, "夜安！路上小心。");
+        let day_greeting = align_dialogue_sky_time("早啊！請問你這批貨怎麼賣？", 8);
+        assert_eq!(day_greeting, "早啊！請問你這批貨怎麼賣？");
+    }
 }

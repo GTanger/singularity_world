@@ -212,6 +212,33 @@ fn inspect_raw_stock_and_tool(
                     .or_else(|| crate::game::object_ecology::lookup_ecology_item_def(tid).map(|d| d.name.to_string()))
                     .or_else(|| crate::db::inventory::fallback_item_name(tid).map(|s| s.to_string()))
                     .unwrap_or_else(|| crate::npc::causal_core::resolve_vocational_vessel(display_title).display_name.to_string());
+                let is_rejected_item = name.contains("傘")
+                    || name.contains("扇")
+                    || name.contains("膏")
+                    || name.contains("散")
+                    || name.contains("丸")
+                    || name.contains("丹")
+                    || name.contains("藥")
+                    || name.contains("米")
+                    || name.contains("漿")
+                    || name.contains("湯")
+                    || name.contains("餅")
+                    || name.contains("茶")
+                    || name.contains("麵")
+                    || name.contains("粥")
+                    || name.contains("果")
+                    || name.contains("肉")
+                    || name.contains("魚")
+                    || name.contains("衫")
+                    || name.contains("袍")
+                    || name.contains("襖")
+                    || name.contains("衣")
+                    || name.contains("褲")
+                    || name.contains("靴")
+                    || name.contains("鞋");
+                if is_rejected_item {
+                    continue;
+                }
                 let bladed = !tid.contains("0973") && !tid.contains("abacus") && !tid.contains("basket");
                 tool_id = tid.clone();
                 tool_name = name;
@@ -220,7 +247,6 @@ fn inspect_raw_stock_and_tool(
             }
         }
     }
-
     let mismatched_default_knife = tool_id == "craft_steel_hunting_knife"
         && !display_title.trim().is_empty()
         && !display_title.contains("獵")
@@ -229,11 +255,15 @@ fn inspect_raw_stock_and_tool(
         && !display_title.contains("哨")
         && !display_title.contains("武");
     if tool_id.is_empty() || tool_id == "craft_bamboo_basket" || mismatched_default_knife {
-        let vessel = crate::npc::causal_core::resolve_vocational_vessel(display_title);
-        if tool_id.is_empty() || vessel.item_id != "craft_bamboo_basket" {
-            tool_id = vessel.item_id.to_string();
-            tool_name = vessel.display_name.to_string();
-            is_bladed = vessel.is_bladed;
+        let spec = crate::npc::causal_core::resolve_vocational_vessel(display_title);
+        if tool_id.is_empty() || spec.item_id != "craft_bamboo_basket" {
+            tool_id = if !spec.catalog_id.is_empty() {
+                spec.catalog_id.to_string()
+            } else {
+                spec.item_id.to_string()
+            };
+            tool_name = spec.display_name.to_string();
+            is_bladed = spec.is_bladed;
         }
     }
 
@@ -490,7 +520,9 @@ impl ResidentIntrinsicFactors {
             || farming_primary;
         let allow_inventory_fallback = !any_primary_factor
             && ent.display_title.trim().is_empty()
-            && sched_bldg.trim().is_empty();
+            && sched_bldg.trim().is_empty()
+            && !ent.id.starts_with("wt_npc_")
+            && !ent.id.starts_with("wt_vendor_");
 
         let has_smith_factor = smith_primary
             || (allow_inventory_fallback
@@ -757,17 +789,66 @@ impl ResidentIntrinsicFactors {
                 },
                 "水脈土壤墒情與稻穀生息分寸".to_string(),
             )
-        } else {
+        } else if ent.display_title.contains("鑿石")
+            || ent.display_title.contains("切石")
+            || ent.display_title.contains("灰窯")
+            || ent.display_title.contains("磚窯")
+            || sched_bldg.contains("鑿石")
+            || sched_bldg.contains("切石")
+            || sched_bldg.contains("磚窯")
+        {
             (
-                format!("{}旁的活水磨石台", sched_bldg),
+                format!("{}的鑿石工作台", sched_bldg),
+                "wt_cat_0001".to_string(),
+                "玄武岩原石".to_string(),
+                "塊",
+                vec![("wt_cat_0023".to_string(), "精鑿玄武岩基石".to_string(), "方", 1)],
+                vec![("wt_cat_0023".to_string(), "精鑿玄武岩基石".to_string(), "方", 2)],
+                "ore",
+                "workshop",
+                "三號坑口".to_string(),
+                if sched_act.is_empty() {
+                    format!("在{}運使{}將堅硬玄武岩鑿成防風屋基石與船錨", sched_bldg, tool_name)
+                } else {
+                    sched_act.to_string()
+                },
+                "石材紋理與灰窯火候".to_string(),
+            )
+        } else if ent.display_title.contains("大廚")
+            || ent.display_title.contains("食堂")
+            || ent.display_title.contains("攤")
+            || ent.display_title.contains("肉")
+            || ent.id.starts_with("wt_vendor_")
+            || sched_bldg.contains("食堂")
+        {
+            (
+                format!("{}的料理灶台", sched_bldg),
                 "wt-good-009".to_string(),
                 "精碾白米".to_string(),
                 "袋",
-                vec![("wt_cat_0388".to_string(), "溫米漿".to_string(), "桶", 1)],
-                vec![("wt_cat_0388".to_string(), "現磨溫米漿".to_string(), "桶", 2)],
+                vec![("wt_cat_0437".to_string(), "老麵蔥油大餅".to_string(), "份", 2)],
+                vec![("wt_cat_0437".to_string(), "老麵蔥油大餅".to_string(), "份", 2)],
                 "grain",
                 "canteen",
                 "大圳頭".to_string(),
+                if sched_act.is_empty() {
+                    format!("在{}運使{}照看爐灶火候、備妥新鮮熱食點心", sched_bldg, tool_name)
+                } else {
+                    sched_act.to_string()
+                },
+                "半島四時食材與灶火成色".to_string(),
+            )
+        } else {
+            (
+                format!("{}的當值案台", sched_bldg),
+                "wt_cat_0781".to_string(),
+                "竹綿紙記事手札".to_string(),
+                "冊",
+                vec![("wt_cat_0786".to_string(), "核訖當值清冊".to_string(), "卷", 1)],
+                vec![("wt_cat_0786".to_string(), "核訖當值清冊".to_string(), "卷", 1)],
+                "shop",
+                "shop",
+                "文曜".to_string(),
                 if sched_act.is_empty() {
                     format!("在{}運使{}踏實料理手頭差事", sched_bldg, tool_name)
                 } else {

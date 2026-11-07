@@ -77,6 +77,13 @@ pub fn resolve_room_venue_object(room_name: &str, extra_hint: &str) -> Option<Ro
     if is_private_residence_room_name(room_name) || is_street_or_gate_room_name(room_name) {
         return None;
     }
+    if extra_hint.trim().is_empty()
+        && crate::game::CANONICAL_HUNTING_ZONES
+            .iter()
+            .any(|(z, _, _)| room_name == *z || room_name.starts_with(&format!("{z}・")))
+    {
+        return None;
+    }
     let key = (room_name.to_string(), extra_hint.to_string());
     if let Ok(guard) = ROOM_VENUE_CACHE.read()
         && let Some(&cached) = guard.get(&key)

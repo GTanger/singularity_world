@@ -1,5 +1,44 @@
 fn sanitize_npc_dialogue_part2(mut s: String) -> String {
     for (bad, good) in [
+        ("剛吃完", "吃完"),
+        ("剛吃飽", "吃飽"),
+        ("剛吃過", "吃過"),
+        ("剛吃下", "吃下"),
+        ("剛檢查完", "檢查完"),
+        ("剛檢查過", "檢查過"),
+        ("剛檢查", "檢查過"),
+        ("剛檢視完", "檢視完"),
+        ("剛檢視過", "檢視過"),
+        ("剛檢視", "檢視過"),
+        ("剛巡視完", "巡視完"),
+        ("剛巡查完", "巡查完"),
+        ("剛巡完", "巡完"),
+        ("剛巡過", "巡過"),
+        ("剛巡視", "巡視過"),
+        ("剛巡查", "巡查過"),
+        ("剛歇了", "歇了"),
+        ("剛歇過", "歇過"),
+        ("剛歇完", "歇完"),
+        ("剛歇下", "歇下"),
+        ("剛忙完", "忙完"),
+        ("剛做完", "做完"),
+        ("剛弄完", "弄完"),
+        ("剛送完", "送完"),
+        ("剛搬完", "搬完"),
+        ("剛收完", "收完"),
+        ("剛賣完", "賣完"),
+        ("剛買完", "買完"),
+        ("剛磨完", "磨完"),
+        ("剛打完", "打完"),
+        ("剛算完", "算完"),
+        ("剛寫完", "寫完"),
+        ("剛看完", "看完"),
+        ("剛喝完", "喝完"),
+        ("剛洗完", "洗完"),
+        ("剛轉過", "初轉過"),
+        ("剛走過", "才走過"),
+        ("剛路過", "路過"),
+        ("剛邁步", "邁步"),
         ("剛拿", "才拿"),
         ("剛帶", "新帶"),
         ("剛摘", "新摘"),
@@ -76,7 +115,7 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("剛燉", "新燉"),
         ("剛檢視完", "檢視完"),
         ("剛檢完", "檢視完"),
-        ("剛檢", "檢視過"),
+        ("剛檢", "檢查過"),
         ("剛繫", "新繫"),
         ("剛順", "順妥"),
         ("剛踏", "才踏"),
@@ -121,11 +160,19 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
         ("剛靠", "才靠"),
         ("剛幫", "才幫"),
         ("剛轉涼", "初轉涼"),
+        ("剛轉", "初轉"),
     ] {
         if s.contains(bad) {
             s = s.replace(bad, good);
         }
     }
+    s = s
+        .replace("吃過完", "吃完")
+        .replace("吃過飽", "吃飽")
+        .replace("巡過完", "巡完")
+        .replace("檢視過查完", "檢查完")
+        .replace("檢視過查", "檢查過")
+        .replace("歇過了", "歇了");
     if s.contains('剛') {
         s = replace_temporal_gang_chars(&s);
     }
@@ -435,6 +482,8 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
     while s.contains("  ") {
         s = s.replace("  ", " ");
     }
+    let hour = crate::store::current_game_hour() as u32;
+    s = align_dialogue_sky_time(&s, hour);
     s.trim().to_string()
 }
 
@@ -458,4 +507,21 @@ pub fn contains_unregistered_phantom_venue(text: &str) -> bool {
         "西虹石板拱橋",
     ];
     FORBIDDEN_PHANTOM_VENUES.iter().any(|&phantom| text.contains(phantom))
+}
+
+/// 清理立即性時間詞副詞與動詞複合詞，防止出現「吃過完」、「檢視過查完」等重疊贅詞。
+pub fn strip_immediate_temporal_words(text: &str) -> String {
+    sanitize_npc_dialogue_part2(text.to_string())
+}
+
+/// 依據半島當前天色時辰調整台詞問候語，夜深時段替換晨間問候。
+pub fn align_dialogue_sky_time(text: &str, hour: u32) -> String {
+    if (0..5).contains(&hour) || hour >= 19 {
+        text.replace("早啊！", "夜深了！")
+            .replace("早啊，", "夜深了，")
+            .replace("早安！", "夜安！")
+            .replace("早安，", "夜裡風涼，")
+    } else {
+        text.to_string()
+    }
 }

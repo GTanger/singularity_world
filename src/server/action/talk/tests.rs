@@ -334,7 +334,7 @@ mod tests {
             NpcStanceChoice::Accept,
             &[],
         ).unwrap();
-        assert!(rep_what.contains("隨身收納有") || rep_what.contains("磨損已至 2/3"), "rep: {rep_what}");
+        assert!(rep_what.contains("隨身收納有") || rep_what.contains("磨損頗重"), "rep: {rep_what}");
 
         let (_, rep_trouble) = build_cognitive_talk_reply(
             &ch,
@@ -345,7 +345,7 @@ mod tests {
             NpcStanceChoice::Accept,
             &[],
         ).unwrap();
-        assert!(rep_trouble.contains("磨耗已至 2/3") || rep_trouble.contains("隨身這批"), "rep: {rep_trouble}");
+        assert!(rep_trouble.contains("磨損頗重") || rep_trouble.contains("隨身這批"), "rep: {rep_trouble}");
 
         let (_, rep_trade) = build_cognitive_talk_reply(
             &ch,
@@ -356,7 +356,7 @@ mod tests {
             NpcStanceChoice::Accept,
             &[],
         ).unwrap();
-        assert!(rep_trade.contains("隨身正收存有") || rep_trade.contains("磨損達 2/3"), "rep: {rep_trade}");
+        assert!(rep_trade.contains("隨身正收存有") || rep_trade.contains("磨損頗重"), "rep: {rep_trade}");
     }
 
     #[test]

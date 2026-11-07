@@ -596,7 +596,7 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
         (
             "src/server/simulation_loop/idle.rs",
             include_str!("server/simulation_loop/idle.rs"),
-            &["co_enact_script_pack", "resolve_any_room_venue_object"],
+            &["run_npc_autonomous_production_step", "resolve_any_room_venue_object"],
         ),
         (
             "src/grid/grid.rs",
