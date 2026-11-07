@@ -13,7 +13,34 @@ pub struct NpcGridState {
 
 impl NpcGridState {
     pub fn current_activity(&self) -> String {
-        let hour = current_game_hour();
+        let hour = crate::game::current_game_hour();
+        if !(6..=19).contains(&hour) {
+            let is_night_venue = [
+                "旅社", "客舍", "行館", "驛館", "通鋪", "歇舍", "哨", "巡防", "守更", "鐘樓", "燈塔",
+            ]
+            .iter()
+            .any(|k| self.dest_name.contains(k))
+                || (hour == 20 && ["食堂", "茶", "浴", "湯"].iter().any(|k| self.dest_name.contains(k)));
+
+            if !is_night_venue {
+                let leaf = self.dest_name.rsplit('・').next().unwrap_or(&self.dest_name);
+                if self.current != self.dest {
+                    return format!("正趁夜色動身返回【{}】，準備洗漱安歇", self.dest_name);
+                } else if hour >= 21 || hour < 5 {
+                    return format!("正在{}內室木榻上熟睡安歇，門窗已妥善落栓", leaf);
+                } else {
+                    return if self.stay_activity.contains("安歇")
+                        || self.stay_activity.contains("歇息")
+                        || self.stay_activity.contains("家務")
+                    {
+                        self.stay_activity.clone()
+                    } else {
+                        format!("正在{}屋內燈下收拾器物與家務，準備就寢安歇", leaf)
+                    };
+                }
+            }
+        }
+
         if self.current == self.dest {
             self.stay_activity.clone()
         } else {

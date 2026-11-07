@@ -185,25 +185,7 @@ impl Store {
             let _ = self.effective_entity_grid(&e);
         }
         if let Some(state) = LIVE_NPC_GRID_STATES.read().get(id) {
-            let mut act = state.current_activity();
-            let hour = current_game_hour();
-            if (hour >= 22 || hour < 5) && state.current == state.dest {
-                let is_watch = state.dest_name.contains("巡防")
-                    || state.dest_name.contains("哨")
-                    || state.dest_name.contains("關口")
-                    || state.dest_name.contains("道口")
-                    || state.dest_name.contains("水口")
-                    || state.dest_name.contains("渡口")
-                    || state.dest_name.contains("門坊")
-                    || state.dest_name.contains("旅社")
-                    || state.dest_name.contains("驛館")
-                    || state.dest_name.contains("歇舍");
-                if !is_watch && !act.contains("安歇") && !act.contains("熟睡") && !act.contains("就寢") {
-                    let slot = wenyao_household_slot_for(id);
-                    let (_, _, _, sleep_act, _) = resolve_wenyao_npc_schedule(slot, hour, false, &state.dest_name);
-                    act = sleep_act;
-                }
-            }
+            let act = state.current_activity();
             if !act.is_empty() {
                 e.current_activity = act;
             }
@@ -608,7 +590,7 @@ impl Store {
                 ((c.coord.x, c.coord.y), c.name.clone())
             } else if is_wenyao {
                 (
-                    resolve_bldg_coord_or_fallback("泉香溫水浴場", (2, -2)),
+                    resolve_bldg_coord_or_fallback("泉香溫水浴場", (-4, 1)),
                     "文曜・泉香溫水浴場".to_string(),
                 )
             } else {
@@ -668,7 +650,7 @@ impl Store {
                 ((c.coord.x, c.coord.y), c.name.clone())
             } else if is_wenyao {
                 (
-                    resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
+                    resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -4)),
                     "文曜・溫氏脈絡診所".to_string(),
                 )
             } else if slot.home_y < -220 {
@@ -700,7 +682,7 @@ impl Store {
                     ((c.coord.x, c.coord.y), c.name.clone())
                 } else if is_wenyao {
                     (
-                        resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
+                        resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (2, -4)),
                         "文曜・岑氏第一鍛造工坊".to_string(),
                     )
                 } else if slot.home_x > 40 {
@@ -715,7 +697,7 @@ impl Store {
         crate::npc::causal_core::VenueRequirement::DockOrStation => {
             if is_wenyao {
                 (
-                    resolve_bldg_coord_or_fallback("西門車馬聯運總站", (-2, -1)),
+                    resolve_bldg_coord_or_fallback("西門車馬聯運總站", (-5, 0)),
                     "文曜・西門車馬聯運總站".to_string(),
                 )
             } else {
@@ -828,19 +810,20 @@ impl Store {
         } else {
             slot_idx % 2 == 1
         };
-        let sched_hour = if is_expedition_slot { 10 } else { hour };
+        let is_daytime = (6..=19).contains(&hour);
+        let sched_hour = if is_expedition_slot && is_daytime { 10 } else { hour };
         let (dest, _dest_name, _purpose, _stay_activity, stay_ticks) =
             resolve_wenyao_npc_schedule(slot, sched_hour, init_toggle, slot.home_name);
         let mut init_coord = dest;
         let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
-        if slot.brief_tag.starts_with("入山百工・") && !init_toggle {
+        if is_daytime && slot.brief_tag.starts_with("入山百工・") && !init_toggle {
             let (start_pt, _start_sub) = crate::game::pick_zone_artisan_waypoint(
                 zone_prefix,
                 (slot_idx as u64).wrapping_mul(131),
                 (slot.work_x, slot.work_y),
             );
             init_coord = start_pt;
-        } else if slot.brief_tag.starts_with("古道行旅・") && !init_toggle {
+        } else if is_daytime && slot.brief_tag.starts_with("古道行旅・") && !init_toggle {
             let (start_pt, _start_zone) = crate::game::pick_island_trail_waypoint(
                 zone_prefix,
                 (slot.home_x, slot.home_y),
@@ -849,7 +832,7 @@ impl Store {
                 (slot.home_x, slot.home_y),
             );
             init_coord = start_pt;
-        } else if (slot.home_x.abs() > 24 || slot.home_y.abs() > 24) && !is_expedition_slot && (slot_idx % 4 == 0) {
+        } else if is_daytime && (slot.home_x.abs() > 24 || slot.home_y.abs() > 24) && !is_expedition_slot && (slot_idx % 4 == 0) {
             let (near_zone, _, _) =
                 crate::grid::r#gen::classify_wilderness_cell(slot.home_x, slot.home_y);
             let (out_pt, _out_sub) = if slot_idx % 8 == 0 {

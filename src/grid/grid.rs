@@ -136,6 +136,38 @@ impl GridCell {
         matches!(self.terrain, Terrain::Road | Terrain::Bridge)
             || is_street_or_gate_room_name(&self.name)
     }
+
+    pub fn is_night_hospitality_or_watch_venue(&self) -> bool {
+        self.terrain == Terrain::Inn
+            || self.has_room_tag("inn")
+            || self.has_room_tag("defense")
+            || self.has_room_tag("bell_tower")
+            || self.has_room_tag("lighthouse")
+            || ["旅社", "客舍", "行館", "驛館", "通鋪", "歇舍", "哨", "巡防", "守更", "鐘樓", "燈塔"]
+                .iter()
+                .any(|k| self.name.contains(k))
+    }
+
+    pub fn is_evening_dining_or_bath_venue(&self) -> bool {
+        self.terrain == Terrain::Tavern
+            || self.has_room_tag("canteen")
+            || self.has_room_tag("teahouse")
+            || self.has_room_tag("bathhouse")
+            || ["食堂", "茶", "飯", "麵", "浴", "湯"]
+                .iter()
+                .any(|k| self.name.contains(k))
+    }
+
+    pub fn is_open_at_hour(&self, hour: u32, is_night_duty_role: bool) -> bool {
+        if (6..=19).contains(&hour) {
+            true
+        } else {
+            self.is_private_residence()
+                || self.is_night_hospitality_or_watch_venue()
+                || (hour == 20 && self.is_evening_dining_or_bath_venue())
+                || (is_night_duty_role && self.is_pure_street_or_courtyard())
+        }
+    }
 }
 
 
@@ -194,6 +226,109 @@ impl SquareGrid {
             }
         }
         None
+    }
+
+    /// 依中心座標查詢周邊核心機能地標，優先依據來客輸入抽取之兩字特徵詞篩選，再以生活機能分類補滿（至多 12 個）
+    pub fn query_settlement_landmarks_from(
+        &self,
+        center: (i32, i32),
+        max_radius: i32,
+        query_hint: &str,
+    ) -> Vec<((i32, i32), String)> {
+        let (cx, cy) = center;
+        const STOP_WORDS: &[&str] = &[
+            "請問", "哪裡", "在哪", "怎麼", "如何", "地方", "這裡", "什麼", "過去", "走去",
+        ];
+        let mut cleaned = query_hint.to_string();
+        for &stop in STOP_WORDS {
+            cleaned = cleaned.replace(stop, " ");
+        }
+        let mut query_subs: Vec<String> = Vec::new();
+        for segment in cleaned.split_whitespace() {
+            let chars: Vec<char> = segment
+                .chars()
+                .filter(|c| {
+                    !c.is_ascii_punctuation()
+                        && !c.is_ascii_whitespace()
+                        && *c != '（'
+                        && *c != '）'
+                        && *c != '？'
+                        && *c != '！'
+                        && *c != '，'
+                        && *c != '。'
+                })
+                .collect();
+            if chars.len() >= 2 {
+                for i in 0..chars.len() - 1 {
+                    let sub: String = [chars[i], chars[i + 1]].iter().collect();
+                    if !query_subs.contains(&sub) {
+                        query_subs.push(sub);
+                    }
+                }
+            }
+        }
+
+        let mut candidates: Vec<&GridCell> = self
+            .cells
+            .values()
+            .filter(|cell| {
+                let dx = cell.coord.x - cx;
+                let dy = cell.coord.y - cy;
+                dx.abs() <= max_radius
+                    && dy.abs() <= max_radius
+                    && (dx != 0 || dy != 0)
+                    && !cell.name.is_empty()
+                    && !cell.is_pure_street_or_courtyard()
+                    && !cell.is_private_residence()
+            })
+            .collect();
+
+        candidates.sort_by_key(|c| {
+            let dist = (cx - c.coord.x).abs() + (cy - c.coord.y).abs();
+            (dist, c.coord.x, c.coord.y)
+        });
+
+        let mut results: Vec<((i32, i32), String)> = Vec::new();
+
+        if !query_subs.is_empty() {
+            for cell in &candidates {
+                if results.len() >= 6 {
+                    break;
+                }
+                if query_subs.iter().any(|sub| cell.name.contains(sub)) {
+                    let item = ((cell.coord.x, cell.coord.y), cell.name.clone());
+                    if !results.contains(&item) {
+                        results.push(item);
+                    }
+                }
+            }
+        }
+
+        const CORE_CATEGORIES: &[&[&str]] = &[
+            &["inn"],
+            &["canteen", "teahouse"],
+            &["bathhouse"],
+            &["clinic", "medicine"],
+            &["bank", "shop", "market"],
+            &["blacksmith", "workshop"],
+            &["academy"],
+            &["civic"],
+            &["courier", "dock"],
+        ];
+
+        for &category in CORE_CATEGORIES {
+            if results.len() >= 12 {
+                break;
+            }
+            if let Some(cell) = candidates.iter().find(|c| {
+                category.iter().any(|&tag| c.has_room_tag(tag))
+                    && !results.iter().any(|(pos, _)| *pos == (c.coord.x, c.coord.y))
+            }) {
+                results.push(((cell.coord.x, cell.coord.y), cell.name.clone()));
+            }
+        }
+
+        results
     }
 }
 

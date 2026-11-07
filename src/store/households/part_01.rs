@@ -60,7 +60,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     WenyaoHouseholdSlot {
         home_x: -4, home_y: 4, home_name: "三水口・陳氏庖廚居",
         home_stay_activity: "正在院裡劈好整齊的松木柴火，擦洗銅製保溫湯桶",
-        morning_hour: 6, evening_hour: 20,
+        morning_hour: 6, evening_hour: 19,
         work_x: -1, work_y: 2, work_name: "三水大食堂",
         work_purpose: "劈柴燒灶與外場送餐", work_stay_activity: "正在食堂大堂穿梭端送熱氣騰騰的切仔湯麵，吆喝聲清脆",
         errand_x: -1, errand_y: -2, errand_name: "西門車馬聯運總站",
@@ -163,7 +163,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     WenyaoHouseholdSlot {
         home_x: -2, home_y: 6, home_name: "三水口・信使快騎宿所",
         home_stay_activity: "結束夜班巡遞後，正在宿所通鋪旁喝著熱薑湯、擦拭隨身銅號角",
-        morning_hour: 13, evening_hour: 22,
+        morning_hour: 13, evening_hour: 18,
         work_x: -2, work_y: 6, work_name: "三水口・信使快騎宿所",
         work_purpose: "白日輪休守宿與整理信袋", work_stay_activity: "正在信使宿所廳內分類縫補磨損的油布郵袋，留守接聽急報",
         errand_x: -2, errand_y: 1, errand_name: "傳訊鐘樓與信使總站",
@@ -326,7 +326,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
         work_x: -2, work_y: -1, work_name: "公議堂房地契書局",
         work_purpose: "謄抄地契丈量稅算單據", work_stay_activity: "正在房地契書局案前使用計數板與蘸水硬筆，細心覆核新登記宅基地的分攤費用",
         errand_x: 2, errand_y: 4, errand_name: "講堂街書局",
-        errand_purpose: "採買核帳專用松煙墨條", errand_stay_activity: "正在講堂街書局向掌櫃詢問新到的油煙墨與特級核算用紙",
+        errand_purpose: "採買核帳專用松煙墨條", errand_stay_activity: "正在講堂街書局向主事詢問新到的油煙墨與特級核算用紙",
         attire_line: "身穿素色棉麻短版外套，斜背著一枚隨身計數板，顯得機靈勤快",
         brief_tag: "斜背隨身計數板",
     },
@@ -494,7 +494,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     WenyaoHouseholdSlot {
         home_x: 2, home_y: -6, home_name: "東橋畔・沈氏臨水居",
         home_stay_activity: "正在臨水居窗前清點客房黃銅鑰匙牌，擦拭備用的旋蓋夜光貝母台燈",
-        morning_hour: 7, evening_hour: 20,
+        morning_hour: 7, evening_hour: 19,
         work_x: 2, work_y: -1, work_name: "東橋旅社與山風茶屋",
         work_purpose: "打點樓上客房與迎送行旅", work_stay_activity: "正在東橋旅社二樓客房鋪設蓬鬆羽絨暖被與山風草安神枕，開窗通風",
         errand_x: -4, errand_y: 1, errand_name: "泉香溫水浴場",
@@ -505,7 +505,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     // 45-48. 分家巷・岑氏鍛藝居 & 分家巷・岑氏武勇舍（各與岑氏鍛匠、武師共 3 口同住）
     WenyaoHouseholdSlot {
         home_x: 6, home_y: -4, home_name: "分家巷・岑氏鍛藝居",
-        home_stay_activity: "正在鍛藝居工作台前用游標銅卡尺測量新車製的黃銅水栓閥芯",
+        home_stay_activity: "正在岑氏鍛藝居屋內歸置隨身衣物與器皿，烹一壺溫水歇腳",
         morning_hour: 7, evening_hour: 19,
         work_x: 1, work_y: -1, work_name: "岑氏第一鍛造工坊",
         work_purpose: "協製新式黃銅水栓與鎖簧", work_stay_activity: "正在第一鍛造工坊精密鉗台前銼磨自來活水黃銅水栓的止水螺紋",
@@ -585,7 +585,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     WenyaoHouseholdSlot {
         home_x: -2, home_y: -4, home_name: "西門・駝獸牧夫宿所",
         home_stay_activity: "交卸完夜班巡欄差事後，正在宿所木榻旁修剪獸蹄鐵刀、小酌米酒",
-        morning_hour: 13, evening_hour: 22,
+        morning_hour: 13, evening_hour: 19,
         work_x: -2, work_y: -4, work_name: "西門・駝獸牧夫宿所",
         work_purpose: "白日守舍與調配精料豆餅", work_stay_activity: "正在牧夫宿所院內將炒熟的黑豆、麥麩與碎草拌成高能精料草餅",
         errand_x: -4, errand_y: -1, errand_name: "韓氏聯運貨運行",

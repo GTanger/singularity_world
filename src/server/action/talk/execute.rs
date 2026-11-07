@@ -135,6 +135,7 @@ fn build_spatial_navigation_guide(
     target: &Character,
     gx: Option<i32>,
     gy: Option<i32>,
+    player_input: &str,
 ) -> String {
     let (Some(cx), Some(cy)) = (gx, gy) else {
         return String::new();
@@ -148,44 +149,26 @@ fn build_spatial_navigation_guide(
         format!("你的住處【{}】：{}", slot.home_name, home_dir),
         format!("常去差事地點【{}】：{}", slot.errand_name, errand_dir),
     ];
-    if cx.abs() <= 18 && cy.abs() <= 18 {
-        let wenyao_inns_and_hubs = [
-            ("文曜・三水外坊・北灣臨水旅社", -4, 11),
-            ("文曜・東橋旅社與山風茶屋", 2, -1),
-            ("文曜・西門・行商長途歇舍", -7, -4),
-            ("文曜・西門外坊・風塵客商大旅社", -11, -4),
-            ("文曜・講堂外坊・青雲求學客舍", 11, 6),
-            ("文曜・百工外坊・四方匠師行館", 6, -11),
-            ("文曜・三水大食堂", -1, 2),
-            ("文曜・三水外坊・臨江水手茶飯館", -11, 4),
-        ];
-        for (name, lx, ly) in wenyao_inns_and_hubs {
+    if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
+        let landmarks = grid.query_settlement_landmarks_from((cx, cy), 24, player_input);
+        for ((lx, ly), lname) in landmarks {
             landmark_parts.push(format!(
-                "【{name}】：{}",
+                "【{lname}】：{}",
                 format_relative_grid_direction(cx, cy, lx, ly)
-            ));
-        }
-    } else if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
-        if let Some(((ix, iy), iname)) = grid.find_nearest_room_by_tags((cx, cy), 20, &["inn", "teahouse"], 0) {
-            landmark_parts.push(format!(
-                "本聚落旅社茶屋【{iname}】：{}",
-                format_relative_grid_direction(cx, cy, ix, iy)
-            ));
-        }
-        if let Some(((fx, fy), fname)) = grid.find_nearest_room_by_tags((cx, cy), 20, &["canteen", "hot_food"], 0) {
-            landmark_parts.push(format!(
-                "本聚落食堂【{fname}】：{}",
-                format_relative_grid_direction(cx, cy, fx, fy)
             ));
         }
     }
     format!(
-        "\n【精確指路與地標方位表（當前所在座標：{cx}, {cy}）】{}。若來客詢問「旅社在哪」、「某處怎麼走」或打聽你的任事場所／住處方位，必須 100% 依據上述真實方向與步數指路（例如從 -12, 11 去北灣臨水旅社 -4, 11 應回答「往正東走八步便是北灣臨水旅社」），嚴禁瞎編「過引水石橋再走兩步」等與真實座標不符的假路線！",
+        "\n【精確指路與地標方位表（當前所在座標：{cx}, {cy}）】{}。若來客詢問聚落內客舍、食堂、浴場、醫館、工坊或商行位置，必須嚴格依據上方【鄰近真實場所方位表】給出準確方位與步數，不得憑空捏造路徑。",
         landmark_parts.join("；")
     )
 }
 
-fn build_temporal_and_skepticism_grounding_note(room_display_name: &str) -> String {
+fn build_temporal_and_skepticism_grounding_note(
+    room_display_name: &str,
+    gx: Option<i32>,
+    gy: Option<i32>,
+) -> String {
     let (hour, _minute) = crate::game::current_game_hour_and_min();
     let shichen = match hour {
         23 | 0 => "子時（23:00–00:59，三更深夜）",
@@ -201,15 +184,46 @@ fn build_temporal_and_skepticism_grounding_note(room_display_name: &str) -> Stri
         19 | 20 => "戌時（19:00–20:59，入夜初更）",
         _ => "亥時（21:00–22:59，二更夜深）",
     };
+    let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
+    let cell_opt = match (grid_opt.as_ref(), gx, gy) {
+        (Some(grid), Some(x), Some(y)) => grid.get(crate::grid::SquareCoord::new(x, y)),
+        _ => None,
+    };
+    let is_street = cell_opt.map(|c| c.is_pure_street_or_courtyard()).unwrap_or_else(|| {
+        crate::grid::is_street_or_gate_room_name(room_display_name)
+    });
+    let is_open = cell_opt.map(|c| c.is_open_at_hour(hour.max(0) as u32, false)).unwrap_or((6..=19).contains(&hour));
+
     let mut note = String::new();
     if !(6..=19).contains(&hour) {
+        if is_street {
+            note.push_str(&format!(
+                "\n【時辰與公共通道夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。眼下為夜段收市時分，公共街巷與橋樑通道僅作通行、巡防或返家路徑，並無營業商鋪，居民均在收工返家或回舍安歇途中。"
+            ));
+        } else if !is_open {
+            note.push_str(&format!(
+                "\n【時辰與場所夜間打烊硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。當前場所【{room_display_name}】於夜段已打烊閉門，商號與工坊均已收工歇業。"
+            ));
+        } else {
+            note.push_str(&format!(
+                "\n【時辰與夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。眼下為夜段，全城日間商號工坊均已打烊，除值更巡防與夜間接待場所外，居民皆在歇息安頓，言行須符合深夜情境。"
+            ));
+        }
+    }
+
+    if is_street {
         note.push_str(&format!(
-            "\n【時辰與夜間打烊硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須精確使用該時辰，未滿 22:30 嚴禁訛稱「快子時了」）。眼下為夜段收市時分，全城露天攤販、白日商號與工坊均已打烊收攤，石橋與街巷上絕無任何營業中的藥商攤頭、絲織攤或五金攤！你此刻是在返家歇息或夜間散步途中，嚴禁宣稱自己正在石橋或街頭攤位買賣挑貨！"
+            "\n【空間機能與時序誠實校準】當前場所【{room_display_name}】為公共通道，僅供穿行、駐足或巡防，並非固定營業店鋪；面對來客詢問所在位置或時段時，必須依據此處真實場域性質與當前時辰如實應答。"
+        ));
+    } else if !is_open {
+        note.push_str(&format!(
+            "\n【空間機能與時序誠實校準】當前場所【{room_display_name}】目前已打烊收歇；面對來客詢問所在位置或時段時，應坦誠自己正料理收尾、準備返舍或在此歇宿，不得虛構營業狀態。"
+        ));
+    } else {
+        note.push_str(&format!(
+            "\n【空間機能與時序誠實校準】面對來客詢問所在位置或時段時，必須依據當前場所【{room_display_name}】之現場器物與當前時辰如實應答，言行與現場環境保持一致。"
         ));
     }
-    note.push_str(&format!(
-        "\n【面對來客質疑或反諷之誠實校準】若來客質疑地點或時間（如問「這裡？」、「這時間？」或反諷「夜市啊」），必須立即核對當前地標【{room_display_name}】之【現場可見器物】與當前時辰：若現場是石橋／街道且無攤位，或眼下已是夜間收市時段，必須坦率承認此處並無攤位／夜間早已收攤（例如說明是白天採買的物料、此刻正要返家歇息，或順著話意自嘲夜間確實沒攤子），嚴禁硬拗「就這石橋攤頭正挑貨」或順著反諷瞎附和「夜裡比白日還亮堂好挑料」！"
-    ));
     note
 }
 
@@ -705,11 +719,11 @@ pub(super) fn do_entity_talk(
         if !spatial_note.is_empty() {
             bs.push_str(&spatial_note);
         }
-        let nav_guide = build_spatial_navigation_guide(target, gx, gy);
+        let nav_guide = build_spatial_navigation_guide(target, gx, gy, &player_input);
         if !nav_guide.is_empty() {
             bs.push_str(&nav_guide);
         }
-        let temporal_skepticism_note = build_temporal_and_skepticism_grounding_note(&room_display_name);
+        let temporal_skepticism_note = build_temporal_and_skepticism_grounding_note(&room_display_name, gx, gy);
         if !temporal_skepticism_note.is_empty() {
             bs.push_str(&temporal_skepticism_note);
         }

@@ -19,13 +19,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 154, home_name: "風舶角・碼頭起卸工小院", home_stay_activity: "正在風舶角・碼頭起卸工小院堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "理貨上架與接待採買行商", work_stay_activity: "正在風舶角・港區魚獲水產交易行貨架前按品級分裝乾貨與物資，向洽詢客商說明今日行情",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港尾車馬聯運站與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 154, home_name: "風舶角・碼頭起卸工小院", home_stay_activity: "正在風舶角・碼頭起卸工小院堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "刨削船板與檢視捻縫桐油", work_stay_activity: "正在風舶角・馭風帆具與船材工坊船架旁配合匠師刨平樟木船板，並在接縫處填實防滲桐油灰",
         errand_x: -263, errand_y: 156, errand_name: "風舶角・林氏大船塢", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・林氏大船塢與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
     },
@@ -43,9 +43,9 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 159, home_name: "風舶角・海味水產乾貨家", home_stay_activity: "正在風舶角・海味水產乾貨家堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "整理錨鏈與檢點遠航風帆", work_stay_activity: "正在泊位旁盤整粗麻纜繩、修補受海風撕裂的橫帆索具",
+        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "理貨上架與接待採買行商", work_stay_activity: "正在風舶角・海事總商行與船貨契據所貨架前按品級分裝乾貨與物資，向洽詢客商說明今日行情",
         errand_x: -263, errand_y: 161, errand_name: "風舶角・海員旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・海員旅社與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "西海遠洋水手", morning_hour: 7, evening_hour: 19,
+        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "風舶角商行執事", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 159, home_name: "風舶角・海味水產乾貨家", home_stay_activity: "正在風舶角・海味水產乾貨家堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -67,13 +67,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -254, home_y: 158, home_name: "風舶角・防潮倉管家舍", home_stay_activity: "正在風舶角・防潮倉管家舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "接待洽公鄉親與調解庶務", work_stay_activity: "正在風舶角・風舶海事商盟總會前堂耐心聽取居民陳情與物資調度申請，依規登錄備查",
         errand_x: -261, errand_y: 160, errand_name: "風舶角・風舶海事商盟總會", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・風舶海事商盟總會與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
+        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "風舶角議事文書", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -254, home_y: 158, home_name: "風舶角・防潮倉管家舍", home_stay_activity: "正在風舶角・防潮倉管家舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "校勘圖誌卷冊與整理書櫃", work_stay_activity: "正在風舶角・風舶航海圖誌館明窗長案前逐頁核對圖誌與海陸輿圖，修補磨損書頁",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港區魚獲水產交易行與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
@@ -103,9 +103,9 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 156, home_name: "風舶角・深水錨工家屋", home_stay_activity: "正在風舶角・深水錨工家屋堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "整理錨鏈與檢點遠航風帆", work_stay_activity: "正在泊位旁盤整粗麻纜繩、修補受海風撕裂的橫帆索具",
+        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "添補柴火與照看燒水鍋爐", work_stay_activity: "正在風舶角・港灣溫水浴場後場水爐旁添入耐燃硬柴，維持各處湯池熱水供應穩定",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港尾車馬聯運站與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "西海遠洋水手", morning_hour: 7, evening_hour: 19,
+        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "風舶角湯屋侍者", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 166, home_name: "風舶角・海波平寧安居宅", home_stay_activity: "正在風舶角・海波平寧安居宅屋內獨自整理隨身器具、生火煮茶歇息",
@@ -115,15 +115,15 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 166, home_name: "風舶角・海波平寧安居宅", home_stay_activity: "正在風舶角・海波平寧安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 160, work_name: "風舶角・深水泊位與卸貨碼頭", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -263, work_y: 160, work_name: "風舶角・深水泊位與卸貨碼頭", work_purpose: "檢修板車軸輪與盤整麻纜", work_stay_activity: "正在風舶角・深水泊位與卸貨碼頭車棚下替重載板車車軸塗抹潤滑脂，並盤妥綑紮用粗麻繩",
         errand_x: -261, errand_y: 159, errand_name: "風舶角・風舶航海圖誌館", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・風舶航海圖誌館與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 166, home_name: "風舶角・海波平寧安居宅", home_stay_activity: "正在風舶角・海波平寧安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "盤點藥櫃與分裝藥散", work_stay_activity: "正在風舶角・港務脈絡診所百眼藥櫃前逐格核對藥材存量，將研磨好的藥散分裝入罐",
         errand_x: -263, errand_y: 158, errand_name: "風舶角・港務脈絡診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港務脈絡診所與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
+        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "風舶角醫館藥師", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 159, home_name: "風舶角・帆布油蠟作坊舍", home_stay_activity: "正在風舶角・帆布油蠟作坊舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -139,9 +139,9 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 159, home_name: "風舶角・帆布油蠟作坊舍", home_stay_activity: "正在風舶角・帆布油蠟作坊舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "整理錨鏈與檢點遠航風帆", work_stay_activity: "正在泊位旁盤整粗麻纜繩、修補受海風撕裂的橫帆索具",
+        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "抄錄文獻與更換防潮香囊", work_stay_activity: "正在風舶角・風舶航海圖誌館樟木書架間巡檢藏書防潮狀況，並將新匯報的觀測紀錄謄入冊頁",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港區魚獲水產交易行與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "西海遠洋水手", morning_hour: 7, evening_hour: 19,
+        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "風舶角圖誌校書", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 159, home_name: "風舶角・帆布油蠟作坊舍", home_stay_activity: "正在風舶角・帆布油蠟作坊舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -169,13 +169,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 161, home_name: "風舶角・林家船匠支系宅", home_stay_activity: "正在風舶角・林家船匠支系宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "整理浴巾木桶與刷洗石階", work_stay_activity: "正在風舶角・港灣溫水浴場更衣廊下疊放烘乾的潔淨麻巾，並用長柄刷清理池畔青石板",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港尾車馬聯運站與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
+        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "風舶角湯屋侍者", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 161, home_name: "風舶角・林家船匠支系宅", home_stay_activity: "正在風舶角・林家船匠支系宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "檢點廊下燈火與備妥熱水", work_stay_activity: "正在風舶角・海員旅社天井廊下修剪防風提燈燈芯，並往保溫大木桶添入熱水",
         errand_x: -263, errand_y: 160, errand_name: "風舶角・深水泊位與卸貨碼頭", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・深水泊位與卸貨碼頭與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
@@ -217,13 +217,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -254, home_y: 162, home_name: "風舶角・巨藻纜繩存收院", home_stay_activity: "正在風舶角・巨藻纜繩存收院堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -256, work_y: 160, work_name: "風舶角・港尾車馬聯運站", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -256, work_y: 160, work_name: "風舶角・港尾車馬聯運站", work_purpose: "起卸轉運貨件與核對貨單", work_stay_activity: "正在風舶角・港尾車馬聯運站卸貨坪前持木牌清點到站麻袋與木箱，指揮板車依序入庫",
         errand_x: -263, errand_y: 157, errand_name: "風舶角・馭風帆具與船材工坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・馭風帆具與船材工坊與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -254, home_y: 162, home_name: "風舶角・巨藻纜繩存收院", home_stay_activity: "正在風舶角・巨藻纜繩存收院堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 156, work_name: "風舶角・林氏大船塢", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -263, work_y: 156, work_name: "風舶角・林氏大船塢", work_purpose: "盤整錨鏈與縫補遠航帆布", work_stay_activity: "正在風舶角・林氏大船塢作坊內修補受海風磨損的厚帆布，並逐節敲檢鐵錨鏈環",
         errand_x: -263, errand_y: 162, errand_name: "風舶角・港灣溫水浴場", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港灣溫水浴場與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
     },
@@ -231,11 +231,11 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
         home_x: -259, home_y: 162, home_name: "風舶角・港尾車馬行屋", home_stay_activity: "正在風舶角・港尾車馬行屋屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -257, work_y: 160, work_name: "風舶角・海陸聯運貨運行", work_purpose: "編組車隊與核對貨單", work_stay_activity: "正在風舶角・海陸聯運貨運行車棚下檢修載重板車軸承、替遠行駝獸備妥草料",
         errand_x: -263, errand_y: 163, errand_name: "風舶角・海風海鮮食堂", errand_purpose: "歇腳用膳與打聽消息", errand_stay_activity: "正在風舶角・海風海鮮食堂木桌旁享用熱湯麵食，與鄰座同鄉閒話家常",
-        attire_line: "身穿防鹹水浸染的深青厚麻短衫，腰間繫著銅扣麻繩與船匠木尺", brief_tag: "短衫船匠", morning_hour: 7, evening_hour: 20,
+        attire_line: "身穿防鹹水浸染的深青厚麻短衫，腰間繫著銅扣麻繩與船匠木尺", brief_tag: "短衫船匠", morning_hour: 7, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 162, home_name: "風舶角・港尾車馬行屋", home_stay_activity: "正在風舶角・港尾車馬行屋廊下借著油燈微光檢視器具榫頭，與家人低聲商議本旬家計",
-        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "精細修整與成品打包", work_stay_activity: "正在風舶角・海員旅社工作長案旁剔除成品邊角毛刺，以乾燥麻布妥善包覆防潮",
+        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "整理客房床鋪與更換被褥", work_stay_activity: "正在風舶角・海員旅社客房內鋪平曝曬過的乾爽棉被，並擦拭案几與窗櫺",
         errand_x: -263, errand_y: 160, errand_name: "風舶角・深水泊位與卸貨碼頭", errand_purpose: "交接料件與核對口信", errand_stay_activity: "正在風舶角・深水泊位與卸貨碼頭替工坊捎來本旬訂製的小批配件，並轉達師傅交代的口信",
         attire_line: "身穿整潔的茶褐細麻長衫，腰繫青布小囊，舉止溫和有禮（港尾車馬行屋八房）", brief_tag: "港尾茶褐細麻街坊", morning_hour: 7, evening_hour: 19,
     },
@@ -265,8 +265,8 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 157, home_name: "風舶角・港灣晨汲水井居", home_stay_activity: "正在風舶角・港灣晨汲水井居院門內替家中小輩整理行裝，叮囑明日前往工坊當值的注意事項",
-        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "損耗修補與廢料回收", work_stay_activity: "正在風舶角・港區魚獲水產交易行角落將邊角餘料重新分類收納，修補尚可續用的舊木框與麻袋",
-        errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "採買家用與互通消息", errand_stay_activity: "正在風舶角・港尾車馬聯運站挑選家中欠缺的油鹽雜貨，順道向熟識掌櫃打聽近日商路行情",
+        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "過磅驗貨與登錄交易流水", work_stay_activity: "正在風舶角・港區魚獲水產交易行大秤旁逐批秤量新到的山海貨品，核對成色後記入流水帳冊",
+        errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "採買家用與互通消息", errand_stay_activity: "正在風舶角・港尾車馬聯運站挑選家中欠缺的油鹽雜貨，順道向熟識主事打聽近日商路行情",
         attire_line: "身穿綴有耐磨補丁的栗色短衫，腰間掛著銅製號牌與鑰匙串，作風老練（港灣晨汲水井居二房）", brief_tag: "港灣栗衫老練匠師", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
@@ -289,7 +289,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 158, home_name: "風舶角・築港石匠工寮居", home_stay_activity: "正在風舶角・築港石匠工寮居堂屋木桌旁擦拭今日隨身工具，與同住親眷核對明日派工時辰",
-        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "精細修整與成品打包", work_stay_activity: "正在風舶角・海事總商行與船貨契據所工作長案旁剔除成品邊角毛刺，以乾燥麻布妥善包覆防潮",
+        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "過磅驗貨與登錄交易流水", work_stay_activity: "正在風舶角・海事總商行與船貨契據所大秤旁逐批秤量新到的山海貨品，核對成色後記入流水帳冊",
         errand_x: -263, errand_y: 161, errand_name: "風舶角・海員旅社", errand_purpose: "打聽船期車班與備貨", errand_stay_activity: "正在風舶角・海員旅社詢問近期往返文曜與鄰鎮的車船班次，預先安排下旬交貨時程",
         attire_line: "身穿耐磨靛青粗麻短褐，腰間束著牛皮工具袋，袖口俐落挽至前臂（築港石匠工寮居六房）", brief_tag: "築港青麻短褐匠人", morning_hour: 7, evening_hour: 19,
     },
@@ -313,13 +313,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 154, home_name: "風舶角・落霞臨海居", home_stay_activity: "正在風舶角・落霞臨海居堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 163, work_name: "風舶角・海風海鮮食堂", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -263, work_y: 163, work_name: "風舶角・海風海鮮食堂", work_purpose: "擦拭食案與招呼堂內食客", work_stay_activity: "正在風舶角・海風海鮮食堂堂內麻利收拾碗筷、擦淨木桌，替剛入座的客人添上熱茶",
         errand_x: -261, errand_y: 161, errand_name: "風舶角・海事總商行與船貨契據所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・海事總商行與船貨契據所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 154, home_name: "風舶角・落霞臨海居", home_stay_activity: "正在風舶角・落霞臨海居側屋木架前分門別類擺好備用零件，替同屋晚輩指點手藝訣竅",
-        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "損耗修補與廢料回收", work_stay_activity: "正在風舶角・風舶海事商盟總會角落將邊角餘料重新分類收納，修補尚可續用的舊木框與麻袋",
+        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "接待洽公鄉親與調解庶務", work_stay_activity: "正在風舶角・風舶海事商盟總會前堂耐心聽取居民陳情與物資調度申請，依規登錄備查",
         errand_x: -261, errand_y: 160, errand_name: "風舶角・風舶海事商盟總會", errand_purpose: "送還借物與道謝寒暄", errand_stay_activity: "正在風舶角・風舶海事商盟總會歸還前日借用的竹簍與麻繩，與場內管事客氣寒暄幾句",
         attire_line: "身著加厚雙層麻布短褂，小腿緊綁防刮綁腿，步伐穩健有力（落霞臨海居十一房）", brief_tag: "落霞綁腿麻褂青年", morning_hour: 6, evening_hour: 18,
     },
@@ -337,13 +337,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 163, home_name: "風舶角・海員避風客舍", home_stay_activity: "正在風舶角・海員避風客舍院門內替家中小輩整理行裝，叮囑明日前往工坊當值的注意事項",
-        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "環境巡檢與器具保養", work_stay_activity: "正在風舶角・港區魚獲水產交易行巡看各處作業檯面與固定索具，及時替磨損構件塗抹防護桐油",
+        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "過磅驗貨與登錄交易流水", work_stay_activity: "正在風舶角・港區魚獲水產交易行大秤旁逐批秤量新到的山海貨品，核對成色後記入流水帳冊",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "請教手藝與借用工具", errand_stay_activity: "正在風舶角・港尾車馬聯運站向當值老匠請教器物修繕竅門，順手借用兩件趁手工具",
         attire_line: "身穿整潔的茶褐細麻長衫，腰繫青布小囊，舉止溫和有禮（海員避風客舍三房）", brief_tag: "海員茶褐細麻街坊", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 163, home_name: "風舶角・海員避風客舍", home_stay_activity: "正在風舶角・海員避風客舍長凳上用細砂石打磨隨身小刀與木尺，一邊聽家人聊起街坊近況",
-        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "精細修整與成品打包", work_stay_activity: "正在風舶角・馭風帆具與船材工坊工作長案旁剔除成品邊角毛刺，以乾燥麻布妥善包覆防潮",
+        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "盤整錨鏈與縫補遠航帆布", work_stay_activity: "正在風舶角・馭風帆具與船材工坊作坊內修補受海風磨損的厚帆布，並逐節敲檢鐵錨鏈環",
         errand_x: -263, errand_y: 156, errand_name: "風舶角・林氏大船塢", errand_purpose: "探看親友與捎帶乾糧", errand_stay_activity: "正在風舶角・林氏大船塢將家中現做的熱食乾糧交予當班親眷，叮囑按時用膳歇息",
         attire_line: "身穿灰藍交領棉麻衫，手腕戴著防磨皮護腕，隨身佩著銅扣小刀（海員避風客舍四房）", brief_tag: "海員皮護腕百工", morning_hour: 7, evening_hour: 19,
     },
@@ -355,14 +355,14 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 163, home_name: "風舶角・海風眺望石樓", home_stay_activity: "正在風舶角・海風眺望石樓堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "理貨上架與接待採買行商", work_stay_activity: "正在風舶角・海事總商行與船貨契據所貨架前按品級分裝乾貨與物資，向洽詢客商說明今日行情",
         errand_x: -263, errand_y: 161, errand_name: "風舶角・海員旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・海員旅社與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
+        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "風舶角商行執事", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 163, home_name: "風舶角・海風眺望石樓", home_stay_activity: "正在風舶角・海風眺望石樓堂屋木桌旁擦拭今日隨身工具，與同住親眷核對明日派工時辰",
-        work_x: -263, work_y: 160, work_name: "風舶角・深水泊位與卸貨碼頭", work_purpose: "學徒督導與下料備製", work_stay_activity: "正在風舶角・深水泊位與卸貨碼頭指導年輕幫手按尺寸裁切基礎料件，嚴格把關每一道初加工",
-        errand_x: -261, errand_y: 159, errand_name: "風舶角・風舶航海圖誌館", errand_purpose: "採買家用與互通消息", errand_stay_activity: "正在風舶角・風舶航海圖誌館挑選家中欠缺的油鹽雜貨，順道向熟識掌櫃打聽近日商路行情",
+        work_x: -263, work_y: 160, work_name: "風舶角・深水泊位與卸貨碼頭", work_purpose: "起卸轉運貨件與核對貨單", work_stay_activity: "正在風舶角・深水泊位與卸貨碼頭卸貨坪前持木牌清點到站麻袋與木箱，指揮板車依序入庫",
+        errand_x: -261, errand_y: 159, errand_name: "風舶角・風舶航海圖誌館", errand_purpose: "採買家用與互通消息", errand_stay_activity: "正在風舶角・風舶航海圖誌館挑選家中欠缺的油鹽雜貨，順道向熟識主事打聽近日商路行情",
         attire_line: "穿著洗得發白的墨綠工作短衣，圍著厚牛皮護腰，眼神專注踏實（海風眺望石樓七房）", brief_tag: "海風墨綠短衣熟手", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
@@ -391,7 +391,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 156, home_name: "風舶角・船具修配鐵匠居", home_stay_activity: "正在風舶角・船具修配鐵匠居側屋木架前分門別類擺好備用零件，替同屋晚輩指點手藝訣竅",
-        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "環境巡檢與器具保養", work_stay_activity: "正在風舶角・風舶航海圖誌館巡看各處作業檯面與固定索具，及時替磨損構件塗抹防護桐油",
+        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "抄錄文獻與更換防潮香囊", work_stay_activity: "正在風舶角・風舶航海圖誌館樟木書架間巡檢藏書防潮狀況，並將新匯報的觀測紀錄謄入冊頁",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "核對地方公議與輪值表", errand_stay_activity: "正在風舶角・港區魚獲水產交易行查看張貼的本旬街坊輪值與互助事項，記下自家負責的時段",
         attire_line: "身著輕便天青色麻布衣裙，髮髻以木簪束妥，手裡提著藤編小籃（船具修配鐵匠居十二房）", brief_tag: "船具木簪提籃親眷", morning_hour: 7, evening_hour: 19,
     },
@@ -403,7 +403,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 163, home_name: "風舶角・風舶航海錄校對齋", home_stay_activity: "正在風舶角・風舶航海錄校對齋窗下翻看本旬交貨木牌與帳目小冊，確認各坊往來差事無誤",
-        work_x: -261, work_y: 163, work_name: "風舶角・風舶航海錄校對齋", work_purpose: "火候看顧與原料調配", work_stay_activity: "正在風舶角・風舶航海錄校對齋作業區專注觀察溫度與濕度變化，按比例調配今日所需輔料",
+        work_x: -261, work_y: 163, work_name: "風舶角・風舶航海錄校對齋", work_purpose: "抄錄文獻與更換防潮香囊", work_stay_activity: "正在風舶角・風舶航海錄校對齋樟木書架間巡檢藏書防潮狀況，並將新匯報的觀測紀錄謄入冊頁",
         errand_x: -261, errand_y: 160, errand_name: "風舶角・風舶海事商盟總會", errand_purpose: "請教手藝與借用工具", errand_stay_activity: "正在風舶角・風舶海事商盟總會向當值老匠請教器物修繕竅門，順手借用兩件趁手工具",
         attire_line: "穿著洗得發白的墨綠工作短衣，圍著厚牛皮護腰，眼神專注踏實（風舶航海錄校對齋三房）", brief_tag: "風舶墨綠短衣熟手", morning_hour: 7, evening_hour: 17,
     },
@@ -415,7 +415,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 163, home_name: "風舶角・風舶航海錄校對齋", home_stay_activity: "正在風舶角・風舶航海錄校對齋長凳上用細砂石打磨隨身小刀與木尺，一邊聽家人聊起街坊近況",
-        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "學徒督導與下料備製", work_stay_activity: "正在風舶角・港灣溫水浴場指導年輕幫手按尺寸裁切基礎料件，嚴格把關每一道初加工",
+        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "巡看湯池水溫與引水閥", work_stay_activity: "正在風舶角・港灣溫水浴場湯池畔測試泉水溫度，並調節引水竹管與排煙氣窗",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "協助卸貨與順路搭把手", errand_stay_activity: "正在風舶角・港尾車馬聯運站門前順手幫鄰里扶穩卸下的貨簍，彼此熱絡招呼寒暄",
         attire_line: "身著深灰防潮帆布工裝，腳踏防滑麻底草鞋，肩頭搭著一條乾淨汗巾（風舶航海錄校對齋五房）", brief_tag: "風舶帆布工裝好手", morning_hour: 6, evening_hour: 18,
     },
@@ -439,7 +439,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 158, home_name: "風舶角・領航副舵手舍", home_stay_activity: "正在風舶角・領航副舵手舍前院石階下修整竹簍與麻繩，順手將晾乾的粗布衣衫收進屋內",
-        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "物料分揀與工序支援", work_stay_activity: "正在風舶角・港務脈絡診所後場協助分類新運抵的原料，依序遞交給主事匠人推進工序",
+        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "診間理療與敷藥照護", work_stay_activity: "正在風舶角・港務脈絡診所診案旁替傷患清洗患處、換上新調配的活血草藥膏",
         errand_x: -263, errand_y: 158, errand_name: "風舶角・港務脈絡診所", errand_purpose: "領取憑據與結算尾款", errand_stay_activity: "正在風舶角・港務脈絡診所櫃前核對上旬往來帳目木牌，辦妥日常物資的結算手續",
         attire_line: "穿著厚實赭石色家常布衫，外罩耐磨麻布背心，雙手結著勤懇老繭（領航副舵手舍九房）", brief_tag: "領航赭衣勤懇居民", morning_hour: 7, evening_hour: 19,
     },
@@ -463,13 +463,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 165, home_name: "風舶角・築港頭・許家宅邸", home_stay_activity: "正在風舶角・築港頭・許家宅邸堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "抄錄文獻與更換防潮香囊", work_stay_activity: "正在風舶角・風舶航海圖誌館樟木書架間巡檢藏書防潮狀況，並將新匯報的觀測紀錄謄入冊頁",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港區魚獲水產交易行與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
+        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "風舶角圖誌校書", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 165, home_name: "風舶角・築港頭・許家宅邸", home_stay_activity: "正在風舶角・築港頭・許家宅邸後院石槽邊洗淨工作沾染的泥灰，換上乾爽家常布衫歇息",
-        work_x: -256, work_y: 160, work_name: "風舶角・港尾車馬聯運站", work_purpose: "學徒督導與下料備製", work_stay_activity: "正在風舶角・港尾車馬聯運站指導年輕幫手按尺寸裁切基礎料件，嚴格把關每一道初加工",
+        work_x: -256, work_y: 160, work_name: "風舶角・港尾車馬聯運站", work_purpose: "起卸轉運貨件與核對貨單", work_stay_activity: "正在風舶角・港尾車馬聯運站卸貨坪前持木牌清點到站麻袋與木箱，指揮板車依序入庫",
         errand_x: -263, errand_y: 157, errand_name: "風舶角・馭風帆具與船材工坊", errand_purpose: "請教手藝與借用工具", errand_stay_activity: "正在風舶角・馭風帆具與船材工坊向當值老匠請教器物修繕竅門，順手借用兩件趁手工具",
         attire_line: "穿著樸素玄色粗布褲褂，肩挎斜背麻布工具包，神情謙和熱心（許家宅邸三房）", brief_tag: "許家玄布挎包幫手", morning_hour: 6, evening_hour: 18,
     },
@@ -477,7 +477,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
         home_x: -257, home_y: 162, home_name: "風舶角・防浪厚石排屋二號", home_stay_activity: "正在風舶角・防浪厚石排屋二號屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "協調坊務與登記契據", work_stay_activity: "正在風舶角・風舶海事商盟總會議事廳整理地方工坊排班文書與物資調度卷宗",
         errand_x: -263, errand_y: 156, errand_name: "風舶角・林氏大船塢", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在風舶角・林氏大船塢與熟識的管事交接日常物料與地方口信",
-        attire_line: "披著桐油防風海事皮背心，雙手虎口帶著長年拉索的老繭", brief_tag: "海事水手", morning_hour: 7, evening_hour: 20,
+        attire_line: "披著桐油防風海事皮背心，雙手虎口帶著長年拉索的老繭", brief_tag: "海事水手", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 162, home_name: "風舶角・防浪厚石排屋二號", home_stay_activity: "正在風舶角・防浪厚石排屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -487,9 +487,9 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -257, home_y: 162, home_name: "風舶角・防浪厚石排屋二號", home_stay_activity: "正在風舶角・防浪厚石排屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "整理錨鏈與檢點遠航風帆", work_stay_activity: "正在泊位旁盤整粗麻纜繩、修補受海風撕裂的橫帆索具",
+        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "整理客房床鋪與更換被褥", work_stay_activity: "正在風舶角・海員旅社客房內鋪平曝曬過的乾爽棉被，並擦拭案几與窗櫺",
         errand_x: -263, errand_y: 160, errand_name: "風舶角・深水泊位與卸貨碼頭", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・深水泊位與卸貨碼頭與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "西海遠洋水手", morning_hour: 7, evening_hour: 19,
+        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "風舶角旅社房務", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 163, home_name: "風舶角・遠洋物資存備宅", home_stay_activity: "正在風舶角・遠洋物資存備宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -505,13 +505,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 163, home_name: "風舶角・遠洋物資存備宅", home_stay_activity: "正在風舶角・遠洋物資存備宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "炮製草藥與煎煮湯劑", work_stay_activity: "正在風舶角・港務脈絡診所藥灶前看顧文火煎藥砂鍋，並按方稱取烘乾草藥",
         errand_x: -263, errand_y: 158, errand_name: "風舶角・港務脈絡診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・港務脈絡診所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 163, home_name: "風舶角・遠洋物資存備宅", home_stay_activity: "正在風舶角・遠洋物資存備宅前院石階下修整竹簍與麻繩，順手將晾乾的粗布衣衫收進屋內",
-        work_x: -257, work_y: 160, work_name: "風舶角・海陸聯運貨運行", work_purpose: "火候看顧與原料調配", work_stay_activity: "正在風舶角・海陸聯運貨運行作業區專注觀察溫度與濕度變化，按比例調配今日所需輔料",
+        work_x: -257, work_y: 160, work_name: "風舶角・海陸聯運貨運行", work_purpose: "檢修板車軸輪與盤整麻纜", work_stay_activity: "正在風舶角・海陸聯運貨運行車棚下替重載板車車軸塗抹潤滑脂，並盤妥綑紮用粗麻繩",
         errand_x: -257, errand_y: 160, errand_name: "風舶角・海陸聯運貨運行", errand_purpose: "協助卸貨與順路搭把手", errand_stay_activity: "正在風舶角・海陸聯運貨運行門前順手幫鄰里扶穩卸下的貨簍，彼此熱絡招呼寒暄",
         attire_line: "穿著樸素玄色粗布褲褂，肩挎斜背麻布工具包，神情謙和熱心（遠洋物資存備宅十房）", brief_tag: "遠洋玄布挎包幫手", morning_hour: 6, evening_hour: 18,
     },
@@ -541,7 +541,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 166, home_name: "風舶角・港務文書書吏舍", home_stay_activity: "正在風舶角・港務文書書吏舍後院石槽邊洗淨工作沾染的泥灰，換上乾爽家常布衫歇息",
-        work_x: -263, work_y: 156, work_name: "風舶角・林氏大船塢", work_purpose: "當值協作與器物檢整", work_stay_activity: "正在風舶角・林氏大船塢當值案前逐件核驗今日器物成色，將合格成品整齊碼放上架",
+        work_x: -263, work_y: 156, work_name: "風舶角・林氏大船塢", work_purpose: "刨削船板與檢視捻縫桐油", work_stay_activity: "正在風舶角・林氏大船塢船架旁配合匠師刨平樟木船板，並在接縫處填實防滲桐油灰",
         errand_x: -263, errand_y: 162, errand_name: "風舶角・港灣溫水浴場", errand_purpose: "挑選耗材與比對成色", errand_stay_activity: "正在風舶角・港灣溫水浴場仔細比對幾批新到常備耗材的質地，挑出最耐用的一批帶回",
         attire_line: "穿著厚實赭石色家常布衫，外罩耐磨麻布背心，雙手結著勤懇老繭（港務文書書吏舍四房）", brief_tag: "港務赭衣勤懇居民", morning_hour: 7, evening_hour: 19,
     },
@@ -559,13 +559,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 162, home_name: "風舶角・帆纜編繩匠舍", home_stay_activity: "正在風舶角・帆纜編繩匠舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "起卸大宗海貨與推運板車", work_stay_activity: "正在碼頭跳板上扛起百斤鹽包與乾貨木箱穩步入倉",
+        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "整理客房床鋪與更換被褥", work_stay_activity: "正在風舶角・海員旅社客房內鋪平曝曬過的乾爽棉被，並擦拭案几與窗櫺",
         errand_x: -263, errand_y: 160, errand_name: "風舶角・深水泊位與卸貨碼頭", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・深水泊位與卸貨碼頭與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "港埠挑運苦力", morning_hour: 6, evening_hour: 18,
+        attire_line: "身著耐磨粗布背心，肩墊加厚牛皮護肩，雙臂肌肉結實", brief_tag: "風舶角旅社房務", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 162, home_name: "風舶角・帆纜編繩匠舍", home_stay_activity: "正在風舶角・帆纜編繩匠舍屋簷下編結備用麻索、檢點防雨油布，為連日勞作做好準備",
-        work_x: -263, work_y: 163, work_name: "風舶角・海風海鮮食堂", work_purpose: "火候看顧與原料調配", work_stay_activity: "正在風舶角・海風海鮮食堂作業區專注觀察溫度與濕度變化，按比例調配今日所需輔料",
+        work_x: -263, work_y: 163, work_name: "風舶角・海風海鮮食堂", work_purpose: "擦拭食案與招呼堂內食客", work_stay_activity: "正在風舶角・海風海鮮食堂堂內麻利收拾碗筷、擦淨木桌，替剛入座的客人添上熱茶",
         errand_x: -261, errand_y: 161, errand_name: "風舶角・海事總商行與船貨契據所", errand_purpose: "歇腳飲茶與鄰里寒暄", errand_stay_activity: "正在風舶角・海事總商行與船貨契據所長凳上略作歇息，與偶遇的同村街坊交換各處天氣與物價消息",
         attire_line: "身著加厚雙層麻布短褂，小腿緊綁防刮綁腿，步伐穩健有力（帆纜編繩匠舍八房）", brief_tag: "帆纜綁腿麻褂青年", morning_hour: 6, evening_hour: 18,
     },
@@ -589,7 +589,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 158, home_name: "風舶角・大船塢老木工居", home_stay_activity: "正在風舶角・大船塢老木工居灶房旁添柴溫水，將明日出工要帶的乾糧與水囊逐一備妥",
-        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "損耗修補與廢料回收", work_stay_activity: "正在風舶角・港區魚獲水產交易行角落將邊角餘料重新分類收納，修補尚可續用的舊木框與麻袋",
+        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "過磅驗貨與登錄交易流水", work_stay_activity: "正在風舶角・港區魚獲水產交易行大秤旁逐批秤量新到的山海貨品，核對成色後記入流水帳冊",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "核對地方公議與輪值表", errand_stay_activity: "正在風舶角・港尾車馬聯運站查看張貼的本旬街坊輪值與互助事項，記下自家負責的時段",
         attire_line: "身穿灰藍交領棉麻衫，手腕戴著防磨皮護腕，隨身佩著銅扣小刀（大船塢老木工居十二房）", brief_tag: "大船皮護腕百工", morning_hour: 7, evening_hour: 19,
     },
@@ -607,7 +607,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 157, home_name: "風舶角・泊位碼頭工舍", home_stay_activity: "正在風舶角・泊位碼頭工舍側屋木架前分門別類擺好備用零件，替同屋晚輩指點手藝訣竅",
-        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "環境巡檢與器具保養", work_stay_activity: "正在風舶角・海事總商行與船貨契據所巡看各處作業檯面與固定索具，及時替磨損構件塗抹防護桐油",
+        work_x: -261, work_y: 161, work_name: "風舶角・海事總商行與船貨契據所", work_purpose: "理貨上架與接待採買行商", work_stay_activity: "正在風舶角・海事總商行與船貨契據所貨架前按品級分裝乾貨與物資，向洽詢客商說明今日行情",
         errand_x: -263, errand_y: 161, errand_name: "風舶角・海員旅社", errand_purpose: "挑選耗材與比對成色", errand_stay_activity: "正在風舶角・海員旅社仔細比對幾批新到常備耗材的質地，挑出最耐用的一批帶回",
         attire_line: "身著加厚雙層麻布短褂，小腿緊綁防刮綁腿，步伐穩健有力（泊位碼頭工舍四房）", brief_tag: "泊位綁腿麻褂青年", morning_hour: 6, evening_hour: 18,
     },
@@ -625,13 +625,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 161, home_name: "風舶角・海陸過磅員民舍", home_stay_activity: "正在風舶角・海陸過磅員民舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 163, work_name: "風舶角・海風海鮮食堂", work_purpose: "整理錨鏈與檢點遠航風帆", work_stay_activity: "正在泊位旁盤整粗麻纜繩、修補受海風撕裂的橫帆索具",
+        work_x: -263, work_y: 163, work_name: "風舶角・海風海鮮食堂", work_purpose: "備製麵點與分切熟食滷味", work_stay_activity: "正在風舶角・海風海鮮食堂案板前揉製筋道麵團、分切出鍋熱滷食，裝盤端上櫃檯",
         errand_x: -261, errand_y: 161, errand_name: "風舶角・海事總商行與船貨契據所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・海事總商行與船貨契據所與街坊鄰里交接日用物資、寒暄近況",
-        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "西海遠洋水手", morning_hour: 7, evening_hour: 19,
+        attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "風舶角堂前伙計", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 161, home_name: "風舶角・海陸過磅員民舍", home_stay_activity: "正在風舶角・海陸過磅員民舍長凳上用細砂石打磨隨身小刀與木尺，一邊聽家人聊起街坊近況",
-        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "學徒督導與下料備製", work_stay_activity: "正在風舶角・風舶海事商盟總會指導年輕幫手按尺寸裁切基礎料件，嚴格把關每一道初加工",
+        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "接待洽公鄉親與調解庶務", work_stay_activity: "正在風舶角・風舶海事商盟總會前堂耐心聽取居民陳情與物資調度申請，依規登錄備查",
         errand_x: -261, errand_y: 160, errand_name: "風舶角・風舶海事商盟總會", errand_purpose: "請教手藝與借用工具", errand_stay_activity: "正在風舶角・風舶海事商盟總會向當值老匠請教器物修繕竅門，順手借用兩件趁手工具",
         attire_line: "身穿灰藍交領棉麻衫，手腕戴著防磨皮護腕，隨身佩著銅扣小刀（海陸過磅員民舍八房）", brief_tag: "海陸皮護腕百工", morning_hour: 7, evening_hour: 19,
     },
@@ -649,19 +649,19 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 155, home_name: "風舶角・大船塢・林家宅院", home_stay_activity: "正在風舶角・大船塢・林家宅院堂屋木桌旁擦拭今日隨身工具，與同住親眷核對明日派工時辰",
-        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "當值協作與器物檢整", work_stay_activity: "正在風舶角・港務脈絡診所當值案前逐件核驗今日器物成色，將合格成品整齊碼放上架",
+        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "炮製草藥與煎煮湯劑", work_stay_activity: "正在風舶角・港務脈絡診所藥灶前看顧文火煎藥砂鍋，並按方稱取烘乾草藥",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "打聽船期車班與備貨", errand_stay_activity: "正在風舶角・港尾車馬聯運站詢問近期往返文曜與鄰鎮的車船班次，預先安排下旬交貨時程",
         attire_line: "穿著洗得發白的墨綠工作短衣，圍著厚牛皮護腰，眼神專注踏實（林家宅院十一房）", brief_tag: "林家墨綠短衣熟手", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 155, home_name: "風舶角・大船塢・林家宅院", home_stay_activity: "正在風舶角・大船塢・林家宅院前院石階下修整竹簍與麻繩，順手將晾乾的粗布衣衫收進屋內",
-        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "物料分揀與工序支援", work_stay_activity: "正在風舶角・港區魚獲水產交易行後場協助分類新運抵的原料，依序遞交給主事匠人推進工序",
+        work_x: -263, work_y: 164, work_name: "風舶角・港區魚獲水產交易行", work_purpose: "理貨上架與接待採買行商", work_stay_activity: "正在風舶角・港區魚獲水產交易行貨架前按品級分裝乾貨與物資，向洽詢客商說明今日行情",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "核對地方公議與輪值表", errand_stay_activity: "正在風舶角・港尾車馬聯運站查看張貼的本旬街坊輪值與互助事項，記下自家負責的時段",
         attire_line: "穿著樸素玄色粗布褲褂，肩挎斜背麻布工具包，神情謙和熱心（林家宅院十二房）", brief_tag: "林家玄布挎包幫手", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -263, home_y: 155, home_name: "風舶角・大船塢・林家宅院", home_stay_activity: "正在風舶角・大船塢・林家宅院灶房旁添柴溫水，將明日出工要帶的乾糧與水囊逐一備妥",
-        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "環境巡檢與器具保養", work_stay_activity: "正在風舶角・馭風帆具與船材工坊巡看各處作業檯面與固定索具，及時替磨損構件塗抹防護桐油",
+        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "刨削船板與檢視捻縫桐油", work_stay_activity: "正在風舶角・馭風帆具與船材工坊船架旁配合匠師刨平樟木船板，並在接縫處填實防滲桐油灰",
         errand_x: -263, errand_y: 156, errand_name: "風舶角・林氏大船塢", errand_purpose: "歇腳飲茶與鄰里寒暄", errand_stay_activity: "正在風舶角・林氏大船塢長凳上略作歇息，與偶遇的同村街坊交換各處天氣與物價消息",
         attire_line: "身著深灰防潮帆布工裝，腳踏防滑麻底草鞋，肩頭搭著一條乾淨汗巾（林家宅院二房）", brief_tag: "林家帆布工裝好手", morning_hour: 6, evening_hour: 18,
     },
@@ -691,7 +691,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -254, home_y: 161, home_name: "風舶角・海風麵點鋪居", home_stay_activity: "正在風舶角・海風麵點鋪居窗下翻看本旬交貨木牌與帳目小冊，確認各坊往來差事無誤",
-        work_x: -263, work_y: 160, work_name: "風舶角・深水泊位與卸貨碼頭", work_purpose: "外務接洽與樣品展示", work_stay_activity: "正在風舶角・深水泊位與卸貨碼頭前堂接待前來洽詢的鄰里與行商，清楚說明各類器物規格",
+        work_x: -263, work_y: 160, work_name: "風舶角・深水泊位與卸貨碼頭", work_purpose: "檢修板車軸輪與盤整麻纜", work_stay_activity: "正在風舶角・深水泊位與卸貨碼頭車棚下替重載板車車軸塗抹潤滑脂，並盤妥綑紮用粗麻繩",
         errand_x: -261, errand_y: 159, errand_name: "風舶角・風舶航海圖誌館", errand_purpose: "交接料件與核對口信", errand_stay_activity: "正在風舶角・風舶航海圖誌館替工坊捎來本旬訂製的小批配件，並轉達師傅交代的口信",
         attire_line: "穿著洗得發白的墨綠工作短衣，圍著厚牛皮護腰，眼神專注踏實（海風麵點鋪居七房）", brief_tag: "海風墨綠短衣熟手", morning_hour: 7, evening_hour: 19,
     },
@@ -709,13 +709,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 157, home_name: "風舶角・海員家眷安居樓", home_stay_activity: "正在風舶角・海員家眷安居樓堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "刨削樟木船板與捻縫船底", work_stay_activity: "正在船架下配合師傅拉鋸巨樟龍骨、塗敷防蟲桐油灰",
+        work_x: -261, work_y: 160, work_name: "風舶角・風舶海事商盟總會", work_purpose: "整理地方卷宗與核對清冊", work_stay_activity: "正在風舶角・風舶海事商盟總會議事案前彙整里坊戶籍與公共修繕清冊，逐筆核銷出入帳目",
         errand_x: -261, errand_y: 160, errand_name: "風舶角・風舶海事商盟總會", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・風舶海事商盟總會與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿厚麻防潮造船工衫，腰插曲尺與墨斗，指節粗大有力", brief_tag: "風舶造船木匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 157, home_name: "風舶角・海員家眷安居樓", home_stay_activity: "正在風舶角・海員家眷安居樓茶几旁沖泡熱茶分予同屋親人，仔細收納今日結算的銅幣與憑據",
-        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "環境巡檢與器具保養", work_stay_activity: "正在風舶角・風舶航海圖誌館巡看各處作業檯面與固定索具，及時替磨損構件塗抹防護桐油",
+        work_x: -261, work_y: 159, work_name: "風舶角・風舶航海圖誌館", work_purpose: "抄錄文獻與更換防潮香囊", work_stay_activity: "正在風舶角・風舶航海圖誌館樟木書架間巡檢藏書防潮狀況，並將新匯報的觀測紀錄謄入冊頁",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "打聽船期車班與備貨", errand_stay_activity: "正在風舶角・港區魚獲水產交易行詢問近期往返文曜與鄰鎮的車船班次，預先安排下旬交貨時程",
         attire_line: "身著防潑水暗青油布外褂，頭戴竹編遮陽笠，手腳麻利爽快（海員家眷安居樓十一房）", brief_tag: "海員竹笠油褂居民", morning_hour: 6, evening_hour: 18,
     },
@@ -723,17 +723,17 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
         home_x: -259, home_y: 164, home_name: "風舶角・外海探險老舵手居", home_stay_activity: "正在風舶角・外海探險老舵手居屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在風舶角・港務脈絡診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -263, errand_y: 157, errand_name: "風舶角・馭風帆具與船材工坊", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在風舶角・馭風帆具與船材工坊與熟識的管事交接日常物料與地方口信",
-        attire_line: "身著靛藍耐髒帆布工裝，褲腳俐落紮入防滑麻草鞋中", brief_tag: "港埠工匠", morning_hour: 7, evening_hour: 20,
+        attire_line: "身著靛藍耐髒帆布工裝，褲腳俐落紮入防滑麻草鞋中", brief_tag: "港埠工匠", morning_hour: 7, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 164, home_name: "風舶角・外海探險老舵手居", home_stay_activity: "正在風舶角・外海探險老舵手居堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "整理錨鏈與檢點遠航風帆", work_stay_activity: "正在泊位旁盤整粗麻纜繩、修補受海風撕裂的橫帆索具",
+        work_x: -263, work_y: 157, work_name: "風舶角・馭風帆具與船材工坊", work_purpose: "盤整錨鏈與縫補遠航帆布", work_stay_activity: "正在風舶角・馭風帆具與船材工坊作坊內修補受海風磨損的厚帆布，並逐節敲檢鐵錨鏈環",
         errand_x: -263, errand_y: 156, errand_name: "風舶角・林氏大船塢", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風舶角・林氏大船塢與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "披著鹽霜斑駁的深藍海事短褂，小腿綁著防滑麻綁腿", brief_tag: "西海遠洋水手", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 164, home_name: "風舶角・外海探險老舵手居", home_stay_activity: "正在風舶角・外海探險老舵手居灶房旁添柴溫水，將明日出工要帶的乾糧與水囊逐一備妥",
-        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "重物搬運與倉儲碼放", work_stay_activity: "正在風舶角・港灣溫水浴場儲物區將沉重木箱與麻袋依品項疊放穩妥，留出寬敞通道",
+        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "添補柴火與照看燒水鍋爐", work_stay_activity: "正在風舶角・港灣溫水浴場後場水爐旁添入耐燃硬柴，維持各處湯池熱水供應穩定",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "領取憑據與結算尾款", errand_stay_activity: "正在風舶角・港尾車馬聯運站櫃前核對上旬往來帳目木牌，辦妥日常物資的結算手續",
         attire_line: "身穿灰藍交領棉麻衫，手腕戴著防磨皮護腕，隨身佩著銅扣小刀（外海探險老舵手居三房）", brief_tag: "外海皮護腕百工", morning_hour: 7, evening_hour: 19,
     },
@@ -763,7 +763,7 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -256, home_y: 156, home_name: "風舶角・大船塢學徒宿舍", home_stay_activity: "正在風舶角・大船塢學徒宿舍窗下翻看本旬交貨木牌與帳目小冊，確認各坊往來差事無誤",
-        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "物料分揀與工序支援", work_stay_activity: "正在風舶角・港務脈絡診所後場協助分類新運抵的原料，依序遞交給主事匠人推進工序",
+        work_x: -263, work_y: 158, work_name: "風舶角・港務脈絡診所", work_purpose: "診間理療與敷藥照護", work_stay_activity: "正在風舶角・港務脈絡診所診案旁替傷患清洗患處、換上新調配的活血草藥膏",
         errand_x: -263, errand_y: 158, errand_name: "風舶角・港務脈絡診所", errand_purpose: "請教手藝與借用工具", errand_stay_activity: "正在風舶角・港務脈絡診所向當值老匠請教器物修繕竅門，順手借用兩件趁手工具",
         attire_line: "身穿耐磨靛青粗麻短褐，腰間束著牛皮工具袋，袖口俐落挽至前臂（大船塢學徒宿舍八房）", brief_tag: "大船青麻短褐匠人", morning_hour: 6, evening_hour: 18,
     },
@@ -787,8 +787,8 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 164, home_name: "風舶角・潮音茶憩小舍", home_stay_activity: "正在風舶角・潮音茶憩小舍茶几旁沖泡熱茶分予同屋親人，仔細收納今日結算的銅幣與憑據",
-        work_x: -256, work_y: 160, work_name: "風舶角・港尾車馬聯運站", work_purpose: "重物搬運與倉儲碼放", work_stay_activity: "正在風舶角・港尾車馬聯運站儲物區將沉重木箱與麻袋依品項疊放穩妥，留出寬敞通道",
-        errand_x: -263, errand_y: 157, errand_name: "風舶角・馭風帆具與船材工坊", errand_purpose: "採買家用與互通消息", errand_stay_activity: "正在風舶角・馭風帆具與船材工坊挑選家中欠缺的油鹽雜貨，順道向熟識掌櫃打聽近日商路行情",
+        work_x: -256, work_y: 160, work_name: "風舶角・港尾車馬聯運站", work_purpose: "檢修板車軸輪與盤整麻纜", work_stay_activity: "正在風舶角・港尾車馬聯運站車棚下替重載板車車軸塗抹潤滑脂，並盤妥綑紮用粗麻繩",
+        errand_x: -263, errand_y: 157, errand_name: "風舶角・馭風帆具與船材工坊", errand_purpose: "採買家用與互通消息", errand_stay_activity: "正在風舶角・馭風帆具與船材工坊挑選家中欠缺的油鹽雜貨，順道向熟識主事打聽近日商路行情",
         attire_line: "身穿素色桐油防風罩衫，腰插竹製量尺與記帳木牌，神色沉穩幹練（潮音茶憩小舍十二房）", brief_tag: "潮音防風罩衫管事", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
@@ -805,13 +805,13 @@ const PART_01: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 161, home_name: "風舶角・北冕號船員宿所", home_stay_activity: "正在風舶角・北冕號船員宿所灶房旁添柴溫水，將明日出工要帶的乾糧與水囊逐一備妥",
-        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "損耗修補與廢料回收", work_stay_activity: "正在風舶角・港灣溫水浴場角落將邊角餘料重新分類收納，修補尚可續用的舊木框與麻袋",
+        work_x: -263, work_y: 162, work_name: "風舶角・港灣溫水浴場", work_purpose: "添補柴火與照看燒水鍋爐", work_stay_activity: "正在風舶角・港灣溫水浴場後場水爐旁添入耐燃硬柴，維持各處湯池熱水供應穩定",
         errand_x: -256, errand_y: 160, errand_name: "風舶角・港尾車馬聯運站", errand_purpose: "挑選耗材與比對成色", errand_stay_activity: "正在風舶角・港尾車馬聯運站仔細比對幾批新到常備耗材的質地，挑出最耐用的一批帶回",
         attire_line: "身著深灰防潮帆布工裝，腳踏防滑麻底草鞋，肩頭搭著一條乾淨汗巾（北冕號船員宿所四房）", brief_tag: "北冕帆布工裝好手", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 161, home_name: "風舶角・北冕號船員宿所", home_stay_activity: "正在風舶角・北冕號船員宿所廊下借著油燈微光檢視器具榫頭，與家人低聲商議本旬家計",
-        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "當值協作與器物檢整", work_stay_activity: "正在風舶角・海員旅社當值案前逐件核驗今日器物成色，將合格成品整齊碼放上架",
+        work_x: -263, work_y: 161, work_name: "風舶角・海員旅社", work_purpose: "整理客房床鋪與更換被褥", work_stay_activity: "正在風舶角・海員旅社客房內鋪平曝曬過的乾爽棉被，並擦拭案几與窗櫺",
         errand_x: -263, errand_y: 160, errand_name: "風舶角・深水泊位與卸貨碼頭", errand_purpose: "打聽船期車班與備貨", errand_stay_activity: "正在風舶角・深水泊位與卸貨碼頭詢問近期往返文曜與鄰鎮的車船班次，預先安排下旬交貨時程",
         attire_line: "身穿整潔的茶褐細麻長衫，腰繫青布小囊，舉止溫和有禮（北冕號船員宿所五房）", brief_tag: "北冕茶褐細麻街坊", morning_hour: 6, evening_hour: 18,
     },

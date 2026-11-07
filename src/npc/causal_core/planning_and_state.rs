@@ -136,8 +136,17 @@ pub fn plan_next_causal_action(
     if state.stress >= 72 {
         state.stress_break_active = true;
     }
+    let is_night_hour = !(6..=19).contains(&hour);
+    let is_night_duty = role_hint.contains("守更")
+        || role_hint.contains("夜巡")
+        || role_hint.contains("哨")
+        || role_hint.contains("更夫")
+        || role_hint.contains("鐘樓")
+        || role_hint.contains("燈塔");
     let image = if has_affliction {
         DecisionImageKind::HealOrTend
+    } else if is_night_hour && !is_night_duty {
+        DecisionImageKind::SleepOrRest
     } else if state.hunger >= 64 || (matches!(hour, 7 | 12 | 18) && state.hunger >= 35) {
         DecisionImageKind::Eat
     } else if state.thirst >= 62 || (matches!(hour, 10 | 15) && state.thirst >= 38) {
@@ -182,6 +191,23 @@ pub fn plan_next_causal_action(
             })
             .collect()
     };
+    if is_night_hour && !is_night_duty && image == DecisionImageKind::SleepOrRest {
+        let night_rest_filtered: Vec<&'static ActionOptionDef> = eligible
+            .iter()
+            .copied()
+            .filter(|opt| {
+                !matches!(
+                    opt.code,
+                    "rest_lean_on_workbench_catch_breath"
+                        | "rest_sit_under_shade_wipe_sweat"
+                        | "rest_meditate_and_gaze_water_on_bridge"
+                )
+            })
+            .collect();
+        if !night_rest_filtered.is_empty() {
+            eligible = night_rest_filtered;
+        }
+    }
     let is_wilderness_vocation = ["林", "樵", "柴", "採", "獵", "山", "藥"]
         .iter()
         .any(|k| role_hint.contains(k));

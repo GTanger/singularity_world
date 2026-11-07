@@ -11,7 +11,7 @@ pub const PREDEFINED_ACTION_CATALOG: &[ActionOptionDef] = &[
         max_mg: Some(4),
         cost_mg: 0,
         earn_mg: 0,
-        venue_req: VenueRequirement::WildOrOutskirts,
+        venue_req: VenueRequirement::OwnWorkplace,
         preferred_cornerstone: Some(Cornerstone::Pride),
         condition_gate: "餓了 ＋ 沒錢（0..=4 鎂）",
         action_title: "取出隨身乾糧細嚼果腹",
@@ -71,8 +71,8 @@ pub const PREDEFINED_ACTION_CATALOG: &[ActionOptionDef] = &[
         venue_req: VenueRequirement::HomeOrKitchen,
         preferred_cornerstone: Some(Cornerstone::Order),
         condition_gate: "餓了 ＋ 有小錢（≥5 鎂）＋ 重視日常規矩",
-        action_title: "採買米菜自炊熱粥",
-        action_behavior: "算計著荷包買一把青菜與糙米回屋自己生火熬粥，吃得熱乎又省錢",
+        action_title: "返家生火熬煮糙米青菜粥",
+        action_behavior: "回到居所廚下取糙米與青菜生火熬粥，吃得熱乎又省錢",
     },
     // 有餘裕（>=25 鎂）：額外解鎖 4 項高自由度選項（加計溫飽保留項共 6 項可選！）
     ActionOptionDef {
@@ -111,7 +111,7 @@ pub const PREDEFINED_ACTION_CATALOG: &[ActionOptionDef] = &[
         max_mg: None,
         cost_mg: 8,
         earn_mg: 0,
-        venue_req: VenueRequirement::HomeOrKitchen,
+        venue_req: VenueRequirement::CanteenOrStall,
         preferred_cornerstone: Some(Cornerstone::Care),
         condition_gate: "餓了 ＋ 有餘裕（≥25 鎂）＋ 記掛家眷學徒",
         action_title: "切份滷肉包熱點心解饞",
@@ -442,8 +442,8 @@ pub const PREDEFINED_ACTION_CATALOG: &[ActionOptionDef] = &[
         venue_req: VenueRequirement::HomeOrKitchen,
         preferred_cornerstone: Some(Cornerstone::Craft),
         condition_gate: "傷了 ＋ 有小錢（≥5 鎂）＋ 暗傷勞損",
-        action_title: "買老薑草藥回屋煎湯熱敷",
-        action_behavior: "買幾塊老薑與活血草回屋煎成熱湯，邊喝邊用熱帕敷揉酸痛關節",
+        action_title: "回屋煎煮老薑草藥湯熱敷",
+        action_behavior: "在居所小灶將老薑與活血草煎成熱湯，邊喝邊用熱帕敷揉酸痛關節",
     },
     // 有餘裕（>=25 鎂）：額外解鎖 3 項（共 5 項可選）
     ActionOptionDef {
@@ -737,8 +737,8 @@ pub const PREDEFINED_ACTION_CATALOG: &[ActionOptionDef] = &[
         venue_req: VenueRequirement::BridgeOrPlaza,
         preferred_cornerstone: Some(Cornerstone::Pride),
         condition_gate: "要過日子 ＋ 有餘裕（≥25 鎂）＋ 今日進項已足",
-        action_title: "提早收工去書閣翻閱山海古卷",
-        action_behavior: "提早收工步入書閣案前，靜心翻閱山海古卷與半島風物圖誌",
+        action_title: "提早收工至廊下展讀風物手札",
+        action_behavior: "提早收工信步至橋畔廊下，靜心展讀隨身攜帶的山海風物圖誌",
     },
 
     // =========================================================================

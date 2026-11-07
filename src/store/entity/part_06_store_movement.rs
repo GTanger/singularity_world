@@ -1,4 +1,15 @@
+use crate::grid::SquareCoord;
+
 impl Store {
+    pub fn resolve_wenyao_npc_schedule(
+        slot: &'static WenyaoHouseholdSlot,
+        hour: i32,
+        work_errand_toggle: bool,
+        origin_name: &str,
+    ) -> ((i32, i32), String, String, String, u8) {
+        resolve_wenyao_npc_schedule(slot, hour, work_errand_toggle, origin_name)
+    }
+
     pub fn step_npc_grid_coord_with_grid(
         &self,
         entity_id: &str,
@@ -48,26 +59,31 @@ impl Store {
         }
         // 作息與日間／夜間返家均由下方正向因果引擎（plan_next_causal_action）統一驅動
         let game_hour = crate::game::current_game_hour();
-        let is_night_duty_role = ["巡夜", "守更", "更夫", "夜歸", "巡防", "哨", "值夜", "鐘樓"]
-            .iter()
-            .any(|k| e.display_title.contains(k) || slot.brief_tag.contains(k) || slot.work_name.contains(k));
-        let is_daytime_errand_or_trade = state.dest == (slot.errand_x, slot.errand_y)
-            || ["採買", "購辦", "挑選", "挑揀", "展售", "兜售", "交割", "過磅", "拍賣", "圍獵", "拾柴", "野草", "尋溪邊青石", "打磨", "鍛打", "刨削", "拉鋸"]
-                .iter()
-                .any(|k| state.purpose.contains(k) || state.stay_activity.contains(k) || state.dest_name.contains("西麓林道"));
+        let is_night_duty_role = slot.work_name.contains("守更")
+            || slot.work_name.contains("哨")
+            || slot.work_name.contains("鐘樓")
+            || slot.work_name.contains("燈塔")
+            || slot.brief_tag.contains("守更")
+            || slot.brief_tag.contains("夜巡");
         if !(6..=19).contains(&game_hour)
             && !is_night_duty_role
-            && (state.current != (slot.home_x, slot.home_y) || is_daytime_errand_or_trade)
-            && (is_daytime_errand_or_trade
-                || state.purpose.contains("拾柴")
-                || state.purpose.contains("野草")
-                || state.dest_name.contains("西麓林道"))
+            && state.dest != (slot.home_x, slot.home_y)
         {
-            state.dest = (slot.home_x, slot.home_y);
-            state.dest_name = slot.home_name.to_string();
-            state.purpose = "回居所木榻安歇養神".to_string();
-            state.stay_activity = slot.home_stay_activity.to_string();
-            state.stay_ticks_remaining = 0;
+            let is_permitted_venue = grid
+                .get(SquareCoord::new(state.dest.0, state.dest.1))
+                .is_some_and(|c| {
+                    c.is_night_hospitality_or_watch_venue()
+                        || (game_hour == 20 && c.is_evening_dining_or_bath_venue())
+                });
+            if !is_permitted_venue {
+                let (sched_dest, sched_name, sched_purpose, sched_activity, _) =
+                    Self::resolve_wenyao_npc_schedule(slot, game_hour, false, &state.dest_name);
+                state.dest = sched_dest;
+                state.dest_name = sched_name;
+                state.purpose = sched_purpose;
+                state.stay_activity = sched_activity;
+                state.stay_ticks_remaining = 0;
+            }
         }
         if state.current == state.dest {
             if state.stay_ticks_remaining > 0 {

@@ -349,15 +349,15 @@ pub const WENYAO_TARGETS: &[NpcDestinationTarget] = &[
     NpcDestinationTarget { x: -1, y: 2, name: "三水大食堂", purpose: "用餐休息", stay_activity: "正在木桌旁享用熱湯麵與現磨米漿" },
     NpcDestinationTarget { x: -1, y: 1, name: "三水總商行總部", purpose: "交割貨單", stay_activity: "正在櫃檯前核對山海貨單與鎂幣帳目" },
     NpcDestinationTarget { x: 1, y: 4, name: "講堂街書局與印行館", purpose: "採買書冊", stay_activity: "正在翻閱新印好的竹綿紙書冊與旬報" },
-    NpcDestinationTarget { x: 1, y: -1, name: "岑氏第一鍛造工坊", purpose: "修整器物", stay_activity: "正在爐火旁查看鍛鐵器物與工具刃口" },
+    NpcDestinationTarget { x: 2, y: -4, name: "岑氏第一鍛造工坊", purpose: "修整器物", stay_activity: "正在爐火旁查看鍛鐵器物與工具刃口" },
     NpcDestinationTarget { x: 1, y: -4, name: "溫氏脈絡診所", purpose: "抓藥調理", stay_activity: "正在藥櫃前等候秤量草藥" },
     NpcDestinationTarget { x: 1, y: 1, name: "學院主校區", purpose: "旁聽課程", stay_activity: "正在講堂廊下研討數學與會計與專業教材" },
     NpcDestinationTarget { x: -1, y: -1, name: "公議堂", purpose: "查閱告示", stay_activity: "正在公議堂前核對近期政令與委託" },
     NpcDestinationTarget { x: -2, y: 0, name: "三水渡埠街", purpose: "探問船期", stay_activity: "正在渡埠街邊打聽往來貨船班次" },
     NpcDestinationTarget { x: -1, y: 4, name: "三水口乾貨海味行", purpose: "挑選乾貨", stay_activity: "正在挑選風乾海味與遠行乾糧" },
     NpcDestinationTarget { x: 2, y: -1, name: "東橋旅社與山風茶屋", purpose: "喝茶聊天", stay_activity: "正在茶屋竹椅上啜飲熱茶歇息" },
-    NpcDestinationTarget { x: -1, y: 6, name: "三水口・老水夫舍", purpose: "返家歇息", stay_activity: "正在屋內整理隨身行囊與衣物" },
-    NpcDestinationTarget { x: 1, y: 7, name: "講堂街・研墨小齋", purpose: "閱讀資料", stay_activity: "正在案前整理筆記" },
+    NpcDestinationTarget { x: -4, y: 6, name: "三水口・老水夫舍", purpose: "返家歇息", stay_activity: "正在屋內整理隨身行囊與衣物" },
+    NpcDestinationTarget { x: 4, y: 7, name: "講堂街・研墨小齋", purpose: "閱讀資料", stay_activity: "正在案前整理筆記" },
 ];
 
 pub use super::households::{WenyaoHouseholdSlot, WENYAO_HOUSEHOLD_SLOTS};
@@ -594,9 +594,6 @@ static BLDG_COORD_CACHE: std::sync::LazyLock<
 > = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
 
 pub fn resolve_bldg_coord_or_fallback(bldg_name: &str, fallback: (i32, i32)) -> (i32, i32) {
-    if fallback.0.abs() > 20 || fallback.1.abs() > 20 {
-        return fallback;
-    }
     if let Some(&coord) = BLDG_COORD_CACHE.read().get(bldg_name) {
         return coord;
     }
@@ -624,7 +621,7 @@ pub fn resolve_wenyao_npc_schedule(
     }
     let slot_idx = household_slot_index(slot);
     let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
-    if hour >= 22 || hour < 5 {
+    if hour >= 21 || hour < 5 {
         let is_night_watch_place = slot.work_name.contains("巡防")
             || slot.work_name.contains("哨")
             || slot.work_name.contains("關口")
@@ -674,14 +671,14 @@ pub fn resolve_wenyao_npc_schedule(
             10,
         );
     }
-    if (18..=21).contains(&hour)
+    if (18..=19).contains(&hour)
         && hour >= slot.evening_hour
         && work_errand_toggle
         && ((h.wrapping_add(hour as u64)) % 3 == 0)
     {
         let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
         let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
-        let target_tags = &["teahouse", "canteen", "bathhouse", "market"];
+        let target_tags = &["teahouse", "canteen", "bathhouse"];
         let found_venue = grid_opt
             .as_ref()
             .and_then(|g| g.find_nearest_room_by_tags(home_coord, 16, target_tags, h));
@@ -698,7 +695,7 @@ pub fn resolve_wenyao_npc_schedule(
             let fallback_venues = [
                 ((2, -1), "東橋旅社與山風茶屋"),
                 ((-1, 2), "三水大食堂"),
-                ((-2, 1), "泉香溫水浴場"),
+                ((-4, 1), "泉香溫水浴場"),
             ];
             let fallback_choice = fallback_venues[(h as usize) % fallback_venues.len()];
             let n = fallback_choice.1.to_string();
@@ -710,22 +707,19 @@ pub fn resolve_wenyao_npc_schedule(
             );
             (fallback_choice.0, n, act)
         } else {
-            let errand_coord = resolve_bldg_coord_or_fallback(slot.errand_name, (slot.errand_x, slot.errand_y));
-            let n = slot.errand_name.to_string();
-            let act = synthesize_grounded_venue_activity(
-                &n,
-                &slot.errand_stay_activity,
-                held_vessel(slot).1,
-                h.wrapping_add(hour as u64),
-            );
-            (errand_coord, n, act)
+            let act = if slot.home_stay_activity.is_empty() {
+                "正在屋內整理器物與家務".to_string()
+            } else {
+                slot.home_stay_activity.to_string()
+            };
+            (home_coord, slot.home_name.to_string(), act)
         };
 
         let ticks = 18 + (((h.wrapping_add(hour as u64)) % 11) as u8);
         return (dest_coord, dest_name, "晚間休歇".to_string(), stay_act, ticks);
     }
     let is_home_window = (hour >= 5 && hour < slot.morning_hour)
-        || (hour >= slot.evening_hour && hour < 22);
+        || ((hour >= slot.evening_hour && hour < 21) || hour == 20);
     if is_home_window {
         let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
         let mut home_act = if slot.home_stay_activity.is_empty() {
