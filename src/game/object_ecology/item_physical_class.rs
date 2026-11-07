@@ -21,6 +21,20 @@ pub enum ItemPhysicalClass {
 }
 
 impl ItemPhysicalClass {
+    pub fn strip_mutation_affixes(item_name: &str) -> String {
+        let mut clean_name = item_name.trim().to_string();
+        while let Some(start) = clean_name.find("【異變") {
+            if let Some(end_rel) = clean_name[start..].find('】') {
+                let after = start + end_rel + '】'.len_utf8();
+                let rest = clean_name[after..].trim_start_matches('・').trim();
+                clean_name = format!("{}{}", &clean_name[..start], rest);
+            } else {
+                break;
+            }
+        }
+        clean_name.trim_matches(|c| c == '【' || c == '】').trim().to_string()
+    }
+
     pub fn classify(item_id: &str, item_name: &str) -> Self {
         let mut base_id = item_id.trim();
         while let Some(rest) = base_id.strip_prefix("mut_") {
@@ -40,16 +54,8 @@ impl ItemPhysicalClass {
         {
             clean_name = cat.name.to_string();
         }
-        while let Some(start) = clean_name.find("【異變") {
-            if let Some(end_rel) = clean_name[start..].find('】') {
-                let after = start + end_rel + '】'.len_utf8();
-                let rest = clean_name[after..].trim_start_matches('・').trim();
-                clean_name = format!("{}{}", &clean_name[..start], rest);
-            } else {
-                break;
-            }
-        }
-        let clean_name = clean_name.trim_matches(|c| c == '【' || c == '】').trim();
+        let clean_name = Self::strip_mutation_affixes(&clean_name);
+        let clean_name = clean_name.as_str();
 
         if base_id.ends_with("_bundle")
             || clean_name.contains("草綑")

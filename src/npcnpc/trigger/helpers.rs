@@ -95,29 +95,14 @@ pub fn resolve_viewer_npc_label(player_id: &str, c: &crate::entity::Character, r
         return role_title.to_string();
     }
     let tag = crate::store::npc_brief_appearance_tag(&c.id, &c.display_title);
-    if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, &c.display_title)
-        && !venue.default_host_title.is_empty()
-        && venue.default_host_title != "街坊居民"
-    {
-        let role = venue.default_host_title;
-        return if !tag.is_empty() {
-            format!("{tag}的{role}")
-        } else {
-            format!("一名{role}")
-        };
-    }
-    let role = if room_name.contains("工坊") || room_name.contains("鍛造") || room_name.contains("木作") || room_name.contains("鐵坊") {
-        "匠人"
-    } else if room_name.contains("藥") || room_name.contains("診") || room_name.contains("脈") {
-        "醫工"
-    } else if room_name.contains("學") || room_name.contains("講堂") || room_name.contains("書") || room_name.contains("印行") || room_name.contains("觀星") {
-        "學者"
-    } else if room_name.contains("商") || room_name.contains("鋪") || room_name.contains("市集") || room_name.contains("行") {
-        "行商"
-    } else if room_name.contains("渡") || room_name.contains("津") || room_name.contains("水尾") || room_name.contains("河") {
+    let role = if room_name.contains("渡") || room_name.contains("津") || room_name.contains("埠") {
         "候渡客"
-    } else if room_name.contains("茶") || room_name.contains("食") || room_name.contains("泉") || room_name.contains("旅社") || room_name.contains("驛館") {
+    } else if room_name.contains("茶") || room_name.contains("食") || room_name.contains("旅社") || room_name.contains("驛") {
         "茶客"
+    } else if room_name.contains("市") || room_name.contains("鋪") || room_name.contains("商行") || room_name.contains("坊") {
+        "顧客"
+    } else if c.move_state != crate::entity::MoveState::Idle {
+        "行人"
     } else {
         "街坊"
     };

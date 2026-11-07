@@ -896,6 +896,36 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
             ));
         }
     }
+
+    let mut vessel_counts: HashMap<&str, usize> = HashMap::new();
+    let total_slots = WENYAO_HOUSEHOLD_SLOTS.len() + OUTER_HOUSEHOLD_SLOTS.len();
+    for (idx, slot) in WENYAO_HOUSEHOLD_SLOTS.iter().chain(OUTER_HOUSEHOLD_SLOTS.iter()).enumerate() {
+        let (cat_id, vname) = crate::store::entity::held_vessel(slot);
+        *vessel_counts.entry(vname).or_insert(0) += 1;
+        if vname.contains("晴雨傘") || vname.contains("雨傘") {
+            violations.push(format!("家戶本職器物誤映射為雨傘: {vname} (slot: {})", slot.name()));
+        }
+        if !crate::game::object_ecology::ItemPhysicalClass::classify(cat_id, vname).is_bladed()
+            && crate::pg::living_world::VesselCondition::Sharp.label_for_item(cat_id, vname) == "鋒利"
+        {
+            violations.push(format!("非刃具器物誤標為鋒利: {cat_id}/{vname} (slot: {})", slot.name()));
+        }
+        let probe_id = format!("npc_eval_sensory_probe_{idx}");
+        crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS.write().insert(probe_id.clone(), idx);
+        let sensory = crate::store::npc_sensory_appearance_line(&probe_id, "");
+        crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS.write().remove(&probe_id);
+        if sensory.contains('（') || sensory.contains('）') {
+            violations.push(format!("npc_sensory_appearance_line 外洩家戶括號標籤: {sensory} (slot #{idx})"));
+        }
+    }
+    for (&vname, &count) in &vessel_counts {
+        if total_slots > 0 && count * 100 / total_slots > 30 {
+            violations.push(format!("單一兜底器物佔比過高: {vname} ({count}/{total_slots})"));
+        }
+    }
+    if include_str!("game/object_ecology/crafting_and_mutation.rs").contains(".replace(\"【異變・") {
+        violations.push("crafting_and_mutation.rs 仍使用 .replace 硬剝異變詞綴".to_string());
+    }
     CodebaseAntiLoopingAuditReport {
         audited_text_surfaces,
         audited_core_modules: module_contracts.len(),

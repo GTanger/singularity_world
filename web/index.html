@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-<link rel="stylesheet" href="style.css?v=20261107as">
-<link rel="stylesheet" href="game.css?v=20261107as">
+<link rel="stylesheet" href="style.css?v=20261107at">
+<link rel="stylesheet" href="game.css?v=20261107at">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-<link rel="stylesheet" href="game-grid.css?v=20261107as" id="game-grid-css" disabled>
+<link rel="stylesheet" href="game-grid.css?v=20261107at" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -316,18 +316,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261107as"></script>
-	<script src="grid-map.js?v=20261107as"></script>
-	<script src="sw-room-desc.js?v=20261107as"></script>
-	<script src="sw-object-list.js?v=20261107as"></script>
-	<script src="sw-log.js?v=20261107as"></script>
-	<script src="sw-panes.js?v=20261107as"></script>
-	<script src="sw-modals.js?v=20261107as"></script>
-	<script src="sw-interactions.js?v=20261107as"></script>
-	<script src="sw-clock.js?v=20261107as"></script>
-	<script src="sw-narrative.js?v=20261107as"></script>
-	<script src="sw-auth.js?v=20261107as"></script>
-	<script src="main.js?v=20261107as"></script>
+	<script src="narrative-markdown.js?v=20261107at"></script>
+	<script src="grid-map.js?v=20261107at"></script>
+	<script src="sw-room-desc.js?v=20261107at"></script>
+	<script src="sw-object-list.js?v=20261107at"></script>
+	<script src="sw-log.js?v=20261107at"></script>
+	<script src="sw-panes.js?v=20261107at"></script>
+	<script src="sw-modals.js?v=20261107at"></script>
+	<script src="sw-interactions.js?v=20261107at"></script>
+	<script src="sw-clock.js?v=20261107at"></script>
+	<script src="sw-narrative.js?v=20261107at"></script>
+	<script src="sw-auth.js?v=20261107at"></script>
+	<script src="main.js?v=20261107at"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -342,13 +342,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261107as')) return;
-				sessionStorage.setItem('sw_reloaded_v20261107as', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261107at')) return;
+				sessionStorage.setItem('sw_reloaded_v20261107at', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261107as', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261107at', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

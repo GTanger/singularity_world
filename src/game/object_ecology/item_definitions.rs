@@ -775,13 +775,43 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                         origin: base_good.origin.to_string(),
                     })
                 } else if base_part != item_id && !base_part.starts_with("mut_") {
-                    lookup_ecology_item_def(base_part)
+                    lookup_ecology_item_def(base_part).or_else(|| {
+                        crate::game::peninsula_catalog::find_catalog_entry(base_part).map(|entry| {
+                            crate::db::ItemDefBrief {
+                                name: entry.name.to_string(),
+                                item_type: "tool".to_string(),
+                                slot: "hold_r".to_string(),
+                                description: entry.look_text.to_string(),
+                                weight: 2.0,
+                                vit_bonus: 0,
+                                dex_bonus: 1,
+                                atk_bonus: 0,
+                                origin: format!("白塔半島・{}", entry.workshop),
+                            }
+                        })
+                    })
                 } else {
                     None
                 };
 
                 let base_def = base_def.unwrap_or_else(|| {
-                    let base_good = &STANDARD_FINISHED_GOODS[0];
+                    use crate::game::object_ecology::ItemPhysicalClass;
+                    let phys = ItemPhysicalClass::classify(base_part, base_part);
+                    let base_good = match phys {
+                        ItemPhysicalClass::OuterCloakOrRobe
+                        | ItemPhysicalClass::GarmentOrArmor
+                        | ItemPhysicalClass::SheetOrFabric
+                        | ItemPhysicalClass::FootwearOrHeadgear => &STANDARD_FINISHED_GOODS[1],
+                        ItemPhysicalClass::BookOrScroll => &STANDARD_FINISHED_GOODS[6],
+                        ItemPhysicalClass::BundledFiber | ItemPhysicalClass::HeavyFixture => &STANDARD_FINISHED_GOODS[8],
+                        ItemPhysicalClass::MedicineOrSalve
+                        | ItemPhysicalClass::CookedFoodOrPastry
+                        | ItemPhysicalClass::LiquidBeverage
+                        | ItemPhysicalClass::GrainOrPowder
+                        | ItemPhysicalClass::AquaticOrMeat => &STANDARD_FINISHED_GOODS[4],
+                        ItemPhysicalClass::BladedWeaponOrTool => &STANDARD_FINISHED_GOODS[0],
+                        _ => &STANDARD_FINISHED_GOODS[2],
+                    };
                     crate::db::ItemDefBrief {
                         name: base_good.name.to_string(),
                         item_type: base_good.item_type.to_string(),

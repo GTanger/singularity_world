@@ -371,6 +371,14 @@ pub fn run_npc_autonomous_production_step(
     if is_workshop_site {
         let (raw_id, raw_name, finished_def) = if room_name.contains("鐵") || room_name.contains("鍛") {
             ("mat_iron_scrap", "回收熟鐵料塊", &STANDARD_FINISHED_GOODS[0])
+        } else if room_name.contains("織") || room_name.contains("布") || room_name.contains("服") || room_name.contains("染") || room_name.contains("繡") {
+            ("mat_cotton_yarn_spool", "精紡棉麻紗線軸", &STANDARD_FINISHED_GOODS[1])
+        } else if room_name.contains("皮") || room_name.contains("靴") || room_name.contains("革") || room_name.contains("鞋") {
+            ("mat_tanned_leather_hide", "熟製牛皮料片", &STANDARD_FINISHED_GOODS[3])
+        } else if room_name.contains("窯") || room_name.contains("磚") || room_name.contains("陶") || room_name.contains("瓦") || room_name.contains("瓷") || room_name.contains("石") {
+            ("mat_kiln_clay_block", "精煉陶土坯塊", &STANDARD_FINISHED_GOODS[5])
+        } else if room_name.contains("油") || room_name.contains("樟") || room_name.contains("竹編") || room_name.contains("傘") || room_name.contains("扇") {
+            ("mat_bamboo_strip_bundle", "刮青韌竹篾束", &STANDARD_FINISHED_GOODS[7])
         } else if room_name.contains("木") || room_name.contains("竹") {
             ("mat_timber_log", "伐採原木", &STANDARD_FINISHED_GOODS[2])
         } else if room_name.contains("藥") {

@@ -216,9 +216,8 @@ fn try_entity_branch(
     let is_entity_id_prefix = target_id.starts_with("ambient_")
         || target_id.starts_with("shanhai_")
         || target_id.starts_with("wt_npc_")
-        || target_id.starts_with("wt_vendor_")
-        || target_id.starts_with("wt_citizen_")
-        || target_id.starts_with("npc_");
+        || target_id.starts_with("npc_")
+        || target_id.starts_with("u_");
     let Ok(target_opt) = db::get_entity(target_id) else {
         return false;
     };
@@ -929,5 +928,25 @@ mod tests {
         );
         assert!(fallback_no_supply.contains("你挽起衣袖投入「採石搬運」"));
         assert!(fallback_no_supply.contains("管事核對工冊無誤"));
+    }
+
+    #[test]
+    fn test_target_departed_suggested_action_contract() {
+        let msg = ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: "Talk".into(),
+            target_id: "npc_departed_sample".into(),
+            target_name: "陌生人".into(),
+            narrative: "你欲上前，對方卻已邁步離開此處，朝鄰街走遠了。".into(),
+            success: false,
+            actions: vec![],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: "target_departed".into(),
+            tactical_choices: vec![],
+        };
+        assert_eq!(msg.suggested_action, "target_departed");
+        assert!(!msg.success);
+        assert!(msg.narrative.contains("邁步離開此處"));
     }
 }

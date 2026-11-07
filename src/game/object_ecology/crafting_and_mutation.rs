@@ -602,20 +602,7 @@ pub fn mutate_finished_item(
     } else {
         resolved_base_name
     };
-    let base_clean_name = base_name
-        .replace("【異變・星紋共鳴】・", "")
-        .replace("【異變・雷紋淬火】・", "")
-        .replace("【異變・寒泉凝露】・", "")
-        .replace("【異變・紫煙凝魄】・", "")
-        .replace("【異變・赤焰熔心】・", "")
-        .replace("【異變・潮汐晶化】・", "")
-        .replace("【異變・星紋共鳴】", "")
-        .replace("【異變・雷紋淬火】", "")
-        .replace("【異變・寒泉凝露】", "")
-        .replace("【異變・紫煙凝魄】", "")
-        .replace("【異變・赤焰熔心】", "")
-        .replace("【異變・潮汐晶化】", "");
-
+    let base_clean_name = crate::game::object_ecology::ItemPhysicalClass::strip_mutation_affixes(&base_name);
     // 選擇異變原型（避免與原先重複）
     let mut arch_idx = ((now_unix as usize) ^ (chosen_item_id.len())) % MUTATION_ARCHETYPES.len();
     if chosen_item_id.contains(MUTATION_ARCHETYPES[arch_idx].key) {
