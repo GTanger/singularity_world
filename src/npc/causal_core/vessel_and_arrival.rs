@@ -414,16 +414,18 @@ pub fn drain_pending_arrival_effects() -> usize {
     for eff in &batch {
         match eff {
             ArrivalEffect::WildernessForaged {
-                entity_id, streak, ..
+                entity_id, ..
             } => {
-                let item_choices = [
-                    "mat_foraged_herb",
-                    "mat_timber_log",
-                    "mat_rough_ore",
-                    "mat_hemp_rope_roll",
-                ];
-                let picked = item_choices[(*streak as usize) % item_choices.len()];
-                if !entity_id.starts_with("npc_") {
+                let work_ctx = if entity_id.starts_with("npc_") {
+                    crate::store::wenyao_household_slot_for(entity_id).work_name
+                } else {
+                    ""
+                };
+                let (picked, _) =
+                    crate::game::object_ecology::ItemPhysicalClass::canonical_vocation_supply_item(
+                        work_ctx,
+                    );
+                if !crate::db::inventory_has_qty(entity_id, picked, 2) {
                     let _ = crate::db::add_to_inventory(entity_id, picked, 1);
                 }
                 record_settlement_market_production("文曜", picked, 1);
@@ -481,20 +483,14 @@ pub fn drain_pending_arrival_effects() -> usize {
                     now_unix,
                 } => {
                     let _ = s.update_entity(&entity_id, |ent| {
-                        let thought_text = if ["籃", "簍", "袋", "桶", "網"]
-                            .iter()
-                            .any(|k| vessel_name.contains(k))
-                        {
-                            format!(
-                                "在{}把隨身的「{}」洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了",
-                                dest_name, vessel_name
-                            )
-                        } else {
-                            format!(
-                                "在{}把隨身的「{}」細細修整校準，器況煥然一新，幹起活來順手多了",
-                                dest_name, vessel_name
-                            )
-                        };
+                        let phys_class = crate::game::object_ecology::ItemPhysicalClass::classify(
+                            "",
+                            &vessel_name,
+                        );
+                        let action_phrase = phys_class.maintenance_action_phrase();
+                        let thought_text = format!(
+                            "在{dest_name}把隨身的「{vessel_name}」{action_phrase}，器況煥然一新，幹起活來順手多了"
+                        );
                         crate::db::add_thought_to_entity_with_flavor(
                             ent,
                             crate::db::ThoughtSource::WorkDone,

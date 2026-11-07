@@ -94,10 +94,23 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
         }
     }
 
+    let work_ctx = if is_household_npc {
+        let s = wenyao_household_slot_for(&e.id);
+        format!("{} {}", s.work_name, s.work_purpose)
+    } else {
+        e.display_title.clone()
+    };
+    let (canon_supply_id, _) =
+        crate::game::object_ecology::ItemPhysicalClass::canonical_vocation_supply_item(&work_ctx);
+
     if !e.inventory.trim().is_empty()
-        && let Ok(mut entries) =
-            serde_json::from_str::<Vec<crate::db::inventory::InventoryEntry>>(&e.inventory)
+        || is_household_npc
     {
+        let mut entries: Vec<crate::db::inventory::InventoryEntry> = if e.inventory.trim().is_empty() {
+            Vec::new()
+        } else {
+            serde_json::from_str(&e.inventory).unwrap_or_default()
+        };
         let orig_len = entries.len();
         let mut inv_modified = false;
         entries.retain_mut(|entry| {
@@ -108,14 +121,12 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
             if crate::world::author_economy::is_runtime_good_item(&entry.item_id) {
                 return true;
             }
-            if (entry.item_id == vspec.item_id
-                || entry.item_id == vspec.catalog_id
-                || entry.item_id == cat_id)
-                && !entry.item_id.contains("umbrella")
-                && !entry.item_id.contains("cloak")
-            {
-                if entry.qty > 1 {
-                    entry.qty = 1;
+            if crate::game::object_ecology::ItemPhysicalClass::is_item_coherent_with_vocation(
+                &entry.item_id,
+                &work_ctx,
+            ) {
+                if !entry.item_id.starts_with("wt-good-") && entry.qty > 2 {
+                    entry.qty = 2;
                     inv_modified = true;
                 }
                 return true;
@@ -123,6 +134,13 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
             inv_modified = true;
             false
         });
+        if is_household_npc && !entries.iter().any(|it| it.item_id == canon_supply_id) {
+            entries.push(crate::db::inventory::InventoryEntry {
+                item_id: canon_supply_id.to_string(),
+                qty: 2,
+            });
+            inv_modified = true;
+        }
         if (inv_modified || entries.len() != orig_len)
             && let Ok(new_inv) = serde_json::to_string(&entries)
         {
@@ -146,52 +164,7 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
     for t in &mut e.thoughts {
         if let Some(flavor) = t.flavor.as_mut() {
             let orig = flavor.clone();
-            if flavor.contains("陳氏庖廚居") && !home_name.contains("陳氏庖廚居") {
-                *flavor = flavor
-                    .replace("文曜・三水口・陳氏庖廚居", "文曜・三水大食堂")
-                    .replace("三水口・陳氏庖廚居", "文曜・三水大食堂")
-                    .replace("陳氏庖廚居", "文曜・三水大食堂");
-            }
-            if flavor.contains("海風麵點鋪居") && !home_name.contains("海風麵點鋪居") {
-                *flavor = flavor
-                    .replace("風舶角・海風麵點鋪居", "風舶角・海風熱食攤")
-                    .replace("海風麵點鋪居", "風舶角・海風熱食攤");
-            }
-            if flavor.contains("修耙補犁鋪居") && !home_name.contains("修耙補犁鋪居") {
-                *flavor = flavor
-                    .replace("大圳頭・修耙補犁鋪居", "大圳頭・農具百工坊")
-                    .replace("修耙補犁鋪居", "大圳頭・農具百工坊");
-            }
-            if flavor.contains("白氏湯屋居") && !home_name.contains("白氏湯屋居") {
-                *flavor = flavor
-                    .replace("文曜・三水口・白氏湯屋居", "文曜・泉香溫水浴場")
-                    .replace("三水口・白氏湯屋居", "文曜・泉香溫水浴場")
-                    .replace("白氏湯屋居", "文曜・泉香溫水浴場");
-            }
-            if flavor.contains("石板弄堂天井") {
-                if flavor.contains("清冽甘水") || flavor.contains("竹水筒") {
-                    *flavor = flavor
-                        .replace("文曜・三水口・石板弄堂天井", "文曜・三水口水岸公井")
-                        .replace("三水口・石板弄堂天井", "文曜・三水口水岸公井")
-                        .replace("石板弄堂天井", "文曜・三水口水岸公井");
-                } else if !home_name.contains("石板弄堂天井")
-                    || flavor.contains("重新紮緊")
-                    || flavor.contains("修整校準")
-                {
-                    *flavor = flavor
-                        .replace("文曜・三水口・石板弄堂天井", work_name)
-                        .replace("三水口・石板弄堂天井", work_name)
-                        .replace("石板弄堂天井", work_name);
-                }
-            }
-            if flavor.contains("洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了")
-                && !["籃", "簍", "袋", "桶", "網"].iter().any(|k| flavor.contains(k))
-            {
-                *flavor = flavor.replace(
-                    "洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了",
-                    "細細修整校準，器況煥然一新，幹起活來順手多了",
-                );
-            }
+            *flavor = sanitize_thought_flavor_by_grid_and_class(flavor, home_name, work_name, "文曜");
             if *flavor != orig {
                 thoughts_modified = true;
             }
@@ -202,4 +175,118 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
     }
 
     changed
+}
+
+/// 通用念頭文本場所與器物整飭校驗：
+/// 1. 將非自家之私人住宅或在街邊執行的就餐/飲水/沐浴/整飭場所校正為公共設施或工作場所；
+/// 2. 依實際器物分類對齊其維護動態詞句。
+pub fn sanitize_thought_flavor_by_grid_and_class(
+    flavor: &str,
+    home_name: &str,
+    work_name: &str,
+    _settlement: &str,
+) -> String {
+    let mut result = flavor.to_string();
+    let action_verbs = [
+        "完成",
+        "用過",
+        "飲過",
+        "把隨身的",
+        "泡過",
+        "歇息",
+        "坐街邊",
+    ];
+
+    if let Some(start_idx) = result.find("在") {
+        let after_at = &result[start_idx + "在".len()..];
+        let mut best_verb: Option<(&str, usize)> = None;
+        for &verb in &action_verbs {
+            if let Some(pos) = after_at.find(verb) {
+                match best_verb {
+                    None => best_verb = Some((verb, pos)),
+                    Some((_, existing_pos)) if pos < existing_pos => {
+                        best_verb = Some((verb, pos));
+                    }
+                    _ => {}
+                }
+            }
+        }
+        if let Some((verb, verb_pos)) = best_verb {
+            let raw_venue = after_at[..verb_pos].trim();
+            let clean_venue = raw_venue.rsplit('・').next().unwrap_or(raw_venue).trim();
+            let is_eating = verb == "用過"
+                || result.contains("飯食")
+                || result.contains("熱湯")
+                || result.contains("麵")
+                || result.contains("饃")
+                || result.contains("乾糧");
+            let is_drinking = verb == "飲過"
+                || result.contains("清冽甘水")
+                || result.contains("冷水")
+                || result.contains("冷開水")
+                || result.contains("竹水筒")
+                || result.contains("公井");
+            let is_bathing = verb == "泡過" || result.contains("溫水") || result.contains("熱湯洗塵");
+            let is_maintaining = verb == "把隨身的"
+                || result.contains("重新紮緊")
+                || result.contains("修整校準")
+                || result.contains("砥礪刃口");
+
+            let is_residence = (crate::grid::is_private_residence_room_name(clean_venue)
+                || crate::grid::is_private_residence_room_name(raw_venue))
+                && (!home_name.contains(clean_venue) && !home_name.contains(raw_venue));
+
+            let is_street_for_indoor_activity = (crate::grid::is_street_or_gate_room_name(clean_venue)
+                || crate::grid::is_street_or_gate_room_name(raw_venue)
+                || clean_venue.contains("天井")
+                || raw_venue.contains("天井"))
+                && (is_drinking || is_eating || is_bathing || is_maintaining);
+
+            if is_residence || is_street_for_indoor_activity {
+                let target_venue = if is_drinking {
+                    "文曜・三水口水岸公井"
+                } else if is_eating {
+                    "文曜・三水大食堂"
+                } else if is_bathing {
+                    "文曜・泉香溫水浴場"
+                } else if is_maintaining {
+                    if !work_name.is_empty() {
+                        work_name
+                    } else {
+                        "文曜・百工修繕坊"
+                    }
+                } else if !home_name.is_empty() {
+                    home_name
+                } else {
+                    "文曜・三水大食堂"
+                };
+                result = result.replace(raw_venue, target_venue);
+            }
+        }
+    }
+
+    if result.contains("把隨身的「") && result.contains("」") {
+        if let Some(start_v) = result.find("把隨身的「") {
+            let after_open = &result[start_v + "把隨身的「".len()..];
+            if let Some(end_rel) = after_open.find('」') {
+                let vessel_name = &after_open[..end_rel];
+                let phys = crate::game::object_ecology::ItemPhysicalClass::classify("", vessel_name);
+                let action_phrase = phys.maintenance_action_phrase();
+                let target_replacement = format!("{action_phrase}，器況煥然一新，幹起活來順手多了");
+                if result.contains("洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了") {
+                    result = result.replace(
+                        "洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了",
+                        &target_replacement,
+                    );
+                } else if result.contains("細細修整校準，器況煥然一新，幹起活來順手多了") {
+                    result = result.replace(
+                        "細細修整校準，器況煥然一新，幹起活來順手多了",
+                        &target_replacement,
+                    );
+                }
+            }
+        }
+    }
+
+    result
 }

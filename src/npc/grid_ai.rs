@@ -806,8 +806,30 @@ fn compatibility_room(graph: &PlaceGraph, place_id: &str) -> String {
 }
 
 fn set_activity_if_changed(entity_id: &str, current: &str, next: &str) {
-    if current != next {
-        let _ = set_entity_activity(entity_id, next);
+    let target_next = if entity_id.starts_with("npc_") {
+        if let Some(st) = crate::store::LIVE_NPC_GRID_STATES.read().get(entity_id) {
+            st.current_activity()
+        } else {
+            let slot = crate::store::wenyao_household_slot_for(entity_id);
+            let home_settlement = slot.home_name.split('・').next().unwrap_or("文曜");
+            const ALL_SETTLEMENTS: &[&str] = &[
+                "文曜", "風舶角", "大圳頭", "半嶺鎮", "南哨", "老堰頭", "北嶺腳", "霜林口",
+                "風櫃尾", "烏石鼻", "牛埔", "紅土崁", "三號坑口", "水尾寮", "下營",
+            ];
+            let mismatches = ALL_SETTLEMENTS.iter().any(|&settlement| {
+                !home_settlement.starts_with(settlement) && next.contains(settlement)
+            });
+            if mismatches {
+                return;
+            }
+            next.to_string()
+        }
+    } else {
+        next.to_string()
+    };
+
+    if current != target_next {
+        let _ = set_entity_activity(entity_id, &target_next);
     }
 }
 

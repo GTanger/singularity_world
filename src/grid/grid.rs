@@ -125,6 +125,19 @@ pub struct SquareGrid {
     dirty: bool,
 }
 
+impl GridCell {
+    pub fn is_private_residence(&self) -> bool {
+        self.terrain == Terrain::House
+            || self.has_room_tag("residence")
+            || is_private_residence_room_name(&self.name)
+    }
+
+    pub fn is_pure_street_or_courtyard(&self) -> bool {
+        matches!(self.terrain, Terrain::Road | Terrain::Bridge)
+            || is_street_or_gate_room_name(&self.name)
+    }
+}
+
 
 
 impl SquareGrid {
@@ -140,6 +153,9 @@ impl SquareGrid {
         if required_tags.is_empty() || max_radius < 0 {
             return None;
         }
+        let allow_residence = required_tags
+            .iter()
+            .any(|t| matches!(*t, "residence" | "home" | "house"));
         let (cx, cy) = center;
         for dist in 0..=max_radius {
             let mut matches_in_ring: Vec<((i32, i32), String)> = Vec::new();
@@ -148,6 +164,7 @@ impl SquareGrid {
                 if let Some(cell) = self.cells.get(&coord)
                     && !cell.name.is_empty()
                     && !cell.name.contains("內室")
+                    && (allow_residence || !cell.is_private_residence())
                     && required_tags.iter().any(|t| cell.has_room_tag(t))
                 {
                     return Some(((cx, cy), cell.name.clone()));
@@ -163,6 +180,7 @@ impl SquareGrid {
                     if let Some(cell) = self.cells.get(&coord)
                         && !cell.name.is_empty()
                         && !cell.name.contains("內室")
+                        && (allow_residence || !cell.is_private_residence())
                         && required_tags.iter().any(|t| cell.has_room_tag(t))
                     {
                         matches_in_ring.push(((coord.x, coord.y), cell.name.clone()));

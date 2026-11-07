@@ -10,6 +10,7 @@ pub enum ItemPhysicalClass {
     MedicineOrSalve,
     BladedWeaponOrTool,
     BluntCraftTool,
+    WovenContainerOrPack,
     UmbrellaOrFan,
     OuterCloakOrRobe,
     GarmentOrArmor,
@@ -75,6 +76,13 @@ impl ItemPhysicalClass {
         {
             return Self::UmbrellaOrFan;
         }
+        if ["籃", "簍", "袋", "桶", "網", "背囊", "背包"]
+            .iter()
+            .any(|k| clean_name.contains(k))
+        {
+            return Self::WovenContainerOrPack;
+        }
+
 
         if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(base_id) {
             let is_fixture = ["箱", "櫃", "架", "車", "台", "檯", "爐", "砧", "磨", "機", "缸"]
@@ -289,6 +297,15 @@ impl ItemPhysicalClass {
                     "把"
                 }
             }
+            Self::WovenContainerOrPack => {
+                if item_name.contains('袋') || item_name.contains('囊') || item_name.contains('包') {
+                    "口"
+                } else if item_name.contains('網') {
+                    "張"
+                } else {
+                    "只"
+                }
+            }
             Self::UmbrellaOrFan => "把",
             Self::OuterCloakOrRobe | Self::GarmentOrArmor | Self::GeneralGood => "件",
             Self::FootwearOrHeadgear => {
@@ -321,7 +338,10 @@ impl ItemPhysicalClass {
     }
 
     pub fn is_vocational_or_combat_vessel(&self) -> bool {
-        matches!(self, Self::BladedWeaponOrTool | Self::BluntCraftTool)
+        matches!(
+            self,
+            Self::BladedWeaponOrTool | Self::BluntCraftTool | Self::WovenContainerOrPack
+        )
     }
 
     pub fn condition_label(&self, cond: crate::pg::living_world::VesselCondition) -> &'static str {
@@ -354,6 +374,122 @@ impl ItemPhysicalClass {
             ("hold_r" | "hold_l" | "hand" | "weapon" | "tool" | "hold", _) => "手持",
             _ => "隨身佩著",
         }
+    }
+
+    pub fn maintenance_action_phrase(self) -> &'static str {
+        match self {
+            Self::WovenContainerOrPack => "洗淨擦拭、重新紮緊",
+            Self::BladedWeaponOrTool => "細細砥礪刃口、擦拭上油",
+            Self::BluntCraftTool => "細細修整校準",
+            Self::OuterCloakOrRobe | Self::GarmentOrArmor | Self::FootwearOrHeadgear => {
+                "拍淨塵土、細細縫補整燙"
+            }
+            Self::LiquidBeverage
+            | Self::GrainOrPowder
+            | Self::BundledFiber
+            | Self::RawMineralOrTimber
+            | Self::SheetOrFabric
+            | Self::AquaticOrMeat
+            | Self::CookedFoodOrPastry
+            | Self::MedicineOrSalve => "妥善分裝、防潮封存",
+            Self::UmbrellaOrFan | Self::AccessoryOrTrinket | Self::HeavyFixture | Self::GeneralGood => {
+                "細細擦拭養護、妥善收整"
+            }
+            Self::BookOrScroll => "細細拂拭紙頁、壓平整帙",
+        }
+    }
+
+    pub fn canonical_vocation_supply_item(role_or_work: &str) -> (&'static str, &'static str) {
+        if role_or_work.contains('鍛')
+            || role_or_work.contains('鐵')
+            || role_or_work.contains('爐')
+            || role_or_work.contains('鑄')
+            || role_or_work.contains('銅')
+        {
+            ("mat_coal_lump", "硬木白炭")
+        } else if role_or_work.contains('木')
+            || role_or_work.contains('鋸')
+            || role_or_work.contains('船')
+            || role_or_work.contains('筏')
+            || role_or_work.contains('林')
+            || role_or_work.contains('樵')
+        {
+            ("mat_timber_log", "伐採原木")
+        } else if role_or_work.contains('織')
+            || role_or_work.contains('布')
+            || role_or_work.contains('染')
+            || role_or_work.contains('繡')
+            || role_or_work.contains('衣')
+            || role_or_work.contains('裁')
+            || role_or_work.contains('網')
+            || role_or_work.contains('繩')
+        {
+            ("mat_hemp_fiber", "韌麻纖維")
+        } else if role_or_work.contains('藥')
+            || role_or_work.contains('醫')
+            || role_or_work.contains('診')
+            || role_or_work.contains('草')
+            || role_or_work.contains('丹')
+            || role_or_work.contains('香')
+        {
+            ("mat_foraged_herb", "山野鮮藥草")
+        } else if role_or_work.contains('獵')
+            || role_or_work.contains('皮')
+            || role_or_work.contains('靴')
+            || role_or_work.contains('毛')
+            || role_or_work.contains('牧')
+        {
+            ("mat_beast_hide", "山獸生皮")
+        } else if role_or_work.contains('石')
+            || role_or_work.contains('玉')
+            || role_or_work.contains('礦')
+            || role_or_work.contains('窯')
+            || role_or_work.contains('陶')
+            || role_or_work.contains('磚')
+            || role_or_work.contains('灰')
+        {
+            ("mat_rough_ore", "粗採礦石")
+        } else if role_or_work.contains('海')
+            || role_or_work.contains('漁')
+            || role_or_work.contains('鹽')
+            || role_or_work.contains('港')
+            || role_or_work.contains('舶')
+            || role_or_work.contains('鮮')
+            || role_or_work.contains('魚')
+        {
+            ("mat_sea_salt", "日曬粗海鹽")
+        } else if role_or_work.contains('書')
+            || role_or_work.contains('學')
+            || role_or_work.contains('院')
+            || role_or_work.contains('講')
+            || role_or_work.contains("校勘")
+            || role_or_work.contains('算')
+            || role_or_work.contains('帳')
+            || role_or_work.contains('秤')
+            || role_or_work.contains('庫')
+            || role_or_work.contains('署')
+            || role_or_work.contains('哨')
+            || role_or_work.contains('衛')
+            || role_or_work.contains('巡')
+        {
+            ("wt_cat_0784", "防潮竹紙帳冊")
+        } else {
+            ("mat_wheat_grain", "飽滿小麥穗")
+        }
+    }
+
+    pub fn is_item_coherent_with_vocation(item_id: &str, role_or_work: &str) -> bool {
+        if item_id.starts_with("wt-good-") {
+            return true;
+        }
+        if item_id == Self::canonical_vocation_supply_item(role_or_work).0 {
+            return true;
+        }
+        let vessel = crate::npc::causal_core::resolve_vocational_vessel(role_or_work);
+        if item_id == vessel.item_id || item_id == vessel.catalog_id {
+            return true;
+        }
+        false
     }
 }
 

@@ -768,6 +768,46 @@ pub fn format_npc_talk_line(target: &Character, talk_name: &str, reply: &str, pl
         .any(|k| act.contains(k));
     let is_cook_or_vendor = target.id.starts_with("wt_vendor_")
         || ["廚", "攤", "食堂", "茶館"].iter().any(|k| target.display_title.contains(k));
+    let (is_outdoor_bridge_or_street, room_has_forge, room_has_kitchen, room_has_desk) = {
+        let gx = target.grid_x.unwrap_or(target.x);
+        let gy = target.grid_y.unwrap_or(target.y);
+        let coord = crate::grid::SquareCoord::new(gx, gy);
+        let cell_opt = crate::server::grid_manager::get_runtime_grid_cell(coord).or_else(|| {
+            static FALLBACK_GRID: std::sync::LazyLock<crate::grid::SquareGrid> =
+                std::sync::LazyLock::new(crate::grid::generate_white_tower_grid);
+            FALLBACK_GRID.get(coord).cloned()
+        });
+        if let Some(cell) = cell_opt {
+            let outdoor = cell.is_pure_street_or_courtyard();
+            let forge = !outdoor
+                && (cell.has_room_tag("blacksmith")
+                    || cell.has_room_tag("workshop")
+                    || cell.name.contains("鍛")
+                    || cell.name.contains("坊"));
+            let kitchen = !outdoor
+                && (cell.has_room_tag("canteen")
+                    || cell.has_room_tag("teahouse")
+                    || cell.has_room_tag("inn")
+                    || cell.name.contains("食堂")
+                    || cell.name.contains("茶")
+                    || cell.name.contains("攤")
+                    || cell.name.contains("麵"));
+            let desk = !outdoor
+                && !cell.is_private_residence()
+                && (cell.has_room_tag("study")
+                    || cell.has_room_tag("shop")
+                    || cell.name.contains("院")
+                    || cell.name.contains("堂")
+                    || cell.name.contains("署")
+                    || cell.name.contains("行")
+                    || cell.name.contains("館")
+                    || cell.name.contains("社"));
+            (outdoor, forge, kitchen, desk)
+        } else {
+            (false, false, false, false)
+        }
+    };
+
     let action_desc = if is_in_transit {
         let p = [
             "稍稍放緩了趕路的步伐，側過身望向你道：",
@@ -789,28 +829,35 @@ pub fn format_npc_talk_line(target: &Character, talk_name: &str, reply: &str, pl
             "把隨身磨刀工具袋往肩上托了托，轉過身笑道：",
         ];
         p[(seed.unsigned_abs() as usize) % p.len()]
-    } else if is_cook_or_vendor && (act.contains("炭火") || act.contains("烤") || act.contains("肉")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("炭火") || act.contains("烤") || act.contains("肉")) {
         "撥了撥炭爐的旺火，擦了擦額邊微汗轉頭道："
-    } else if is_cook_or_vendor && (act.contains("麵") || act.contains("湯") || act.contains("鍋")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("麵") || act.contains("湯") || act.contains("鍋")) {
         "掀開滾沸的大湯鍋蓋，白汽蒸騰中側過身笑道："
-    } else if is_cook_or_vendor && (act.contains("餅") || act.contains("烤爐")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("餅") || act.contains("烤爐")) {
         "用鐵夾翻動著熱氣騰騰的烤爐，拍了拍手上的麵粉道："
-    } else if is_cook_or_vendor && (act.contains("沏茶") || act.contains("茶盞") || act.contains("品茗")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("沏茶") || act.contains("茶盞") || act.contains("品茗")) {
         "端起微溫的粗陶茶盞啜了一口，神色沉靜地抬眼道："
-    } else if is_cook_or_vendor && (act.contains("豆花") || act.contains("米漿") || act.contains("石磨")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("豆花") || act.contains("米漿") || act.contains("石磨")) {
         "用木勺勻了勻桶裡的熱甜汁，語氣和藹地迎上前道："
-    } else if is_cook_or_vendor && (act.contains("菜") || act.contains("農")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("菜") || act.contains("農")) {
         "在竹簍裡理了理水靈靈的鮮菜，抖了抖葉上的露水笑道："
-    } else if is_cook_or_vendor && (act.contains("蝦") || act.contains("魚") || act.contains("漁網")) {
+    } else if is_cook_or_vendor && room_has_kitchen && (act.contains("蝦") || act.contains("魚") || act.contains("漁網")) {
         "往水盆裡添了勺清水，看著水花撲騰笑吟吟地道："
-    } else if act.contains("書") || act.contains("校勘") || act.contains("講義") {
+    } else if room_has_desk && (act.contains("書") || act.contains("校勘") || act.contains("講義")) {
         "從攤開的書冊上移開視線，扶了扶書卷神色溫和道："
-    } else if act.contains("鐵") || act.contains("錘") || act.contains("鍛造") {
+    } else if room_has_forge && (act.contains("鐵") || act.contains("錘") || act.contains("鍛造")) {
         "停下手中敲打構件的錘子，擦拭著掌心老繭打量你道："
-    } else if act.contains("帳") || act.contains("算盤") || act.contains("核算") {
+    } else if room_has_desk && (act.contains("帳") || act.contains("算盤") || act.contains("核算")) {
         "擱下手邊的竹管毛筆，核對了帳目抬頭道："
     } else if act.contains("巡") || act.contains("衛") {
         "扶了扶腰間佩具，神色嚴肅警醒地注視著你道："
+    } else if is_outdoor_bridge_or_street {
+        let p = [
+            "迎著街橋微風側過身，神色平和地望向你道：",
+            "停下腳步抹了一把額角的微汗，和氣地開口道：",
+            "整了整隨身攜帶的物件，駐足看向你道：",
+        ];
+        p[(seed.unsigned_abs() as usize) % p.len()]
     } else if disp < -20 {
         let pool = [
             "眉頭微蹙，有些心不在焉地擺弄著手頭物料道：",

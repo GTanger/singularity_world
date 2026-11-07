@@ -483,12 +483,7 @@ impl Store {
         current
     };
     let is_public_cell = |c: &crate::grid::GridCell| {
-        c.terrain != crate::grid::Terrain::House
-            && !c.has_room_tag("residence")
-            && !c.name.ends_with('居')
-            && !c.name.ends_with('宅')
-            && !c.name.ends_with('舍')
-            && !c.name.contains("天井")
+        !c.is_private_residence() && !c.is_pure_street_or_courtyard()
     };
     match req {
         crate::npc::causal_core::VenueRequirement::HomeOrKitchen => {

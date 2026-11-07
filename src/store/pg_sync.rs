@@ -305,14 +305,15 @@ impl Store {
         };
 
         self.entities.clear();
-        let mut raw_meta: std::collections::HashMap<String, (String, String)> =
+        let mut raw_meta: std::collections::HashMap<String, (String, String, String)> =
             std::collections::HashMap::with_capacity(rows.len());
         for row in &rows {
             let id: String = row.get(0);
             let raw_gender: String = row.get(16);
             let raw_title: String = row.get(18);
             let display_title = super::entity::normalize_archaic_title(&raw_title);
-            raw_meta.insert(id.clone(), (raw_gender.clone(), raw_title));
+            let raw_activity: String = row.get(23);
+            raw_meta.insert(id.clone(), (raw_gender.clone(), raw_title, raw_activity));
             let raw_eq: String = row.get(20);
             let equipment_slots = super::entity::normalize_archaic_clothing(&raw_eq);
             let raw_inv: String = row.get(21);
@@ -379,14 +380,52 @@ impl Store {
                 e.gender = g;
                 e.display_title = resolved;
                 let eq_inv_changed = super::entity::sanitize_npc_equipment_and_inventory(e);
-                if let Some((raw_g, raw_t)) = raw_meta.get(&e.id)
-                    && (&e.gender != raw_g || &e.display_title != raw_t || eq_inv_changed)
+
+                let slot = crate::store::wenyao_household_slot_for(&e.id);
+                let home_settlement = slot.home_name.split('・').next().unwrap_or("文曜");
+                let mut act_changed = false;
+                if e.x == 0
+                    && e.y == 0
+                    && (slot.home_x.abs() + slot.home_y.abs()) > 40
+                {
+                    e.x = slot.home_x;
+                    e.y = slot.home_y;
+                    e.grid_x = Some(slot.home_x);
+                    e.grid_y = Some(slot.home_y);
+                    act_changed = true;
+                }
+                const ALL_SETTLEMENTS: &[&str] = &[
+                    "文曜", "風舶角", "大圳頭", "半嶺鎮", "南哨", "老堰頭", "北嶺腳", "霜林口",
+                    "風櫃尾", "烏石鼻", "牛埔", "紅土崁", "三號坑口", "水尾寮", "下營",
+                ];
+                let cross_settlement_act = ALL_SETTLEMENTS.iter().any(|&st| {
+                    !home_settlement.starts_with(st) && e.current_activity.contains(st)
+                });
+                if cross_settlement_act
+                    || e.current_activity.ends_with("專注勞作")
+                    || e.current_activity.trim().is_empty()
+                {
+                    let venue_name = if slot.work_name.is_empty() {
+                        slot.home_name
+                    } else {
+                        slot.work_name
+                    };
+                    e.current_activity = format!("在{}推進{}工序", venue_name, slot.work_purpose);
+                    act_changed = true;
+                }
+
+                if let Some((raw_g, raw_t, raw_act)) = raw_meta.get(&e.id)
+                    && (&e.gender != raw_g
+                        || &e.display_title != raw_t
+                        || eq_inv_changed
+                        || act_changed
+                        || &e.current_activity != raw_act)
                 {
                     let thoughts_json =
                         serde_json::to_string(&e.thoughts).unwrap_or_else(|_| "[]".to_string());
                     let _ = conn.execute(
-                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4, thoughts = $5 WHERE id = $6",
-                        &[&e.gender, &e.display_title, &e.equipment_slots, &e.inventory, &thoughts_json, &e.id],
+                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4, thoughts = $5, current_activity = $6, x = $7, y = $8, grid_x = $7, grid_y = $8 WHERE id = $9",
+                        &[&e.gender, &e.display_title, &e.equipment_slots, &e.inventory, &thoughts_json, &e.current_activity, &e.x, &e.y, &e.id],
                     );
                 }
             }

@@ -141,6 +141,34 @@ pub fn harvest_from_world_object(
     (extra_granted, note)
 }
 
+fn add_vocation_coherent_inventory_capped(npc_id: &str, work_ctx: &str, candidate_id: &str) {
+    let item_to_add = if npc_id.starts_with("npc_") {
+        let (canon_id, _) = ItemPhysicalClass::canonical_vocation_supply_item(work_ctx);
+        if ItemPhysicalClass::is_item_coherent_with_vocation(candidate_id, work_ctx) {
+            candidate_id
+        } else {
+            canon_id
+        }
+    } else {
+        candidate_id
+    };
+    let current_qty: i32 = db::get_entity(npc_id)
+        .ok()
+        .flatten()
+        .map(|e| {
+            db::get_inventory(&e.inventory, e.vit)
+                .items
+                .into_iter()
+                .filter(|i| i.item_id == item_to_add)
+                .map(|i| i.qty)
+                .sum()
+        })
+        .unwrap_or(0);
+    if current_qty < 2 {
+        let _ = db::add_to_inventory(npc_id, item_to_add, 1);
+    }
+}
+
 /// 運行單步 NPC 自主經濟與工造巡檢。
 pub fn run_npc_autonomous_production_step(
     _room_id: &str,
@@ -152,7 +180,13 @@ pub fn run_npc_autonomous_production_step(
         return None;
     }
     let npc_id = &npc_ids[(now_unix as usize) % npc_ids.len()];
-    let (npc_name, ent_inventory, venue_opt) = if let Some(ent) = db::get_entity(npc_id).ok().flatten() {
+    let (npc_name, ent_inventory, venue_opt, work_context) = if let Some(ent) = db::get_entity(npc_id).ok().flatten() {
+        let work_context = if npc_id.starts_with("npc_") {
+            let slot = crate::store::wenyao_household_slot_for(npc_id);
+            format!("{} {}", slot.work_name, slot.work_purpose)
+        } else {
+            ent.display_title.clone()
+        };
         let tag = crate::store::npc_brief_appearance_tag(npc_id, &ent.display_title);
         let (is_staff, has_uniform, in_counter_zone) =
             crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
@@ -175,10 +209,10 @@ pub fn run_npc_autonomous_production_step(
         } else {
             format!("那名{}的街坊", tag)
         };
-        (name, ent.inventory, venue_opt)
+        (name, ent.inventory, venue_opt, work_context)
     } else {
         let venue_opt = crate::grid::resolve_any_room_venue_object(room_name, "");
-        ("一名街坊匠人".to_string(), "[]".to_string(), venue_opt)
+        ("一名街坊匠人".to_string(), "[]".to_string(), venue_opt, String::new())
     };
 
     // Step A: 原料採集 (渡口/水岸/河/碼頭/藥圃/竹林/山道/埠階/海/林/礦坑/採石場)
@@ -330,9 +364,7 @@ pub fn run_npc_autonomous_production_step(
             ));
         }
 
-        if !npc_id.starts_with("npc_") {
-            let _ = db::add_to_inventory(npc_id, raw_id, 1);
-        }
+        add_vocation_coherent_inventory_capped(npc_id, &work_context, raw_id);
         {
             let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
             if let Some(entry) = ledger.items.get_mut(raw_id) {
@@ -360,9 +392,7 @@ pub fn run_npc_autonomous_production_step(
         } else {
             ("wt_cat_0279", "特級在來米粉")
         };
-        if !npc_id.starts_with("npc_") {
-            let _ = db::add_to_inventory(npc_id, prod_id, 1);
-        }
+        add_vocation_coherent_inventory_capped(npc_id, &work_context, prod_id);
         let mill_s = crate::world::materials::infer_origin_settlement(room_name);
         let mill_settlement = if mill_s.is_empty() { "老堰頭" } else { mill_s };
         crate::npc::causal_core::record_settlement_market_production(mill_settlement, prod_id, 1);
@@ -495,8 +525,8 @@ pub fn run_npc_autonomous_production_step(
                 origin: finished_def.origin.to_string(),
             };
             ensure_item_in_store(item);
+            add_vocation_coherent_inventory_capped(npc_id, &work_context, &mut_id);
             if !npc_id.starts_with("npc_") {
-                let _ = db::add_to_inventory(npc_id, &mut_id, 1);
                 let _ = crate::server::handler::npc_autonomous_word_and_equip_step(
                     npc_id,
                     &npc_name,
@@ -561,9 +591,7 @@ pub fn run_npc_autonomous_production_step(
                 origin: finished_def.origin.to_string(),
             };
             ensure_item_in_store(item);
-            if !npc_id.starts_with("npc_") {
-                let _ = db::add_to_inventory(npc_id, finished_def.id, 1);
-            }
+            add_vocation_coherent_inventory_capped(npc_id, &work_context, finished_def.id);
 
             {
                 let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());

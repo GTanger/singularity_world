@@ -170,7 +170,7 @@ pub fn plan_next_causal_action(
         .copied()
         .filter(|opt| dynamic_action_cost_mg(settlement, opt) <= effective_mg.max(0))
         .collect();
-    let eligible: Vec<&'static ActionOptionDef> = if !affordable_in_band.is_empty() {
+    let mut eligible: Vec<&'static ActionOptionDef> = if !affordable_in_band.is_empty() {
         affordable_in_band
     } else {
         PREDEFINED_ACTION_CATALOG
@@ -182,17 +182,28 @@ pub fn plan_next_causal_action(
             })
             .collect()
     };
+    let is_wilderness_vocation = ["林", "樵", "柴", "採", "獵", "山", "藥"]
+        .iter()
+        .any(|k| role_hint.contains(k));
+    if image == DecisionImageKind::WorkOrTrade && !is_wilderness_vocation {
+        let filtered: Vec<&'static ActionOptionDef> = eligible
+            .iter()
+            .copied()
+            .filter(|opt| opt.code != "work_scavenge_wild_firewood_and_scraps")
+            .collect();
+        if !filtered.is_empty() {
+            eligible = filtered;
+        }
+    }
     let margin = MarginBand::from_magnesium(effective_mg);
 
     let chosen = if image == DecisionImageKind::WorkOrTrade && scarce_label.is_some() {
         let preferred_code = match margin {
             MarginBand::Scarcity => {
-                if matches!(state.cornerstone, Cornerstone::Order | Cornerstone::Profit)
-                    || !(state.life_step_tick + seed).is_multiple_of(3)
-                {
-                    "work_perform_steady_daily_vocation"
-                } else {
+                if is_wilderness_vocation && (state.life_step_tick + seed).is_multiple_of(3) {
                     "work_scavenge_wild_firewood_and_scraps"
+                } else {
+                    "work_perform_steady_daily_vocation"
                 }
             }
             MarginBand::Subsistence => {
@@ -337,10 +348,10 @@ fn find_real_settlement_venue(settlement: &str, keywords: &[char]) -> Option<Str
 pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str) -> String {
     let settlement = clean_settlement_name(dest_name);
     let dest_leaf = dest_name.rsplit('・').next().unwrap_or(dest_name).trim();
-    let is_private_residence_leaf = dest_leaf.ends_with('居')
-        || dest_leaf.ends_with('宅')
-        || dest_leaf.ends_with('舍')
-        || dest_leaf.contains("天井");
+    let is_private_or_street = crate::grid::is_private_residence_room_name(dest_name)
+        || crate::grid::is_private_residence_room_name(dest_leaf)
+        || crate::grid::is_street_or_gate_room_name(dest_name)
+        || crate::grid::is_street_or_gate_room_name(dest_leaf);
     match venue_req {
         VenueRequirement::HomeOrKitchen => {
             let is_home = (dest_leaf.contains('宅')
@@ -386,7 +397,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::CanteenOrStall => {
-            if !is_private_residence_leaf
+            if !is_private_or_street
                 && (dest_leaf.contains("食堂")
                     || dest_leaf.contains('飯')
                     || dest_leaf.contains('麵')
@@ -401,7 +412,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::TeahouseOrTavern => {
-            if !is_private_residence_leaf
+            if !is_private_or_street
                 && (dest_leaf.contains('茶')
                     || dest_leaf.contains('酒')
                     || dest_leaf.contains("旅社")
@@ -416,7 +427,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::WellOrStream => {
-            if !is_private_residence_leaf
+            if !is_private_or_street
                 && (dest_leaf.contains('井')
                     || dest_leaf.contains('泉')
                     || dest_leaf.contains('溪')
@@ -432,7 +443,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::Bathhouse => {
-            if !is_private_residence_leaf && (dest_leaf.contains('浴') || dest_leaf.contains('湯')) {
+            if !is_private_or_street && (dest_leaf.contains('浴') || dest_leaf.contains('湯')) {
                 dest_leaf.to_string()
             } else if settlement == "文曜" {
                 "泉香溫水浴場".to_string()
@@ -455,7 +466,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::Clinic => {
-            if !is_private_residence_leaf
+            if !is_private_or_street
                 && (dest_leaf.contains('診') || dest_leaf.contains('醫') || dest_leaf.contains('藥'))
             {
                 dest_leaf.to_string()
@@ -467,7 +478,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::ForgeOrWorkshop => {
-            if !is_private_residence_leaf
+            if !is_private_or_street
                 && (dest_leaf.contains('坊')
                     || dest_leaf.contains('鍛')
                     || dest_leaf.contains('鐵')
@@ -500,7 +511,7 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             }
         }
         VenueRequirement::Market => {
-            if !is_private_residence_leaf
+            if !is_private_or_street
                 && (dest_leaf.contains('市')
                     || dest_leaf.contains('商')
                     || dest_leaf.contains('集')

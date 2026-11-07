@@ -545,6 +545,7 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
         check_surface(script.id, script.outcome_and_world_change);
     }
     let grid = generate_white_tower_grid();
+    crate::server::grid_manager::set_runtime_square_grid_for_testing(grid.clone());
     for cell in grid.cells() {
         check_surface(&cell.name, &cell.description);
     }
@@ -941,6 +942,32 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
     if talk_line.contains("停下手中敲打構件的錘子") {
         violations.push(format!(
             "在途趕路 NPC 誤套用打鐵錘擊動作前綴: {talk_line}"
+        ));
+    }
+    let mut bridge_blacksmith_probe: crate::entity::Character =
+        serde_json::from_str(r#"{"id":"npc_bridge_blacksmith_probe","kind":"npc"}"#).expect("probe char");
+    bridge_blacksmith_probe.display_title = "岑大牛".to_string();
+    bridge_blacksmith_probe.x = 0;
+    bridge_blacksmith_probe.y = 0;
+    bridge_blacksmith_probe.grid_x = Some(0);
+    bridge_blacksmith_probe.grid_y = Some(0);
+    bridge_blacksmith_probe.current_activity = "在三水匯流大石橋思索鍛造工序".to_string();
+    let bridge_talk_line = crate::server::action::talk::format_npc_talk_line(
+        &bridge_blacksmith_probe,
+        "岑大牛",
+        "我正看著橋下水流出神。",
+        "你在這做什麼？",
+        "",
+    );
+    if bridge_talk_line.contains("停下手中敲打構件的錘子") {
+        violations.push(format!(
+            "大石橋戶外鐵匠誤套用室內打鐵錘擊動作前綴: {bridge_talk_line}"
+        ));
+    }
+    let supply = crate::game::object_ecology::ItemPhysicalClass::canonical_vocation_supply_item("岑氏第一鍛造工坊");
+    if supply != ("mat_coal_lump", "硬木白炭") {
+        violations.push(format!(
+            "鍛造工坊本職資材應為硬木白炭(mat_coal_lump)，實際為: {supply:?}"
         ));
     }
     for (req, bad_dest) in [

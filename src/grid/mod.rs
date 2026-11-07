@@ -13,6 +13,7 @@ pub use coord::{Direction, SquareCoord, grid_room_id_from_coord, parse_grid_room
 pub use r#gen::generate_white_tower_grid;
 pub use grid::{
     canonical_room_tag, derive_room_tags, ExplicitExit, GridCell, RoomVenueObject, SquareGrid,
+    is_private_residence_room_name, is_street_or_gate_room_name,
     resolve_any_room_venue_object, resolve_market_or_specialty_room_object,
     resolve_room_ambient_visitor_activity, resolve_room_venue_object,
 };
