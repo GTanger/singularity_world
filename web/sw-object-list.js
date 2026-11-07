@@ -1030,7 +1030,7 @@
                     }
                     token.microState = '駐足交談';
                     SwOpenObjectPopover(token);
-                    var playerLine = '你對【' + (targetName || targetId) + '】說：「寒暄問候」';
+                    var playerLine = '你上前向【' + (targetName || targetId) + '】頷首致意，隨口寒暄了幾句。';
                     var fmt = window.gameFormatNarrative || function (t) { return t; };
                     var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
                     appendNarr(fmt(playerLine), 'Talk');
@@ -1055,7 +1055,7 @@
                     }
                     token.microState = '駐足交談';
                     SwOpenObjectPopover(token);
-                    var playerLine = '你對【' + (targetName || targetId) + '】說：「打聽近況」';
+                    var playerLine = '你向【' + (targetName || targetId) + '】打聽起近日坊間的動靜。';
                     var fmt = window.gameFormatNarrative || function (t) { return t; };
                     var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
                     appendNarr(fmt(playerLine), 'Talk');
@@ -3167,6 +3167,9 @@
         var s = String(text || '').trim();
         if (/^你仔細打量了/.test(s)) return true;
         if (/^你對【[^】]+】說：「(寒暄|寒暄問候|打聽|打聽近況|請教差事)」$/.test(s)) return true;
+        if (/^你上前向【[^】]+】頷首致意，隨口寒暄了幾句。$/.test(s)) return true;
+        if (/^你向【[^】]+】打聽起近日坊間的動靜。$/.test(s)) return true;
+        if (/^你向【[^】]+】探詢手頭可有能搭把手的差事。$/.test(s)) return true;
         return false;
     }
 

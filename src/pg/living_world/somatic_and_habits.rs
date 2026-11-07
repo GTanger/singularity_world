@@ -457,6 +457,10 @@ impl VesselCondition {
             Self::RolledEdge => "捲刃待修",
         }
     }
+
+    pub fn label_for_item(&self, item_id: &str, item_name: &str) -> &'static str {
+        crate::game::object_ecology::ItemPhysicalClass::classify(item_id, item_name).condition_label(*self)
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]

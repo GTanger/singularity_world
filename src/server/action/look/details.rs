@@ -692,4 +692,75 @@ mod tests {
             "visiting hunter in clinic must NOT be described with the clinic doctor's on_duty_demeanor: {visitor_narrative}"
         );
     }
+
+    #[test]
+    fn test_stranger_look_perspective_boundary_and_item_physical_class_units() {
+        use crate::game::object_ecology::ItemPhysicalClass;
+
+        assert_eq!(
+            ItemPhysicalClass::classify("mat_reed_bundle", "水澤老蘆草綑")
+                .format_qty("水澤老蘆草綑", 12),
+            "水澤老蘆草綑 12 綑"
+        );
+        assert_eq!(
+            ItemPhysicalClass::classify(
+                "mut_craft_storm_canvas_cloak_violet_haze",
+                "【異變・紫煙凝魄】・防風浸油帆布行旅斗篷",
+            )
+            .wear_or_carry_prefix("body"),
+            "外罩"
+        );
+
+        if let Some(slot_idx) = crate::store::WENYAO_HOUSEHOLD_SLOTS
+            .iter()
+            .position(|s| s.attire_line.contains("細竹毛刷"))
+        {
+            crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS
+                .write()
+                .insert("npc_dj0ebffutkzt".to_string(), slot_idx);
+        }
+        let mut stranger = test_character();
+        stranger.id = "npc_dj0ebffutkzt".to_string();
+        stranger.kind = crate::entity::EntityKind::Npc;
+        stranger.display_title = "三水口・紙坊抄紙女工|白芷瑜".to_string();
+        stranger.equipment_slots = r#"{"body":"mut_craft_storm_canvas_cloak_violet_haze","hold_r":"craft_bamboo_oil_umbrella"}"#.to_string();
+        stranger.inventory = r#"[{"item_id":"mat_reed_bundle","qty":12},{"item_id":"mat_rough_ore","qty":11}]"#.to_string();
+        stranger.current_activity = "前往【文曜・三水口・石板弄堂天井】掬清泉冷水解渴".to_string();
+
+        let narrative = build_look_narrative(
+            &stranger,
+            "陌生人",
+            "文曜・三水口・三水匯流大石橋",
+            Some("viewer_p"),
+        );
+
+        assert!(
+            !narrative.contains("潮汐綿長息"),
+            "stranger look must NOT leak internal breath school: {narrative}"
+        );
+        assert!(
+            !narrative.contains("已歷") && !narrative.contains("鋒利"),
+            "stranger look must NOT leak tool use counter or sharp umbrella: {narrative}"
+        );
+        assert!(
+            !narrative.contains("隨身攜有") && !narrative.contains("12 桶"),
+            "stranger look must NOT X-ray backpack contents: {narrative}"
+        );
+        assert!(
+            !narrative.contains("【文曜・三水口・石板弄堂天井】") && !narrative.contains("準備掬清泉冷水解渴"),
+            "stranger look must NOT leak telepathic destination or purpose: {narrative}"
+        );
+        assert!(
+            !narrative.contains("手持一把細竹毛刷"),
+            "when hold_r is occupied, static attire_line held item must be stripped to prevent three-hands conflict: {narrative}"
+        );
+        assert!(
+            !narrative.contains("步態乾脆俐落"),
+            "static gait clause in attire_line must be deduplicated against posture: {narrative}"
+        );
+        assert!(
+            !narrative.contains("】・") && !narrative.contains("】】") && narrative.contains("只見其身穿淺黛色棉布套裝長裙。"),
+            "mutated cloak and attire_line must be clean: {narrative}"
+        );
+    }
 }

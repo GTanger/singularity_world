@@ -854,7 +854,6 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
     }
     None
 }
-
 #[cfg(test)]
 mod item_definitions_tests {
     use super::*;

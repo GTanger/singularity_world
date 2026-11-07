@@ -212,7 +212,16 @@
 			for (var cbi = 0; cbi < chipButtons.length; cbi++) {
 				chipButtons[cbi].disabled = true;
 			}
-			var playerLine = '你對【' + (targetName || entityId) + '】說：「' + sayText + '」';
+			var playerLine;
+			if (sayText === '寒暄' || sayText === '寒暄問候' || sayText === '（搭話）') {
+				playerLine = '你上前向【' + (targetName || entityId) + '】頷首致意，隨口寒暄了幾句。';
+			} else if (sayText === '打聽' || sayText === '打聽近況') {
+				playerLine = '你向【' + (targetName || entityId) + '】打聽起近日坊間的動靜。';
+			} else if (sayText === '請教差事') {
+				playerLine = '你向【' + (targetName || entityId) + '】探詢手頭可有能搭把手的差事。';
+			} else {
+				playerLine = '你對【' + (targetName || entityId) + '】說：「' + sayText + '」';
+			}
 			var fmt = window.gameFormatNarrative || function (t) { return t; };
 			var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
 			appendNarr(fmt(playerLine), 'Talk');

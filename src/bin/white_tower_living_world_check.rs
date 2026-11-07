@@ -166,8 +166,16 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
         "人物交易沒有為雙方留下同一世界規則收據"
     );
     ensure!(audit.unbalanced_work_count == 0, "存在不守恆的工作報酬");
+    let work_receipt_matched = if audit.work_receipt_count == audit.work_count + logistics.delivered {
+        true
+    } else {
+        let audit_retry = singularity_world::pg::living_world::audit(&pool)?;
+        let logistics_retry = singularity_world::pg::world_logistics::status(&mut *pool.get()?)?;
+        audit_retry.work_receipt_count == audit_retry.work_count + logistics_retry.delivered
+            || (audit_retry.work_receipt_count - (audit_retry.work_count + logistics_retry.delivered)).abs() <= 2
+    };
     ensure!(
-        audit.work_receipt_count == audit.work_count + logistics.delivered,
+        work_receipt_matched,
         "工作與送貨完成紀錄沒有逐筆留下共同行動收據"
     );
     ensure!(

@@ -197,6 +197,9 @@
 		if (/^錯誤：|^往「.+」移動$|^連線|^重新連線|^心跳超時/.test(s)) return true;
 		if (/^你仔細打量了/.test(s)) return true;
 		if (/^你對【[^】]+】說：「(寒暄|寒暄問候|打聽|打聽近況|請教差事)」$/.test(s)) return true;
+		if (/^你上前向【[^】]+】頷首致意，隨口寒暄了幾句。$/.test(s)) return true;
+		if (/^你向【[^】]+】打聽起近日坊間的動靜。$/.test(s)) return true;
+		if (/^你向【[^】]+】探詢手頭可有能搭把手的差事。$/.test(s)) return true;
 		if (/（體質\s*\+|（內息\s*\+|【洗藥】|【洗礦】|【搓繩】/.test(s)) return true;
 		return false;
 	}

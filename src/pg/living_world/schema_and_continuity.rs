@@ -3,6 +3,25 @@ const ALL_GATHER_CORRECTION_ID: &str = "living_world_v1_all_gather_correction";
 
 /// 判斷物品是否為武器或工器具（排斥消耗品、食材、茶水、藥材、素材等）
 pub fn is_weapon_or_tool_item(item_id: &str, item_name: &str) -> bool {
+    let cls = crate::game::object_ecology::ItemPhysicalClass::classify(item_id, item_name);
+    if matches!(
+        cls,
+        crate::game::object_ecology::ItemPhysicalClass::UmbrellaOrFan
+            | crate::game::object_ecology::ItemPhysicalClass::OuterCloakOrRobe
+            | crate::game::object_ecology::ItemPhysicalClass::GarmentOrArmor
+            | crate::game::object_ecology::ItemPhysicalClass::FootwearOrHeadgear
+            | crate::game::object_ecology::ItemPhysicalClass::MedicineOrSalve
+            | crate::game::object_ecology::ItemPhysicalClass::LiquidBeverage
+            | crate::game::object_ecology::ItemPhysicalClass::GrainOrPowder
+            | crate::game::object_ecology::ItemPhysicalClass::BundledFiber
+            | crate::game::object_ecology::ItemPhysicalClass::RawMineralOrTimber
+            | crate::game::object_ecology::ItemPhysicalClass::BookOrScroll
+            | crate::game::object_ecology::ItemPhysicalClass::AquaticOrMeat
+            | crate::game::object_ecology::ItemPhysicalClass::CookedFoodOrPastry
+    ) {
+        return false;
+    }
+
     let id_lower = item_id.to_lowercase();
     let name_lower = item_name.to_lowercase();
 
@@ -28,10 +47,10 @@ pub fn is_weapon_or_tool_item(item_id: &str, item_name: &str) -> bool {
         }
     }
 
-    // 包含名單：刀、劍、匕、斧、鎬、槍、錘、杖、針、刃、弓、盾、鑿、鋸、鏟等武器或工器具
+    // 包含名單：刀、劍、匕、斧、鎬、槍、錘、杖、針、刃、弓、盾、鑿、鋸、鏟等武器或工器具（已排除「傘」）
     const WEAPON_TOOL_KEYWORDS: &[&str] = &[
         "刀", "劍", "匕", "斧", "鎬", "槍", "錘", "杖", "針", "刃", "弓", "盾", "鑿", "鋸", "鏟", "鏨", "篩架", "旋鑿", "刨",
-        "竿", "剪", "鐮", "鍘", "槳", "篙", "扁擔", "算盤", "尺", "墨斗", "鉗", "傘", "杵", "臼", "網", "叉", "耙",
+        "竿", "剪", "鐮", "鍘", "槳", "篙", "扁擔", "算盤", "尺", "墨斗", "鉗", "杵", "臼", "網", "叉", "耙",
         "knife", "blade", "sword", "axe", "pick", "hammer", "spear", "rod", "staff", "bow", "shield", "weapon",
     ];
     WEAPON_TOOL_KEYWORDS.iter().any(|&kw| id_lower.contains(kw) || name_lower.contains(kw))

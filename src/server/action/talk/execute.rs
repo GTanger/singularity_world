@@ -835,7 +835,7 @@ pub(super) fn do_entity_talk(
             .trim()
             .to_string();
         if !already_mentioned {
-            final_narrative.push_str(&format!("\n交談間，你得知對方名叫【{talk_name}】（{role_desc}）。"));
+            final_narrative.push_str(&format!(" 交談間，你得知對方名叫【{talk_name}】（{role_desc}）。"));
         }
     }
     if let Some(suffix) = &world_effect.narrative_suffix {

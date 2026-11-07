@@ -178,7 +178,7 @@ fn build_talk_fallback(
                 15..=17 => "日頭已經偏西，快到傍晚收工的時候了",
                 _ => "現在天已經黑了，外頭都是夜色",
             };
-            Some(format!("「這會兒大概是 {h:02}:{m:02} 前後，{sky_desc}。我手頭正{act}呢。」"))
+            Some(format!("「眼下大概是 {h:02}:{m:02} 前後，{sky_desc}。我手頭正{act}呢。」"))
         } else if is_greeting {
             let role_intro = if role.ends_with("人") || role.ends_with("徒") || role.ends_with("計") || role.ends_with("家") || role.ends_with("傅") || role.ends_with("事") || role.ends_with("夫") || role.ends_with("生") || role.ends_with("匠") || role.ends_with("手") || role.ends_with("員") || role.ends_with("客") { format!("我是這兒的{role}") } else { format!("我是負責{role}的") };
             Some(format!("「你好！{role_intro}，現在正{act}。有什麼需要幫忙或打聽的嗎？」"))
@@ -626,28 +626,8 @@ fn build_cognitive_talk_reply(
                 } else {
                     &i.name
                 };
-                let unit = if display_name.contains("米漿")
-                    || display_name.contains("湯")
-                    || display_name.contains("飲")
-                    || display_name.contains("油")
-                    || display_name.contains("水")
-                {
-                    "桶"
-                } else if display_name.contains("粉")
-                    || display_name.contains("米")
-                    || display_name.contains("麵")
-                    || display_name.contains("穀")
-                    || display_name.contains("鹽")
-                {
-                    "袋"
-                } else {
-                    ""
-                };
-                if !unit.is_empty() {
-                    format!("{display_name} {} {unit}", i.qty)
-                } else {
-                    format!("{display_name} ×{}", i.qty)
-                }
+                crate::game::object_ecology::ItemPhysicalClass::classify(&i.item_id, display_name)
+                    .format_qty(display_name, i.qty)
             })
             .collect();
 
@@ -658,16 +638,12 @@ fn build_cognitive_talk_reply(
             let vspec = crate::npc::causal_core::resolve_vocational_vessel(&target.display_title);
             if let Some(tid) = held_id {
                 let tname = crate::db::get_item_name(tid);
-                let is_non_tool = [
-                    "傘", "扇", "膏", "散", "丸", "丹", "藥", "米", "漿", "湯", "餅", "茶", "麵",
-                    "粥", "果", "肉", "魚", "衫", "袍", "襖", "衣", "褲", "靴", "鞋", "提籃",
-                ]
-                .iter()
-                .any(|kw| tname.contains(kw));
-                if is_non_tool {
-                    (vspec.item_id.to_string(), vspec.display_name.to_string())
-                } else {
+                let is_vessel = crate::game::object_ecology::ItemPhysicalClass::classify(tid, &tname)
+                    .is_vocational_or_combat_vessel();
+                if is_vessel {
                     (tid.clone(), tname)
+                } else {
+                    (vspec.item_id.to_string(), vspec.display_name.to_string())
                 }
             } else {
                 (vspec.item_id.to_string(), vspec.display_name.to_string())
@@ -677,7 +653,8 @@ fn build_cognitive_talk_reply(
         let (v_opt, worn) = if !t_id.is_empty() {
             let v = crate::pg::living_world::get_vessel_state(&target.id, &t_id);
             let is_worn = v.wear_points >= 2;
-            (Some((t_name, v.wear_points, v.condition.label().to_string())), is_worn)
+            let cond_str = v.condition.label_for_item(&t_id, &t_name).to_string();
+            (Some((t_name, v.wear_points, cond_str)), is_worn)
         } else {
             (None, false)
         };
@@ -939,7 +916,7 @@ fn build_cognitive_talk_reply(
                     || act_phrase.contains("睡")
                     || act_phrase.contains("納涼")
                 {
-                    format!("「我這會兒正{act_phrase}，尋常度日罷了。」")
+                    format!("「我眼下正{act_phrase}，尋常度日罷了。」")
                 } else if act_phrase.starts_with("在") || act_phrase.contains("手頭") {
                     format!("「我眼下正{act_phrase}，尋常度日罷了。」")
                 } else {

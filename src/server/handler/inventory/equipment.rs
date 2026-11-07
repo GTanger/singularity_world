@@ -274,6 +274,29 @@ pub fn npc_autonomous_word_and_equip_step(
         return None;
     }
 
+    // 防護硬閘門：居民/NPC 僅能配戴與自身本職相符之本命器物，絕不將晴雨傘、行旅斗篷或非本職商品自動頂替身上既有常服與器物
+    let phys_class = crate::game::object_ecology::ItemPhysicalClass::classify(
+        crafted_item_id,
+        crafted_item_name,
+    );
+    let is_npc_actor = npc_id.starts_with("npc_") || npc_id.starts_with("wt_");
+    if is_npc_actor {
+        let vspec = crate::npc::causal_core::resolve_vocational_vessel(&vocation_hint);
+        let is_own_vessel =
+            crafted_item_id == vspec.item_id || crafted_item_id == vspec.catalog_id;
+        if matches!(
+            phys_class,
+            crate::game::object_ecology::ItemPhysicalClass::UmbrellaOrFan
+                | crate::game::object_ecology::ItemPhysicalClass::OuterCloakOrRobe
+                | crate::game::object_ecology::ItemPhysicalClass::GarmentOrArmor
+                | crate::game::object_ecology::ItemPhysicalClass::FootwearOrHeadgear
+        ) || !is_own_vessel
+        {
+            save_player_wordplates();
+            return None;
+        }
+    }
+
     let raw_slot = db::get_item_def(crafted_item_id)
         .map(|d| d.slot)
         .unwrap_or_default();

@@ -278,6 +278,7 @@ fn build_look_narrative(
         }
     }
     let has_outfit = is_known_resident_desc || has_resident_desc.is_some() || !sensory_line.trim().is_empty();
+    let mut held_items: Vec<String> = Vec::new();
 
     if !target.equipment_slots.is_empty() {
         if let Ok(serde_json::Value::Object(map)) = serde_json::from_str::<serde_json::Value>(&target.equipment_slots) {
@@ -320,7 +321,6 @@ fn build_look_narrative(
 
             // 2. 持握工具 / 武器（無論是否有專屬服飾皆顯示器物）
             let held_slots = ["hold_r", "weapon", "hand", "tool", "hold_l"];
-            let mut held_items: Vec<String> = Vec::new();
             for &slot in &held_slots {
                 if let Some(item_id) = slots_map.get(slot) {
                     if !item_id.is_empty() && !is_starter_gear(item_id) {
@@ -373,11 +373,10 @@ fn build_look_narrative(
                             }
                             if viewer_pid != Some(target.id.as_str()) {
                                 match vstate.condition {
-                                    crate::pg::living_world::VesselCondition::SlightlyDull => {
-                                        held_items.push(format!("【{item_label}】（刃口微鈍）"));
-                                    }
-                                    crate::pg::living_world::VesselCondition::RolledEdge => {
-                                        held_items.push(format!("【{item_label}】（刃口微捲）"));
+                                    crate::pg::living_world::VesselCondition::SlightlyDull
+                                    | crate::pg::living_world::VesselCondition::RolledEdge => {
+                                        let cond_lbl = vstate.condition.label_for_item(item_id, &cleaned);
+                                        held_items.push(format!("【{item_label}】（{cond_lbl}）"));
                                     }
                                     crate::pg::living_world::VesselCondition::Sharp => {
                                         held_items.push(format!("【{item_label}】"));
@@ -401,13 +400,64 @@ fn build_look_narrative(
             }
 
             // 3. 非初始裝備之隨身佩戴物（如披風、腰帶、飾品等）
-            let worn_slots: &[&str] = if has_outfit {
-                &["waist", "cloak", "trinket", "neck", "head", "wrist", "leg_armor", "body", "legs", "feet"]
-            } else {
-                &["waist", "cloak", "trinket", "neck", "head", "wrist", "leg_armor"]
+            let clean_public_item_helper = |raw: &str| -> String {
+                let mut s = raw.trim().to_string();
+                while let Some(start) = s.find("【異變") {
+                    if let Some(end_rel) = s[start..].find('】') {
+                        let after = start + end_rel + '】'.len_utf8();
+                        let rest = s[after..].trim_start_matches('・').trim();
+                        s = format!("{}{}", &s[..start], rest);
+                    } else {
+                        break;
+                    }
+                }
+                let s = s.trim_matches(|c| c == '【' || c == '】').trim();
+                for prefix in ["精鍛", "百煉", "特製", "加固", "防身"] {
+                    if s.starts_with(prefix) && s.chars().count() > prefix.chars().count() + 1 {
+                        return s[prefix.len()..].to_string();
+                    }
+                }
+                s.to_string()
             };
+
+            // 3. 外罩斗篷 / 披風 / 蓑衣
+            let mut cloak_items: Vec<String> = Vec::new();
+            for &slot in &["cloak", "body"] {
+                if let Some(item_id) = slots_map.get(slot) {
+                    if !item_id.is_empty()
+                        && !is_starter_gear(item_id)
+                        && !item_id.contains("storage_box")
+                        && !item_id.contains("pine_soot_ink")
+                    {
+                        let ecol_name = crate::game::object_ecology::lookup_ecology_item_def(item_id).map(|d| d.name);
+                        let base_name = names
+                            .get(slot)
+                            .map(|s| s.as_str())
+                            .or(ecol_name.as_deref())
+                            .unwrap_or(item_id);
+                        let is_cloak_slot = slot == "cloak";
+                        let is_outer_cloak = crate::game::object_ecology::ItemPhysicalClass::classify(item_id, base_name)
+                            == crate::game::object_ecology::ItemPhysicalClass::OuterCloakOrRobe;
+                        if is_cloak_slot || is_outer_cloak {
+                            let cleaned = clean_public_item_helper(base_name);
+                            let item_label = crate::server::handler::format_entity_item_with_inscription(
+                                &target.id,
+                                item_id,
+                                &cleaned,
+                            );
+                            cloak_items.push(format!("【{item_label}】"));
+                        }
+                    }
+                }
+            }
+            if !cloak_items.is_empty() {
+                desc.push_str(&format!("外罩{}。", cloak_items.join("、")));
+            }
+
+            // 4. 非初始裝備之隨身佩戴飾品（腰帶、佩件、項飾、腕飾、頭飾、背負等）
+            let accessory_slots: &[&str] = &["waist", "trinket", "neck", "wrist", "head", "back"];
             let mut worn_items: Vec<String> = Vec::new();
-            for &slot in worn_slots {
+            for &slot in accessory_slots {
                 if let Some(item_id) = slots_map.get(slot) {
                     if !item_id.is_empty()
                         && !is_starter_gear(item_id)
@@ -427,11 +477,11 @@ fn build_look_narrative(
                         {
                             continue;
                         }
-                        let s = base_name.trim_matches(|c| c == '【' || c == '】').trim();
+                        let cleaned = clean_public_item_helper(base_name);
                         let item_label = crate::server::handler::format_entity_item_with_inscription(
                             &target.id,
                             item_id,
-                            s,
+                            &cleaned,
                         );
                         worn_items.push(format!("【{item_label}】"));
                     }
@@ -442,10 +492,6 @@ fn build_look_narrative(
             }
         }
     }
-    if !is_known_resident_desc && target.kind == crate::entity::EntityKind::Npc && !sensory_line.trim().is_empty() {
-        desc.push_str(&format!("只見其{sensory_line}。"));
-    }
-
     let hour = crate::store::current_game_hour();
     let is_night = hour >= 22 || hour < 5;
     let live_act = crate::store::LIVE_NPC_GRID_STATES
@@ -458,6 +504,47 @@ fn build_look_narrative(
     } else {
         live_act.as_deref()
     };
+
+    if !is_known_resident_desc && target.kind == crate::entity::EntityKind::Npc && !sensory_line.trim().is_empty() {
+        let mut clean_sensory = sensory_line.clone();
+        if !held_items.is_empty() {
+            for hold_prefix in ["，手持", "、手持", "，手握", "、手握", "，手執", "、手執"] {
+                if let Some(start_idx) = clean_sensory.find(hold_prefix) {
+                    let clause_after = &clean_sensory[start_idx + hold_prefix.len()..];
+                    if let Some(comma_rel) = clause_after.find('，') {
+                        clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
+                    } else if let Some(comma_rel) = clause_after.find('、') {
+                        clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
+                    } else {
+                        clean_sensory = clean_sensory[..start_idx].to_string();
+                    }
+                }
+            }
+        }
+        for gait_prefix in ["，步態", "、步態", "，步履", "、步履", "，步伐", "、步伐"] {
+            if let Some(start_idx) = clean_sensory.find(gait_prefix) {
+                let clause_after = &clean_sensory[start_idx + gait_prefix.len()..];
+                if let Some(comma_rel) = clause_after.find('，') {
+                    clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
+                } else if let Some(comma_rel) = clause_after.find('、') {
+                    clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
+                } else {
+                    clean_sensory = clean_sensory[..start_idx].to_string();
+                }
+            }
+        }
+        if raw_act.is_some() {
+            for act_prefix in ["，正", "、正"] {
+                if let Some(start_idx) = clean_sensory.find(act_prefix) {
+                    clean_sensory = clean_sensory[..start_idx].to_string();
+                }
+            }
+        }
+        let clean_sensory = clean_sensory.trim().trim_matches(['，', '、', '。']);
+        if !clean_sensory.is_empty() {
+            desc.push_str(&format!("只見其{clean_sensory}。"));
+        }
+    }
 
     if let Some(act_str) = raw_act {
         let mut sanitized_act = sanitize_activity_for_display(act_str);
@@ -500,7 +587,9 @@ fn build_look_narrative(
                     || sanitized_act.contains("金屬行")
                     || sanitized_act.contains("線行"));
             if is_transit_act {
-                if !sanitized_act.contains('(')
+                if is_stranger && (sanitized_act.contains('【') || sanitized_act.contains("準備")) {
+                    desc.push_str(&format_activity_sentence(pronoun, "正沿街快步穿行，似有差事在身"));
+                } else if !sanitized_act.contains('(')
                     && !sanitized_act.contains('（')
                     && !sanitized_act.contains("推進目標")
                     && sanitized_act.chars().count() >= 10
@@ -516,7 +605,7 @@ fn build_look_narrative(
                 }
             } else if is_phantom_bridge_stall || (is_night && (room_name.contains("三水匯流大石橋") || room_name.contains("中心樞紐石橋"))) {
                 let vis_bridge = if is_night {
-                    if target.id.bytes().fold(0u8, u8::wrapping_add).is_multiple_of(2) {
+                    if room_name.contains("三水匯流大石橋") {
                         "正駐足青石橋欄旁，迎著河面晚風凝望三水川夜色"
                     } else {
                         "正沿著青石橋面緩步徐行，在橋頭駐足歇腳"
@@ -583,7 +672,7 @@ fn build_look_narrative(
         desc.push_str(&format!("細看之下，似帶有{}之態。", labels.join("、")));
     }
 
-    append_universal_living_entity_details(target, room_name, &mut desc);
+    append_universal_living_entity_details(target, room_name, is_stranger, &mut desc);
 
     if let Some(pool) = crate::pg::pool() {
         if let Some(pid) = viewer_pid
@@ -644,8 +733,13 @@ fn is_starter_gear_id(id: &str) -> bool {
         )
 }
 
-fn append_universal_living_entity_details(target: &Character, room_name: &str, desc: &mut String) {
-    // 1. 內息底色與吐納習慣
+fn append_universal_living_entity_details(
+    target: &Character,
+    room_name: &str,
+    is_stranger: bool,
+    desc: &mut String,
+) {
+    if !is_stranger {
     let breath = crate::pg::living_world::get_or_derive_breath_habit(
         &target.id,
         &target.display_title,
@@ -679,10 +773,12 @@ fn append_universal_living_entity_details(target: &Character, room_name: &str, d
     if let Some(tool_id) = held_tool_id {
         let vstate = crate::pg::living_world::get_vessel_state(&target.id, tool_id);
         if vstate.use_count > 0 && !desc.contains("手頭器物已歷") {
+            let t_name = crate::db::get_item_name(tool_id);
+            let cond_lbl = vstate.condition.label_for_item(tool_id, &t_name);
             desc.push_str(&format!(
                 "手頭器物已歷 {} 次運使（{}）。",
                 vstate.use_count,
-                vstate.condition.label()
+                cond_lbl
             ));
         }
     } else if target.kind == crate::entity::EntityKind::Npc {
@@ -698,11 +794,12 @@ fn append_universal_living_entity_details(target: &Character, room_name: &str, d
         let vstate = crate::pg::living_world::get_vessel_state(&target.id, vessel.item_id);
         if !desc.contains(vessel.display_name) {
             if vstate.use_count > 0 {
+                let cond_lbl = vstate.condition.label_for_item(vessel.item_id, vessel.display_name);
                 desc.push_str(&format!(
                     "手邊常備本職器物【{}】（已歷 {} 次運使・{}）。",
                     inscribed,
                     vstate.use_count,
-                    vstate.condition.label()
+                    cond_lbl
                 ));
             } else {
                 desc.push_str(&format!("手邊常備本職器物【{}】。", inscribed));
@@ -741,33 +838,14 @@ fn append_universal_living_entity_details(target: &Character, room_name: &str, d
                 } else {
                     &i.name
                 };
-                let unit = if display_name.contains("米漿")
-                    || display_name.contains("湯")
-                    || display_name.contains("飲")
-                    || display_name.contains("油")
-                    || display_name.contains("水")
-                {
-                    "桶"
-                } else if display_name.contains("粉")
-                    || display_name.contains("米")
-                    || display_name.contains("麵")
-                    || display_name.contains("穀")
-                    || display_name.contains("鹽")
-                {
-                    "袋"
-                } else {
-                    ""
-                };
-                if !unit.is_empty() {
-                    format!("{display_name} {} {unit}", i.qty)
-                } else {
-                    format!("{display_name} ×{}", i.qty)
-                }
+                crate::game::object_ecology::ItemPhysicalClass::classify(&i.item_id, display_name)
+                    .format_qty(display_name, i.qty)
             })
             .collect();
         if !stock_parts.is_empty() {
             desc.push_str(&format!("隨身攜有{}。", stock_parts.join("、")));
         }
+    }
     }
 
     if target.kind == crate::entity::EntityKind::Npc {

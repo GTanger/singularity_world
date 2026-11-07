@@ -19,6 +19,7 @@ include!("object_ecology/economy_ledger.rs");
 include!("object_ecology/market_pricing.rs");
 include!("object_ecology/supply_and_catalog.rs");
 include!("object_ecology/item_definitions.rs");
+include!("object_ecology/item_physical_class.rs");
 include!("object_ecology/crafting_and_mutation.rs");
 include!("object_ecology/harvest_and_production.rs");
 include!("object_ecology/campfires_and_refining.rs");

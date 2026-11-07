@@ -181,18 +181,55 @@ pub fn run_npc_autonomous_production_step(
         ("一名街坊匠人".to_string(), "[]".to_string(), venue_opt)
     };
 
-    // Step A: 原料採集 (渡口/水岸/河/碼頭/藥圃/竹林/山道/埠階/海/林)
-    let is_gathering_site = room_name.contains("渡口")
-        || room_name.contains("水岸")
-        || room_name.contains("河")
-        || room_name.contains("碼頭")
-        || room_name.contains("藥圃")
+    // Step A: 原料採集 (渡口/水岸/河/碼頭/藥圃/竹林/山道/埠階/海/林/礦坑/採石場)
+    // 排除城鎮街道、橋樑、弄堂、店鋪、公所等非採集地景
+    let is_city_traffic_or_shop = room_name.contains("橋")
+        || room_name.contains("街")
+        || room_name.contains("巷")
+        || room_name.contains("弄")
+        || room_name.contains("堂")
+        || room_name.contains("館")
+        || room_name.contains("店")
+        || room_name.contains("鋪")
+        || room_name.contains("盧")
+        || room_name.contains("廬")
+        || room_name.contains("坪")
+        || room_name.contains("道");
+
+    let is_explicit_resource_site = room_name.contains("礦")
+        || room_name.contains("坑")
+        || room_name.contains("鑿石")
+        || room_name.contains("採石")
+        || room_name.contains("蘆")
+        || room_name.contains("沼")
+        || room_name.contains("草澤")
         || room_name.contains("竹林")
-        || room_name.contains("山道")
-        || room_name.contains("埠階")
-        || room_name.contains("海")
-        || room_name.contains("田")
-        || room_name.contains("林");
+        || room_name.contains("深林")
+        || room_name.contains("林場")
+        || room_name.contains("鋸木")
+        || room_name.contains("伐木");
+
+    let is_gathering_site = (!is_city_traffic_or_shop || is_explicit_resource_site)
+        && (room_name.contains("渡口")
+            || room_name.contains("水岸")
+            || room_name.contains("河口")
+            || room_name.contains("碼頭")
+            || room_name.contains("藥圃")
+            || room_name.contains("竹林")
+            || room_name.contains("山道")
+            || room_name.contains("埠階")
+            || room_name.contains("海灘")
+            || room_name.contains("藥田")
+            || room_name.contains("草澤")
+            || room_name.contains("林")
+            || room_name.contains("礦")
+            || room_name.contains("坑")
+            || room_name.contains("鑿石")
+            || room_name.contains("採石")
+            || room_name.contains("鋸木")
+            || room_name.contains("伐木")
+            || room_name.contains("沼")
+            || room_name.contains("灘"));
 
     // Step B: 工坊工造與異變
     // 排除哨所、巡防、居所、橋樑等非工坊設施，並剝離外坊等行政區域名稱後判定是否為工坊
@@ -200,6 +237,13 @@ pub fn run_npc_autonomous_production_step(
         || room_name.contains("巡河")
         || room_name.contains("居")
         || room_name.contains("宅")
+        || room_name.contains("天井")
+        || room_name.contains("庭院")
+        || room_name.contains("書院")
+        || room_name.contains("茶館")
+        || room_name.contains("飯館")
+        || room_name.contains("醫館")
+        || room_name.contains("會館")
         || room_name.contains("橋")
         || room_name.contains("碼頭")
         || room_name.contains("渡口");
@@ -235,8 +279,8 @@ pub fn run_npc_autonomous_production_step(
             || clean_workshop_site_name.contains("藥")
             || clean_workshop_site_name.contains("織")
             || clean_workshop_site_name.contains("造")
-            || clean_workshop_site_name.contains("院")
-            || clean_workshop_site_name.contains("館")))
+            || clean_workshop_site_name.contains("編院")
+            || clean_workshop_site_name.contains("巧編")))
         || venue_opt.as_ref().is_some_and(|v| {
             v.semantic_tags().iter().any(|t| {
                 matches!(
@@ -246,18 +290,24 @@ pub fn run_npc_autonomous_production_step(
             })
         });
     if is_gathering_site && !is_workshop_site {
-        let (raw_id, raw_name) = if room_name.contains("藥") || room_name.contains("圃") || room_name.contains("田") {
-            ("mat_foraged_herb", "野生採集草藥")
-        } else if room_name.contains("竹") || room_name.contains("林") || room_name.contains("木") {
-            ("mat_timber_log", "伐採原木")
-        } else if room_name.contains("渡") || room_name.contains("岸") || room_name.contains("葦") {
-            ("mat_reed_bundle", "水澤老蘆草綑")
+        let raw_opt = if room_name.contains("礦") || room_name.contains("坑") || room_name.contains("鑿石") || room_name.contains("採石") {
+            Some(("mat_rough_ore", "粗生礦石"))
+        } else if room_name.contains("蘆") || room_name.contains("沼") || room_name.contains("灘") || room_name.contains("岸") || room_name.contains("澤") {
+            Some(("mat_reed_bundle", "水澤老蘆草綑"))
+        } else if room_name.contains("藥") || room_name.contains("圃") || room_name.contains("田") {
+            Some(("mat_foraged_herb", "野生採集草藥"))
+        } else if room_name.contains("林") || room_name.contains("木坊") || room_name.contains("鋸木") || room_name.contains("巧木") || room_name.contains("伐木") {
+            Some(("mat_timber_log", "伐採原木"))
         } else if room_name.contains("紙") {
-            ("mat_coarse_paper_ream", "粗製竹麻紙料")
+            Some(("mat_coarse_paper_ream", "粗製竹麻紙料"))
         } else {
-            ("mat_iron_scrap", "回收熟鐵料塊")
+            None
         };
 
+        let (raw_id, raw_name) = match raw_opt {
+            Some(r) => r,
+            None => return None,
+        };
         let raw_s = crate::world::materials::infer_origin_settlement(room_name);
         let cur_settlement = normalize_canonical_settlement(if raw_s.is_empty() { room_name } else { raw_s });
 
