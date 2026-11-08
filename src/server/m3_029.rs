@@ -88,7 +88,7 @@ pub(crate) fn run_pack_runner_tick(now_unix: i64) -> Option<MarketRunnerTick> {
     #[cfg(not(test))]
     {
         let hour = crate::game::current_game_hour();
-        if !(5..=19).contains(&hour) {
+        if !(5..=19).contains(&hour) || crate::store::is_npc_paused_for_interaction(PACK_RUNNER_ID) {
             return None;
         }
     }

@@ -259,12 +259,50 @@ pub fn format_schedule_window_sense(
     };
     let elapsed_m = (adj_now_m - start_total_m).max(0);
     let remain_m = (end_total_m - adj_now_m).max(0);
+    if eh <= sh {
+        if nh >= 5 && nh < eh {
+            let morning_elapsed_m = ((nh - 5) * 60 + nm).max(0);
+            let to_work_m = (eh * 60 - now_total_m).max(1);
+            let prep_desc = if morning_elapsed_m < 15 {
+                "晨起不久".to_string()
+            } else {
+                format!("已晨起備工約 {} 分鐘", morning_elapsed_m)
+            };
+            let start_desc = if to_work_m <= 30 {
+                format!("再過約 {} 分鐘即達 {:02}:00 晨間開工時刻", to_work_m, eh % 24)
+            } else {
+                format!("距 {:02}:00 晨間開工尚有約 {} 小時", eh % 24, (to_work_m + 30) / 60)
+            };
+            return format!(
+                "本段為晨起備工時段 05:00–{:02}:00（昨夜已在居所安歇休整，{}，{}，並非夜間或半夜趕工）",
+                eh % 24,
+                prep_desc,
+                start_desc
+            );
+        }
+        let rest_elapsed_desc = if elapsed_m < 30 {
+            "初收工歇息不久".to_string()
+        } else if elapsed_m < 60 {
+            format!("已收工休整約 {} 分鐘", elapsed_m)
+        } else {
+            format!("已收工休整約 {} 小時", (elapsed_m + 30) / 60)
+        };
+        let next_work_desc = format!(
+            "距 {:02}:00 晨間開工尚有約 {} 小時",
+            eh % 24,
+            ((remain_m + 30) / 60).max(1)
+        );
+        return format!(
+            "本段為收工休整與夜間安歇時段 {:02}:00–05:00（{}，{}）",
+            sh, rest_elapsed_desc, next_work_desc
+        );
+    }
     let elapsed_desc = if elapsed_m < 30 {
         "初開工不久".to_string()
     } else if elapsed_m < 60 {
-        format!("已持續約 {} 分鐘", elapsed_m)
+        format!("已當值約 {} 分鐘", elapsed_m)
     } else {
-        format!("已持續約 {} 小時", (elapsed_m + 30) / 60)
+        format!("已當值約 {} 小時", (elapsed_m + 30) / 60)
     };
     let remain_desc = if remain_m <= 30 {
         format!(
@@ -280,7 +318,7 @@ pub fn format_schedule_window_sense(
         )
     };
     format!(
-        "本段作息 {:02}:00–{:02}:00（{}，{}）",
+        "本段當值作息 {:02}:00–{:02}:00（{}，{}）",
         sh,
         eh % 24,
         elapsed_desc,

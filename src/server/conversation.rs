@@ -53,12 +53,29 @@ fn sanitize_talk_text(s: &str) -> String {
     crate::ai::sanitize::sanitize_npc_dialogue_line(out.trim())
 }
 
+fn clean_player_input_text(s: &str) -> String {
+    let mut out = s.replace(['\r', '\n'], " ");
+    while out.contains("  ") {
+        out = out.replace("  ", " ");
+    }
+    out.trim().to_string()
+}
+
 fn truncate_snippet(s: &str, max_chars: usize) -> String {
     let sanitized = sanitize_talk_text(s);
     if sanitized.chars().count() > max_chars {
         sanitized.chars().take(max_chars).collect::<String>() + "…"
     } else {
         sanitized
+    }
+}
+
+fn truncate_player_snippet(s: &str, max_chars: usize) -> String {
+    let cleaned = clean_player_input_text(s);
+    if cleaned.chars().count() > max_chars {
+        cleaned.chars().take(max_chars).collect::<String>() + "…"
+    } else {
+        cleaned
     }
 }
 
@@ -74,7 +91,7 @@ fn consolidate_turns(turns: &[ConversationTurn]) -> Vec<String> {
     picked
         .into_iter()
         .map(|t| {
-            let clean_p = sanitize_talk_text(&t.player_input);
+            let clean_p = clean_player_input_text(&t.player_input);
             let clean_r = sanitize_talk_text(&t.npc_reply);
             format!(
                 "【{}】來客言：「{}」；回應道：「{}」",
@@ -98,7 +115,7 @@ fn summary_from_turns(turns: &[ConversationTurn]) -> String {
 
     let p_snippets: Vec<String> = window
         .iter()
-        .map(|t| truncate_snippet(&t.player_input, 80))
+        .map(|t| truncate_player_snippet(&t.player_input, 80))
         .filter(|s| !s.is_empty() && s != "（搭話）")
         .collect();
 
@@ -233,7 +250,7 @@ pub fn flush_conversation_and_append(
     let trimmed_input = player_input.trim();
     let trimmed_reply = clean_reply_for_store.trim();
     if !trimmed_input.is_empty() && !trimmed_reply.is_empty() {
-        let clean_p = sanitize_talk_text(trimmed_input);
+        let clean_p = clean_player_input_text(trimmed_input);
         let archival_line = format!(
             "與來客({})交談：對方說「{}」，我回應「{}」",
             player_id, clean_p, trimmed_reply

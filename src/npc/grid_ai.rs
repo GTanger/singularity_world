@@ -350,7 +350,7 @@ fn snapshot_npcs(store: &crate::store::Store) -> HashMap<String, NpcSnapshot> {
     store
         .entities
         .values()
-        .filter(|entity| entity.kind == "npc" && entity.vit > 0)
+        .filter(|entity| entity.kind == "npc" && entity.vit > 0 && entity.id != "npc_m3_029_pack_runner")
         .filter_map(|entity| {
             let place_id = entity.place_id.clone()?;
             store
