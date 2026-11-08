@@ -657,14 +657,14 @@ pub fn resolve_wenyao_npc_schedule(
         }
         let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
         let sleep_act = match slot_idx % 3 {
-            0 => "正在內室榻上熄燈安歇",
+            0 => "正在內室榻上熄燈就寢",
             1 => "已在屋內床榻上熟睡養神",
-            _ => "正在屋內熄燈就寢安歇",
+            _ => "正在屋內熄燈就寢休息",
         };
         return (
             home_coord,
             slot.home_name.to_string(),
-            "返家安歇".to_string(),
+            "返家歇息".to_string(),
             sleep_act.to_string(),
             10,
         );
@@ -743,7 +743,7 @@ pub fn resolve_wenyao_npc_schedule(
         return (
             home_coord,
             slot.home_name.to_string(),
-            "返家安歇".to_string(),
+            "返家歇息".to_string(),
             home_act,
             20 + ((h % 11) as u8),
         );

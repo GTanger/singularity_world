@@ -219,7 +219,7 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                             "你出入山道市集可得多留個心眼。"
                         };
                         let reflex = format!(
-                            "{}見你行色匆匆踏入，壓低嗓音朝你提點道：「前刻外頭傳來的風聲——{}，{}」",
+                            "{}見你行色匆匆踏入，壓低嗓音朝你提點道：「外頭才傳來的風聲——{}，{}」",
                             caller, rf.prose_summary, ending
                         );
                         conn.send_json(&NpcAddressMsg {
@@ -266,7 +266,7 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             return;
         }
         let reflex = match (crate::game::now_unix() as usize + known_npc.id.len()) % 3 {
-            0 => format!("{name}見你邁步走入，神色微動，溫和點頭致意：「別來無恙，先前還在思忖何時能與你會面。」"),
+            0 => format!("{name}見你邁步走入，神色微動，溫和點頭致意：「別來無恙，前陣子還在想何時能與你碰面。」"),
             1 => format!("{name}停下手頭的事務，抬眼望見你，含笑招呼：「旅途可還順遂？若有事需要打點，隨時知會一聲。」"),
             _ => format!("{name}朝你微微頷首：「來得正好，四方市面平穩，請入內歇步。」"),
         };
@@ -521,7 +521,7 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             ]
         } else if room.contains("蒙學") || room.contains("學院") || room.contains("書局") || room.contains("書舍") || room.contains("講堂") || room.contains("藏書") {
             &[
-                ("「先前先生講的氣象潮汐篇，那段測風速的法子真精妙。」", "「稍後去借閱室把《半島風物圖誌》找出來，核對一下就全通了。」"),
+                ("「上回先生講的氣象潮汐篇，那段測風速的法子真精妙。」", "「稍後去借閱室把《半島風物圖誌》找出來，核對一下就全通了。」"),
                 ("「這批新到的竹綿紙墨色吃得極好，抄寫筆札不化不透。」", "「我也挑了兩刀，打算謄寫先生留下來的天文算曆課卷。」"),
             ]
         } else if room.contains("鐵坊") || room.contains("鍛造") || room.contains("木作") || room.contains("工坊") {
@@ -542,7 +542,7 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
         } else {
             &[
                 ("「今天手頭這趟活計忙完，可得好好去南街市集逛逛。」", "「聽說今晚各家攤子都熱鬧，走走散步正好吹吹夜風。」"),
-                ("「街坊近來大家都在聊那趟新開的貨運班次呢。」", "「路修得平整，往來半嶺跟三水口確實比早先省了一半腳程。」"),
+                ("「街坊近來大家都在聊那趟新開的貨運班次呢。」", "「路修得平整，往來半嶺跟三水口確實比以前省了一半路程。」"),
             ]
         };
 

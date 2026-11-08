@@ -449,8 +449,8 @@ pub(super) fn run_idle_wander_section(
                                         (Some(ob), Some(th), false) => {
                                             if !is_reply {
                                                 match seq % 3 {
-                                                    0 => format!("「{}，手頭還記掛著{}的事，眼下{}。」", th, ob, act_clean),
-                                                    1 => format!("「眼下{}，心裡倒還想著{}那樁差事。」", act_clean, ob),
+                                                    0 => format!("「{}，手頭還記掛著{}的事，現在{}。」", th, ob, act_clean),
+                                                    1 => format!("「現在{}，心裡倒還想著{}那樁差事。」", act_clean, ob),
                                                     _ => format!("「先把{}的事處置妥當要緊，{}。」", ob, th),
                                                 }
                                             } else {
@@ -463,9 +463,9 @@ pub(super) fn run_idle_wander_section(
                                         }
                                         (Some(ob), _, false) => {
                                             if !is_reply {
-                                                format!("「手頭還惦記著{}的事，趁著眼下{}。」", ob, act_bare)
+                                                format!("「手頭還惦記著{}的事，趁著現在{}。」", ob, act_bare)
                                             } else {
-                                                format!("「我這頭也記掛著{}的活計，眼下正{}呢。」", ob, act_bare)
+                                                format!("「我這頭也記掛著{}的活計，現在正{}呢。」", ob, act_bare)
                                             }
                                         }
                                         (None, Some(th), false) => {
@@ -483,7 +483,7 @@ pub(super) fn run_idle_wander_section(
                                             }
                                         }
                                         _ => {
-                                            let act_str = if act_clean.is_empty() { "把眼下手頭的差事理順" } else { act_clean.as_str() };
+                                            let act_str = if act_clean.is_empty() { "把現在手頭的差事理順" } else { act_clean.as_str() };
                                             let act_fallback_bare = if act_clean.is_empty() { "按部就班理順差事" } else { act_bare };
                                             if !is_reply {
                                                 format!("「忙完手頭的活計，{}最是舒心。」", act_str)
@@ -554,7 +554,7 @@ pub(super) fn run_idle_wander_section(
                                         || activity.contains("熟睡")
                                         || activity.contains("就寢"))
                                 {
-                                    format!("屋內燈火已熄，{}已在床鋪上安歇，四周寧靜無聲。", caller)
+                                    format!("屋內燈火已熄，{}已在床鋪上熄燈就寢，四周寧靜無聲。", caller)
                                 } else if !activity.is_empty() {
                                     let act_trimmed = activity.trim_end_matches(['。', '，', ' ']);
                                     let clean_raw = act_trimmed

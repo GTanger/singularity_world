@@ -141,7 +141,7 @@ fn build_talk_fallback(
         } else if is_asking_activity {
             match stance {
                 NpcStanceChoice::Refuse => {
-                    Some(format!("「我眼下正{act}，手頭活計容不得分心，請勿打擾。」"))
+                    Some(format!("「我現在正{act}，手頭活計容不得分心，請勿打擾。」"))
                 }
                 NpcStanceChoice::Bargain => {
                     Some(format!("「我正在{act}。身為{role}，手頭的事總是一樁接一樁，你若是有心搭把手，我倒能騰出些空閒細聊。」"))
@@ -150,7 +150,7 @@ fn build_talk_fallback(
                     Some(format!("「也就是些例行的活計，正{act}呢。市井瑣事繁雜，也沒什麼特別值得大書特書的。」"))
                 }
                 NpcStanceChoice::Accept => {
-                    Some(format!("「我眼下正{act}呢。身為{role}，日常就得把這些事務打理妥當，你若是好奇，在旁看看無妨。」"))
+                    Some(format!("「我現在正{act}呢。身為{role}，日常就得把這些事務打理妥當，你若是好奇，在旁看看無妨。」"))
                 }
             }
         } else if is_asking_errand {
@@ -160,12 +160,12 @@ fn build_talk_fallback(
                     "repair_tool" => Some(format!("「我手頭器物正待整修（需{subj}），得送去工坊打理，若是有人能代跑一趟就好了。」")),
                     "treat_injury" => Some("「近來身子受了些風寒勞損，正缺些舒筋和血的草藥調理。」".to_string()),
                     "repay_debt" => Some("「手頭票單正趕著去核銷，正愁沒人幫忙跑腿遞送票契呢。」".to_string()),
-                    _ => Some(format!("「眼下我正為了（{subj}）奔波，你若能搭把手，回頭少不了你的謝禮。」")),
+                    _ => Some(format!("「現在我正為了（{subj}）奔波，你若能搭把手，回頭少不了你的謝禮。」")),
                 }
             } else {
                 match stance {
                     NpcStanceChoice::Refuse => Some("「手頭暫時沒什麼要委託外人的差事，你自己四處逛逛吧。」".to_string()),
-                    _ => Some("「眼下我手邊的活計尚能應付。不過工坊與商會的告示板上時常有物資收購的差事，你若想接活，不妨去那邊瞧瞧。」".to_string()),
+                    _ => Some("「現在我手邊的活計尚能應付。不過工坊與商會的告示板上時常有物資收購的差事，你若想接活，不妨去那邊瞧瞧。」".to_string()),
                 }
             }
         } else if is_asking_time {
@@ -178,7 +178,7 @@ fn build_talk_fallback(
                 15..=17 => "日頭已經偏西，快到傍晚收工的時候了",
                 _ => "現在天已經黑了，外頭都是夜色",
             };
-            Some(format!("「眼下大概是 {h:02}:{m:02} 前後，{sky_desc}。我手頭正{act}呢。」"))
+            Some(format!("「現在大概是 {h:02}:{m:02} 前後，{sky_desc}。我手頭正{act}呢。」"))
         } else if is_greeting {
             let role_intro = if role.ends_with("人") || role.ends_with("徒") || role.ends_with("計") || role.ends_with("家") || role.ends_with("傅") || role.ends_with("事") || role.ends_with("夫") || role.ends_with("生") || role.ends_with("匠") || role.ends_with("手") || role.ends_with("員") || role.ends_with("客") { format!("我是這兒的{role}") } else { format!("我是負責{role}的") };
             Some(format!("「你好！{role_intro}，現在正{act}。有什麼需要幫忙或打聽的嗎？」"))
@@ -420,7 +420,7 @@ fn build_cognitive_talk_reply(
         .any(|k| raw_act_trimmed.contains(k))
     {
         if raw_act_trimmed.contains("走回") || raw_act_trimmed.contains("返回") || raw_act_trimmed.contains("前往") {
-            "收工準備回家安歇".to_string()
+            "收工準備回家休息".to_string()
         } else {
             "在屋裡歇息養神".to_string()
         }
@@ -686,7 +686,7 @@ fn build_cognitive_talk_reply(
                 }
                 _ => {
                     let mut parts = Vec::new();
-                    parts.push(format!("我眼下正踏實料理著{act_phrase}"));
+                    parts.push(format!("我現在正踏實料理著{act_phrase}"));
                     if !live_stock_items.is_empty() {
                         parts.push(format!("隨身收納有{}", live_stock_items.join("、")));
                     }
@@ -737,11 +737,11 @@ fn build_cognitive_talk_reply(
                             "「要說難處，{wear_desc}，若你得空代為送往鐵坊整修，或是覓得砥石打磨，當真幫了大忙。」"
                         )
                     } else if let Some((_, subj)) = &ob_opt {
-                        format!("「實不相瞞，我眼下正為【{subj}】費神。你若肯代為周全跑一趟，酬勞自不會少。」")
+                        format!("「實不相瞞，我現在正為【{subj}】費神。你若肯代為周全跑一趟，酬勞自不會少。」")
                     } else if !live_stock_items.is_empty() {
                         format!("「隨身這批{}正待處置，若你能幫忙尋條銷路或搭把手，便是替我分了憂。」", live_stock_items.join("、"))
                     } else {
-                        format!("「眼下踏實照料{act_phrase}，倒無甚大礙，多謝掛心。」")
+                        format!("「現在踏實照料{act_phrase}，倒沒什麼大礙，多謝掛心。」")
                     }
                 }
             }
@@ -792,10 +792,10 @@ fn build_cognitive_talk_reply(
         if let Some((_, subj)) = &ob_opt {
             match stance {
                 NpcStanceChoice::Accept => {
-                    format!("「實不相瞞，我眼下正為【{subj}】掛心。你若真肯搭把手，那可是解了我的燃眉之急。」")
+                    format!("「實不相瞞，我現在正為【{subj}】掛心。你若真肯搭把手，那可是解了我的燃眉之急。」")
                 }
                 NpcStanceChoice::Bargain => {
-                    format!("「難處自然是有的，眼下正愁【{subj}】沒人著落。你若能替我分憂，酬勞自不會虧待了你。」")
+                    format!("「難處自然是有的，現在正愁【{subj}】沒人著落。你若能替我分憂，酬勞自不會虧待了你。」")
                 }
                 NpcStanceChoice::Deflect => {
                     format!("「街坊鄰里討生活，誰手頭沒幾件煩難事？我自己料理這{act_phrase}便成，不敢勞動你。」")
@@ -807,13 +807,13 @@ fn build_cognitive_talk_reply(
         } else {
             match stance {
                 NpcStanceChoice::Accept => {
-                    "「眼下好在手頭這份日常差事還算順暢，你若真有心，往後多照應著點便足夠了。」".to_string()
+                    "「好在現在手頭這份日常差事還算順暢，你若真有心，往後多照應著點就夠了。」".to_string()
                 }
                 NpcStanceChoice::Bargain => {
                     format!("「手頭活計瑣碎，若你能幫著照看一二，我這頭也能輕鬆不少，少不了你的好處。」")
                 }
                 NpcStanceChoice::Deflect => {
-                    format!("「眼下倒也談不上什麼大難處，把這{act_phrase}做紮實就是了。」")
+                    format!("「現在倒也談不上什麼大難處，把這{act_phrase}做紮實就是了。」")
                 }
                 NpcStanceChoice::Refuse => {
                     format!("「我手腳俐落，沒什麼需要幫忙的，請回吧。」")
@@ -827,7 +827,7 @@ fn build_cognitive_talk_reply(
                     && !fact.prose_summary.trim().is_empty()
                 {
                     let clean_sum = fact.prose_summary.trim().trim_end_matches('。');
-                    format!("「你問起近況？我前刻才聽人提起——{clean_sum}。這事在我們{room_name}一帶也傳開了。」")
+                    format!("「你問起近況？我才聽人提起——{clean_sum}。這事在我們{room_name}一帶也傳開了。」")
                 } else if let Some(rumor) = crate::db::top_npc_rumors(room_name, "", now_ts, 3)
                     .into_iter()
                     .find(|r| !r.text.trim().is_empty())
@@ -835,9 +835,9 @@ fn build_cognitive_talk_reply(
                     let clean_r = rumor.text.trim().trim_end_matches('。');
                     let time_tag = crate::store::format_short_relative_time(rumor.updated_at, crate::game::now_unix());
                     let clean_r = format!("{time_tag}{clean_r}");
-                    format!("「要說這{room_name}一帶的近況，前刻街面上正傳著呢——{clean_r}。」")
+                    format!("「要說這{room_name}一帶的近況，街面上正傳著呢——{clean_r}。」")
                 } else if let Some((_, subj)) = &ob_opt {
-                    format!("「這{room_name}一帶往來雖熱鬧，可眼下街坊們正為【{subj}】費神呢，市面上這路物事正緊俏。」")
+                    format!("「這{room_name}一帶往來雖熱鬧，可現在街坊們正為【{subj}】費神呢，市面上這路物事正緊俏。」")
                 } else {
                     format!("「這{room_name}一帶今日往來行客絡繹不絕，各家鋪頭與攤位都在忙著手頭營生，倒也安穩熱鬧。」")
                 }
@@ -865,7 +865,7 @@ fn build_cognitive_talk_reply(
                 format!("「交換講究各取所需，你若能拿出合適的物事或代勞些雜務，我們萬事好商量。」")
             }
             NpcStanceChoice::Deflect => {
-                format!("「手頭這{act_phrase}正吃緊，商量物事容後再議，眼下暫且顧不上。」")
+                format!("「手頭這{act_phrase}正吃緊，商量物事晚點再談，現在暫且顧不上。」")
             }
             NpcStanceChoice::Refuse => {
                 format!("「我這頭自顧不暇，暫無這等心思與盤算，還是另尋高就吧。」")
@@ -874,10 +874,10 @@ fn build_cognitive_talk_reply(
     } else if is_complaining_repeat {
         format!("「哈哈，是我老惦記著{act_phrase}這點瑣事，話說得絮叨了。你若有別的事想聊，儘管直說便是。」")
     } else if is_asking_rest {
-        if act_phrase.contains("安歇") || act_phrase.contains("養神") {
-            "「多謝掛心，忙活了一整日，確實正準備回屋安歇養神，明早還得早起開工呢。」".to_string()
+        if act_phrase.contains("安歇") || act_phrase.contains("休息") || act_phrase.contains("養神") {
+            "「多謝掛心，忙活了一整天，確實正準備回屋休息養神，明早還得早起開工呢。」".to_string()
         } else {
-            format!("「多謝體恤，待我把眼下這點{act_phrase}的收尾活計理順了，便回屋歇息。」")
+            format!("「多謝體恤，等我把現在這點{act_phrase}的收尾工作理順了，就回屋休息。」")
         }
     } else {
         // 一般搭話或問候
@@ -892,9 +892,9 @@ fn build_cognitive_talk_reply(
                             .iter()
                             .any(|k| t.contains(k));
                         if is_comfort {
-                            format!("「眼下正{act_phrase}，前刻{clean_t}，此時精神正好，相逢便是有緣。」")
+                            format!("「現在正{act_phrase}，才{clean_t}，這時候精神正好，相逢便是有緣。」")
                         } else {
-                            format!("「眼下正{act_phrase}，心裡正盤算著『{clean_t}』呢，相逢便是有緣。」")
+                            format!("「現在正{act_phrase}，心裡正盤算著『{clean_t}』呢，相逢便是有緣。」")
                         }
                     }
                 } else if let Some((_, subj)) = &ob_opt {
@@ -916,9 +916,9 @@ fn build_cognitive_talk_reply(
                     || act_phrase.contains("睡")
                     || act_phrase.contains("納涼")
                 {
-                    format!("「我眼下正{act_phrase}，尋常度日罷了。」")
+                    format!("「我現在正{act_phrase}，尋常度日罷了。」")
                 } else if act_phrase.starts_with("在") || act_phrase.contains("手頭") {
-                    format!("「我眼下正{act_phrase}，尋常度日罷了。」")
+                    format!("「我現在正{act_phrase}，尋常度日罷了。」")
                 } else {
                     format!("「我正忙著手頭{act_phrase}的營生，尋常度日罷了。」")
                 }

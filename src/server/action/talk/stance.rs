@@ -449,10 +449,10 @@ fn synthesize_talk_reply_with_stance_and_obligation(
         match kind.as_str() {
             "restock_goods" => match stance {
                 NpcStanceChoice::Refuse => {
-                    "「實不相瞞，店裡現貨正巧斷檔見底，我正愁著去總商行提領新貨補倉，眼下實在抽不開身，還請見諒。」".to_string()
+                    "「實不相瞞，店裡現貨正巧斷檔見底，我正愁著去總商行提領新貨補倉，現在實在抽不開身，還請見諒。」".to_string()
                 }
                 NpcStanceChoice::Deflect => {
-                    "「鋪子裡眼下正為提貨補倉的事抽不開身，你提的事先緩一下，等貨運齊備了再來好好聊。」".to_string()
+                    "「鋪子裡現在正為提貨補倉的事抽不開身，你提的事先緩一下，等貨運齊備了再來好好聊。」".to_string()
                 }
                 NpcStanceChoice::Bargain => {
                     "「店裡現貨正等著去提領，你若願替我搭手跑趟腿或打點清單，我便能早些抽身與你相商。」".to_string()
@@ -462,12 +462,12 @@ fn synthesize_talk_reply_with_stance_and_obligation(
                     if s.ends_with('」') {
                         s.pop();
                     }
-                    format!("{s}……只不過店內現貨已然售罄，我正準備往商行補倉，你要提貨恐怕得稍等片刻。」")
+                    format!("{s}……只不過店內現貨已經賣完，我正準備往商行補倉，你要提貨恐怕得稍等一下。」")
                 }
             },
             "repair_tool" => match stance {
                 NpcStanceChoice::Refuse => {
-                    "「手頭工具刃口崩磨得厲害，不進鐵坊重淬根本使不上力，眼下委實難以接下委任。」".to_string()
+                    "「手頭工具刃口崩磨得厲害，不進鐵坊重淬根本使不上力，現在實在難以接下委任。」".to_string()
                 }
                 NpcStanceChoice::Deflect => {
                     "「待我先把手頭磨損的傢伙什送去鐵坊整飭好，回頭得空再來與你細商。」".to_string()
@@ -485,7 +485,7 @@ fn synthesize_talk_reply_with_stance_and_obligation(
             },
             "treat_injury" => match stance {
                 NpcStanceChoice::Refuse => {
-                    "「連日勞作氣息微滯，胸口悶得緊，眼下急需前往診所調息，實在難以相陪。」".to_string()
+                    "「連日勞作氣息微滯，胸口悶得緊，現在急需前往診所調息，實在難以相陪。」".to_string()
                 }
                 NpcStanceChoice::Deflect => {
                     "「身子骨略感不適，待我去溫氏脈絡診所討兩劑舒筋活血的方子，改日再來敘話。」".to_string()
@@ -523,7 +523,7 @@ fn synthesize_talk_reply_with_stance_and_obligation(
                 let note = if !subj.is_empty() { subj.as_str() } else { "手頭要事" };
                 match stance {
                     NpcStanceChoice::Refuse => {
-                        format!("「眼下我正為【{note}】分身乏術，實在難以答應你，還請包涵。」")
+                        format!("「現在我正為【{note}】分身乏術，實在難以答應你，還請包涵。」")
                     }
                     NpcStanceChoice::Deflect => {
                         format!("「我這頭【{note}】尚未了結，你的事晚點再聊。」")
@@ -544,10 +544,10 @@ fn synthesize_talk_reply_with_stance_and_obligation(
     } else {
         match stance {
             NpcStanceChoice::Refuse => {
-                "「今日事情繁雜，你這番心思我心領了，只是眼下實在抽不開身，還請見諒。」".to_string()
+                "「今日事情繁雜，你這番心思我心領了，只是現在實在抽不開身，還請見諒。」".to_string()
             }
             NpcStanceChoice::Deflect => {
-                "「你說的事晚點再聊。眼下手頭瑣碎甚多，不如先坐著喝杯茶，改天再細說。」".to_string()
+                "「你說的事晚點再聊。現在手頭瑣事不少，不如先坐著喝杯茶，改天再細說。」".to_string()
             }
             NpcStanceChoice::Bargain => {
                 let mut s = base_line.to_string();

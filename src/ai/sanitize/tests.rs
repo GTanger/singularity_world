@@ -45,7 +45,7 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("志剛從北邊來，我剛到，他剛回答我。"),
-            "志剛從北邊來，我初到，他才回答我。"
+            "志剛從北邊來，我才到，他才回答我。"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("志剛從北邊來，剛剛好我才剛到，他剛回答我。"),
@@ -114,8 +114,8 @@ mod tests {
             "天才買主吧"
         );
         assert_eq!(
-            sanitize_npc_dialogue_line("走半晌才到，這才拿正眼瞧你，這才看向你，人才出眾，患難之中，才見真情"),
-            "走半晌才到，這才拿正眼瞧你，這才看向你，人才出眾，患難之中，才見真情"
+            sanitize_npc_dialogue_line("走半小時才到，這才拿正眼瞧你，這才看向你，人才出眾，患難之中，才見真情"),
+            "走半小時才到，這才拿正眼瞧你，這才看向你，人才出眾，患難之中，才見真情"
         );
     }
 
@@ -173,7 +173,7 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("我早先在南哨買肥皂花十七鎂。"),
-            "我早先在南哨買茶籽皂塊花十七鎂。"
+            "我前面在南哨買茶籽皂塊花十七鎂。"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("嗯，才窯溫下來，火候穩。"),
@@ -189,7 +189,7 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("剛好我看了下獸跡，咱倆別走太遠，天才放晴，冷開水才舀好，倒了一碗白開水，泉水涼得跟才冒的霧一樣。"),
-            "正好我看了下獸跡，我們倆別走太遠，天色初晴，涼茶水才舀好，倒了一碗溫茶水，泉水涼得跟新起的山霧一樣。"
+            "正好我看了下獸跡，我們倆別走太遠，天色才放晴，涼茶水才舀好，倒了一碗溫茶水，泉水涼得跟新起的山霧一樣。"
         );
     }
 
@@ -228,11 +228,11 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("等了半個鐘頭，歇了半個鐘，走了一個鐘頭，花了兩個鐘頭，耗了幾個鐘頭。"),
-            "等了半晌，歇了半晌，走了一時半刻，花了好一陣子，耗了良久。"
+            "等了半小時，歇了半小時，走了一小時，花了兩小時，耗了好幾小時。"
         );
         assert_eq!(
-            sanitize_npc_dialogue_line("等了半個時辰，歇了半晌，走了一個時辰，花了兩個時辰，耗了幾個時辰。"),
-            "等了半晌，歇了半晌，走了一時半刻，花了好一陣子，耗了良久。"
+            sanitize_npc_dialogue_line("等了半個時辰，走了一個時辰，花了兩個時辰，耗了幾個時辰。"),
+            "等了半小時，走了一小時，花了兩小時，耗了好幾小時。"
         );
 
         // Legacy non-canonical settlement/zone phrases
@@ -264,7 +264,7 @@ mod tests {
         // Emergence, frost, fog, wind, snow, rain (including 剛 -> 才 post-pass)
         assert_eq!(
             sanitize_npc_dialogue_line("草芽剛冒出來，才冒出來，剛冒出，才冒出，剛結的霜，才結的霜，剛結霜，才結霜，剛起的霧，才起的霧，剛起的風，才起的風，剛下的雪，才下的雪，剛下的雨，才下的雨。"),
-            "草芽新凝出來，新凝出來，初冒出，初冒出，新結的霜，新結的霜，新結霜，新結霜，新起的霧，新起的霧，新起的風，新起的風，新落的雪，新落的雪，新落的雨，新落的雨。"
+            "草芽新長出來，新長出來，才冒出，才冒出，新結的霜，新結的霜，新結霜，新結霜，新起的霧，新起的霧，新起的風，新起的風，新落的雪，新落的雪，新落的雨，新落的雨。"
         );
 
         // Mountain closure and zone name replacements
@@ -322,19 +322,19 @@ mod tests {
     fn test_round57_soak_dialogue_temporal_cai_and_colloquial_guards() {
         assert_eq!(
             sanitize_npc_dialogue_line("嗯，我也早先挑了點菜，早先在水尾寮聽說"),
-            "嗯，我也先挑了點菜，早先在水尾寮聽說"
+            "嗯，我也先挑了點菜，前面在水尾寮聽說"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("歇了會兒，曬了會兒，坐了會兒，等了會兒，聊了會兒"),
-            "歇了片刻，曬了片刻，坐了片刻，等了片刻，聊了片刻"
+            "歇了一下，曬了一下，坐了一下，等了一下，聊了一下"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("好一會兒沒見，等了一會兒，這會兒有空"),
-            "好一陣子沒見，等了片刻，眼下有空"
+            "好一陣子沒見，等了一下，現在有空"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("船工活兒也是手頭活兒，這活兒真不好幹，幹活兒得賣力，粗活兒細活兒都要做"),
-            "船工活計也是手頭活計，這活計真不好幹，做工得賣力，粗活細活都要做"
+            "船工活計也是手頭活計，這差事真不好幹，做工得賣力，粗活細活都要做"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("去攞貨還是幫你攞？刮得真勁，刮得勁，風勁得站不住，幹得得勁"),
@@ -382,11 +382,11 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("剛喘，剛割，剛拾，剛確，剛量，剛泡，剛用，剛剝，剛瞧，剛磨，剛補"),
-            "才喘，才割，才拾，才確認，才量，才泡，才用，新剝，才瞧，磨好，修補好"
+            "才喘，才割，才拾，才確認，才量，才泡，才用，新剝，才瞧，才磨，才補"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("早先才到，護身符，平安符，符紙，買一送一，買二送一，概不退換"),
-            "早先到，辟瘴香囊，祈安木牌，草藥帖，買一贈一，買二贈一，離手不退"
+            "前面才到，辟瘴香囊，祈安木牌，草藥帖，買一贈一，買二贈一，離手不退"
         );
     }
 
@@ -402,11 +402,11 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("我早先看到一隻小刺猬在滾草堆，你準備啥用？"),
-            "我早先看到一隻小刺蝟在滾草堆，你準備做什麼用？"
+            "我前面看到一隻小刺蝟在滾草堆，你準備做什麼用？"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("我早先就收了蓋布，怕氧化變色，想先借四鎂過個週"),
-            "我早先就收了蓋布，怕受潮走色，想先借四鎂周轉幾日"
+            "我前面就收了蓋布，怕受潮走色，想先借四鎂周轉幾日"
         );
         assert_eq!(
             fix_self_surname_vocative_in_pair(
@@ -458,7 +458,7 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("我才在修船塢閉眼喘了會兒，海味食堂才幫人熬了鍋海苔粥"),
-            "我才在修船塢閉眼喘了片刻，海味食堂才幫人熬了鍋海苔粥"
+            "我才在修船塢閉眼喘了一下，海味食堂才幫人熬了鍋海苔粥"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("才從車廠出來，貨車還在廠棚裡待著，手腳麻利點"),
@@ -474,11 +474,11 @@ mod tests {
     fn test_round62_soak_dialogue_root_erhua_and_factory_guards() {
         assert_eq!(
             sanitize_npc_dialogue_line("我正往貨運行去，修鞍子的活兒才完，也不覺得冷"),
-            "我正往貨運行去，修鞍子的活計方歇，也不覺得冷"
+            "我正往貨運行去，修鞍子的工作才忙完，也不覺得冷"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("早先從水尾寮回來，我才盤貨也聽說這事"),
-            "早先從水尾寮回來，我才盤貨也聽說這事"
+            "前面從水尾寮回來，我才盤貨也聽說這事"
         );
         assert_eq!(
             sanitize_npc_dialogue_line(
@@ -496,19 +496,19 @@ mod tests {
         );
         assert_eq!(
             sanitize_npc_dialogue_line("會計師與編輯助理、紀錄員、護理員、外務員都在會計事務所"),
-            "商算大匠與校書生、抄錄書生、採藥人、押運夥計都在算學舍"
+            "帳房師傅與編修幫手、記冊員、醫館幫手、跑街夥計都在算學舍"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("民事調解員在陸老師宿舍旁，老師宿舍裡放著寒水玉保鮮櫃與保鮮櫃"),
-            "民務通事在蒙學陸先生舍旁，先生舍裡放著寒水玉儲食石櫃與冰鑑櫃"
+            "街坊調解人在陸先生住處旁，先生住處裡放著寒水玉儲食石櫃與儲食冰櫃"
         );
         assert_eq!(
-            sanitize_npc_dialogue_line("別顯擺又憋屈，扯淡說八卦鏡能治發燒，還賣防感冒草藥"),
-            "別誇耀又怨悶，閒磕牙說避邪銅鏡能治染寒熱，還賣辟寒草藥"
+            sanitize_npc_dialogue_line("別顯擺又憋屈，扯淡說八卦鏡能治染寒熱，還賣防感冒草藥"),
+            "別炫耀又悶氣，胡扯說避邪銅鏡能治發熱，還賣驅寒草藥"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("系學生與巡防課研究員別得瑟嘚瑟，窩囊又磨嘰"),
-            "生員與巡防處治學士別張揚張揚，怯弱又拖延"
+            "學院學徒與巡防處研習員別張揚張揚，沒出息又拖拉"
         );
     }
 
@@ -519,8 +519,8 @@ mod tests {
             "這望遠鏡架才從老船工那邊換的，我背架裡還留著北嶺釘鞋"
         );
         assert_eq!(
-            sanitize_npc_dialogue_line("店長在鍋爐房拿了保溫桶與擔架，別在教室吹牛套近乎"),
-            "掌事在炭火氣釜房拿了溫存桶與抬架，別在講舍誇口套交情"
+            sanitize_npc_dialogue_line("店長在鍋爐房拿了保溫桶與擔架，準備送到教室"),
+            "掌事在炭火氣釜房拿了保溫木桶與抬架，準備送到講堂"
         );
         assert_eq!(
             strip_wt_catalog_codes("這望遠鏡架才從老船工那邊換的，我背架裡還留著-0893北嶺釘鞋"),
@@ -551,16 +551,20 @@ mod tests {
             "帶上硬木藤背架去巡查"
         );
         assert_eq!(
-            sanitize_npc_dialogue_line("六分儀的游標才調好，警衛在值班室看著病床與瓷磚日曆車廂煞車"),
-            "六分儀的游標才調好，哨衛在當值房看著病榻與陶磚星曆車輿制動"
+            sanitize_npc_dialogue_line("六分儀的游標才調好，警衛在值班室看著病榻與瓷磚車廂"),
+            "六分儀的游標才調好，哨衛在值班房看著病床與陶磚車斗"
         );
         assert_eq!(
             sanitize_npc_dialogue_line("這張明信片印著輪胎井蓋幫浦藍圖，別想糊弄擦屁股背黑鍋"),
-            "這張風物圖卷印著車輪箍渠石蓋唧筒工造圖樣，別想矇混充作揩拭紙代人受過"
+            "這張風景畫片印著車輪箍水渠石蓋抽水筒工造圖樣，別想敷衍收拾爛攤子代人受過"
         );
         assert_eq!(
-            sanitize_npc_dialogue_line("那窮光蛋搞清楚清潔工與科研流體力學，發條鐵青蛙在剪板機下課後給員工"),
-            "那赤貧窮漢弄個明白淨街夫與考工研習格物流水，發條木雀在裁板機歇功後給夥計"
+            sanitize_npc_dialogue_line("那窮光蛋問清潔工與科研流體力學，發條鐵青蛙在剪板機下課後給員工"),
+            "那窮小子問清掃工與研習水道工學，發條木雀在裁板機散學後給夥計"
+        );
+        assert_eq!(
+            sanitize_npc_dialogue_line("拂曉這會兒我才在小市集把蘆葦賣給行腳客，這就回水尾寮安歇，測溫銅管剛換過，我剛聽人說"),
+            "拂曉這時候我才在市集把蘆葦賣給外地客商，這就回水尾寮休息，測溫銅管才換過，我才聽人說"
         );
     }
 
@@ -598,7 +602,7 @@ mod tests {
         // 驗證 strip_immediate_temporal_words 不會產生疊詞或非正典冗贅短語
         let input = "我剛吃完麵，剛檢查完門栓，剛巡完索具，剛吃飽";
         let stripped = strip_immediate_temporal_words(input);
-        assert_eq!(stripped, "我吃完麵，檢查完門栓，巡完索具，吃飽");
+        assert_eq!(stripped, "我才吃完麵，才檢查完門栓，才巡完索具，才吃飽");
         assert!(!stripped.contains("吃過完"));
         assert!(!stripped.contains("吃過飽"));
         assert!(!stripped.contains("檢視過查"));

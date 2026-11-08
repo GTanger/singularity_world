@@ -198,7 +198,7 @@ fn build_temporal_and_skepticism_grounding_note(
     if !(5..=19).contains(&hour) {
         if is_street {
             note.push_str(&format!(
-                "\n【時辰與公共通道夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。眼下為夜段收市時分，公共街巷與橋樑通道僅作通行、巡防或返家路徑，並無營業商鋪，居民均在收工返家或回舍安歇途中。"
+                "\n【時辰與公共通道夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。現在為夜段收市時分，公共街巷與橋樑通道僅作通行、巡防或返家路徑，並無營業商鋪，居民均在收工返家或回家休息途中。"
             ));
         } else if !is_open {
             note.push_str(&format!(
@@ -206,7 +206,7 @@ fn build_temporal_and_skepticism_grounding_note(
             ));
         } else {
             note.push_str(&format!(
-                "\n【時辰與夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。眼下為夜段，全城日間商號工坊均已打烊，除值更巡防與夜間接待場所外，居民皆在歇息安頓，言行須符合深夜情境。"
+                "\n【時辰與夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。現在為夜段，全城日間商號工坊均已打烊，除值更巡防與夜間接待場所外，居民皆在休息安頓，言行須符合深夜情境。"
             ));
         }
     } else if (5..=7).contains(&hour) {
@@ -221,14 +221,14 @@ fn build_temporal_and_skepticism_grounding_note(
         ));
     } else if !is_open {
         note.push_str(&format!(
-            "\n【空間機能與時序誠實校準】當前場所【{room_display_name}】目前已打烊收歇；面對來客詢問所在位置或時段時，應坦誠自己正料理收尾、準備返舍或在此歇宿，不得虛構營業狀態。"
+            "\n【空間機能與時序誠實校準】當前場所【{room_display_name}】目前已打烊收工；面對來客詢問所在位置或時段時，應坦誠自己正料理收尾、準備回家或在此過夜休息，不得虛構營業狀態。"
         ));
     } else {
         note.push_str(&format!(
             "\n【空間機能與時序誠實校準】面對來客詢問所在位置或時段時，必須依據當前場所【{room_display_name}】之現場器物與當前時辰如實應答，言行與現場環境保持一致。"
         ));
     }
-    note.push_str("\n台詞一律使用自然台灣正體中文口語，嚴禁使用「詞兒、這地兒、那地兒、今兒」等北方兒化音，亦不得將口誤疊字硬拗為地方專有用詞。");
+    note.push_str("\n台詞一律使用自然生活化的台灣正體中文白話口語，嚴禁使用「眼下、先前、早先、前刻、片刻、半晌、良久、安歇、回舍、行腳客、名號、休想、作罷」等古裝文言腔調，亦嚴禁使用「詞兒、這地兒、那地兒、今兒、這會兒、一會兒」等北方兒化音，不得將口誤疊字硬拗為地方專有用詞。");
     note
 }
 
@@ -762,13 +762,13 @@ pub(super) fn do_entity_talk(
         let sanitize_instant_time_words = |text: String| -> String {
             let cleaned = crate::ai::sanitize::sanitize_npc_dialogue_line(&text);
             cleaned
-                .replace("\u{525b}裝好", "前刻裝好")
-                .replace("\u{525b}從", "前刻從")
-                .replace("\u{525b}聽", "前刻聽")
-                .replace("\u{525b}到", "初到")
-                .replace("\u{525b}\u{624d}", "前刻")
-                .replace("\u{525b}\u{525b}", "前刻")
-                .replace("\u{65b9}\u{624d}", "前刻")
+                .replace("\u{525b}裝好", "才裝好")
+                .replace("\u{525b}從", "才從")
+                .replace("\u{525b}聽", "才聽")
+                .replace("\u{525b}到", "才到")
+                .replace("\u{525b}\u{624d}", "前面")
+                .replace("\u{525b}\u{525b}", "前面")
+                .replace("\u{65b9}\u{624d}", "前面")
         };
         let player_or_key = crate::ai::get_player_openrouter_key(pid);
         let ai_result = if player_or_key.is_some() || conn.cfg.player_talk_uses_web_api() {

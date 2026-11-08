@@ -113,9 +113,9 @@ fn canonical_or_venue_talk_reply(
 
         let line = if !is_actively_vending {
             if is_prepping_or_moving {
-                format!("「這批【{item_name}】（{sensory_clause}）才備妥，我眼下{act}，等到了攤位開張再來嚐鮮選購吧！」")
+                format!("「這批【{item_name}】（{sensory_clause}）才備妥，我現在{act}，等到了攤位開張再來嚐鮮選購吧！」")
             } else {
-                format!("「今日的【{item_name}】已經收攤歇息了（眼下{act}），待開市時段再來光顧吧！」")
+                format!("「今天的【{item_name}】已經收攤休息了（現在{act}），等開市時段再來光顧吧！」")
             }
         } else {
             let mut h: i64 = 0;
@@ -173,16 +173,16 @@ fn canonical_or_venue_talk_reply(
         let act_phrase = if is_on_the_road { "正要趕路" } else { "手頭正忙著" };
         let line = match stance {
             NpcStanceChoice::Refuse => format!(
-                "「我眼下{act_phrase}{ob_suffix}，實在分身乏術，恕不能奉陪了。」"
+                "「我現在{act_phrase}{ob_suffix}，實在分身乏術，恕不能奉陪了。」"
             ),
             NpcStanceChoice::Bargain => format!(
-                "「我眼下{act_phrase}{ob_suffix}，若有要緊事，長話短說隨我一併走一段吧。」"
+                "「我現在{act_phrase}{ob_suffix}，若有要緊事，長話短說隨我一併走一段吧。」"
             ),
             NpcStanceChoice::Deflect => format!(
-                "「我眼下{act_phrase}{ob_suffix}，前路正忙，你若不急，待我回鋪子再說不遲。」"
+                "「我現在{act_phrase}{ob_suffix}，路上正忙，你若不急，等我回鋪子再說不遲。」"
             ),
             NpcStanceChoice::Accept => format!(
-                "「我眼下{act_phrase}{ob_suffix}，你若有要事，不妨隨我同行或待我回鋪子再細談。」"
+                "「我現在{act_phrase}{ob_suffix}，你若有要事，不妨隨我同行或等我回鋪子再細談。」"
             ),
         };
         let narrative = format_talk_narrative(target, talk_name, &line, player_input);

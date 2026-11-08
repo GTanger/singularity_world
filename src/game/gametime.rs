@@ -274,7 +274,7 @@ pub fn format_schedule_window_sense(
                 format!("距 {:02}:00 晨間開工尚有約 {} 小時", eh % 24, (to_work_m + 30) / 60)
             };
             return format!(
-                "本段為晨起備工時段 05:00–{:02}:00（昨夜已在居所安歇休整，{}，{}，並非夜間或半夜趕工）",
+                "本段為晨起備工時段 05:00–{:02}:00（昨夜已在居所睡過休息，{}，{}，並非夜間或半夜趕工）",
                 eh % 24,
                 prep_desc,
                 start_desc
@@ -293,7 +293,7 @@ pub fn format_schedule_window_sense(
             ((remain_m + 30) / 60).max(1)
         );
         return format!(
-            "本段為收工休整與夜間安歇時段 {:02}:00–05:00（{}，{}）",
+            "本段為收工休整與夜間休息時段 {:02}:00–05:00（{}，{}）",
             sh, rest_elapsed_desc, next_work_desc
         );
     }
@@ -355,7 +355,7 @@ pub fn format_game_time_prompt_context(hour: i32, min: i32) -> String {
             "{h:02}:{m:02}（夜段入夜・天色已黑，街巷點起燈火）"
         ),
         _ => format!(
-            "{h:02}:{m:02}（夜段深宵・夜色已深、天色漆黑，多數鋪子已歇業準備安歇）"
+            "{h:02}:{m:02}（夜段深宵・夜色已深、天色漆黑，多數鋪子已歇業準備休息）"
         ),
     }
 }

@@ -24,31 +24,9 @@ fn buffer_key(player_id: &str, npc_id: &str) -> String {
 }
 
 fn sanitize_talk_text(s: &str) -> String {
-    let mut out = s
-        .replace('\r', " ")
-        .replace('\n', " ")
-        .replace(concat!("\u{525b}", "\u{624d}"), "先前")
-        .replace(concat!("\u{525b}", "\u{525b}"), "先前")
-        .replace("\u{5c0f}\u{5e02}集", "市集")
-        .replace("\u{77ed}\u{5e02}集", "市集")
-        .replace("\u{5c0f}\u{5e02}", "市集")
-        .replace("\u{77ed}\u{5e02}", "市集")
-        .replace("還有", "另有")
-        .replace("資料庫", "卷宗")
-        .replace("database", "卷宗")
-        .replace("grid", "街坊")
-        .replace("debug", "")
-        .replace("scene_stub", "")
-        .replace("聖塔", "白塔")
-        .replace("110V", "")
-        .replace("110v", "")
-        .replace("念場", "心神")
-        .replace("富態", "寬厚");
+    let mut out = s.replace(['\r', '\n'], " ");
     while out.contains("  ") {
         out = out.replace("  ", " ");
-    }
-    while out.contains("市集集") {
-        out = out.replace("市集集", "市集");
     }
     crate::ai::sanitize::sanitize_npc_dialogue_line(out.trim())
 }
@@ -94,7 +72,7 @@ fn consolidate_turns(turns: &[ConversationTurn]) -> Vec<String> {
             let clean_p = clean_player_input_text(&t.player_input);
             let clean_r = sanitize_talk_text(&t.npc_reply);
             format!(
-                "【{}】來客言：「{}」；回應道：「{}」",
+                "【{}】對方說：「{}」；回應：「{}」",
                 crate::store::format_game_calendar_stamp(t.at),
                 clean_p,
                 clean_r
@@ -273,29 +251,26 @@ mod tests {
     fn test_summary_from_turns_and_sanitization() {
         let turns = vec![
             ConversationTurn {
-                player_input: concat!("\u{525b}", "\u{624d}", "在小市聽說了些傳聞還有別的").to_string(),
-                npc_reply: concat!("\u{525b}", "\u{525b}", "確實有些消息").to_string(),
+                player_input: "請問最近渡口還有船班嗎？".to_string(),
+                npc_reply: concat!("\u{525b}", "\u{525b}", "聽說午後有一班渡船靠岸。").to_string(),
                 at: 100,
             },
             ConversationTurn {
-                player_input: "請問最近渡口有船班嗎？".to_string(),
-                npc_reply: "今日午後便有一班渡船靠岸。".to_string(),
+                player_input: "船票怎麼算？".to_string(),
+                npc_reply: "一人兩枚鎂幣，到碼頭直接找船家就行。".to_string(),
                 at: 110,
             },
         ];
 
         let sum = summary_from_turns(&turns);
         assert!(sum.contains("共 2 輪"));
-        assert!(sum.contains("先前在市集聽說了些傳聞另有別的"));
-        assert!(sum.contains("先前確實有些消息"));
+        assert!(sum.contains("請問最近渡口還有船班嗎？"));
+        assert!(sum.contains("聽說午後有一班渡船靠岸"));
         assert!(!sum.contains(concat!("\u{525b}", "\u{624d}")));
         assert!(!sum.contains(concat!("\u{525b}", "\u{525b}")));
-        assert!(!sum.contains("小市"));
-        assert!(!sum.contains("還有"));
 
         let consolidated = consolidate_turns(&turns);
         assert_eq!(consolidated.len(), 2);
-        assert!(!consolidated[0].contains(concat!("\u{525b}", "\u{624d}")));
-        assert!(!consolidated[0].contains("小市"));
+        assert!(!consolidated[0].contains(concat!("\u{525b}", "\u{525b}")));
     }
 }

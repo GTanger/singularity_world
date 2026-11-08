@@ -25,9 +25,9 @@ impl NpcGridState {
             if !is_night_venue {
                 let leaf = self.dest_name.rsplit('・').next().unwrap_or(&self.dest_name);
                 if self.current != self.dest {
-                    return format!("正趁夜色動身返回【{}】，準備洗漱安歇", self.dest_name);
+                    return format!("正趁夜色動身返回【{}】，準備洗漱休息", self.dest_name);
                 } else if hour >= 21 || hour < 5 {
-                    return format!("正在{}內室木榻上熟睡安歇，門窗已妥善落栓", leaf);
+                    return format!("正在{}內室木榻上熟睡休息，門窗已妥善落栓", leaf);
                 } else {
                     return if self.stay_activity.contains("安歇")
                         || self.stay_activity.contains("歇息")
@@ -35,7 +35,7 @@ impl NpcGridState {
                     {
                         self.stay_activity.clone()
                     } else {
-                        format!("正在{}屋內燈下收拾器物與家務，準備就寢安歇", leaf)
+                        format!("正在{}屋內燈下收拾器物與家務，準備就寢休息", leaf)
                     };
                 }
             }
@@ -54,7 +54,7 @@ impl NpcGridState {
                 || purpose.contains("回居所")
             {
                 if hour >= 20 || hour < 5 {
-                    format!("正踏著夜色返回【{}】準備安歇", self.dest_name)
+                    format!("正踏著夜色返回【{}】準備就寢休息", self.dest_name)
                 } else {
                     format!("正返回【{}】稍作歇息", self.dest_name)
                 }
