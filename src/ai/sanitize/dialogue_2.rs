@@ -27,24 +27,6 @@ fn sanitize_npc_dialogue_part2(mut s: String) -> String {
     if s.contains('剛') {
         s = replace_temporal_gang_chars(&s);
     }
-    for pat in ["\u{5c0f}\u{5e02}", "\u{77ed}\u{5e02}"] {
-        if s.contains(pat) {
-            let mut out = String::with_capacity(s.len() + 8);
-            let mut rest = s.as_str();
-            while let Some(pos) = rest.find(pat) {
-                out.push_str(&rest[..pos]);
-                let after = &rest[pos + pat.len()..];
-                if after.starts_with('集') {
-                    out.push_str("市");
-                } else {
-                    out.push_str("市集");
-                }
-                rest = after;
-            }
-            out.push_str(rest);
-            s = out;
-        }
-    }
     s = replace_clause_initial_temporal_cai(&s);
     let has_ox_mg = s.contains("氧化鎂");
     if has_ox_mg {
