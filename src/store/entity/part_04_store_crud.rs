@@ -430,7 +430,8 @@ impl Store {
             .filter(|e| {
                 e.kind == "npc"
                     && e.vit > 0
-                    && e.grid_x.is_none()
+                    && e.id.starts_with("npc_")
+                    && e.id != "npc_m3_029_pack_runner"
                     && !is_deprecated_npc_id(&e.id)
             })
             .map(|e| e.id.clone())
@@ -810,7 +811,7 @@ impl Store {
         } else {
             slot_idx % 2 == 1
         };
-        let is_daytime = (6..=19).contains(&hour);
+        let is_daytime = (5..=19).contains(&hour);
         let sched_hour = if is_expedition_slot && is_daytime { 10 } else { hour };
         let (dest, _dest_name, _purpose, _stay_activity, stay_ticks) =
             resolve_wenyao_npc_schedule(slot, sched_hour, init_toggle, slot.home_name);

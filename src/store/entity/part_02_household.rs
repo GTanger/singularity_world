@@ -513,6 +513,9 @@ pub fn resident_macro_settlement(entity_id: &str, display_title: &str) -> Option
 }
 
 pub fn wenyao_household_slot_for(entity_id: &str) -> &'static WenyaoHouseholdSlot {
+    if entity_id == "npc_m3_029_pack_runner" {
+        return &WENYAO_HOUSEHOLD_SLOTS[92];
+    }
     if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
         return household_slot_at(idx);
     }
@@ -524,46 +527,41 @@ pub fn wenyao_household_slot_for(entity_id: &str) -> &'static WenyaoHouseholdSlo
         h ^= u64::from(*b);
         h = h.wrapping_mul(0x0100_0000_01b3);
     }
-    if !entity_id.starts_with("npc_") {
-        let target_settlement = resident_macro_settlement(entity_id, "").unwrap_or("文曜");
-        if target_settlement == "文曜" {
-            if let Some((home_room, work_room)) =
-                crate::server::grid_manager::resident_schedule_home_and_work(entity_id)
+    let target_settlement = resident_macro_settlement(entity_id, "").unwrap_or("文曜");
+    if target_settlement == "文曜" {
+        if let Some((home_room, work_room)) =
+            crate::server::grid_manager::resident_schedule_home_and_work(entity_id)
+        {
+            if let Some(slot) = WENYAO_HOUSEHOLD_SLOTS
+                .iter()
+                .find(|s| s.home_name == home_room && s.work_name == work_room)
             {
-                if let Some(slot) = WENYAO_HOUSEHOLD_SLOTS
-                    .iter()
-                    .find(|s| s.home_name == home_room && s.work_name == work_room)
-                {
-                    return slot;
-                }
-                if let Some(slot) = WENYAO_HOUSEHOLD_SLOTS
-                    .iter()
-                    .find(|s| s.home_name == home_room)
-                {
-                    return slot;
-                }
+                return slot;
             }
-            return &WENYAO_HOUSEHOLD_SLOTS[(h >> 8) as usize % WENYAO_HOUSEHOLD_SLOTS.len()];
-        } else {
-            let matching: Vec<&'static WenyaoHouseholdSlot> =
-                super::outer_households::OUTER_HOUSEHOLD_SLOTS
-                    .iter()
-                    .filter(|s| s.home_name.starts_with(target_settlement))
-                    .collect();
-            if let Some((home_room, _)) =
-                crate::server::grid_manager::resident_schedule_home_and_work(entity_id)
+            if let Some(slot) = WENYAO_HOUSEHOLD_SLOTS
+                .iter()
+                .find(|s| s.home_name == home_room)
             {
-                if let Some(&slot) = matching.iter().find(|s| s.home_name == home_room) {
-                    return slot;
-                }
-            }
-            if !matching.is_empty() {
-                return matching[(h >> 8) as usize % matching.len()];
+                return slot;
             }
         }
-    }
-    if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
-        return household_slot_at(idx);
+        return &WENYAO_HOUSEHOLD_SLOTS[(h >> 8) as usize % WENYAO_HOUSEHOLD_SLOTS.len()];
+    } else {
+        let matching: Vec<&'static WenyaoHouseholdSlot> =
+            super::outer_households::OUTER_HOUSEHOLD_SLOTS
+                .iter()
+                .filter(|s| s.home_name.starts_with(target_settlement))
+                .collect();
+        if let Some((home_room, _)) =
+            crate::server::grid_manager::resident_schedule_home_and_work(entity_id)
+        {
+            if let Some(&slot) = matching.iter().find(|s| s.home_name == home_room) {
+                return slot;
+            }
+        }
+        if !matching.is_empty() {
+            return matching[(h >> 8) as usize % matching.len()];
+        }
     }
     household_slot_at((h >> 8) as usize)
 }
@@ -718,9 +716,21 @@ pub fn resolve_wenyao_npc_schedule(
         let ticks = 18 + (((h.wrapping_add(hour as u64)) % 11) as u8);
         return (dest_coord, dest_name, "晚間休歇".to_string(), stay_act, ticks);
     }
-    let is_home_window = (hour >= 5 && hour < slot.morning_hour)
-        || ((hour >= slot.evening_hour && hour < 21) || hour == 20);
-    if is_home_window {
+    if hour >= 5 && hour < slot.morning_hour {
+        let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
+        let home_leaf = slot.home_name.rsplit('・').next().unwrap_or(slot.home_name);
+        let work_leaf = slot.work_name.rsplit('・').next().unwrap_or(slot.work_name);
+        let morning_act = format!("正在{home_leaf}屋內晨起洗漱、用過早膳，準備動身前往{work_leaf}上工");
+        return (
+            home_coord,
+            slot.home_name.to_string(),
+            "晨起備工".to_string(),
+            morning_act,
+            15 + ((h % 9) as u8),
+        );
+    }
+    let is_evening_rest_window = (hour >= slot.evening_hour && hour < 21) || hour == 20;
+    if is_evening_rest_window {
         let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
         let mut home_act = if slot.home_stay_activity.is_empty() {
             "正在屋內整理器物與家務".to_string()

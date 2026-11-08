@@ -192,10 +192,10 @@ fn build_temporal_and_skepticism_grounding_note(
     let is_street = cell_opt.map(|c| c.is_pure_street_or_courtyard()).unwrap_or_else(|| {
         crate::grid::is_street_or_gate_room_name(room_display_name)
     });
-    let is_open = cell_opt.map(|c| c.is_open_at_hour(hour.max(0) as u32, false)).unwrap_or((6..=19).contains(&hour));
+    let is_open = cell_opt.map(|c| c.is_open_at_hour(hour.max(0) as u32, false)).unwrap_or((5..=19).contains(&hour));
 
     let mut note = String::new();
-    if !(6..=19).contains(&hour) {
+    if !(5..=19).contains(&hour) {
         if is_street {
             note.push_str(&format!(
                 "\n【時辰與公共通道夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。眼下為夜段收市時分，公共街巷與橋樑通道僅作通行、巡防或返家路徑，並無營業商鋪，居民均在收工返家或回舍安歇途中。"
@@ -209,6 +209,10 @@ fn build_temporal_and_skepticism_grounding_note(
                 "\n【時辰與夜段硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，必須如實使用該時辰名稱，不得跨時辰誤報）。眼下為夜段，全城日間商號工坊均已打烊，除值更巡防與夜間接待場所外，居民皆在歇息安頓，言行須符合深夜情境。"
             ));
         }
+    } else if (5..=7).contains(&hour) {
+        note.push_str(&format!(
+            "\n【時辰與拂曉晨起硬約束】當前真實時刻為 {hour:02} 點（屬{shichen}，拂曉晨間）。此時為清晨早起上工、晨汲洗漱或早市開張時分，絕非「剛收工準備返家睡覺」；言談應符合晨起準備活計或早間當值情境。"
+        ));
     }
 
     if is_street {
@@ -224,6 +228,7 @@ fn build_temporal_and_skepticism_grounding_note(
             "\n【空間機能與時序誠實校準】面對來客詢問所在位置或時段時，必須依據當前場所【{room_display_name}】之現場器物與當前時辰如實應答，言行與現場環境保持一致。"
         ));
     }
+    note.push_str("\n台詞一律使用自然台灣正體中文口語，嚴禁使用「詞兒、這地兒、那地兒、今兒」等北方兒化音，亦不得將口誤疊字硬拗為地方專有用詞。");
     note
 }
 

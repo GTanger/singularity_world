@@ -159,7 +159,7 @@ impl GridCell {
     }
 
     pub fn is_open_at_hour(&self, hour: u32, is_night_duty_role: bool) -> bool {
-        if (6..=19).contains(&hour) {
+        if (5..=19).contains(&hour) {
             true
         } else {
             self.is_private_residence()

@@ -65,7 +65,7 @@ impl Store {
             || slot.work_name.contains("燈塔")
             || slot.brief_tag.contains("守更")
             || slot.brief_tag.contains("夜巡");
-        if !(6..=19).contains(&game_hour)
+        if !(5..=19).contains(&game_hour)
             && !is_night_duty_role
             && state.dest != (slot.home_x, slot.home_y)
         {
@@ -377,7 +377,7 @@ impl Store {
             let time_bucket = (now_unix / 20) as u64;
 
             // (A0) 若此人正參與「合社獵團／自主圍獵小隊（`LIVE_HUNTING_PARTIES`）」，直接由小隊共識板同步四面合圍戰術站位與階段行動！
-            if (6..=19).contains(&game_hour)
+            if (5..=19).contains(&game_hour)
                 && let Some(parties) = LIVE_HUNTING_PARTIES.try_read()
             {
                 for party in parties.values() {

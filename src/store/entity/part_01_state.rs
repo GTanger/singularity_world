@@ -14,7 +14,7 @@ pub struct NpcGridState {
 impl NpcGridState {
     pub fn current_activity(&self) -> String {
         let hour = crate::game::current_game_hour();
-        if !(6..=19).contains(&hour) {
+        if !(5..=19).contains(&hour) {
             let is_night_venue = [
                 "旅社", "客舍", "行館", "驛館", "通鋪", "歇舍", "哨", "巡防", "守更", "鐘樓", "燈塔",
             ]

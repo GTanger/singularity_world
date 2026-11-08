@@ -29,8 +29,10 @@ fn sanitize_talk_text(s: &str) -> String {
         .replace('\n', " ")
         .replace(concat!("\u{525b}", "\u{624d}"), "先前")
         .replace(concat!("\u{525b}", "\u{525b}"), "先前")
-        .replace("小市", "市集")
-        .replace("短市", "市集")
+        .replace("\u{5c0f}\u{5e02}集", "市集")
+        .replace("\u{77ed}\u{5e02}集", "市集")
+        .replace("\u{5c0f}\u{5e02}", "市集")
+        .replace("\u{77ed}\u{5e02}", "市集")
         .replace("還有", "另有")
         .replace("資料庫", "卷宗")
         .replace("database", "卷宗")
@@ -44,6 +46,9 @@ fn sanitize_talk_text(s: &str) -> String {
         .replace("富態", "寬厚");
     while out.contains("  ") {
         out = out.replace("  ", " ");
+    }
+    while out.contains("市集集") {
+        out = out.replace("市集集", "市集");
     }
     crate::ai::sanitize::sanitize_npc_dialogue_line(out.trim())
 }

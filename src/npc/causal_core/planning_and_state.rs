@@ -136,7 +136,7 @@ pub fn plan_next_causal_action(
     if state.stress >= 72 {
         state.stress_break_active = true;
     }
-    let is_night_hour = !(6..=19).contains(&hour);
+    let is_night_hour = !(5..=19).contains(&hour);
     let is_night_duty = role_hint.contains("守更")
         || role_hint.contains("夜巡")
         || role_hint.contains("哨")
@@ -151,7 +151,7 @@ pub fn plan_next_causal_action(
         DecisionImageKind::Eat
     } else if state.thirst >= 62 || (matches!(hour, 10 | 15) && state.thirst >= 38) {
         DecisionImageKind::Drink
-    } else if state.fatigue >= 68 || state.stress >= 76 || !(6..=19).contains(&hour) {
+    } else if state.fatigue >= 68 || state.stress >= 76 || !(5..=19).contains(&hour) {
         DecisionImageKind::SleepOrRest
     } else if vessel_worn {
         DecisionImageKind::MendOrEquip
@@ -162,7 +162,7 @@ pub fn plan_next_causal_action(
         && (7..=19).contains(&hour)
     {
         DecisionImageKind::WorkOrTrade
-    } else if (effective_mg <= 4 && (6..=19).contains(&hour)) || (8..=17).contains(&hour) {
+    } else if (effective_mg <= 4 && (5..=19).contains(&hour)) || (8..=17).contains(&hour) {
         DecisionImageKind::WorkOrTrade
     } else {
         DecisionImageKind::InteractOrUnwind

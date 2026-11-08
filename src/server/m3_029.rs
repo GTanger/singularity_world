@@ -85,6 +85,13 @@ pub(crate) fn shared_economy_echo(object_id: &str, states: &[String]) -> Option<
 
 /// 正式 NPC 市場搬貨 tick：取得蘆草、交付市集、留下倉棚回聲。
 pub(crate) fn run_pack_runner_tick(now_unix: i64) -> Option<MarketRunnerTick> {
+    #[cfg(not(test))]
+    {
+        let hour = crate::game::current_game_hour();
+        if !(5..=19).contains(&hour) {
+            return None;
+        }
+    }
     ensure_pack_runner_entity(now_unix).ok()?;
     let states = pack_runner_states(now_unix);
     if !has_state(&states, RUNNER_HOLDING_REEDS_STATE)
@@ -140,7 +147,7 @@ fn gather_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 0, 0);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "在北岸蘆叢邊挑一束能墊箱的蘆草，下一步要往市集包貨單交",
+        "在三水口北岸蘆叢邊挑一束能墊箱的蘆草，準備交往三水口東街包貨單",
     );
     if let Some(gathered) =
         materials::try_gather_material_for_room_preserving(NORTH_BANK_ROOM_ID, now_unix, 1)
@@ -177,7 +184,7 @@ fn deliver_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 1, 0);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "已把一束蘆草交到市集包貨單，手裡多了幾枚鎂，下一步等倉棚點貨",
+        "已把一束蘆草交到三水口東街包貨單，手裡多了幾枚鎂，下一步等倉棚點貨",
     );
     let has_reeds = db::get_entity(PACK_RUNNER_ID)
         .ok()
@@ -229,7 +236,7 @@ fn move_trace_to_warehouse(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 1, -2);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "站在倉棚點貨牌旁等市集那批貨入冊，下一步看下一輪市集包貨單",
+        "站在倉棚點貨牌旁等三水口東街那批貨入冊，下一步看下一輪包貨單",
     );
     let _ = event::append(
         now_unix,

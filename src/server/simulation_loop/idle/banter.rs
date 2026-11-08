@@ -324,7 +324,7 @@ pub(super) fn reconcile_simulation_errands_and_thoughts(_hour: i32) {
                 .iter()
                 .any(|z| state.origin_name.contains(z));
                 let game_hour = crate::game::current_game_hour();
-                let is_night = !(6..=19).contains(&game_hour);
+                let is_night = !(5..=19).contains(&game_hour);
                 if is_in_wilderness || is_night {
                     state.dest = (slot.home_x, slot.home_y);
                     state.dest_name = slot.home_name.to_string();
