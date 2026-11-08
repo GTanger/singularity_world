@@ -584,7 +584,44 @@ pub(super) fn do_entity_talk(
         sensitivity.push_str(&fact_line);
     }
     let has_prior_session_talk = prior_turn_count > 0;
-    if current_activity.starts_with("正動身前往") {
+    let trimmed_input = player_input.trim();
+    let is_asking_shift_hours = (trimmed_input.contains("幾點")
+        || trimmed_input.contains("何時")
+        || trimmed_input.contains("什麼時候")
+        || trimmed_input.contains("到幾點"))
+        && ["下班", "收工", "上工", "開工", "當值", "休息", "打烊", "歇業", "工作"]
+            .iter()
+            .any(|kw| trimmed_input.contains(kw));
+    if is_asking_shift_hours {
+        let slot = crate::store::wenyao_household_slot_for(target_id);
+        if !sensitivity.is_empty() && !sensitivity.ends_with('\n') {
+            sensitivity.push('\n');
+        }
+        sensitivity.push_str(&format!(
+            "【上下班作息時刻直答指令】來客正在詢問你的上下班（開工／收工）時刻！你每日固定 {:02}:00 上工、傍晚 {:02}:00 收工（下班）。請直接以自然口語明確回答「我每天早上 {} 點上工、傍晚 {} 點收工」（或直接報出 {} 點收工），嚴禁答非所問去報路程步數或只說『才收工』卻不報幾點！",
+            slot.morning_hour,
+            slot.evening_hour,
+            slot.morning_hour,
+            slot.evening_hour,
+            slot.evening_hour
+        ));
+    }
+    let is_asking_where_going = ["去哪", "往哪", "做什麼", "幹嘛", "在忙什麼", "去哪裡", "從哪", "還要走多久", "幾步"]
+        .iter()
+        .any(|kw| trimmed_input.contains(kw));
+    let already_mentioned_transit = session_turns_pre.iter().any(|(_, n_rep)| {
+        ["正趕著", "正往", "才從", "動身", "步就到", "歇腳呢"]
+            .iter()
+            .any(|kw| n_rep.contains(kw))
+    });
+    if already_mentioned_transit && !is_asking_where_going {
+        if !sensitivity.is_empty() && !sensitivity.ends_with('\n') {
+            sensitivity.push('\n');
+        }
+        sensitivity.push_str(&format!(
+            "【多輪對話推進與防鬼打牆複讀鐵律】你在本場前幾句對話中已經向來客交代過自己從何處過來、正趕往何處；本句請 100% 針對來客的新提問（「{trimmed_input}」）直接正面回答，嚴禁在句首或句尾再次重複背誦「才從…出來」、「正趕著回…歇腳」或剩餘步數！"
+        ));
+    } else if current_activity.starts_with("正動身前往") {
         if let Some(spatial_sense) = crate::store::describe_npc_spatial_temporal_state(target_id) {
             if !sensitivity.is_empty() && !sensitivity.ends_with('\n') {
                 sensitivity.push('\n');
@@ -597,7 +634,6 @@ pub(super) fn do_entity_talk(
         }
     }
 
-    let trimmed_input = player_input.trim();
     let recent_turns = get_recent_turns(pid, target_id, 5);
     let effective_user_prompt = if trimmed_input.is_empty() || trimmed_input == "（搭話）" {
         if !recent_turns.is_empty() {
@@ -887,7 +923,9 @@ pub(super) fn do_entity_talk(
 
         match ai_result {
             Ok(raw_reply) => {
-                let reply = if !is_trade_topic && already_mentioned_barter {
+                let reply = if (!is_trade_topic && already_mentioned_barter)
+                    || (already_mentioned_transit && !is_asking_where_going)
+                {
                     strip_repeated_barter_tail(&raw_reply, &session_turns_pre, &obligation_descs)
                 } else {
                     raw_reply

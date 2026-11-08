@@ -304,6 +304,7 @@ impl Store {
                     dest,
                     dest_name,
                     origin_name: slot.home_name.to_string(),
+                    origin_purpose: "居家整頓備工".to_string(),
                     stay_activity,
                     purpose,
                     stay_ticks_remaining: stay_ticks,
@@ -421,10 +422,38 @@ impl Store {
 
     pub fn ensure_household_assignments(&self) {
         let total_slots = total_household_slots_len();
-        if HOUSEHOLD_MEMBER_ASSIGNMENTS.read().len() >= total_slots {
+        if HOUSEHOLD_MEMBER_ASSIGNMENTS.read().len() >= total_slots && self.place_graph.places().next().is_some() {
             return;
         }
-        let mut eligible_entities: Vec<(String, &'static str)> = self
+        let slot_gender_compatible = |slot: &WenyaoHouseholdSlot, is_female: bool| -> bool {
+            let is_feminine_slot = [
+                "繡花圍裙", "繡花小圍裙", "碎花", "髮簪", "木簪", "銀簪", "布裙", "長裙", "百褶裙", "羅裙", "婦人", "姑娘", "婆婆", "娘子",
+            ]
+            .iter()
+            .any(|kw| slot.attire_line.contains(kw) || slot.brief_tag.contains(kw));
+            let is_masculine_slot = ["短髭", "絡腮鬍", "長鬚", "鬍鬚", "老漢", "壯漢"]
+                .iter()
+                .any(|kw| slot.attire_line.contains(kw) || slot.brief_tag.contains(kw));
+            if !is_female && is_feminine_slot {
+                return false;
+            }
+            if is_female && is_masculine_slot {
+                return false;
+            }
+            true
+        };
+        let fallback_settlement_group = |settlement: &str| -> &'static [&'static str] {
+            match settlement {
+                "霜林口" => &["霜林口", "北嶺腳", "老堰頭", "風舶嶼"],
+                "三號坑口" => &["三號坑口", "風櫃尾", "牛埔", "紅土崁"],
+                "大圳頭" => &["大圳頭", "紅土崁", "牛埔", "烏石鼻"],
+                "水尾寮" => &["水尾寮", "烏石鼻", "下營", "風櫃尾"],
+                "下營" => &["下營", "烏石鼻", "風櫃尾", "牛埔"],
+                "南哨" => &["南哨", "風舶角", "風舶嶼", "烏石鼻"],
+                _ => &[],
+            }
+        };
+        let mut eligible_entities: Vec<(String, &'static str, bool)> = self
             .entities
             .values()
             .filter(|e| {
@@ -434,6 +463,7 @@ impl Store {
                     && !is_deprecated_npc_id(&e.id)
             })
             .map(|e| {
+                let is_female = npc_effective_is_female(&e.id, Some(&e.gender));
                 let settlement = e
                     .place_id
                     .as_deref()
@@ -455,7 +485,7 @@ impl Store {
                                 .unwrap_or("文曜")
                         }
                     });
-                (e.id.clone(), settlement)
+                (e.id.clone(), settlement, is_female)
             })
             .collect();
         eligible_entities.sort_by(|a, b| a.0.cmp(&b.0));
@@ -463,23 +493,37 @@ impl Store {
         if map.len() < eligible_entities.len().min(total_slots) {
             map.clear();
             let mut used_slots = vec![false; total_slots];
-            let mut unassigned_ids = Vec::new();
-            for (id, settlement) in eligible_entities.into_iter().take(total_slots) {
-                if let Some(slot_idx) = (0..total_slots).find(|&idx| {
+            let mut unassigned_entities = Vec::new();
+            for (id, settlement, is_female) in eligible_entities.into_iter().take(total_slots) {
+                let exact_gender_match = (0..total_slots).find(|&idx| {
+                    let s = household_slot_at(idx);
                     !used_slots[idx]
-                        && normalize_household_home_settlement(
-                            household_slot_at(idx).home_name,
-                        ) == settlement
-                }) {
+                        && normalize_household_home_settlement(s.home_name) == settlement
+                        && slot_gender_compatible(s, is_female)
+                });
+                let group = fallback_settlement_group(settlement);
+                let group_gender_match = exact_gender_match.or_else(|| {
+                    (0..total_slots).find(|&idx| {
+                        let s = household_slot_at(idx);
+                        let norm = normalize_household_home_settlement(s.home_name);
+                        !used_slots[idx]
+                            && group.contains(&norm)
+                            && slot_gender_compatible(s, is_female)
+                    })
+                });
+                if let Some(slot_idx) = group_gender_match {
                     used_slots[slot_idx] = true;
                     map.insert(id, slot_idx);
                 } else {
-                    unassigned_ids.push(id);
+                    unassigned_entities.push((id, is_female));
                 }
             }
-            let mut free_iter = (0..total_slots).filter(|&idx| !used_slots[idx]);
-            for id in unassigned_ids {
-                if let Some(slot_idx) = free_iter.next() {
+            for (id, is_female) in unassigned_entities {
+                let slot_idx_opt = (0..total_slots)
+                    .find(|&idx| !used_slots[idx] && slot_gender_compatible(household_slot_at(idx), is_female))
+                    .or_else(|| (0..total_slots).find(|&idx| !used_slots[idx]));
+                if let Some(slot_idx) = slot_idx_opt {
+                    used_slots[slot_idx] = true;
                     map.insert(id, slot_idx);
                 }
             }
@@ -509,6 +553,21 @@ impl Store {
             ((slot.home_x, slot.home_y), slot.home_name.to_string())
         }
         crate::npc::causal_core::VenueRequirement::OwnWorkplace => {
+            let hour = crate::game::current_game_hour();
+            let is_night_duty = slot.work_name.contains("守更")
+                || slot.work_name.contains("哨")
+                || slot.work_name.contains("鐘樓")
+                || slot.work_name.contains("燈塔")
+                || slot.brief_tag.contains("守更")
+                || slot.brief_tag.contains("夜巡");
+            let in_shift = if slot.evening_hour > slot.morning_hour {
+                hour >= i32::from(slot.morning_hour) && hour < i32::from(slot.evening_hour)
+            } else {
+                hour >= i32::from(slot.morning_hour) || hour < i32::from(slot.evening_hour)
+            };
+            if !in_shift && !is_night_duty {
+                return ((slot.home_x, slot.home_y), slot.home_name.to_string());
+            }
             if slot.brief_tag.starts_with("入山百工・") {
                 let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
                 let (pt, actual_zone, sub) =
@@ -935,6 +994,7 @@ impl Store {
                 dest: dest_coord,
                 dest_name,
                 origin_name,
+                origin_purpose: "居家整頓備工".to_string(),
                 stay_activity,
                 purpose: chosen.action_title.to_string(),
                 stay_ticks_remaining,

@@ -419,6 +419,12 @@ pub fn normalize_household_home_settlement(home_name: &str) -> &'static str {
             return s;
         }
     }
+    if home_name.starts_with("雲腰雪林") {
+        return "霜林口";
+    }
+    if home_name.starts_with("青脊山") || home_name.starts_with("青竹坪") {
+        return "三號坑口";
+    }
     "文曜"
 }
 

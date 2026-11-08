@@ -144,7 +144,7 @@ pub fn strip_repeated_barter_tail(
     ];
 
     const CHORE_REPEAT_MARKERS: &[&str] = &[
-        "得先去", "正要去", "得趕去", "還得去", "正打算去", "手頭還有", "手邊這批", "手邊燈罩",
+        "得先去", "正要去", "得趕去", "還得去", "正打算去", "正趕著", "正往", "手頭還有", "手邊這批", "手邊燈罩",
     ];
 
     let chars: Vec<char> = raw.chars().collect();

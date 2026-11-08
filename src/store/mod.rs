@@ -253,9 +253,9 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         }
     };
 
-    // 3. 優先從 PostgreSQL 載入；若 DB 為空則從 JSON 種子灌入
+    // 3. 先載入場所拓撲圖（確保 load_entities_from_pg 內 ensure_household_assignments 可查詢 get_place），再優先從 PostgreSQL 載入實體
+    let _ = s.reload_place_graph();
     let pg_loaded = s.load_entities_from_pg();
-
     if pg_loaded {
         tracing::info!("[store] 資料從 PostgreSQL 載入（主資料源）");
         // entity_rooms 需驗證房間存在性（房間可能被編輯器刪除）

@@ -46,6 +46,7 @@ impl Store {
                 dest,
                 dest_name,
                 origin_name: slot.home_name.to_string(),
+                origin_purpose: "居家整頓備工".to_string(),
                 stay_activity,
                 purpose,
                 stay_ticks_remaining: stay_ticks,
@@ -65,16 +66,30 @@ impl Store {
             || slot.work_name.contains("燈塔")
             || slot.brief_tag.contains("守更")
             || slot.brief_tag.contains("夜巡");
-        if !(5..=19).contains(&game_hour)
+        let is_within_shift = if slot.evening_hour > slot.morning_hour {
+            game_hour >= i32::from(slot.morning_hour) && game_hour < i32::from(slot.evening_hour)
+        } else {
+            game_hour >= i32::from(slot.morning_hour) || game_hour < i32::from(slot.evening_hour)
+        };
+        let is_off_shift_at_workplace = !is_within_shift
             && !is_night_duty_role
-            && state.dest != (slot.home_x, slot.home_y)
+            && state.dest == (slot.work_x, slot.work_y)
+            && (slot.work_x, slot.work_y) != (slot.home_x, slot.home_y);
+        if is_off_shift_at_workplace
+            || (!(5..=19).contains(&game_hour)
+                && !is_night_duty_role
+                && state.dest != (slot.home_x, slot.home_y))
         {
-            let is_permitted_venue = grid
-                .get(SquareCoord::new(state.dest.0, state.dest.1))
-                .is_some_and(|c| {
-                    c.is_night_hospitality_or_watch_venue()
-                        || (game_hour == 20 && c.is_evening_dining_or_bath_venue())
-                });
+            let is_expedition_traveler = slot.brief_tag.starts_with("古道行旅・")
+                || slot.brief_tag.starts_with("合社獵團・")
+                || slot.brief_tag.starts_with("入山百工・");
+            let is_permitted_venue = !is_off_shift_at_workplace
+                && grid
+                    .get(SquareCoord::new(state.dest.0, state.dest.1))
+                    .is_some_and(|c| {
+                        (is_expedition_traveler && c.is_night_hospitality_or_watch_venue())
+                            || (game_hour == 20 && c.is_evening_dining_or_bath_venue())
+                    });
             if !is_permitted_venue {
                 let (sched_dest, sched_name, sched_purpose, sched_activity, _) =
                     Self::resolve_wenyao_npc_schedule(slot, game_hour, false, &state.dest_name);
@@ -363,6 +378,7 @@ impl Store {
                 );
             }
             let prev_loc_name = state.dest_name.clone();
+            let prev_purpose = state.purpose.clone();
             let mut obligation_handled = false;
 
             let afflictions = crate::pg::living_world::get_entity_afflictions(entity_id);
@@ -420,6 +436,7 @@ impl Store {
                     res_seed.wrapping_add(time_bucket),
                 );
                 state.origin_name = prev_loc_name;
+                state.origin_purpose = prev_purpose;
                 state.dest = next_coord;
                 state.dest_name = next_dest_name;
                 state.purpose = chosen_opt.action_title.to_string();

@@ -4,6 +4,7 @@ pub struct NpcGridState {
     pub dest: (i32, i32),
     pub dest_name: String,
     pub origin_name: String,
+    pub origin_purpose: String,
     pub stay_activity: String,
     pub purpose: String,
     pub stay_ticks_remaining: u8,
@@ -112,7 +113,12 @@ impl NpcGridState {
             let est_game_mins = (steps_left * 6).max(6);
             let origin_clause =
                 if !self.origin_name.trim().is_empty() && self.origin_name != self.dest_name {
-                    format!("自【{}】動身，", self.origin_name)
+                    let op = self.origin_purpose.trim();
+                    if !op.is_empty() {
+                        format!("自【{}】（上一站於該處{}）動身，", self.origin_name, op)
+                    } else {
+                        format!("自【{}】動身，", self.origin_name)
+                    }
                 } else {
                     String::new()
                 };

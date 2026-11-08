@@ -274,8 +274,10 @@ pub fn format_schedule_window_sense(
                 format!("距 {:02}:00 晨間開工尚有約 {} 小時", eh % 24, (to_work_m + 30) / 60)
             };
             return format!(
-                "本段為晨起備工時段 05:00–{:02}:00（昨夜已在居所睡過休息，{}，{}，並非夜間或半夜趕工）",
+                "本段為晨起備工時段 05:00–{:02}:00（你平日固定 {:02}:00 上工、傍晚 {:02}:00 收工下班；昨夜已在居所睡過休息，{}，{}，並非夜間或半夜趕工）",
                 eh % 24,
+                eh % 24,
+                sh,
                 prep_desc,
                 start_desc
             );
@@ -293,8 +295,12 @@ pub fn format_schedule_window_sense(
             ((remain_m + 30) / 60).max(1)
         );
         return format!(
-            "本段為收工休整與夜間休息時段 {:02}:00–05:00（{}，{}）",
-            sh, rest_elapsed_desc, next_work_desc
+            "本段為收工休整與夜間休息時段 {:02}:00–05:00（你平日固定 {:02}:00 上工、傍晚 {:02}:00 收工下班；{}，{}）",
+            sh,
+            eh % 24,
+            sh,
+            rest_elapsed_desc,
+            next_work_desc
         );
     }
     let elapsed_desc = if elapsed_m < 30 {
@@ -318,7 +324,9 @@ pub fn format_schedule_window_sense(
         )
     };
     format!(
-        "本段當值作息 {:02}:00–{:02}:00（{}，{}）",
+        "本段當值作息 {:02}:00–{:02}:00（你平日固定 {:02}:00 上工、傍晚 {:02}:00 收工下班；{}，{}）",
+        sh,
+        eh % 24,
         sh,
         eh % 24,
         elapsed_desc,

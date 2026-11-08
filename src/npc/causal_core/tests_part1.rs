@@ -645,3 +645,33 @@
         }
     }
 
+    #[test]
+    fn test_off_shift_excludes_workplace_bench_and_preserves_origin_purpose() {
+        let (_state, chosen) = plan_next_causal_action(
+            "npc_test_off_shift_18",
+            "三水外坊・北灣臨水旅社",
+            "文曜",
+            42,
+            "文曜・三水口水岸公井",
+            1,
+            false,
+            false,
+            25,
+            18,
+            None,
+        );
+        assert_ne!(
+            chosen.venue_req,
+            VenueRequirement::OwnWorkplace,
+            "Off-shift NPC at 18:00 must not be routed back to OwnWorkplace to rest on workbench"
+        );
+        assert_ne!(chosen.code, "rest_lean_on_workbench_catch_breath");
+
+        let sched_sense = crate::game::format_schedule_window_sense(18, 7, 18, 41);
+        assert!(
+            sched_sense.contains("07:00 上工") && sched_sense.contains("18:00 收工下班"),
+            "Schedule sense must explicitly state daily start and end shift hours: {}",
+            sched_sense
+        );
+    }
+

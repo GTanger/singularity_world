@@ -136,6 +136,14 @@ pub fn plan_next_causal_action(
     if state.stress >= 72 {
         state.stress_break_active = true;
     }
+    let slot = crate::store::wenyao_household_slot_for(entity_id);
+    let shift_start = (slot.morning_hour as u32).clamp(5, 10);
+    let shift_end = (slot.evening_hour as u32).clamp(16, 22);
+    let is_within_work_shift = if shift_end > shift_start {
+        hour >= shift_start && hour < shift_end
+    } else {
+        hour >= shift_start || hour < shift_end
+    };
     let is_night_hour = !(5..=19).contains(&hour);
     let is_night_duty = role_hint.contains("守更")
         || role_hint.contains("夜巡")
@@ -143,6 +151,7 @@ pub fn plan_next_causal_action(
         || role_hint.contains("更夫")
         || role_hint.contains("鐘樓")
         || role_hint.contains("燈塔");
+    let is_off_shift = !is_within_work_shift && !is_night_duty;
     let image = if has_affliction {
         DecisionImageKind::HealOrTend
     } else if is_night_hour && !is_night_duty {
@@ -151,18 +160,18 @@ pub fn plan_next_causal_action(
         DecisionImageKind::Eat
     } else if state.thirst >= 62 || (matches!(hour, 10 | 15) && state.thirst >= 38) {
         DecisionImageKind::Drink
-    } else if state.fatigue >= 68 || state.stress >= 76 || !(5..=19).contains(&hour) {
+    } else if state.fatigue >= 68 || state.stress >= 76 || is_off_shift {
         DecisionImageKind::SleepOrRest
-    } else if vessel_worn {
+    } else if vessel_worn && !is_off_shift {
         DecisionImageKind::MendOrEquip
-    } else if (scarce_ratio >= 1.25 || scarce_label.is_some())
+    } else if !is_off_shift
+        && (scarce_ratio >= 1.25 || scarce_label.is_some())
         && state.hunger < 68
         && state.thirst < 68
         && state.fatigue < 70
-        && (7..=19).contains(&hour)
     {
         DecisionImageKind::WorkOrTrade
-    } else if (effective_mg <= 4 && (5..=19).contains(&hour)) || (8..=17).contains(&hour) {
+    } else if !is_off_shift && (effective_mg <= 4 || (8..=17).contains(&hour)) {
         DecisionImageKind::WorkOrTrade
     } else {
         DecisionImageKind::InteractOrUnwind
@@ -191,17 +200,18 @@ pub fn plan_next_causal_action(
             })
             .collect()
     };
-    if is_night_hour && !is_night_duty && image == DecisionImageKind::SleepOrRest {
+    if (is_night_hour || is_off_shift) && !is_night_duty {
         let night_rest_filtered: Vec<&'static ActionOptionDef> = eligible
             .iter()
             .copied()
             .filter(|opt| {
-                !matches!(
-                    opt.code,
-                    "rest_lean_on_workbench_catch_breath"
-                        | "rest_sit_under_shade_wipe_sweat"
-                        | "rest_meditate_and_gaze_water_on_bridge"
-                )
+                opt.venue_req != VenueRequirement::OwnWorkplace
+                    && !matches!(
+                        opt.code,
+                        "rest_lean_on_workbench_catch_breath"
+                            | "rest_sit_under_shade_wipe_sweat"
+                            | "rest_meditate_and_gaze_water_on_bridge"
+                    )
             })
             .collect();
         if !night_rest_filtered.is_empty() {

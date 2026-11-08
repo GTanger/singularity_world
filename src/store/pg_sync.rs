@@ -382,11 +382,11 @@ impl Store {
                 let eq_inv_changed = super::entity::sanitize_npc_equipment_and_inventory(e);
 
                 let slot = crate::store::wenyao_household_slot_for(&e.id);
-                let home_settlement = slot.home_name.split('・').next().unwrap_or("文曜");
+                let home_settlement = super::entity::normalize_household_home_settlement(slot.home_name);
                 let mut act_changed = false;
-                if e.x == 0
-                    && e.y == 0
-                    && (slot.home_x.abs() + slot.home_y.abs()) > 40
+                let dist_from_home = (e.x - slot.home_x).abs() + (e.y - slot.home_y).abs();
+                if (e.x == 0 && e.y == 0 && (slot.home_x.abs() + slot.home_y.abs()) > 20)
+                    || dist_from_home > 45
                 {
                     e.x = slot.home_x;
                     e.y = slot.home_y;
@@ -394,22 +394,20 @@ impl Store {
                     e.grid_y = Some(slot.home_y);
                     act_changed = true;
                 }
-                const ALL_SETTLEMENTS: &[&str] = &[
-                    "文曜", "風舶角", "大圳頭", "半嶺鎮", "南哨", "老堰頭", "北嶺腳", "霜林口",
-                    "風櫃尾", "烏石鼻", "牛埔", "紅土崁", "三號坑口", "水尾寮", "下營",
-                ];
-                let cross_settlement_act = ALL_SETTLEMENTS.iter().any(|&st| {
-                    !home_settlement.starts_with(st) && e.current_activity.contains(st)
-                });
+                let venue_name = if slot.work_name.is_empty() {
+                    slot.home_name
+                } else {
+                    slot.work_name
+                };
+                let expected_venue_settlement = super::entity::normalize_household_home_settlement(venue_name);
+                let cross_settlement_act = dist_from_home > 45
+                    || (!e.current_activity.contains(home_settlement)
+                        && !e.current_activity.contains(expected_venue_settlement)
+                        && !e.current_activity.contains(venue_name));
                 if cross_settlement_act
                     || e.current_activity.ends_with("專注勞作")
                     || e.current_activity.trim().is_empty()
                 {
-                    let venue_name = if slot.work_name.is_empty() {
-                        slot.home_name
-                    } else {
-                        slot.work_name
-                    };
                     e.current_activity = format!("在{}推進{}工序", venue_name, slot.work_purpose);
                     act_changed = true;
                 }
