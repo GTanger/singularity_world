@@ -585,7 +585,7 @@ mod tests_1 {
     fn m3_029_pack_runner_delivery_counts_toward_shared_reed_demand() {
         let npc_reed_action = vec!["m3_027_market_reed_buyer|SellReeds".to_string()];
         let npc_reed_states = vec![
-            "m3_029_pack_runner|reed_delivered_to_short_market".to_string(),
+            "m3_029_pack_runner|reed_delivered_to_ferry_market".to_string(),
             M3_027_REED_SOLD_STATE.to_string(),
         ];
         assert_eq!(

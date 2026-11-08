@@ -35,6 +35,33 @@ use super::{
     get_active_thoughts, get_npc_person_display_name, get_personality_for_entity, get_recent_events,
 };
 
+fn format_npc_event_for_identity_prompt(event_type: &str, raw_payload: &str) -> Option<String> {
+    let p = raw_payload.trim();
+    if p.is_empty()
+        || p.contains('|')
+        || p.contains('｜')
+        || p.contains(':')
+        || p.contains('_')
+        || p.chars().any(|c| c.is_ascii_alphabetic())
+        || p.chars().all(|c| c.is_ascii_digit() || c == '-')
+        || p.contains("青籠關")
+        || p.contains("林緣聚地")
+    {
+        return None;
+    }
+    match event_type {
+        "trade" | "work" | "contact" => Some(p.to_string()),
+        "talk" => Some(format!("與{p}寒暄交談")),
+        "npc_workshop_craft"
+        | "refine_fiber"
+        | "refine_hide_fish"
+        | "refine_herb"
+        | "refine_mineral" => Some(format!("親手製成「{p}」")),
+        "npc_workshop_mutation" | "craft_mutation" => Some(format!("造物凝出「{p}」")),
+        _ => None,
+    }
+}
+
 /// 組裝 NPC 給 LLM 用的身份描述：真名、職稱、場所、性格、心境、最近事件、摘要（對齊既有 `BuildIdentity`）。
 #[must_use]
 pub fn build_identity(entity_id: &str) -> String {
@@ -292,22 +319,11 @@ pub fn build_identity(entity_id: &str) -> String {
         result.push_str("你最近的經歷動向：");
         let header_len = result.len();
         for e in evts {
-            if e.payload.is_empty()
-                || e.payload.chars().all(|c| c.is_ascii_digit() || c == '-')
-                || e.payload.contains("npc_")
-                || e.payload.contains("wt-")
-                || e.payload.contains("wt_")
-                || e.payload.contains("grid:")
-                || e.payload.contains("ambient_")
-                || e.payload.contains("shanhai_")
-                || e.payload.contains("青籠關")
-                || e.payload.contains("林緣聚地")
-            {
+            let Some(formatted) = format_npc_event_for_identity_prompt(&e.event_type, &e.payload) else {
                 continue;
-            }
-            let sanitized = e.payload.replace(['|', '｜'], "・");
+            };
             let tag = crate::store::format_short_relative_time(e.at, now_unix);
-            result.push_str(&format!("{tag}{sanitized}；"));
+            result.push_str(&format!("{tag}{formatted}；"));
         }
         if result.len() == header_len {
             result.truncate(mark);

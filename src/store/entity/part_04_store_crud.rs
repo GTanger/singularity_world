@@ -424,28 +424,64 @@ impl Store {
         if HOUSEHOLD_MEMBER_ASSIGNMENTS.read().len() >= total_slots {
             return;
         }
-        let mut eligible_ids: Vec<String> = self
+        let mut eligible_entities: Vec<(String, &'static str)> = self
             .entities
             .values()
             .filter(|e| {
                 e.kind == "npc"
                     && e.vit > 0
                     && e.id.starts_with("npc_")
-                    && e.id != "npc_m3_029_pack_runner"
                     && !is_deprecated_npc_id(&e.id)
             })
-            .map(|e| e.id.clone())
+            .map(|e| {
+                let settlement = e
+                    .place_id
+                    .as_deref()
+                    .and_then(|pid| self.get_place(pid))
+                    .map(|pl| {
+                        if pl.zone == "wt-c-wenyao" || pl.name.starts_with("文曜") {
+                            "文曜"
+                        } else {
+                            let mapped =
+                                crate::pg::living_world::peninsula_market_settlement_name(&pl.name);
+                            normalize_household_home_settlement(mapped)
+                        }
+                    })
+                    .unwrap_or_else(|| {
+                        if e.x.abs() <= 20 && e.y.abs() <= 20 {
+                            "文曜"
+                        } else {
+                            resident_macro_settlement(&e.id, &e.display_title)
+                                .unwrap_or("文曜")
+                        }
+                    });
+                (e.id.clone(), settlement)
+            })
             .collect();
-        eligible_ids.sort();
+        eligible_entities.sort_by(|a, b| a.0.cmp(&b.0));
         let mut map = HOUSEHOLD_MEMBER_ASSIGNMENTS.write();
-        if map.len() < eligible_ids.len().min(total_slots) {
+        if map.len() < eligible_entities.len().min(total_slots) {
             map.clear();
-            for (idx, id) in eligible_ids
-                .into_iter()
-                .take(total_slots)
-                .enumerate()
-            {
-                map.insert(id, idx);
+            let mut used_slots = vec![false; total_slots];
+            let mut unassigned_ids = Vec::new();
+            for (id, settlement) in eligible_entities.into_iter().take(total_slots) {
+                if let Some(slot_idx) = (0..total_slots).find(|&idx| {
+                    !used_slots[idx]
+                        && normalize_household_home_settlement(
+                            household_slot_at(idx).home_name,
+                        ) == settlement
+                }) {
+                    used_slots[slot_idx] = true;
+                    map.insert(id, slot_idx);
+                } else {
+                    unassigned_ids.push(id);
+                }
+            }
+            let mut free_iter = (0..total_slots).filter(|&idx| !used_slots[idx]);
+            for id in unassigned_ids {
+                if let Some(slot_idx) = free_iter.next() {
+                    map.insert(id, slot_idx);
+                }
             }
         }
     }

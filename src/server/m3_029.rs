@@ -12,13 +12,13 @@ const WAREHOUSE_ROOM_ID: &str = "grid:1:-2";
 const REED_ITEM_ID: &str = "mat_reed_bundle";
 const REED_PAY_MG: i32 = 4;
 
-const M3_027_REED_SOLD_STATE: &str = "m3_027_short_market|sold_reed_bundle";
+const M3_027_REED_SOLD_STATE: &str = "m3_027_ferry_market|sold_reed_bundle";
 const M3_027_REED_ACTION: &str = "m3_027_market_reed_buyer|SellReeds";
 const RUNNER_GATHER_ACTION: &str = "m3_029_pack_runner|GatherReeds";
 const RUNNER_DELIVER_ACTION: &str = "m3_029_pack_runner|DeliverReeds";
 const RUNNER_WAREHOUSE_ACTION: &str = "m3_029_pack_runner|MoveToWarehouse";
 const RUNNER_HOLDING_REEDS_STATE: &str = "m3_029_pack_runner|holding_reed_bundle";
-const RUNNER_DELIVERED_REEDS_STATE: &str = "m3_029_pack_runner|reed_delivered_to_short_market";
+const RUNNER_DELIVERED_REEDS_STATE: &str = "m3_029_pack_runner|reed_delivered_to_ferry_market";
 const RUNNER_WAREHOUSE_TRACE_STATE: &str = "m3_029_pack_runner|warehouse_trace_logged";
 
 #[derive(Debug, Clone, PartialEq, Eq)]

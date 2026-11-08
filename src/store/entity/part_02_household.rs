@@ -513,9 +513,6 @@ pub fn resident_macro_settlement(entity_id: &str, display_title: &str) -> Option
 }
 
 pub fn wenyao_household_slot_for(entity_id: &str) -> &'static WenyaoHouseholdSlot {
-    if entity_id == "npc_m3_029_pack_runner" {
-        return &WENYAO_HOUSEHOLD_SLOTS[92];
-    }
     if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
         return household_slot_at(idx);
     }
