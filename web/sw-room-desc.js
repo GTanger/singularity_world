@@ -222,6 +222,25 @@
         }
         el.textContent = String(title || '').trim();
         el.hidden = !el.textContent;
+        el.style.cursor = 'pointer';
+        el.title = '點擊檢視或操作當前地塊物件';
+        if (!el._cellObjClickBound) {
+            el._cellObjClickBound = true;
+            el.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                if (Array.isArray(_lastObjects) && _lastObjects.length > 0) {
+                    var primary = _lastObjects[0];
+                    var pid = String(primary.id || primary.object_id || primary.name || '');
+                    if (pid) {
+                        _activeInlineObjId = (_activeInlineObjId === pid) ? '' : pid;
+                        renderL3(_lastTerrainData, _lastDescText, _lastObjects, _lastHarvestables);
+                        if (window.gameSend) {
+                            window.gameSend({ type: 'action', action: 'Look', target_id: pid, object_id: pid });
+                        }
+                    }
+                }
+            });
+        }
         var locatorNode = locatorEl();
         if (locatorNode) {
             locatorNode.textContent = String(locator || '').trim();
@@ -693,6 +712,9 @@
             document.addEventListener('click', function (ev) {
                 if (!_activeInlineObjId) return;
                 var l3 = document.getElementById('sw-l3-terrain');
+                var pNode = placeEl();
+                var isPlayerCell = ev.target && ev.target.closest && ev.target.closest('.sw-cell-player');
+                if (isPlayerCell || (pNode && pNode.contains(ev.target))) return;
                 if (l3 && !l3.contains(ev.target)) {
                     _activeInlineObjId = null;
                     setTimeout(function () {
@@ -800,6 +822,15 @@
         renderL1: renderL1,
         renderL2: renderL2,
         renderL3: renderL3,
+        activateCellObject: function (objId) {
+            if (!objId && Array.isArray(_lastObjects) && _lastObjects.length > 0) {
+                objId = String(_lastObjects[0].id || _lastObjects[0].object_id || _lastObjects[0].name || '');
+            }
+            if (!objId) return '';
+            _activeInlineObjId = String(objId);
+            renderL3(_lastTerrainData, _lastDescText, _lastObjects, _lastHarvestables);
+            return _activeInlineObjId;
+        },
         syncL3Objects: function (objects, harvestables) {
             renderL3(_lastTerrainData, _lastDescText, objects, harvestables);
         },

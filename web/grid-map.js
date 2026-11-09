@@ -94,7 +94,7 @@
         'wilderness': '𐡚',
         'forest': 'Φ',
         'woods': 'Φ',
-        'bamboo': 'Φ',
+        'bamboo': '𓐂',
         'forest_heavy': 'Φ',
         'forest_light': 'Φ',
         'jungle': 'Φ',
@@ -163,6 +163,8 @@
     };
     function symbolForCell(cell) {
         if (!cell) return '⋯';
+        var n = String(cell.name || '');
+        if (/[竹篁]/.test(n) && (!cell.symbol || cell.symbol === 'Φ')) return '𓐂';
         if (cell.symbol) return cell.symbol;
         var k = (cell.kind || cell.terrain || '').toLowerCase();
         return TERRAIN_SYMBOLS[k] || '⋯';
@@ -190,7 +192,8 @@
         if (/[山峰崖嶺壁丘崗]/.test(n)) return '⛰︎';
         if (/[洞窟穴礦谷坑]/.test(n)) return '△';
         if (/[塔樓殘跡廢壘]/.test(n)) return '∆';
-        if (/[林森樹木竹林篁]/.test(n)) return 'Φ';
+        if (/[竹篁]/.test(n)) return '𓐂';
+        if (/[林森樹木]/.test(n)) return 'Φ';
         if (/[草野牧疇]/.test(n)) return '𐡚';
         if (/[牆壁城垣關隘砦]/.test(n)) return '■';
         if (/[欄籬柵垛]/.test(n)) return '≠';
@@ -230,6 +233,32 @@
     }
 
     var EXACT_SHORT_LABELS = {
+        '平原伏流河道': '伏流河道',
+        '北澗卵石溪床': '卵石溪床',
+        '北溪上游山澗': '上游山澗',
+        '南側平原溪流': '平原溪流',
+        '南坑礫石山澗': '礫石山澗',
+        '西側深水外海': '深水外海',
+        '濱海蘆葦泥澤': '蘆葦泥澤',
+        '潮間沙礫海灘': '沙礫海灘',
+        '平原菅芒草海': '菅芒草海',
+        '海濱砂質平地': '砂質平地',
+        '海濱防風雜木林': '防風木林',
+        '西麓刺竹密林': '刺竹密林',
+        '高台紅土竹林': '紅土竹林',
+        '西麓坡腳竹林': '坡腳竹林',
+        '西麓紅土緩坡': '紅土緩坡',
+        '坡腳紅土旱坪': '紅土旱坪',
+        '山腰崩塌陡崖': '崩塌陡崖',
+        '山腰樟竹混林': '樟竹混林',
+        '山腰紅土礫坡': '紅土礫坡',
+        '山腰向陽苦楝林': '向陽苦楝',
+        '稜線雲霧巨木林': '雲霧巨林',
+        '稜線風化礫石嶺': '風化礫嶺',
+        '稜頂迎風草坡': '迎風草坡',
+        '東麓盆地溪流': '東麓溪流',
+        '東坡闊葉雜木林': '闊葉木林',
+        '東坡紅土階地': '紅土階地',
         '下營邊貿坪': '邊貿坪',
         '下營・下營邊貿坪': '邊貿坪',
         '下營・幽深籠林': '幽深籠林',
@@ -1428,7 +1457,36 @@
         '水尾寮浮水蘆荻安樂居': '蘆荻安居',
         '浮水蘆荻安樂居': '蘆荻安居',
         '三水匯流大石橋': '三水石橋',
-        '文曜・三水匯流大石橋': '三水石橋'
+        '文曜・三水匯流大石橋': '三水石橋',
+        '刺竹伏流坪': '伏流竹坪',
+        '伏流卵石灘': '伏流卵灘',
+        '伏流冷泉眼': '伏流冷泉',
+        '北澗竹林坡': '北澗竹坡',
+        '南坡紅土坪': '南坡紅土',
+        '西緣巨竹林': '西緣巨竹',
+        '東坡新筍林': '東坡筍林',
+        '西北竹蔭窪地': '竹蔭窪地',
+        '西北腐殖窪地': '腐殖窪地',
+        '西南竹林緩坡': '西南竹坡',
+        '西南竹鞭緩坡': '西南竹鞭',
+        '西崖礫石台': '西崖礫台',
+        '東坡竹隙緩谷': '竹隙緩谷',
+        '東北溪畔竹林': '溪畔竹林',
+        '東北溪畔芋叢': '溪畔芋叢',
+        '東南樟竹混林': '樟竹混林',
+        '東南百年樟林': '百年樟林',
+        '紅土礫石長坡': '紅土長坡',
+        '北澗卵石淺灘': '北澗淺灘',
+        '向陽樟木緩坡': '樟木緩坡',
+        '赤土礫石峭壁': '赤土峭壁',
+        '北溪紅土峽谷': '紅土峽谷',
+        '苦楝硬木陡坡': '苦楝陡坡',
+        '雲霧巨木稜線': '雲霧稜線',
+        '稜北湧泉深潭': '湧泉深潭',
+        '南稜望海岩峰': '望海岩峰',
+        '濱海濃霧深澤': '濃霧深澤',
+        '密生倒鉤竹海': '倒鉤竹海',
+        '險峻紅土斷崖': '險峻斷崖'
     };
 
     function shortPlaceLabel(rawName, fallbackDir) {
@@ -1994,7 +2052,7 @@
             div.title = cellTitle;
 
             var symSpan = document.createElement('span');
-            symSpan.className = 'sw-cell-sym';
+            symSpan.className = 'sw-cell-sym' + (item.char === '𓐂' ? ' sw-sym-bamboo' : '');
             symSpan.textContent = item.char;
             div.appendChild(symSpan);
 
@@ -2041,11 +2099,15 @@
                             window.gameSend({ type: 'move', direction: '進' });
                             return;
                         }
-                        if (window.SwLog && window.SwLog.appendLog) {
-                            window.SwLog.appendLog('你駐足環顧四周，審視當前地界之風物與動靜。');
+                        var primaryObj = (Array.isArray(mapData.objects) && mapData.objects.length > 0) ? mapData.objects[0] : null;
+                        var primaryObjId = primaryObj ? String(primaryObj.id || primaryObj.object_id || primaryObj.name || '') : '';
+                        if (primaryObjId && window.SwRoomDesc && typeof window.SwRoomDesc.activateCellObject === 'function') {
+                            window.SwRoomDesc.activateCellObject(primaryObjId);
                         }
-                        if (window.SwObjectList && window.SwObjectList.appendCurrentExitsToLog) {
-                            window.SwObjectList.appendCurrentExitsToLog();
+                        if (primaryObjId && window.gameSend) {
+                            window.gameSend({ type: 'action', action: 'Look', target_id: primaryObjId, object_id: primaryObjId });
+                        } else if (window.SwLog && window.SwLog.appendLog) {
+                            window.SwLog.appendLog('你駐足環顧四周，審視當前地界之風物與動靜。');
                         }
                         if (window.myPlayerId && window.gameSend) {
                             window.gameSend({ type: 'get_entity_status', entity_id: window.myPlayerId });
@@ -2053,6 +2115,9 @@
                         return;
                     }
                     if (Math.abs(targetX - px) === 1 && Math.abs(targetY - py) === 1) {
+                        if (window.gameSend) {
+                            window.gameSend({ type: 'action', action: 'Look', target_id: 'cell:' + targetX + ',' + targetY, object_id: 'cell:' + targetX + ',' + targetY });
+                        }
                         if (window.SwLog && window.SwLog.appendLog) {
                             window.SwLog.appendLog('斜向不可直行，移動僅能依東、西、南、北正向行進。');
                         }
@@ -2078,6 +2143,9 @@
                             window.gameSend(payload);
                         }
                     } else {
+                        if (window.gameSend) {
+                            window.gameSend({ type: 'action', action: 'Look', target_id: 'cell:' + targetX + ',' + targetY, object_id: 'cell:' + targetX + ',' + targetY });
+                        }
                         var tName = (targetCell && targetCell.name) || targetLbl || '地勢阻隔';
                         var tSym = targetChar || '·';
                         if (window.SwLog && window.SwLog.appendLog) {
@@ -2114,7 +2182,7 @@
     // ── 行旅足跡儲存與管理 ───────────────────────────────────────────
     function getWalkedStorageKey() {
         var pid = window.myPlayerId || (mapData && mapData.myPlayerId) || 'default';
-        return 'sw_walked_map_v1_' + pid;
+        return 'sw_walked_map_terrain_v5_' + pid;
     }
 
     function loadWalkedStore() {
@@ -2357,7 +2425,7 @@
                 div.className = cls;
 
                 var symSpan = document.createElement('span');
-                symSpan.className = 'wm-sym';
+                symSpan.className = 'wm-sym' + (sym === '𓐂' ? ' sw-sym-bamboo' : '');
                 symSpan.textContent = sym;
                 div.appendChild(symSpan);
 
@@ -2693,77 +2761,6 @@
         // 百工開拓快捷按鈕
         if (pioneerSpan) {
             pioneerSpan.innerHTML = '';
-            if (!isTownOrBuilding) {
-                if (currentSymbol === 'Φ') {
-                    var logBtn = document.createElement('button');
-                    logBtn.type = 'button';
-                    logBtn.className = 'sw-pioneer-btn';
-                    logBtn.textContent = '伐木取材（Φ）';
-                    logBtn.addEventListener('click', function () {
-                        var targetCoord = { x: px, y: py };
-                        if (window.SwOpenObjectPopover) {
-                            window.SwOpenObjectPopover({ id: '__terrain_pioneer__', label: logBtn.textContent, subtitle: '百工開拓', kind: 'explore', data: {} });
-                        }
-                        if (window.gameSend) window.gameSend({ type: 'mutate_terrain', action: 'chop', x: targetCoord.x, y: targetCoord.y });
-                    });
-                    pioneerSpan.appendChild(logBtn);
-                } else if (currentSymbol === '𐡚') {
-                    var tillBtn = document.createElement('button');
-                    tillBtn.type = 'button';
-                    tillBtn.className = 'sw-pioneer-btn';
-                    tillBtn.textContent = '墾荒闢壟（≡）';
-                    tillBtn.addEventListener('click', function () {
-                        var targetCoord = { x: px, y: py };
-                        if (window.SwOpenObjectPopover) {
-                            window.SwOpenObjectPopover({ id: '__terrain_pioneer__', label: tillBtn.textContent, subtitle: '百工開拓', kind: 'explore', data: {} });
-                        }
-                        if (window.gameSend) window.gameSend({ type: 'mutate_terrain', action: 'till', x: targetCoord.x, y: targetCoord.y });
-                    });
-                    pioneerSpan.appendChild(tillBtn);
-                } else if (currentSymbol === '≡') {
-                    var plantBtn = document.createElement('button');
-                    plantBtn.type = 'button';
-                    plantBtn.className = 'sw-pioneer-btn';
-                    plantBtn.textContent = '播種育苗（▦）';
-                    plantBtn.addEventListener('click', function () {
-                        var targetCoord = { x: px, y: py };
-                        if (window.SwOpenObjectPopover) {
-                            window.SwOpenObjectPopover({ id: '__terrain_pioneer__', label: plantBtn.textContent, subtitle: '百工開拓', kind: 'explore', data: {} });
-                        }
-                        if (window.gameSend) window.gameSend({ type: 'mutate_terrain', action: 'plant', x: targetCoord.x, y: targetCoord.y });
-                    });
-                    pioneerSpan.appendChild(plantBtn);
-                }
-
-                var orthoNeighbors = [
-                    { dx: 0, dy: 1 }, { dx: 1, dy: 0 },
-                    { dx: 0, dy: -1 }, { dx: -1, dy: 0 }
-                ];
-                var mountainCoord = null;
-                for (var oi = 0; oi < orthoNeighbors.length; oi++) {
-                    var ox = px + orthoNeighbors[oi].dx;
-                    var oy = py + orthoNeighbors[oi].dy;
-                    var oc = cellMap[ox + ',' + oy];
-                    if (oc && symbolForCell(oc) === '⛰︎') {
-                        mountainCoord = { x: ox, y: oy };
-                        break;
-                    }
-                }
-                if (mountainCoord) {
-                    var mineBtn = document.createElement('button');
-                    mineBtn.type = 'button';
-                    mineBtn.className = 'sw-pioneer-btn';
-                    mineBtn.textContent = '開鑿礦道（△）';
-                    mineBtn.addEventListener('click', function () {
-                        var targetCoord = mountainCoord;
-                        if (window.SwOpenObjectPopover) {
-                            window.SwOpenObjectPopover({ id: '__terrain_pioneer__', label: mineBtn.textContent, subtitle: '百工開拓', kind: 'explore', data: {} });
-                        }
-                        if (window.gameSend) window.gameSend({ type: 'mutate_terrain', action: 'mine', x: targetCoord.x, y: targetCoord.y });
-                    });
-                    pioneerSpan.appendChild(mineBtn);
-                }
-            }
         }
     }
 

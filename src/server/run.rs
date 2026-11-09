@@ -40,7 +40,9 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     let sessions = Arc::new(SessionStore::new());
     let state = AppState { hub, sessions, cfg };
     grid_manager::init();
-    crate::game::object_ecology::ensure_ecology_items_in_store();
+    if grid_manager::get_runtime_square_grid().is_some_and(|g| g.has_peninsula_wilderness()) {
+        crate::game::object_ecology::ensure_ecology_items_in_store();
+    }
     spawn_simulation_main_loop(
         Arc::clone(&state.sessions),
         Arc::clone(&state.hub),

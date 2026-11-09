@@ -391,6 +391,29 @@ fn resolve_special_room_object_part2(target: &str) -> Option<crate::model::RoomO
 
 fn resolve_room_object(room_id: &str, target_id: &str) -> Option<crate::model::RoomObject> {
     let target = target_id.trim();
+    if let Some(coord_str) = target.strip_prefix("cell:") {
+        let mut parts = coord_str.split(',');
+        if let (Some(xs), Some(ys)) = (parts.next(), parts.next()) {
+            if let (Ok(cx), Ok(cy)) = (xs.trim().parse::<i32>(), ys.trim().parse::<i32>()) {
+                let neighbor_room = format!("grid:{cx},{cy}");
+                if let Some(cell) = crate::server::grid_manager::get_runtime_grid_cell(
+                    crate::grid::SquareCoord::new(cx, cy),
+                ) {
+                    if let Some(first) = cell.objects.first() {
+                        if let Some(obj) = resolve_grid_scene_object(&neighbor_room, &first.id) {
+                            return Some(obj);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if let Some(obj) = resolve_grid_scene_object(room_id, target_id) {
+        return Some(obj);
+    }
+    if let Some(obj) = crate::grid::resolve_shalu_zhulin_object(target) {
+        return Some(obj);
+    }
     if let Some(obj) = resolve_special_room_object_part1(room_id, target) {
         return Some(obj);
     }

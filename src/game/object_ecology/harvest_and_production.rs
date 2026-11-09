@@ -745,6 +745,9 @@ pub fn run_npc_autonomous_production_step(
 }
 
 pub fn get_clean_item_name(item_id: &str) -> String {
+    if let Some(z) = crate::grid::zhulin::lookup_zhulin_item_def(item_id) {
+        return z.name.to_string();
+    }
     match item_id {
         "mat_rough_ore" => return "粗生礦石".to_string(),
         "mat_iron_scrap" => return "熟鐵料塊".to_string(),

@@ -80,6 +80,15 @@ pub fn canonical_room_tag(tag: &str) -> &'static str {
         "smoked_fish" | "冷燻" => "smoked_fish",
         "kelp" | "巨藻" => "kelp",
         "bamboo_craft" | "竹編" => "bamboo_craft",
+        "bamboo" | "刺竹" | "竹林" | "巨竹" | "竹篁" => "bamboo",
+        "bamboo_shoot" | "竹筍" | "巨筍" => "bamboo_shoot",
+        "bamboo_rhizome" | "竹鞭" => "bamboo_rhizome",
+        "spring" | "冷泉" | "湧泉" | "伏流" => "spring",
+        "pebble_flat" | "卵石灘" | "石英卵石" => "pebble_flat",
+        "red_clay" | "紅土" | "赭紅礫石" => "red_clay",
+        "camphor" | "樟木" | "樟樹" | "老樟" => "camphor",
+        "melia" | "苦楝" => "melia",
+        "humus" | "腐殖土" | "腐葉" => "humus",
         _ => "",
     }
 }

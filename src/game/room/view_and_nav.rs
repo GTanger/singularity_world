@@ -350,15 +350,20 @@ pub fn get_grid_room_view(
         c.description = format!("{zone}的{sub_geo}地帶");
         c
     };
-    let cell_objects = if cell.objects.is_empty() && !is_inside_settlement_urban_core(x, y) {
+    let is_peninsula = grid_opt
+        .as_ref()
+        .map_or(false, |g| g.has_peninsula_wilderness());
+    let cell_objects = if is_peninsula && cell.objects.is_empty() && !is_inside_settlement_urban_core(x, y) {
         crate::grid::r#gen::generate_cell_objects(coord, cell.terrain)
     } else {
         cell.objects.clone()
     };
     let mut room_objs = grid_objects_to_room_objects(&cell_objects);
-    room_objs.extend(super::player_scene::player_layer_scene_objects_for_cell(
-        &cell,
-    ));
+    if is_peninsula {
+        room_objs.extend(super::player_scene::player_layer_scene_objects_for_cell(
+            &cell,
+        ));
+    }
     let mut room = Room {
         id: grid_room_id_from_coord(x, y),
         name: if cell.name.is_empty() {
@@ -433,7 +438,8 @@ pub fn get_grid_room_view(
     let time_bucket = (crate::game::now_unix() / 180) as i64;
     let mut matched_live_slot = false;
 
-    if !is_inside_settlement_urban_core(x, y)
+    if is_peninsula
+        && !is_inside_settlement_urban_core(x, y)
         && !matches!(
             cell.terrain,
             crate::grid::Terrain::Wall | crate::grid::Terrain::WaterDeep
@@ -466,7 +472,8 @@ pub fn get_grid_room_view(
         }
     }
 
-    if !matched_live_slot
+    if is_peninsula
+        && !matched_live_slot
         && !is_inside_settlement_urban_core(x, y)
         && !matches!(
             cell.terrain,
@@ -537,7 +544,8 @@ pub fn get_grid_room_view(
             move_to_room_id: String::new(),
         });
     }
-    if !is_inside_settlement_urban_core(x, y)
+    if is_peninsula
+        && !is_inside_settlement_urban_core(x, y)
         && !matches!(
             cell.terrain,
             crate::grid::Terrain::Wall | crate::grid::Terrain::WaterDeep

@@ -122,9 +122,17 @@ fn login_success(conn: &WsConnection, player_id: &str) {
         .unwrap_or((10, 10, 10));
     let rm = compute_resource_maxes(vit, qi, dex);
 
+    let runtime_grid = crate::server::grid_manager::get_runtime_square_grid();
     let (gx, gy) = match ent.as_ref().and_then(|e| e.grid_x.zip(e.grid_y)) {
-        Some(coord) => coord,
-        None => {
+        Some((x, y))
+            if runtime_grid
+                .as_ref()
+                .and_then(|g| g.get(crate::grid::SquareCoord::new(x, y)))
+                .map_or(false, |c| c.terrain.walkable()) =>
+        {
+            (x, y)
+        }
+        _ => {
             let _ = db::set_entity_grid(player_id, 0, 0);
             (0, 0)
         }

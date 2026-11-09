@@ -18,7 +18,7 @@ fn build_grid_view_cells(
         let symbol = grid_snap
             .as_ref()
             .and_then(|g| g.get(SquareCoord::new(cx, cy)))
-            .map(|cell| cell.terrain.display_char().to_string())
+            .map(|cell| cell.display_symbol().to_string())
             .unwrap_or_else(|| "⋯".to_string());
 
         // 對於與當前格 (x, y) 緊鄰的四正鄰格，計算 walkable 為從當前格是否可實際走過去；對角角格絕不可走
@@ -94,7 +94,7 @@ fn build_grid_view_cells(
                     name: cell.name.clone(),
                     explored: cell.explored,
                     walkable: cell.terrain.walkable(),
-                    symbol: cell.terrain.display_char().to_string(),
+                    symbol: cell.display_symbol().to_string(),
                     npc_count: cell_npc_count,
                 });
             }
@@ -122,7 +122,7 @@ fn build_grid_view_exits(
     grid_snap: Option<&crate::grid::SquareGrid>,
     base_room_name: &str,
 ) -> GridViewExitsResult {
-    // 先把 exits_v5 與 grid_exits 所需的相鄰資訊組裝好
+    // 先把 exits_v5 與 grid_exits 所需的周邊鄰接資訊組裝好
     let _current_terrain_key = current_cell
         .as_ref()
         .map(|c| c.terrain.kind_str().to_string())
@@ -343,10 +343,26 @@ fn build_grid_view_exits(
         }
     }
     // 以 SquareGrid 當前格構造真實 current_place_json
+    let is_peninsula = grid_snap
+        .as_ref()
+        .map_or(false, |g| g.has_peninsula_wilderness());
+    let locator_str = if is_peninsula {
+        format!(
+            "白塔半島 · {}",
+            current_cell.as_ref().map(|c| c.zone.as_str()).unwrap_or("荒野")
+        )
+    } else {
+        current_cell
+            .as_ref()
+            .map(|c| c.zone.as_str())
+            .filter(|z| !z.trim().is_empty())
+            .unwrap_or("紅土西麓")
+            .to_string()
+    };
     let current_place_json = serde_json::json!({
         "id": crate::grid::grid_room_id_from_coord(x, y),
         "name": if in_private_room { &final_room_name } else { &current_terrain_name },
-        "locator": format!("白塔半島 · {}", current_cell.as_ref().map(|c| c.zone.as_str()).unwrap_or("荒野")),
+        "locator": locator_str,
         "full_name": if in_private_room { &final_room_name } else { &current_terrain_name },
         "kind": current_terrain_category,
         "scale": "grid_cell"
@@ -501,10 +517,20 @@ fn build_grid_view_objects(
     let final_objects = if in_private_room {
         indoor_objects
     } else {
-        let mut objs = base_objects.to_vec();
+        let is_bamboo_slot = current_cell
+            .map(crate::grid::zhulin::is_bamboo_slot_cell)
+            .unwrap_or(false);
+        let mut objs = if is_bamboo_slot {
+            Vec::new()
+        } else {
+            base_objects.to_vec()
+        };
         if objs.is_empty() {
             if let Some(cell) = &current_cell {
                 for obj in &cell.objects {
+                    if is_bamboo_slot && obj.quantity == 0 {
+                        continue;
+                    }
                     let actions = if obj.quantity > 0 {
                         vec!["Look".to_string(), "Gather".to_string()]
                     } else {
@@ -560,7 +586,12 @@ fn build_grid_view_objects(
                 && !tail_room_name.contains("屋")
                 && !tail_room_name.contains("診所")
                 && !tail_room_name.contains("浴場"));
-        if !is_open_street_or_bridge && !crate::grid::grid::is_private_residence_room_name(base_room_name) {
+        let is_new_world_cell = !crate::server::grid_manager::get_runtime_square_grid()
+            .map_or(false, |g| g.has_peninsula_wilderness());
+        if !is_new_world_cell
+            && !is_open_street_or_bridge
+            && !crate::grid::grid::is_private_residence_room_name(base_room_name)
+        {
             if let Some(venue) = crate::grid::resolve_any_room_venue_object(base_room_name, "") {
                 if venue.has_counter_restricted_zone
                     && !objs.iter().any(|o| {

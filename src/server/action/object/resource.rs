@@ -91,6 +91,7 @@ fn try_grid_cell_object_action(
                     let remaining_qty = target_obj.quantity;
                     let obj_name = target_obj.name.clone();
                     let obj_id = target_obj.id.clone();
+                    crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
                     updated_state = Some((
                         cell.explored,
                         cell.freshness,
@@ -123,104 +124,40 @@ fn try_grid_cell_object_action(
         return true;
     }
 
-    let Some((explored, freshness, updated_objects, remaining_qty, obj_name, obj_id)) = updated_state else {
+    let Some((explored, freshness, updated_objects, remaining_qty, _obj_name, obj_id)) = updated_state else {
         return false;
     };
 
     let _ = db::update_cell_state(coord.x, coord.y, explored, freshness, &updated_objects);
 
-    let item_id = if obj_id.starts_with("wild_fruit")
-        || obj_name.contains("漿果")
-        || obj_name.contains("果")
-        || obj_name.contains("山茶籽")
-        || obj_name.contains("燕窩")
-    {
-        "harvest_berries"
-    } else if obj_id.starts_with("wood")
-        || obj_name.contains("木材")
-        || obj_name.contains("原木")
-        || obj_name.contains("枯木")
-        || obj_name.contains("倒木")
-        || obj_name.contains("心材")
-        || obj_name.contains("木材")
-        || obj_name.contains("良材")
-        || obj_name.contains("雲杉")
-        || obj_name.contains("烏木")
-        || obj_name.contains("韌竹")
-        || obj_name.contains("鐵杉")
-        || obj_name.contains("穀木")
-        || obj_name.contains("樹脂")
-    {
-        if obj_name.contains("溫木") || obj_name.contains("烏木") || obj_name.contains("心材") || obj_name.contains("樹脂") {
-            "harvest_rare_wood"
-        } else if obj_name.contains("雲杉") || obj_name.contains("原木") {
-            "harvest_wood"
-        } else {
-            "harvest_deadwood"
-        }
-    } else if obj_id.starts_with("herb")
-        || obj_name.contains("草")
-        || obj_name.contains("苔")
-        || obj_name.contains("蓮")
-        || obj_name.contains("藤")
-        || obj_name.contains("葦")
-        || obj_name.contains("百草")
-    {
-        if obj_name.contains("藤") {
-            "harvest_vine"
-        } else {
-            "harvest_herb"
-        }
-    } else if obj_id.starts_with("ore")
-        || obj_name.contains("礦")
-        || obj_name.contains("玉")
-        || obj_name.contains("石")
-        || obj_name.contains("岩")
-        || obj_name.contains("晶")
-        || obj_name.contains("髓")
-        || obj_name.contains("貝")
-        || obj_name.contains("砂")
-        || obj_name.contains("黏土")
-        || obj_name.contains("鹽")
-    {
-        if obj_name.contains("玉") || obj_name.contains("晶") || obj_name.contains("髓") {
-            "harvest_crystal"
-        } else if obj_name.contains("鐵") || obj_name.contains("銅") || obj_name.contains("礦") || obj_name.contains("煤") {
-            "harvest_ore"
-        } else {
-            "harvest_hardstone"
-        }
-    } else if obj_id.starts_with("water_source") || obj_name.contains("水") {
-        "fresh_water"
-    } else if obj_id.starts_with("grain") || obj_name.contains("稻") {
-        "grain_rice"
-    } else if obj_id.starts_with("wheat") || obj_name.contains("麥") {
-        "grain_wheat"
-    } else {
-        "harvest_herb"
+    let Some(item_id) = crate::grid::zhulin::yield_item_id_for_object(&obj_id) else {
+        conn.send_error("此地景物件無法直接採集");
+        return true;
     };
-    let _ = db::add_to_inventory(pid, item_id, 1);
-    let now_unix = crate::game::now_unix();
-    let (_extra_qty, harvest_note) = crate::game::object_ecology::harvest_from_world_object(
-        pid,
-        &obj.id,
-        &obj.name,
-        item_id,
-        now_unix,
-    );
 
-    let actions = if remaining_qty > 0 {
+    let actual_harvested: u32 = 1;
+    let final_remaining_qty = remaining_qty;
+    let _ = db::add_to_inventory(pid, item_id, 1);
+
+    let actions = if final_remaining_qty > 0 {
         vec!["Look".into(), "Gather".into()]
     } else {
         vec!["Look".into()]
     };
 
-    let mut narrative = format!("你俯身細心採擷，將一份「{}」收入行囊之中。", obj.name);
-    if !harvest_note.is_empty() {
-        narrative.push(' ');
-        narrative.push_str(&harvest_note);
-    }
-
+    let narrative = if let Some(custom) = crate::grid::zhulin::gather_narrative_for_object(
+        &obj_id,
+        actual_harvested,
+        final_remaining_qty,
+    ) {
+        custom
+    } else {
+        let clean_item = crate::game::object_ecology::get_clean_item_name(item_id);
+        format!(
+            "你自「{}」處細心採擷，將 {} 份「{}」收入行囊之中。",
+            obj.name, actual_harvested, clean_item
+        )
+    };
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
         action: action.into(),

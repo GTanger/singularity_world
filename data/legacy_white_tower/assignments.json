@@ -1,0 +1,3422 @@
+{
+  "entries": [
+    {
+      "entity_id": "npc_dj0qc2wtdfch",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-014",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39qvwyhbfb",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-022",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj96ngy20miv",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-013",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6myy8ypese",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0114",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3a6o806538",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0199",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xgxht6v7g",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0131",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv2x23emlu",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0303",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj390dm7k5nf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-043",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj83lrhbsvr0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-020",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj80safseaab",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0290",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39a5t1b1k9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-013",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djy95cv598j0",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0216",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3edabb0v46",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0029",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj30f29qa8wn",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0141",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9nqe89z6uz",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja68q2k3tlk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0138",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3izrvgl9am",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-024",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3e0zweg34x",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-045",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj8ackb41chm",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0297",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xihb70q13",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-040",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6npqwzbd9a",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0174",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj38yg8xxu7v",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-044",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6n7oze5c5e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0113",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaa8slk34hg",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0085",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f6tda3bam",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0070",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6n8gryvhqm",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0005",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizuynmcw6qc",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0066",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3fja1xjuml",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3cx5tu3iza",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-024",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7yqip6hfb0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-025",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0qaxc41byh",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0229",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7roirw2tt",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-040",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj30fg1vk36c",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0128",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_citizen_60",
+      "occupation_id": "服務生",
+      "venue_id": "venue_life_inn"
+    },
+    {
+      "entity_id": "npc_dj9nkh0tj2en",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-019",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3ida1jlqi6",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-043",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8a5e0yzawy",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0221",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1uy5zerdvw",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0074",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaerrljy4m6",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0081",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96lj49ey7s",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0156",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizuztfbakht",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0028",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di7wukomse10",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0079",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3cwrtfgwz2",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0161",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0ea9v5ixjd",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0004",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39z1nil3vq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-036",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39mmwcuhhh",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0282",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e1rx87v2x",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0026",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3a881dlqj9",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-050",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaep27g5s18",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-027",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djulvi0yd723",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0130",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xkeognr7n",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-025",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja64uvhfkcv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0121",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja62j9jkh63",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0061",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3eu36vcjid",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-010",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj80a2k7oz6a",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0250",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nrzev1nz3",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6n0vdz17td",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-013",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj96n2xn5ibd",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0152",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaev98qikzk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0232",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6my685fswd",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7wog27p2e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0010",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj98y4gvkllr",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-004",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39jxqj4mzy",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0075",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djadbajjp7zq",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0207",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3cpxfkg7zk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0072",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djadd852lrvz",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0193",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad9qyfhtnt",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0237",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qajbpek0h",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0262",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3fdut7cvio",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj806llti40c",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0273",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3htz6klus9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj72k9ufuvx1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0247",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3d3wrcqyu4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3djws2exlj",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0009",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad87lkmjia",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-033",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9n7wae5ill",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-033",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96ithwba1c",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-003",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nmdi8qkhb",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0023",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1viglh5m2k",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-020",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djaahvplxqg6",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0040",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g69fbun39",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-029",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3fhcgem7y2",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0093",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djulrnaf1os1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0013",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj807dedvpin",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0045",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj393vs5lifd",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0060",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3eweca68i7",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7zlmawmd7m",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-015",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39bpmf9pzt",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-027",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja66eovb9h2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-033",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja9p1ipo9dv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0091",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39wpt9grrn",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3fl7vqg87o",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-018",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0csk3aa8pr",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-008",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk0ga4e4kh3b",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-042",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1wdx3anjcs",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0140",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3a2103swwi",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0268",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizuzfewj18o",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-029",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7s3o3ke8y2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-026",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6ny901rx6j",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-003",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9nh4ocim6g",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0119",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj72ji1vrcwv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0286",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dludltgjf",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0080",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96jzj4z4p4",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-037",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizuy9u73zpf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-024",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja68c25fxr5",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0251",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tmjb221fn",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0116",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8adq4333ho",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3hsflgkjtv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0256",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj82g8f99g0g",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3fhqgt8736",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0218",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nvxmd39zy",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-004",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qffu8x2xq",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0280",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0q9dagxrhj",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7lrzuy6j1a",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0275",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizuxw21thqf",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0034",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9q9letg401",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-015",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0cu3wocetf",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-028",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja9h5ypicq4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-049",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3ho7cb9iqs",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0265",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djultknob2uz",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-022",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39ynn2hr60",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-016",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tp8xfkwy7",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-042",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0csy3pmqv4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-014",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3hpcnh4btd",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6myk8jykli",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-044",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qdmhy0uw6",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-005",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nlzq3cnzg",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-004",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tnb3miccy",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-053",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g8kt0myhq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dizv7zz92wd0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-026",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj80zedi4zf0",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-036",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0coo1bqqo5",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-005",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja9mc4mhbq7",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0063",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7yurwnx9hf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-010",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj80t2gm4iof",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0187",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e893055sf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj82ifz8i2ft",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0301",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv95s8om0h",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-008",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96jliqco7f",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0205",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaah3x29b9b",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0083",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cni03dpy1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0238",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39o6iv8gl8",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-039",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj974lye22sm",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0233",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8a6jtxtn70",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-027",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6moj7zrrsb",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0284",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g5vewu4at",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0194",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3d4obnlc9q",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0127",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7lq2hnumas",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-017",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj38wivoxat4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-010",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djaafk3nx4qm",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-035",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g7t8pecgf",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0006",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g9clkcyny",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0062",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3icw9ea7kj",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0071",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5fbffud4wh",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0055",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hol4gmhqu",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-028",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tpmxu887o",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0032",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaajtjfc19h",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0217",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaepu0048ht",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-044",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8abei5cjz7",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0125",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3csmlgk81g",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0129",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaen3thzr12",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-029",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3cxxme96to",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja7ze2esgth",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0076",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaa9y69pfi1",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-044",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hkcdieg9a",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0179",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3errcnswut",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-031",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dizv1r0uwa6i",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0104",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ig3ruzm8e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0043",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj398lznsmo5",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0056",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv0z00s1fd",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0078",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f61cggq2f",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-003",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja9onqkc7fy",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0202",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1uvg4sil4x",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0255",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj80xh08ozom",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0021",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaesx691onq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-030",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3dl2cs972i",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0197",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad23y21qzu",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0281",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6njosy5tbg",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-048",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj72gsw22htg",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-005",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja62x1p7z63",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-003",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6xlyhugh5i",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-013",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj72l1mzy5af",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0184",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1vj8e1ebzp",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0264",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9nlmtsi9y3",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0024",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39ci9bpbrk",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-041",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1wep44b9v4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6ni57ttqke",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0039",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj80520p33yb",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0095",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaak7ju3lxd",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-024",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3i7c4ptzo6",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39lhbnccpi",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0162",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3972eji60w",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-053",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1web3pkjzn",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-037",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nix0dvf69",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0067",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e3bicqkvd",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-019",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qbowetu2b",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-014",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9o3u0petc8",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0002",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7yoz428rwx",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djy913no5m25",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0213",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj822x7b54d8",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-025",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_di7wnx98m468",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-034",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39xhu37gta",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-034",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3d34ysv5pa",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7lsrni58rq",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-050",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7lnxw3gbpg",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0049",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj83mj9vzd0h",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0246",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj804a853qd6",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0041",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaesje3q61h",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0259",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad6a01nbfw",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0192",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nt889zp7e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0158",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0coa0xd175",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-029",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3eq7rivu0c",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0241",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj80nn7w8c1t",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0154",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7yo7bhrdv2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3hfagv4gyr",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-004",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3hbta7lp6x",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0180",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3h3dlkaofi",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-019",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3cvqxym7dc",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0299",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9q7nl11l7o",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-008",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj72iq9bezc6",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-020",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1v19m6xa9p",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0254",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9q9zf8kwat",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0012",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cuhotn1ub",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0018",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dzu3exxx4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9714rqed0j",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-038",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj38yu13aaxc",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qk2dcaemq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0qm074t11q",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-041",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39pcbuozjn",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-047",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja9ih5ugdhv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0228",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj30ftu12s5u",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0166",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3d0tcux0dc",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0227",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cwettxw4p",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-041",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj973u5tjhb7",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djacz0jk55f5",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0126",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1uvu56zeg1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0051",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj82khz9rcrz",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0134",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3fkfuwl9s2",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0300",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dkokmxfaw",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-051",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39neqb6mio",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-046",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0ebt80bo6l",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj974868617k",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0097",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e5oof15p2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-053",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj8ahz3b1kfh",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-002",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj846q6bby5y",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-016",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0ctc44g8d3",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nhr7fakdf",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0120",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7zhqf13wq0",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0052",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9o47sut45p",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-017",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3h4xey9qwe",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-019",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dizuz1mr7dbh",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-021",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39guc0x4xe",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g3jsythkk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0235",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj973g5f53zy",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0033",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dh7dz9wg4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-015",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj806zdz9rr5",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-002",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja9hjqusha9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-047",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj83m5hqewqo",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-016",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39e1ug6l2q",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-043",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3ibcg0951k",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-016",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3in9fvh9ly",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-034",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaetp72yy0s",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0223",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv3dg5ob75",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-030",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj30dwgs08mp",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-021",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj81ynztksxw",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0016",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9nicwq2mhf",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-045",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xjmvwdfjq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3htl6664z2",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-037",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj72ceumndpd",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-021",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj83h49fp40i",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-051",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1uw7xcek19",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-044",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja9i35ekeqf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-004",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0cn47xsp7e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0069",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3h790wg406",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0014",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8absiju6wg",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0214",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ifprg0b5t",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0230",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaadygwivxw",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0090",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cvn9j7xaq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-038",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj820zls4eyx",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-035",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6mtr1fzv0l",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3d1yxkbsh1",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-052",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1wbzhrb6cl",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-040",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj82nf6y7zym",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0017",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nxuzmy7j0",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0289",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj72mzgsqdxh",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0288",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g870v7ch5",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0200",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cnw0ibepf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-005",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nr7dwb358",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0261",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tstnr5ho9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-049",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj994atcxoin",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-043",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xr5wh6ygv",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-053",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3hb19du3ad",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0295",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39okja8qp2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39pqc934cj",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0022",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ipktk7edp",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djaa3rtsls1e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0219",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tudh5h9cg",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0203",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xrjwwc15l",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0107",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3i83xa4mio",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-041",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj72gf3wn4j3",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-054",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj82q4l1pv0f",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0027",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3iyzunczc3",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-002",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj992rghwtrb",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-016",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1vhb910wbm",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0142",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96o8id2wd8",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-051",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6mqulo1kml",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djaa9k5updxn",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0304",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f59bmyoxk",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-032",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj72jw2akuoq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja7uquio91s",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0132",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9q81lftnlm",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0136",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8a5s1dls84",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0196",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizuwqhc735s",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-018",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1tk7guf9a4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-048",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7lqua8i9cv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0038",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xqdvnli3b",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0258",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1uxrz03zvk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0185",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e73a1699w",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0225",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaafy43gmyr",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-054",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3h6v0hf16n",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-019",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3dm8e0n2oc",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-049",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj804o0an81o",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7s2wazwzx1",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39zyahma01",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0122",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96zl6m3w7a",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0077",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8ab0hq4m62",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0195",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9nj4paobpa",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-037",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9o2a7bjsfh",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0124",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3a6afuow9k",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-027",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xlkhfr22m",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-029",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3dhl64skg1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0263",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9nhighuyfx",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9n8zln8thj",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-047",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dizv5al5twdg",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0234",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9o5rm8dxr9",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0003",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djy98ghxgjei",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0276",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9nsc22gyoj",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0209",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3h5b73oi8j",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1txgvniuql",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0058",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj80vjeor99i",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0137",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj847hqmch52",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0118",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39r9xd4nf7",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-047",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nsu7vdjtp",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0163",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6n7ayzjsf2",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-007",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39da1vur99",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0031",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3i9kir197l",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-035",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6xsppv5zc8",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0086",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3iexyvfa6k",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-026",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djad8ldpz9hj",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0240",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad71sm5v18",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-015",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6npcwkbfx7",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0073",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad55k0gav1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0110",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5fanvjlh74",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0294",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaa80szwwlr",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0198",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj83km4vxf7b",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-036",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3ct1blgv03",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-018",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj30g7uft70m",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0112",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaeq80famay",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0008",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj83fyggka2i",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0167",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nqtdgz9eb",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-048",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9917n3u4z5",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-045",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hlhy8e6u6",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0279",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6mr8m2oqd1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0181",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xk0o1xch0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-015",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7lrm2sneh9",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-031",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0ecl8u5ouq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-032",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3d9b9x0k3k",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0046",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e2xhxmqho",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0153",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj394r0uwxdv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0019",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96zyyrfk30",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0cuvgz0zhe",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-040",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3ik61dvan2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-013",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1uyxrz7c0y",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0249",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cr0i651to",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-035",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djaa3dtdxw7f",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0037",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7qiy26bff",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-034",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaam5lwxw8h",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0089",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djy97oh3vnb4",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0177",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nv5tt3r9d",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0186",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xgjhe67gz",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_di7wuyp0zxt4",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0239",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3i57beeuut",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-032",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj82eatq6933",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0208",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3933zkvutz",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0101",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di7wsnbchoes",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6mnrff7o97",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0020",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaetb6ns0tm",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-017",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj395itf3o2h",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-042",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj77bjjtm71n",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0106",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hewggdaow",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0244",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7s7nw5wtbi",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0054",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj82lvlu3noc",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-003",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9nqs8ohimt",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-054",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizux49i5jw0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-021",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj83gq91dfyk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0065",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7sfp3qqry",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0035",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0e9vuqp07r",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1toh4vagr5",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0087",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja676hfltbn",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0176",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0ee4tyesag",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-020",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0gaiej3jp5",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-043",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3h45mdsosh",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-030",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj72av9idr2p",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-025",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djy97agorin3",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-054",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7zms3vrh7l",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-023",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6xo2hz52pt",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-022",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6n9mkxo4rb",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0111",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3imhnbouws",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-039",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nxgz81ub2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-046",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj84bqhjnyc0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7ys2aap5hr",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0222",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0q8ziba8hl",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-052",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39tzjq4xgv",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-014",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di7wu6o7b2np",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0212",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tnp41am9j",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0248",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6mwmvafryt",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0175",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj30cqw2ajq9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-020",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja9o9q62vdn",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0171",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7loponprm9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-032",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3cu74khh56",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-036",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3a19ft1y23",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0188",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9o7az3imas",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-042",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj38y28jdi8n",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0243",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ddxt02dni",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0057",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9niqx4kcb1",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-039",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dizv2j1ob49w",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0007",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dxwhwny6q",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0170",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaaechboh6b",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-047",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nudszd1pm",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-050",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6naedhhjhh",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0064",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qiwkcxetf",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-028",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7z0a9dh12",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-037",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1wa1ny6b72",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0102",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f8qqjks6w",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0159",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f9iaukvtq",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0206",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qftme6tws",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-014",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dk1viulvnypu",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0271",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djy95qnavo0a",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-036",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nkgd8qw93",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-007",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hmnr6z3e7",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0030",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5fc7gnv875",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj82ha6a6ni9",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0044",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di7wob9nibg6",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja7qwq7snbo",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-053",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39gc3093b9",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-049",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj82o6ziceip",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9o2o7qa506",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0272",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizvabth3kro",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-024",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv077gn1wd",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0082",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7zl8ahnc57",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0260",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djulv48shswq",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-030",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0e7y97h7jp",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-038",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_di5fb1np2mij",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj83ju42cgb7",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0296",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj390rectiye",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj96x13er1ts",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0098",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e9evzecy4",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-046",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7tz1yo4ww",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0226",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nhd70blb1",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djadc2kd1zla",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0068",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djulst3dpeea",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0149",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaczskdncgw",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0169",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad4ijybpte",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-033",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja67ya01570",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-034",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_citizen_21",
+      "occupation_id": "服務生",
+      "venue_id": "venue_life_inn"
+    },
+    {
+      "entity_id": "npc_dj3a0cawh3pk",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-007",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3d0fcfz3cd",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-035",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3d2cxz1fdf",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-008",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nb5xs91ta",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-016",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj821ddxi2i9",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0211",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv7lyubrsp",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-002",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj7aogkg0ol1",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0231",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaeoofavl0z",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0172",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6n03lej358",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0266",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djy91ho325fl",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-050",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di7wtf3wef29",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0224",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj80wayzihpk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0100",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaerdte7eb4",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0108",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6mpp0y9366",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0189",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja9fxdx4hqh",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj77ecieh494",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-001",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6n0hdk4ajk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0135",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39kbioeqdx",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-038",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ea6wt1cal",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-012",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nwp6nrz2q",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-011",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ctfc0e86w",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0053",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dew0avtrw",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-014",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0edd9nlq60",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0298",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nrleaugom",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-010",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6nq4xe580w",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0236",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3fe8lcv63i",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-020",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9no2ullgin",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-035",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk0g9qlywfw8",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-048",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj0q9ravqjjt",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0252",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e7vausjm7",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-009",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj39x3tony1w",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-008",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj397u73mt81",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0050",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3ev8jbaf8s",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0042",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad7tl69y2t",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0168",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja9lk3sunrt",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-045",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3d1750fn54",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-026",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj77cbcdrwjk",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-018",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj8afnhcl156",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0190",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3e0lvzcgqb",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0115",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3j1pgzodtk",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0164",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv3r8b71pr",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0133",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96lx4o5ne5",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-010",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3fgyfzty7x",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-005",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6n65ea6rph",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0220",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad2vqm947z",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0191",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hgg1kflq8",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-022",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dizv1d0fzzcq",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0099",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7v4uyd5qv",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0165",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f5nc279t0",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0096",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3cqbfyxge2",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0285",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj8a7bmi0jqq",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0109",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3cuz5e87m0",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-031",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3hbf9t0sbw",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0092",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1tx2v8j18a",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0123",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3diqz3mgot",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-021",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaalrlhxuz3",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-006",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3iefm8yvj6",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0088",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3eakoybav1",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3ie1u3li3s",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-032",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3a728emitg",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-046",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3dfnsv15u4",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-038",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_djy93ta0z74p",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0011",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3d4aji8krq",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-042",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj990fujqpfr",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0274",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3hstdlzbhm",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0001",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di5f6fcvp03e",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0270",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj39nsqpy8s2",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0178",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja7q4xnziqz",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0139",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6nn5asyn32",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-017",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj803ifl724t",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-028",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3dc0nzu6m2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-008",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qlm6pypnp",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-039",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj72m7o92l91",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0117",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9qadfn4cao",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0105",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djuls1athcpx",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-026",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj3db8vg25rt",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0048",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96pejli7vb",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0183",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3eciahi502",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-052",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj9o1wf66cna",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0182",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9o328523dd",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-025",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj991lnilcf9",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0204",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1vn3l3m5ci",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-051",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0cw11ogwes",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9qemn4qpzg",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-028",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dk1vmbsjjkxt",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-023",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7anojmh1iy",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0287",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj96z7egsu8o",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0293",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djaa7msl6m20",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-031",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj9q6nf86j1c",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0047",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_djad44jje4pd",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-032",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj0qf1tu5jw2",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-033",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj6mslgp9wqe",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-030",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3i8o4oer01",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-013",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj82ro65ghvl",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-029",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj72h6o7aqy8",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-022",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dja9kej3exzo",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-052",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj7zopxofufd",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0059",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3i6ycjsfn3",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0201",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj845kllju98",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0267",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj6n6x6uatux",
+      "occupation_id": "服務生",
+      "venue_id": "wt-market-007",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj3cxjlzjd12",
+      "occupation_id": "市場供應調度員",
+      "venue_id": "wt-market-002",
+      "assigned_by": "runtime:author_economy"
+    },
+    {
+      "entity_id": "npc_dj82j7rslx7g",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0103",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dj38z81i15tz",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0173",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dja65mo1tnrx",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0015",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_di7ws9axunu9",
+      "occupation_id": "地方供應人員",
+      "venue_id": "wt-supply-0292",
+      "assigned_by": "job_matching"
+    }
+  ]
+}

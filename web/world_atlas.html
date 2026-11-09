@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>白塔半島・全開啟大地圖總覽</title>
+  <title>山海地貌・全開啟大地圖</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700;900&display=swap" rel="stylesheet">
@@ -983,32 +983,32 @@
     <!-- 頂部導航與圖資統計 -->
     <header id="top-header">
       <div class="header-left">
-        <button id="toggle-sidebar-btn" class="header-btn" title="切換聚落與獵場目錄">
+        <button id="toggle-sidebar-btn" class="header-btn" title="切換地形分區與圖層目錄">
           <span>☰</span> 目錄
         </button>
         <div class="header-title-group">
           <div class="header-title">
-            白塔半島・全開啟大地圖
-            <span class="seal">正典輿圖</span>
+            山海地貌・全開啟大地圖
+            <span class="seal">純自然地形</span>
           </div>
-          <div class="header-subtitle">800 × 1,000 無縫大世界 · 宏微兩級沉浸檢視</div>
+          <div class="header-subtitle">121 × 81 連續自然地貌 · 西側外海至紅土台地與東坡溪谷</div>
         </div>
       </div>
 
       <div class="header-stats">
         <div class="stat-badge" title="SquareGrid 顯式登記地塊總數">
           <span>顯式地塊</span>
-          <strong id="stat-cells-count">14,424</strong>
+          <strong id="stat-cells-count">9,801</strong>
         </div>
-        <div class="stat-badge" title="2大城（文曜245棟、風舶角55棟）、5大鎮、9大村共 635 棟正典地標建築">
-          <span>十六聚落</span>
-          <strong>2城·5鎮·9村 (635棟)</strong>
+        <div class="stat-badge" title="七大自然地貌分區">
+          <span>自然地貌帶</span>
+          <strong>7 大地形分區</strong>
         </div>
-        <div class="stat-badge" title="五大分區 19 處《白塔山海誌》正典獵場與山海地脈">
-          <span>十九獵場</span>
-          <strong>白塔山海誌生態</strong>
+        <div class="stat-badge" title="純自然地勢，零城鎮人造建築">
+          <span>人工建築</span>
+          <strong>0 (無城鎮建築)</strong>
         </div>
-        <div class="stat-badge highlight" title="伺服器端活動中人物與山海生靈數量">
+        <div class="stat-badge highlight" title="伺服器端活動中人物與生靈數量">
           <span>在場實體</span>
           <strong id="stat-entities-count">載入中…</strong>
         </div>
@@ -1016,11 +1016,11 @@
 
       <div class="header-right">
         <div class="search-box">
-          <input type="text" id="map-search-input" placeholder="搜尋地名或聚落…" autocomplete="off">
+          <input type="text" id="map-search-input" placeholder="搜尋地名或地形座標…" autocomplete="off">
           <button class="search-btn" id="map-search-btn" title="搜尋">🔍</button>
         </div>
-        <button id="reset-view-btn" class="header-btn" title="全島總覽視角">
-          <span>⛶</span> 全島
+        <button id="reset-view-btn" class="header-btn" title="全域地貌總覽">
+          <span>⛶</span> 全域
         </button>
         <button id="refresh-entities-btn" class="header-btn" title="重新整理人物實體位置">
           <span>↻</span> 刷新
@@ -1033,7 +1033,7 @@
       <!-- 左側摺疊目錄 -->
       <aside id="sidebar">
         <div class="sidebar-tabs">
-          <button class="tab-btn active" data-tab="tab-directory">聚落與獵場</button>
+          <button class="tab-btn active" data-tab="tab-directory">自然地形帶</button>
           <button class="tab-btn" data-tab="tab-layers">圖層設定</button>
           <button class="tab-btn" data-tab="tab-entities">活動人物</button>
         </div>
@@ -1041,269 +1041,76 @@
         <div class="sidebar-content">
           <!-- 分頁一：聚落與獵場目錄 -->
           <div id="tab-directory" class="tab-pane active">
-            <!-- 全島總覽按鈕 -->
+            <!-- 全域地貌總覽按鈕 -->
             <button class="jump-card" style="margin-bottom: 12px; border-left: 3.5px solid var(--copper);" onclick="resetToIslandView()">
               <div class="card-top">
-                <span class="card-name" style="font-size: 0.95rem;">全島總覽視野 (800 × 1,000)</span>
+                <span class="card-name" style="font-size: 0.95rem;">全域地貌總覽 (121 × 81)</span>
                 <span class="card-badge">全域</span>
               </div>
-              <div class="card-desc">涵蓋白塔半島極北冰峰至極南青籠關全貌</div>
+              <div class="card-desc">西側深水外海、海岸平原、紅土西麓刺竹高台至台地雲霧稜線與東坡溪谷</div>
             </button>
 
-            <!-- 二大城 -->
+            <!-- 七大自然地形帶（由西向東） -->
             <div class="section-title">
-              <span>二大城</span>
-              <span class="count-tag">文曜 245 棟 · 風舶角 55 棟</span>
+              <span>七大自然地形帶（由西向東）</span>
+              <span class="count-tag">7 大分區</span>
             </div>
             <div class="jump-btn-grid" style="margin-bottom: 14px;">
               <div class="jump-card city" onclick="jumpTo(0, 0, 24)">
                 <div class="card-top">
-                  <span class="card-name">文曜</span>
-                  <span class="card-badge">大城 · 245棟</span>
+                  <span class="card-name">刺竹伏流坪 (原點)</span>
+                  <span class="card-badge">世界原點</span>
                 </div>
-                <div class="card-meta"><span class="coord">半島中樞 (內城+四大外坊)</span></div>
-                <div class="card-desc">三水匯流、學院、商盟總行與 204 戶百工民居</div>
+                <div class="card-meta"><span class="coord">X: 0, Y: 0 · 紅土西麓</span></div>
+                <div class="card-desc">紅土台地西麓平坦礫石高台，合抱刺竹林環繞天然伏流冷泉</div>
               </div>
-              <div class="jump-card city" onclick="jumpTo(-260, 160, 24)">
+              <div class="jump-card town" onclick="jumpTo(-1, 0, 18)">
                 <div class="card-top">
-                  <span class="card-name">風舶角</span>
-                  <span class="card-badge">大城</span>
+                  <span class="card-name">紅土西麓・刺竹林帶</span>
+                  <span class="card-badge">坡腳高台</span>
                 </div>
-                <div class="card-meta"><span class="coord">風舶港灣</span></div>
-                <div class="card-desc">西海深水港埠，造船巨木區</div>
+                <div class="card-meta"><span class="coord">X: -7..6 · 坡腳高台</span></div>
+                <div class="card-desc">西崖礫石台、北澗竹林坡、南坡紅土坪與東南樟竹混林</div>
               </div>
-            </div>
-
-            <!-- 五大鎮 -->
-            <div class="section-title">
-              <span>五大鎮</span>
-              <span class="count-tag">5 座 · 各 40 棟</span>
-            </div>
-            <div class="jump-btn-grid" style="margin-bottom: 14px;">
-              <div class="jump-card town" onclick="jumpTo(-330, 160, 24)">
+              <div class="jump-card village" onclick="jumpTo(-20, 0, 14)">
                 <div class="card-top">
-                  <span class="card-name">風舶嶼</span>
-                  <span class="card-badge">大鎮</span>
+                  <span class="card-name">西側海岸平原</span>
+                  <span class="card-badge">平原草海</span>
                 </div>
-                <div class="card-meta"><span class="coord">風舶外澳</span></div>
-                <div class="card-desc">外澳領航公會，海防要塞</div>
+                <div class="card-meta"><span class="coord">X: -29..-8 · 海岸平原</span></div>
+                <div class="card-desc">低平開闊的平原菅芒草海、海濱砂質平地與防風雜木林</div>
               </div>
-              <div class="jump-card town" onclick="jumpTo(-180, -140, 24)">
+              <div class="jump-card wild" onclick="jumpTo(-38, 0, 12)">
                 <div class="card-top">
-                  <span class="card-name">大圳頭</span>
-                  <span class="card-badge">大鎮</span>
+                  <span class="card-name">潮間泥灘與西側外海</span>
+                  <span class="card-badge">外海潮間</span>
                 </div>
-                <div class="card-meta"><span class="coord">大圳頭—紅土崁</span></div>
-                <div class="card-desc">大圳農牧總社</div>
+                <div class="card-meta"><span class="coord">X: -60..-30 · 濱海潮間帶</span></div>
+                <div class="card-desc">潮間沙礫海灘、濱海蘆葦泥澤與西側深水外海</div>
               </div>
-              <div class="jump-card town" onclick="jumpTo(160, 210, 24)">
+              <div class="jump-card wild" onclick="jumpTo(10, 14, 16)">
                 <div class="card-top">
-                  <span class="card-name">半嶺鎮</span>
-                  <span class="card-badge">大鎮</span>
+                  <span class="card-name">北澗與南坑溪谷</span>
+                  <span class="card-badge">山澗溪流</span>
                 </div>
-                <div class="card-meta"><span class="coord">青脊山</span></div>
-                <div class="card-desc">寒水玉切石與試招場</div>
+                <div class="card-meta"><span class="coord">X: -42..38 · 東西向山澗</span></div>
+                <div class="card-desc">切穿紅土台地向西入海的清澈卵石山澗與峽谷溪流</div>
               </div>
-              <div class="jump-card town" onclick="jumpTo(0, -220, 24)">
+              <div class="jump-card town" onclick="jumpTo(16, 0, 16)">
                 <div class="card-top">
-                  <span class="card-name">南哨</span>
-                  <span class="card-badge">大鎮</span>
+                  <span class="card-name">紅土台地山腰</span>
+                  <span class="card-badge">台地西坡</span>
                 </div>
-                <div class="card-meta"><span class="coord">南境黑沼</span></div>
-                <div class="card-desc">南部邊陲防禦公議廳</div>
+                <div class="card-meta"><span class="coord">X: 7..26 · 台地西坡</span></div>
+                <div class="card-desc">赤土礫石峭壁、山腰樟竹混林與向陽苦楝硬木陡坡</div>
               </div>
-              <div class="jump-card town" onclick="flyTo(0, -395, 2.2); jumpTo(0, -395, 24)">
+              <div class="jump-card wild" onclick="jumpTo(36, 0, 14)">
                 <div class="card-top">
-                  <span class="card-name">下營</span>
-                  <span class="card-badge">大鎮</span>
+                  <span class="card-name">台地雲霧稜線與東坡</span>
+                  <span class="card-badge">稜線東麓</span>
                 </div>
-                <div class="card-meta"><span class="coord">南境山麓</span></div>
-                <div class="card-desc">南哨與青籠關邊貿坪、竹木行棧</div>
-              </div>
-            </div>
-
-            <!-- 九大村 -->
-            <div class="section-title">
-              <span>九大村</span>
-              <span class="count-tag">9 座 · 各 15 棟</span>
-            </div>
-            <div class="jump-btn-grid" style="margin-bottom: 14px;">
-              <div class="jump-card village" onclick="jumpTo(0, 125, 24)">
-                <div class="card-top"><span class="card-name">老堰頭</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">北坡溪谷</span></div>
-                <div class="card-desc">水輪石磨工坊與水渠農舍</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(110, 115, 24)">
-                <div class="card-top"><span class="card-name">北嶺腳</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">白塔北麓</span></div>
-                <div class="card-desc">北麓山林旅社登山門戶</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(190, 290, 24)">
-                <div class="card-top"><span class="card-name">霜林口</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">青脊東麓</span></div>
-                <div class="card-desc">原木水車鋸木坊與護林所</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(-360, 95, 24)">
-                <div class="card-top"><span class="card-name">風櫃尾</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">西北岬角</span></div>
-                <div class="card-desc">西北岬角燈塔與防浪漁村</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(-260, 35, 24)">
-                <div class="card-top"><span class="card-name">烏石鼻</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">西南近海</span></div>
-                <div class="card-desc">黑曜玄武岩漁船泊位</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(-180, -245, 24)">
-                <div class="card-top"><span class="card-name">牛埔</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">長風草甸</span></div>
-                <div class="card-desc">向陽草甸牧業公議所</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(-85, -140, 24)">
-                <div class="card-top"><span class="card-name">紅土崁</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">赤石階地</span></div>
-                <div class="card-desc">耐火紅磚與選礦場</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(-285, -140, 24)">
-                <div class="card-top"><span class="card-name">三號坑口</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">西南重礦</span></div>
-                <div class="card-desc">西南重礦坑口礦務所</div>
-              </div>
-              <div class="jump-card village" onclick="jumpTo(-75, -280, 24)">
-                <div class="card-top"><span class="card-name">水尾寮</span><span class="card-badge">村</span></div>
-                <div class="card-meta"><span class="coord">黑沼水網</span></div>
-                <div class="card-desc">黑沼耐水烏木高腳屋</div>
-              </div>
-            </div>
-
-            <!-- 十九處自然獵場（五大分區） -->
-            <div class="section-title">
-              <span>十九處自然獵場 · 白塔山海誌</span>
-              <span class="count-tag">5 大分區</span>
-            </div>
-
-            <!-- 1. 大圳頭—紅土崁 -->
-            <div class="hg-group">
-              <div class="hg-group-header">
-                <span>一、大圳頭—紅土崁</span>
-                <span class="count-tag">4 處</span>
-              </div>
-              <div class="hg-group-items">
-                <div class="jump-card wild" onclick="jumpTo(-180, -195, 18)">
-                  <div class="card-name">長風草甸</div>
-                  <div class="card-meta"><span class="coord">梅花鹿 · 四目水鹿 · 環頸雉</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(-80, -60, 18)">
-                  <div class="card-name">古河巨木林</div>
-                  <div class="card-meta"><span class="coord">雲豹 · 飛鼠 · 巨顎鍬形蟲</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(-85, -180, 18)">
-                  <div class="card-name">赤石坡</div>
-                  <div class="card-meta"><span class="coord">穿山甲(鯪鯉) · 石虎 · 山羌</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(-340, -140, 18)">
-                  <div class="card-name">落日岬</div>
-                  <div class="card-meta"><span class="coord">黑鳶 · 綠蠵龜 · 長鬃山羊</span></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 2. 風舶雙港與近海 -->
-            <div class="hg-group">
-              <div class="hg-group-header">
-                <span>二、風舶雙港與近海</span>
-                <span class="count-tag">3 處</span>
-              </div>
-              <div class="hg-group-items">
-                <div class="jump-card wild" onclick="jumpTo(-360, 180, 18)">
-                  <div class="card-name">驚濤岩岸</div>
-                  <div class="card-meta"><span class="coord">遊隼 · 海獺 · 岩鷺</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(-300, 260, 18)">
-                  <div class="card-name">巨藻淺灣</div>
-                  <div class="card-meta"><span class="coord">綠蠵龜 · 黑面琵鷺 · 招潮蟹</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(-260, -20, 18)">
-                  <div class="card-name">黑石灣</div>
-                  <div class="card-meta"><span class="coord">馬蹄蟹(鱟) · 玄武海蟹</span></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. 文曜—北坡森林—白塔 -->
-            <div class="hg-group">
-              <div class="hg-group-header">
-                <span>三、文曜—北坡森林—白塔</span>
-                <span class="count-tag">4 處</span>
-              </div>
-              <div class="hg-group-items">
-                <div class="jump-card wild" onclick="jumpTo(-130, 80, 18)">
-                  <div class="card-name">西麓林道</div>
-                  <div class="card-meta"><span class="coord">藍腹鷴 · 長尾山娘 · 山羌</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(60, 160, 18)">
-                  <div class="card-name">清泉溪谷</div>
-                  <div class="card-meta"><span class="coord">櫻花鉤吻鮭 · 食蟹獴</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(0, 240, 18)">
-                  <div class="card-name">翠冠巨木林</div>
-                  <div class="card-meta"><span class="coord">雲豹 · 藍腹鷴 · 黃喉貂</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(80, 300, 18)">
-                  <div class="card-name">北坡雲杉林</div>
-                  <div class="card-meta"><span class="coord">胸白月熊 · 帝雉</span></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. 南哨—水尾澤—青籠關 -->
-            <div class="hg-group">
-              <div class="hg-group-header">
-                <span>四、南哨—水尾澤—青籠關</span>
-                <span class="count-tag">4 處</span>
-              </div>
-              <div class="hg-group-items">
-                <div class="jump-card wild" onclick="jumpTo(0, -340, 18)">
-                  <div class="card-name">淺澤泥口</div>
-                  <div class="card-meta"><span class="coord">重角水牛 · 柴棺龜 · 水雉</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(-120, -320, 18)">
-                  <div class="card-name">白茫洲</div>
-                  <div class="card-meta"><span class="coord">百步蛇 · 飯匙倩 · 翡翠樹蛙</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(120, -320, 18)">
-                  <div class="card-name">貼山深潭</div>
-                  <div class="card-meta"><span class="coord">千年鱸鰻 · 寒潭山椒魚</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(0, -450, 18)">
-                  <div class="card-name">青籠關</div>
-                  <div class="card-meta"><span class="coord">大冠鷲 · 石虎 · 剛鬃山豬</span></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 5. 青脊山主脊—白塔 -->
-            <div class="hg-group">
-              <div class="hg-group-header">
-                <span>五、青脊山主脊—白塔</span>
-                <span class="count-tag">4 處</span>
-              </div>
-              <div class="hg-group-items">
-                <div class="jump-card wild" onclick="jumpTo(180, 40, 18)">
-                  <div class="card-name">西嶺礦谷</div>
-                  <div class="card-meta"><span class="coord">穿山甲 · 月熊 · 長鬃山羊</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(320, 200, 18)">
-                  <div class="card-name">東海峭壁</div>
-                  <div class="card-meta"><span class="coord">高山角鷹(熊鷹) · 遊隼</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(180, 320, 18)">
-                  <div class="card-name">雲腰雪林</div>
-                  <div class="card-meta"><span class="coord">帝雉 · 月熊 · 雪林山椒魚</span></div>
-                </div>
-                <div class="jump-card wild" onclick="jumpTo(0, 420, 18)">
-                  <div class="card-name">白塔雪巔</div>
-                  <div class="card-meta"><span class="coord">帝雉 · 四目水鹿 · 冰河山椒魚</span></div>
-                </div>
+                <div class="card-meta"><span class="coord">X: 27..60 · 稜線至東麓</span></div>
+                <div class="card-desc">雲霧巨木稜線、稜北湧泉深潭、南稜望海岩峰與東坡闊葉林溪谷</div>
               </div>
             </div>
           </div>
@@ -1315,21 +1122,21 @@
             </div>
             <div class="layer-group">
               <div class="layer-item">
-                <span>顯示十九獵場分區底色</span>
+                <span>顯示自然地形分區底色</span>
                 <label class="switch">
                   <input type="checkbox" id="layer-zones" checked>
                   <span class="slider"></span>
                 </label>
               </div>
               <div class="layer-item">
-                <span>顯示道路網與跨海橋樑</span>
+                <span>顯示山澗溪流與水系</span>
                 <label class="switch">
                   <input type="checkbox" id="layer-roads" checked>
                   <span class="slider"></span>
                 </label>
               </div>
               <div class="layer-item">
-                <span>顯示十六聚落標籤與腹地</span>
+                <span>顯示地形分區核心錨點</span>
                 <label class="switch">
                   <input type="checkbox" id="layer-settlements" checked>
                   <span class="slider"></span>
@@ -1362,23 +1169,23 @@
               <span>縮放階層預設</span>
             </div>
             <div class="zoom-presets">
-              <button class="zoom-preset-btn" onclick="setZoomLevel(1.1)">全島 (1x)</button>
-              <button class="zoom-preset-btn" onclick="setZoomLevel(6)">區域 (6x)</button>
-              <button class="zoom-preset-btn" onclick="setZoomLevel(20)">街坊 (20x)</button>
-              <button class="zoom-preset-btn" onclick="setZoomLevel(32)">建築 (32x)</button>
+              <button class="zoom-preset-btn" onclick="setZoomLevel(6)">全域 (6x)</button>
+              <button class="zoom-preset-btn" onclick="setZoomLevel(12)">分區 (12x)</button>
+              <button class="zoom-preset-btn" onclick="setZoomLevel(20)">地貌 (20x)</button>
+              <button class="zoom-preset-btn" onclick="setZoomLevel(32)">微觀 (32x)</button>
             </div>
 
             <div class="section-title" style="margin-top: 14px;">
               <span>地圖設計正典說明</span>
             </div>
             <div class="insp-desc" style="font-size: 0.74rem;">
-              白塔半島採用直角正交座標系，跨度為 800 × 1,000 方格。
+              採用直角正交座標系，跨度為 121 × 81 方格（X: -60..=60, Y: -40..=40，共 9,801 格純自然地形）。
               <br><br>
-              • <strong>東向 (X+)</strong>：青脊山主脊、東海峭壁、東海<br>
-              • <strong>西向 (X-)</strong>：大圳頭、落日岬、風舶雙港、北冕海<br>
-              • <strong>北向 (Y+)</strong>：老堰頭、北坡林地、白塔雪巔<br>
-              • <strong>南向 (Y-)</strong>：大圳頭、水尾澤、南哨、青籠關<br>
-              • <strong>中心原點 (0, 0)</strong>：政治文化樞紐 文曜大城
+              • <strong>東向 (X+)</strong>：紅土台地山腰、雲霧巨木稜線與東坡溪谷<br>
+              • <strong>西向 (X-)</strong>：西麓刺竹密林、海岸平原、沙礫海灘至深水外海<br>
+              • <strong>北向 (Y+)</strong>：北澗卵石溪床與峽谷溪流<br>
+              • <strong>南向 (Y-)</strong>：南坑礫石山澗與山南緩坡<br>
+              • <strong>中心原點 (0, 0)</strong>：紅土西麓・刺竹伏流坪天然冷泉
             </div>
           </div>
 
@@ -1431,21 +1238,21 @@
 
         <!-- 當前座標指示器 (HUD) -->
         <div id="hud-coords">
-          <div class="hud-pos" id="hud-pos-text">當前視域：白塔半島・文曜</div>
-          <div class="hud-zone" id="hud-zone-text">半島中樞・三水匯流</div>
+          <div class="hud-pos" id="hud-pos-text">當前視域：紅土西麓・刺竹伏流坪</div>
+          <div class="hud-zone" id="hud-zone-text">紅土西麓・刺竹伏流坪 (𐡚)</div>
         </div>
 
         <!-- 浮動縮放按鈕 -->
         <div id="floating-controls">
           <button class="ctrl-btn" id="ctrl-zoom-in" title="放大 (+)">＋</button>
           <button class="ctrl-btn" id="ctrl-zoom-out" title="縮小 (-)">－</button>
-          <button class="ctrl-btn text-btn" id="ctrl-recenter-island" title="全島總覽">全島</button>
-          <button class="ctrl-btn text-btn" id="ctrl-recenter-city" title="回到文曜大城">文曜</button>
+          <button class="ctrl-btn text-btn" id="ctrl-recenter-island" title="全域地貌總覽">全域</button>
+          <button class="ctrl-btn text-btn" id="ctrl-recenter-city" title="回到刺竹伏流坪 (0, 0)">原點</button>
         </div>
 
         <!-- 比例尺 -->
         <div id="scale-bar">
-          <div id="scale-label">50 格 = 1 里</div>
+          <div id="scale-label">10 格比例尺</div>
           <div id="scale-rule" style="width: 80px;"></div>
         </div>
 
@@ -1455,8 +1262,8 @@
             <div class="insp-title-box">
               <div class="insp-symbol" id="insp-symbol">𖠿</div>
               <div>
-                <div class="insp-name" id="insp-name">文曜・三水總商行總部</div>
-                <span class="insp-short" id="insp-short">三水商行</span>
+                <div class="insp-name" id="insp-name">刺竹伏流坪</div>
+                <span class="insp-short" id="insp-short">伏流冷泉</span>
               </div>
             </div>
             <button class="insp-close" id="insp-close-btn" title="關閉檢視">✕</button>
@@ -1469,12 +1276,12 @@
                 <span class="insp-value coord" id="insp-coord">X: 0, Y: 0</span>
               </div>
               <div class="insp-row">
-                <span class="insp-label">行政分區</span>
-                <span class="insp-value" id="insp-zone">文曜 [大城]</span>
+                <span class="insp-label">自然分區</span>
+                <span class="insp-value" id="insp-zone">紅土西麓</span>
               </div>
               <div class="insp-row">
                 <span class="insp-label">地貌類型</span>
-                <span class="insp-value" id="insp-terrain">總商行匯兌處 ($)</span>
+                <span class="insp-value" id="insp-terrain">廣袤原野 (𐡚)</span>
               </div>
               <div class="insp-row">
                 <span class="insp-label">通行性質</span>
@@ -1487,7 +1294,7 @@
             </div>
 
             <div class="insp-objects-section" id="insp-eco-section" style="display: none;">
-              <div class="insp-label" id="insp-eco-title">聚落供需與山海生態脈動</div>
+              <div class="insp-label" id="insp-eco-title">自然生境與生態脈動</div>
               <div id="insp-eco-content" style="font-size: 0.76rem; color: var(--ink-light); background: rgba(139,90,43,0.06); border-left: 3px solid var(--copper); padding: 6px 8px; border-radius: 3px; line-height: 1.45;"></div>
             </div>
 
@@ -1517,7 +1324,7 @@
     <!-- 載入中遮罩 -->
     <div id="loading-overlay">
       <div class="loading-spinner"></div>
-      <div class="loading-text" id="loading-text">正在繪製白塔半島全島宏觀地圖…</div>
+      <div class="loading-text" id="loading-text">正在繪製山海地貌全域大地圖…</div>
     </div>
   </div>
 
@@ -1528,91 +1335,37 @@
 
     // 19 處正典獵場分區顏色、代表色與分區
     const ZONE_COLORS = {
-      // 1. 大圳頭—紅土崁
-      '長風草甸':    { bg: '#dce8c8', stroke: '#8fa868', text: '#3c5420', region: '大圳頭—紅土崁' },
-      '古河巨木林':  { bg: '#c9d8bf', stroke: '#739460', text: '#264818', region: '大圳頭—紅土崁' },
-      '赤石坡':      { bg: '#ebd2c2', stroke: '#b0795c', text: '#643218', region: '大圳頭—紅土崁' },
-      '落日岬':      { bg: '#dfd2b8', stroke: '#9c8762', text: '#4e3e20', region: '大圳頭—紅土崁' },
-
-      // 2. 風舶雙港與近海
-      '驚濤岩岸':    { bg: '#cdd3cf', stroke: '#7b8f84', text: '#2d4036', region: '風舶雙港與近海' },
-      '巨藻淺灣':    { bg: '#c0d6cf', stroke: '#619688', text: '#1e483d', region: '風舶雙港與近海' },
-      '黑石灣':      { bg: '#bfc4c8', stroke: '#697a85', text: '#263742', region: '風舶雙港與近海' },
-
-      // 3. 文曜—北坡森林—白塔
-      '翠冠巨木林':  { bg: '#b7d4b6', stroke: '#568b55', text: '#194918', region: '文曜—北坡森林—白塔' },
-      '清泉溪谷':    { bg: '#bee0e2', stroke: '#529ca0', text: '#1a4e52', region: '文曜—北坡森林—白塔' },
-      '北坡雲杉林':  { bg: '#b2c8c4', stroke: '#4f7d74', text: '#19433b', region: '文曜—北坡森林—白塔' },
-      '西麓林道':    { bg: '#dfd7bf', stroke: '#98875c', text: '#4b3f1e', region: '文曜—北坡森林—白塔' },
-
-      // 4. 南哨—水尾澤—青籠關
-      '淺澤泥口':    { bg: '#dcd1bd', stroke: '#918060', text: '#493c22', region: '南哨—水尾澤—青籠關' },
-      '白茫洲':      { bg: '#d4ced6', stroke: '#85788a', text: '#3c3242', region: '南哨—水尾澤—青籠關' },
-      '貼山深潭':    { bg: '#c3d3d8', stroke: '#65848f', text: '#213c46', region: '南哨—水尾澤—青籠關' },
-      '青籠關':      { bg: '#bccab4', stroke: '#5d7552', text: '#22381c', region: '南哨—水尾澤—青籠關' },
-
-      // 5. 青脊山主脊—白塔
-      '西嶺礦谷':    { bg: '#e0c9bd', stroke: '#9a6b54', text: '#502a18', region: '青脊山主脊—白塔' },
-      '東海峭壁':    { bg: '#cec6be', stroke: '#807266', text: '#3d342b', region: '青脊山主脊—白塔' },
-      '雲腰雪林':    { bg: '#cce2e6', stroke: '#719ea7', text: '#254b52', region: '青脊山主脊—白塔' },
-      '白塔雪巔':    { bg: '#f4f6fa', stroke: '#9fb2c4', text: '#2d475e', region: '青脊山主脊—白塔' },
-
-      // 外海與海灣水道
-      '北冕海':      { bg: '#bed6e6', stroke: '#6193b5', text: '#184768', region: '外海' },
-      '東海':        { bg: '#b7d0e3', stroke: '#568cb1', text: '#144061', region: '外海' },
-      '天然港灣道':  { bg: '#bfd8e6', stroke: '#6b9dbf', text: '#1d4f73', region: '風舶雙港與近海' },
+      '西側外海':     { bg: '#9fc0d8', stroke: '#6193b5', text: '#123955', region: '西側外海' },
+      '潮間泥灘':     { bg: '#dcd1bd', stroke: '#918060', text: '#493c22', region: '潮間泥灘' },
+      '西側海岸平原': { bg: '#d5e4be', stroke: '#8fa868', text: '#325218', region: '西側海岸平原' },
+      '紅土西麓':     { bg: '#cae0c7', stroke: '#568b55', text: '#194918', region: '紅土西麓' },
+      '北澗溪谷':     { bg: '#bcd5e6', stroke: '#529ca0', text: '#1a4e52', region: '北澗溪谷' },
+      '紅土山腰':     { bg: '#ebd2c2', stroke: '#b0795c', text: '#643218', region: '紅土山腰' },
+      '台地稜線':     { bg: '#b7d4b6', stroke: '#4f7d74', text: '#19433b', region: '台地稜線' },
+      '台地東坡':     { bg: '#c9d8bf', stroke: '#739460', text: '#264818', region: '台地東坡' },
     };
 
-    // 正典 19 獵場中心座標與設定（labelX/labelY 專供宏觀銘刻防重疊）
     const HUNTING_GROUNDS = [
-      { name: '長風草甸', x: -180, y: -195, labelX: -215, labelY: -195, region: '大圳頭—紅土崁', beasts: '梅花鹿、四目水鹿、草甸野灰兔、環頸雉', desc: '向陽廣袤草原，梅花鹿群與水鹿踏草奔躍，產鹿茸、鹿皮與鐵線長草' },
-      { name: '古河巨木林', x: -80, y: -60, labelX: -105, labelY: -75, region: '大圳頭—紅土崁', beasts: '雲豹、古林獼猴、大赤鼯鼠（飛鼠）、領角鴞、巨顎鍬形蟲', desc: '古河階百年樟楠巨木林，千年樟雲豹王潛行樹冠，產雲豹皮與老樟良材' },
-      { name: '赤石坡', x: -85, y: -180, labelX: -75, labelY: -210, region: '大圳頭—紅土崁', beasts: '穿山甲（鯪鯉）、山羌、石虎、大冠鷲', desc: '赤石階地紅土礦坡，鯪鯉掘洞尋蟻、石虎伏行，富含赤紋鐵礦與鯪鯉甲片' },
-      { name: '落日岬', x: -340, y: -140, labelX: -320, labelY: -205, region: '大圳頭—紅土崁', beasts: '黑鳶、長鬃山羊、綠蠵龜、白鼻心', desc: '大圳頭最西端入海海岬，黑鳶盤旋海風、綠蠵龜爬行礫灘' },
-      { name: '驚濤岩岸', x: -360, y: 180, labelX: -354, labelY: 196, region: '風舶雙港與近海', beasts: '遊隼、岩鷺、海獺、長鬃山羊', desc: '風舶西岸險峭玄武岩岸，驚濤拍岸、遊隼俯衝，產海獸油膏與寒鐵貝' },
-      { name: '巨藻淺灣', x: -300, y: 260, labelX: -295, labelY: 298, region: '風舶雙港與近海', beasts: '綠蠵龜、黑面琵鷺、招潮蟹、彈塗魚', desc: '雙港北側礁石淺灣，深水巨藻隨潮搖曳，綠蠵龜與黑面琵鷺棲息覓食' },
-      { name: '黑石灣', x: -260, y: -20, labelX: -285, labelY: -35, region: '風舶雙港與近海', beasts: '馬蹄蟹（鱟）、花跳魚、玄武海蟹、白腹鰹鳥', desc: '烏石鼻南側玄武岩海灣，潮汐湧動，成對海鱟與玄武岩蟹伏於黑石潮池' },
-      { name: '西麓林道', x: -130, y: 80, labelX: -135, labelY: 130, region: '文曜—北坡森林—白塔', beasts: '藍腹鷴、長尾山娘、山羌、竹雞', desc: '西麓山腰古道蜿蜒穿行闊葉林海，晨霧中藍腹鷴與長尾山娘掠過林隙' },
-      { name: '清泉溪谷', x: 60, y: 160, labelX: 62, labelY: 185, region: '文曜—北坡森林—白塔', beasts: '清泉櫻花鉤吻鮭、食蟹獴、鉛色水鶇、四目水鹿', desc: '融雪清澈溪谷，冰河孑遺櫻花鉤吻鮭逆流躍水，產寒水玉與清泉鮮魚' },
-      { name: '翠冠巨木林', x: 0, y: 240, labelX: -45, labelY: 255, region: '文曜—北坡森林—白塔', beasts: '雲豹、藍腹鷴、飛鼠、黃喉貂、領角鴞', desc: '老堰頭往北溫暖巨木密林，古木蔽日、木源清氣豐沛，雲豹與黃喉貂穿梭其間' },
-      { name: '北坡雲杉林', x: 80, y: 300, labelX: 85, labelY: 335, region: '文曜—北坡森林—白塔', beasts: '胸白月熊、帝雉、黃喉貂、長鬃山羊', desc: '北坡高海拔百年雲杉林，胸帶新月白毫之月熊與霧中王者帝雉棲息' },
-      { name: '淺澤泥口', x: 0, y: -340, labelX: 28, labelY: -335, region: '南哨—水尾澤—青籠關', beasts: '重角水牛、柴棺龜、水雉、白鷺鷥', desc: '南哨南門外淺水泥澤，老水牛浸水納涼、柴棺龜與凌波水雉棲於菱葉間' },
-      { name: '白茫洲', x: -120, y: -320, labelX: -145, labelY: -365, region: '南哨—水尾澤—青籠關', beasts: '百步蛇、飯匙倩、翡翠樹蛙、四目水鹿', desc: '水尾寮南側水尾澤迷霧泥澤，黑沼百步蛇王盤踞枯木，產百步蛇膽與避瘴藥草' },
-      { name: '貼山深潭', x: 120, y: -320, labelX: 122, labelY: -355, region: '南哨—水尾澤—青籠關', beasts: '千年花斑鱸鰻、寒潭山椒魚、四目水鹿、翠鳥', desc: '緊貼青脊山腳幽深寒潭，水源清氣凝聚，碗口粗千年花斑鱸鰻與冰河山椒魚潛伏' },
-      { name: '青籠關', x: 0, y: -450, labelX: 0, labelY: -455, region: '南哨—水尾澤—青籠關', beasts: '大冠鷲、石虎、剛鬃黑山豬、穿山甲（鯪鯉）', desc: '半島南端陸路險隘門戶，獠牙山豬與石虎出沒荊棘山坳，大冠鷲長鳴高空' },
-      { name: '西嶺礦谷', x: 180, y: 40, labelX: 235, labelY: 85, region: '青脊山主脊—白塔', beasts: '長鬃山羊、穿山甲（鯪鯉）、胸白月熊、金翼白眉', desc: '青脊山西側縱深礦谷，金石地脈外露，鯪鯉與長鬃山羊攀行青脊重礦岩壁' },
-      { name: '東海峭壁', x: 320, y: 200, labelX: 322, labelY: 135, region: '青脊山主脊—白塔', beasts: '高山角鷹（熊鷹）、長鬃山羊、遊隼、峭壁岩鷚', desc: '半島東側臨海千仞東海斷崖，森林雕王高山角鷹迎東海罡風振翅，長鬃山羊踏立絕壁' },
-      { name: '雲腰雪林', x: 180, y: 320, labelX: 230, labelY: 350, region: '青脊山主脊—白塔', beasts: '帝雉、胸白月熊、雪林山椒魚、酒紅朱雀', desc: '白塔山腰耐寒鐵杉與高山圓柏雪林，冰魄晶瑩，藍黑羽帝雉漫步雪霧' },
-      { name: '白塔雪巔', x: 0, y: 420, labelX: 0, labelY: 435, region: '青脊山主脊—白塔', beasts: '帝雉、四目水鹿、長鬃山羊、雪巔冰河山椒魚、雪峰岩鷚', desc: '雲霧磁場極頂雪峰，天地至純清氣（氣源）奔湧，獨角霜冠大水鹿與帝雉駐足絕頂' },
+      { name: '西側外海', x: -51, y: 0 },
+      { name: '潮間泥灘', x: -36, y: -6 },
+      { name: '西側海岸平原', x: -20, y: 2 },
+      { name: '紅土西麓', x: -1, y: 5 },
+      { name: '刺竹伏流坪', x: 0, y: -2 },
+      { name: '北澗溪谷', x: 6, y: 15 },
+      { name: '紅土山腰', x: 17, y: 0 },
+      { name: '台地稜線', x: 35, y: 2 },
+      { name: '台地東坡', x: 51, y: 0 }
     ];
-    // 十五座聚落核心清單
-    const SETTLEMENTS = [
-      { name: '文曜', x: 0, y: 0, kind: 'city', title: '大城', radius: 17, bldgs: 245, desc: '半島政治文化心臟，內城與三水・講堂・百工・西門四大外坊共 245 棟地標與 204 戶百工民居' },
-      { name: '風舶角', x: -260, y: 160, kind: 'city', title: '大城', radius: 10, bldgs: 55, desc: '西海深水良港商埠，造船巨木區、海事商盟總會' },
-      { name: '風舶嶼', x: -330, y: 160, kind: 'town', title: '大鎮', radius: 7, bldgs: 40, desc: '外澳領航公會，修船塢與海防要塞' },
-      { name: '大圳頭', x: -180, y: -140, kind: 'town', title: '大鎮', radius: 7, bldgs: 40, desc: '大圳頭糧倉灌溉渠首，大圳農牧總社' },
-      { name: '半嶺鎮', x: 160, y: 210, kind: 'town', title: '大鎮', radius: 7, bldgs: 40, desc: '青脊山腰採石重鎮，寒水玉切石工坊與試招場' },
-      { name: '南哨', x: 0, y: -220, kind: 'town', title: '大鎮', radius: 7, bldgs: 40, desc: '南部邊陲防務關隘，水尾澤南緣、公議廳' },
-      { name: '老堰頭', x: 0, y: 125, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '北境清泉奔湧堰渠，水輪石磨工坊與水田農舍' },
-      { name: '北嶺腳', x: 110, y: 115, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '北麓登山門戶，山林旅社與獵戶歇腳處' },
-      { name: '霜林口', x: 190, y: 290, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '東麓原木林業村，原木水車鋸木坊與護林所' },
-      { name: '風櫃尾', x: -360, y: 95, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '西北岬角玄武岩漁村，防浪漁舍與風櫃尾燈塔' },
-      { name: '烏石鼻', x: -260, y: 35, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '西南近海黑礁漁港，黑曜石漁舍與鮮魚泊位' },
-      { name: '牛埔', x: -180, y: -245, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '長風草甸放牧聚落，向陽草甸暖氈屋與牧業公議所' },
-      { name: '紅土崁', x: -85, y: -140, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '赤石階地選礦聚落，耐火紅磚礦居與選礦場' },
-      { name: '三號坑口', x: -285, y: -140, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '西南深層重礦井口，條石礦居與坑口礦務所' },
-      { name: '水尾寮', x: -75, y: -280, kind: 'village', title: '名村', radius: 6, bldgs: 15, desc: '黑沼水網高腳聚落，耐水烏木高腳屋與竹筏埠' },
-      { name: '下營', x: 0, y: -395, kind: 'town', title: '大鎮', radius: 7, bldgs: 40, desc: '南哨與青籠關之間的山麓邊貿聚落，設下營邊貿坪、竹木行棧與巡山歇腳寮' },
-    ];
+    const SETTLEMENTS = [];
 
     // 23 個定案正典純圖樣符號表
     const TERRAIN_SYMBOLS = {
-      water_deep: '≋', beach: '⋯', water: '≈', bridge: '≍', swamp: '⋍',
-      plain: '𐡚', grassland: '𐡚', desert: '𐡚', tundra: '𐡚',
-      forest: 'Φ', forest_heavy: 'Φ', forest_light: 'Φ', jungle: 'Φ',
-      mountain: '⛰︎', hills: '△', mine_pass: '△', holy_tower: '∆', mage_tower: '∆',
-      empty_furrow: '≡', farm_field: '▦', dry_field: '▤', herb_garden: '☷',
-      wall: '■', fence: '≠', road: '::',
+      water_deep: '〜', beach: '∴', water: '≈', bridge: '≍', swamp: '░',
+      plain: '𐡚', grassland: '𐡚', desert: '∷', tundra: '❄',
+      forest: 'Φ', forest_heavy: 'Ψ', forest_light: 'φ', jungle: '⸙',
+      mountain: '⛰︎', hills: '∩', mine_pass: '△', holy_tower: '∆', mage_tower: '☗',
+      empty_furrow: '═', farm_field: '☷', dry_field: '▦', herb_garden: '☷',
+      wall: '⛊', fence: '☲', road: '::',
       house: '𖠿', farmhouse: '𖠿', warehouse: '𖠿', granary: '𖠿', courthouse: '𖠿',
       jail: '𖠿', prison_yard: '𖠿', urban: '𖠿',
       market: '$', general_store: '$', bank: '$', mint: '$', dock: '$', caravanserai: '$',
@@ -1622,13 +1375,12 @@
       guild_hall: '⚑', town_hall: '⚑', theater: '⚑', arena: '⚑', observatory: '⚑',
       alchemist: '⚑', embassy: '⚑', stables: '⚑',
     };
-
     // 地貌中文名稱對照
     const TERRAIN_NAMES = {
       water_deep: '深水海域', beach: '沙礫海灘', water: '河道水域', bridge: '平整橋樑', swamp: '沼澤泥澤',
       plain: '廣袤原野', grassland: '向陽草原', desert: '沙磧荒原', tundra: '凍土苔原',
       forest: '茂密森林', forest_heavy: '深邃巨木林', forest_light: '疏朗林道', jungle: '熱帶密林',
-      mountain: '高峻山嶺', hills: '起伏丘陵', mine_pass: '礦道石隘', holy_tower: '白塔雪巔', mage_tower: '高塔神龕',
+      mountain: '高峻山嶺', hills: '起伏丘陵', mine_pass: '礦道石隘', holy_tower: '高山奇峰', mage_tower: '高處石台',
       empty_furrow: '整地空壟', farm_field: '阡陌水田', dry_field: '平整旱田', herb_garden: '分畦藥圃',
       wall: '堅固城垣', fence: '防護木柵', road: '平坦石道',
       house: '居民坊舍', farmhouse: '農莊宅院', warehouse: '商運貨棧', granary: '常平儲糧倉', courthouse: '公議審理所',
@@ -1636,7 +1388,7 @@
       market: '商貿市集', general_store: '雜貨雜買鋪', bank: '總商行匯兌處', mint: '鎂幣精鑄局', dock: '舟楫泊位碼頭', caravanserai: '客商大車大院',
       blacksmith: '精鍛鐵匠鋪', workshop: '百工匠藝坊', clinic: '脈絡百草診所',
       inn: '山風迎客旅社', tavern: '煙火水畔食堂', bathhouse: '溫水活水浴場',
-      academy: '文曜學宮講堂', library: '典籍藏書閣', barracks: '衛戍守備營', guard_post: '傳訊哨站崗樓', temple: '思源社稷古壇',
+      academy: '學宮講堂', library: '典籍藏書閣', barracks: '衛戍守備營', guard_post: '傳訊哨站崗樓', temple: '思源社稷古壇',
       guild_hall: '百工領航公會', town_hall: '公議堂大廳', theater: '樂府演藝社', arena: '演武試招場', observatory: '天候觀星台',
       alchemist: '本草煉製坊', embassy: '各方使驛會館', stables: '草獸快騎驛站',
     };
@@ -1704,385 +1456,125 @@
     };
 
     /* ═══════════════════════════════════════════════════════════════════
-       正典分類器（嚴格鏡射 src/grid/gen.rs classify_wilderness_cell）
+       正典分類器（嚴格鏡射 src/grid/shalu_zhulin.rs，121 × 81 自然地貌）
        ═══════════════════════════════════════════════════════════════════ */
-    const SIN16 = [0, 38, 71, 92, 100, 92, 71, 38, 0, -38, -71, -92, -100, -92, -71, -38];
-
     function remEuclid(a, b) {
       return ((a % b) + b) % b;
     }
 
-    function peninsulaWave(t, p1, a1, p2, a2) {
-      const idx1 = Math.trunc((remEuclid(t, p1) * 16) / p1) & 15;
-      const idx2 = Math.trunc((remEuclid(t, p2) * 16) / p2) & 15;
-      return Math.trunc((SIN16[idx1] * a1 + SIN16[idx2] * a2) / 100);
-    }
-
-    function isPeninsulaRiver(x, y, wx, wy) {
-      if (Math.abs(x) <= 17 && Math.abs(y) <= 17) return null;
-
-      // 1. 北源清泉水脈 (y in 18..=385)
-      if (y >= 18 && y <= 385) {
-        let river_x, half_w;
-        if (y >= 118 && y <= 132) {
-          river_x = -1;
-          half_w = 0;
-        } else if (y >= 104 && y < 118) {
-          river_x = -2 - Math.trunc((118 - y) / 5);
-          half_w = 1;
-        } else if (y >= 133 && y <= 147) {
-          river_x = -2 - Math.trunc((y - 132) / 5);
-          half_w = 1;
-        } else {
-          river_x = -5 + peninsulaWave(y, 90, 4, 40, 2);
-          half_w = 1;
-        }
-        if (Math.abs(x - river_x) <= half_w) {
-          const zone = y >= 375 ? '白塔雪巔' : '翠冠巨木林';
-          return { zone, sub_geo: '河道', terrain: 'water', s: '≈' };
-        }
-      }
-
-      // 2. 東源清泉溪 (x in 18..=151)
-      if (x >= 18 && x <= 151) {
-        const ry = (x <= 100)
-          ? 2 + Math.trunc(((x - 18) * 113) / 82) + peninsulaWave(x, 48, 3, 24, 2)
-          : 115 + Math.trunc(((x - 100) * 93) / 51) + peninsulaWave(x, 48, 3, 24, 2);
-        if (Math.abs(y - ry) <= 1) {
-          return { zone: '清泉溪谷', sub_geo: '溪流', terrain: 'water', s: '≈' };
-        }
-      }
-
-      // 3. 西麓山溪 (x in -135..=-18)
-      if (x >= -135 && x <= -18 && !(x === -18 && (y === 0 || y === -1))) {
-        const wy_creek = 4 + Math.trunc(((-x - 18) * 76) / 117) + peninsulaWave(x, 52, 4, 26, 2);
-        if (Math.abs(y - wy_creek) <= 1) {
-          return { zone: '西麓林道', sub_geo: '山溪', terrain: 'water', s: '≈' };
-        }
-      }
-
-      // 4. 南流大河 (y in -340..=-18)
-      if (y >= -340 && y <= -18) {
-        let sr_x;
-        if (y >= -42 && y <= -18) {
-          sr_x = 2 + Math.trunc(((-18 - y) * 8) / 24);
-        } else if (y >= -232 && y <= -208) {
-          sr_x = 10;
-        } else {
-          sr_x = 10 + peninsulaWave(y, 80, 4, 36, 2);
-        }
-        if (Math.abs(x - sr_x) <= 1) {
-          const zone = y <= -120 ? '淺澤泥口' : '古河巨木林';
-          return { zone, sub_geo: '河道', terrain: 'water', s: '≈' };
-        }
-      }
-
-      // 5. 西南大圳 (x in -235..=8)
-      if (x >= -235 && x <= 8) {
-        const cy = (x >= -155)
-          ? -55 - Math.trunc(((8 - x) * 83) / 163)
-          : -138;
-        if (Math.abs(y - cy) === 0) {
-          const zone = x <= -180 ? '長風草甸' : (x <= -80 ? '古河巨木林' : '淺澤泥口');
-          return { zone, sub_geo: '大圳', terrain: 'water', s: '≈' };
-        }
-      }
-
-      return null;
-    }
-
     function classifyWildernessZone(x, y) {
-      const wx = peninsulaWave(x, 160, 18, 64, 8);
-      const wy = peninsulaWave(y, 180, 22, 72, 10);
-
-      // 1. 風舶外島（風舶嶼 -330, 160、驚濤岩岸 -360, 180、風櫃尾 -360, 95）
-      const w_isl = peninsulaWave(y, 48, 3, 20, 2);
-      const south_cap = y < 90 ? (90 - y) * 2 : 0;
-      const north_cap = y > 196 ? (y - 196) * 2 : 0;
-      const island_west = (y >= 89 && y <= 101) ? -366 : (-376 + w_isl + south_cap + north_cap);
-      let island_east;
-      if (y >= 146 && y <= 174) {
-        island_east = -323 - Math.trunc(Math.max(0, Math.abs(y - 160) - 7) / 2);
-      } else if (y > 174) {
-        island_east = -326 - Math.trunc(((y - 174) * 18) / 32) + Math.trunc(w_isl / 2) - north_cap;
-      } else {
-        island_east = -326 - Math.trunc(((146 - y) * 18) / 62) + Math.trunc(w_isl / 2) - south_cap;
-      }
-      const on_fengbo_island = (y >= 84 && y <= 206) && x >= island_west && x <= island_east;
-
-      // 2. 半島外海海岸線
-      const north_taper = y > 220 ? Math.trunc((y - 220) / 3) : 0;
-      const south_taper = 0;
-      let coast_west;
-      if (y >= 245) {
-        coast_west = -355 + north_taper + wy;
-      } else if (y >= 175) {
-        coast_west = -270 - Math.trunc(((y - 175) * (77 - wy)) / 70);
-      } else if (y >= 145) {
-        coast_west = -270;
-      } else if (y >= -28) {
-        if (y >= 28 && y <= 42) {
-          coast_west = -266;
-        } else if (y >= -24 && y <= -16) {
-          coast_west = -265;
-        } else {
-          coast_west = -268 + peninsulaWave(y, 56, 3, 24, 2);
-        }
-      } else if (y >= -115) {
-        coast_west = -268 - Math.trunc(((-29 - y) * (87 - wy)) / 86);
-      } else {
-        let cw = -355 + south_taper + wy;
-        if (y >= -165 && y <= -115 && cw > -355) {
-          cw = -355;
-        }
-        coast_west = cw;
+      const key = `${x},${y}`;
+      const cached = explicitCells.get(key);
+      if (cached) {
+        return {
+          zone: cached.z || '紅土西麓',
+          sub_geo: cached.n || '自然原野',
+          terrain: cached.t || 'plain',
+          s: cached.s || '𐡚',
+        };
       }
 
-      let coast_east = 335 - north_taper - Math.trunc(south_taper / 2) + wy;
-      if (y >= 175 && y <= 225 && coast_east < 332) {
-        coast_east = 332;
+      if (x < -60) {
+        return { zone: '西側外海', sub_geo: '外海深水', terrain: 'water_deep', s: '〜' };
       }
-      const coast_north = 455 + wx - Math.trunc(Math.abs(x) / 5);
-      // 3. 天然港灣道與深水外海判定（當不在風舶外島上時）
-      if (!on_fengbo_island) {
-        if (y >= 84 && y <= 206 && x > island_east && x < coast_west) {
-          return { zone: '天然港灣道', sub_geo: '海灣', terrain: 'water', s: '≈' };
-        } else if (y >= 207 && y <= 230 && x >= (-356 + (y - 206) * 2 + w_isl) && x < coast_west) {
-          return { zone: '天然港灣道', sub_geo: '北水道口', terrain: 'water', s: '≈' };
-        } else if (y >= 60 && y <= 83 && x >= (-356 + (84 - y) * 3 + w_isl) && x < coast_west) {
-          return { zone: '天然港灣道', sub_geo: '南水道口', terrain: 'water', s: '≈' };
+      if (x > 60) {
+        return { zone: '台地東坡', sub_geo: '東坡階地', terrain: 'hills', s: '∩' };
+      }
+      if (y < -40 || y > 40) {
+        return { zone: '紅土西麓', sub_geo: '遠郊原野', terrain: 'plain', s: '𐡚' };
+      }
+
+      const w = remEuclid(x * 7 + y * 13, 11) - 5;
+      const rawH = Math.imul(x, 73856093) ^ Math.imul(y, 19349663);
+      const h = Math.abs(remEuclid(rawH, 100));
+
+      if (x >= -42 && x <= 38) {
+        const northY = 12 + Math.trunc(((x + 42) * 6) / 80) + (remEuclid(x * 3, 5) - 2);
+        if (Math.abs(y - northY) <= 1 && !(x >= -1 && x <= 4 && y >= -1 && y <= 1)) {
+          const name = x < -10 ? '平原伏流河道' : (x < 15 ? '北澗卵石溪床' : '北溪上游山澗');
+          return { zone: '北澗溪谷', sub_geo: name, terrain: 'water', s: '≈' };
         }
-        if (y > coast_north || x < coast_west) {
-          return { zone: '北冕海', sub_geo: '深水', terrain: 'water_deep', s: '≋' };
-        }
-        if (x > coast_east) {
-          return { zone: '東海', sub_geo: '深水', terrain: 'water_deep', s: '≋' };
+      }
+      if (x >= -42 && x <= 32) {
+        const southY = -14 - Math.trunc(((x + 42) * 5) / 74) + (remEuclid(x * 5, 5) - 2);
+        if (Math.abs(y - southY) <= 1) {
+          const name = x < -10 ? '南側平原溪流' : '南坑礫石山澗';
+          return { zone: '北澗溪谷', sub_geo: name, terrain: 'water', s: '≈' };
         }
       }
 
-      // 文曜西門外關鍵錨點保持西麓林道正典
-      if (x === -18 && (y === 0 || y === -1)) {
-        return { zone: '西麓林道', sub_geo: '林道', terrain: 'forest', s: 'Φ' };
+      if (x < -42 + Math.trunc(w / 2)) {
+        return { zone: '西側外海', sub_geo: '西側深水外海', terrain: 'water_deep', s: '〜' };
       }
-
-      // 19 處正典獵場核心 5x5 錨點優先保持正典主地貌
-      const huntingAnchors = [
-        [[-180, -195], '長風草甸', '草原', 'grassland', '𐡚'],
-        [[-80, -60], '古河巨木林', '密林', 'forest', 'Φ'],
-        [[-85, -180], '赤石坡', '礦坡', 'mine_pass', '△'],
-        [[-340, -140], '落日岬', '海岬', 'beach', '⋯'],
-        [[-360, 180], '驚濤岩岸', '岩岸', 'beach', '⋯'],
-        [[-300, 260], '巨藻淺灣', '淺灣', 'beach', '⋯'],
-        [[-260, -20], '黑石灣', '礫灣', 'beach', '⋯'],
-        [[-130, 80], '西麓林道', '林道', 'forest', 'Φ'],
-        [[60, 160], '清泉溪谷', '溪谷', 'water', '≈'],
-        [[0, 240], '翠冠巨木林', '密林', 'forest', 'Φ'],
-        [[80, 300], '北坡雲杉林', '雲杉', 'forest', 'Φ'],
-        [[0, -340], '淺澤泥口', '泥口', 'swamp', '⋍'],
-        [[-120, -320], '白茫洲', '泥澤', 'swamp', '⋍'],
-        [[120, -320], '貼山深潭', '深潭', 'swamp', '⋍'],
-        [[0, -450], '青籠關', '山隘', 'mine_pass', '△'],
-        [[180, 40], '西嶺礦谷', '礦谷', 'mine_pass', '△'],
-        [[320, 200], '東海峭壁', '峭壁', 'mine_pass', '△'],
-        [[180, 320], '雲腰雪林', '雪林', 'forest', 'Φ'],
-        [[0, 420], '白塔雪巔', '雪巔', 'holy_tower', '∆'],
-      ];
-      for (const [[cx, cy], z, sg, t, s] of huntingAnchors) {
-        if (Math.abs(x - cx) <= 2 && Math.abs(y - cy) <= 2) {
-          return { zone: z, sub_geo: sg, terrain: t, s };
+      if (x < -30 + Math.trunc(w / 2)) {
+        if (h < 40) return { zone: '潮間泥灘', sub_geo: '濱海蘆葦泥澤', terrain: 'swamp', s: '░' };
+        return { zone: '潮間泥灘', sub_geo: '潮間沙礫海灘', terrain: 'beach', s: '∴' };
+      }
+      if (x < -8 + Math.trunc(w / 2)) {
+        if (h < 50) return { zone: '西側海岸平原', sub_geo: '平原菅芒草海', terrain: 'grassland', s: '𐡚' };
+        if (h < 80) return { zone: '西側海岸平原', sub_geo: '海濱砂質平地', terrain: 'plain', s: '𐡚' };
+        return { zone: '西側海岸平原', sub_geo: '海濱防風雜木林', terrain: 'forest_light', s: 'φ' };
+      }
+      if (x <= 6) {
+        if (Math.abs(x) <= 4 && Math.abs(y) <= 4) {
+          if (h < 65) return { zone: '紅土西麓', sub_geo: '刺竹林', terrain: 'forest_heavy', s: '𓐂' };
+          return { zone: '紅土西麓', sub_geo: '刺竹林', terrain: 'forest', s: '𓐂' };
         }
+        if (h < 45) return { zone: '紅土西麓', sub_geo: '刺竹林', terrain: 'forest', s: '𓐂' };
+        if (h < 80) return { zone: '紅土西麓', sub_geo: '西麓紅土緩坡', terrain: 'hills', s: '∩' };
+        return { zone: '紅土西麓', sub_geo: '坡腳紅土旱坪', terrain: 'plain', s: '𐡚' };
       }
-
-      // 連續河流與水系（僅文曜城外）
-      const river = isPeninsulaRiver(x, y, wx, wy);
-      if (river) return river;
-
-      // 凝聚性 3x3 叢集雜湊（用於自然微地貌變化，消除純色塊）
-      const gx = Math.floor(x / 3);
-      const gy = Math.floor(y / 3);
-      const rawH = Math.imul(gx, 73856093) ^ Math.imul(gy, 19349663);
-      const h = remEuclid(rawH, 100);
-
-      // 19 處正典獵場分區判定與自然微地貌生成
-      if (y >= (375 + Math.trunc(wx / 2)) && x <= (135 + Math.trunc(wy / 2)) && x >= (-210 + Math.trunc(wy / 2))) {
-        if (Math.abs(x) <= 15 && y >= 405 && y <= 435) {
-          return { zone: '白塔雪巔', sub_geo: '雪巔', terrain: 'holy_tower', s: '∆' };
-        }
-        if (h < 22) return { zone: '白塔雪巔', sub_geo: '礦階', terrain: 'mine_pass', s: '△' };
-        if (h < 26) return { zone: '白塔雪巔', sub_geo: '高山草甸', terrain: 'grassland', s: '𐡚' };
-        if (h < 30) return { zone: '白塔雪巔', sub_geo: '高山藥叢', terrain: 'herb_garden', s: '☷' };
-        return { zone: '白塔雪巔', sub_geo: '冰峰', terrain: 'mountain', s: '⛰︎' };
+      if (x <= 26 + Math.trunc(w / 2)) {
+        if (h < 15) return { zone: '紅土山腰', sub_geo: '山腰崩塌陡崖', terrain: 'mountain', s: '⛰︎' };
+        if (h < 50) return { zone: '紅土山腰', sub_geo: '山腰樟竹混林', terrain: 'forest', s: '𓐂' };
+        if (h < 80) return { zone: '紅土山腰', sub_geo: '山腰紅土礫坡', terrain: 'hills', s: '∩' };
+        return { zone: '紅土山腰', sub_geo: '山腰向陽苦楝林', terrain: 'forest_light', s: 'φ' };
       }
-
-      if (y >= (255 + Math.trunc(wx / 2)) && x > (135 + Math.trunc(wy / 2)) && x < (312 + Math.trunc(wy / 3))) {
-        if (h < 10) return { zone: '雲腰雪林', sub_geo: '林間草地', terrain: 'grassland', s: '𐡚' };
-        if (h < 15) return { zone: '雲腰雪林', sub_geo: '野生草藥圃', terrain: 'herb_garden', s: '☷' };
-        if (h < 19) return { zone: '雲腰雪林', sub_geo: '林間石坎', terrain: 'mine_pass', s: '△' };
-        return { zone: '雲腰雪林', sub_geo: '雪林', terrain: 'forest', s: 'Φ' };
+      if (x <= 44 + Math.trunc(w / 2)) {
+        if (h < 20) return { zone: '台地稜線', sub_geo: '險峻紅土斷崖', terrain: 'mountain', s: '⛰︎' };
+        if (h < 60) return { zone: '台地稜線', sub_geo: '稜線雲霧巨木林', terrain: 'forest_heavy', s: 'Ψ' };
+        if (h < 85) return { zone: '台地稜線', sub_geo: '稜線風化礫石嶺', terrain: 'hills', s: '∩' };
+        return { zone: '台地稜線', sub_geo: '稜頂迎風草坡', terrain: 'grassland', s: '𐡚' };
       }
-
-      if (x >= coast_east - 28) {
-        if (x === 320 && y >= 198 && y <= 202) {
-          return { zone: '東海峭壁', sub_geo: '峭壁', terrain: 'mine_pass', s: '△' };
-        }
-        if (h < 22) return { zone: '東海峭壁', sub_geo: '礦階', terrain: 'mine_pass', s: '△' };
-        if (h < 26) return { zone: '東海峭壁', sub_geo: '高山草甸', terrain: 'grassland', s: '𐡚' };
-        if (h < 30) return { zone: '東海峭壁', sub_geo: '高山藥叢', terrain: 'herb_garden', s: '☷' };
-        return { zone: '東海峭壁', sub_geo: '峭壁', terrain: 'mountain', s: '⛰︎' };
+      if (x >= 56 && remEuclid(y + x, 7) <= 1) {
+        return { zone: '台地東坡', sub_geo: '東麓盆地溪流', terrain: 'water', s: '≈' };
       }
-
-      // 4 處濱海獵場（風舶外島・驚濤岩岸、巨藻淺灣、黑石灣、落日岬）
-      if (on_fengbo_island) {
-        const zone = '驚濤岩岸';
-        if (x <= island_west + 6 || x >= island_east - 3 || y <= 88 || y >= 196) {
-          if (h < 10) return { zone, sub_geo: '海蝕礁石', terrain: 'mountain', s: '⛰︎' };
-          if (h < 18 && x <= island_west + 4) return { zone, sub_geo: '潮間帶潮池', terrain: 'water', s: '≈' };
-          if (h < 30) return { zone, sub_geo: '海濱灌叢', terrain: 'grassland', s: '𐡚' };
-          return { zone, sub_geo: '岩岸', terrain: 'beach', s: '⋯' };
-        } else {
-          if (h < 32) return { zone, sub_geo: '海濱林', terrain: 'forest', s: 'Φ' };
-          if (h < 56) return { zone, sub_geo: '海濱草坡', terrain: 'grassland', s: '𐡚' };
-          if (h < 76) return { zone, sub_geo: '海蝕岩丘', terrain: 'mine_pass', s: '△' };
-          return { zone, sub_geo: '岩岸', terrain: 'beach', s: '⋯' };
-        }
-      }
-
-      const isJuZao = x <= (-220 + Math.trunc(wy / 2)) && y >= (171 + Math.trunc(wx / 3));
-      const isHeiShi = x <= (-220 + Math.trunc(wy / 2)) && (y >= (-79 + Math.trunc(wx / 2)) && y <= 149);
-      const isLuoRi = x <= (-261 + Math.trunc(wy / 2)) && (y >= (-260 + Math.trunc(wx / 2)) && y <= (-80 + Math.trunc(wx / 2)));
-      if (isJuZao || isHeiShi || isLuoRi) {
-        const zone = isJuZao ? '巨藻淺灣' : (isHeiShi ? '黑石灣' : '落日岬');
-        const subGeo = isJuZao ? '淺灣' : (isHeiShi ? '礫灣' : '海岬');
-        if (isLuoRi && x > -305) {
-          if (h < 42) return { zone, sub_geo: '礦脈岩坡', terrain: 'mine_pass', s: '△' };
-          if (h < 74) return { zone, sub_geo: '向陽草坡', terrain: 'grassland', s: '𐡚' };
-          return { zone, sub_geo: '耐風林地', terrain: 'forest', s: 'Φ' };
-        } else if (x > coast_west + 14) {
-          // 內陸過渡帶：海濱林、草坡與岩丘
-          if (h < 30) return { zone, sub_geo: '海濱林', terrain: 'forest', s: 'Φ' };
-          if (h < 50) return { zone, sub_geo: '海濱草坡', terrain: 'grassland', s: '𐡚' };
-          if (h < 65) return { zone, sub_geo: '海蝕岩丘', terrain: 'mine_pass', s: '△' };
-          return { zone, sub_geo: '海灘', terrain: 'beach', s: '⋯' };
-        } else {
-          // 臨海潮間帶：海蝕礁石、潮池、海濱灌叢與沙灘
-          if (h < 8) return { zone, sub_geo: '海蝕礁石', terrain: 'mountain', s: '⛰︎' };
-          if (h < 15) return { zone, sub_geo: '潮間帶潮池', terrain: 'water', s: '≈' };
-          if (h < 24) return { zone, sub_geo: '海濱灌叢', terrain: 'grassland', s: '𐡚' };
-          return { zone, sub_geo: subGeo, terrain: 'beach', s: '⋯' };
-        }
-      }
-
-      if ((x >= (-260 + Math.trunc(wy / 2)) && x <= (-125 + Math.trunc(wy / 2)) && y >= (-260 + Math.trunc(wx / 2)) && y <= (-80 + Math.trunc(wx / 2))) ||
-          (x >= (-219 + Math.trunc(wy / 2)) && x <= (-141 + Math.trunc(wy / 2)) && y >= (-79 + Math.trunc(wx / 2)) && y <= -1)) {
-        if (h < 8) return { zone: '長風草甸', sub_geo: '草甸樹叢', terrain: 'forest', s: 'Φ' };
-        if (h < 14) return { zone: '長風草甸', sub_geo: '野花草甸', terrain: 'herb_garden', s: '☷' };
-        if (h < 18) return { zone: '長風草甸', sub_geo: '微風土丘', terrain: 'mine_pass', s: '△' };
-        return { zone: '長風草甸', sub_geo: '草原', terrain: 'grassland', s: '𐡚' };
-      }
-
-      if (x >= (-124 + Math.trunc(wy / 2)) && x <= (-30 + Math.trunc(wy / 2)) && y >= (-260 + Math.trunc(wx / 2)) && y <= (-116 + Math.trunc(wx / 2))) {
-        if (h < 22 || (x >= -87 && x <= -83 && y >= -182 && y <= -178)) {
-          return { zone: '赤石坡', sub_geo: '礦坡', terrain: 'mine_pass', s: '△' };
-        }
-        if (h < 26) return { zone: '赤石坡', sub_geo: '高山草甸', terrain: 'grassland', s: '𐡚' };
-        if (h < 30) return { zone: '赤石坡', sub_geo: '高山藥叢', terrain: 'herb_garden', s: '☷' };
-        return { zone: '赤石坡', sub_geo: '山脊', terrain: 'mountain', s: '⛰︎' };
-      }
-
-      if (x >= (-140 + Math.trunc(wy / 2)) && x <= -1 && y >= (-115 + Math.trunc(wx / 2)) && y <= -18) {
-        if (h < 10) return { zone: '古河巨木林', sub_geo: '林間草地', terrain: 'grassland', s: '𐡚' };
-        if (h < 15) return { zone: '古河巨木林', sub_geo: '野生草藥圃', terrain: 'herb_garden', s: '☷' };
-        if (h < 19) return { zone: '古河巨木林', sub_geo: '林間石坎', terrain: 'mine_pass', s: '△' };
-        return { zone: '古河巨木林', sub_geo: '密林', terrain: 'forest', s: 'Φ' };
-      }
-
-      if (y <= -410 + Math.trunc(wx / 2) + Math.trunc(x / 10)) {
-        if (Math.abs(x) <= 4) {
-          return { zone: '青籠關', sub_geo: '山隘', terrain: 'mine_pass', s: '△' };
-        }
-        if (h < 22) {
-          return { zone: '青籠關', sub_geo: '礦階', terrain: 'mine_pass', s: '△' };
-        } else if (h < 48) {
-          return { zone: '青籠關', sub_geo: '幽深籠林', terrain: 'forest', s: 'Φ' };
-        } else if (h < 54) {
-          return { zone: '青籠關', sub_geo: '高山草甸', terrain: 'grassland', s: '𐡚' };
-        } else if (h < 60) {
-          return { zone: '青籠關', sub_geo: '高山藥叢', terrain: 'herb_garden', s: '☷' };
-        }
-        return { zone: '青籠關', sub_geo: '山脊', terrain: 'mountain', s: '⛰︎' };
-      }
-
-      // 3 處水澤獵場（白茫洲、貼山深潭、淺澤泥口）
-      const isBaiMang = y <= (-261 + Math.trunc(wx / 2)) && x <= (-51 + Math.trunc(wy / 2));
-      const isTieShan = y <= (-200 + Math.trunc(wx / 2)) && x >= (60 + Math.trunc(wy / 2)) && x <= (185 + Math.trunc(wy / 2));
-      const isQianZe = (y <= (-120 + Math.trunc(wx / 2)) && x >= (-50 + Math.trunc(wy / 2)) && x <= (59 + Math.trunc(wy / 2))) ||
-                       (y >= (-119 + Math.trunc(wx / 2)) && y <= -18 && x >= 0 && x <= 39);
-      if (isBaiMang || isTieShan || isQianZe) {
-        const zone = isBaiMang ? '白茫洲' : (isTieShan ? '貼山深潭' : '淺澤泥口');
-        const subGeo = isBaiMang ? '泥澤' : (isTieShan ? '深潭' : '泥口');
-        const poolLim = isTieShan ? 28 : 12;
-        if (h < poolLim) return { zone, sub_geo: '沼澤水窪', terrain: 'water', s: '≈' };
-        if (h < poolLim + 6) return { zone, sub_geo: '蘆葦洲', terrain: 'grassland', s: '𐡚' };
-        if (h < poolLim + 12) return { zone, sub_geo: '枯木林', terrain: 'forest', s: 'Φ' };
-        return { zone, sub_geo: subGeo, terrain: 'swamp', s: '⋍' };
-      }
-
-      if ((x >= (141 + Math.trunc(wy / 2)) && y >= (40 + Math.trunc(wx / 2)) && y <= (254 + Math.trunc(wx / 2))) ||
-          (x >= (40 + Math.trunc(wy / 2)) && y >= (-199 + Math.trunc(wx / 2)) && y <= (39 + Math.trunc(wx / 2))) ||
-          (x > (185 + Math.trunc(wy / 2)) && y <= (-200 + Math.trunc(wx / 2)))) {
-        if (h < 22 || (x >= 178 && x <= 182 && y >= 38 && y <= 42)) {
-          return { zone: '西嶺礦谷', sub_geo: '礦谷', terrain: 'mine_pass', s: '△' };
-        }
-        if (h < 26) return { zone: '西嶺礦谷', sub_geo: '高山草甸', terrain: 'grassland', s: '𐡚' };
-        if (h < 30) return { zone: '西嶺礦谷', sub_geo: '高山藥叢', terrain: 'herb_garden', s: '☷' };
-        return { zone: '西嶺礦谷', sub_geo: '山脊', terrain: 'mountain', s: '⛰︎' };
-      }
-
-      if (x >= (41 + Math.trunc(wy / 2)) && x <= (140 + Math.trunc(wy / 2)) && y >= (241 + Math.trunc(wx / 2)) && y <= (374 + Math.trunc(wx / 2))) {
-        if (h < 10) return { zone: '北坡雲杉林', sub_geo: '林間草地', terrain: 'grassland', s: '𐡚' };
-        if (h < 15) return { zone: '北坡雲杉林', sub_geo: '野生草藥圃', terrain: 'herb_garden', s: '☷' };
-        if (h < 19) return { zone: '北坡雲杉林', sub_geo: '林間石坎', terrain: 'mine_pass', s: '△' };
-        return { zone: '北坡雲杉林', sub_geo: '雲杉', terrain: 'forest', s: 'Φ' };
-      }
-
-      // 清泉溪谷：林地與草甸溪谷，北部設有溪流支脈貫通至 (60, 160)
-      if (x >= (20 + Math.trunc(wy / 3)) && x <= (140 + Math.trunc(wy / 2)) && y >= (40 + Math.trunc(wx / 2)) && y <= (240 + Math.trunc(wx / 2))) {
-        if (x >= 55 && x <= 65 && y >= 140 && y <= 230) {
-          const stream_x = 60 + peninsulaWave(y, 40, 3, 20, 1);
-          if (Math.abs(x - stream_x) <= 1) {
-            return { zone: '清泉溪谷', sub_geo: '溪流', terrain: 'water', s: '≈' };
-          }
-        }
-        if (x >= 58 && x <= 62 && y >= 158 && y <= 162) {
-          return { zone: '清泉溪谷', sub_geo: '溪谷', terrain: 'water', s: '≈' };
-        }
-        if (h < 10) return { zone: '清泉溪谷', sub_geo: '林間草地', terrain: 'grassland', s: '𐡚' };
-        if (h < 15) return { zone: '清泉溪谷', sub_geo: '野生草藥圃', terrain: 'herb_garden', s: '☷' };
-        if (h < 19) return { zone: '清泉溪谷', sub_geo: '林間石坎', terrain: 'mine_pass', s: '△' };
-        if (h < 35) return { zone: '清泉溪谷', sub_geo: '溪旁草灘', terrain: 'grassland', s: '𐡚' };
-        return { zone: '清泉溪谷', sub_geo: '密林', terrain: 'forest', s: 'Φ' };
-      }
-
-      if (y >= (221 + Math.trunc(wx / 2)) || (x >= -19 && x <= 19 && y >= 18 && y <= (220 + Math.trunc(wx / 2)))) {
-        if (h < 10) return { zone: '翠冠巨木林', sub_geo: '林間草地', terrain: 'grassland', s: '𐡚' };
-        if (h < 15) return { zone: '翠冠巨木林', sub_geo: '野生草藥圃', terrain: 'herb_garden', s: '☷' };
-        if (h < 19) return { zone: '翠冠巨木林', sub_geo: '林間石坎', terrain: 'mine_pass', s: '△' };
-        return { zone: '翠冠巨木林', sub_geo: '密林', terrain: 'forest', s: 'Φ' };
-      }
-
-      if (h < 10) return { zone: '西麓林道', sub_geo: '林間草地', terrain: 'grassland', s: '𐡚' };
-      if (h < 15) return { zone: '西麓林道', sub_geo: '野生草藥圃', terrain: 'herb_garden', s: '☷' };
-      if (h < 19) return { zone: '西麓林道', sub_geo: '林間石坎', terrain: 'mine_pass', s: '△' };
-      return { zone: '西麓林道', sub_geo: '林道', terrain: 'forest', s: 'Φ' };
+      if (h < 50) return { zone: '台地東坡', sub_geo: '東坡闊葉雜木林', terrain: 'forest', s: 'Φ' };
+      return { zone: '台地東坡', sub_geo: '東坡紅土階地', terrain: 'hills', s: '∩' };
     }
     /* ═══════════════════════════════════════════════════════════════════
        四字微地名簡稱提煉（嚴格鏡射 web/grid-map.js shortPlaceLabel）
        ═══════════════════════════════════════════════════════════════════ */
     const EXACT_SHORT_LABELS = {
-      '青籠關・幽深籠林': '幽深籠林',
+      '平原伏流河道': '伏流河道',
+      '北澗卵石溪床': '卵石溪床',
+      '北溪上游山澗': '上游山澗',
+      '南側平原溪流': '平原溪流',
+      '南坑礫石山澗': '礫石山澗',
+      '西側深水外海': '深水外海',
+      '濱海蘆葦泥澤': '蘆葦泥澤',
+      '潮間沙礫海灘': '沙礫海灘',
+      '平原菅芒草海': '菅芒草海',
+      '海濱砂質平地': '砂質平地',
+      '海濱防風雜木林': '防風木林',
+      '西麓刺竹密林': '刺竹密林',
+      '西南竹林緩坡': '西南竹坡',
+      '高台紅土竹林': '紅土竹林',
+      '西麓坡腳竹林': '坡腳竹林',
+      '西麓紅土緩坡': '紅土緩坡',
+      '坡腳紅土旱坪': '紅土旱坪',
+      '山腰崩塌陡崖': '崩塌陡崖',
+      '山腰樟竹混林': '樟竹混林',
+      '山腰紅土礫坡': '紅土礫坡',
+      '山腰向陽苦楝林': '向陽苦楝',
+      '稜線雲霧巨木林': '雲霧巨林',
+      '稜線風化礫石嶺': '風化礫嶺',
+      '稜頂迎風草坡': '迎風草坡',
+      '東麓盆地溪流': '東麓溪流',
+      '東坡闊葉雜木林': '闊葉木林',
+      '東坡紅土階地': '紅土階地',
       '幽深籠林': '幽深籠林',
       '南下古隘道': '南下古道',
-      '青籠關・南下古隘道': '南下古道',
       '中心樞紐石橋': '中心石橋',
       '三水總商行總部': '三水商行',
       '傳訊鐘樓與信使總站': '傳訊鐘樓',
@@ -2092,16 +1584,12 @@
       '石板弄堂天井': '弄堂天井',
       '信使快騎宿所': '快騎宿所',
       '河畔迎客小院': '迎客小院',
-      '學院主校區': '文曜學院',
       '學院觀星台與評議廳': '觀星台',
       '藏書閣與印行館': '藏書閣',
       '百工商算學舍': '商算學舍',
       '講堂街書局與印行館': '印行書局',
       '講堂街老字號剪剃鋪': '老剪剃鋪',
       '講堂街書局': '講堂書局',
-      '文曜蒙學堂講舍': '文曜蒙學',
-      '蒙學堂講舍': '文曜蒙學',
-      '學院蒙學堂講習舍': '文曜蒙學',
       '講堂街・蒙學陸先生舍': '先生舍',
       '蒙學陸先生舍': '先生舍',
       '秦氏算學居': '秦氏算學',
@@ -2208,13 +1696,6 @@
       '書院巷北口': '學院北口',
       '書院巷中段': '學院巷中',
       '書院巷南口': '學院南口',
-      '講堂街・文曜蒙學堂十字口': '蒙學街口',
-      '文曜蒙學堂十字口': '蒙學街口',
-      '講堂街・文曜蒙學堂前巷': '蒙學前巷',
-      '文曜蒙學堂前巷': '蒙學前巷',
-      '文曜蒙學堂書聲西口': '蒙學西口',
-      '文曜蒙學堂書聲西段': '蒙學西段',
-      '文曜蒙學堂書聲中段': '蒙學中段',
       '講堂外環北校舍口': '外環校口',
       '觀星台道西口': '觀星西口',
       '觀星台道東段': '觀星東段',
@@ -2715,7 +2196,6 @@
       '鐵砂淘洗工舍': '淘洗工舍',
       '百鍊刀劍匠宅': '刀劍匠宅',
       '天工安居大院': '天工大院',
-      '萬里駝隊大驛站': '駝隊驛站',
       '西門皮毛大市': '皮毛大市',
       '常平糧草總大庫': '糧草總庫',
       '重載雙輪大車坊': '雙輪車坊',
@@ -2745,9 +2225,6 @@
       '商隊嚮導家屋': '嚮導家屋',
       '西關歇腳小院': '西關小院',
       '順風車馬大院': '順風大院',
-      '翠冠巨木林': '翠冠巨林',
-      '古河巨木林': '古河巨林',
-      '北坡雲杉林': '北坡杉林',
       '天然港灣道': '港灣水道',
       '天然港灣道・海灣': '港灣水道',
       '天然港灣道・北水道口': '北水道口',
@@ -2756,43 +2233,20 @@
       '跨海長橋': '跨海長橋',
       '大圳農牧總社': '農牧總社',
       '大圳農具與百工坊': '農具工坊',
-      '大圳頭農具與百工坊': '農具工坊',
-      '大圳頭農具': '農具工坊',
-      '大圳頭農產與糧油市集': '農產市集',
       '農產與糧油市集': '農產市集',
       '農產': '農產市集',
-      '大圳頭商旅社': '大圳商旅',
       '商旅社': '大圳商旅',
-      '大圳頭農產行': '大圳農產',
-      '大圳頭車馬聯運站': '車馬聯運',
-      '大圳頭脈絡診所': '脈絡診所',
       '田園風味大食堂': '田園食堂',
       '圳水溫和浴堂': '圳水浴堂',
-      '大圳頭省力翻土犁工坊舍': '翻土犁坊',
-      '大圳頭農具百工舍': '農具工舍',
-      '大圳頭糧油調度員宅': '糧油調度',
       '農牧總社管事居': '總社管事',
       '圳道引水水工舍': '引水水工',
       '草獸牽引大車伕居': '大車伕居',
-      '大圳頭棉麻織造家': '棉麻織造',
       '原野收穫儲糧宅': '收穫儲糧',
-      '大圳頭田園蔬食居': '田園蔬食',
-      '大圳頭拓墾老農舍': '拓墾農舍',
-      '大圳頭甘蔗榨汁小院': '甘蔗小院',
       '圳水磨坊工匠宅': '水磨匠宅',
       '農產市集主事居': '市集主事',
-      '大圳頭聯運駝獸伕舍': '駝獸伕舍',
-      '大圳頭行商會客小舍': '行商會舍',
       '田園風光青石屋': '田園石屋',
-      '大圳頭修耙補犁鋪居': '修耙補犁',
-      '大圳頭草料集運宅': '草料集運',
-      '大圳頭稻香安居舍': '稻香安居',
-      '大圳頭育苗育種園居': '育苗園居',
-      '大圳頭清泉飲水舍': '清泉飲舍',
-      '大圳頭望野樓': '望野石樓',
       '海事總商行與船貨契據所': '海事商行',
       '海事總商行': '海事商行',
-      '風舶航海圖誌館': '航海圖館',
       '馭風帆具與船材工坊': '帆具工坊',
       '馭風帆具': '帆具工坊',
       '港務脈絡診所': '港務診所',
@@ -2808,61 +2262,34 @@
       '碼頭水產長街': '水產長街',
       '東北環港石街': '東北環街',
       '西北海防石街': '西北海街',
-      '老堰頭農產公議所': '農產公所',
-      '老堰頭脈絡草木診所': '草木診所',
       '秦氏水輪石磨傳承老宅': '秦氏老宅',
-      '老堰頭水門守閘水工舍': '守閘水工',
       '堰渠石匠維修工舍': '石匠工舍',
       '陸家舊堰農契典藏舍': '農契典藏',
       '水畔碾米磨藥工匠居': '碾米磨藥',
-      '老堰頭清流甘泉水豆腐坊舍': '水豆腐坊',
-      '老堰頭水圳巡渠員居': '巡渠員居',
       '堰上微風迎客小院': '迎客小院',
-      '老堰頭水車木匠家屋': '水車木匠',
-      '老堰頭古堰安瀾石屋': '古堰石屋',
-      '南哨防務公議廳': '防務公廳',
-      '南哨傳訊信使站': '傳訊信站',
       '重型獵具工坊': '重獵具坊',
-      '南哨脈絡解毒診所': '解毒診所',
       '入林嚮導公會': '嚮導公會',
       '高棧坪獵人旅社': '獵人旅社',
       '黑沼素材收購行': '素材收購',
-      '南哨原野食堂': '原野食堂',
       '高棧坪溫水浴場': '高棧浴場',
       '高棧坪・羅家宅院': '羅家宅院',
       '羅家宅院': '羅家宅院',
       '雷家重型獵具大匠宅': '雷家匠宅',
       '葉家白茫避瘴清心齋': '避瘴清齋',
       '羅家黑沼防務精舍': '防務精舍',
-      '南哨鐵絲巨藻獵網工棚舍': '獵網工棚',
-      '南哨飛爪索精造舍': '飛爪索舍',
       '黑沼紅磷信號筒工匠居': '信號匠居',
       '高棧坪首席嚮導歇宿舍': '嚮導歇舍',
-      '南哨防瘴草藥焙製院': '草藥焙院',
-      '南哨重獵具維護工寮': '獵具工寮',
-      '南哨獸材分級過磅居': '獸材過磅',
       '高棧坪高架木石屋一號': '高棧一號',
       '高棧坪高架木石屋二號': '高棧二號',
       '高棧坪高架木石屋三號': '高棧三號',
       '高棧坪高架木石屋四號': '高棧四號',
       '高棧坪高架木石屋五號': '高棧五號',
-      '南哨防泥浸厚皮靴舍': '厚皮靴舍',
-      '南哨隘口值守衛士居': '值守衛居',
-      '南哨夜間警備更房': '夜間更房',
-      '南哨獵犬與角鹿馴養舍': '獵犬馴舍',
       '高棧坪篝火圍坐大院': '篝火大院',
       '黑沼探險老獵夫舍': '老獵夫舍',
-      '南哨驅蚊艾草曬場居': '艾草曬居',
-      '南哨硬木弓弩修造居': '弓弩修居',
       '高棧坪山野乾糧小棧': '乾糧小棧',
-      '南哨解毒藥草培植圃居': '藥草圃居',
       '高棧坪晨霧瞭望石居': '瞭望石居',
-      '南哨防濕木料棧舍': '防濕棧舍',
-      '南哨涉水長皮靴手藝居': '涉水靴居',
       '高棧坪獵友聚義小院': '聚義小院',
-      '南哨黑沼門戶安防石宅': '安防石宅',
       '外澳領航公會': '領航公會',
-      '風舶嶼海防公議所': '海防公所',
       '島嶼修船塢': '島修船塢',
       '外澳海員旅社': '海員旅社',
       '外澳水產交易行': '外澳水產',
@@ -2872,67 +2299,36 @@
       '潮音溫水浴堂': '潮音浴堂',
       '外澳・顧家宅院': '顧家宅院',
       '顧家宅院': '顧家宅院',
-      '半嶺鎮山務公議所': '山務公所',
-      '半嶺試招場': '半嶺試招',
       '寒水玉切石工坊': '寒水玉坊',
-      '半嶺山泉旅社': '山泉旅社',
-      '半嶺氣象觀測所': '氣象觀測',
       '山岳脈絡診所': '山岳診所',
-      '半嶺山野食堂': '山野食堂',
-      '半嶺高山溫水湯堂': '高山湯堂',
       '青脊礦石與玉材交易行': '礦玉商行',
-      '半嶺・岑家二房宅院': '岑家二房',
       '岑家二房宅院': '岑家二房',
-      '北嶺腳山林旅社': '山林旅社',
-      '北嶺腳脈絡急救診所': '北嶺診所',
       '北嶺山徑補給行': '山徑補給',
       '嶺腳暖火食堂': '暖火食堂',
-      '北嶺腳公事房': '北嶺公房',
       '馬家鐵齒登山釘鞋工坊宅': '馬家釘鞋',
       '霜林護林瞭望所': '護林瞭望',
       '霜林脈絡診所': '霜林診所',
       '原木水車鋸木坊': '水車鋸坊',
       '高山木料調配站': '木料調配',
       '林緣溫暖旅社': '林緣旅社',
-      '風櫃尾燈塔': '風櫃燈塔',
-      '風櫃尾脈絡草藥診所': '風櫃診所',
       '水產冷燻工坊': '冷燻工坊',
-      '風櫃尾海風食堂': '海風食堂',
-      '風櫃尾巨藻晾曬場': '巨藻晾場',
-      '烏石鼻漁船泊位': '漁船泊位',
-      '烏石鼻脈絡草木診所': '烏石診所',
       '玄武岩鑿石工坊': '鑿石工坊',
       '烏石水產集散行': '烏石水產',
-      '烏石鼻海貝灰窯': '海貝灰窯',
-      '牛埔牧業公議所': '牧業公所',
       '草甸脈絡調理診所': '草甸診所',
       '羊毛與乳酪精製坊': '乳酪精坊',
-      '牛埔牧畜交易市集': '牧畜市集',
       '牧野歇腳旅社': '牧野旅社',
-      '紅土崁選礦場': '紅土選礦',
-      '紅土崁脈絡復原診所': '紅土診所',
       '紅土百工鐵器坊': '紅土鐵坊',
       '鐵礦原料調撥處': '鐵礦調撥',
-      '紅土崁・方家宅院': '方家宅院',
       '方家宅院': '方家宅院',
-      '三號坑口礦務所': '坑口礦務',
-      '三號坑口脈絡急救診所': '坑口診所',
       '坑口台車維修棚': '台車維修',
       '礦山生活物資行': '礦山物資',
       '坑口礦工旅社': '礦工旅社',
-      '水尾寮平底竹筏埠': '竹筏碼頭',
       '濕地脈絡防瘴診所': '防瘴診所',
       '蘆葦與竹編工棚': '竹編工棚',
       '黑沼生鮮水產行': '黑沼水產',
       '水尾浮木旅社': '浮木旅社',
-      '風舶嶼・公所': '外澳公所',
-      '半嶺鎮・公所': '半嶺公所',
       '公所': '鎮務公所',
-      '風舶嶼公所': '外澳公所',
-      '半嶺鎮公所': '半嶺公所',
-      '風櫃尾・燈塔': '風櫃燈塔',
       '燈塔': '海岬燈塔',
-      '三號坑口・礦務所': '坑口礦所',
       '礦務所': '坑口礦所',
       '脈絡急救診所': '急救診所',
       '脈絡解毒診所': '解毒診所',
@@ -2940,7 +2336,6 @@
       '脈絡草藥診所': '草藥診所',
       '脈絡復原診所': '復原診所',
       '外澳港務脈絡診所': '港務診所',
-      '半嶺脈絡診所': '半嶺診所',
       '防務公議廳': '防務公廳',
       '傳訊信使站': '傳訊信站',
       '牧業公議所': '牧業公所',
@@ -2952,12 +2347,8 @@
       '外澳海島信使中繼站': '外澳信站',
       '外澳石砌碼頭': '外澳碼頭',
       '外澳海味食堂': '外澳食堂',
-      '半嶺山貨特產行': '半嶺山貨',
       '青脊石湯溫水浴場': '石湯浴場',
-      '半嶺山野茶屋食堂': '山野茶屋',
       '岑家二房別院': '岑家別院',
-      '半嶺鎮・岑家二房別院': '岑家別院',
-      '大圳頭・周家莊園': '周家莊園',
       '周家莊園': '周家莊園',
       '林氏大船塢': '林氏船塢',
       '巨藻晾曬場': '巨藻曬場',
@@ -2982,7 +2373,6 @@
       '大圳北岸街': '大圳北街',
       '市鎮中心大街': '市鎮大街',
       '寒水玉採石坑': '寒水玉坑',
-      '半嶺中心階道': '半嶺中階',
       '西麓石坊道': '西麓石道',
       '東嶺切石階': '東嶺石階',
       '高棧坪木橋': '高棧木橋',
@@ -3015,7 +2405,6 @@
       '海味水產乾貨家': '海味乾貨',
       '潮間帶補網小築': '補網小築',
       '林家船匠支系宅': '林家支宅',
-      '風舶航海錄校對齋': '航海校齋',
       '海員避風客舍': '避風客舍',
       '防浪厚石排屋一號': '厚石一號',
       '防浪厚石排屋二號': '厚石二號',
@@ -3034,7 +2423,6 @@
       '遠洋物資存備宅': '遠洋備宅',
       '避浪石巷居所': '避浪居所',
       '大船塢學徒宿舍': '船塢學舍',
-      '風舶海巡隊員居': '海巡隊居',
       '迎浪青石街屋': '迎浪街屋',
       '碼頭起卸工小院': '起卸小院',
       '港尾修靴防浸屋': '修靴防屋',
@@ -3044,7 +2432,6 @@
       '防潮倉管家舍': '防潮倉舍',
       '巨藻纜繩存收院': '纜繩存院',
       '落霞臨海居': '落霞海居',
-      '風舶角落霞臨海居': '落霞海居',
       '顧氏領航世家老宅': '顧氏老宅',
       '外澳夜光羅盤工匠舍': '羅盤匠舍',
       '外澳老舵工石屋': '老舵石屋',
@@ -3093,44 +2480,12 @@
       '農耕民家四號': '農耕四號',
       '農耕民家五號': '農耕五號',
       '農耕民家六號': '農耕六號',
-      '大圳頭農耕民家一號': '農耕一號',
-      '大圳頭農耕民家二號': '農耕二號',
-      '大圳頭農耕民家三號': '農耕三號',
-      '大圳頭農耕民家四號': '農耕四號',
-      '大圳頭農耕民家五號': '農耕五號',
-      '大圳頭農耕民家六號': '農耕六號',
       '清泉飲水舍': '清泉飲舍',
-      '大圳頭望野樓': '望野石樓',
       '石家寒水玉切石匠宅': '石家匠宅',
-      '袁家半嶺山泉客舍': '袁家客舍',
       '高家青銅測風儀觀測居': '高家觀居',
-      '半嶺試招武師居': '試招武居',
-      '半嶺山岳急救草藥舍': '急救藥舍',
-      '半嶺山貨收購商舍': '山貨商舍',
-      '半嶺氣象風雪預警值房': '風雪值房',
       '寒水玉握石拋光齋': '玉石拋齋',
-      '半嶺石湯溫熱居': '石湯溫居',
       '雪嶺暖身茶湯鋪居': '暖身茶鋪',
-      '半嶺登山鐵齒釘鞋作坊舍': '釘鞋坊舍',
       '青竹坪山徑嚮導居': '山徑嚮導',
-      '半嶺坡地石砌排屋一號': '坡地一號',
-      '半嶺坡地石砌排屋二號': '坡地二號',
-      '半嶺坡地石砌排屋三號': '坡地三號',
-      '半嶺松木柴薪庫居': '柴薪庫居',
-      '半嶺高台聽泉樓': '聽泉石樓',
-      '半嶺山泉汲水石台居': '汲水台居',
-      '半嶺山澗釣翁居': '山澗釣居',
-      '半嶺避雪溫暖石舍': '避雪石舍',
-      '半嶺切石水力水車工舍': '切石水舍',
-      '半嶺山野果子乾味舍': '山果乾舍',
-      '半嶺石壁行商歇腳房': '石壁歇房',
-      '半嶺林緣巡山衛舍': '巡山衛舍',
-      '半嶺古道老鋪民宅': '古道老宅',
-      '半嶺青脊礦石辨識齋': '辨礦石齋',
-      '半嶺雲海觀景雅舍': '觀雲雅舍',
-      '半嶺山風草曬製院': '曬草石院',
-      '半嶺石階清掃工居': '石階工居',
-      '半嶺半山迎客別院': '迎客別院',
       '鐵絲巨藻獵網工棚舍': '獵網工棚',
       '飛爪索精造舍': '飛爪索舍',
       '防瘴草藥焙製院': '草藥焙院',
@@ -3154,15 +2509,11 @@
       '硬木藤背架老匠居': '藤背架居',
       '松脂暖手爐銅匠舍': '暖爐銅舍',
       '北嶺山風草採藥人居': '採藥人居',
-      '北嶺腳急救醫助居': '急救醫居',
       '急救醫助居': '急救醫居',
-      '北嶺腳山道背夫歇腳院': '背夫歇院',
       '山道背夫歇腳院': '背夫歇院',
-      '北嶺腳登山行囊補配鋪舍': '行囊鋪舍',
       '登山行囊補配鋪舍': '行囊鋪舍',
       '嶺腳坡地石砌家屋一號': '嶺腳一號',
       '嶺腳坡地石砌家屋二號': '嶺腳二號',
-      '北嶺腳山泉甘洌安居宅': '山泉安宅',
       '山泉甘洌安居宅': '山泉安宅',
       '山徑補給行': '山徑補給',
       '梁氏水車鋸木大匠宅': '梁氏匠宅',
@@ -3170,109 +2521,67 @@
       '伐一補三護林員居': '護林員居',
       '高山融雪水力排鋸工居': '排鋸工居',
       '重原木裝車大木匠居': '裝車木居',
-      '霜林口雪松松脂採集舍': '松脂採舍',
       '雪松松脂採集舍': '松脂採舍',
-      '霜林口耐寒雪狼絨皮匠居': '絨皮匠居',
       '耐寒雪狼絨皮匠居': '絨皮匠居',
-      '霜林口林緣伐木工排屋一號': '林緣一號',
       '林緣伐木工排屋一號': '林緣一號',
-      '霜林口林緣伐木工排屋二號': '林緣二號',
       '林緣伐木工排屋二號': '林緣二號',
-      '霜林口林木繁育種苗居': '種苗林居',
       '林木繁育種苗居': '種苗林居',
       '洪家守塔與冷燻匠師宅': '洪家匠宅',
-      '風櫃尾燈塔長明海燈維護舍': '海燈護舍',
       '燈塔長明海燈維護舍': '海燈護舍',
       '風櫃海風松屑冷燻魚乾坊居': '冷燻魚坊',
       '海岬風洞聽潮石屋': '聽潮石屋',
-      '風櫃尾採藻編繩漁家': '採藻漁家',
       '採藻編繩漁家': '採藻漁家',
       '耐浪防風厚玄武石屋一號': '玄武一號',
       '耐浪防風厚玄武石屋二號': '玄武二號',
-      '風櫃尾海浪警報守望舍': '海浪望舍',
       '海浪警報守望舍': '海浪望舍',
-      '風櫃尾海燕鳥羽採集居': '海燕羽居',
       '海燕鳥羽採集居': '海燕羽居',
-      '風櫃尾海角避濤安泰宅': '避濤安宅',
       '海角避濤安泰宅': '避濤安宅',
       '鄭家烏石重錨鑿石老宅': '鄭家老宅',
-      '烏石鼻海貝灰窯燒漿匠居': '灰窯匠居',
       '海貝灰窯燒漿匠居': '灰窯匠居',
       '深水黑曜玄武岩採鑿工舍': '採鑿工舍',
-      '烏石鼻十二眼八卦網老漁夫居': '八卦網居',
       '十二眼八卦網老漁夫居': '八卦網居',
-      '烏石鼻深海石斑釣客舍': '石斑釣舍',
       '深海石斑釣客舍': '石斑釣舍',
-      '烏石鼻玄武岩堆砌漁舍一號': '烏石一號',
       '玄武岩堆砌漁舍一號': '烏石一號',
-      '烏石鼻玄武岩堆砌漁舍二號': '烏石二號',
       '玄武岩堆砌漁舍二號': '烏石二號',
-      '烏石鼻海鹽結晶提煉作坊居': '海鹽坊居',
       '海鹽結晶提煉作坊居': '海鹽坊居',
-      '烏石鼻防滲灰漿調配舍': '灰漿調舍',
       '防滲灰漿調配舍': '灰漿調舍',
-      '烏石鼻黑石灣觀濤石宅': '觀濤石宅',
-      '黑石灣觀濤石宅': '觀濤石宅',
-      '牧家牛埔硬乳酪發酵老宅': '牧家老宅',
       '向陽草甸原牛厚毛氈壓製居': '毛氈壓居',
-      '牛埔重型駝獸高鞍皮匠舍': '高鞍皮舍',
       '重型駝獸高鞍皮匠舍': '高鞍皮舍',
-      '牛埔原生甜苜蓿草種子庫居': '苜蓿種庫',
       '原生甜苜蓿草種子庫居': '苜蓿種庫',
-      '牛埔疾行草獸馴育舍': '草獸馴舍',
       '疾行草獸馴育舍': '草獸馴舍',
-      '牛埔重角原牛擠乳工舍': '擠乳工舍',
       '重角原牛擠乳工舍': '擠乳工舍',
       '草甸石基暖屋一號': '草甸一號',
       '草甸石基暖屋二號': '草甸二號',
-      '牛埔牧道巡草員舍': '巡草員舍',
       '牧道巡草員舍': '巡草員舍',
-      '牛埔長風草浪安居宅': '草浪安宅',
       '長風草浪安居宅': '草浪安宅',
       '方氏分支選礦與耐火磚老宅': '方氏老宅',
-      '紅土崁千度耐火磚瓦窯居': '耐火窯居',
       '千度耐火磚瓦窯居': '耐火窯居',
       '赤石階地選礦選石匠居': '選石匠居',
-      '紅土崁重型鍛錘鋼模修造舍': '鋼模修舍',
       '重型鍛錘鋼模修造舍': '鋼模修舍',
-      '紅土崁赤紋鐵礦調撥員居': '鐵礦調居',
       '赤紋鐵礦調撥員居': '鐵礦調居',
       '紅磚紅瓦工人家屋一號': '紅磚一號',
       '紅磚紅瓦工人家屋二號': '紅磚二號',
-      '紅土崁防潮紅泥倉儲居': '紅泥倉居',
       '防潮紅泥倉儲居': '紅泥倉居',
-      '紅土崁耐火泥漿攪拌工舍': '泥漿工舍',
       '耐火泥漿攪拌工舍': '泥漿工舍',
       '紅土階地向陽安居屋': '向陽安屋',
       '方石礦務辦事與技術研討舍': '礦務研舍',
-      '三號坑口重型捲揚軌道機工居': '捲揚機居',
       '重型捲揚軌道機工居': '捲揚機居',
       '採礦防風礦燈檢修舍': '礦燈修舍',
       '雙刃碎石手鎬淬火工匠舍': '手鎬匠舍',
       '礦道通風支柱老木匠居': '支柱木居',
       '依嶺石砌礦工宿舍一號': '依嶺一號',
       '依嶺石砌礦工宿舍二號': '依嶺二號',
-      '三號坑口礦石樣本檢測齋': '礦石檢齋',
       '礦石樣本檢測齋': '礦石檢齋',
-      '三號坑口洗礦沉澱水工居': '洗礦水居',
       '洗礦沉澱水工居': '洗礦水居',
-      '三號坑口西嶺堅石安平宅': '堅石安宅',
       '西嶺堅石安平宅': '堅石安宅',
       '阮家高腳木屋與平底竹筏匠老宅': '阮家老宅',
-      '水尾寮沼生烏木打樁水工舍': '打樁水舍',
       '沼生烏木打樁水工舍': '打樁水舍',
-      '水尾寮柔韌蘆葦編簾工匠居': '編簾匠居',
       '柔韌蘆葦編簾工匠居': '編簾匠居',
-      '白茫洲止血水苔採收人舍': '水苔採舍',
       '淺澤泥甲鱷獸防護哨舍': '防鱷哨舍',
-      '水尾寮架高避水木屋一號': '避水一號',
       '架高避水木屋一號': '避水一號',
-      '水尾寮架高避水木屋二號': '避水二號',
       '架高避水木屋二號': '避水二號',
-      '水尾寮平底竹筏修配棚舍': '竹筏修棚',
       '平底竹筏修配棚舍': '竹筏修棚',
       '黑沼生鮮水產暫存冷浸舍': '水產冷舍',
-      '水尾寮浮水蘆荻安樂居': '蘆荻安居',
       '浮水蘆荻安樂居': '蘆荻安居'
     };
 
@@ -3414,8 +2723,8 @@
     let baseMapCtx = null;
 
     // 視角狀態
-    let viewX = 0;       // 世界座標中心 X (-400..399)
-    let viewY = 0;       // 世界座標中心 Y (-500..499)
+    let viewX = 0;       // 世界座標中心 X (-60..60)
+    let viewY = 0;       // 世界座標中心 Y (-40..40)
     let zoom = 1.2;      // 每格像素寬高 (1.0 = 800px寬, 24.0 = 每格24px)
     let targetX = 0, targetY = 0, targetZoom = 1.2;
     let isAnimating = false;
@@ -3451,15 +2760,14 @@
     function initBaseMapCanvas() {
       if (!baseMapCanvas) {
         baseMapCanvas = document.createElement('canvas');
-        baseMapCanvas.width = 800;
-        baseMapCanvas.height = 1000;
+        baseMapCanvas.width = 121;
+        baseMapCanvas.height = 81;
         baseMapCtx = baseMapCanvas.getContext('2d', { willReadFrequently: true });
       }
 
-      const imgData = baseMapCtx.createImageData(800, 1000);
+      const imgData = baseMapCtx.createImageData(121, 81);
       const data = imgData.data;
 
-      // 預設荒野顏色快取（HEX 轉 RGB）
       const rgbCache = {};
       for (const [z, item] of Object.entries(ZONE_COLORS)) {
         const hex = item.bg;
@@ -3470,21 +2778,19 @@
         ];
       }
 
-      // 掃描全島 800,000 地塊填入像素
-      for (let py = 0; py < 1000; py++) {
-        const y = 499 - py; // py 0 為 y=499 (極北)
-        const rowOffset = py * 800 * 4;
+      // 掃描全域 121 × 81 (X: -60..60, Y: -40..40, 9,801 地塊)
+      for (let py = 0; py < 81; py++) {
+        const y = 40 - py; // py 0 為 y=40 (最北)
+        const rowOffset = py * 121 * 4;
 
-        for (let px = 0; px < 800; px++) {
-          const x = -400 + px;
+        for (let px = 0; px < 121; px++) {
+          const x = -60 + px;
           const pixelIndex = rowOffset + px * 4;
 
           const key = `${x},${y}`;
           const explicit = explicitCells.get(key);
 
-          const isSettlementCell = explicit && SETTLEMENTS.some(s => s.name === explicit.z);
-          if (explicit && ((isSettlementCell && explicit.t !== 'road') || explicit.t === 'bridge')) {
-            // 顯式地塊（聚落建築、城牆、水系、橋樑、碼頭等）
+          if (explicit) {
             const style = TERRAIN_STYLE[explicit.t] || TERRAIN_STYLE.plain;
             const hex = style.bg;
             data[pixelIndex] = parseInt(hex.slice(1, 3), 16);
@@ -3492,48 +2798,34 @@
             data[pixelIndex + 2] = parseInt(hex.slice(5, 7), 16);
             data[pixelIndex + 3] = 255;
           } else {
-            // 荒野自然分類（以及道路地塊的底圖本底）
             const info = classifyWildernessZone(x, y);
-            if (info.sub_geo === '河道' || info.sub_geo === '溪流' || info.sub_geo === '山溪' || info.sub_geo === '大圳') {
-              // 半島連續河流水系 (128, 178, 206)
-              data[pixelIndex] = 128;
-              data[pixelIndex + 1] = 178;
-              data[pixelIndex + 2] = 206;
-              data[pixelIndex + 3] = 255;
-            } else {
-              const baseRgb = rgbCache[info.zone] || [220, 215, 200];
-              const gx = Math.floor(x / 3);
-              const gy = Math.floor(y / 3);
-              const rawH = Math.imul(gx, 73856093) ^ Math.imul(gy, 19349663);
-              const h = remEuclid(rawH, 100);
-              const delta = Math.trunc((h % 11) - 5);
+            const baseRgb = rgbCache[info.zone] || [220, 215, 200];
+            const gx = Math.floor(x / 3);
+            const gy = Math.floor(y / 3);
+            const rawH = Math.imul(gx, 73856093) ^ Math.imul(gy, 19349663);
+            const h = remEuclid(rawH, 100);
+            const delta = Math.trunc((h % 11) - 5);
 
-              let r = baseRgb[0] + delta;
-              let g = baseRgb[1] + delta;
-              let b = baseRgb[2] + delta;
+            let r = baseRgb[0] + delta;
+            let g = baseRgb[1] + delta;
+            let b = baseRgb[2] + delta;
 
-              // 微地貌色調微調
-              if (info.terrain === 'mountain') {
-                r -= 7; g -= 7; b -= 7;
-              } else if (info.terrain === 'mine_pass') {
-                r += 8; g -= 2; b -= 6;
-              } else if (info.terrain === 'beach') {
-                r += 12; g += 10; b += 2;
-              } else if (info.terrain === 'forest') {
-                r -= 8; g += 6; b -= 8;
-              } else if (info.terrain === 'grassland') {
-                r += 4; g += 8; b -= 4;
-              } else if (info.terrain === 'swamp') {
-                r -= 4; g -= 2; b += 4;
-              } else if (info.terrain === 'herb_garden') {
-                r -= 4; g += 10; b += 2;
-              }
-
-              data[pixelIndex] = Math.max(0, Math.min(255, r));
-              data[pixelIndex + 1] = Math.max(0, Math.min(255, g));
-              data[pixelIndex + 2] = Math.max(0, Math.min(255, b));
-              data[pixelIndex + 3] = 255;
+            if (info.terrain === 'mountain') {
+              r -= 7; g -= 7; b -= 7;
+            } else if (info.terrain === 'beach') {
+              r += 12; g += 10; b += 2;
+            } else if (info.terrain === 'forest' || info.terrain === 'forest_heavy') {
+              r -= 8; g += 6; b -= 8;
+            } else if (info.terrain === 'grassland') {
+              r += 4; g += 8; b -= 4;
+            } else if (info.terrain === 'swamp') {
+              r -= 4; g -= 2; b += 4;
             }
+
+            data[pixelIndex] = Math.max(0, Math.min(255, r));
+            data[pixelIndex + 1] = Math.max(0, Math.min(255, g));
+            data[pixelIndex + 2] = Math.max(0, Math.min(255, b));
+            data[pixelIndex + 3] = 255;
           }
         }
       }
@@ -3600,11 +2892,11 @@
 
       // ── 1. 繪製全域底圖（宏觀與背景快取）──
       if (baseMapCanvas && layerState.showZones) {
-        // baseMap 涵蓋 x: -400.5..399.5, y: -500.5..499.5
-        const mapScreenLeft = centerX + (-400.5 - viewX) * zoom;
-        const mapScreenTop = centerY - (499.5 - viewY) * zoom;
-        const mapScreenW = 800 * zoom;
-        const mapScreenH = 1000 * zoom;
+        // baseMap 涵蓋 x: -60.5..60.5, y: -40.5..40.5
+        const mapScreenLeft = centerX + (-60.5 - viewX) * zoom;
+        const mapScreenTop = centerY - (40.5 - viewY) * zoom;
+        const mapScreenW = 121 * zoom;
+        const mapScreenH = 81 * zoom;
 
         ctx.imageSmoothingEnabled = zoom < 8; // 放大時切換銳利鄰近像素
         ctx.drawImage(baseMapCanvas, mapScreenLeft, mapScreenTop, mapScreenW, mapScreenH);
@@ -3648,10 +2940,10 @@
       }
       // ── 4. 微觀模式：地塊純圖樣符號與微地名繪製（zoom >= 9）──
       if (zoom >= 9) {
-        const xStart = Math.max(-400, visMinX);
-        const xEnd = Math.min(399, visMaxX);
-        const yStart = Math.max(-500, visMinY);
-        const yEnd = Math.min(499, visMaxY);
+        const xStart = Math.max(-60, visMinX);
+        const xEnd = Math.min(60, visMaxX);
+        const yStart = Math.max(-40, visMinY);
+        const yEnd = Math.min(40, visMaxY);
 
         for (let y = yEnd; y >= yStart; y--) {
           const sy = centerY - (y + 0.5 - viewY) * zoom;
@@ -3839,14 +3131,7 @@
           ctx.lineWidth = Math.max(1.2, 1.5 * zoom);
           ctx.strokeRect(sx - r, sy - r, r * 2, r * 2);
 
-          // 全島視野下錯開同緯度相鄰聚落銘牌避免重疊
-          if (zoom < 3.5) {
-            if (s.name === '風舶嶼' || s.name === '三號坑口') sy -= 12;
-            if (s.name === '風舶角' || s.name === '紅土崁') sy += 12;
-            if (s.name === '老堰頭') sy -= 8;
-            if (s.name === '北嶺腳') sy += 10;
-            if (s.name === '水尾寮') sy += 12;
-          }
+          // 全域視野下銘牌避讓
 
           const labelSize = Math.max(9, Math.min(16, 11.2 * Math.sqrt(zoom)));
           ctx.font = `bold ${labelSize}px "Noto Serif TC", serif`;
@@ -3893,11 +3178,11 @@
       }
 
       if (!selectedCellCoord && !hoveredCellCoord) {
-        if (zoom < 2.5) {
+        if (zoom < 4.0) {
           const hudPos = document.getElementById('hud-pos-text');
           const hudZone = document.getElementById('hud-zone-text');
-          if (hudPos) hudPos.textContent = '當前視域：白塔半島・全島總覽';
-          if (hudZone) hudZone.textContent = '十六聚落・十九獵場全域視野';
+          if (hudPos) hudPos.textContent = '當前視域：紅土西麓・刺竹伏流坪全域總覽';
+          if (hudZone) hudZone.textContent = '七大自然地形帶 (121 × 81 連續地貌)';
         } else {
           updateHudForCoord(Math.round(viewX), Math.round(viewY));
         }
@@ -3917,11 +3202,11 @@
       const key = `${x},${y}`;
       const explicit = explicitCells.get(key);
       if (explicit) {
-        hudPos.textContent = `當前視域：白塔半島・${explicit.z}`;
+        hudPos.textContent = `當前視域：${explicit.z}・${explicit.n}`;
         hudZone.textContent = explicit.n.startsWith(explicit.z) ? explicit.n : `${explicit.z}・${explicit.n}`;
       } else {
         const info = classifyWildernessZone(x, y);
-        hudPos.textContent = `當前視域：白塔半島・${info.zone}`;
+        hudPos.textContent = `當前視域：${info.zone}・${info.sub_geo}`;
         hudZone.textContent = `${info.zone}・${info.sub_geo} (${info.s})`;
       }
     }
@@ -3948,10 +3233,10 @@
       targetY = 0;
       const dpr = window.devicePixelRatio || 1;
       const fitZoom = Math.min(
-        (canvas.width / dpr * 0.88) / 800,
-        (canvas.height / dpr * 0.85) / 1000
+        (canvas.width / dpr * 0.90) / 121,
+        (canvas.height / dpr * 0.88) / 81
       );
-      targetZoom = Math.max(0.46, fitZoom);
+      targetZoom = Math.max(6, Math.min(10, fitZoom));
       selectedCellCoord = null;
       const insp = document.getElementById('inspector-panel');
       if (insp) insp.classList.add('hidden');
@@ -4012,9 +3297,7 @@
         zone = info.zone;
         fullName = `${info.zone}・${info.sub_geo}`;
         const hg = HUNTING_GROUNDS.find(h => h.name === zone);
-        desc = hg
-          ? `${hg.desc}。棲息生靈：${hg.beasts}。`
-          : `白塔半島正典荒野自然地勢，屬於${zone}廣闊腹地，草木風水自然生長。`;
+        desc = `紅土台地純自然地勢，屬於${zone}廣闊腹地，草木清泉自然生長。`;
       }
 
       const tName = TERRAIN_NAMES[terrain] || terrain;
@@ -4030,7 +3313,7 @@
       document.getElementById('insp-walkable').textContent = (terrain === 'wall' || terrain === 'water_deep' || terrain === 'mountain') ? '不可直行' : '可平整步行';
       document.getElementById('insp-desc').textContent = desc;
 
-      // 聚落供需與《白塔山海誌》生態脈動
+      // 生態脈動與自然氣運
       const ecoSec = document.getElementById('insp-eco-section');
       const ecoTitle = document.getElementById('insp-eco-title');
       const ecoContent = document.getElementById('insp-eco-content');
@@ -4047,7 +3330,7 @@
       } else if (hgInfo || hgPulse) {
         ecoSec.style.display = 'block';
         const zTitle = hgInfo ? hgInfo.name : zone;
-        ecoTitle.textContent = `【${zTitle}】白塔山海誌生態與天地氣源`;
+        ecoTitle.textContent = `【${zTitle}】自然生境與天地氣息`;
         let html = '';
         if (hgInfo && hgInfo.beasts) {
           html += `<div><strong>山海生靈：</strong><span style="color:#266141;font-weight:700;">${hgInfo.beasts}</span></div>`;
@@ -4431,19 +3714,18 @@
     function updateScaleBar() {
       const scaleRule = document.getElementById('scale-rule');
       const scaleLabel = document.getElementById('scale-label');
-      // 50 格代表 1 里
-      const pxFor50Cells = 50 * zoom;
-      if (pxFor50Cells >= 40 && pxFor50Cells <= 300) {
-        scaleRule.style.width = `${pxFor50Cells}px`;
-        scaleLabel.textContent = `50 格 = 1 里 (${Math.round(pxFor50Cells)}px)`;
-      } else if (pxFor50Cells > 300) {
-        const pxFor10Cells = 10 * zoom;
+      const pxFor10Cells = 10 * zoom;
+      if (pxFor10Cells >= 40 && pxFor10Cells <= 250) {
         scaleRule.style.width = `${pxFor10Cells}px`;
-        scaleLabel.textContent = `10 格 = 200 步 (${Math.round(pxFor10Cells)}px)`;
+        scaleLabel.textContent = `10 格比例尺 (${Math.round(pxFor10Cells)}px)`;
+      } else if (pxFor10Cells > 250) {
+        const pxFor5Cells = 5 * zoom;
+        scaleRule.style.width = `${pxFor5Cells}px`;
+        scaleLabel.textContent = `5 格比例尺 (${Math.round(pxFor5Cells)}px)`;
       } else {
-        const pxFor200Cells = 200 * zoom;
-        scaleRule.style.width = `${pxFor200Cells}px`;
-        scaleLabel.textContent = `200 格 = 4 里 (${Math.round(pxFor200Cells)}px)`;
+        const pxFor20Cells = 20 * zoom;
+        scaleRule.style.width = `${pxFor20Cells}px`;
+        scaleLabel.textContent = `20 格比例尺 (${Math.round(pxFor20Cells)}px)`;
       }
     }
 
@@ -4463,7 +3745,7 @@
       const loadingText = document.getElementById('loading-text');
 
       try {
-        loadingText.textContent = '正在載入白塔半島全島顯式地塊 (14,424 格) 與山海活體生態…';
+        loadingText.textContent = '正在載入全域顯式地塊 (9,801 格) 與自然生態生靈…';
         const [mapRes, entRes, pulseRes] = await Promise.all([
           fetch('/api/eco/map').then(r => r.ok ? r.json() : []).catch(() => []),
           fetch('/api/eco/entities').then(r => r.ok ? r.json() : []).catch(() => []),
@@ -4492,7 +3774,7 @@
         processEntities(entRes);
 
         // 初始化底圖離屏畫布
-        loadingText.textContent = '正在渲染全島 800 × 1,000 離屏底圖…';
+        loadingText.textContent = '正在渲染 121 × 81 離屏自然底圖…';
         initBaseMapCanvas();
 
         // 完成載入並呈現全島無遮擋總覽視野
@@ -4551,20 +3833,11 @@
       if (currentEntityFilterMode === 'all') {
         const humansAll = rawEntitiesList.filter(e => !isShanhaiKind(e.kind, e.id));
         let cityCnt = 0, townCnt = 0, villageCnt = 0, wildCnt = 0, huntPartyCnt = 0;
-        const CITY_ZONES = new Set(['文曜', '風舶角']);
-        const TOWN_ZONES = new Set(['半嶺鎮', '大圳頭', '南哨', '風舶嶼', '下營']);
-        const VILLAGE_ZONES = new Set(['紅土崁', '烏石鼻', '北嶺腳', '牛埔', '霜林口', '水尾寮', '老堰頭', '風櫃尾', '三號坑口']);
         const classifyHumanTier = (h) => {
-          const cell = explicitCells.get(`${h.x},${h.y}`);
-          const z = cell ? cell.z : '';
-          if (h.hunting_party || (h.title || '').includes('合社獵團') || (h.title || '').includes('入山百工') || (h.title || '').includes('古道行旅') || (!CITY_ZONES.has(z) && !TOWN_ZONES.has(z) && !VILLAGE_ZONES.has(z))) {
-            return 'wild';
-          } else if (CITY_ZONES.has(z)) {
-            return 'city';
-          } else if (TOWN_ZONES.has(z)) {
-            return 'town';
+          if (h.hunting_party || (h.title || '').includes('獵團') || (h.title || '').includes('獵戶')) {
+            return 'hunting';
           }
-          return 'village';
+          return 'wild';
         };
         humansAll.forEach(h => {
           if (h.hunting_party) huntPartyCnt++;
@@ -4592,14 +3865,11 @@
         humanBanner.style.cssText = 'padding:7px 9px;margin-bottom:8px;border-radius:5px;background:rgba(158,42,43,0.06);border:1px solid rgba(158,42,43,0.22);font-size:0.72rem;line-height:1.45;color:var(--ink);';
         const ratioStr = humansAll.length > 0 ? (shanhaiAll.length / humansAll.length).toFixed(2) : '1.00';
         humanBanner.innerHTML = `
-          <div style="font-weight:700;color:var(--vermilion);margin-bottom:3px;">白塔半島人類人口金字塔（共 ${humansAll.length.toLocaleString()} 人｜人:獸＝1:${ratioStr}）</div>
+          <div style="font-weight:700;color:var(--vermilion);margin-bottom:3px;">山海自然在場人物分佈（共 ${humansAll.length.toLocaleString()} 人｜人:生靈＝1:${ratioStr}）</div>
           <div style="display:flex;flex-wrap:wrap;">
-            ${mkHChip('all', '全部人類', humansAll.length)}
-            ${mkHChip('city', '🏙️ 二大城', cityCnt)}
-            ${mkHChip('town', '🏘️ 五大鎮', townCnt)}
-            ${mkHChip('village', '🏡 九大村', villageCnt)}
-            ${mkHChip('wild', '🥾 獵場與古道', wildCnt)}
-            ${mkHChip('hunting', '🏹 合社獵團', huntPartyCnt)}
+            ${mkHChip('all', '全部人物', humansAll.length)}
+            ${mkHChip('wild', '🥾 原野漫遊', wildCnt + cityCnt + townCnt + villageCnt)}
+            ${mkHChip('hunting', '🏹 荒野狩獵', huntPartyCnt)}
           </div>
         `;
         humanBanner.querySelectorAll('button[data-htier]').forEach(b => {
@@ -4627,7 +3897,7 @@
           return `<button type="button" data-stier="${tierKey}" style="cursor:pointer;padding:2px 6px;margin:2px 3px 0 0;border-radius:3px;font-size:0.68rem;${st}">${label} <b>${count.toLocaleString()}</b></button>`;
         };
         summaryBanner.innerHTML = `
-          <div style="font-weight:700;color:#266141;margin-bottom:3px;">白塔山海誌四層生態金字塔（共 ${shanhaiAll.length.toLocaleString()} 隻・霸主:顯形＝1:94）</div>
+          <div style="font-weight:700;color:#266141;margin-bottom:3px;">自然生靈四層生態金字塔（共 ${shanhaiAll.length.toLocaleString()} 隻）</div>
           <div style="display:flex;flex-wrap:wrap;">
             ${mkTierChip('all', '全部階層', shanhaiAll.length)}
             ${mkTierChip('shanhai_apex', '🐾 隱匿霸主', apexCnt)}

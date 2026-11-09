@@ -588,6 +588,7 @@ pub(super) fn run_wilderness_ecology_and_campfire_tick(now_unix: i64) {
                 }
             }
             if changed {
+                crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
                 modified.push((
                     cell.coord.x,
                     cell.coord.y,

@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-<link rel="stylesheet" href="style.css?v=20261107au">
-<link rel="stylesheet" href="game.css?v=20261107au">
+<link rel="stylesheet" href="style.css?v=20261109obj1">
+<link rel="stylesheet" href="game.css?v=20261109obj1">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-<link rel="stylesheet" href="game-grid.css?v=20261107au" id="game-grid-css" disabled>
+<link rel="stylesheet" href="game-grid.css?v=20261109obj1" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -81,7 +81,7 @@
 				<span id="sw-top-calendar" class="sw-top-calendar">開譜曆 元年・春融・1 日</span>
 			</div>
 			<div class="sw-topbar-right">
-				<span id="sw-top-phase-place" class="sw-top-phase-place">正晝 ｜ 白塔大堂</span>
+				<span id="sw-top-phase-place" class="sw-top-phase-place">正晝 ｜ 紅土西麓</span>
 			</div>
 			<!-- 相容 L1 與 L2 隱藏/低聲層 -->
 			<div id="sw-l1-time" class="sw-desc-layer sw-l1" style="display:none;" aria-hidden="true"></div>
@@ -255,7 +255,8 @@
 							<li><span class="sym">≈</span> 碧水長流（溪澗、河道、運河、水脈）</li>
 							<li><span class="sym">≍</span> 跨水橋埠（石橋、木橋、津渡、碼頭）</li>
 							<li><span class="sym">𐡚</span> 原野草息（草地、平疇、曠野、牧場）</li>
-							<li><span class="sym">Φ</span> 幽林深篁（山林、樹叢、竹篁、林莽）</li>
+							<li><span class="sym">𓐂</span> 翠竹深篁（刺竹林、竹坡、竹隙、混生竹林）</li>
+							<li><span class="sym">Φ</span> 幽林叢木（山林、樹叢、樟木、闊葉林）</li>
 							<li><span class="sym">⛰︎</span> 峻嶺崇山（峰巒、崖壁、崇山、奇石）</li>
 							<li><span class="sym">△</span> 幽穴採掘（洞窟、礦脈、幽壑、坑道）</li>
 							<li><span class="sym">∆</span> 遺蹟高塔（塔樓、殘跡、雪線石塔）</li>
@@ -316,18 +317,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261107au"></script>
-	<script src="grid-map.js?v=20261107au"></script>
-	<script src="sw-room-desc.js?v=20261107au"></script>
-	<script src="sw-object-list.js?v=20261107au"></script>
-	<script src="sw-log.js?v=20261107au"></script>
-	<script src="sw-panes.js?v=20261107au"></script>
-	<script src="sw-modals.js?v=20261107au"></script>
-	<script src="sw-interactions.js?v=20261107au"></script>
-	<script src="sw-clock.js?v=20261107au"></script>
-	<script src="sw-narrative.js?v=20261107au"></script>
-	<script src="sw-auth.js?v=20261107au"></script>
-	<script src="main.js?v=20261107au"></script>
+	<script src="narrative-markdown.js?v=20261109obj1"></script>
+	<script src="grid-map.js?v=20261109obj1"></script>
+	<script src="sw-room-desc.js?v=20261109obj1"></script>
+	<script src="sw-object-list.js?v=20261109obj1"></script>
+	<script src="sw-log.js?v=20261109obj1"></script>
+	<script src="sw-panes.js?v=20261109obj1"></script>
+	<script src="sw-modals.js?v=20261109obj1"></script>
+	<script src="sw-interactions.js?v=20261109obj1"></script>
+	<script src="sw-clock.js?v=20261109obj1"></script>
+	<script src="sw-narrative.js?v=20261109obj1"></script>
+	<script src="sw-auth.js?v=20261109obj1"></script>
+	<script src="main.js?v=20261109obj1"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -342,13 +343,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261107au')) return;
-				sessionStorage.setItem('sw_reloaded_v20261107au', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261109obj1')) return;
+				sessionStorage.setItem('sw_reloaded_v20261109obj1', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261107au', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261109obj1', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

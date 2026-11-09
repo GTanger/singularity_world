@@ -6,11 +6,16 @@ pub mod r#gen;
 pub mod grid;
 pub mod reveal;
 pub mod village_template;
+pub mod shalu_zhulin;
 pub mod world_skeleton;
+pub mod zhulin;
 
 pub use cell::{Freshness, GridObject, GridObjectKind, Terrain};
 pub use coord::{Direction, SquareCoord, grid_room_id_from_coord, parse_grid_room_id};
 pub use r#gen::generate_white_tower_grid;
+pub use shalu_zhulin::{
+    SHALU_ZHULIN_WORLD_SEED, generate_shalu_zhulin_grid, resolve_shalu_zhulin_object,
+};
 pub use grid::{
     canonical_room_tag, derive_room_tags, ExplicitExit, GridCell, RoomVenueObject, SquareGrid,
     is_private_residence_room_name, is_street_or_gate_room_name,

@@ -73,11 +73,18 @@ pub fn object_attribute_tags(id: &str, name: &str) -> Vec<&'static str> {
         }
     }
 
+    // 1b. 查竹林產出物品與地景物件規範
+    if let Some(z) = crate::grid::zhulin::lookup_zhulin_item_def(clean_id) {
+        return z.tags.attribute_tags.to_vec();
+    }
+    if let Some(gspec) = crate::grid::cell::find_grid_object_spec(clean_id, clean_name) {
+        return gspec.attribute_tags.to_vec();
+    }
+
     // 2. 查非目錄場景物件規範表（SCENE_OBJECT_TAG_SPECS）
     if let Some(spec) = find_scene_object_spec(clean_id, clean_name) {
         return spec.attribute_tags.to_vec();
     }
-
     // 3. 次選：一般名稱查目錄
     if let Some(entry) = crate::game::peninsula_catalog::find_catalog_entry_by_id_or_name(clean_id, clean_name) {
         return entry.attribute_tags().to_vec();
@@ -108,11 +115,18 @@ pub fn canonical_object_tag(id: &str, name: &str) -> String {
         }
     }
 
+    // 1b. 查竹林產出物品與地景物件規範
+    if let Some(z) = crate::grid::zhulin::lookup_zhulin_item_def(clean_id) {
+        return z.tags.exclusive_tag.to_string();
+    }
+    if let Some(gspec) = crate::grid::cell::find_grid_object_spec(clean_id, clean_name) {
+        return gspec.object_tag.to_string();
+    }
+
     // 2. 查場景物件規格表（SCENE_OBJECT_TAG_SPECS）
     if let Some(spec) = find_scene_object_spec(clean_id, clean_name) {
         return spec.object_tag.to_string();
     }
-
     // 3. 特殊格式比對
     if clean_id.starts_with("resource:") {
         let parts: Vec<&str> = clean_id.split(':').collect();
@@ -147,11 +161,16 @@ pub fn object_archetype_tag(id: &str, name: &str) -> &'static str {
     let clean_id = id.trim();
     let clean_name = name.trim();
 
-    // 1. 優先查場景物件規格表（SCENE_OBJECT_TAG_SPECS）
+    // 1. 優先查竹林產出物品、地景物件與場景物件規格表
+    if crate::grid::zhulin::lookup_zhulin_item_def(clean_id).is_some() {
+        return "resource_node";
+    }
+    if let Some(gspec) = crate::grid::cell::find_grid_object_spec(clean_id, clean_name) {
+        return gspec.archetype_tag;
+    }
     if let Some(spec) = find_scene_object_spec(clean_id, clean_name) {
         return spec.archetype_tag;
     }
-
     // 2. 查千物總典
     if let Some(entry) = crate::game::peninsula_catalog::find_catalog_entry_by_id_or_name(clean_id, clean_name) {
         // 從 entry.category_tag 或 entry.attribute_tags 判定原型
@@ -195,11 +214,18 @@ pub fn object_category_tag(id: &str, name: &str) -> &'static str {
         }
     }
 
+    // 1b. 查竹林產出物品與地景物件規範
+    if let Some(z) = crate::grid::zhulin::lookup_zhulin_item_def(clean_id) {
+        return z.tags.category_tags.first().copied().unwrap_or("timber_bamboo_fungi");
+    }
+    if let Some(gspec) = crate::grid::cell::find_grid_object_spec(clean_id, clean_name) {
+        return gspec.category_tag;
+    }
+
     // 2. 查場景物件規格表（SCENE_OBJECT_TAG_SPECS）
     if let Some(spec) = find_scene_object_spec(clean_id, clean_name) {
         return spec.category_tag;
     }
-
     // 3. 目錄一般查詢
     if let Some(entry) = crate::game::peninsula_catalog::find_catalog_entry_by_id_or_name(clean_id, clean_name) {
         return crate::game::peninsula_catalog::category_tag_for_num(entry.category_num);

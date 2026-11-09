@@ -88,6 +88,20 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
             singularity_world::pg::world_logistics::producer_shipment_probe(&mut *conn)?,
         )
     };
+    if audit.npc_count == 0 && market.inventory_rows == 0 {
+        let mut conn = pool.get()?;
+        let row = conn.query_one(
+            "SELECT count(*)::bigint FROM entities WHERE kind = 'player' AND (inventory LIKE '%harvest_%' OR inventory LIKE '%wt_cat_%' OR inventory LIKE '%wt-good-%' OR inventory LIKE '%blank_manual%' OR equipment_slots LIKE '%wt_cat_%' OR equipment_slots LIKE '%mut_craft_%')",
+            &[],
+        )?;
+        let polluted_players: i64 = row.get(0);
+        ensure!(polluted_players == 0, "發現玩家實體殘留舊世白塔半島物品或裝備 ID");
+        println!(
+            "live_probe: mode=post_cataclysm_clean_slate characters={} npc=0 legacy_market_rows=0 polluted_players=0",
+            audit.character_count
+        );
+        return Ok(());
+    }
     println!(
         "live_probe: work={} producer_assignments={} workers_at_source={} funded_markets={} eligible_profiles={} eligible_workers_at_source={} waiting_workers={} supply_events={} producer_shipments={}",
         audit.work_count,
@@ -156,7 +170,7 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
     );
     ensure!(!audit.all_npcs_gathering(), "所有居民仍被困在採集硬迴圈");
     ensure!(
-        audit.distinct_npc_activities >= 3,
+        audit.npc_count == 0 || audit.distinct_npc_activities >= 3,
         "居民可見活動仍未形成至少三種真實狀態"
     );
     ensure!(audit.action_receipt_count > 0, "尚未留下任何共同行動收據");

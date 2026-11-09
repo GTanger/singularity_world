@@ -1,0 +1,2678 @@
+{
+  "entries": [
+    {
+      "entity_id": "npc_dja62j9jkh63",
+      "work_room": "wt-physical-0061",
+      "rest_room": "wt-physical-0061",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3e2xhxmqho",
+      "work_room": "wt-physical-0153",
+      "rest_room": "wt-physical-0153",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7lrm2sneh9",
+      "work_room": "wt-physical-0001",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hsflgkjtv",
+      "work_room": "wt-physical-0256",
+      "rest_room": "wt-physical-0256",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy913no5m25",
+      "work_room": "wt-physical-0213",
+      "rest_room": "wt-physical-0213",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja64uvhfkcv",
+      "work_room": "wt-physical-0121",
+      "rest_room": "wt-physical-0121",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1wbzhrb6cl",
+      "work_room": "wt-physical-0013",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3d0fcfz3cd",
+      "work_room": "wt-physical-0230",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3i6ycjsfn3",
+      "work_room": "wt-physical-0201",
+      "rest_room": "wt-physical-0201",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7zms3vrh7l",
+      "work_room": "wt-physical-0201",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80zedi4zf0",
+      "work_room": "wt-physical-0026",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5f6tda3bam",
+      "work_room": "wt-physical-0070",
+      "rest_room": "wt-physical-0070",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5fanvjlh74",
+      "work_room": "wt-physical-0294",
+      "rest_room": "wt-physical-0304",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n7oze5c5e",
+      "work_room": "wt-physical-0113",
+      "rest_room": "wt-physical-0113",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9nicwq2mhf",
+      "work_room": "wt-physical-0280",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3fkfuwl9s2",
+      "work_room": "wt-physical-0300",
+      "rest_room": "wt-physical-0297",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3h790wg406",
+      "work_room": "wt-physical-0014",
+      "rest_room": "wt-physical-0014",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96x13er1ts",
+      "work_room": "wt-physical-0098",
+      "rest_room": "wt-physical-0098",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3edabb0v46",
+      "work_room": "wt-physical-0029",
+      "rest_room": "wt-physical-0029",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa80szwwlr",
+      "work_room": "wt-physical-0198",
+      "rest_room": "wt-physical-0198",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad55k0gav1",
+      "work_room": "wt-physical-0110",
+      "rest_room": "wt-physical-0110",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n6x6uatux",
+      "work_room": "wt-physical-0064",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja9ih5ugdhv",
+      "work_room": "wt-physical-0228",
+      "rest_room": "wt-physical-0228",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja65mo1tnrx",
+      "work_room": "wt-physical-0015",
+      "rest_room": "wt-physical-0015",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj83mj9vzd0h",
+      "work_room": "wt-physical-0246",
+      "rest_room": "wt-physical-0246",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6my685fswd",
+      "work_room": "wt-physical-0301",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hstdlzbhm",
+      "work_room": "wt-physical-0001",
+      "rest_room": "wt-physical-0001",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3h45mdsosh",
+      "work_room": "wt-physical-0180",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3d4aji8krq",
+      "work_room": "wt-physical-0246",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj98y4gvkllr",
+      "work_room": "wt-physical-0116",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9nlmtsi9y3",
+      "work_room": "wt-physical-0024",
+      "rest_room": "wt-physical-0024",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ev8jbaf8s",
+      "work_room": "wt-physical-0042",
+      "rest_room": "wt-physical-0299",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv5al5twdg",
+      "work_room": "wt-physical-0234",
+      "rest_room": "wt-physical-0234",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1uyxrz7c0y",
+      "work_room": "wt-physical-0249",
+      "rest_room": "wt-physical-0249",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3fdut7cvio",
+      "work_room": "wt-physical-0301",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1vn3l3m5ci",
+      "work_room": "wt-physical-0027",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1web3pkjzn",
+      "work_room": "wt-physical-0131",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96n2xn5ibd",
+      "work_room": "wt-physical-0152",
+      "rest_room": "wt-physical-0152",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa3dtdxw7f",
+      "work_room": "wt-physical-0037",
+      "rest_room": "wt-physical-0037",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ida1jlqi6",
+      "work_room": "wt-physical-0134",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nsu7vdjtp",
+      "work_room": "wt-physical-0163",
+      "rest_room": "wt-physical-0163",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nv5tt3r9d",
+      "work_room": "wt-physical-0186",
+      "rest_room": "wt-physical-0186",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n9mkxo4rb",
+      "work_room": "wt-physical-0111",
+      "rest_room": "wt-physical-0111",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaah3x29b9b",
+      "work_room": "wt-physical-0083",
+      "rest_room": "wt-physical-0083",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy97oh3vnb4",
+      "work_room": "wt-physical-0177",
+      "rest_room": "wt-physical-0177",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82ifz8i2ft",
+      "work_room": "wt-physical-0301",
+      "rest_room": "wt-physical-0301",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ie1u3li3s",
+      "work_room": "wt-physical-0232",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad6a01nbfw",
+      "work_room": "wt-physical-0192",
+      "rest_room": "wt-physical-0192",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj72mzgsqdxh",
+      "work_room": "wt-physical-0288",
+      "rest_room": "wt-physical-0290",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80safseaab",
+      "work_room": "wt-physical-0290",
+      "rest_room": "wt-physical-0290",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6myy8ypese",
+      "work_room": "wt-physical-0114",
+      "rest_room": "wt-physical-0114",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja68c25fxr5",
+      "work_room": "wt-physical-0251",
+      "rest_room": "wt-physical-0251",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96jliqco7f",
+      "work_room": "wt-physical-0205",
+      "rest_room": "wt-physical-0205",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7lsrni58rq",
+      "work_room": "wt-physical-0101",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hol4gmhqu",
+      "work_room": "wt-physical-0007",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizvabth3kro",
+      "work_room": "wt-physical-0262",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dm8e0n2oc",
+      "work_room": "wt-physical-0156",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djulvi0yd723",
+      "work_room": "wt-physical-0130",
+      "rest_room": "wt-physical-0130",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaeoofavl0z",
+      "work_room": "wt-physical-0172",
+      "rest_room": "wt-physical-0172",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8a5s1dls84",
+      "work_room": "wt-physical-0196",
+      "rest_room": "wt-physical-0171",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv7lyubrsp",
+      "work_room": "wt-physical-0220",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj38yg8xxu7v",
+      "work_room": "wt-physical-0274",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv2x23emlu",
+      "work_room": "wt-physical-0303",
+      "rest_room": "wt-physical-0303",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39jxqj4mzy",
+      "work_room": "wt-physical-0075",
+      "rest_room": "wt-physical-0075",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0qlm6pypnp",
+      "work_room": "wt-physical-0178",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8a5e0yzawy",
+      "work_room": "wt-physical-0221",
+      "rest_room": "wt-physical-0221",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj974lye22sm",
+      "work_room": "wt-physical-0233",
+      "rest_room": "wt-physical-0233",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3a6afuow9k",
+      "work_room": "wt-physical-0031",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3e9evzecy4",
+      "work_room": "wt-physical-0290",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv0z00s1fd",
+      "work_room": "wt-physical-0078",
+      "rest_room": "wt-physical-0078",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djadc2kd1zla",
+      "work_room": "wt-physical-0068",
+      "rest_room": "wt-physical-0068",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa9y69pfi1",
+      "work_room": "wt-physical-0274",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv077gn1wd",
+      "work_room": "wt-physical-0082",
+      "rest_room": "wt-physical-0082",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ddxt02dni",
+      "work_room": "wt-physical-0057",
+      "rest_room": "wt-physical-0057",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaetb6ns0tm",
+      "work_room": "wt-physical-0098",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7anojmh1iy",
+      "work_room": "wt-physical-0287",
+      "rest_room": "wt-physical-0287",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3fhcgem7y2",
+      "work_room": "wt-physical-0093",
+      "rest_room": "wt-physical-0093",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1uy5zerdvw",
+      "work_room": "wt-physical-0074",
+      "rest_room": "wt-physical-0074",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7zl8ahnc57",
+      "work_room": "wt-physical-0260",
+      "rest_room": "wt-physical-0260",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3iyzunczc3",
+      "work_room": "wt-physical-0220",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0g9clkcyny",
+      "work_room": "wt-physical-0062",
+      "rest_room": "wt-physical-0062",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3e0lvzcgqb",
+      "work_room": "wt-physical-0115",
+      "rest_room": "wt-physical-0115",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hb19du3ad",
+      "work_room": "wt-physical-0295",
+      "rest_room": "wt-physical-0295",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7uquio91s",
+      "work_room": "wt-physical-0132",
+      "rest_room": "wt-physical-0132",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1uvu56zeg1",
+      "work_room": "wt-physical-0051",
+      "rest_room": "wt-physical-0051",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dludltgjf",
+      "work_room": "wt-physical-0080",
+      "rest_room": "wt-physical-0080",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7lnxw3gbpg",
+      "work_room": "wt-physical-0049",
+      "rest_room": "wt-physical-0049",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6ni57ttqke",
+      "work_room": "wt-physical-0039",
+      "rest_room": "wt-physical-0039",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39o6iv8gl8",
+      "work_room": "wt-physical-0178",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1vhb910wbm",
+      "work_room": "wt-physical-0142",
+      "rest_room": "wt-physical-0142",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv3r8b71pr",
+      "work_room": "wt-physical-0133",
+      "rest_room": "wt-physical-0133",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizuztfbakht",
+      "work_room": "wt-physical-0028",
+      "rest_room": "wt-physical-0028",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80520p33yb",
+      "work_room": "wt-physical-0095",
+      "rest_room": "wt-physical-0095",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj72l1mzy5af",
+      "work_room": "wt-physical-0184",
+      "rest_room": "wt-physical-0184",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj83gq91dfyk",
+      "work_room": "wt-physical-0065",
+      "rest_room": "wt-physical-0065",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj845kllju98",
+      "work_room": "wt-physical-0267",
+      "rest_room": "wt-physical-0267",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39ynn2hr60",
+      "work_room": "wt-physical-0066",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6mslgp9wqe",
+      "work_room": "wt-physical-0180",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj803ifl724t",
+      "work_room": "wt-physical-0007",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0cw11ogwes",
+      "work_room": "wt-physical-0201",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3j1pgzodtk",
+      "work_room": "wt-physical-0164",
+      "rest_room": "wt-physical-0164",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3d0tcux0dc",
+      "work_room": "wt-physical-0227",
+      "rest_room": "wt-physical-0227",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hewggdaow",
+      "work_room": "wt-physical-0244",
+      "rest_room": "wt-physical-0244",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj72m7o92l91",
+      "work_room": "wt-physical-0117",
+      "rest_room": "wt-physical-0117",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96z7egsu8o",
+      "work_room": "wt-physical-0293",
+      "rest_room": "wt-physical-0302",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj83ju42cgb7",
+      "work_room": "wt-physical-0296",
+      "rest_room": "wt-physical-0296",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nmdi8qkhb",
+      "work_room": "wt-physical-0023",
+      "rest_room": "wt-physical-0023",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9nsc22gyoj",
+      "work_room": "wt-physical-0209",
+      "rest_room": "wt-physical-0209",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hbf9t0sbw",
+      "work_room": "wt-physical-0092",
+      "rest_room": "wt-physical-0092",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6xgxht6v7g",
+      "work_room": "wt-physical-0131",
+      "rest_room": "wt-physical-0131",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7s2wazwzx1",
+      "work_room": "wt-physical-0203",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3933zkvutz",
+      "work_room": "wt-physical-0101",
+      "rest_room": "wt-physical-0101",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy93ta0z74p",
+      "work_room": "wt-physical-0011",
+      "rest_room": "wt-physical-0011",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaev98qikzk",
+      "work_room": "wt-physical-0232",
+      "rest_room": "wt-physical-0232",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj83fyggka2i",
+      "work_room": "wt-physical-0167",
+      "rest_room": "wt-physical-0167",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv95s8om0h",
+      "work_room": "wt-physical-0195",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1tnp41am9j",
+      "work_room": "wt-physical-0248",
+      "rest_room": "wt-physical-0248",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3972eji60w",
+      "work_room": "wt-physical-0035",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39pqc934cj",
+      "work_room": "wt-physical-0022",
+      "rest_room": "wt-physical-0022",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj83h49fp40i",
+      "work_room": "wt-physical-0027",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaepu0048ht",
+      "work_room": "wt-physical-0274",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1uxrz03zvk",
+      "work_room": "wt-physical-0185",
+      "rest_room": "wt-physical-0185",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nq4xe580w",
+      "work_room": "wt-physical-0236",
+      "rest_room": "wt-physical-0236",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaep27g5s18",
+      "work_room": "wt-physical-0031",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hmnr6z3e7",
+      "work_room": "wt-physical-0030",
+      "rest_room": "wt-physical-0030",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7s3o3ke8y2",
+      "work_room": "wt-physical-0083",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ctfc0e86w",
+      "work_room": "wt-physical-0053",
+      "rest_room": "wt-physical-0072",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5fbffud4wh",
+      "work_room": "wt-physical-0055",
+      "rest_room": "wt-physical-0055",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82nf6y7zym",
+      "work_room": "wt-physical-0017",
+      "rest_room": "wt-physical-0017",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3a19ft1y23",
+      "work_room": "wt-physical-0188",
+      "rest_room": "wt-physical-0188",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n65ea6rph",
+      "work_room": "wt-physical-0220",
+      "rest_room": "wt-physical-0220",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di7wu6o7b2np",
+      "work_room": "wt-physical-0212",
+      "rest_room": "wt-physical-0212",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj30g7uft70m",
+      "work_room": "wt-physical-0112",
+      "rest_room": "wt-physical-0112",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96lj49ey7s",
+      "work_room": "wt-physical-0156",
+      "rest_room": "wt-physical-0156",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nwp6nrz2q",
+      "work_room": "wt-physical-0047",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaetp72yy0s",
+      "work_room": "wt-physical-0223",
+      "rest_room": "wt-physical-0223",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hbta7lp6x",
+      "work_room": "wt-physical-0180",
+      "rest_room": "wt-physical-0180",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3cwrtfgwz2",
+      "work_room": "wt-physical-0161",
+      "rest_room": "wt-physical-0161",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja68q2k3tlk",
+      "work_room": "wt-physical-0138",
+      "rest_room": "wt-physical-0138",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o7az3imas",
+      "work_room": "wt-physical-0246",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6xkeognr7n",
+      "work_room": "wt-physical-0166",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3cx5tu3iza",
+      "work_room": "wt-physical-0262",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3fgyfzty7x",
+      "work_room": "wt-physical-0184",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj72ji1vrcwv",
+      "work_room": "wt-physical-0286",
+      "rest_room": "wt-physical-0286",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hkcdieg9a",
+      "work_room": "wt-physical-0179",
+      "rest_room": "wt-physical-0179",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9no2ullgin",
+      "work_room": "wt-physical-0230",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaadygwivxw",
+      "work_room": "wt-physical-0090",
+      "rest_room": "wt-physical-0090",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82q4l1pv0f",
+      "work_room": "wt-physical-0027",
+      "rest_room": "wt-physical-0027",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1uvg4sil4x",
+      "work_room": "wt-physical-0255",
+      "rest_room": "wt-physical-0255",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3icw9ea7kj",
+      "work_room": "wt-physical-0071",
+      "rest_room": "wt-physical-0071",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad8ldpz9hj",
+      "work_room": "wt-physical-0240",
+      "rest_room": "wt-physical-0240",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3fhqgt8736",
+      "work_room": "wt-physical-0218",
+      "rest_room": "wt-physical-0218",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9n7wae5ill",
+      "work_room": "wt-physical-0096",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nt889zp7e",
+      "work_room": "wt-physical-0158",
+      "rest_room": "wt-physical-0158",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaafk3nx4qm",
+      "work_room": "wt-physical-0230",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9nj4paobpa",
+      "work_room": "wt-physical-0131",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djadd852lrvz",
+      "work_room": "wt-physical-0193",
+      "rest_room": "wt-physical-0193",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3e3bicqkvd",
+      "work_room": "wt-physical-0297",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39kbioeqdx",
+      "work_room": "wt-physical-0212",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3cqbfyxge2",
+      "work_room": "wt-physical-0285",
+      "rest_room": "wt-physical-0285",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0qajbpek0h",
+      "work_room": "wt-physical-0262",
+      "rest_room": "wt-physical-0262",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7q4xnziqz",
+      "work_room": "wt-physical-0139",
+      "rest_room": "wt-physical-0139",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj991lnilcf9",
+      "work_room": "wt-physical-0204",
+      "rest_room": "wt-physical-0057",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39da1vur99",
+      "work_room": "wt-physical-0031",
+      "rest_room": "wt-physical-0031",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv2j1ob49w",
+      "work_room": "wt-physical-0007",
+      "rest_room": "wt-physical-0007",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6myk8jykli",
+      "work_room": "wt-physical-0274",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80t2gm4iof",
+      "work_room": "wt-physical-0187",
+      "rest_room": "wt-physical-0187",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad2vqm947z",
+      "work_room": "wt-physical-0191",
+      "rest_room": "wt-physical-0169",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7qiy26bff",
+      "work_room": "wt-physical-0108",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3a6o806538",
+      "work_room": "wt-physical-0199",
+      "rest_room": "wt-physical-0199",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80wayzihpk",
+      "work_room": "wt-physical-0100",
+      "rest_room": "wt-physical-0100",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj30f29qa8wn",
+      "work_room": "wt-physical-0141",
+      "rest_room": "wt-physical-0141",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaerdte7eb4",
+      "work_room": "wt-physical-0108",
+      "rest_room": "wt-physical-0108",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di7wtf3wef29",
+      "work_room": "wt-physical-0224",
+      "rest_room": "wt-physical-0224",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o328523dd",
+      "work_room": "wt-physical-0166",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n8gryvhqm",
+      "work_room": "wt-physical-0005",
+      "rest_room": "wt-physical-0005",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6npqwzbd9a",
+      "work_room": "wt-physical-0174",
+      "rest_room": "wt-physical-0174",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6moj7zrrsb",
+      "work_room": "wt-physical-0284",
+      "rest_room": "wt-physical-0284",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djultknob2uz",
+      "work_room": "wt-physical-0217",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0qbowetu2b",
+      "work_room": "wt-physical-0043",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja9onqkc7fy",
+      "work_room": "wt-physical-0202",
+      "rest_room": "wt-physical-0221",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dc0nzu6m2",
+      "work_room": "wt-physical-0195",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0edd9nlq60",
+      "work_room": "wt-physical-0298",
+      "rest_room": "wt-physical-0300",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hlhy8e6u6",
+      "work_room": "wt-physical-0279",
+      "rest_room": "wt-physical-0279",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9q81lftnlm",
+      "work_room": "wt-physical-0136",
+      "rest_room": "wt-physical-0136",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0ea9v5ixjd",
+      "work_room": "wt-physical-0004",
+      "rest_room": "wt-physical-0004",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja9mc4mhbq7",
+      "work_room": "wt-physical-0063",
+      "rest_room": "wt-physical-0063",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39nsqpy8s2",
+      "work_room": "wt-physical-0178",
+      "rest_room": "wt-physical-0178",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o3u0petc8",
+      "work_room": "wt-physical-0002",
+      "rest_room": "wt-physical-0002",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0ee4tyesag",
+      "work_room": "wt-physical-0209",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9qadfn4cao",
+      "work_room": "wt-physical-0105",
+      "rest_room": "wt-physical-0105",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj38yu13aaxc",
+      "work_room": "wt-physical-0047",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8abei5cjz7",
+      "work_room": "wt-physical-0125",
+      "rest_room": "wt-physical-0125",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nix0dvf69",
+      "work_room": "wt-physical-0067",
+      "rest_room": "wt-physical-0067",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96o8id2wd8",
+      "work_room": "wt-physical-0027",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaeq80famay",
+      "work_room": "wt-physical-0008",
+      "rest_room": "wt-physical-0008",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja676hfltbn",
+      "work_room": "wt-physical-0176",
+      "rest_room": "wt-physical-0176",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6mr8m2oqd1",
+      "work_room": "wt-physical-0181",
+      "rest_room": "wt-physical-0181",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj397u73mt81",
+      "work_room": "wt-physical-0050",
+      "rest_room": "wt-physical-0050",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di7wuyp0zxt4",
+      "work_room": "wt-physical-0239",
+      "rest_room": "wt-physical-0196",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj38y28jdi8n",
+      "work_room": "wt-physical-0243",
+      "rest_room": "wt-physical-0243",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1vj8e1ebzp",
+      "work_room": "wt-physical-0264",
+      "rest_room": "wt-physical-0264",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3diqz3mgot",
+      "work_room": "wt-physical-0041",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39zyahma01",
+      "work_room": "wt-physical-0122",
+      "rest_room": "wt-physical-0137",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj807dedvpin",
+      "work_room": "wt-physical-0045",
+      "rest_room": "wt-physical-0045",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nqtdgz9eb",
+      "work_room": "wt-physical-0149",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy97agorin3",
+      "work_room": "wt-physical-0070",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39r9xd4nf7",
+      "work_room": "wt-physical-0285",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaerrljy4m6",
+      "work_room": "wt-physical-0081",
+      "rest_room": "wt-physical-0081",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8a7bmi0jqq",
+      "work_room": "wt-physical-0109",
+      "rest_room": "wt-physical-0109",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di7ws9axunu9",
+      "work_room": "wt-physical-0292",
+      "rest_room": "wt-physical-0290",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0g7t8pecgf",
+      "work_room": "wt-physical-0006",
+      "rest_room": "wt-physical-0006",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj973g5f53zy",
+      "work_room": "wt-physical-0033",
+      "rest_room": "wt-physical-0033",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96jzj4z4p4",
+      "work_room": "wt-physical-0131",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82j7rslx7g",
+      "work_room": "wt-physical-0103",
+      "rest_room": "wt-physical-0286",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7lrzuy6j1a",
+      "work_room": "wt-physical-0275",
+      "rest_room": "wt-physical-0275",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizuxw21thqf",
+      "work_room": "wt-physical-0034",
+      "rest_room": "wt-physical-0034",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0g870v7ch5",
+      "work_room": "wt-physical-0200",
+      "rest_room": "wt-physical-0200",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaesje3q61h",
+      "work_room": "wt-physical-0259",
+      "rest_room": "wt-physical-0259",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6mwmvafryt",
+      "work_room": "wt-physical-0175",
+      "rest_room": "wt-physical-0175",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaahvplxqg6",
+      "work_room": "wt-physical-0040",
+      "rest_room": "wt-physical-0040",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1txgvniuql",
+      "work_room": "wt-physical-0058",
+      "rest_room": "wt-physical-0058",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1wa1ny6b72",
+      "work_room": "wt-physical-0102",
+      "rest_room": "wt-physical-0102",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa3rtsls1e",
+      "work_room": "wt-physical-0219",
+      "rest_room": "wt-physical-0219",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80vjeor99i",
+      "work_room": "wt-physical-0137",
+      "rest_room": "wt-physical-0137",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nr7dwb358",
+      "work_room": "wt-physical-0261",
+      "rest_room": "wt-physical-0180",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dhl64skg1",
+      "work_room": "wt-physical-0263",
+      "rest_room": "wt-physical-0263",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80a2k7oz6a",
+      "work_room": "wt-physical-0250",
+      "rest_room": "wt-physical-0250",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaajtjfc19h",
+      "work_room": "wt-physical-0217",
+      "rest_room": "wt-physical-0217",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7tz1yo4ww",
+      "work_room": "wt-physical-0226",
+      "rest_room": "wt-physical-0218",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6xjmvwdfjq",
+      "work_room": "wt-physical-0301",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nvxmd39zy",
+      "work_room": "wt-physical-0116",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv1d0fzzcq",
+      "work_room": "wt-physical-0099",
+      "rest_room": "wt-physical-0099",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6mpp0y9366",
+      "work_room": "wt-physical-0189",
+      "rest_room": "wt-physical-0189",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3iefm8yvj6",
+      "work_room": "wt-physical-0088",
+      "rest_room": "wt-physical-0088",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja9p1ipo9dv",
+      "work_room": "wt-physical-0091",
+      "rest_room": "wt-physical-0091",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0qaxc41byh",
+      "work_room": "wt-physical-0229",
+      "rest_room": "wt-physical-0229",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj990fujqpfr",
+      "work_room": "wt-physical-0274",
+      "rest_room": "wt-physical-0274",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9nh4ocim6g",
+      "work_room": "wt-physical-0119",
+      "rest_room": "wt-physical-0119",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dxwhwny6q",
+      "work_room": "wt-physical-0170",
+      "rest_room": "wt-physical-0170",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3csmlgk81g",
+      "work_room": "wt-physical-0129",
+      "rest_room": "wt-physical-0129",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj974868617k",
+      "work_room": "wt-physical-0097",
+      "rest_room": "wt-physical-0097",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj806llti40c",
+      "work_room": "wt-physical-0273",
+      "rest_room": "wt-physical-0272",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9nqs8ohimt",
+      "work_room": "wt-physical-0070",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nxuzmy7j0",
+      "work_room": "wt-physical-0289",
+      "rest_room": "wt-physical-0289",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7ze2esgth",
+      "work_room": "wt-physical-0076",
+      "rest_room": "wt-physical-0076",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj847hqmch52",
+      "work_room": "wt-physical-0118",
+      "rest_room": "wt-physical-0118",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj806zdz9rr5",
+      "work_room": "wt-physical-0220",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj804a853qd6",
+      "work_room": "wt-physical-0041",
+      "rest_room": "wt-physical-0041",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5f59bmyoxk",
+      "work_room": "wt-physical-0232",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ig3ruzm8e",
+      "work_room": "wt-physical-0043",
+      "rest_room": "wt-physical-0043",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7lq2hnumas",
+      "work_room": "wt-physical-0098",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0qiwkcxetf",
+      "work_room": "wt-physical-0007",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0cni03dpy1",
+      "work_room": "wt-physical-0238",
+      "rest_room": "wt-physical-0238",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3e73a1699w",
+      "work_room": "wt-physical-0225",
+      "rest_room": "wt-physical-0225",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dl2cs972i",
+      "work_room": "wt-physical-0197",
+      "rest_room": "wt-physical-0197",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7wog27p2e",
+      "work_room": "wt-physical-0010",
+      "rest_room": "wt-physical-0010",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3d4obnlc9q",
+      "work_room": "wt-physical-0127",
+      "rest_room": "wt-physical-0127",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96zl6m3w7a",
+      "work_room": "wt-physical-0077",
+      "rest_room": "wt-physical-0077",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa7msl6m20",
+      "work_room": "wt-physical-0001",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8afnhcl156",
+      "work_room": "wt-physical-0190",
+      "rest_room": "wt-physical-0192",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja9lk3sunrt",
+      "work_room": "wt-physical-0280",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0qffu8x2xq",
+      "work_room": "wt-physical-0280",
+      "rest_room": "wt-physical-0280",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96lx4o5ne5",
+      "work_room": "wt-physical-0233",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3a881dlqj9",
+      "work_room": "wt-physical-0101",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6xsppv5zc8",
+      "work_room": "wt-physical-0086",
+      "rest_room": "wt-physical-0086",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0g3jsythkk",
+      "work_room": "wt-physical-0235",
+      "rest_room": "wt-physical-0235",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1viulvnypu",
+      "work_room": "wt-physical-0271",
+      "rest_room": "wt-physical-0271",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3e1rx87v2x",
+      "work_room": "wt-physical-0026",
+      "rest_room": "wt-physical-0026",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82khz9rcrz",
+      "work_room": "wt-physical-0134",
+      "rest_room": "wt-physical-0134",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8ab0hq4m62",
+      "work_room": "wt-physical-0195",
+      "rest_room": "wt-physical-0195",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9917n3u4z5",
+      "work_room": "wt-physical-0280",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaafy43gmyr",
+      "work_room": "wt-physical-0070",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0cu3wocetf",
+      "work_room": "wt-physical-0007",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy91ho325fl",
+      "work_room": "wt-physical-0101",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa9k5updxn",
+      "work_room": "wt-physical-0304",
+      "rest_room": "wt-physical-0304",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3htl6664z2",
+      "work_room": "wt-physical-0131",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dkokmxfaw",
+      "work_room": "wt-physical-0027",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82eatq6933",
+      "work_room": "wt-physical-0208",
+      "rest_room": "wt-physical-0227",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n0hdk4ajk",
+      "work_room": "wt-physical-0135",
+      "rest_room": "wt-physical-0135",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1v19m6xa9p",
+      "work_room": "wt-physical-0254",
+      "rest_room": "wt-physical-0254",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di7wukomse10",
+      "work_room": "wt-physical-0079",
+      "rest_room": "wt-physical-0079",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3cpxfkg7zk",
+      "work_room": "wt-physical-0072",
+      "rest_room": "wt-physical-0072",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad23y21qzu",
+      "work_room": "wt-physical-0281",
+      "rest_room": "wt-physical-0281",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8absiju6wg",
+      "work_room": "wt-physical-0214",
+      "rest_room": "wt-physical-0214",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ho7cb9iqs",
+      "work_room": "wt-physical-0265",
+      "rest_room": "wt-physical-0265",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj96pejli7vb",
+      "work_room": "wt-physical-0183",
+      "rest_room": "wt-physical-0183",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9q6nf86j1c",
+      "work_room": "wt-physical-0047",
+      "rest_room": "wt-physical-0048",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7zhqf13wq0",
+      "work_room": "wt-physical-0052",
+      "rest_room": "wt-physical-0051",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj394r0uwxdv",
+      "work_room": "wt-physical-0019",
+      "rest_room": "wt-physical-0019",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaa8slk34hg",
+      "work_room": "wt-physical-0085",
+      "rest_room": "wt-physical-0085",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj398lznsmo5",
+      "work_room": "wt-physical-0056",
+      "rest_room": "wt-physical-0056",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9q9zf8kwat",
+      "work_room": "wt-physical-0012",
+      "rest_room": "wt-physical-0012",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj393vs5lifd",
+      "work_room": "wt-physical-0060",
+      "rest_room": "wt-physical-0060",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaak7ju3lxd",
+      "work_room": "wt-physical-0262",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3dew0avtrw",
+      "work_room": "wt-physical-0043",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djadbajjp7zq",
+      "work_room": "wt-physical-0207",
+      "rest_room": "wt-physical-0207",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7sfp3qqry",
+      "work_room": "wt-physical-0035",
+      "rest_room": "wt-physical-0035",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj77bjjtm71n",
+      "work_room": "wt-physical-0106",
+      "rest_room": "wt-physical-0106",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39guc0x4xe",
+      "work_room": "wt-physical-0203",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6npcwkbfx7",
+      "work_room": "wt-physical-0073",
+      "rest_room": "wt-physical-0073",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7ys2aap5hr",
+      "work_room": "wt-physical-0222",
+      "rest_room": "wt-physical-0222",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj82ha6a6ni9",
+      "work_room": "wt-physical-0044",
+      "rest_room": "wt-physical-0043",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nlzq3cnzg",
+      "work_room": "wt-physical-0116",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj72gf3wn4j3",
+      "work_room": "wt-physical-0070",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0cn47xsp7e",
+      "work_room": "wt-physical-0069",
+      "rest_room": "wt-physical-0069",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1tudh5h9cg",
+      "work_room": "wt-physical-0203",
+      "rest_room": "wt-physical-0203",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1tmjb221fn",
+      "work_room": "wt-physical-0116",
+      "rest_room": "wt-physical-0116",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj30ftu12s5u",
+      "work_room": "wt-physical-0166",
+      "rest_room": "wt-physical-0166",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3a2103swwi",
+      "work_room": "wt-physical-0268",
+      "rest_room": "wt-physical-0268",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad44jje4pd",
+      "work_room": "wt-physical-0232",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7roirw2tt",
+      "work_room": "wt-physical-0013",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj38z81i15tz",
+      "work_room": "wt-physical-0173",
+      "rest_room": "wt-physical-0173",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39mmwcuhhh",
+      "work_room": "wt-physical-0282",
+      "rest_room": "wt-physical-0282",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djulst3dpeea",
+      "work_room": "wt-physical-0149",
+      "rest_room": "wt-physical-0149",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy95cv598j0",
+      "work_room": "wt-physical-0216",
+      "rest_room": "wt-physical-0216",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1tpmxu887o",
+      "work_room": "wt-physical-0032",
+      "rest_room": "wt-physical-0032",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djacz0jk55f5",
+      "work_room": "wt-physical-0126",
+      "rest_room": "wt-physical-0126",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o2a7bjsfh",
+      "work_room": "wt-physical-0124",
+      "rest_room": "wt-physical-0124",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy98ghxgjei",
+      "work_room": "wt-physical-0276",
+      "rest_room": "wt-physical-0276",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja9o9q62vdn",
+      "work_room": "wt-physical-0171",
+      "rest_room": "wt-physical-0171",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7qwq7snbo",
+      "work_room": "wt-physical-0035",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7aogkg0ol1",
+      "work_room": "wt-physical-0231",
+      "rest_room": "wt-physical-0231",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39lhbnccpi",
+      "work_room": "wt-physical-0162",
+      "rest_room": "wt-physical-0162",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3eq7rivu0c",
+      "work_room": "wt-physical-0241",
+      "rest_room": "wt-physical-0241",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj994atcxoin",
+      "work_room": "wt-physical-0134",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaczskdncgw",
+      "work_room": "wt-physical-0169",
+      "rest_room": "wt-physical-0169",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5f8qqjks6w",
+      "work_room": "wt-physical-0159",
+      "rest_room": "wt-physical-0159",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6xqdvnli3b",
+      "work_room": "wt-physical-0258",
+      "rest_room": "wt-physical-0258",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1tnb3miccy",
+      "work_room": "wt-physical-0035",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv1r0uwa6i",
+      "work_room": "wt-physical-0104",
+      "rest_room": "wt-physical-0104",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj81ynztksxw",
+      "work_room": "wt-physical-0016",
+      "rest_room": "wt-physical-0016",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0g69fbun39",
+      "work_room": "wt-physical-0224",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0e9vuqp07r",
+      "work_room": "wt-physical-0047",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0g5vewu4at",
+      "work_room": "wt-physical-0194",
+      "rest_room": "wt-physical-0194",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj821ddxi2i9",
+      "work_room": "wt-physical-0211",
+      "rest_room": "wt-physical-0211",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad7tl69y2t",
+      "work_room": "wt-physical-0168",
+      "rest_room": "wt-physical-0168",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3cvqxym7dc",
+      "work_room": "wt-physical-0299",
+      "rest_room": "wt-physical-0296",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1wdx3anjcs",
+      "work_room": "wt-physical-0140",
+      "rest_room": "wt-physical-0140",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n7ayzjsf2",
+      "work_room": "wt-physical-0064",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7lqua8i9cv",
+      "work_room": "wt-physical-0038",
+      "rest_room": "wt-physical-0038",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj30fg1vk36c",
+      "work_room": "wt-physical-0128",
+      "rest_room": "wt-physical-0128",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djy95qnavo0a",
+      "work_room": "wt-physical-0026",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6n03lej358",
+      "work_room": "wt-physical-0266",
+      "rest_room": "wt-physical-0266",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5f5nc279t0",
+      "work_room": "wt-physical-0096",
+      "rest_room": "wt-physical-0096",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djaam5lwxw8h",
+      "work_room": "wt-physical-0089",
+      "rest_room": "wt-physical-0089",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9qemn4qpzg",
+      "work_room": "wt-physical-0007",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6naedhhjhh",
+      "work_room": "wt-physical-0064",
+      "rest_room": "wt-physical-0064",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk0gaiej3jp5",
+      "work_room": "wt-physical-0134",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3hgg1kflq8",
+      "work_room": "wt-physical-0217",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj39tzjq4xgv",
+      "work_room": "wt-physical-0043",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djad9qyfhtnt",
+      "work_room": "wt-physical-0237",
+      "rest_room": "wt-physical-0237",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3d9b9x0k3k",
+      "work_room": "wt-physical-0046",
+      "rest_room": "wt-physical-0047",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3in9fvh9ly",
+      "work_room": "wt-physical-0108",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o5rm8dxr9",
+      "work_room": "wt-physical-0003",
+      "rest_room": "wt-physical-0039",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj8ackb41chm",
+      "work_room": "wt-physical-0297",
+      "rest_room": "wt-physical-0295",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5f9iaukvtq",
+      "work_room": "wt-physical-0206",
+      "rest_room": "wt-physical-0206",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0cuhotn1ub",
+      "work_room": "wt-physical-0018",
+      "rest_room": "wt-physical-0018",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o2o7qa506",
+      "work_room": "wt-physical-0272",
+      "rest_room": "wt-physical-0272",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7zopxofufd",
+      "work_room": "wt-physical-0059",
+      "rest_room": "wt-physical-0059",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_djulrnaf1os1",
+      "work_room": "wt-physical-0013",
+      "rest_room": "wt-physical-0013",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80xh08ozom",
+      "work_room": "wt-physical-0021",
+      "rest_room": "wt-physical-0021",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3ifprg0b5t",
+      "work_room": "wt-physical-0230",
+      "rest_room": "wt-physical-0230",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6mnrff7o97",
+      "work_room": "wt-physical-0020",
+      "rest_room": "wt-physical-0020",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv3dg5ob75",
+      "work_room": "wt-physical-0180",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1tx2v8j18a",
+      "work_room": "wt-physical-0123",
+      "rest_room": "wt-physical-0123",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nkgd8qw93",
+      "work_room": "wt-physical-0064",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6nhr7fakdf",
+      "work_room": "wt-physical-0120",
+      "rest_room": "wt-physical-0120",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3djws2exlj",
+      "work_room": "wt-physical-0009",
+      "rest_room": "wt-physical-0007",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dja7v4uyd5qv",
+      "work_room": "wt-physical-0165",
+      "rest_room": "wt-physical-0165",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1uw7xcek19",
+      "work_room": "wt-physical-0274",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizv7zz92wd0",
+      "work_room": "wt-physical-0083",
+      "rest_room": "lobby",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj6xrjwwc15l",
+      "work_room": "wt-physical-0107",
+      "rest_room": "wt-physical-0107",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj72k9ufuvx1",
+      "work_room": "wt-physical-0247",
+      "rest_room": "wt-physical-0247",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj80nn7w8c1t",
+      "work_room": "wt-physical-0154",
+      "rest_room": "wt-physical-0154",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_di5f6fcvp03e",
+      "work_room": "wt-physical-0270",
+      "rest_room": "wt-physical-0270",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj3db8vg25rt",
+      "work_room": "wt-physical-0048",
+      "rest_room": "wt-physical-0048",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dk1toh4vagr5",
+      "work_room": "wt-physical-0087",
+      "rest_room": "wt-physical-0087",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj9o1wf66cna",
+      "work_room": "wt-physical-0182",
+      "rest_room": "wt-physical-0182",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj7s7nw5wtbi",
+      "work_room": "wt-physical-0054",
+      "rest_room": "wt-physical-0072",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dizuynmcw6qc",
+      "work_room": "wt-physical-0066",
+      "rest_room": "wt-physical-0066",
+      "shift_start": 6,
+      "shift_end": 19
+    },
+    {
+      "entity_id": "npc_dj0q9ravqjjt",
+      "work_room": "wt-physical-0252",
+      "rest_room": "wt-physical-0252",
+      "shift_start": 6,
+      "shift_end": 19
+    }
+  ]
+}

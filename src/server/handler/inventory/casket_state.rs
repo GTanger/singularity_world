@@ -203,8 +203,10 @@ fn create_default_loadout(registry: &WordRegistry) -> TacticalLoadout {
 }
 
 pub fn populate_resident_vocational_casket(pid: &str, casket: &mut WordCasket, registry: &WordRegistry) -> bool {
+    if crate::server::grid_manager::get_runtime_square_grid().is_some_and(|g| !g.has_peninsula_wilderness()) {
+        return false;
+    }
     let mut matched_clue: Option<String> = None;
-
     if pid == "秦水生" {
         matched_clue = Some("水輪石磨匠|老堰頭・水輪石磨工坊|秦水生".to_string());
     } else {
@@ -411,21 +413,8 @@ pub fn ensure_player_initialized(pid: &str) {
     if mutated && is_persisted_wordplate_owner(pid) {
         save_player_wordplates();
     }
-    if !pid.starts_with("npc_")
-        && !pid.starts_with("wt_")
-        && !pid.starts_with("shanhai_")
-        && !pid.starts_with("ambient_")
-    {
-        if let Ok(Some(ent)) = db::get_entity(pid) {
-            if !inventory_has_item(&ent.inventory, "blank_manual")
-                && !inventory_has_item(&ent.inventory, "wt_blank_manual")
-                && STARTER_MANUAL_GRANTED.write().insert(pid.to_string())
-            {
-                let grant_qty = 2;
-                let _ = db::add_to_inventory(pid, "blank_manual", grant_qty);
-            }
-        }
-    }
+    // 滅世後的新生：不再於登入時自動塞入舊世「空白手札（blank_manual）」至玩家行囊
+    let _ = &STARTER_MANUAL_GRANTED;
 }
 
 /// 一次性建世種子：為全島工坊與住戶匠人初始化器物磨損與吐納基底（所有人皆為自己的主角）

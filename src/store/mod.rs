@@ -226,22 +226,24 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     s.db_pool = match sql::init_pool(&pg_url) {
         Ok(pool) => {
             tracing::info!("[store] PostgreSQL 連線池已初始化: {}", pg_url);
-            let topology = crate::pg::world_topology::ensure_builtin(&pool)?;
-            tracing::info!(
-                "[world] 已載入 {} v{}：{} nodes, {} links（PostgreSQL 主資料）",
-                topology.world_id,
-                topology.version,
-                topology.node_count,
-                topology.link_count
-            );
-            let places = crate::pg::world_place::ensure_topology_places(&pool)?;
+            if !s.rooms.is_empty() {
+                let topology = crate::pg::world_topology::ensure_builtin(&pool)?;
+                tracing::info!(
+                    "[world] 已載入 {} v{}：{} nodes, {} links（PostgreSQL 主資料）",
+                    topology.world_id,
+                    topology.version,
+                    topology.node_count,
+                    topology.link_count
+                );
+                let places = crate::pg::world_place::ensure_topology_places(&pool)?;
+                tracing::info!(
+                    "[world] 已把 {} 個白塔拓撲節點登記為不可行走場所容器",
+                    places.topology_places
+                );
+            }
             crate::pg::world_journey::ensure_schema(&pool)?;
             crate::pg::economy::ensure_schema(&pool)?;
             crate::pg::living_world::ensure_schema(&pool)?;
-            tracing::info!(
-                "[world] 已把 {} 個白塔拓撲節點登記為不可行走場所容器",
-                places.topology_places
-            );
             // 同步灌給全域 pg:: 模組——繞過 store lock 的直接 IO 路徑用
             crate::pg::set_pool(pool.clone());
             Some(pool)
@@ -276,15 +278,17 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
                 false
             }
         });
-        let n = s.ensure_p0_material_items();
-        if n > 0 {
-            tracing::info!("[store] P0 世界物質補入 items 快取: {n}");
+        if !s.rooms.is_empty() {
+            let n = s.ensure_p0_material_items();
+            if n > 0 {
+                tracing::info!("[store] P0 世界物質補入 items 快取: {n}");
+            }
+            let n = s.normalize_legacy_material_inventories();
+            if n > 0 {
+                tracing::info!("[store] 舊物品背包升級為 P0 世界物質: {n} entities");
+            }
         }
-        let n = s.normalize_legacy_material_inventories();
-        if n > 0 {
-            tracing::info!("[store] 舊物品背包升級為 P0 世界物質: {n} entities");
-        }
-    } else {
+    } else if !s.rooms.is_empty() {
         tracing::info!("[store] PostgreSQL 為空或不可用，從 JSON 種子載入...");
         let _ = s.load_entity_rooms();
         if !data_dir.is_empty() {
@@ -308,11 +312,9 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         if let Err(e) = s.sync_all_to_postgresql() {
             tracing::error!("[store] 啟動時 PostgreSQL 同步失敗: {}", e);
         }
+        let _ = s.load_npc_rumors();
+        let _ = s.load_npc_rumor_digest();
     }
-
-    // 4. 傳聞：已有 PG-first + JSON fallback 邏輯
-    let _ = s.load_npc_rumors();
-    let _ = s.load_npc_rumor_digest();
     s.reload_place_graph()?;
 
     tracing::info!(
@@ -336,8 +338,11 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         }
     }
 
+    let has_legacy_rooms = !s.rooms.is_empty();
     set_store(s);
-    crate::game::object_ecology::ensure_ecology_items_in_store();
+    if has_legacy_rooms {
+        crate::game::object_ecology::ensure_ecology_items_in_store();
+    }
     Ok(())
 }
 

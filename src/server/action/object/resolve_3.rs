@@ -269,6 +269,38 @@ fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::mo
                 move_to_room_id: String::new(),
             });
         }
+        if let Some(zl_slot_obj) =
+            crate::grid::zhulin::resolve_bamboo_slot_object_with_qty(&obj.id, obj.quantity)
+                .or_else(|| {
+                    crate::grid::zhulin::resolve_bamboo_slot_object_with_qty(
+                        &obj.name,
+                        obj.quantity,
+                    )
+                })
+        {
+            return Some(zl_slot_obj);
+        }
+        if let Some(mut zl_obj) = crate::grid::resolve_shalu_zhulin_object(&obj.id)
+            .or_else(|| crate::grid::resolve_shalu_zhulin_object(&obj.name))
+        {
+            if obj.quantity > 0 && !zl_obj.sockets.iter().any(|s| s == "Gather") {
+                zl_obj.sockets.push("Gather".to_string());
+            } else if obj.quantity == 0 {
+                zl_obj.sockets.retain(|s| s != "Gather");
+            }
+            if obj.max_quantity > 0 {
+                if let Some(look) = zl_obj.responses.get_mut("Look") {
+                    crate::grid::zhulin::append_diegetic_stock_clause(
+                        &obj.id,
+                        &obj.name,
+                        look,
+                        obj.quantity,
+                        obj.max_quantity,
+                    );
+                }
+            }
+            return Some(zl_obj);
+        }
 
         let sockets = vec!["Look".to_string(), "Gather".to_string()];
         let look_desc = if obj.quantity > 0 {

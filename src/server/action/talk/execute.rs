@@ -22,25 +22,43 @@ fn build_one_hop_spatial_grounding_note(
         })
     });
 
+    let is_peninsula = grid_opt.as_ref().is_some_and(|g| g.has_peninsula_wilderness());
     let (cell_desc, room_canon_name, scene_objs) = if let (Some(grid), Some((cx, cy))) = (&grid_opt, coord_opt) {
         if let Some(cell) = grid.get(crate::grid::SquareCoord::new(cx, cy)) {
             let desc = if !cell.description.trim().is_empty() {
                 cell.description.trim().to_string()
-            } else {
+            } else if is_peninsula {
                 format!("白塔半島街坊（{}）", cell.name)
+            } else {
+                cell.name.clone()
             };
-            let mut objs = crate::game::player_layer_scene_objects_for_cell(cell);
-            if objs.is_empty() {
-                objs = crate::game::player_layer_scene_objects_for_room(&cell.name);
-            }
+            let objs = if is_peninsula {
+                let mut o = crate::game::player_layer_scene_objects_for_cell(cell);
+                if o.is_empty() {
+                    o = crate::game::player_layer_scene_objects_for_room(&cell.name);
+                }
+                o
+            } else {
+                Vec::new()
+            };
             (desc, cell.name.clone(), objs)
         } else {
-            let objs = crate::game::player_layer_scene_objects_for_room(room_id);
-            ("白塔半島市井街區".to_string(), room_id.to_string(), objs)
+            let objs = if is_peninsula {
+                crate::game::player_layer_scene_objects_for_room(room_id)
+            } else {
+                Vec::new()
+            };
+            let fallback_desc = if is_peninsula { "白塔半島市井街區" } else { "野外地帶" };
+            (fallback_desc.to_string(), room_id.to_string(), objs)
         }
     } else {
-        let objs = crate::game::player_layer_scene_objects_for_room(room_id);
-        ("白塔半島市井街區".to_string(), room_id.to_string(), objs)
+        let objs = if is_peninsula {
+            crate::game::player_layer_scene_objects_for_room(room_id)
+        } else {
+            Vec::new()
+        };
+        let fallback_desc = if is_peninsula { "白塔半島市井街區" } else { "野外地帶" };
+        (fallback_desc.to_string(), room_id.to_string(), objs)
     };
 
     let mut obj_descs = Vec::new();

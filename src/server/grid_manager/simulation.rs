@@ -77,68 +77,8 @@ fn step_resident_idles(grid: &crate::grid::SquareGrid) {
                                 obj.quantity = obj.quantity.saturating_sub(1);
                                 let obj_id = obj.id.clone();
                                 let obj_name = obj.name.clone();
-                                let item_id = if obj_id.starts_with("wild_fruit")
-                                    || obj_name.contains("漿果")
-                                    || obj_name.contains("果")
-                                    || obj_name.contains("山茶籽")
-                                    || obj_name.contains("燕窩")
-                                {
-                                    "harvest_berries"
-                                } else if obj_id.starts_with("wood")
-                                    || obj_name.contains("木材")
-                                    || obj_name.contains("原木")
-                                    || obj_name.contains("枯木")
-                                    || obj_name.contains("倒木")
-                                    || obj_name.contains("心材")
-                                    || obj_name.contains("良材")
-                                    || obj_name.contains("雲杉")
-                                    || obj_name.contains("烏木")
-                                    || obj_name.contains("韌竹")
-                                    || obj_name.contains("鐵杉")
-                                    || obj_name.contains("穀木")
-                                    || obj_name.contains("樹脂")
-                                {
-                                    if obj_name.contains("溫木") || obj_name.contains("烏木") || obj_name.contains("心材") || obj_name.contains("樹脂") {
-                                        "harvest_rare_wood"
-                                    } else if obj_name.contains("雲杉") || obj_name.contains("原木") {
-                                        "harvest_wood"
-                                    } else {
-                                        "harvest_deadwood"
-                                    }
-                                } else if obj_id.starts_with("herb")
-                                    || obj_name.contains("草")
-                                    || obj_name.contains("苔")
-                                    || obj_name.contains("蓮")
-                                    || obj_name.contains("藤")
-                                    || obj_name.contains("葦")
-                                    || obj_name.contains("百草")
-                                {
-                                    if obj_name.contains("藤") {
-                                        "harvest_vine"
-                                    } else {
-                                        "harvest_herb"
-                                    }
-                                } else if obj_id.starts_with("ore")
-                                    || obj_name.contains("礦")
-                                    || obj_name.contains("玉")
-                                    || obj_name.contains("石")
-                                    || obj_name.contains("岩")
-                                    || obj_name.contains("晶")
-                                    || obj_name.contains("髓")
-                                    || obj_name.contains("貝")
-                                    || obj_name.contains("砂")
-                                    || obj_name.contains("黏土")
-                                    || obj_name.contains("鹽")
-                                {
-                                    if obj_name.contains("玉") || obj_name.contains("晶") || obj_name.contains("髓") {
-                                        "harvest_crystal"
-                                    } else if obj_name.contains("鐵") || obj_name.contains("銅") || obj_name.contains("礦") || obj_name.contains("煤") {
-                                        "harvest_ore"
-                                    } else {
-                                        "harvest_hardstone"
-                                    }
-                                } else {
-                                    "harvest_herb"
+                                let Some(item_id) = crate::grid::zhulin::yield_item_id_for_object(&obj_id) else {
+                                    continue;
                                 };
                                 let snapshot = cell.clone();
                                 g.mark_dirty();

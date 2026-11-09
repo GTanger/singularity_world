@@ -105,23 +105,25 @@ pub fn build_identity(entity_id: &str) -> String {
         let is_female = crate::store::npc_effective_is_female(entity_id, Some(&ent.gender));
         let gender = if is_female { "女性" } else { "男性" };
         person = crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
+        let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+            .is_some_and(|g| g.has_peninsula_wilderness());
         let slot = crate::store::wenyao_household_slot_for(entity_id);
         let sched_home_work = crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
         let role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
         let role = if !role_label.is_empty() {
             role_label
-        } else if !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
+        } else if is_peninsula && !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
             slot.brief_tag.to_string()
         } else if !occ.is_empty() && !occ.contains("服務生") {
             occ.clone()
         } else {
-            "居民".to_string()
+            "行旅".to_string()
         };
         effective_occupation = role.clone();
 
         let work_name = if let Some((_, work_room)) = sched_home_work {
             work_room.to_string()
-        } else if !slot.work_name.is_empty() {
+        } else if is_peninsula && !slot.work_name.is_empty() {
             slot.work_name.to_string()
         } else if let Some(v_name) = venue_name_opt.as_ref() {
             if !role.contains("服務生") && !occ.contains("服務生") {
@@ -133,26 +135,26 @@ pub fn build_identity(entity_id: &str) -> String {
             String::new()
         };
 
-        let home_name = if let Some((h_room, _)) = sched_home_work {
-            h_room
-        } else {
-            slot.home_name
-        };
-
         if !work_name.is_empty() {
             result = format!("你是{person}，{gender}，職稱為{role}，在{work_name}任事。");
         } else {
-            result = format!("你是{person}，{gender}，職稱為{role}。");
+            result = format!("你是{person}，{gender}，身分為{role}。");
         }
 
-        result.push_str(&format!(
-            "你的穿著外觀：{}。平日住所為【{}】，任職單位為【{}】（職司：{}）。",
-            slot.attire_line,
-            home_name,
-            work_name,
-            slot.work_purpose,
-        ));
-
+        if is_peninsula {
+            let home_name = if let Some((h_room, _)) = sched_home_work {
+                h_room
+            } else {
+                slot.home_name
+            };
+            result.push_str(&format!(
+                "你的穿著外觀：{}。平日住所為【{}】，任職單位為【{}】（職司：{}）。",
+                slot.attire_line,
+                home_name,
+                work_name,
+                slot.work_purpose,
+            ));
+        }
         if !live_act.is_empty() {
             result.push_str(&format!("你當前的具體活動：{}。", live_act));
             let (start_hour, end_hour) = if game_h >= slot.morning_hour && game_h < slot.evening_hour {
@@ -235,38 +237,44 @@ pub fn build_identity(entity_id: &str) -> String {
             ));
         }
     } else if let Some(v_name) = venue_name_opt {
+        let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+            .is_some_and(|g| g.has_peninsula_wilderness());
         let slot = crate::store::wenyao_household_slot_for(entity_id);
         let sched_hw = crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
         let effective_occ = if !occ.is_empty() && !occ.contains("服務生") {
             occ.clone()
-        } else if !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
+        } else if is_peninsula && !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
             slot.brief_tag.to_string()
         } else {
             "居民".to_string()
         };
-        let (sched_home, sched_work) = match sched_hw {
-            Some((h, w)) => (h, w),
-            None => (slot.home_name, slot.work_name),
-        };
-        let effective_work = if !sched_work.is_empty() {
-            sched_work
-        } else if !effective_occ.contains("服務生") {
-            &v_name
+        if is_peninsula {
+            let (sched_home, sched_work) = match sched_hw {
+                Some((h, w)) => (h, w),
+                None => (slot.home_name, slot.work_name),
+            };
+            let effective_work = if !sched_work.is_empty() {
+                sched_work
+            } else if !effective_occ.contains("服務生") {
+                &v_name
+            } else {
+                ""
+            };
+            let effective_home = if !sched_home.is_empty() {
+                sched_home
+            } else {
+                slot.home_name
+            };
+            if let Some((h_room, w_room)) = sched_hw {
+                let settlement_prefix = h_room.split('・').next().unwrap_or("文曜");
+                result = format!("{settlement_prefix}的{effective_occ}，平素於【{w_room}】當值，居於【{h_room}】。");
+            } else if !effective_work.is_empty() {
+                result = format!("你是{person}，職稱是{effective_occ}，在{effective_work}工作。住所為【{effective_home}】。");
+            } else {
+                result = format!("你是{person}，住所為【{effective_home}】。");
+            }
         } else {
-            ""
-        };
-        let effective_home = if !sched_home.is_empty() {
-            sched_home
-        } else {
-            slot.home_name
-        };
-        if let Some((h_room, w_room)) = sched_hw {
-            let settlement_prefix = h_room.split('・').next().unwrap_or("文曜");
-            result = format!("{settlement_prefix}的{effective_occ}，平素於【{w_room}】當值，居於【{h_room}】。");
-        } else if !effective_work.is_empty() {
-            result = format!("你是{person}，職稱是{effective_occ}，在{effective_work}工作。住所為【{effective_home}】。");
-        } else {
-            result = format!("你是{person}，住所為【{effective_home}】。");
+            result = format!("你是{person}，身處【{v_name}】。");
         }
     }
     let seed = crate::npc::causal_core::deterministic_resident_seed(
@@ -329,44 +337,48 @@ pub fn build_identity(entity_id: &str) -> String {
             result.truncate(mark);
         }
     }
-    let pulse = crate::game::object_ecology::market_pulse_summary_for_prompt();
-    if !pulse.is_empty() {
-        result.push_str(&format!("當前坊市經濟脈動：{}。", pulse));
-    }
-    let facts = crate::pg::living_world::recent_resident_knowledge_facts(entity_id, 3);
-    if !facts.is_empty() {
-        result.push_str(&format!("\n【個人親歷與坊間熟知】：{}", facts.join("；")));
-    }
-    let s = npc_summary.trim();
-    if !s.is_empty() && (s.contains("開譜曆") || s.contains("白塔曆")) {
-        result.push_str(&format!("\n近期交談摘要：{}", s));
-    }
-    let slot = crate::store::wenyao_household_slot_for(entity_id);
-    let sched_hw = crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
-    let (vessel_id, vessel_name) = if sched_hw.is_some() {
-        let spec = crate::npc::causal_core::resolve_vocational_vessel(&effective_occupation);
-        (spec.catalog_id, spec.display_name)
-    } else {
-        let (vid, vname) = crate::store::held_vessel(slot);
-        if vname.is_empty() || vid.is_empty() {
+    if crate::server::grid_manager::get_runtime_square_grid()
+        .is_some_and(|g| g.has_peninsula_wilderness())
+    {
+        let pulse = crate::game::object_ecology::market_pulse_summary_for_prompt();
+        if !pulse.is_empty() {
+            result.push_str(&format!("當前坊市經濟脈動：{}。", pulse));
+        }
+        let facts = crate::pg::living_world::recent_resident_knowledge_facts(entity_id, 3);
+        if !facts.is_empty() {
+            result.push_str(&format!("\n【個人親歷與坊間熟知】：{}", facts.join("；")));
+        }
+        let s = npc_summary.trim();
+        if !s.is_empty() && (s.contains("開譜曆") || s.contains("白塔曆")) {
+            result.push_str(&format!("\n近期交談摘要：{}", s));
+        }
+        let slot = crate::store::wenyao_household_slot_for(entity_id);
+        let sched_hw = crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
+        let (vessel_id, vessel_name) = if sched_hw.is_some() {
             let spec = crate::npc::causal_core::resolve_vocational_vessel(&effective_occupation);
             (spec.catalog_id, spec.display_name)
         } else {
-            (vid, vname)
-        }
-    };
-    let (final_home, final_work) = if let Some((h, w)) = sched_hw {
-        (h, w)
-    } else {
-        (slot.home_name, slot.work_name)
-    };
-    result.push_str(&format!(
-        "\n【閉世界事實白名單（僅准引用以下真實外鍵，嚴禁無中生有）】住處：【{}】（{},{}）；本職場所：【{}】（{},{}）；常去採買／交接場所：【{}】（{},{}）；職司隨身器物：【{}】（{}）。對話提及之店鋪、街巷或器物必須 100% 限於上述白名單、隨身行囊或現場四鄰實景；未列於白名單之店鋪或物品代表不存在，必須回答「不曉得」或「這附近沒有」！",
-        final_home, slot.home_x, slot.home_y,
-        final_work, slot.work_x, slot.work_y,
-        slot.errand_name, slot.errand_x, slot.errand_y,
-        vessel_name, vessel_id
-    ));
+            let (vid, vname) = crate::store::held_vessel(slot);
+            if vname.is_empty() || vid.is_empty() {
+                let spec = crate::npc::causal_core::resolve_vocational_vessel(&effective_occupation);
+                (spec.catalog_id, spec.display_name)
+            } else {
+                (vid, vname)
+            }
+        };
+        let (final_home, final_work) = if let Some((h, w)) = sched_hw {
+            (h, w)
+        } else {
+            (slot.home_name, slot.work_name)
+        };
+        result.push_str(&format!(
+            "\n【閉世界事實白名單（僅准引用以下真實外鍵，嚴禁無中生有）】住處：【{}】（{},{}）；本職場所：【{}】（{},{}）；常去採買／交接場所：【{}】（{},{}）；職司隨身器物：【{}】（{}）。對話提及之店鋪、街巷或器物必須 100% 限於上述白名單、隨身行囊或現場四鄰實景；未列於白名單之店鋪或物品代表不存在，必須回答「不曉得」或「這附近沒有」！",
+            final_home, slot.home_x, slot.home_y,
+            final_work, slot.work_x, slot.work_y,
+            slot.errand_name, slot.errand_x, slot.errand_y,
+            vessel_name, vessel_id
+        ));
+    }
     result
 }
 
@@ -477,29 +489,36 @@ pub fn build_third_person_actor_card(
         role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
     }
 
+    let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+        .is_some_and(|g| g.has_peninsula_wilderness());
     let slot = crate::store::wenyao_household_slot_for(entity_id);
     let sched_hw = crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
     let job_label = if !role_label.is_empty() {
         role_label
-    } else if !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
+    } else if is_peninsula && !slot.brief_tag.is_empty() && slot.brief_tag != "街坊居民" {
         slot.brief_tag.to_string()
     } else if !occ.is_empty() && !occ.contains("服務生") {
         occ
     } else {
-        "居民".to_string()
+        "行旅".to_string()
     };
 
-    let clothing_desc = slot.attire_line;
-    let (home_name, work_name) = if let Some((h, w)) = sched_hw {
-        (h, w)
+    let mut card = if is_peninsula {
+        let clothing_desc = slot.attire_line;
+        let (home_name, work_name) = if let Some((h, w)) = sched_hw {
+            (h, w)
+        } else {
+            (slot.home_name, slot.work_name)
+        };
+        let work_purpose = slot.work_purpose;
+        format!(
+            "【{role_tag}：{name}】（只可自稱「我」，不可自呼「{name}」或自身外號；對面交談對象是「{peer_name}」）｜性別：{gender}｜職稱：{job_label}｜穿戴：{clothing_desc}｜住所：【{home_name}】｜任事場所：【{work_name}】（{work_purpose}）"
+        )
     } else {
-        (slot.home_name, slot.work_name)
+        format!(
+            "【{role_tag}：{name}】（只可自稱「我」，不可自呼「{name}」或自身外號；對面交談對象是「{peer_name}」）｜性別：{gender}｜身分：{job_label}"
+        )
     };
-    let work_purpose = slot.work_purpose;
-
-    let mut card = format!(
-        "【{role_tag}：{name}】（只可自稱「我」，不可自呼「{name}」或自身外號；對面交談對象是「{peer_name}」）｜性別：{gender}｜職稱：{job_label}｜穿戴：{clothing_desc}｜住所：【{home_name}】｜任事場所：【{work_name}】（{work_purpose}）"
-    );
     let personality_opt = get_personality_for_entity(entity_id).or_else(|| {
         if let Some(seed) = soul_seed_val
             && seed != 0
@@ -584,17 +603,23 @@ pub fn build_third_person_actor_card(
         card.push_str(&format!("\n近期交談摘要：{}", s));
     }
 
-    let effective_live_act = if live_act.is_empty() || is_routine_physiological_thought(&live_act) {
-        slot.work_stay_activity
-    } else {
-        live_act.as_str()
-    };
-    if !effective_live_act.is_empty() {
+    if is_peninsula {
+        let work_name = sched_hw.map(|(_, w)| w).unwrap_or(slot.work_name);
+        let effective_live_act = if live_act.is_empty() || is_routine_physiological_thought(&live_act) {
+            slot.work_stay_activity
+        } else {
+            live_act.as_str()
+        };
+        if !effective_live_act.is_empty() {
+            card.push('\n');
+            card.push_str(&format!(
+                "當前手頭活計：{}（嚴守本職【{}】，切勿自稱在其他診所或非自身場所當差）。",
+                effective_live_act, work_name
+            ));
+        }
+    } else if !live_act.is_empty() {
         card.push('\n');
-        card.push_str(&format!(
-            "當前手頭活計：{}（嚴守本職【{}】，切勿自稱在其他診所或非自身場所當差）。",
-            effective_live_act, work_name
-        ));
+        card.push_str(&format!("當前手頭活動：{}。", live_act));
     }
     card
 }

@@ -482,7 +482,7 @@
                 }
             }
         }
-        var prefixRegex = /^(?:青鹽海貝|煅燒海貝|重礦包邊|薄層重礦|三號坑口|三號坑|老堰頭|霜林口|築港頭|文曜城|文曜|大圳頭|半嶺鎮|半嶺|風櫃尾|烏石鼻|水尾寮|紅土崁|黑沼|北嶺|南哨|外澳|牛埔|風舶角|風舶|黃銅鑲邊|雕花青石|防蛀樟木|夜光貝母|寒水玉雙層|寒水玉|松香木|老青竹黃銅輪|老青竹|紅土光學黃銅|紅土光學|自來活水黃銅|自來活水|三水川雕花|文曜青石|防雨竹筒|防雨竹編|烏木內膽|烏木膽|(?:黃銅|青石|石雕|雕花|生鐵|熟鐵|精鋼|樟木|松木|烏木|紅木|鐵木|楠木|粗陶|白磁|竹編|單筒|捲線|貝母|木|竹|鐵|銅|石|陶)製?)/;
+        var prefixRegex = /^(?:青鹽海貝|煅燒海貝|重礦包邊|薄層重礦|三號坑口|三號坑|老堰頭|霜林口|築港頭|文曜城|文曜|大圳頭|半嶺鎮|半嶺|風櫃尾|烏石鼻|水尾寮|紅土崁|黑沼|北嶺|南哨|外澳|牛埔|風舶角|風舶|黃銅鑲邊|雕花青石|防蛀樟木|夜光貝母|寒水玉雙層|寒水玉|松香木|老青竹黃銅輪|老青竹|紅土光學黃銅|紅土光學|自來活水黃銅|自來活水|三水川雕花|文曜青石|防雨竹筒|防雨竹編|烏木內膽|烏木膽|(?:黃銅|青石|石雕|雕花|生鐵|熟鐵|精鋼|樟木|松木|烏木|紅木|鐵木|楠木|粗陶|白磁|竹編|單筒|捲線|貝母)製?|(?:木|竹|鐵|銅|石|陶)製)/;
         for (var pi = 0; pi < 2; pi++) {
             var stripped = str.replace(prefixRegex, '').replace(/^[製式膽]/, '').trim();
             if (stripped.length >= 2 && stripped !== str) {
@@ -1439,7 +1439,7 @@
         if (tokens.length === 0) {
             var appEl = document.getElementById('app') || document.getElementById('app-grid');
             var isNight = (appEl && appEl.getAttribute('data-tide') === 'night');
-            var emptyText = isNight ? '夜色靜謐，四下暫無行旅駐足' : '街面清朗，四下暫無駐足行人';
+            var emptyText = isNight ? '夜色靜謐，四下悄無聲息' : '四下清朗，林間悄無聲息';
             if (!existingEmptyHint) {
                 existingEmptyHint = document.createElement('div');
                 existingEmptyHint.className = 'sw-canvas-empty-hint';

@@ -56,6 +56,24 @@ pub struct GridCell {
     pub explicit_exits: Vec<ExplicitExit>,
 }
 
+impl GridCell {
+    /// 取得格子的顯示符號：若為竹林／竹篁地貌則回傳 `𓐂`，否則回傳 `self.terrain.display_char()`
+    pub fn display_symbol(&self) -> &'static str {
+        if matches!(
+            self.terrain,
+            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle
+        ) && (self.has_room_tag("bamboo")
+            || self.name.contains('竹')
+            || self.name.contains('篁')
+            || self.name.contains('筍'))
+        {
+            "𓐂"
+        } else {
+            self.terrain.display_char()
+        }
+    }
+}
+
 /// 判斷房間名稱是否為私人住宅、內室或宿舍（不應具備商業櫃檯或非本店人員禁止進入區）
 pub fn is_private_residence_room_name(name: &str) -> bool {
     let trimmed = name.trim();

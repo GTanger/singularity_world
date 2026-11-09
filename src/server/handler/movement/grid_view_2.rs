@@ -485,7 +485,10 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         let game_minute_of_day = (base.game_time_sec_since_midnight.rem_euclid(86_400) / 60) as u32;
         let current_desc = current_cell
             .as_ref()
-            .map(|c| c.description.trim().to_string())
+            .and_then(|c| {
+                crate::grid::zhulin::compose_bamboo_description(c)
+                    .or_else(|| Some(c.description.trim().to_string()))
+            })
             .filter(|s| !s.is_empty())
             .unwrap_or_else(|| {
                 if base.description.trim().is_empty() {

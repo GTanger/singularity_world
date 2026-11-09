@@ -21,27 +21,7 @@ async fn main() -> anyhow::Result<()> {
         runtime.to_str().expect("utf-8"),
         data.to_str().expect("utf-8"),
     )?;
-    if let Err(e) = singularity_world::db::seed_npcs_for_store() {
-        tracing::warn!("seed npcs: {e}");
-    }
-    let _ = singularity_world::db::ensure_all_npcs_have_soul_seed();
-    let runtime = singularity_world::store::activate_white_tower_runtime()?;
-    tracing::info!(
-        "white_tower_runtime: {} places, {} routes, {} goods, {} markets, {} source deals, {} upstream profiles, {} producer sites, {} work sites, {} inventory rows, {} flow lanes, {} entities migrated, {} journeys migrated, {} backups",
-        runtime.runtime_places,
-        runtime.runtime_routes,
-        runtime.economy_goods,
-        runtime.economy_markets,
-        runtime.economy_trade_evidence,
-        runtime.economy_upstream_supply_profiles,
-        runtime.economy_producer_sites,
-        runtime.economy_work_sites,
-        runtime.economy_operational_inventory,
-        runtime.economy_flow_lanes,
-        runtime.entities_migrated,
-        runtime.journeys_migrated,
-        runtime.location_backups
-    );
+    tracing::info!("singularity_world: 啟動滅世後的新生世界【沙鹿・竹林里】（不載入舊世白塔半島 NPC 與聚落種子）");
     let topics = root.join("data/npc_to_npc_topics.json");
     singularity_world::npc::try_load_npc_npc_topics(&topics)
         .or_else(|_| {

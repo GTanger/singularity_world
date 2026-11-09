@@ -146,7 +146,7 @@ impl SquareGrid {
     /// 是否啟用白塔半島 800×1,000 無縫荒野基底層
     #[inline]
     pub fn has_peninsula_wilderness(&self) -> bool {
-        self.world_seed == 2026_07_03 || self.cells.len() > 2000
+        self.world_seed == 2026_07_03 && self.cells.len() > 2000
     }
 
     /// 取得格子（未揭露回傳 `None`）
@@ -271,6 +271,9 @@ impl SquareGrid {
         }
         if !to_cell.terrain.walkable() {
             return false;
+        }
+        if self.world_seed == crate::grid::SHALU_ZHULIN_WORLD_SEED {
+            return true;
         }
 
         // 街道 :: 與相鄰公開建築格（$ ⚒︎ + ⌂ ⚑ 𖠿 ∆）互相開放通行

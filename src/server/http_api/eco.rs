@@ -107,7 +107,7 @@ trait CellExt {
 
 impl CellExt for crate::grid::GridCell {
     fn symbol(&self) -> &'static str {
-        self.terrain.symbol()
+        self.display_symbol()
     }
 }
 
@@ -248,6 +248,12 @@ fn derive_eco_inner_thought(
 
 /// 取得全島住民因果思緒與決策選項明細（/api/eco/npc-thoughts）
 pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
+    let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+        .map_or(false, |g| g.has_peninsula_wilderness());
+    if !is_peninsula {
+        return Json(Vec::<NpcThoughtEntry>::new()).into_response();
+    }
+
     let Some(st_arc) = store::get_store() else {
         return Json(Vec::<NpcThoughtEntry>::new()).into_response();
     };
@@ -545,9 +551,15 @@ pub async fn eco_map() -> impl IntoResponse {
                 let t: String = r.get(2);
                 let z: String = r.get(3);
                 let n: String = r.get(4);
-                let s = crate::grid::Terrain::from_kind_str(&t)
-                    .map(|tr| tr.symbol().to_string())
-                    .unwrap_or_else(|| "·".to_string());
+                let s = if (n.contains('竹') || n.contains('篁'))
+                    && t.starts_with("forest")
+                {
+                    "𓐂".to_string()
+                } else {
+                    crate::grid::Terrain::from_kind_str(&t)
+                        .map(|tr| tr.symbol().to_string())
+                        .unwrap_or_else(|| "·".to_string())
+                };
                 EcoMapCell {
                     x,
                     y,
@@ -571,18 +583,23 @@ pub async fn eco_entities() -> impl IntoResponse {
         return Json(Vec::<EcoEntity>::new()).into_response();
     };
     crate::npc::causal_core::ensure_circular_economy_normalized_if_needed();
-    if store::LIVE_HUNTING_PARTIES.read().is_empty()
+    let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+        .map_or(false, |g| g.has_peninsula_wilderness());
+    if is_peninsula
+        && store::LIVE_HUNTING_PARTIES.read().is_empty()
         && let Some(grid) = crate::server::grid_manager::get_runtime_square_grid()
     {
         st_arc.read().sync_and_advance_hunting_parties(&grid);
     }
-
     let raw_rows: Vec<(store::Entity, i32, i32, Option<String>, Option<String>)> = {
         let st = st_arc.read();
         st.entities
             .values()
             .filter_map(|e| {
                 if e.vit <= 0 {
+                    return None;
+                }
+                if !is_peninsula && (e.kind == "npc" || e.id.contains("驗收") || e.display_title.contains("驗收")) {
                     return None;
                 }
                 let (x, y) = st.effective_entity_grid(e)?;
@@ -712,7 +729,10 @@ pub async fn eco_entities() -> impl IntoResponse {
         } else {
             e.current_activity.clone()
         };
-        let activity = sanitize_eco_activity(&raw_act);
+        let mut activity = sanitize_eco_activity(&raw_act);
+        if !is_peninsula && (activity.contains("客舍") || activity.contains("街坊") || activity.is_empty()) {
+            activity = "漫步穿行於山林原野之間".to_string();
+        }
         let breath_habit = crate::pg::living_world::get_or_derive_breath_habit(
             &e.id,
             &role_for_breath,
@@ -736,9 +756,13 @@ pub async fn eco_entities() -> impl IntoResponse {
             .cloned()
             .unwrap_or_else(|| (String::new(), None));
         let eff_mg = e.magnesium;
-        let settlement = store::resident_macro_settlement(&e.id, &e.display_title)
-            .unwrap_or_else(|| store::normalize_household_home_settlement(store::wenyao_household_slot_for(&e.id).home_name));
-        let thought = derive_eco_inner_thought(&e, settlement, &title, &activity, &hunting_party, eff_mg);
+        let thought = if !is_peninsula {
+            "佇立於紅土台地西麓，靜聽刺竹林間風聲與伏流潺潺。".to_string()
+        } else {
+            let settlement = store::resident_macro_settlement(&e.id, &e.display_title)
+                .unwrap_or_else(|| store::normalize_household_home_settlement(store::wenyao_household_slot_for(&e.id).home_name));
+            derive_eco_inner_thought(&e, settlement, &title, &activity, &hunting_party, eff_mg)
+        };
         let magnesium = Some(eff_mg);
 
         entities.push(EcoEntity {
@@ -760,49 +784,51 @@ pub async fn eco_entities() -> impl IntoResponse {
         });
     }
 
-    // 補入 19 處獵場的 1,805 隻《白塔山海誌》全島自然棲地生靈（消除同心圓，按真實疆域進行藍噪聲 Poisson-disc 與獸群聚落分布）
-    let time_tick = (crate::game::now_unix() / 180) as i64;
-    for (z_idx, &(zone_name, _, _)) in crate::game::CANONICAL_HUNTING_ZONES.iter().enumerate() {
-        let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
-        for sl in slots {
-            if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(sl.x, sl.y, sl.tier_tag) {
-                let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
-                    crate::game::ambient_creature_loot(&amb.display_title)
-                {
-                    format!("可剝取【{loot_name}】｜{shanhai_note}")
-                } else {
-                    String::new()
-                };
-                let id_str = if sl.tier == 1 {
-                    format!("apex_{z_idx}_{}_{}", sl.x, sl.y)
-                } else {
-                    format!("shanhai_{z_idx}_{}_{}_{}", sl.slot_idx, sl.x, sl.y)
-                };
-                let act_str = if sl.tier == 1 {
-                    format!(
-                        "{}{}（常隱於{}深處，唯順著林間深深獸跡才能尋見蹤影）",
-                        sl.act_prefix, amb.current_activity, sl.sub_geo
-                    )
-                } else {
-                    format!("{}{}", sl.act_prefix, amb.current_activity)
-                };
-                entities.push(EcoEntity {
-                    id: id_str,
-                    name: amb.display_title,
-                    title: format!("{zone_name}・{}（{}）", sl.tier_label, sl.sub_geo),
-                    x: sl.x,
-                    y: sl.y,
-                    kind: sl.kind_str.to_string(),
-                    activity: act_str,
-                    thought: String::new(),
-                    magnesium: None,
-                    hunting_party: String::new(),
-                    prey_target: None,
-                    breath_habit: "山林長息".to_string(),
-                    held_vessel,
-                    afflictions: Vec::new(),
-                    lineage: Vec::new(),
-                });
+    // 補入 19 處獵場的 1,805 隻《白塔山海誌》全島自然棲地生靈（若為白塔半島）
+    if is_peninsula {
+        let time_tick = (crate::game::now_unix() / 180) as i64;
+        for (z_idx, &(zone_name, _, _)) in crate::game::CANONICAL_HUNTING_ZONES.iter().enumerate() {
+            let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
+            for sl in slots {
+                if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(sl.x, sl.y, sl.tier_tag) {
+                    let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
+                        crate::game::ambient_creature_loot(&amb.display_title)
+                    {
+                        format!("可剝取【{loot_name}】｜{shanhai_note}")
+                    } else {
+                        String::new()
+                    };
+                    let id_str = if sl.tier == 1 {
+                        format!("apex_{z_idx}_{}_{}", sl.x, sl.y)
+                    } else {
+                        format!("shanhai_{z_idx}_{}_{}_{}", sl.slot_idx, sl.x, sl.y)
+                    };
+                    let act_str = if sl.tier == 1 {
+                        format!(
+                            "{}{}（常隱於{}深處，唯順著林間深深獸跡才能尋見蹤影）",
+                            sl.act_prefix, amb.current_activity, sl.sub_geo
+                        )
+                    } else {
+                        format!("{}{}", sl.act_prefix, amb.current_activity)
+                    };
+                    entities.push(EcoEntity {
+                        id: id_str,
+                        name: amb.display_title,
+                        title: format!("{zone_name}・{}（{}）", sl.tier_label, sl.sub_geo),
+                        x: sl.x,
+                        y: sl.y,
+                        kind: sl.kind_str.to_string(),
+                        activity: act_str,
+                        thought: String::new(),
+                        magnesium: None,
+                        hunting_party: String::new(),
+                        prey_target: None,
+                        breath_habit: "山林長息".to_string(),
+                        held_vessel,
+                        afflictions: Vec::new(),
+                        lineage: Vec::new(),
+                    });
+                }
             }
         }
     }
@@ -816,6 +842,19 @@ pub async fn eco_pulse() -> impl IntoResponse {
         .map(|g| g.len())
         .unwrap_or(14_424);
 
+    let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+        .map_or(false, |g| g.has_peninsula_wilderness());
+    if !is_peninsula {
+        return Json(EcoPulseResponse {
+            explicit_cells,
+            settlements: Vec::new(),
+            hunting_zones: Vec::new(),
+            active_ripples_count: 0,
+            active_ripples: Vec::new(),
+            stranded_cargo_orders: Vec::new(),
+        })
+        .into_response();
+    }
     const SETTLEMENT_NAMES: &[&str] = &[
         "文曜",
         "風舶角",

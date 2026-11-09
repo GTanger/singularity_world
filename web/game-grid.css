@@ -5161,3 +5161,17 @@ body.game-grid-body.sw-tide-ready {
     min-height: 42px !important;
   }
 }
+
+/* ── 竹林專屬符號 𓐂 (U+13402) 微放大與清晰竹節渲染 ── */
+.sw-cell-sym.sw-sym-bamboo {
+  font-family: "Noto Sans Egyptian Hieroglyphs", sans-serif !important;
+  font-size: 21px !important;
+  line-height: 1 !important;
+  -webkit-text-stroke: 0.25px currentColor;
+}
+.wm-sym.sw-sym-bamboo {
+  font-family: "Noto Sans Egyptian Hieroglyphs", sans-serif !important;
+  font-size: 19px !important;
+  line-height: 1 !important;
+  -webkit-text-stroke: 0.2px currentColor;
+}

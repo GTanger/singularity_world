@@ -213,8 +213,29 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
             )
         );
 
-        let (outcome, log, loot) = if !is_wilderness {
-            // 聚落／道路／建築／農田安全地帶：絕不觸發猛獸襲擊與巨獸殘鱗
+        let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+            .is_some_and(|g| g.has_peninsula_wilderness());
+        let (outcome, log, loot) = if !is_peninsula {
+            if let Some(obj) = current_cell_objects.iter().find(|o| o.quantity > 0)
+                && let Some(item_id) = crate::grid::zhulin::yield_item_id_for_object(&obj.id)
+                && let Some(item_def) = crate::grid::zhulin::lookup_zhulin_item_def(item_id)
+            {
+                let _ = crate::db::add_to_inventory(&player_id, item_id, 1);
+                let prose = format!("你在【{}】周邊細細巡看，順手採得 1 份「{}」收入行囊。", obj.name, item_def.name);
+                let loot = vec![LootItem {
+                    item_id: item_id.into(),
+                    name: item_def.name.into(),
+                    qty: 1,
+                }];
+                ("harvest".into(), prose, loot)
+            } else {
+                (
+                    "trace".into(),
+                    "你循著四周地貌細細察看，風聲掠過林梢與土坡，周遭靜謐無異。".into(),
+                    vec![],
+                )
+            }
+        } else if !is_wilderness {
             if roll < 0.45 {
                 let prose = "循著街巷石階與屋簷廊下細細巡看，往來行旅與街坊步履匆匆，車轍與石縫間留有商隊裝卸貨匣的壓痕，四周秩序井然。";
                 ("trace".into(), prose.into(), vec![])

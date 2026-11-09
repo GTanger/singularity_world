@@ -101,7 +101,11 @@ fn run_simulation_tick(
             if let Ok(bytes) = serde_json::to_vec(&msg) {
                 hub.broadcast(bytes);
             }
-            crate::server::grid_manager::sync_white_tower_scheduled_residents(hour);
+            if crate::server::grid_manager::get_runtime_square_grid()
+                .map_or(false, |g| g.has_peninsula_wilderness())
+            {
+                crate::server::grid_manager::sync_white_tower_scheduled_residents(hour);
+            }
             let mut active_rooms = sessions.player_room_ids();
             for pid in sessions.all_player_ids() {
                 if let Ok(Some(ent)) = crate::db::get_entity(&pid)
@@ -137,19 +141,25 @@ fn run_simulation_tick(
         (fd, fdi)
     };
 
-    if fire_decay && let Err(e) = decay_npc_rumors(now_unix) {
-        tracing::warn!("decay_npc_rumors: {e}");
+    if crate::server::grid_manager::get_runtime_square_grid()
+        .is_some_and(|g| g.has_peninsula_wilderness())
+    {
+        if fire_decay && let Err(e) = decay_npc_rumors(now_unix) {
+            tracing::warn!("decay_npc_rumors: {e}");
+        }
+        if fire_digest && let Err(e) = build_npc_rumor_digest(now_unix) {
+            tracing::warn!("build_npc_rumor_digest: {e}");
+        }
     }
-    if fire_digest && let Err(e) = build_npc_rumor_digest(now_unix) {
-        tracing::warn!("build_npc_rumor_digest: {e}");
-    }
-
     // 事件種子注入（每 10 分鐘一次）
     let fire_seed = {
         let Ok(mut st) = state.lock() else { return };
         periodic_fire(&mut st.last_event_seed, Duration::from_secs(600))
     };
-    if fire_seed {
+    if fire_seed
+        && crate::server::grid_manager::get_runtime_square_grid()
+            .map_or(false, |g| g.has_peninsula_wilderness())
+    {
         inject_event_seed(now_unix);
     }
 
@@ -287,21 +297,29 @@ fn run_simulation_tick(
         }
     }
 
-    run_game_day_economy(now_unix, game_day, state);
-    run_market_economy_section(sessions, cfg, now_unix, state);
-    run_m3_027_north_bank_actor_tick(sessions, cfg, now_unix, state);
-    run_npc_pool_tick(cfg, now_unix, state, traveler_mgr);
-    run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
-    run_travel_section(sessions, cfg, hour, now_unix, state, traveler_mgr);
-    run_grid_npc_tick(sessions, cfg, now_unix, hour, game_day, state, grid_npc_mgr);
-    run_idle_wander_section(sessions, cfg, hour, state);
+    if crate::server::grid_manager::get_runtime_square_grid()
+        .map_or(false, |g| g.has_peninsula_wilderness())
+    {
+        run_game_day_economy(now_unix, game_day, state);
+        run_market_economy_section(sessions, cfg, now_unix, state);
+        run_m3_027_north_bank_actor_tick(sessions, cfg, now_unix, state);
+        run_npc_pool_tick(cfg, now_unix, state, traveler_mgr);
+        run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
+        run_travel_section(sessions, cfg, hour, now_unix, state, traveler_mgr);
+        run_grid_npc_tick(sessions, cfg, now_unix, hour, game_day, state, grid_npc_mgr);
+        run_idle_wander_section(sessions, cfg, hour, state);
+    }
 }
 
 /// 在 Tokio runtime 上依 `cfg.tick_interval_ms` 週期執行主迴圈片段（與 Axum 並行）。
 pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, hub: Arc<Hub>, cfg: Server) {
     let traveler_mgr = Arc::new(Mutex::new(TravelerManager::new()));
-    if let Err(e) = seed_traveler_manager(&traveler_mgr) {
-        tracing::warn!("seed_traveler_manager: {e}");
+    if crate::server::grid_manager::get_runtime_square_grid()
+        .map_or(false, |g| g.has_peninsula_wilderness())
+    {
+        if let Err(e) = seed_traveler_manager(&traveler_mgr) {
+            tracing::warn!("seed_traveler_manager: {e}");
+        }
     }
     let grid_npc_mgr = Arc::new(Mutex::new(GridNpcManager::new()));
     let tick_state = Arc::new(Mutex::new(MainLoopTickState {

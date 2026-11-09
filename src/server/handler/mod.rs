@@ -110,7 +110,7 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         "craft_item" => inventory::handle_craft_item(conn, &msg),
         "mutate_item" => inventory::handle_mutate_item(conn, &msg),
         "print_topology_debug" => inventory::handle_print_topology_debug(conn),
-        "do_action" => handle_do_action(conn, &msg),
+        "do_action" | "action" | "object_action" => handle_do_action(conn, &msg),
         "explore" => movement::handle_explore_grid(conn),
         "scout" => movement::handle_scout(conn, &msg),
         "observe" => handle_observe(conn, &msg),
