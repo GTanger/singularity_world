@@ -81,31 +81,72 @@ fn try_grid_cell_object_action(
         return false;
     }
 
+    let player_inv_json = db::get_entity(pid)
+        .ok()
+        .flatten()
+        .map(|e| e.inventory)
+        .unwrap_or_default();
+
     let mut updated_state = None;
     let mut zero_quantity = false;
+    let mut blocked_narrative: Option<String> = None;
     crate::server::grid_manager::with_square_grid_mut(|grid| {
         if let Some(cell) = grid.get_mut(coord) {
             if let Some(target_obj) = cell.objects.iter_mut().find(|o| o.id == obj.id || o.name == obj.name) {
                 if target_obj.quantity > 0 {
-                    target_obj.quantity -= 1;
-                    let remaining_qty = target_obj.quantity;
-                    let obj_name = target_obj.name.clone();
-                    let obj_id = target_obj.id.clone();
-                    crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
-                    updated_state = Some((
-                        cell.explored,
-                        cell.freshness,
-                        cell.objects.clone(),
-                        remaining_qty,
-                        obj_name,
-                        obj_id,
-                    ));
+                    match crate::grid::zhulin::evaluate_zhulin_gather(
+                        &target_obj.id,
+                        target_obj.quantity,
+                        &player_inv_json,
+                    ) {
+                        crate::grid::zhulin::GatherCheckResult::Blocked { narrative } => {
+                            blocked_narrative = Some(narrative);
+                        }
+                        crate::grid::zhulin::GatherCheckResult::Allowed {
+                            stock_cost,
+                            yield_qty,
+                            custom_narrative,
+                        } => {
+                            target_obj.quantity = target_obj.quantity.saturating_sub(stock_cost);
+                            let remaining_qty = target_obj.quantity;
+                            let obj_name = target_obj.name.clone();
+                            let obj_id = target_obj.id.clone();
+                            crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
+                            updated_state = Some((
+                                cell.explored,
+                                cell.freshness,
+                                cell.objects.clone(),
+                                remaining_qty,
+                                obj_name,
+                                obj_id,
+                                yield_qty,
+                                custom_narrative,
+                            ));
+                        }
+                    }
                 } else {
                     zero_quantity = true;
                 }
             }
         }
     });
+
+    if let Some(narrative) = blocked_narrative {
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: action.into(),
+            target_id: obj.id.clone(),
+            target_name: obj.name.clone(),
+            narrative,
+            success: false,
+            actions: vec!["Look".into(), "Gather".into()],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        return true;
+    }
 
     if zero_quantity {
         conn.send_json(&ActionResultMsg {
@@ -124,7 +165,17 @@ fn try_grid_cell_object_action(
         return true;
     }
 
-    let Some((explored, freshness, updated_objects, remaining_qty, _obj_name, obj_id)) = updated_state else {
+    let Some((
+        explored,
+        freshness,
+        updated_objects,
+        remaining_qty,
+        _obj_name,
+        obj_id,
+        actual_harvested,
+        custom_narrative,
+    )) = updated_state
+    else {
         return false;
     };
 
@@ -135,9 +186,8 @@ fn try_grid_cell_object_action(
         return true;
     };
 
-    let actual_harvested: u32 = 1;
     let final_remaining_qty = remaining_qty;
-    let _ = db::add_to_inventory(pid, item_id, 1);
+    let _ = db::add_to_inventory(pid, item_id, actual_harvested as i32);
 
     let actions = if final_remaining_qty > 0 {
         vec!["Look".into(), "Gather".into()]
@@ -145,7 +195,9 @@ fn try_grid_cell_object_action(
         vec!["Look".into()]
     };
 
-    let narrative = if let Some(custom) = crate::grid::zhulin::gather_narrative_for_object(
+    let narrative = if let Some(custom) = custom_narrative {
+        custom
+    } else if let Some(custom) = crate::grid::zhulin::gather_narrative_for_object(
         &obj_id,
         actual_harvested,
         final_remaining_qty,

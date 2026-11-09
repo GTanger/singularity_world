@@ -75,6 +75,23 @@ pub fn gather_narrative(harvested_count: u32, remaining_qty: u32) -> String {
     format!("{action_part}{remain_part}")
 }
 
+/// 未持撬挖／掘土工具（`pry_edge` / `earth_dig`）且存量 >= 2 時，徒手硬掰造成折損（耗 2 株存量得 1 株）
+pub fn barehand_lossy_gather_narrative(remaining_qty: u32) -> String {
+    let remain_part = match remaining_qty {
+        0 => "此處泥縫間的竹筍已盡數扳盡，僅留碎筍殘根。",
+        1 => "竹根旁尚留最後一株孤筍冒尖。",
+        _ => "泥縫間尚有飽滿竹筍可掘。",
+    };
+    format!(
+        "你徒手硬扳濕土中的筍尖，手指被堅硬籜毛扎得生疼，筍身自中段折損，耗費兩株筍芽才勉強掰出一株「{YIELD_NOUN}」收入行囊。{remain_part}"
+    )
+}
+
+/// 未持撬挖／掘土工具且僅剩最後 1 株孤筍時，擋回徒手硬掰以免掰碎斷根
+pub fn blocked_lone_shoot_narrative() -> String {
+    "泥縫間僅剩這一株孤筍，徒手硬掰極易將嫩筍折斷於硬土中；需藉助銳邊石片或竹鏟等撬挖利器方可完整連根掘出。".to_string()
+}
+
 pub fn build_grid_object(qty: u32) -> GridObject {
     let q = qty.max(1);
     GridObject {

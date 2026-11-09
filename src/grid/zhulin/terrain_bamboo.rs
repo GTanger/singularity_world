@@ -415,6 +415,129 @@ mod tests {
             assert_eq!(brief.name, item_def.name);
             assert_eq!(brief.origin, "刺竹林");
         }
-        assert_eq!(ALL_ZHULIN_ITEMS.len(), 16);
+        assert_eq!(ALL_ZHULIN_ITEMS.len(), 21);
+        for item in ALL_ZHULIN_ITEMS {
+            assert!(!item.tags.category_tags.is_empty());
+            assert!(!item.tags.attribute_tags.is_empty());
+            assert_eq!(item.tags.exclusive_tag, item.id);
+        }
+    }
+
+    #[test]
+    fn bamboo_three_tier_gather_friction_and_tag_affordances_work() {
+        use crate::grid::zhulin::{
+            GatherCheckResult, classify_zhulin_item_capabilities, evaluate_zhulin_gather,
+        };
+
+        let empty_bag = "[]";
+        // 第 0 階：乾竹葉、枯黃竹籜、竹根木耳徒手直採（耗 1 得 1）
+        assert_eq!(
+            evaluate_zhulin_gather(dry_leaves::ID, 10, empty_bag),
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                custom_narrative: None,
+            }
+        );
+        assert_eq!(
+            evaluate_zhulin_gather(bamboo_sheath::ID, 5, empty_bag),
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                custom_narrative: None,
+            }
+        );
+        assert_eq!(
+            evaluate_zhulin_gather(bamboo_fungus::ID, 2, empty_bag),
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                custom_narrative: None,
+            }
+        );
+
+        // 第 1 階：破土竹筍徒手硬掰（存量 >= 2 耗 2 得 1；存量 == 1 孤筍擋回）
+        match evaluate_zhulin_gather(bamboo_shoot::ID, 2, empty_bag) {
+            GatherCheckResult::Allowed {
+                stock_cost,
+                yield_qty,
+                custom_narrative,
+            } => {
+                assert_eq!(stock_cost, 2);
+                assert_eq!(yield_qty, 1);
+                assert!(custom_narrative.is_some());
+            }
+            other => panic!("expected lossy barehand shoot gather, got {other:?}"),
+        }
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_shoot::ID, 1, empty_bag),
+            GatherCheckResult::Blocked { .. }
+        ));
+
+        // 第 1.5 / 2 階：盤錯竹鞭與合抱刺竹叢徒手擋回
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_rhizome::ID, 3, empty_bag),
+            GatherCheckResult::Blocked { .. }
+        ));
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_culm::ID, 8, empty_bag),
+            GatherCheckResult::Blocked { .. }
+        ));
+
+        // 持有【銳邊石片】（`sharp_edge` + `pry_edge`）：可無損撬取孤筍、可斬斷鬚根掘出竹鞭，但仍無法伐取合抱刺竹叢
+        let flake_bag = r#"[{"item_id":"zl_item_sharp_stone_flake","qty":1}]"#;
+        assert_eq!(
+            evaluate_zhulin_gather(bamboo_shoot::ID, 1, flake_bag),
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                custom_narrative: None,
+            }
+        );
+        assert_eq!(
+            evaluate_zhulin_gather(bamboo_rhizome::ID, 3, flake_bag),
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                custom_narrative: None,
+            }
+        );
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_culm::ID, 8, flake_bag),
+            GatherCheckResult::Blocked { .. }
+        ));
+
+        // 持有【籜繩竹鞭石斧】（`heavy_chop`）：成功解鎖伐取合抱刺竹叢
+        let axe_bag = r#"[{"item_id":"zl_item_bamboo_stone_axe","qty":1}]"#;
+        assert_eq!(
+            evaluate_zhulin_gather(bamboo_culm::ID, 8, axe_bag),
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                custom_narrative: None,
+            }
+        );
+
+        // 標籤驅動手作按鈕名稱檢驗
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_quartz_cobble"),
+            Some(("raw".to_string(), true, "敲擊打片".to_string()))
+        );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_sharp_stone_flake"),
+            Some(("raw".to_string(), true, "紮製石斧".to_string()))
+        );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_bamboo_culm"),
+            Some(("raw".to_string(), true, "裁製竹器".to_string()))
+        );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_dry_leaves"),
+            Some(("raw".to_string(), true, "引火竹爆".to_string()))
+        );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_bamboo_shoot"),
+            Some(("raw".to_string(), true, "煨烤熟食".to_string()))
+        );
     }
 }

@@ -73,6 +73,11 @@ pub fn gather_narrative(harvested_count: u32, remaining_qty: u32) -> String {
     format!("{action_part}{remain_part}")
 }
 
+/// 未持切割／掘土／砍劈工具（`sharp_edge` / `earth_dig` / `heavy_chop`）徒手拉扯時的物理受阻敘事
+pub fn blocked_gather_narrative() -> String {
+    "土表半露的老竹根鞭節短壁厚、鬚根深鎖紅土，徒手拉扯紋絲不動，反倒磨得掌心發紅；需藉助銳邊石片或掘土器物斬斷鬚根方可掘出。".to_string()
+}
+
 pub fn build_grid_object(qty: u32) -> GridObject {
     let q = qty.max(1);
     GridObject {

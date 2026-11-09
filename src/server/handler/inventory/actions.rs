@@ -378,6 +378,30 @@ pub(super) fn handle_craft_item(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("inv_entity_not_found"));
         return;
     };
+    if let Some(zhulin_res) = crate::grid::zhulin::try_craft_zhulin_item(&pid, &msg.item_id) {
+        match zhulin_res {
+            Ok((out_id, out_name, narrative)) => {
+                push_refresh(conn, &pid);
+                conn.send_json(&ActionResultMsg {
+                    msg_type: "action_result".into(),
+                    action: "craft_item".into(),
+                    target_id: out_id,
+                    target_name: out_name,
+                    narrative,
+                    success: true,
+                    actions: vec![],
+                    move_target_id: String::new(),
+                    open_trade: false,
+                    suggested_action: String::new(),
+                    tactical_choices: vec![],
+                });
+            }
+            Err(err) => {
+                conn.send_error(err);
+            }
+        }
+        return;
+    }
     let (_, room_name) = entity_location_label(&ent);
     let now = crate::game::now_unix();
 

@@ -77,6 +77,11 @@ pub fn gather_narrative(harvested_count: u32, remaining_qty: u32) -> String {
     format!("{action_part}{remain_part}")
 }
 
+/// 未持 `heavy_chop`（砍劈利器）徒手採伐時的物理受阻敘事（扣 0 存量、得 0 產物）
+pub fn blocked_gather_narrative() -> String {
+    "刺竹基部密布堅硬彎刺，竹壁厚實如鐵，徒手攀折只會被銳刺扎傷手掌；需持有石斧等砍劈利器方可伐取竹稈。".to_string()
+}
+
 pub fn build_grid_object(qty: u32) -> GridObject {
     let q = qty.max(1);
     GridObject {

@@ -15,10 +15,13 @@ pub mod objects;
 pub mod terrain_bamboo;
 
 pub use objects::{
-    ALL_ZHULIN_ITEMS, BambooSlotKind, ZhulinItemDef, ZhulinTagTriad, append_diegetic_stock_clause,
-    bamboo_culm, bamboo_fungus, bamboo_rhizome, bamboo_sheath, bamboo_shoot, dry_leaves,
-    gather_narrative_for_object, lookup_zhulin_item_def, lookup_zhulin_object_tags,
-    resolve_bamboo_slot_object, resolve_bamboo_slot_object_with_qty, scene_sentence_for_object,
+    ALL_ZHULIN_ITEMS, BambooSlotKind, GatherCheckResult, ITEM_BAMBOO_CANTEEN, ITEM_BAMBOO_SPADE,
+    ITEM_BAMBOO_STONE_AXE, ITEM_ROASTED_BAMBOO_SHOOT, ITEM_SHARP_STONE_FLAKE, ZhulinItemDef,
+    ZhulinTagTriad, append_diegetic_stock_clause, bamboo_culm, bamboo_fungus, bamboo_rhizome,
+    bamboo_sheath, bamboo_shoot, classify_zhulin_item_capabilities, dry_leaves,
+    evaluate_zhulin_gather, gather_narrative_for_object, inventory_has_capability_tag,
+    lookup_zhulin_item_def, lookup_zhulin_object_tags, resolve_bamboo_slot_object,
+    resolve_bamboo_slot_object_with_qty, scene_sentence_for_object, try_craft_zhulin_item,
     yield_item_id_for_object,
 };
 pub use terrain_bamboo::{

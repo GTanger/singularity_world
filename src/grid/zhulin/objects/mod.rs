@@ -6,6 +6,7 @@
 //! - 物件自帶存量感知端詳描述 `resolve_bamboo_slot_object_with_qty`
 //! - 物件自帶採集敘事 `gather_narrative_for_object`
 
+pub mod affordance;
 pub mod bamboo_culm;
 pub mod bamboo_fungus;
 pub mod bamboo_rhizome;
@@ -13,6 +14,11 @@ pub mod bamboo_sheath;
 pub mod bamboo_shoot;
 pub mod dry_leaves;
 
+pub use affordance::{
+    GatherCheckResult, ITEM_BAMBOO_CANTEEN, ITEM_BAMBOO_SPADE, ITEM_BAMBOO_STONE_AXE,
+    ITEM_ROASTED_BAMBOO_SHOOT, ITEM_SHARP_STONE_FLAKE, classify_zhulin_item_capabilities,
+    evaluate_zhulin_gather, inventory_has_capability_tag, try_craft_zhulin_item,
+};
 use crate::grid::cell::GridObject;
 use crate::model::RoomObject;
 
@@ -26,6 +32,17 @@ pub struct ZhulinTagTriad {
     pub attribute_tags: &'static [&'static str],
     /// 專屬標籤（唯一識別該物件本體，絕不與他物或舊世 ID 共用）
     pub exclusive_tag: &'static str,
+}
+
+impl ZhulinTagTriad {
+    /// 檢查此三層標籤組是否包含指定標籤（比對 `category_tags`、`attribute_tags` 或 `exclusive_tag`）
+    #[must_use]
+    pub fn has_tag(&self, target: &str) -> bool {
+        let t = target.trim();
+        self.exclusive_tag == t
+            || self.category_tags.contains(&t)
+            || self.attribute_tags.contains(&t)
+    }
 }
 
 /// 竹林採集產出之獨立物品物件定義（與舊世白塔半島 `harvest_*` 完全切割）
@@ -197,6 +214,11 @@ pub const ALL_ZHULIN_ITEMS: &[ZhulinItemDef] = &[
     ITEM_WILD_MELASTOMA,
     ITEM_MOUNTAIN_FERN,
     ITEM_SPRING_WATER,
+    ITEM_SHARP_STONE_FLAKE,
+    ITEM_BAMBOO_STONE_AXE,
+    ITEM_BAMBOO_SPADE,
+    ITEM_BAMBOO_CANTEEN,
+    ITEM_ROASTED_BAMBOO_SHOOT,
 ];
 
 /// 依物品專屬 ID 查詢竹林產出物品物件定義
@@ -219,6 +241,11 @@ pub fn lookup_zhulin_item_def(item_id: &str) -> Option<&'static ZhulinItemDef> {
         "zl_item_wild_melastoma" => Some(&ITEM_WILD_MELASTOMA),
         "zl_item_mountain_fern" => Some(&ITEM_MOUNTAIN_FERN),
         "zl_item_spring_water" => Some(&ITEM_SPRING_WATER),
+        "zl_item_sharp_stone_flake" => Some(&ITEM_SHARP_STONE_FLAKE),
+        "zl_item_bamboo_stone_axe" => Some(&ITEM_BAMBOO_STONE_AXE),
+        "zl_item_bamboo_spade" => Some(&ITEM_BAMBOO_SPADE),
+        "zl_item_bamboo_canteen" => Some(&ITEM_BAMBOO_CANTEEN),
+        "zl_item_roasted_bamboo_shoot" => Some(&ITEM_ROASTED_BAMBOO_SHOOT),
         _ => None,
     }
 }

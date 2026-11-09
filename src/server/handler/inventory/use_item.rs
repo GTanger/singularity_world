@@ -49,6 +49,9 @@ pub fn classify_inventory_item_capabilities(
     item_type: &str,
     slot: &str,
 ) -> (String, bool, String) {
+    if let Some(zhulin_caps) = crate::grid::zhulin::classify_zhulin_item_capabilities(item_id) {
+        return zhulin_caps;
+    }
     let is_mutated = item_id.starts_with("mut_")
         || item_name.contains("【異變")
         || crate::game::object_ecology::classify_item_stage(item_id) == "mutated";
