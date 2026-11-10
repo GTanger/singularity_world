@@ -235,7 +235,7 @@
                         _activeInlineObjId = (_activeInlineObjId === pid) ? '' : pid;
                         renderL3(_lastTerrainData, _lastDescText, _lastObjects, _lastHarvestables);
                         if (window.gameSend) {
-                            window.gameSend({ type: 'action', action: 'Look', target_id: pid, object_id: pid });
+							window.gameSend({ type: 'do_action', action: 'Look', entity_id: pid, target_id: pid, object_id: pid });
                         }
                     }
                 }

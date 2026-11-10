@@ -57,7 +57,13 @@ pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("need_login"));
         return;
     };
-    let target_id = msg.entity_id.clone();
+    let target_id = if !msg.entity_id.is_empty() {
+        msg.entity_id.clone()
+    } else if !msg.target_id.is_empty() {
+        msg.target_id.clone()
+    } else {
+        msg.item_id.clone()
+    };
     let mut action = normalize_action_key(&msg.action).to_string();
     if action == "Attack" {
         action = "Slay".into();
@@ -78,6 +84,75 @@ pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("get_self_failed"));
         return;
     };
+    if let Some(coord_str) = target_id.strip_prefix("cell:") {
+        let mut parts = coord_str.split(',');
+        if let (Some(tx_s), Some(ty_s)) = (parts.next(), parts.next())
+            && let (Ok(tx), Ok(ty)) = (tx_s.trim().parse::<i32>(), ty_s.trim().parse::<i32>())
+        {
+            let (px, py) = player_ch.grid_x.zip(player_ch.grid_y).unwrap_or((tx, ty));
+            let (dx, dy) = (tx - px, ty - py);
+            let dir_zh = match (dx.signum(), dy.signum()) {
+                (0, 1) => "北",
+                (0, -1) => "南",
+                (1, 0) => "東",
+                (-1, 0) => "西",
+                (1, 1) => "東北",
+                (-1, 1) => "西北",
+                (1, -1) => "東南",
+                (-1, -1) => "西南",
+                _ => "遠",
+            };
+            let cell_opt = crate::server::grid_manager::get_runtime_grid_cell(
+                crate::grid::SquareCoord::new(tx, ty),
+            );
+            let (cell_name, cell_desc) = if let Some(ref c) = cell_opt {
+                let n = if c.name.trim().is_empty() {
+                    crate::grid::terrain_name_zh(c.terrain).to_string()
+                } else {
+                    c.name.trim().to_string()
+                };
+                let d = c.description.trim();
+                let first_sent = d
+                    .split_inclusive('。')
+                    .next()
+                    .unwrap_or(d)
+                    .trim()
+                    .to_string();
+                (n, first_sent)
+            } else {
+                ("遠處地界".to_string(), String::new())
+            };
+            let narrative = if dx.abs() == 1 && dy.abs() == 1 {
+                if cell_desc.is_empty() {
+                    format!(
+                        "你朝{dir_zh}方遠眺【{cell_name}】。（斜向不可直行，需循東、西、南、北正向繞行前往。）"
+                    )
+                } else {
+                    format!(
+                        "你朝{dir_zh}方遠眺【{cell_name}】：{cell_desc}（斜向不可直行，需循東、西、南、北正向繞行前往。）"
+                    )
+                }
+            } else if cell_desc.is_empty() {
+                format!("你望向{dir_zh}側的【{cell_name}】：地勢阻隔，無法直行。")
+            } else {
+                format!("你望向{dir_zh}側的【{cell_name}】：{cell_desc}（地勢阻隔，無法直行。）")
+            };
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: "Look".into(),
+                target_id: target_id.clone(),
+                target_name: cell_name,
+                narrative,
+                success: true,
+                actions: vec![],
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            return;
+        }
+    }
     let player_room = match db::get_entity_room(&pid) {
         Ok(room) if !room.is_empty() => room,
         _ => match grid_room_key(&player_ch) {

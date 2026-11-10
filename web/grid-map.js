@@ -2105,7 +2105,7 @@
                             window.SwRoomDesc.activateCellObject(primaryObjId);
                         }
                         if (primaryObjId && window.gameSend) {
-                            window.gameSend({ type: 'action', action: 'Look', target_id: primaryObjId, object_id: primaryObjId });
+                            window.gameSend({ type: 'do_action', action: 'Look', entity_id: primaryObjId, target_id: primaryObjId, object_id: primaryObjId });
                         } else if (window.SwLog && window.SwLog.appendLog) {
                             window.SwLog.appendLog('你駐足環顧四周，審視當前地界之風物與動靜。');
                         }
@@ -2115,10 +2115,10 @@
                         return;
                     }
                     if (Math.abs(targetX - px) === 1 && Math.abs(targetY - py) === 1) {
+                        var diagCellId = 'cell:' + targetX + ',' + targetY;
                         if (window.gameSend) {
-                            window.gameSend({ type: 'action', action: 'Look', target_id: 'cell:' + targetX + ',' + targetY, object_id: 'cell:' + targetX + ',' + targetY });
-                        }
-                        if (window.SwLog && window.SwLog.appendLog) {
+                            window.gameSend({ type: 'do_action', action: 'Look', entity_id: diagCellId, target_id: diagCellId, object_id: diagCellId });
+                        } else if (window.SwLog && window.SwLog.appendLog) {
                             window.SwLog.appendLog('斜向不可直行，移動僅能依東、西、南、北正向行進。');
                         }
                         return;
@@ -2143,12 +2143,12 @@
                             window.gameSend(payload);
                         }
                     } else {
+                        var blockedCellId = 'cell:' + targetX + ',' + targetY;
                         if (window.gameSend) {
-                            window.gameSend({ type: 'action', action: 'Look', target_id: 'cell:' + targetX + ',' + targetY, object_id: 'cell:' + targetX + ',' + targetY });
-                        }
-                        var tName = (targetCell && targetCell.name) || targetLbl || '地勢阻隔';
-                        var tSym = targetChar || '·';
-                        if (window.SwLog && window.SwLog.appendLog) {
+                            window.gameSend({ type: 'do_action', action: 'Look', entity_id: blockedCellId, target_id: blockedCellId, object_id: blockedCellId });
+                        } else if (window.SwLog && window.SwLog.appendLog) {
+                            var tName = (targetCell && targetCell.name) || targetLbl || '地勢阻隔';
+                            var tSym = targetChar || '·';
                             window.SwLog.appendLog('「【' + (targetDir || '近處') + '】一側為「' + tName + '」（' + tSym + '），地勢阻隔無法直行。」', 'system');
                         }
                     }
