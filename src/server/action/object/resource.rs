@@ -250,7 +250,32 @@ fn try_grid_cell_object_action(
             obj.name, actual_harvested, clean_item
         )
     };
-    if obj_id == "zl_bamboo_shoot" && final_remaining_qty > 0 && (coord.x + coord.y + final_remaining_qty as i32).abs() % 3 == 0 {
+    let has_stone_axe = player_inv_json.contains("zl_item_bamboo_stone_axe");
+    let has_rhizome_club = player_inv_json.contains("zl_item_rhizome_club");
+    let has_bamboo_spade = player_inv_json.contains("zl_item_bamboo_spade");
+    let has_stone_flake = player_inv_json.contains("zl_item_sharp_stone_flake");
+    let has_bamboo_knife = player_inv_json.contains("zl_item_fire_hardened_bamboo_knife");
+    if obj_id == "zl_bamboo_culm" {
+        if has_stone_axe {
+            narrative.push_str("（手中「籜繩竹鞭石斧」石刃鋒利，順著竹節斜劈而下，省力且毫不損刃）");
+        } else if has_rhizome_club {
+            if final_remaining_qty % 3 == 0 {
+                let _ = db::remove_from_inventory(pid, "zl_item_rhizome_club", 1);
+                narrative.push_str("（純竹「竹鞭根槌」經連番猛砸堅韌竹節，槌頭震裂損毀；若改配銳邊石片紮成「籜繩竹鞭石斧」則鋒利耐用不震裂）");
+            } else {
+                narrative.push_str("（以純竹根槌猛砸竹節頗費氣力；若改用石刃「籜繩竹鞭石斧」斜劈更為省力耐損）");
+            }
+        }
+    } else if obj_id == "zl_bamboo_rhizome" {
+        if has_bamboo_spade {
+            narrative.push_str("（以厚壁「掘土竹鏟」順著紅土縫隙深鏟斷根，竹刀刃口完好無損）");
+        } else if has_bamboo_knife && !has_stone_flake && !has_stone_axe && final_remaining_qty % 2 == 0 {
+            let _ = db::remove_from_inventory(pid, "zl_item_fire_hardened_bamboo_knife", 1);
+            narrative.push_str("（薄刃「烤刃竹片刀」硬撬紅土竹鞭，刃口受砂石磨損崩裂；建議將刺竹稈裁出厚壁「掘土竹鏟」專司掘土）");
+        }
+    }
+    let weevil_mod = if has_bamboo_spade { 2 } else { 3 };
+    if obj_id == "zl_bamboo_shoot" && final_remaining_qty > 0 && (coord.x + coord.y + final_remaining_qty as i32).abs() % weevil_mod == 0 {
         let _ = db::add_to_inventory(pid, "zl_item_bamboo_weevil", 1);
         narrative.push_str("翻挖筍殼間，你還順手抓到一隻肥美的「筍龜」收入行囊！");
     }

@@ -382,6 +382,10 @@ pub(super) fn handle_craft_item(conn: &WsConnection, msg: &ClientMsg) {
         match zhulin_res {
             Ok((out_id, out_name, narrative)) => {
                 push_refresh(conn, &pid);
+                let cur_room = db::get_entity_room(&pid).unwrap_or_default();
+                if !cur_room.is_empty() {
+                    crate::server::broadcast::refresh_room_views_for_room(&conn.sessions, &conn.cfg, &cur_room);
+                }
                 conn.send_json(&ActionResultMsg {
                     msg_type: "action_result".into(),
                     action: "craft_item".into(),

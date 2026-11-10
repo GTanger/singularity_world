@@ -93,53 +93,49 @@ pub fn roll_bamboo_three_slots(
     let h0 = slot_hash(coord.x, coord.y, 0, world_seed);
     let h1 = slot_hash(coord.x, coord.y, 1, world_seed);
     let h2 = slot_hash(coord.x, coord.y, 2, world_seed);
-
-    // 槽位 1（主體／地表保底槽）：55% 合抱刺竹叢（6..=10 根）、30% 乾竹葉層（8..=14 把）、15% 枯黃竹籜（4..=7 片）
-    let roll0 = h0 % 100;
-    let slot1 = if roll0 < 55 {
-        let culm_qty = 6 + ((h0 >> 8) % 5) as u32;
-        BambooSlotKind::BambooCulm(culm_qty)
-    } else if roll0 < 85 {
-        let leaf_qty = 8 + ((h0 >> 8) % 7) as u32;
-        BambooSlotKind::DryLeaves(leaf_qty)
+    // 依離林緣深度分三層生態梯度（0..=1 林緣疏竹帶、2..=3 中圈密竹帶、>=4 幽深竹海豐產帶）
+    let depth = if (coord.x + 225).abs() <= 45 && (coord.y + 45).abs() <= 45 {
+        ((coord.x + 218).abs() + (coord.y + 42).abs()) as u32
     } else {
-        let sheath_qty = 4 + ((h0 >> 8) % 4) as u32;
-        BambooSlotKind::BambooSheath(sheath_qty)
+        coord.x.unsigned_abs().max(coord.y.unsigned_abs())
+    };
+    let (culm_thr, leaf_thr) = if depth <= 1 { (35, 75) } else if depth <= 3 { (68, 88) } else { (55, 85) };
+    let roll0 = h0 % 100;
+    let slot1 = if roll0 < culm_thr {
+        BambooSlotKind::BambooCulm(6 + ((h0 >> 8) % 5) as u32)
+    } else if roll0 < leaf_thr {
+        BambooSlotKind::DryLeaves(8 + ((h0 >> 8) % 7) as u32)
+    } else {
+        BambooSlotKind::BambooSheath(4 + ((h0 >> 8) % 4) as u32)
     };
 
-    // 槽位 2（中層伴生拉霸槽）：35% [空白]、25% 乾竹葉層（8..=13 把）、20% 枯黃竹籜（4..=7 片）、20% 盤錯竹鞭（2..=4 段）
     let roll1 = h1 % 100;
-    let candidate2 = if roll1 < 35 {
+    let empty_thr = if depth <= 1 { 20 } else if depth <= 3 { 25 } else { 35 };
+    let rhizome_start = if depth <= 1 { 82 } else if depth <= 3 { 62 } else { 75 };
+    let candidate2 = if roll1 < empty_thr {
         BambooSlotKind::Empty
-    } else if roll1 < 60 {
-        let leaf_qty = 8 + ((h1 >> 8) % 6) as u32;
-        BambooSlotKind::DryLeaves(leaf_qty)
-    } else if roll1 < 80 {
-        let sheath_qty = 4 + ((h1 >> 8) % 4) as u32;
-        BambooSlotKind::BambooSheath(sheath_qty)
+    } else if roll1 < 52 {
+        BambooSlotKind::DryLeaves(8 + ((h1 >> 8) % 6) as u32)
+    } else if roll1 < rhizome_start {
+        BambooSlotKind::BambooSheath(4 + ((h1 >> 8) % 4) as u32)
     } else {
-        let rhizome_qty = 2 + ((h1 >> 8) % 3) as u32;
-        BambooSlotKind::BambooRhizome(rhizome_qty)
+        BambooSlotKind::BambooRhizome(2 + ((h1 >> 8) % 3) as u32)
     };
     let slot2 = match (&slot1, &candidate2) {
         (BambooSlotKind::BambooCulm(_), BambooSlotKind::BambooCulm(_))
         | (BambooSlotKind::DryLeaves(_), BambooSlotKind::DryLeaves(_))
-        | (BambooSlotKind::BambooSheath(_), BambooSlotKind::BambooSheath(_)) => {
-            BambooSlotKind::Empty
-        }
+        | (BambooSlotKind::BambooSheath(_), BambooSlotKind::BambooSheath(_)) => BambooSlotKind::Empty,
         _ => candidate2,
     };
 
-    // 槽位 3（底層尋寶拉霸槽）：抽 [空白]、【破土竹筍】（1..=3 株）或【竹根木耳】（1..=2 朵）
     let roll2 = h2 % 100;
     let sub_roll = (h2 >> 8) % 100;
-    let slot3 = if is_waterside {
-        if roll2 < 32 {
-            let shoot_qty = if sub_roll < 50 { 1 } else if sub_roll < 85 { 2 } else { 3 };
+    let slot3 = if is_waterside || depth >= 4 {
+        if roll2 < 38 {
+            let shoot_qty = if sub_roll < 40 { 1 } else if sub_roll < 80 { 2 } else { 3 };
             BambooSlotKind::BambooShoot(shoot_qty)
-        } else if roll2 < 58 {
-            let fungus_qty = if sub_roll < 60 { 1 } else { 2 };
-            BambooSlotKind::BambooFungus(fungus_qty)
+        } else if roll2 < 66 {
+            BambooSlotKind::BambooFungus(if sub_roll < 55 { 1 } else { 2 })
         } else {
             BambooSlotKind::Empty
         }
@@ -151,7 +147,6 @@ pub fn roll_bamboo_three_slots(
     } else {
         BambooSlotKind::Empty
     };
-
     [slot1, slot2, slot3]
 }
 
@@ -216,6 +211,9 @@ pub fn compose_bamboo_description(cell: &GridCell) -> Option<String> {
     let mut desc = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
     if has_bamboo_trail_mark(cell) && !desc.contains("竹幹刻著醒目路標") {
         desc.push_str("竹幹刻著醒目路標。");
+    }
+    if cell.has_room_tag("zl_campfire:active") && !desc.contains("竹葉營火") {
+        desc.push_str("林下燃著一簇劈啪作響的竹葉營火。");
     }
     Some(desc)
 }
@@ -337,13 +335,18 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
     }
 
     let is_waterside = cell.has_room_tag("waterside");
+    let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
+    let rain_extinguished = w_def.tags.has_tag("wetting") && !has_standing_culm;
+    let keep_campfire = cell.has_room_tag("zl_campfire:active") && !rain_extinguished;
     let mut new_desc = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
     if has_bamboo_trail_mark(cell) {
         new_desc.push_str("竹幹刻著醒目路標。");
     }
+    if keep_campfire {
+        new_desc.push_str("林下燃著一簇劈啪作響的竹葉營火。");
+    }
     cell.description = new_desc;
 
-    // 保留生態中繼標籤與路標刻痕（zl_roll_day:, zl_weather_epoch:, zl_pressure:, zl_marked_trail）
     let preserved_meta_tags: Vec<String> = cell
         .tags
         .iter()
@@ -351,11 +354,12 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
             t.starts_with("zl_roll_day:")
                 || t.starts_with("zl_weather_epoch:")
                 || t.starts_with("zl_pressure:")
+                || t.starts_with("zl_explored_day:")
                 || *t == "zl_marked_trail"
+                || (*t == "zl_campfire:active" && keep_campfire)
         })
         .cloned()
         .collect();
-
     let mut tags = vec![
         "bamboo".to_string(),
         "flora".to_string(),
@@ -545,13 +549,13 @@ pub fn lazy_refresh_bamboo_cell(
     }
 
     if day_advanced {
+        cell.tags.retain(|t| !t.starts_with("zl_explored_day:"));
         for obj in &mut cell.objects {
             if obj.id != bamboo_culm::ID && obj.quantity == 0 {
                 obj.quantity = obj.max_quantity.max(1);
             }
         }
     }
-
     set_bamboo_cell_meta_tag(&mut cell.tags, "zl_roll_day:", current_game_day);
     set_bamboo_cell_meta_tag(&mut cell.tags, "zl_weather_epoch:", weather_epoch);
     set_bamboo_cell_meta_tag(&mut cell.tags, "zl_pressure:", pressure);
@@ -590,6 +594,7 @@ pub fn explore_bamboo_understory(
 ) -> (Option<(&'static str, u32)>, String) {
     let has_blade = objects::inventory_has_capability_tag(player_inv_json, "sharp_edge");
     let has_slat = player_inv_json.contains("zl_item_aged_bamboo_slat");
+    let explored_today = cell.tags.iter().any(|t| t.starts_with("zl_explored_day:"));
     let has_shoot_here = cell
         .objects
         .iter()
@@ -602,6 +607,11 @@ pub fn explore_bamboo_understory(
         (
             Some((objects::ITEM_AGED_BAMBOO_SLAT.id, 1)),
             "你撥開林下厚密的乾竹葉細細翻找，從風折枯竹間尋得一片竹青堅實的「風折老竹片」收入行囊（可配乾竹葉烘烤出「烤刃竹片刀」）。".to_string(),
+        )
+    } else if explored_today {
+        (
+            None,
+            "此處竹根與落葉層今日已細細翻找過，未見更多遺落竹籜或山珍（可循聽風線索往鄰近竹林探尋）。".to_string(),
         )
     } else if has_shoot_here {
         (
@@ -1087,11 +1097,24 @@ mod tests {
         assert_eq!(loot3, Some(("zl_item_bamboo_weevil", 1)));
         assert!(narr3.contains("筍龜"));
 
-        // 4. 徒手刻記號擋回；持【烤刃竹片刀】成功刻下竹幹路標
+        // 4. 當日已探索過（zl_explored_day:）時，不再重複噴出筍龜，但仍保留鄰格聽風雷達與無刃保底
+        set_bamboo_cell_meta_tag(&mut cell.tags, "zl_explored_day:", 1);
+        let (loot_exhausted, narr_exhausted) =
+            explore_bamboo_understory(&cell, &[("東", &east_neighbor)], knife_bag, clear_weather);
+        assert_eq!(loot_exhausted, None);
+        assert!(narr_exhausted.contains("今日已細細翻找過"));
+        assert!(narr_exhausted.contains("東側竹林飄來新筍破土的清香"));
+        let (loot_bootstrap, _) = explore_bamboo_understory(&cell, &[], "[]", clear_weather);
+        assert_eq!(loot_bootstrap, Some(("zl_item_aged_bamboo_slat", 1)));
+
+        // 5. 刻記號與營火落地狀態
         assert!(carve_bamboo_trail_mark(&mut cell, "[]").is_err());
         let mark_msg = carve_bamboo_trail_mark(&mut cell, knife_bag).expect("knife should carve mark");
         assert!(mark_msg.contains("竹幹路標"));
+        cell.tags.push("zl_campfire:active".to_string());
+        refresh_bamboo_cell_after_gather(&mut cell);
         assert!(has_bamboo_trail_mark(&cell));
         assert!(cell.description.contains("竹幹刻著醒目路標"));
+        assert!(cell.description.contains("竹葉營火"));
     }
 }

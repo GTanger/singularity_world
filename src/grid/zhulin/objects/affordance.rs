@@ -427,11 +427,27 @@ pub fn classify_zhulin_item_capabilities(item_id: &str) -> Option<(String, bool,
         _ => Some(("finished".to_string(), false, String::new())),
     }
 }
-/// 執行新世界標籤驅動手作／野炊／引火動作
+fn ignite_cell_campfire(gx: i32, gy: i32) {
+    crate::server::grid_manager::with_square_grid_mut(|grid| {
+        if let Some(cell) = grid.get_mut(crate::grid::SquareCoord::new(gx, gy)) {
+            if !cell.has_room_tag("zl_campfire:active") {
+                cell.tags.push("zl_campfire:active".to_string());
+            }
+            crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
+            let _ = crate::db::update_cell_state(gx, gy, cell.explored, cell.freshness, &cell.objects);
+        }
+    });
+}
+
+/// 執行新世界標籤驅動手作／野炊／引火動作（支援 `item_id:recipe` 顯式自選配方後綴）
 pub fn try_craft_zhulin_item(
     pid: &str,
-    item_id: &str,
+    raw_item_id: &str,
 ) -> Option<Result<(String, String, String), String>> {
+    let (item_id, recipe_opt) = match raw_item_id.split_once(':') {
+        Some((base, r)) => (base.trim(), Some(r.trim())),
+        None => (raw_item_id.trim(), None),
+    };
     let def = lookup_zhulin_item_def(item_id)?;
     let Ok(Some(ent)) = db::get_entity(pid) else {
         return Some(Err("查無角色狀態，無法執行工序。".to_string()));
@@ -445,18 +461,25 @@ pub fn try_craft_zhulin_item(
     )
     .map(|c| c.tags)
     .unwrap_or_default();
-    // 0a. `heat_hardenable`（風折老竹片）× `tinder`（乾竹葉）-> 烘烤竹青硬化為【烤刃竹片刀】
+    let has_cell_campfire = cell_tags.iter().any(|t| t == "zl_campfire:active");
+
+    // 0a. `heat_hardenable`（風折老竹片）× `tinder`（乾竹葉或格內營火）-> 烘烤竹青硬化為【烤刃竹片刀】
     if def.id == "zl_item_aged_bamboo_slat" || def.tags.has_tag("heat_hardenable") {
-        let Some(tinder_id) = find_item_with_tag(&entries, "tinder", 1) else {
+        let tinder_id_opt = find_item_with_tag(&entries, "tinder", 1);
+        if !has_cell_campfire && tinder_id_opt.is_none() {
             return Some(Err(
-                "烘烤硬化老竹片需生起文火，行囊中尚缺「乾竹葉」（火絨耗材）。".to_string(),
+                "烘烤硬化老竹片需生起文火，行囊中尚缺「乾竹葉」（火絨耗材）且格內尚無營火。".to_string(),
             ));
+        }
+        let total_tinder_qty = if has_cell_campfire {
+            3
+        } else {
+            entries
+                .iter()
+                .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
+                .map(|e| e.qty)
+                .sum::<i32>()
         };
-        let total_tinder_qty = entries
-            .iter()
-            .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
-            .map(|e| e.qty)
-            .sum::<i32>();
         let shelter_prefix = match evaluate_fire_weather_shelter(
             weather_tags,
             &cell_tags,
@@ -469,13 +492,18 @@ pub fn try_craft_zhulin_item(
         if db::remove_from_inventory(pid, item_id, 1).is_err() {
             return Some(Err("行囊中的「風折老竹片」數量不足。".to_string()));
         }
-        let _ = db::remove_from_inventory(pid, &tinder_id, 1);
+        if !has_cell_campfire {
+            if let Some(tid) = tinder_id_opt {
+                let _ = db::remove_from_inventory(pid, &tid, 1);
+            }
+            ignite_cell_campfire(gx, gy);
+        }
         let _ = db::add_to_inventory(pid, ITEM_FIRE_HARDENED_BAMBOO_KNIFE.id, 1);
         return Some(Ok((
             ITEM_FIRE_HARDENED_BAMBOO_KNIFE.id.to_string(),
             ITEM_FIRE_HARDENED_BAMBOO_KNIFE.name.to_string(),
             format!(
-                "{shelter_prefix}你引燃乾竹葉，將「風折老竹片」富含矽質的竹青外緣置於文火上反覆烘烤去水，待纖維收縮硬化後刮出俐落斜刃，製成一把鋒利的「{}」！（解鎖割取竹鞭與無損撬筍能力）",
+                "{shelter_prefix}你借竹葉文火將「風折老竹片」富含矽質的竹青外緣反覆烘烤去水，待纖維收縮硬化後刮出俐落斜刃，製成一把鋒利的「{}」！（解鎖割取竹鞭與無損撬筍能力）",
                 ITEM_FIRE_HARDENED_BAMBOO_KNIFE.name
             ),
         )));
@@ -544,7 +572,18 @@ pub fn try_craft_zhulin_item(
                     .to_string(),
             ));
         };
-        if has_stone_flake {
+        let want_stone_axe = match recipe_opt {
+            Some("stone_axe") => true,
+            Some("club") => false,
+            _ => has_stone_flake || def.id == "zl_item_sharp_stone_flake",
+        };
+        if want_stone_axe {
+            if !has_stone_flake {
+                return Some(Err(
+                    "紮製「籜繩竹鞭石斧」尚缺「銳邊石片 ×1」（可由兩塊石英圓礫互擊打片，或先選「紮製竹鞭根槌」走純竹路線）。"
+                        .to_string(),
+                ));
+            }
             let cord_or_sheath = if entries
                 .iter()
                 .any(|e| e.item_id == ITEM_SHEATH_CORD.id && e.qty >= 1)
@@ -607,8 +646,47 @@ pub fn try_craft_zhulin_item(
         )));
     }
 
-    // 3. `hollow_jointed` + `splittable`（刺竹稈）-> 先裁製【青竹水筒】＋【掘土竹鏟】，若皆已具備則編織【刺竹背簍】
+    // 3. `hollow_jointed` + `splittable`（刺竹稈）-> 支援 `:canteen_spade`（水筒與竹鏟）、`:basket`（刺竹背簍）、`:fire_pop`（投火竹爆）
     if def.tags.has_tag("hollow_jointed") && def.tags.has_tag("splittable") {
+        if recipe_opt == Some("fire_pop") {
+            let tinder_opt = find_item_with_tag(&entries, "tinder", 1);
+            if !has_cell_campfire && tinder_opt.is_none() {
+                return Some(Err(
+                    "執行「投火竹爆」需格內已有營火，或行囊備有至少 1 把「乾竹葉」引燃。".to_string(),
+                ));
+            }
+            let shelter_prefix = match evaluate_fire_weather_shelter(
+                weather_tags,
+                &cell_tags,
+                true,
+                3,
+            ) {
+                Ok(prefix) => prefix.unwrap_or(""),
+                Err(msg) => return Some(Err(msg)),
+            };
+            if db::remove_from_inventory(pid, item_id, 1).is_err() {
+                return Some(Err("行囊中的「刺竹稈」數量不足。".to_string()));
+            }
+            if !has_cell_campfire {
+                if let Some(tid) = tinder_opt {
+                    let _ = db::remove_from_inventory(pid, &tid, 1);
+                }
+            }
+            ignite_cell_campfire(gx, gy);
+            let new_vit = (ent.vit + 12).min(100);
+            if new_vit != ent.vit {
+                let _ = db::update_vit(pid, new_vit);
+            }
+            return Some(Ok((
+                item_id.to_string(),
+                "投火竹爆".to_string(),
+                format!(
+                    "{shelter_prefix}你將一節中空「{}」投入竹葉營火中——受熱膨脹的竹節猛然炸出「砰！」地一聲巨響，林間寒濕瘴氣頓時消散，周遭窺伺的野獸亦驚惶遠遁！（氣力略微恢復）",
+                    def.name
+                ),
+            )));
+        }
+
         let has_canteen = entries.iter().any(|e| {
             (e.item_id == ITEM_BAMBOO_CANTEEN.id || e.item_id == ITEM_BAMBOO_CANTEEN_FULL.id)
                 && e.qty > 0
@@ -620,7 +698,13 @@ pub fn try_craft_zhulin_item(
             .iter()
             .any(|e| e.item_id == ITEM_BAMBOO_BASKET.id && e.qty > 0);
 
-        if has_canteen && has_spade && !has_basket {
+        let want_basket = match recipe_opt {
+            Some("basket") => true,
+            Some("canteen_spade") => false,
+            _ => has_canteen && has_spade && !has_basket,
+        };
+
+        if want_basket {
             let has_cord = entries
                 .iter()
                 .any(|e| e.item_id == ITEM_SHEATH_CORD.id && e.qty >= 1);
@@ -629,7 +713,7 @@ pub fn try_craft_zhulin_item(
                 .any(|e| e.item_id == "zl_item_bamboo_sheath" && e.qty >= 2);
             if !has_cord && !has_two_sheaths {
                 return Some(Err(
-                    "你已備妥青竹水筒與掘土竹鏟；若欲進一步劈篾編織「刺竹背簍」，尚需「竹籜繩 ×1」（或「韌竹籜 ×2」）結成背帶。"
+                    "劈篾編織「刺竹背簍」需「刺竹稈 ×1」搭配「竹籜繩 ×1」（或「韌竹籜 ×2」）結成雙肩背帶。"
                         .to_string(),
                 ));
             }
@@ -661,7 +745,7 @@ pub fn try_craft_zhulin_item(
             ITEM_BAMBOO_SPADE.id.to_string(),
             format!("{}、{}", ITEM_BAMBOO_CANTEEN.name, ITEM_BAMBOO_SPADE.name),
             format!(
-                "你依循「{}」中空留節與纵向易劈的物性，上半截留底節裁成一具「{}」，下半截厚壁斜削為一把「{}」收入行囊！",
+                "你依循「{}」中空留節與縱向易劈的物性，上半截留底節裁成一具「{}」，下半截厚壁斜削為一把「{}」收入行囊！",
                 def.name, ITEM_BAMBOO_CANTEEN.name, ITEM_BAMBOO_SPADE.name
             ),
         )));
@@ -695,14 +779,18 @@ pub fn try_craft_zhulin_item(
         )));
     }
 
-    // 4. `kindling`（乾竹葉）＋ 選配 `flammable_pop`（刺竹稈）-> 引火驅寒與爆竹驚獸（天氣 × 地形遮蔽三方標籤對撞）
+    // 4. `kindling`（乾竹葉）＋ 選配 `flammable_pop`（刺竹稈）-> 引火落地為 `zl_campfire:active` 格態
     if def.tags.has_tag("tinder") {
         let total_tinder_qty = entries
             .iter()
             .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
             .map(|e| e.qty)
             .sum::<i32>();
-        let pop_culm_id = find_item_with_tag(&entries, "flammable_pop", 1);
+        let pop_culm_id = if recipe_opt == Some("camp_fire") {
+            None
+        } else {
+            find_item_with_tag(&entries, "flammable_pop", 1)
+        };
 
         if total_tinder_qty < 2 && pop_culm_id.is_none() {
             return Some(Err(format!(
@@ -732,22 +820,23 @@ pub fn try_craft_zhulin_item(
         if db::remove_from_inventory(pid, item_id, consume_tinder_qty).is_err() {
             return Some(Err("扣除引火材料失敗。".to_string()));
         }
+        ignite_cell_campfire(gx, gy);
         let mut narr = if let Some(culm_id) = pop_culm_id {
             let _ = db::remove_from_inventory(pid, &culm_id, 1);
             format!(
-                "{shelter_prefix}你引燃「{}」並將一節中空刺竹稈投入火中——受熱膨脹的竹節猛然炸出「砰！」地一聲巨響，林間寒濕瘴氣頓時消散，周遭窺伺的野獸亦驚惶遠遁！",
+                "{shelter_prefix}你引燃「{}」生起營火，並將一節中空刺竹稈投入火中——受熱膨脹的竹節猛然炸出「砰！」地一聲巨響，林間寒濕瘴氣頓時消散，周遭窺伺的野獸亦驚惶遠遁！",
                 def.name
             )
         } else if weather_tags.contains(&"rain_harvestable")
             && find_item_with_tag(&entries, "water_container", 1).is_some()
         {
             format!(
-                "{shelter_prefix}你將乾燥蓬鬆的「{}」聚攏引燃，溫暖火光驅散了林間寒氣；你同時將「青竹水筒」斜置於竹葉滴水處，接滿了清冽雨水，氣力恢復不少。",
+                "{shelter_prefix}你將乾燥蓬鬆的「{}」聚攏引燃，於林下生起一簇溫暖營火；你同時將「青竹水筒」斜置於竹葉滴水處，接滿了清冽雨水，氣力恢復不少。",
                 def.name
             )
         } else {
             format!(
-                "{shelter_prefix}你將乾燥蓬鬆的「{}」聚攏引燃，溫暖的火光在竹林間躍動，驅散了滿身疲憊與寒意。",
+                "{shelter_prefix}你將乾燥蓬鬆的「{}」聚攏引燃，於林下生起一簇劈啪作響的竹葉營火（同格後續野炊與烤刃可直接借火，免耗乾竹葉）。",
                 def.name
             )
         };
@@ -763,20 +852,25 @@ pub fn try_craft_zhulin_item(
         )));
     }
 
-    // 5. `roastable` / `soup_ingredient`（鮮刺竹筍／野竹耳／雞肉絲菇／筍龜）-> 竹火野炊（烤筍龜／竹筒山珍湯／籜裹煨竹筍）
+    // 5. `roastable` / `soup_ingredient`（鮮刺竹筍／野生竹耳／雞肉絲菇／筍龜）-> 支援 `:roast`（炙烤／煨筍，不耗水筒）與 `:soup`（竹筒煲湯）
     if def.tags.has_tag("roastable") || def.tags.has_tag("soup_ingredient") {
-        let Some(tinder_id) = find_item_with_tag(&entries, "tinder", 1) else {
+        let tinder_id_opt = find_item_with_tag(&entries, "tinder", 1);
+        if !has_cell_campfire && tinder_id_opt.is_none() {
             return Some(Err(format!(
-                "野炊「{}」需生火慢煨，行囊中尚缺「乾竹葉」（火絨耗材）。",
+                "野炊「{}」需生火慢煨，行囊中尚缺「乾竹葉」（火絨耗材）且格內尚無營火。",
                 def.name
             )));
+        }
+        let total_tinder_qty = if has_cell_campfire {
+            3
+        } else {
+            entries
+                .iter()
+                .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
+                .map(|e| e.qty)
+                .sum::<i32>()
         };
-        let total_tinder_qty = entries
-            .iter()
-            .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
-            .map(|e| e.qty)
-            .sum::<i32>();
-        let has_culm = find_item_with_tag(&entries, "flammable_pop", 1).is_some();
+        let has_culm = has_cell_campfire || find_item_with_tag(&entries, "flammable_pop", 1).is_some();
 
         let shelter_prefix = match evaluate_fire_weather_shelter(
             weather_tags,
@@ -793,29 +887,51 @@ pub fn try_craft_zhulin_item(
             if db::remove_from_inventory(pid, item_id, 1).is_err() {
                 return Some(Err("行囊中的「筍龜」數量不足。".to_string()));
             }
-            let _ = db::remove_from_inventory(pid, &tinder_id, 1);
+            if !has_cell_campfire {
+                if let Some(tid) = tinder_id_opt {
+                    let _ = db::remove_from_inventory(pid, &tid, 1);
+                }
+                ignite_cell_campfire(gx, gy);
+            }
             let _ = db::add_to_inventory(pid, ITEM_ROASTED_WEEVIL.id, 1);
             return Some(Ok((
                 ITEM_ROASTED_WEEVIL.id.to_string(),
                 ITEM_ROASTED_WEEVIL.name.to_string(),
                 format!(
-                    "{shelter_prefix}你將肥美的「筍龜」穿在細竹枝上，架於乾竹葉炭火上方翻烤，甲殼漸轉金紅、油脂滋滋作響，烤出一串香氣撲鼻的「{}」！",
+                    "{shelter_prefix}你將肥美的「筍龜」穿在細竹枝上，架於竹葉炭火上方翻烤，甲殼漸轉金紅、油脂滋滋作響，烤出一串香氣撲鼻的「{}」！",
                     ITEM_ROASTED_WEEVIL.name
                 ),
             )));
         }
 
-        // 5b. 若行囊有【盛水青竹筒】-> 優先煲出【竹筒山珍湯】並歸還空【青竹水筒】
         let has_full_canteen = entries
             .iter()
             .any(|e| e.item_id == ITEM_BAMBOO_CANTEEN_FULL.id && e.qty >= 1);
-        if has_full_canteen {
+        let want_soup = match recipe_opt {
+            Some("soup") => true,
+            Some("roast") => false,
+            _ => has_full_canteen,
+        };
+
+        // 5b. 竹筒煲湯（消耗【盛水青竹筒】-> 產出【竹筒山珍湯】並歸還空【青竹水筒】）
+        if want_soup {
+            if !has_full_canteen {
+                return Some(Err(
+                    "煲煮「竹筒山珍湯」需行囊備有「盛水青竹筒 ×1」（可先持空青竹水筒於近水竹蔭或雨露時盛水，或改選炙烤／煨筍）。"
+                        .to_string(),
+                ));
+            }
             if db::remove_from_inventory(pid, item_id, 1).is_err()
                 || db::remove_from_inventory(pid, ITEM_BAMBOO_CANTEEN_FULL.id, 1).is_err()
             {
                 return Some(Err("煲湯所需食材或盛水竹筒扣除失敗。".to_string()));
             }
-            let _ = db::remove_from_inventory(pid, &tinder_id, 1);
+            if !has_cell_campfire {
+                if let Some(tid) = tinder_id_opt {
+                    let _ = db::remove_from_inventory(pid, &tid, 1);
+                }
+                ignite_cell_campfire(gx, gy);
+            }
             let _ = db::add_to_inventory(pid, ITEM_BAMBOO_TUBE_SOUP.id, 1);
             let _ = db::add_to_inventory(pid, ITEM_BAMBOO_CANTEEN.id, 1);
             return Some(Ok((
@@ -828,21 +944,26 @@ pub fn try_craft_zhulin_item(
             )));
         }
 
-        // 5c. 籜裹煨竹筍
+        // 5c. 野生竹耳／雞肉絲菇 `:roast` 炭火炙烤（不消耗盛水竹筒，直接產出籜裹煨山珍／籜裹煨竹筍）
         let wrap_id = find_item_with_tag(&entries, "wrapping_sheet", 1);
         if db::remove_from_inventory(pid, item_id, 1).is_err() {
             return Some(Err("扣除食材失敗。".to_string()));
         }
-        let _ = db::remove_from_inventory(pid, &tinder_id, 1);
+        if !has_cell_campfire {
+            if let Some(tid) = tinder_id_opt {
+                let _ = db::remove_from_inventory(pid, &tid, 1);
+            }
+            ignite_cell_campfire(gx, gy);
+        }
         let narr = if let Some(w_id) = wrap_id {
             let _ = db::remove_from_inventory(pid, &w_id, 1);
             format!(
-                "{shelter_prefix}你以防潮「韌竹籜」將「{}」層層裹緊，埋入乾竹葉餘燼中慢煨至熟，剝開時香氣四溢，製成一份「{}」！",
+                "{shelter_prefix}你以防潮「韌竹籜」將「{}」層層裹緊，埋入竹葉營火餘燼中慢煨至熟（未消耗竹筒飲水），剝開時香氣四溢，製成一份「{}」！",
                 def.name, ITEM_ROASTED_BAMBOO_SHOOT.name
             )
         } else {
             format!(
-                "{shelter_prefix}你引燃乾竹葉將「{}」置於火堆旁烘烤至熟，去除了生澀苦味，製成一份「{}」收入行囊。",
+                "{shelter_prefix}你將「{}」置於竹葉營火旁慢炙至熟（未消耗竹筒飲水），去除了生澀濕氣，製成一份香氣溫潤的「{}」收入行囊。",
                 def.name, ITEM_ROASTED_BAMBOO_SHOOT.name
             )
         };

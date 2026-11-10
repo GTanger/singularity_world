@@ -241,12 +241,21 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
                 .map(|e| e.inventory)
                 .unwrap_or_default();
             let now_unix = crate::game::now_unix();
-            let (_, gh, _, _gday) = game::game_time_now(now_unix, conn.cfg.game_time_epoch_unix, conn.cfg.game_time_scale);
+            let (_, gh, _, gday) = game::game_time_now(now_unix, conn.cfg.game_time_epoch_unix, conn.cfg.game_time_scale);
             let weather = crate::grid::zhulin::active_zhulin_weather_for_hour(None, gh.max(0) as u32);
-            let current_c = cell_info.as_ref().unwrap();
-            let (yield_opt, text) = crate::grid::zhulin::explore_bamboo_understory(current_c, &neighbor_refs, &inv_json, weather);
+            let mut current_c = cell_info.as_ref().unwrap().clone();
+            let today_tag = format!("zl_explored_day:{gday}");
+            current_c.tags.retain(|t| !t.starts_with("zl_explored_day:") || t == &today_tag);
+            let (yield_opt, text) = crate::grid::zhulin::explore_bamboo_understory(&current_c, &neighbor_refs, &inv_json, weather);
             if let Some((item_id, qty)) = yield_opt {
                 let _ = db::add_to_inventory(&player_id, item_id, qty as i32);
+                crate::server::grid_manager::with_square_grid_mut(|grid| {
+                    if let Some(c) = grid.get_mut(SquareCoord::new(gx, gy)) {
+                        crate::grid::zhulin::set_bamboo_cell_meta_tag(&mut c.tags, "zl_explored_day:", gday);
+                        crate::grid::zhulin::record_bamboo_gather_pressure(c);
+                        let _ = db::update_cell_state(gx, gy, c.explored, c.freshness, &c.objects);
+                    }
+                });
                 let item_name = crate::grid::zhulin::lookup_zhulin_item_def(item_id)
                     .map(|d| d.name)
                     .unwrap_or(item_id);

@@ -508,10 +508,26 @@
 				var rmName = formatItemName(rmRawName, rmId);
 				var rmQty = Number(rm.qty) || 1;
 				var craftLabel = rm.craft_label || '加工煉製';
-				var btnLabel = craftLabel;
-				craftBodyHtml += '<div class="craft-material-row" style="display:flex;justify-content:space-between;align-items:center;padding:4px 6px;background:rgba(0,0,0,0.03);border-radius:4px;">' +
+				var recipeBtnsHtml = '';
+				if (rmId === 'zl_item_bamboo_culm') {
+					recipeBtnsHtml = '<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_culm:canteen_spade">裁製水筒與竹鏟</button>' +
+						'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_culm:basket">劈篾編背簍</button>' +
+						'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_culm:fire_pop">投火竹爆</button>';
+				} else if (rmId === 'zl_item_bamboo_rhizome') {
+					recipeBtnsHtml = '<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_rhizome:club">紮製竹鞭根槌</button>' +
+						'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_rhizome:stone_axe">紮製竹柄石斧</button>';
+				} else if (rmId === 'zl_item_bamboo_shoot') {
+					recipeBtnsHtml = '<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_shoot:roast">籜裹煨筍</button>' +
+						'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="zl_item_bamboo_shoot:soup">竹筒煲筍湯</button>';
+				} else if (rmId === 'zl_item_bamboo_fungus' || rmId === 'zl_item_termite_mushroom') {
+					recipeBtnsHtml = '<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="' + esc(rmId) + ':roast">炭火炙烤</button>' +
+						'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="' + esc(rmId) + ':soup">竹筒煲湯</button>';
+				} else {
+					recipeBtnsHtml = '<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="' + esc(rmId) + '">' + esc(craftLabel) + '</button>';
+				}
+				craftBodyHtml += '<div class="craft-material-row" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;padding:4px 6px;background:rgba(0,0,0,0.03);border-radius:4px;">' +
 					'<span>' + esc(rmName) + (rmQty > 1 ? ' <small style="opacity:0.8;">\u00d7' + rmQty + '</small>' : '') + '</span>' +
-					'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="' + esc(rmId) + '">' + btnLabel + '</button>' +
+					'<span style="display:flex;flex-wrap:wrap;gap:4px;">' + recipeBtnsHtml + '</span>' +
 					'</div>';
 			}
 			craftBodyHtml += '</div>';
@@ -975,7 +991,22 @@
 							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + rawEatLabel + '</button>';
 						}
 						var craftLabel = it.craft_label || '加工煉製';
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">' + esc(craftLabel) + '</button>';
+						if (itemId === 'zl_item_bamboo_culm') {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_culm:canteen_spade">裁製水筒與竹鏟</button>';
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_culm:basket">劈篾編背簍</button>';
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_culm:fire_pop">投火竹爆</button>';
+						} else if (itemId === 'zl_item_bamboo_rhizome') {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_rhizome:club">紮製竹鞭根槌</button>';
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_rhizome:stone_axe">紮製竹柄石斧</button>';
+						} else if (itemId === 'zl_item_bamboo_shoot') {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_shoot:roast">籜裹煨筍</button>';
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="zl_item_bamboo_shoot:soup">竹筒煲筍湯</button>';
+						} else if (itemId === 'zl_item_bamboo_fungus' || itemId === 'zl_item_termite_mushroom') {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="' + esc(itemId) + ':roast">炭火炙烤</button>';
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="' + esc(itemId) + ':soup">竹筒煲湯</button>';
+						} else {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft" data-craft-id="' + esc(itemId) + '">' + esc(craftLabel) + '</button>';
+						}
 					}
 					var curPlaceName = String((window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.currentRoomName) || (document.getElementById('sw-place-name') && document.getElementById('sw-place-name').textContent) || '');
 					var isMarketVenue = /(行|鋪|肆|工坊|染坊|織坊|木坊|鐵坊|茶坊|酒坊|磨坊|店|樓|食堂|市集|攤|館|閣|局|場|廠|塢|站|社)/.test(curPlaceName);
@@ -1029,7 +1060,8 @@
 					expand.querySelectorAll('.inv-action-btn[data-action="craft"]').forEach(function (btn) {
 						btn.addEventListener('click', function (e) {
 							e.stopPropagation();
-							_send({ type: 'craft_item', item_id: itemId });
+							var targetCraftId = btn.getAttribute('data-craft-id') || itemId;
+							_send({ type: 'craft_item', item_id: targetCraftId });
 						});
 					});
 					expand.querySelectorAll('.inv-action-btn[data-action="mutate"]').forEach(function (btn) {
