@@ -1,13 +1,13 @@
 // PWA Service Worker：最小實作，支援「加入主畫面」
 // 改前端後必須 bump 此 CACHE 版號，瀏覽器才會偵測 SW 更新 → install/activate → claim
 // （比 index.html 的 ?v= 更深一層：即使 HTML ?v= 變了，若 SW 本身內容沒變，舊 SW 續命）
-const CACHE = 'sw-shell-v20261110b10';
+const CACHE = 'sw-shell-v20261110b12';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/style.css?v=20261110b10',
-  '/game.css?v=20261110b10',
-  '/game-grid.css?v=20261110b10',
+  '/style.css?v=20261110b12',
+  '/game.css?v=20261110b12',
+  '/game-grid.css?v=20261110b12',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

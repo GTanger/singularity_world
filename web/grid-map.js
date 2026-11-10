@@ -2463,13 +2463,13 @@
                             var dx = tx - px;
                             var dy = ty - py;
                             var isAdj = Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && (dx !== 0 || dy !== 0);
-                            var dir = getDirectionFromOffset(dx, dy);
-                            if (isAdj && tEntry.walkable !== false && dir && moveBtn) {
+                            var dir = isAdj ? getDirectionFromOffset(dx, dy) : null;
+                            if (tEntry.walkable !== false && moveBtn) {
                                 moveBtn.hidden = false;
-                                moveBtn.textContent = '前往此處（' + dir + '）';
+                                moveBtn.textContent = dir ? ('前往此處（' + dir + '）') : ('行往【' + fName + '】');
                                 moveBtn.onclick = function () {
                                     if (window.gameSend) {
-                                        window.gameSend({ type: 'move', direction: dir });
+                                        window.gameSend({ type: 'move', x: tx, y: ty, direction: dir || undefined });
                                     }
                                     closeWorldMapModal();
                                 };
@@ -2513,13 +2513,15 @@
                 var selDx = _selectedWmCoord.x - px;
                 var selDy = _selectedWmCoord.y - py;
                 var isSelAdj = Math.abs(selDx) <= 1 && Math.abs(selDy) <= 1 && (selDx !== 0 || selDy !== 0);
-                var selDir = getDirectionFromOffset(selDx, selDy);
-                if (isSelAdj && selEntry.walkable !== false && selDir && moveBtn) {
+                var selDir = isSelAdj ? getDirectionFromOffset(selDx, selDy) : null;
+                if (selEntry.walkable !== false && moveBtn) {
+                    var targetX = _selectedWmCoord.x;
+                    var targetY = _selectedWmCoord.y;
                     moveBtn.hidden = false;
-                    moveBtn.textContent = '前往此處（' + selDir + '）';
+                    moveBtn.textContent = selDir ? ('前往此處（' + selDir + '）') : ('行往【' + selFName + '】');
                     moveBtn.onclick = function () {
                         if (window.gameSend) {
-                            window.gameSend({ type: 'move', direction: selDir });
+                            window.gameSend({ type: 'move', x: targetX, y: targetY, direction: selDir || undefined });
                         }
                         closeWorldMapModal();
                     };

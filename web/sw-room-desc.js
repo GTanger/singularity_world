@@ -660,7 +660,7 @@
                     } else if (window.SwResolveActionLabelZh) {
                         chipLabel = window.SwResolveActionLabelZh(actCode, activeObjFound);
                     }
-                    if (seenChipLabels[chipLabel]) continue;
+                    if (!chipLabel || seenChipLabels[chipLabel]) continue;
                     seenChipLabels[chipLabel] = true;
                     chipsHtml += '<button type="button" class="sw-inline-act-chip log-object-action"' +
                         ' data-entity-id="' + esc(_activeInlineObjId) + '"' +
@@ -712,9 +712,10 @@
             document.addEventListener('click', function (ev) {
                 if (!_activeInlineObjId) return;
                 var l3 = document.getElementById('sw-l3-terrain');
+                var l4 = document.getElementById('sw-l4-objects');
                 var pNode = placeEl();
                 var isPlayerCell = ev.target && ev.target.closest && ev.target.closest('.sw-cell-player');
-                if (isPlayerCell || (pNode && pNode.contains(ev.target))) return;
+                if (isPlayerCell || (pNode && pNode.contains(ev.target)) || (l4 && l4.contains(ev.target))) return;
                 if (l3 && !l3.contains(ev.target)) {
                     _activeInlineObjId = null;
                     setTimeout(function () {

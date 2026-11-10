@@ -337,13 +337,16 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
     let is_waterside = cell.has_room_tag("waterside");
     let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
     let rain_extinguished = w_def.tags.has_tag("wetting") && !has_standing_culm;
-    let keep_campfire = cell.has_room_tag("zl_campfire:active") && !rain_extinguished;
+    let has_campfire_obj = cell.objects.iter().any(|o| o.id == objects::campfire::ID && o.quantity > 0);
+    let keep_campfire = (cell.has_room_tag("zl_campfire:active") || has_campfire_obj) && !rain_extinguished;
+    if rain_extinguished {
+        cell.objects.retain(|o| o.id != objects::campfire::ID);
+    } else if keep_campfire && !has_campfire_obj {
+        cell.objects.push(objects::campfire::build_grid_object(3));
+    }
     let mut new_desc = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
     if has_bamboo_trail_mark(cell) {
         new_desc.push_str("竹幹刻著醒目路標。");
-    }
-    if keep_campfire {
-        new_desc.push_str("林下燃著一簇劈啪作響的竹葉營火。");
     }
     cell.description = new_desc;
 

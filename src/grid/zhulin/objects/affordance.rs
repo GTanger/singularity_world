@@ -433,6 +433,11 @@ fn ignite_cell_campfire(gx: i32, gy: i32) {
             if !cell.has_room_tag("zl_campfire:active") {
                 cell.tags.push("zl_campfire:active".to_string());
             }
+            if let Some(cf) = cell.objects.iter_mut().find(|o| o.id == super::campfire::ID) {
+                cf.quantity = cf.quantity.max(3);
+            } else {
+                cell.objects.push(super::campfire::build_grid_object(3));
+            }
             crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
             let _ = crate::db::update_cell_state(gx, gy, cell.explored, cell.freshness, &cell.objects);
         }
@@ -1040,5 +1045,28 @@ mod tests {
         // 晴朗天氣無阻礙
         let clear_res = evaluate_fire_weather_shelter(clear_weather, &open_cell_tags, false, 2);
         assert_eq!(clear_res.unwrap(), None);
+    }
+
+    #[test]
+    fn test_campfire_plugin_and_socket_contract() {
+        use crate::grid::zhulin::{
+            campfire, lookup_zhulin_object_tags, resolve_bamboo_slot_object_with_qty,
+            scene_sentence_for_object,
+        };
+        let cf_obj = campfire::build_grid_object(3);
+        assert_eq!(cf_obj.id, "zl_bamboo_campfire");
+        assert_eq!(cf_obj.name, "竹葉營火");
+        let tags = lookup_zhulin_object_tags(campfire::ID).expect("campfire tags");
+        assert!(tags.has_tag("heat_source"));
+        assert!(tags.has_tag("socket_host"));
+        assert!(tags.has_tag("ember_bed"));
+        assert!(tags.has_tag("beast_deterrent"));
+        let sentence = scene_sentence_for_object(&cf_obj).expect("scene sentence");
+        assert!(sentence.contains("竹葉營火"));
+        let room_obj = resolve_bamboo_slot_object_with_qty(campfire::ID, 3).expect("room obj");
+        assert!(room_obj.sockets.contains(&"WarmHands".to_string()));
+        assert!(room_obj.sockets.contains(&"CampfireRoastKnife".to_string()));
+        assert!(room_obj.sockets.contains(&"CampfireRoastShoot".to_string()));
+        assert!(room_obj.sockets.contains(&"CampfireBoilSoup".to_string()));
     }
 }

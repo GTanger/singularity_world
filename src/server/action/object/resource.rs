@@ -60,6 +60,33 @@ fn format_runtime_gather_batch_narrative(
     }
 }
 
+fn campfire_socket_actions_for_inventory(inv_json: &str) -> Vec<String> {
+    let mut acts = vec!["Look".to_string(), "WarmHands".to_string()];
+    if inv_json.contains("zl_item_aged_bamboo_slat") {
+        acts.push("CampfireRoastKnife".to_string());
+    }
+    if inv_json.contains("zl_item_bamboo_shoot") && inv_json.contains("zl_item_bamboo_sheath") {
+        acts.push("CampfireRoastShoot".to_string());
+    }
+    if inv_json.contains("zl_item_bamboo_weevil")
+        || inv_json.contains("zl_item_bamboo_fungus")
+        || inv_json.contains("zl_item_termite_mushroom")
+    {
+        acts.push("CampfireRoastFungus".to_string());
+    }
+    if inv_json.contains("zl_item_bamboo_canteen_full")
+        && (inv_json.contains("zl_item_bamboo_shoot")
+            || inv_json.contains("zl_item_bamboo_fungus")
+            || inv_json.contains("zl_item_termite_mushroom"))
+    {
+        acts.push("CampfireBoilSoup".to_string());
+    }
+    if inv_json.contains("zl_item_bamboo_culm") {
+        acts.push("CampfirePopCulm".to_string());
+    }
+    acts
+}
+
 fn try_grid_cell_object_action(
     conn: &WsConnection,
     pid: &str,
@@ -70,7 +97,25 @@ fn try_grid_cell_object_action(
     let Some(coord) = parse_grid_room_id(player_room) else {
         return false;
     };
-    if action != "Gather" && action != "Harvest" && action != "Take" && action != "CarveMark" {
+    let is_campfire_socket = matches!(
+        action,
+        "WarmHands"
+            | "CampfireRoastKnife"
+            | "CampfireRoastShoot"
+            | "CampfireRoastFungus"
+            | "CampfireBoilSoup"
+            | "CampfirePopCulm"
+    );
+    let is_bamboo_look = action == "Look" && obj.id == "zl_bamboo_campfire";
+    if action != "Gather"
+        && action != "Harvest"
+        && action != "Take"
+        && action != "CarveMark"
+        && action != "ClearBambooTrail"
+        && action != "IgniteCampfire"
+        && !is_campfire_socket
+        && !is_bamboo_look
+    {
         return false;
     }
 
@@ -86,6 +131,248 @@ fn try_grid_cell_object_action(
         .flatten()
         .map(|e| e.inventory)
         .unwrap_or_default();
+
+    if is_bamboo_look {
+        let narrative = obj
+            .responses
+            .get("Look")
+            .cloned()
+            .unwrap_or_else(|| "林下燃著一簇劈啪作響的竹葉營火，紅熱竹炭正散發著乾燥暖意。".to_string());
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: action.into(),
+            target_id: obj.id.clone(),
+            target_name: obj.name.clone(),
+            narrative,
+            success: true,
+            actions: campfire_socket_actions_for_inventory(&player_inv_json),
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        return true;
+    }
+
+    if is_campfire_socket {
+        if action == "WarmHands" {
+            if let Ok(Some(ent)) = db::get_entity(pid) {
+                let _ = db::update_vit(pid, (ent.vit + 15).min(100));
+            }
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.into(),
+                target_id: obj.id.clone(),
+                target_name: obj.name.clone(),
+                narrative: "你湊近「竹葉營火」伸出雙手烘火，竹葉與竹炭散發的乾燥暖流驅散了林間寒氣，四肢百骸頓覺舒暢溫熱。".to_string(),
+                success: true,
+                actions: campfire_socket_actions_for_inventory(&player_inv_json),
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            push_refresh(conn, pid);
+            return true;
+        }
+        let recipe_key = match action {
+            "CampfireRoastKnife" => "zl_item_aged_bamboo_slat",
+            "CampfireRoastShoot" => "zl_item_bamboo_shoot:roast",
+            "CampfireRoastFungus" => {
+                if player_inv_json.contains("zl_item_bamboo_weevil") {
+                    "zl_item_bamboo_weevil"
+                } else if player_inv_json.contains("zl_item_termite_mushroom") {
+                    "zl_item_termite_mushroom:roast"
+                } else {
+                    "zl_item_bamboo_fungus:roast"
+                }
+            }
+            "CampfireBoilSoup" => {
+                if player_inv_json.contains("zl_item_termite_mushroom") {
+                    "zl_item_termite_mushroom:soup"
+                } else if player_inv_json.contains("zl_item_bamboo_fungus") {
+                    "zl_item_bamboo_fungus:soup"
+                } else {
+                    "zl_item_bamboo_shoot:soup"
+                }
+            }
+            "CampfirePopCulm" => "zl_item_bamboo_culm:fire_pop",
+            _ => "",
+        };
+        let (success, narrative) = match crate::grid::zhulin::try_craft_zhulin_item(pid, recipe_key) {
+            Some(Ok((_act, _title, msg))) => (true, msg),
+            Some(Err(err_msg)) => (false, err_msg),
+            None => (false, "手頭尚缺對應食材或器物，無法在竹葉營火上施作。".to_string()),
+        };
+        let new_inv = db::get_entity(pid)
+            .ok()
+            .flatten()
+            .map(|e| e.inventory)
+            .unwrap_or_default();
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: action.into(),
+            target_id: obj.id.clone(),
+            target_name: obj.name.clone(),
+            narrative,
+            success,
+            actions: campfire_socket_actions_for_inventory(&new_inv),
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        push_refresh(conn, pid);
+        refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
+        return true;
+    }
+
+    if action == "IgniteCampfire" {
+        let mut ignite_res: Result<String, String> = Err("此處無乾竹葉可供引火。".to_string());
+        let mut cell_snapshot = None;
+        crate::server::grid_manager::with_square_grid_mut(|grid| {
+            if let Some(cell) = grid.get_mut(coord) {
+                let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
+                let leaves_qty = cell
+                    .objects
+                    .iter()
+                    .find(|o| o.id == "zl_dry_leaves" || o.name == "乾竹葉層")
+                    .map(|o| o.quantity as i32)
+                    .unwrap_or(0);
+                match crate::grid::zhulin::evaluate_fire_weather_shelter(
+                    w_def.tags.attribute_tags,
+                    &cell.tags,
+                    false,
+                    leaves_qty.max(2),
+                ) {
+                    Err(msg) => {
+                        ignite_res = Err(msg);
+                    }
+                    Ok(shelter_note) => {
+                        if let Some(leaves_obj) = cell
+                            .objects
+                            .iter_mut()
+                            .find(|o| o.id == "zl_dry_leaves" || o.name == "乾竹葉層")
+                        {
+                            let cost = leaves_obj.quantity.min(2);
+                            leaves_obj.quantity = leaves_obj.quantity.saturating_sub(cost);
+                        }
+                        if !cell.has_room_tag("zl_campfire:active") {
+                            cell.tags.push("zl_campfire:active".to_string());
+                        }
+                        if let Some(cf) = cell
+                            .objects
+                            .iter_mut()
+                            .find(|o| o.id == crate::grid::zhulin::campfire::ID)
+                        {
+                            cf.quantity = cf.quantity.max(3);
+                        } else {
+                            cell.objects
+                                .push(crate::grid::zhulin::campfire::build_grid_object(3));
+                        }
+                        crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
+                        cell_snapshot = Some((cell.explored, cell.freshness, cell.objects.clone()));
+                        let prefix = shelter_note.unwrap_or("");
+                        ignite_res = Ok(format!(
+                            "{}你就地攏起乾燥竹葉與枯枝引火，火苗劈啪竄起，在林下燃起一簇溫暖的「竹葉營火」！點擊主畫面上的【竹葉營火】即可直接烘火、烤刀、煨筍或煲湯。",
+                            prefix
+                        ));
+                    }
+                }
+            }
+        });
+        if let Some((exp, fresh, objs)) = cell_snapshot {
+            let _ = db::update_cell_state(coord.x, coord.y, exp, fresh, &objs);
+            if let Ok(Some(ent)) = db::get_entity(pid) {
+                let _ = db::update_vit(pid, (ent.vit + 12).min(100));
+            }
+        }
+        let (success, narrative) = match ignite_res {
+            Ok(s) => (true, s),
+            Err(e) => (false, e),
+        };
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: action.into(),
+            target_id: obj.id.clone(),
+            target_name: obj.name.clone(),
+            narrative,
+            success,
+            actions: vec!["Look".into(), "Gather".into()],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        push_refresh(conn, pid);
+        refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
+        return true;
+    }
+
+    if action == "ClearBambooTrail" {
+        if !crate::grid::zhulin::inventory_has_capability_tag(&player_inv_json, "heavy_chop") {
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.into(),
+                target_id: obj.id.clone(),
+                target_name: obj.name.clone(),
+                narrative: "合抱刺竹叢竹竿粗硬如鐵、刺枝交錯，徒手或單憑薄刃難以開路；需持有「竹鞭根槌」或「籜繩竹鞭石斧」方能一舉劈開竹障！".to_string(),
+                success: false,
+                actions: vec!["Look".into(), "Gather".into(), "ClearBambooTrail".into(), "CarveMark".into()],
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            return true;
+        }
+        let has_stone_axe = player_inv_json.contains("zl_item_bamboo_stone_axe");
+        let harvest_culms = if has_stone_axe { 3 } else { 2 };
+        let mut cell_snapshot = None;
+        crate::server::grid_manager::with_square_grid_mut(|grid| {
+            if let Some(cell) = grid.get_mut(coord) {
+                if let Some(target_obj) = cell
+                    .objects
+                    .iter_mut()
+                    .find(|o| o.id == "zl_bamboo_culm" || o.name == "合抱刺竹叢")
+                {
+                    target_obj.quantity = 0;
+                }
+                crate::grid::zhulin::record_bamboo_gather_pressure(cell);
+                crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
+                cell_snapshot = Some((cell.explored, cell.freshness, cell.objects.clone()));
+            }
+        });
+        if let Some((exp, fresh, objs)) = cell_snapshot {
+            let _ = db::update_cell_state(coord.x, coord.y, exp, fresh, &objs);
+            let _ = db::add_to_inventory(pid, "zl_item_bamboo_culm", harvest_culms);
+        }
+        let tool_desc = if has_stone_axe {
+            "揮動「籜繩竹鞭石斧」順著竹節一氣呵成連番斜劈"
+        } else {
+            "掄起「竹鞭根槌」順著竹節猛力砸斷交錯刺枝"
+        };
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: action.into(),
+            target_id: obj.id.clone(),
+            target_name: obj.name.clone(),
+            narrative: format!(
+                "你{}，將擋路的「合抱刺竹叢」連根伐開，闢出一條透光通風的【疏竹小徑】，並順手收起 {} 根筆直的「刺竹稈」入袋，林下也隨之落滿厚實乾竹葉！",
+                tool_desc, harvest_culms
+            ),
+            success: true,
+            actions: vec!["Look".into()],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        push_refresh(conn, pid);
+        refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
+        return true;
+    }
+
     if action == "CarveMark" {
         let mut carve_res = Err("無法在此處刻記號".to_string());
         let mut updated = false;
@@ -115,7 +402,7 @@ fn try_grid_cell_object_action(
             target_name: obj.name.clone(),
             narrative,
             success,
-            actions: vec!["Look".into(), "Gather".into(), "CarveMark".into()],
+            actions: vec!["Look".into(), "Gather".into(), "ClearBambooTrail".into(), "CarveMark".into()],
             move_target_id: String::new(),
             open_trade: false,
             suggested_action: String::new(),
@@ -125,7 +412,6 @@ fn try_grid_cell_object_action(
         refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
         return true;
     }
-
 
     let mut updated_state = None;
     let mut zero_quantity = false;
@@ -147,7 +433,12 @@ fn try_grid_cell_object_action(
                             yield_qty,
                             custom_narrative,
                         } => {
-                            target_obj.quantity = target_obj.quantity.saturating_sub(stock_cost);
+                            let is_batch_hand_gather = (target_obj.id == "zl_dry_leaves"
+                                || target_obj.id == "zl_bamboo_sheath")
+                                && target_obj.quantity >= 2;
+                            let eff_cost = if is_batch_hand_gather { 2 } else { stock_cost };
+                            let eff_yield = if is_batch_hand_gather { 2 } else { yield_qty };
+                            target_obj.quantity = target_obj.quantity.saturating_sub(eff_cost);
                             let remaining_qty = target_obj.quantity;
                             let obj_name = target_obj.name.clone();
                             let obj_id = target_obj.id.clone();
@@ -159,7 +450,7 @@ fn try_grid_cell_object_action(
                                 remaining_qty,
                                 obj_name,
                                 obj_id,
-                                yield_qty,
+                                eff_yield,
                                 custom_narrative,
                             ));
                         }
@@ -253,26 +544,16 @@ fn try_grid_cell_object_action(
     let has_stone_axe = player_inv_json.contains("zl_item_bamboo_stone_axe");
     let has_rhizome_club = player_inv_json.contains("zl_item_rhizome_club");
     let has_bamboo_spade = player_inv_json.contains("zl_item_bamboo_spade");
-    let has_stone_flake = player_inv_json.contains("zl_item_sharp_stone_flake");
-    let has_bamboo_knife = player_inv_json.contains("zl_item_fire_hardened_bamboo_knife");
     if obj_id == "zl_bamboo_culm" {
         if has_stone_axe {
-            narrative.push_str("（手中「籜繩竹鞭石斧」石刃鋒利，順著竹節斜劈而下，省力且毫不損刃）");
+            let _ = db::add_to_inventory(pid, item_id, 1);
+            narrative.push_str("（手中「籜繩竹鞭石斧」石刃鋒利，順著竹節斜劈而下，一舉多伐得 1 根刺竹稈！）");
         } else if has_rhizome_club {
-            if final_remaining_qty % 3 == 0 {
-                let _ = db::remove_from_inventory(pid, "zl_item_rhizome_club", 1);
-                narrative.push_str("（純竹「竹鞭根槌」經連番猛砸堅韌竹節，槌頭震裂損毀；若改配銳邊石片紮成「籜繩竹鞭石斧」則鋒利耐用不震裂）");
-            } else {
-                narrative.push_str("（以純竹根槌猛砸竹節頗費氣力；若改用石刃「籜繩竹鞭石斧」斜劈更為省力耐損）");
-            }
+            narrative.push_str("（以純竹根槌砸節砍伐頗費氣力；若點選【劈竹開路】可一舉伐開竹障，或配銳邊石片紮成「籜繩竹鞭石斧」倍增產出）");
         }
-    } else if obj_id == "zl_bamboo_rhizome" {
-        if has_bamboo_spade {
-            narrative.push_str("（以厚壁「掘土竹鏟」順著紅土縫隙深鏟斷根，竹刀刃口完好無損）");
-        } else if has_bamboo_knife && !has_stone_flake && !has_stone_axe && final_remaining_qty % 2 == 0 {
-            let _ = db::remove_from_inventory(pid, "zl_item_fire_hardened_bamboo_knife", 1);
-            narrative.push_str("（薄刃「烤刃竹片刀」硬撬紅土竹鞭，刃口受砂石磨損崩裂；建議將刺竹稈裁出厚壁「掘土竹鏟」專司掘土）");
-        }
+    } else if obj_id == "zl_bamboo_rhizome" && has_bamboo_spade {
+        let _ = db::add_to_inventory(pid, item_id, 1);
+        narrative.push_str("（厚壁「掘土竹鏟」順著紅土縫隙深鏟斷根，額外多掘出 1 截完整刺竹鞭！）");
     }
     let weevil_mod = if has_bamboo_spade { 2 } else { 3 };
     if obj_id == "zl_bamboo_shoot" && final_remaining_qty > 0 && (coord.x + coord.y + final_remaining_qty as i32).abs() % weevil_mod == 0 {

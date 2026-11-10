@@ -280,8 +280,19 @@ fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::mo
         {
             let mut zl_slot_obj = zl_slot_obj;
             if (obj.id == "zl_bamboo_culm" || obj.name == "合抱刺竹叢") && obj.quantity > 0 {
+                if !zl_slot_obj.sockets.iter().any(|s| s == "ClearBambooTrail") {
+                    zl_slot_obj.sockets.push("ClearBambooTrail".to_string());
+                }
                 if !zl_slot_obj.sockets.iter().any(|s| s == "CarveMark") {
                     zl_slot_obj.sockets.push("CarveMark".to_string());
+                }
+            } else if (obj.id == "zl_dry_leaves" || obj.name == "乾竹葉層") && obj.quantity > 0 {
+                let has_cf = cell
+                    .objects
+                    .iter()
+                    .any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0);
+                if !has_cf && !zl_slot_obj.sockets.iter().any(|s| s == "IgniteCampfire") {
+                    zl_slot_obj.sockets.push("IgniteCampfire".to_string());
                 }
             }
             return Some(zl_slot_obj);

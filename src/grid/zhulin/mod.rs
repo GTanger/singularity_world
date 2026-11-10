@@ -22,7 +22,7 @@ pub use objects::{
     ITEM_FIRE_HARDENED_BAMBOO_KNIFE, ITEM_RHIZOME_CLUB, ITEM_ROASTED_BAMBOO_SHOOT,
     ITEM_ROASTED_WEEVIL, ITEM_SHARP_STONE_FLAKE, ITEM_SHEATH_CORD, ITEM_TERMITE_MUSHROOM,
     ZhulinItemDef, ZhulinTagTriad, append_diegetic_stock_clause, bamboo_culm, bamboo_fungus,
-    bamboo_rhizome, bamboo_sheath, bamboo_shoot, classify_zhulin_item_capabilities, dry_leaves,
+    bamboo_rhizome, bamboo_sheath, bamboo_shoot, campfire, classify_zhulin_item_capabilities, dry_leaves,
     evaluate_fire_weather_shelter, evaluate_zhulin_gather, evaluate_zhulin_gather_with_weather,
     gather_narrative_for_object, inventory_has_capability_tag, lookup_zhulin_item_def,
     lookup_zhulin_object_tags, resolve_bamboo_slot_object, resolve_bamboo_slot_object_with_qty,

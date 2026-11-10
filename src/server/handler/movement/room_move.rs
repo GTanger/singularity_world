@@ -77,6 +77,7 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
             (0, -1) => direction = "南".to_string(),
             (1, 0) => direction = "東".to_string(),
             (-1, 0) => direction = "西".to_string(),
+            (dx, dy) if dx != 0 || dy != 0 => direction = "行旅".to_string(),
             _ => {}
         }
     }
@@ -182,9 +183,9 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         "南" => Some((0, -1)),
         "東" => Some((1, 0)),
         "西" => Some((-1, 0)),
+        "行旅" => msg.x.zip(msg.y).map(|(tx, ty)| (tx - gx, ty - gy)),
         _ => None,
     };
-
 
     if let Some((dx, dy)) = delta_opt {
         let (nx, ny) = (gx + dx, gy + dy);
@@ -193,10 +194,18 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         let target_cell = grid_snap.as_ref().and_then(|g| g.get(target_coord).cloned());
 
         if let Some(cell) = target_cell {
-            let can_move = grid_snap
-                .as_ref()
-                .map(|g| can_step_in_nine_grid(g, SquareCoord::new(gx, gy), target_coord))
-                .unwrap_or_else(|| cell.terrain.walkable());
+            let can_move = if direction == "行旅" {
+                cell.terrain.walkable()
+                    && grid_snap
+                        .as_ref()
+                        .and_then(|g| g.find_path(SquareCoord::new(gx, gy), target_coord))
+                        .is_some()
+            } else {
+                grid_snap
+                    .as_ref()
+                    .map(|g| can_step_in_nine_grid(g, SquareCoord::new(gx, gy), target_coord))
+                    .unwrap_or_else(|| cell.terrain.walkable())
+            };
             if can_move {
                 let old_room = crate::grid::grid_room_id_from_coord(gx, gy);
                 let (gx, gy) = (nx, ny);

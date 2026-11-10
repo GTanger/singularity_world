@@ -12,6 +12,7 @@ pub mod bamboo_fungus;
 pub mod bamboo_rhizome;
 pub mod bamboo_sheath;
 pub mod bamboo_shoot;
+pub mod campfire;
 pub mod dry_leaves;
 
 pub use affordance::{
@@ -283,6 +284,7 @@ pub fn lookup_zhulin_object_tags(obj_id: &str) -> Option<&'static ZhulinTagTriad
         bamboo_rhizome::ID | "zl_obj_bamboo_rhizome" => Some(&bamboo_rhizome::OBJECT_TAGS),
         bamboo_sheath::ID | "zl_obj_bamboo_sheath" => Some(&bamboo_sheath::OBJECT_TAGS),
         bamboo_fungus::ID | "zl_obj_bamboo_fungus" => Some(&bamboo_fungus::OBJECT_TAGS),
+        campfire::ID | "zl_obj_bamboo_campfire" => Some(&campfire::OBJECT_TAGS),
         _ => None,
     }
 }
@@ -332,6 +334,7 @@ pub fn scene_sentence_for_object(obj: &GridObject) -> Option<&'static str> {
         bamboo_rhizome::ID => bamboo_rhizome::scene_sentence(obj.quantity),
         bamboo_sheath::ID => bamboo_sheath::scene_sentence(obj.quantity),
         bamboo_fungus::ID => bamboo_fungus::scene_sentence(obj.quantity),
+        campfire::ID => campfire::scene_sentence(obj.quantity),
         _ => return None,
     };
     if s.is_empty() {
@@ -350,6 +353,7 @@ pub fn cell_tags_for_object_id(id: &str) -> &'static [&'static str] {
         bamboo_rhizome::ID => bamboo_rhizome::CELL_TAGS,
         bamboo_sheath::ID => bamboo_sheath::CELL_TAGS,
         bamboo_fungus::ID => bamboo_fungus::CELL_TAGS,
+        campfire::ID => campfire::CELL_TAGS,
         _ => &["bamboo", "flora"],
     }
 }
@@ -413,6 +417,8 @@ pub fn resolve_bamboo_slot_object(target: &str) -> Option<RoomObject> {
         Some(bamboo_sheath::to_room_object(5))
     } else if t == bamboo_fungus::ID || t == bamboo_fungus::NAME {
         Some(bamboo_fungus::to_room_object(2))
+    } else if t == campfire::ID || t == campfire::NAME {
+        Some(campfire::to_room_object(3))
     } else {
         None
     }
@@ -433,6 +439,8 @@ pub fn resolve_bamboo_slot_object_with_qty(target: &str, qty: u32) -> Option<Roo
         Some(bamboo_sheath::to_room_object(qty))
     } else if t == bamboo_fungus::ID || t == bamboo_fungus::NAME {
         Some(bamboo_fungus::to_room_object(qty))
+    } else if t == campfire::ID || t == campfire::NAME {
+        Some(campfire::to_room_object(qty))
     } else {
         None
     }
@@ -481,6 +489,7 @@ pub fn append_diegetic_stock_clause(
             | bamboo_rhizome::ID
             | bamboo_sheath::ID
             | bamboo_fungus::ID
+            | campfire::ID
     ) || matches!(
         obj_name,
         bamboo_culm::NAME
@@ -489,6 +498,7 @@ pub fn append_diegetic_stock_clause(
             | bamboo_rhizome::NAME
             | bamboo_sheath::NAME
             | bamboo_fungus::NAME
+            | campfire::NAME
     ) {
         return;
     }

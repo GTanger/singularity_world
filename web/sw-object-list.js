@@ -376,7 +376,30 @@
         if (act === 'CarveMark') {
             return (hasAxe || hasFlake) ? '刻竹記號' : '徒手難刻';
         }
-
+        if (act === 'ClearBambooTrail') {
+            return hasAxe ? '劈竹開路' : '無器難闢';
+        }
+        if (act === 'IgniteCampfire') {
+            return '原地生火';
+        }
+        if (act === 'WarmHands' && oid === 'zl_bamboo_campfire') {
+            return '烘火溫養';
+        }
+        if (act === 'CampfireRoastKnife') {
+            return invIds.indexOf('zl_item_aged_bamboo_slat') !== -1 ? '烘烤竹刃' : '';
+        }
+        if (act === 'CampfireRoastShoot') {
+            return (invIds.indexOf('zl_item_bamboo_shoot') !== -1 && invIds.indexOf('zl_item_bamboo_sheath') !== -1) ? '籜裹煨筍' : '';
+        }
+        if (act === 'CampfireRoastFungus') {
+            return (invIds.indexOf('zl_item_bamboo_weevil') !== -1 || invIds.indexOf('zl_item_bamboo_fungus') !== -1 || invIds.indexOf('zl_item_termite_mushroom') !== -1) ? '炭火炙烤' : '';
+        }
+        if (act === 'CampfireBoilSoup') {
+            return (invIds.indexOf('zl_item_bamboo_canteen_full') !== -1 && (invIds.indexOf('zl_item_bamboo_shoot') !== -1 || invIds.indexOf('zl_item_bamboo_fungus') !== -1 || invIds.indexOf('zl_item_termite_mushroom') !== -1)) ? '竹筒煲湯' : '';
+        }
+        if (act === 'CampfirePopCulm') {
+            return invIds.indexOf('zl_item_bamboo_culm') !== -1 ? '投火竹爆' : '';
+        }
         if (act === 'Gather' && obj) {
             var wt = (window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.weather) || (window.gameState && window.gameState() && window.gameState().weather) || null;
             var isMoistSoil = !!(wt && (wt.id === 'zl_weather_post_rain_mist' || wt.event_type === 'plum_rain'));
@@ -1769,6 +1792,10 @@
 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作',
 'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
 'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊', 'CarveMark': '刻竹記號',
+        'ClearBambooTrail': '劈竹開路', 'IgniteCampfire': '原地生火',
+        'CampfireRoastKnife': '烘烤竹刃', 'CampfireRoastShoot': '籜裹煨筍',
+        'CampfireRoastFungus': '炭火炙烤', 'CampfireBoilSoup': '竹筒煲湯',
+        'CampfirePopCulm': '投火竹爆',
         'MakeFire': '生火', 'AddFuel': '添柴', 'SplitWood': '劈柴', 'RefinePlank': '裁鋸木板',
         'BurnCharcoal': '悶燒木炭', 'CraftTorch': '紮製火把', 'CraftHandle': '車削木柄',
         'CollectCharcoal': '收取木炭', 'RoastFood': '炙烤食物', 'RepairStructure': '修繕加固',
@@ -2736,13 +2763,15 @@
             } else if (sceneryName && window.gameSend) {
                 window.gameSend({ type: 'do_action', entity_id: sceneryName, action: 'Look' });
             } else if (objId && window.gameSend) {
+                if (window.SwRoomDesc && typeof window.SwRoomDesc.activateCellObject === 'function') {
+                    window.SwRoomDesc.activateCellObject(objId);
+                }
                 var cardState = card.getAttribute('data-card-state');
                 if (cardState === 'stranger' || cardState === 'observed') {
                     window.gameSend({ type: 'observe', entity_id: objId });
                 }
                 window.gameSend({ type: 'do_action', entity_id: objId, action: 'Look' });
             } else if (entId && window.gameSend) {
-                window.gameSend({ type: 'do_action', entity_id: entId, action: 'Look' });
             }
         });
     }

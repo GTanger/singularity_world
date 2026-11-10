@@ -13,14 +13,27 @@ fn build_grid_view_cells(
 
     // 1. 周圍 radius = 9 格子
     let cells_raw = game::get_grid_cells_around(x, y, 9);
-    for (cx, cy, kind, terrain, category, name, explored, raw_walkable) in cells_raw {
+    for (cx, cy, kind, terrain, category, mut name, explored, raw_walkable) in cells_raw {
         seen_coords.insert((cx, cy));
-        let symbol = grid_snap
+        let mut symbol = grid_snap
             .as_ref()
             .and_then(|g| g.get(SquareCoord::new(cx, cy)))
             .map(|cell| cell.display_symbol().to_string())
             .unwrap_or_else(|| "⋯".to_string());
-
+        if let Some(cell) = grid_snap.as_ref().and_then(|g| g.get(SquareCoord::new(cx, cy))) {
+            if name == "刺竹林" {
+                if cell.has_room_tag("zl_campfire:active")
+                    || cell.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
+                {
+                    name = "竹林營火".to_string();
+                    symbol = "🔥".to_string();
+                } else if crate::grid::zhulin::has_bamboo_trail_mark(cell) {
+                    name = "標記竹徑".to_string();
+                } else if crate::grid::zhulin::is_bamboo_trail_cleared(cell) {
+                    name = "疏竹小徑".to_string();
+                }
+            }
+        }
         // 對於與當前格 (x, y) 緊鄰的四正鄰格，計算 walkable 為從當前格是否可實際走過去；對角角格絕不可走
         let is_neighbor = (cx - x).abs() + (cy - y).abs() == 1;
         let is_diagonal_corner = (cx - x).abs() == 1 && (cy - y).abs() == 1;
@@ -85,16 +98,30 @@ fn build_grid_view_cells(
                 } else {
                     npc_counts.get(&(wx, wy)).copied().unwrap_or(0)
                 };
+                let mut extra_name = cell.name.clone();
+                let mut extra_sym = cell.display_symbol().to_string();
+                if extra_name == "刺竹林" {
+                    if cell.has_room_tag("zl_campfire:active")
+                        || cell.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
+                    {
+                        extra_name = "竹林營火".to_string();
+                        extra_sym = "🔥".to_string();
+                    } else if crate::grid::zhulin::has_bamboo_trail_mark(cell) {
+                        extra_name = "標記竹徑".to_string();
+                    } else if crate::grid::zhulin::is_bamboo_trail_cleared(cell) {
+                        extra_name = "疏竹小徑".to_string();
+                    }
+                }
                 cells.push(GridCellView {
                     x: wx,
                     y: wy,
                     kind: cell.terrain.kind_str().to_string(),
                     terrain: crate::grid::terrain_name_zh(cell.terrain).to_string(),
                     category: cell.terrain.category().to_string(),
-                    name: cell.name.clone(),
+                    name: extra_name,
                     explored: cell.explored,
                     walkable: cell.terrain.walkable(),
-                    symbol: cell.display_symbol().to_string(),
+                    symbol: extra_sym,
                     npc_count: cell_npc_count,
                 });
             }
@@ -169,11 +196,22 @@ fn build_grid_view_exits(
                         .find(|e| e.dir == game_dir && e.target != current_coord)
                     {
                         if let Some(tc) = g.get(ex.target) {
-                            let name = if tc.name.is_empty() {
+                            let mut name = if tc.name.is_empty() {
                                 crate::grid::terrain_name_zh(tc.terrain).to_string()
                             } else {
                                 tc.name.clone()
                             };
+                            if name == "刺竹林" {
+                                if tc.has_room_tag("zl_campfire:active")
+                                    || tc.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
+                                {
+                                    name = "竹林營火".to_string();
+                                } else if crate::grid::zhulin::has_bamboo_trail_mark(tc) {
+                                    name = "標記竹徑".to_string();
+                                } else if crate::grid::zhulin::is_bamboo_trail_cleared(tc) {
+                                    name = "疏竹小徑".to_string();
+                                }
+                            }
                             exits_v5.insert(
                                 dir_key.to_string(),
                                 serde_json::json!({
@@ -228,11 +266,22 @@ fn build_grid_view_exits(
                     let neighbor = g.get(crate::grid::SquareCoord::new(nx, ny));
                     match neighbor {
                         Some(nc) => {
-                            let name = if nc.name.trim().is_empty() {
+                            let mut name = if nc.name.trim().is_empty() {
                                 crate::grid::terrain_name_zh(nc.terrain).to_string()
                             } else {
                                 nc.name.clone()
                             };
+                            if name == "刺竹林" {
+                                if nc.has_room_tag("zl_campfire:active")
+                                    || nc.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
+                                {
+                                    name = "竹林營火".to_string();
+                                } else if crate::grid::zhulin::has_bamboo_trail_mark(nc) {
+                                    name = "標記竹徑".to_string();
+                                } else if crate::grid::zhulin::is_bamboo_trail_cleared(nc) {
+                                    name = "疏竹小徑".to_string();
+                                }
+                            }
                             let can_step = !in_private_room
                                 && g.can_walk(current_coord, crate::grid::SquareCoord::new(nx, ny));
                             exits_v5.insert(
@@ -527,12 +576,41 @@ fn build_grid_view_objects(
         };
         if objs.is_empty() {
             if let Some(cell) = &current_cell {
+                let has_campfire = cell
+                    .objects
+                    .iter()
+                    .any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0);
                 for obj in &cell.objects {
                     if is_bamboo_slot && obj.quantity == 0 {
                         continue;
                     }
-                    let actions = if is_bamboo_slot && obj.id == "zl_bamboo_culm" && obj.quantity > 0 {
-                        vec!["Look".to_string(), "Gather".to_string(), "CarveMark".to_string()]
+                    let actions = if is_bamboo_slot && obj.id == "zl_bamboo_campfire" && obj.quantity > 0 {
+                        vec![
+                            "Look".to_string(),
+                            "WarmHands".to_string(),
+                            "CampfireRoastKnife".to_string(),
+                            "CampfireRoastShoot".to_string(),
+                            "CampfireRoastFungus".to_string(),
+                            "CampfireBoilSoup".to_string(),
+                            "CampfirePopCulm".to_string(),
+                        ]
+                    } else if is_bamboo_slot && obj.id == "zl_bamboo_culm" && obj.quantity > 0 {
+                        vec![
+                            "Look".to_string(),
+                            "Gather".to_string(),
+                            "ClearBambooTrail".to_string(),
+                            "CarveMark".to_string(),
+                        ]
+                    } else if is_bamboo_slot && obj.id == "zl_dry_leaves" && obj.quantity > 0 {
+                        if has_campfire {
+                            vec!["Look".to_string(), "Gather".to_string()]
+                        } else {
+                            vec![
+                                "Look".to_string(),
+                                "Gather".to_string(),
+                                "IgniteCampfire".to_string(),
+                            ]
+                        }
                     } else if obj.quantity > 0 {
                         vec!["Look".to_string(), "Gather".to_string()]
                     } else {
