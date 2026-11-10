@@ -3029,11 +3029,14 @@
         }
         if (nextRoomId) mapData.currentRoomId = nextRoomId;
         mapData.currentRoomName = (msg.place && msg.place.name) || (msg.terrain && msg.terrain.name) || mapData.currentRoomName || '';
-        // 更新 objects / entities
+        // 更新 objects / entities / weather
+        if (msg.weather) mapData.weather = msg.weather;
         if (msg.objects) mapData.objects = msg.objects;
         mapData.npcs = Array.isArray(msg.npcs) ? msg.npcs : null;
         if (typeof msg.total_npc_count === 'number') mapData.total_npc_count = msg.total_npc_count;
-
+        if (window.SwClock && typeof window.SwClock.updateDisplay === 'function') {
+            window.SwClock.updateDisplay();
+        }
         if (Array.isArray(msg.cells) || Array.isArray(msg.grid_cells)) {
             var rawCells = Array.isArray(msg.cells) ? msg.cells : msg.grid_cells;
             mapData.cells = ingestGridCells(rawCells, mapData.playerX, mapData.playerY);

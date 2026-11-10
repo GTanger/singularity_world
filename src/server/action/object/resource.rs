@@ -111,7 +111,7 @@ fn try_grid_cell_object_action(
                             let remaining_qty = target_obj.quantity;
                             let obj_name = target_obj.name.clone();
                             let obj_id = target_obj.id.clone();
-                            crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
+                            crate::grid::zhulin::record_bamboo_gather_pressure(cell);
                             updated_state = Some((
                                 cell.explored,
                                 cell.freshness,

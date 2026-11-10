@@ -156,16 +156,26 @@ pub fn roll_bamboo_three_slots(
     [slot1, slot2, slot3]
 }
 
-/// 根據格內當前剩餘存量 > 0 的槽位物件，動態拼出【刺竹林】地形格的場景描述
+/// 根據格內當前剩餘存量 > 0 的槽位物件與當前天氣物件，動態拼出【刺竹林】地形格的場景描述（嚴守手機 4 行不截斷）
 pub fn compose_bamboo_description_from_objects(
     is_waterside: bool,
     objects: &[GridObject],
 ) -> String {
-    let mut desc = String::from(if is_waterside {
-        BASE_DESC_WATERSIDE
-    } else {
-        BASE_DESC_DRY
-    });
+    let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
+    let base_clause = match w_def.id {
+        "zl_weather_sea_gale" => "枝刺交錯的原生刺竹林，九降勁風吹得竹梢翻湧呼嘯。",
+        "zl_weather_mountain_rain" => "枝刺交錯的原生刺竹林，山雨霏微打在竹冠沙沙作響。",
+        "zl_weather_post_rain_mist" => "枝刺交錯的原生刺竹林，雨後初霽水氣蒸騰、紅土濕軟。",
+        "zl_weather_morning_dew_fog" => "枝刺交錯的原生刺竹林，林間晨霧流轉、竹葉凝滿露珠。",
+        _ => {
+            if is_waterside {
+                BASE_DESC_WATERSIDE
+            } else {
+                BASE_DESC_DRY
+            }
+        }
+    };
+    let mut desc = String::from(base_clause);
 
     for obj in objects {
         if let Some(sentence) = objects::scene_sentence_for_object(obj) {
@@ -205,13 +215,14 @@ pub fn build_bamboo_terrain_cell(
         .filter_map(BambooSlotKind::into_grid_object)
         .collect();
 
-    let has_culm = cell_objects.iter().any(|o| o.id == bamboo_culm::ID);
-    let terrain = if has_culm {
+    let has_standing_culm = cell_objects
+        .iter()
+        .any(|o| o.id == bamboo_culm::ID && o.quantity > 0);
+    let terrain = if has_standing_culm {
         Terrain::ForestHeavy
     } else {
         Terrain::Forest
     };
-
     let mut cell = GridCell::new(coord, terrain, BAMBOO_TERRAIN_NAME);
     cell.zone = zone.to_string();
     cell.explored = true;
@@ -223,6 +234,10 @@ pub fn build_bamboo_terrain_cell(
     ];
     if is_waterside {
         tags.push("waterside".to_string());
+    }
+    if has_standing_culm {
+        tags.push("windbreak".to_string());
+        tags.push("canopy_shelter".to_string());
     }
     for obj in &cell_objects {
         if obj.quantity > 0 {
@@ -250,8 +265,69 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
     if !is_bamboo_slot_cell(cell) {
         return;
     }
+
+    let has_standing_culm = cell
+        .objects
+        .iter()
+        .any(|o| o.id == bamboo_culm::ID && o.quantity > 0);
+    let culm_felled_to_zero = cell
+        .objects
+        .iter()
+        .any(|o| o.id == bamboo_culm::ID && o.quantity == 0);
+
+    if has_standing_culm {
+        cell.terrain = Terrain::ForestHeavy;
+    } else {
+        cell.terrain = Terrain::Forest;
+    }
+
+    // 若主幹被伐倒至 0 且地表無現存乾竹葉層，產出 6 把乾竹葉層
+    if culm_felled_to_zero {
+        let has_active_leaves = cell
+            .objects
+            .iter()
+            .any(|o| o.id == objects::dry_leaves::ID && o.quantity > 0);
+        if !has_active_leaves {
+            if let Some(leaves_obj) = cell
+                .objects
+                .iter_mut()
+                .find(|o| o.id == objects::dry_leaves::ID)
+            {
+                leaves_obj.quantity = 6;
+            } else if cell.objects.len() < 3 {
+                if let Some(obj) = BambooSlotKind::DryLeaves(6).into_grid_object() {
+                    cell.objects.push(obj);
+                }
+            } else if let Some(zero_non_culm) = cell
+                .objects
+                .iter_mut()
+                .find(|o| o.id != bamboo_culm::ID && o.quantity == 0)
+            {
+                if let Some(obj) = BambooSlotKind::DryLeaves(6).into_grid_object() {
+                    *zero_non_culm = obj;
+                }
+            } else if cell.objects.len() <= 3 {
+                if let Some(obj) = BambooSlotKind::DryLeaves(6).into_grid_object() {
+                    cell.objects.push(obj);
+                }
+            }
+        }
+    }
+
     let is_waterside = cell.has_room_tag("waterside");
     cell.description = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
+
+    // 保留生態中繼標籤（zl_roll_day:, zl_weather_epoch:, zl_pressure:）
+    let preserved_meta_tags: Vec<String> = cell
+        .tags
+        .iter()
+        .filter(|t| {
+            t.starts_with("zl_roll_day:")
+                || t.starts_with("zl_weather_epoch:")
+                || t.starts_with("zl_pressure:")
+        })
+        .cloned()
+        .collect();
 
     let mut tags = vec![
         "bamboo".to_string(),
@@ -260,6 +336,10 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
     ];
     if is_waterside {
         tags.push("waterside".to_string());
+    }
+    if has_standing_culm {
+        tags.push("windbreak".to_string());
+        tags.push("canopy_shelter".to_string());
     }
     for obj in &cell.objects {
         if obj.quantity > 0 {
@@ -275,7 +355,181 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
             tags.push(derived);
         }
     }
+    for meta in preserved_meta_tags {
+        if !tags.iter().any(|t| t == &meta) {
+            tags.push(meta);
+        }
+    }
     cell.tags = tags;
+}
+
+/// 取得竹林格當前的採集枯竭壓力值（預設 0）
+pub fn get_bamboo_cell_pressure(cell: &GridCell) -> u32 {
+    for tag in &cell.tags {
+        if let Some(rest) = tag.strip_prefix("zl_pressure:") {
+            if let Ok(v) = rest.parse::<u32>() {
+                return v;
+            }
+        }
+    }
+    0
+}
+
+/// 設定或覆寫竹林格特定前綴的生態中繼標籤
+pub fn set_bamboo_cell_meta_tag(tags: &mut Vec<String>, prefix: &str, val: impl std::fmt::Display) {
+    tags.retain(|t| !t.starts_with(prefix));
+    tags.push(format!("{prefix}{val}"));
+}
+
+/// 記錄採集枯竭壓力（增加 +1 壓力，並刷新格況）
+pub fn record_bamboo_gather_pressure(cell: &mut GridCell) {
+    let current = get_bamboo_cell_pressure(cell);
+    set_bamboo_cell_meta_tag(&mut cell.tags, "zl_pressure:", current.saturating_add(1));
+    refresh_bamboo_cell_after_gather(cell);
+}
+
+/// 延遲評估竹林格物候與採集壓力復生邏輯
+pub fn lazy_refresh_bamboo_cell(
+    cell: &mut GridCell,
+    current_game_day: i32,
+    weather_tags: &[&str],
+    weather_epoch: i64,
+) -> bool {
+    if !is_bamboo_slot_cell(cell) {
+        return false;
+    }
+
+    let last_roll_day = cell
+        .tags
+        .iter()
+        .find_map(|t| t.strip_prefix("zl_roll_day:").and_then(|v| v.parse::<i32>().ok()));
+    let last_weather_epoch = cell
+        .tags
+        .iter()
+        .find_map(|t| t.strip_prefix("zl_weather_epoch:").and_then(|v| v.parse::<i64>().ok()));
+
+    if last_roll_day.is_none() {
+        set_bamboo_cell_meta_tag(&mut cell.tags, "zl_roll_day:", current_game_day);
+        set_bamboo_cell_meta_tag(&mut cell.tags, "zl_weather_epoch:", weather_epoch);
+        return false;
+    }
+
+    let prev_day = last_roll_day.unwrap_or(current_game_day);
+    let day_advanced = current_game_day > prev_day;
+    let is_reactive_weather = weather_tags.contains(&"rhizome_awakening")
+        || weather_tags.contains(&"fungus_blooming")
+        || weather_tags.contains(&"canopy_shedding");
+    let weather_triggered =
+        is_reactive_weather && weather_epoch > last_weather_epoch.unwrap_or(0);
+
+    if !day_advanced && !weather_triggered {
+        return false;
+    }
+
+    let mut pressure = get_bamboo_cell_pressure(cell);
+    if day_advanced {
+        let days = (current_game_day - prev_day).max(1) as u32;
+        pressure = pressure.saturating_sub(days * 2);
+    }
+
+    let h = slot_hash(
+        cell.coord.x,
+        cell.coord.y,
+        (current_game_day as u64).wrapping_add(weather_epoch as u64),
+        crate::grid::SHALU_ZHULIN_WORLD_SEED,
+    );
+
+    if pressure >= 3 && (h % 100) < 85 {
+        set_bamboo_cell_meta_tag(&mut cell.tags, "zl_roll_day:", current_game_day);
+        set_bamboo_cell_meta_tag(&mut cell.tags, "zl_weather_epoch:", weather_epoch);
+        set_bamboo_cell_meta_tag(&mut cell.tags, "zl_pressure:", pressure);
+        refresh_bamboo_cell_after_gather(cell);
+        return true;
+    }
+
+    if day_advanced {
+        for obj in &mut cell.objects {
+            if obj.id == bamboo_culm::ID && obj.quantity < obj.max_quantity {
+                obj.quantity = (obj.quantity + 2).min(obj.max_quantity);
+            }
+        }
+    }
+
+    if weather_tags.contains(&"rhizome_awakening") || weather_tags.contains(&"fungus_blooming") {
+        let target_qty = 2 + (h % 2) as u32;
+        if let Some(shoot_obj) = cell
+            .objects
+            .iter_mut()
+            .find(|o| o.id == objects::bamboo_shoot::ID)
+        {
+            shoot_obj.quantity = target_qty.max(shoot_obj.quantity);
+        } else if let Some(depleted_non_culm) = cell
+            .objects
+            .iter_mut()
+            .find(|o| o.id != bamboo_culm::ID && o.quantity == 0)
+        {
+            if let Some(obj) = BambooSlotKind::BambooShoot(target_qty).into_grid_object() {
+                *depleted_non_culm = obj;
+            }
+        } else if cell.objects.len() < 3 {
+            if let Some(obj) = BambooSlotKind::BambooShoot(target_qty).into_grid_object() {
+                cell.objects.push(obj);
+            }
+        }
+
+        if weather_tags.contains(&"fungus_blooming") && (h >> 8) % 100 < 65 {
+            if let Some(fungus_obj) = cell
+                .objects
+                .iter_mut()
+                .find(|o| o.id == objects::bamboo_fungus::ID)
+            {
+                fungus_obj.quantity = 2.max(fungus_obj.quantity);
+            } else if cell.objects.len() < 3 {
+                let qty = 1 + ((h >> 12) % 2) as u32;
+                if let Some(obj) = BambooSlotKind::BambooFungus(qty).into_grid_object() {
+                    cell.objects.push(obj);
+                }
+            }
+        }
+    }
+
+    if weather_tags.contains(&"canopy_shedding") {
+        let leaf_qty = 10 + (h % 5) as u32;
+        if let Some(leaves_obj) = cell
+            .objects
+            .iter_mut()
+            .find(|o| o.id == objects::dry_leaves::ID)
+        {
+            leaves_obj.quantity = leaf_qty.max(leaves_obj.quantity);
+        } else if cell.objects.len() < 3 {
+            if let Some(obj) = BambooSlotKind::DryLeaves(leaf_qty).into_grid_object() {
+                cell.objects.push(obj);
+            }
+        }
+
+        let sheath_qty = 5 + (h % 3) as u32;
+        if let Some(sheath_obj) = cell
+            .objects
+            .iter_mut()
+            .find(|o| o.id == objects::bamboo_sheath::ID)
+        {
+            sheath_obj.quantity = sheath_qty.max(sheath_obj.quantity);
+        }
+    }
+
+    if day_advanced {
+        for obj in &mut cell.objects {
+            if obj.id != bamboo_culm::ID && obj.quantity == 0 {
+                obj.quantity = obj.max_quantity.max(1);
+            }
+        }
+    }
+
+    set_bamboo_cell_meta_tag(&mut cell.tags, "zl_roll_day:", current_game_day);
+    set_bamboo_cell_meta_tag(&mut cell.tags, "zl_weather_epoch:", weather_epoch);
+    set_bamboo_cell_meta_tag(&mut cell.tags, "zl_pressure:", pressure);
+    refresh_bamboo_cell_after_gather(cell);
+    true
 }
 
 #[cfg(test)]
@@ -539,5 +793,104 @@ mod tests {
             classify_zhulin_item_capabilities("zl_item_bamboo_shoot"),
             Some(("raw".to_string(), true, "煨烤熟食".to_string()))
         );
+    }
+
+    #[test]
+    fn standing_culm_shelter_and_clear_cut_degradation_work() {
+        let mut cell = build_bamboo_terrain_cell(
+            SquareCoord::new(-1, 0),
+            "紅土西麓",
+            false,
+            2026_11_10,
+        );
+        // 初始狀態具備立竹 (quantity > 0)
+        assert_eq!(cell.terrain, Terrain::ForestHeavy);
+        assert!(cell.has_room_tag("windbreak"));
+        assert!(cell.has_room_tag("canopy_shelter"));
+
+        // 移除或伐倒竹葉與立竹
+        for obj in &mut cell.objects {
+            if obj.id == bamboo_culm::ID {
+                obj.quantity = 0;
+            }
+            if obj.id == dry_leaves::ID {
+                obj.quantity = 0;
+            }
+        }
+        refresh_bamboo_cell_after_gather(&mut cell);
+
+        // 伐倒後林冠稀疏：退化為普通森林、移除防風與林冠遮蔽標籤
+        assert_eq!(cell.terrain, Terrain::Forest);
+        assert!(!cell.has_room_tag("windbreak"));
+        assert!(!cell.has_room_tag("canopy_shelter"));
+
+        // 掉落枝葉覆蓋：地面留下 6 把乾竹葉層
+        let leaves = cell
+            .objects
+            .iter()
+            .find(|o| o.id == dry_leaves::ID)
+            .expect("Must leave dry leaves upon clear-cutting");
+        assert_eq!(leaves.quantity, 6);
+    }
+
+    #[test]
+    fn lazy_refresh_rhizome_awakening_spawns_bamboo_shoots() {
+        let mut cell = build_bamboo_terrain_cell(
+            SquareCoord::new(-1, -1),
+            "紅土西麓",
+            false,
+            2026_11_10,
+        );
+        // (-1, -1) 初始只有 culm，無竹筍
+        assert!(!cell.objects.iter().any(|o| o.id == bamboo_shoot::ID));
+
+        // 初始造訪蓋印
+        let rolled_first = lazy_refresh_bamboo_cell(&mut cell, 1, &[], 100);
+        assert!(!rolled_first);
+
+        // 在雨後初霽物候下推進時間
+        let weather_tags = ["rhizome_awakening", "dappled_sunlight"];
+        let rolled = lazy_refresh_bamboo_cell(&mut cell, 2, &weather_tags, 200);
+        assert!(rolled);
+
+        let shoot = cell
+            .objects
+            .iter()
+            .find(|o| o.id == bamboo_shoot::ID)
+            .expect("Shoot must emerge under rhizome awakening");
+        assert!((2..=3).contains(&shoot.quantity));
+    }
+
+    #[test]
+    fn foraging_pressure_increments_and_suppresses_regeneration() {
+        let mut cell = build_bamboo_terrain_cell(
+            SquareCoord::new(1, 0),
+            "紅土西麓",
+            false,
+            2026_11_10,
+        );
+        assert_eq!(get_bamboo_cell_pressure(&cell), 0);
+
+        // 採集 3 次增加壓力
+        record_bamboo_gather_pressure(&mut cell);
+        record_bamboo_gather_pressure(&mut cell);
+        record_bamboo_gather_pressure(&mut cell);
+        assert_eq!(get_bamboo_cell_pressure(&cell), 3);
+
+        // 清空非立竹物件存量以檢驗復生被踩踏抑制
+        for obj in &mut cell.objects {
+            if obj.id != bamboo_culm::ID {
+                obj.quantity = 0;
+            }
+        }
+        refresh_bamboo_cell_after_gather(&mut cell);
+
+        // 初始戳記
+        lazy_refresh_bamboo_cell(&mut cell, 1, &[], 100);
+
+        // 測試壓力衰減：休養 2 天 (-2 * 2 = -4)，壓力歸零
+        let days_advanced = lazy_refresh_bamboo_cell(&mut cell, 3, &[], 300);
+        assert!(days_advanced);
+        assert_eq!(get_bamboo_cell_pressure(&cell), 0);
     }
 }

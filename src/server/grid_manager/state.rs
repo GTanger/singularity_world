@@ -24,11 +24,15 @@ pub fn init() {
             .get(crate::grid::SquareCoord::new(-1, 0))
             .map(|c| {
                 c.name == "刺竹林"
+                    && c.has_room_tag("windbreak")
                     && c.objects
                         .iter()
                         .any(|o| o.id == "zl_bamboo_culm" && o.max_quantity >= 6)
             })
-            .unwrap_or(false);
+            .unwrap_or(false)
+        && !grid
+            .cells()
+            .any(|c| c.coord.x <= -30 && crate::grid::zhulin::is_bamboo_slot_cell(c));
     if !is_shalu_zhulin {
         tracing::info!(
             "grid_manager: 切換為滅世後的新生自然世界【紅土西麓 ↔ 台地稜線】(舊格數={}, 舊種子={})",

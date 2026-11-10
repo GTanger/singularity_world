@@ -3,7 +3,7 @@
 //! 核心契約：
 //! 1. 地圖是一個物件（`SquareGrid`），腳下的每一格（`GridCell`）都是一個具體物件（`一格一物件`），
 //!    格子上的可採集／可互動實體（`GridObject`）與後端標籤（`tags`）、存量（`quantity` / `max_quantity`）直接綁定。
-//! 2. 絕不在單一格子內塞入多個互斥地貌或僅靠散文無中生有；相異地物（如卵石灘、伏流冷泉、合抱刺竹、破土巨筍、百年老樟）
+//! 2. 絕不在單一格子內塞入多個互斥地貌或僅靠散文無中生有；各異地物（如卵石灘、伏流冷泉、合抱刺竹、破土巨筍、百年老樟）
 //!    各自佔據獨立座標格，實現真正的空間與物件精準定位。
 
 use std::collections::HashMap;
@@ -682,7 +682,7 @@ pub fn generate_shalu_zhulin_grid() -> SquareGrid {
                 let r_bamboo = ((fx * 0.82).powi(2) + (fy * 0.65).powi(2)).sqrt()
                     + 1.8 * (theta * 3.0).sin()
                     + 1.1 * (theta * 5.0 + 0.7).cos();
-                if r_bamboo <= 8.4 || (band_x <= 6.5 && h < 45) {
+                if r_bamboo <= 8.4 || (band_x >= -8.0 && band_x <= 6.5 && h < 45) {
                     let is_waterside = (x.abs() <= 1 && (y - 1).abs() <= 1) || h < 30;
                     let cell = crate::grid::zhulin::build_bamboo_terrain_cell(
                         coord,
@@ -1021,5 +1021,26 @@ mod tests {
             .expect("Must locate camphor cell by tag");
         assert_eq!((cx, cy), (1, -1));
         assert_eq!(grid.get(SquareCoord::new(cx, cy)).unwrap().objects[0].name, "百年老樟樹");
+
+        // 驗證西側外海與海岸線防線：x <= -30 絕不生成海外竹林島，x <= -46 全數為深水外海
+        for cell in grid.cells() {
+            if cell.coord.x <= -30 {
+                assert!(
+                    !crate::grid::zhulin::is_bamboo_slot_cell(cell),
+                    "Cell at ({}, {}) should not be a bamboo cell in western ocean",
+                    cell.coord.x,
+                    cell.coord.y
+                );
+            }
+            if cell.coord.x <= -48 {
+                assert_eq!(
+                    cell.terrain,
+                    Terrain::WaterDeep,
+                    "Cell at ({}, {}) in far western deep ocean must be WaterDeep",
+                    cell.coord.x,
+                    cell.coord.y
+                );
+            }
+        }
     }
 }

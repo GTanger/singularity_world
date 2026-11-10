@@ -1,6 +1,6 @@
 # 新生世界竹林地區：地形格模版、三層標籤契約與拉霸採集物件設計規範
 
-- **狀態**：第一章「刺竹林地形格」、第二章「6 大純竹採集物件與獨立產出物（三層標籤契約）」、第三章「同系列竹林之地域特產與風土分化機制」、第四章「三階採集物理門檻與標籤對撞啟動鏈（零死鎖閉環）」正式定案並實裝
+- **狀態**：第一章至第六章（刺竹林地形格、6 大純竹物件與三層標籤契約、地域特產分化、三階採集門檻與啟動鏈、伐竹退化 × 雨後春筍惰性重抽 × 踩踏枯竭圈、5 大天氣物件化與三方標籤對撞）正式定案
 - **日期**：2026-11-09
 - **核心原則**：
   1. **萬物皆物件（容器階層）**：整張地圖（`SquareGrid`）是一個大物件 $\supset$ 腳下的每一格（`GridCell`）本身是一個「地形物件（Terrain Object）」 $\supset$ 地形物件內部裝載 **3 個採集槽位（Slots）**。
@@ -102,3 +102,45 @@
    - **`刺竹稈` `[裁製竹器]`**：依 `hollow_jointed` 與 `splittable` 標籤裁出 **`青竹水筒`**（`zl_item_bamboo_canteen`）與 **`掘土竹鏟`**（`zl_item_bamboo_spade`）。
    - **`乾竹葉` `[引火竹爆]`**：結合 `kindling` 與 `刺竹稈` 之 `flammable_pop` 屬性生火並觸發爆竹驚獸，驅散寒濕疲勞。
    - **`鮮刺竹筍`／`野竹耳` `[煨烤熟食]`**：結合 `roastable`、引火材與 `韌竹籜`（`wrapping_sheet`）煨烤出 **`籜裹煨竹筍`**（`zl_item_roasted_bamboo_shoot`）。
+
+---
+
+## 第五章：伐竹退化、黎明與「雨後春筍」惰性重抽（Lazy Roll）及馮・杜能採集枯竭圈
+
+### 5.1 切斷舊式背景無腦回血：竹林格退出每秒固定 `+regrowth_per_tick`
+- 採用 3 槽位拉霸之竹林格（`is_bamboo_slot_cell`）退出 `simulation.rs` 每 tick 自動遞增存量之舊迴圈，確保「採空即變 `[空白]`、場景短句即時移除」，統一由玩家踏入或觀察該格時執行**惰性重抽（Lazy Roll on Visit）**。
+
+### 5.2 槽位 1【合抱刺竹叢】伐盡後的地表退化與林冠疏化
+- 當槽位 1 之【合抱刺竹叢】被砍伐至 `0` 根時：
+  1. 該格地形遮蔽由濃密 `Terrain::ForestHeavy` 轉為一般 `Terrain::Forest`；
+  2. 若該格原本無【乾竹葉層】，伐竹震落之枝葉自動於地面留下一層 `6 把` 可撿拾之【乾竹葉層】，避免成竹伐盡後變成毫無物產之死地。
+
+### 5.3 跨日黎明 ＆「雨後春筍」惰性重抽（由第六章「天氣物件」之屬性標籤驅動）
+- **惰性重抽雙觸發條件（僅於玩家踏入或端詳該格時結算）**：
+  1. **跨日黎明更新**：當前遊戲日 `current_game_day > last_roll_day`；
+  2. **雨後春筍突發更新**：當前主天象為具備 `rhizome_awakening` 或 `canopy_shedding` 屬性標籤之天氣物件，且該天候周期尚未在此格觸發過重抽。
+- **天時標籤生態加成**：當主天象帶有 `rhizome_awakening` / `fungus_blooming`（如【雨後初霽】、【山雨霏微】）時，槽位 2、3 抽出【破土竹筍】與【竹根木耳】之機率翻倍，且竹筍初始株數提升為 `2～3 株`；當帶有 `canopy_shedding`（如【九降疾風】）時，大幅提高【乾竹葉層】與【枯黃竹籜】補充率。
+
+### 5.4 馮・杜能採集枯竭圈（人跡踩踏壓力 `zl_pressure:{n}` 與休養輪作）
+- **累積踩踏壓力**：每次於該竹林格成功採集，該格之 `zl_pressure:{n}` 標籤計數 `+1`。
+- **高壓抑制再生**：當 `pressure >= 3`（原地反覆密集採集）時，重抽拉霸有 `85%` 機率因泥土踩實而維持 `[空白]`。
+- **休養復甦**：每跨過 1 個未採集之遊戲日，`pressure` 自動衰減 `-2`，引導玩家向外圈深處竹海探索並讓近處竹林自然休養。
+
+---
+
+## 第六章：天氣亦為物件（`src/grid/zhulin/weather/*.rs`）与「天氣 × 地形 × 物品」三方標籤對撞
+
+### 6.1 核心架構：廢除「文字皮膚」式亂數天氣，1 個天氣 1 個檔案＋三層正交標籤
+- 每種天氣皆為獨立物件（`ZhulinWeatherDef`），定義專屬 ID（`exclusive_tag`）、類別標籤（`category_tags`）、物理作用屬性標籤（`attribute_tags`）及自帶環境動態短句。
+- 全區共享連貫自然物候演進（`朗日晴空` $\to$ `九降疾風` $\to$ `山雨霏微` $\to$ `雨後初霽` $\to$ `朗日晴空`，破曉清晨時段為 `晨霧凝露`），消除一格之隔兩重天的假象。
+- 刺竹林格在尚存【合抱刺竹叢】（`quantity > 0`）時，自動掛載 `windbreak`（防風林障）與 `canopy_shelter`（竹冠遮雨）地形標籤；一旦成竹被砍空（`quantity == 0`），立即失去此二遮蔽標籤。
+
+### 6.2 台灣西麓 5 大天氣物件規格表（`src/grid/zhulin/weather/*.rs`）
+
+| 編號 | 檔案模組 | 天氣物件名稱 (`id` / 頂欄簡稱) | 類別標籤 (`category_tags`) | 屬性標籤 (`attribute_tags`) | 三方標籤對撞之真實物理與玩法效果 |
+| :---: | :--- | :--- | :--- | :--- | :--- |
+| **1** | `clear_sun.rs` | **【朗日晴空】**<br>(`zl_weather_clear_sun` / `晴朗`) | `weather, clear_sky, solar_phase` | `solar_warming, air_drying, clear_visibility` | 全地形正常引火野炊；具備 `air_drying`（日曬風乾）。 |
+| **2** | `sea_gale.rs` | **【九降疾風】**<br>(`zl_weather_sea_gale` / `勁風`) | `weather, air_current, monsoon_wind` | `gale_force, canopy_shedding, air_drying` | `gale_force` 吹散露天火苗，需於具備 `windbreak`（留有合抱刺竹叢）之竹林格內方可引火；`canopy_shedding` 吹落枯葉與竹籜加速補充。 |
+| **3** | `mountain_rain.rs` | **【山雨霏微】**<br>(`zl_weather_mountain_rain` / `微雨`) | `weather, precipitation, rain_shower` | `wetting, rain_harvestable, rhizome_soaking` | `wetting` 澆熄露天火苗，需於具備 `canopy_shelter`（濃密刺竹冠）下生火；`rain_harvestable` 可持青竹水筒就地接雨飲用。 |
+| **4** | `post_rain_mist.rs` | **【雨後初霽】**<br>(`zl_weather_post_rain_mist` / `雨霽`) | `weather, post_precipitation, humid_clearing` | `rhizome_awakening, fungus_blooming, moist_soil` | `rhizome_awakening` + `fungus_blooming` 觸發雨後春筍與木耳大爆發；`moist_soil` 泥土濕軟使徒手拔筍亦能 1:1 零折損。 |
+| **5** | `morning_dew_fog.rs` | **【晨霧凝露】**<br>(`zl_weather_morning_dew_fog` / `晨霧`) | `weather, condensation, mist_veil` | `dew_condensing, fungus_blooming, cool_damp` | 破曉清晨（05:00–08:00）自然浮現；`dew_condensing` 使地表乾葉微潮（單靠乾葉引火需多耗 1 把），並助長竹根木耳。 |

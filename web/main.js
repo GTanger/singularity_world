@@ -848,6 +848,7 @@
 						if (msg.room_id) state.room_id = msg.room_id;
 						if (roomEnterName) state.room_name = roomEnterName;
 						if (msg.terrain && msg.terrain.description) state.description = msg.terrain.description;
+						if (msg.weather) state.weather = msg.weather;
 						if (Array.isArray(msg.exits)) state.exits = msg.exits;
 						if (Array.isArray(msg.objects)) state.objects = msg.objects;
 						if (Array.isArray(msg.entities)) {

@@ -580,6 +580,9 @@ pub(super) fn run_wilderness_ecology_and_campfire_tick(now_unix: i64) {
     let modified_cells = crate::server::grid_manager::with_square_grid_mut_in_memory(|g| {
         let mut modified = Vec::new();
         for cell in g.cells_mut() {
+            if crate::grid::zhulin::is_bamboo_slot_cell(cell) {
+                continue;
+            }
             let mut changed = false;
             for obj in &mut cell.objects {
                 if obj.quantity < obj.max_quantity && obj.regrowth_per_tick > 0 {
@@ -657,6 +660,9 @@ pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
                 .map(|p| p.zone.clone())
                 .filter(|r| !r.trim().is_empty())
                 .collect();
+            if !ids.iter().any(|r| r == "default") {
+                ids.push("default".to_string());
+            }
             ids.sort();
             ids.dedup();
             ids
@@ -683,19 +689,25 @@ pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
         }
         let roll: f64 = rng.random();
         if roll < CHANGE_PROB {
-            let can_snow = matches!(
-                climate.region_id.as_str(),
-                "wt-n-sacred-mountain"
-                    | "wt-n-north-crown-sea"
-                    | "wt-c-sacred-tower"
-                    | "wt-e-green-ridge"
-            );
-            let allowed_events: &[&str] = if can_snow {
-                CLIMATE_EVENTS
+            let new_event = if !climate.region_id.starts_with("wt-") {
+                let gh = crate::store::current_game_hour() as u32;
+                crate::grid::zhulin::weather::next_zhulin_weather_in_cycle(&climate.event_type, gh)
+                    .legacy_key
             } else {
-                &["clear", "rain", "wind", "plum_rain"]
+                let can_snow = matches!(
+                    climate.region_id.as_str(),
+                    "wt-n-sacred-mountain"
+                        | "wt-n-north-crown-sea"
+                        | "wt-c-sacred-tower"
+                        | "wt-e-green-ridge"
+                );
+                let allowed_events: &[&str] = if can_snow {
+                    CLIMATE_EVENTS
+                } else {
+                    &["clear", "rain", "wind", "plum_rain"]
+                };
+                allowed_events[rng.random_range(0..allowed_events.len())]
             };
-            let new_event = allowed_events[rng.random_range(0..allowed_events.len())];
             if new_event == climate.event_type {
                 continue;
             }

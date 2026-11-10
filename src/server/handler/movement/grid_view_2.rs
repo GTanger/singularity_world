@@ -462,8 +462,35 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         }
         // 取當前格資料，供前端 L3 渲染用。玩家層不能只收到 icon_key，
         // 否則聚落/道路/建築類地形會退成空白方塊。
+        let target_coord = crate::grid::SquareCoord::new(x, y);
+        if crate::server::grid_manager::get_runtime_grid_cell(target_coord)
+            .as_ref()
+            .is_some_and(crate::grid::zhulin::is_bamboo_slot_cell)
+        {
+            let (w_def, w_epoch) = crate::grid::zhulin::weather::current_world_zhulin_weather();
+            let mut lazy_updated = None;
+            crate::server::grid_manager::with_square_grid_mut_in_memory(|g| {
+                if let Some(cell) = g.get_mut(target_coord) {
+                    if crate::grid::zhulin::lazy_refresh_bamboo_cell(
+                        cell,
+                        base.game_days_since_epoch,
+                        w_def.tags.attribute_tags,
+                        w_epoch,
+                    ) {
+                        lazy_updated = Some((
+                            cell.explored,
+                            cell.freshness,
+                            cell.objects.clone(),
+                        ));
+                    }
+                }
+            });
+            if let Some((explored, freshness, objs)) = lazy_updated {
+                let _ = crate::db::update_cell_state(x, y, explored, freshness, &objs);
+            }
+        }
         let current_cell =
-            crate::server::grid_manager::get_runtime_grid_cell(crate::grid::SquareCoord::new(x, y));
+            crate::server::grid_manager::get_runtime_grid_cell(target_coord);
         let current_terrain_key = current_cell
             .as_ref()
             .map(|c| c.terrain.kind_str().to_string())
@@ -549,6 +576,8 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         let reentry_logs = player_layer_route_reentry_logs(&current_terrain_name, unnamed_total);
 
         let total_room_npcs = entities.iter().filter(|e| e.kind == "npc" || e.kind == "Npc").count();
+        let (active_weather, weather_epoch) =
+            crate::grid::zhulin::weather::current_world_zhulin_weather();
         let room_enter_msg = serde_json::json!({
             "type": "room_enter",
             "room_id": current_room_id,
@@ -564,6 +593,15 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             "time": {
                 "hour_str": format!("{:02}:00", game_hour),
                 "hour": game_hour
+            },
+            "weather": {
+                "id": active_weather.id,
+                "event_type": active_weather.legacy_key,
+                "icon_key": active_weather.legacy_key,
+                "name": active_weather.name,
+                "short_label": active_weather.short_label,
+                "desc": active_weather.ambient_prose,
+                "prose_seed": weather_epoch
             },
             "terrain": {
                 "icon_key": current_terrain_key,

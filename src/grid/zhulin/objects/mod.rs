@@ -17,7 +17,8 @@ pub mod dry_leaves;
 pub use affordance::{
     GatherCheckResult, ITEM_BAMBOO_CANTEEN, ITEM_BAMBOO_SPADE, ITEM_BAMBOO_STONE_AXE,
     ITEM_ROASTED_BAMBOO_SHOOT, ITEM_SHARP_STONE_FLAKE, classify_zhulin_item_capabilities,
-    evaluate_zhulin_gather, inventory_has_capability_tag, try_craft_zhulin_item,
+    evaluate_fire_weather_shelter, evaluate_zhulin_gather, evaluate_zhulin_gather_with_weather,
+    inventory_has_capability_tag, try_craft_zhulin_item,
 };
 use crate::grid::cell::GridObject;
 use crate::model::RoomObject;

@@ -642,6 +642,12 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
 /// 依人物的正式 place_id 重推玩家視野。
 
 fn current_l3_scene_climate() -> Option<(String, i64)> {
+    let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
+        .map_or(false, |g| g.has_peninsula_wilderness());
+    if !is_peninsula {
+        let (w_def, epoch) = crate::grid::zhulin::weather::current_world_zhulin_weather();
+        return Some((w_def.legacy_key.to_string(), epoch));
+    }
     db::get_region_climate("default")
         .ok()
         .flatten()

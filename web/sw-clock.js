@@ -399,12 +399,12 @@
 		return SKY_TIDE_48_PALETTE.slice();
 	};
 	var WEATHER_NAMES = {
-		'clear': '天朗',
+		'clear': '晴朗',
 		'rain': '微雨',
 		'snow': '初雪',
 		'wind': '勁風',
-		'plum_rain': '梅雨',
-		'fog': '薄霧',
+		'plum_rain': '雨霽',
+		'fog': '晨霧',
 		'storm': '雷雨'
 	};
 
@@ -412,10 +412,11 @@
 		var state = window.gameState ? window.gameState() : null;
 		var wt = (state && (state.weather || (state.room_view && state.room_view.weather))) ||
 			(window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.weather);
-		if (!wt) return '天朗';
+		if (!wt) return '晴朗';
 		if (typeof wt === 'string') return WEATHER_NAMES[wt] || wt;
+		if (wt.short_label) return wt.short_label;
 		var k = wt.event_type || wt.icon_key || wt.name || 'clear';
-		return WEATHER_NAMES[k] || wt.desc || '天朗';
+		return WEATHER_NAMES[k] || wt.name || wt.desc || '晴朗';
 	}
 
 	function updateGameTimeDisplay() {
