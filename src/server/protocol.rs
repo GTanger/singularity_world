@@ -648,6 +648,18 @@ pub struct TacticalStateMsg {
     pub loadout: TacticalLoadoutView,
 }
 
+/// 跨格尋路自動移動佇列（前端收到後依序逐格送出單步正交移動，絕不瞬移跳格）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AutoWalkPlanMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String,
+    pub steps: Vec<String>,
+    pub dest_x: i32,
+    pub dest_y: i32,
+    pub dest_name: String,
+    pub total_steps: usize,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -802,6 +814,22 @@ mod tests {
         let decoded_no_intent: NpcAddressMsg = serde_json::from_str(&out_no_intent).unwrap();
         assert_eq!(decoded_no_intent.intent, "");
         assert_eq!(decoded_no_intent, msg_no_intent);
+    }
+
+    #[test]
+    fn auto_walk_plan_roundtrip() {
+        let plan = AutoWalkPlanMsg {
+            msg_type: "auto_walk_plan".into(),
+            steps: vec!["東".into(), "北".into()],
+            dest_x: 2,
+            dest_y: 1,
+            dest_name: "疏竹小徑".into(),
+            total_steps: 3,
+        };
+        let s = serde_json::to_string(&plan).unwrap();
+        assert!(s.contains(r#""type":"auto_walk_plan""#));
+        let decoded: AutoWalkPlanMsg = serde_json::from_str(&s).unwrap();
+        assert_eq!(decoded, plan);
     }
 
     #[test]

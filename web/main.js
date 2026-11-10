@@ -251,6 +251,33 @@
 		}
 	}
 
+	var autoWalkState = {
+		active: false,
+		queue: [],
+		destX: 0,
+		destY: 0,
+		destName: '',
+		totalSteps: 0,
+		stepIndex: 0,
+		lastCoordKey: '',
+		timer: null
+	};
+
+	function cancelAutoWalk(reasonText) {
+		if (!autoWalkState.active && !autoWalkState.timer) return;
+		if (autoWalkState.timer) {
+			clearTimeout(autoWalkState.timer);
+			autoWalkState.timer = null;
+		}
+		var wasActive = autoWalkState.active;
+		autoWalkState.active = false;
+		autoWalkState.queue = [];
+		autoWalkState.lastCoordKey = '';
+		if (wasActive && reasonText && appendNarrative && window.SwNarrative) {
+			appendNarrative(window.SwNarrative.format(reasonText), 'Move');
+		}
+	}
+
 	function connect(options) {
 		options = options || {};
 		if (socket && socket.readyState !== WebSocket.CLOSED && socket.readyState !== WebSocket.CLOSING) {
@@ -315,6 +342,19 @@
 						window.SwClock.draw();
 						if (window.onRoomViewUpdate) window.onRoomViewUpdate(msg);
 						break;
+					case 'auto_walk_plan':
+						cancelAutoWalk();
+						if (Array.isArray(msg.steps) && msg.steps.length > 0) {
+							autoWalkState.active = true;
+							autoWalkState.queue = msg.steps.slice();
+							autoWalkState.destX = Number(msg.dest_x) || 0;
+							autoWalkState.destY = Number(msg.dest_y) || 0;
+							autoWalkState.destName = String(msg.dest_name || '目的地');
+							autoWalkState.totalSteps = Number(msg.total_steps) || (msg.steps.length + 1);
+							autoWalkState.stepIndex = 1;
+							autoWalkState.lastCoordKey = '';
+						}
+						break;
 					case 'grid_view':
 						if (Array.isArray(msg.entities)) {
 							state.entities = msg.entities;
@@ -329,6 +369,34 @@
 							state.game_days_since_epoch = msg.game_days_since_epoch;
 							window.SwClock.startTicker();
 							window.SwClock.updateDisplay();
+						}
+						if (autoWalkState.active) {
+							var gvCoordKey = String(msg.player_x) + ',' + String(msg.player_y);
+							if (gvCoordKey !== autoWalkState.lastCoordKey) {
+								autoWalkState.lastCoordKey = gvCoordKey;
+								if (autoWalkState.timer) {
+									clearTimeout(autoWalkState.timer);
+									autoWalkState.timer = null;
+								}
+								if (autoWalkState.queue.length > 0) {
+									autoWalkState.timer = setTimeout(function () {
+										autoWalkState.timer = null;
+										if (!autoWalkState.active || !autoWalkState.queue.length) return;
+										var nextDir = autoWalkState.queue.shift();
+										autoWalkState.stepIndex += 1;
+										send({ type: 'move', direction: nextDir });
+									}, 280);
+								} else {
+									var arrivedName = autoWalkState.destName || msg.room_name || '目的地';
+									autoWalkState.active = false;
+									autoWalkState.lastCoordKey = '';
+									setTimeout(function () {
+										if (!autoWalkState.active && appendNarrative && window.SwNarrative) {
+											appendNarrative(window.SwNarrative.format('你循路步入【' + arrivedName + '】。'), 'Move');
+										}
+									}, 45);
+								}
+							}
 						}
 						break;
 					case 'me':
@@ -388,6 +456,7 @@
 						window.SwClock.draw();
 						break;
 					case 'blocked':
+						cancelAutoWalk();
 						if (window.mapState) window.mapState.moving = false;
 						appendLog('無法往「' + (msg.direction || '') + '」移動');
 						break;
@@ -906,6 +975,7 @@
 				case 'combat':
 				case 'combat_turn':
 				case 'combat_result':
+					cancelAutoWalk();
 					var combatText = msg.narrative || msg.log || msg.text || '';
 					if (combatText) {
 						var cleanCombat = deNumericText(combatText);
@@ -938,6 +1008,7 @@
 						if (window.onScoutResult) window.onScoutResult(msg);
 						break;
 				case 'npc_address':
+					cancelAutoWalk('身旁有人開口搭話，你收住腳步。');
 					if (window.SwNotify && window.SwNotify.handleNpcAddress) {
 						window.SwNotify.handleNpcAddress(msg);
 					}
@@ -977,7 +1048,7 @@
 								window.SwRecordTransitHint(leaveMatch[1], 'leave', lCard);
 							}
 						}
-						var isRoomStep = /^你(?:(?:往[東南西北])?(?:步入|踏入)【|(?:推開|拉開|穿過門廊步入))/.test(t);
+						var isRoomStep = /^你(?:(?:往[東南西北])?(?:步入|踏入)【|(?:辨明路徑|循路步入)|(?:推開|拉開|穿過門廊步入))/.test(t);
 						appendNarrative(window.SwNarrative.format(msg.text), isRoomStep ? 'Move' : 'ambient');
 					}
 					break;
@@ -985,6 +1056,7 @@
 					renderInventoryContent(msg);
 					break;
 				case 'error':
+					cancelAutoWalk();
 					if (window.SwInteractions) window.SwInteractions.removeLogPendingTalk();
 					if (window.SwInteractions) window.SwInteractions.removeLogPendingTrade();
 					if (!state.me) {
@@ -1007,6 +1079,7 @@
 			}
 		};
 		socket.onclose = function () {
+			cancelAutoWalk();
 			stopHeartbeat();
 			state.me = null;
 			window.SwAuth.showAuth();
@@ -1042,6 +1115,7 @@
 			appendLog('請選擇出口');
 			return;
 		}
+		cancelAutoWalk();
 		appendLog('往「' + direction + '」移動');
 		send({ type: 'move', direction: direction });
 	}
@@ -1080,9 +1154,13 @@
 	}
 
 	window.gameSend = function (msg) {
+		if (msg && typeof msg === 'object' && msg.type && msg.type !== 'ping' && msg.type !== 'get_inventory' && msg.type !== 'set_openrouter_key' && msg.type !== 'get_entity_status') {
+			cancelAutoWalk();
+		}
 		if (typeof msg === 'object') send(msg);
 		else if (socket && socket.readyState === WebSocket.OPEN) socket.send(msg);
 	};
+	window.SwAutoWalkState = function () { return autoWalkState; };
 	window.gameState = function () { return state; };
 	window.gameIsConnected = isConnected;
 	window.gameFormatNarrative = function (t) { return window.SwNarrative.format(t); };

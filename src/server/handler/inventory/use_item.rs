@@ -316,7 +316,8 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
                 "zl_item_bamboo_tube_soup" => {
                     e.vit = (e.vit + 25).min(100);
                     e.qi = (e.qi + 15).min(100);
-                    custom_zl_narrative = Some("你捧起溫熱的竹筒仰頭飲盡「竹筒山珍湯」，山泉、竹膜與野菌的鮮甜精華順喉而下，渾身寒氣與疲憊一掃而空！".to_string());
+                    zl_canteen_returned = true;
+                    custom_zl_narrative = Some("你捧起溫熱的竹筒仰頭飲盡「竹筒山珍湯」，山泉、竹膜與野菌的鮮甜精華順喉而下，渾身寒氣與疲憊一掃而空，並將空出的「青竹水筒」收回行囊備用！".to_string());
                 }
                 "zl_item_bamboo_canteen_full" => {
                     e.vit = (e.vit + 12).min(100);

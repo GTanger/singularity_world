@@ -588,7 +588,8 @@ fn build_grid_view_objects(
                         vec![
                             "Look".to_string(),
                             "WarmHands".to_string(),
-                            "CampfireEatDrink".to_string(),
+                            "CampfireDrinkWater".to_string(),
+                            "CampfireEatFood".to_string(),
                             "FillBambooCanteen".to_string(),
                             "CampfireRoastKnife".to_string(),
                             "CampfireRoastShoot".to_string(),

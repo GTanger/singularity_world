@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
-- **更新日期**：2026-11-10
-- **當前狀態**：`in_progress`（落實「與其營造出虛假的繁華，不如將一物的價值搾到一滴不剩」與「萬事萬物皆插件兼插座」總綱：寫入 `docs/design/shalu_zhulin_terrain_and_objects.md` 第八～十章，實裝 `竹葉營火` 獨立插件兼主畫面插座、單次決策 `[原地生火]`／`[劈竹開路]` 與【行旅足跡輿圖】一點即達輕操作）
+- **更新日期**：2026-11-11
+- **當前狀態**：`in_progress`（完成第 10.2～10.3 章「輕操作後重體驗」遊戲設計專業檢核與收斂：落實輿圖一鍵直達跨格加權尋路**逐格自動移動（絕不瞬移）**、修復 4 處假閉環 ID 與竹筒山珍湯容器守衡、營火溫養 `< 45` 門檻與 `[暢飲竹水]`／`[享用熟食]` 分流、守住物性因果與顯見木耳親手接觸邊界）
 
 ## 一、 本輪完成里程碑（2026-10-27 ～ 2026-10-28）
 
@@ -162,7 +162,7 @@
 59-61. **「第 27～47 刀 `ItemPhysicalClass` 強型別物理分類、`Store::load_entities_from_pg` 雙端清創、`GridCell` 場域語意守衛、324 戶文曜家戶座標對齊與拔除 `.replace` 擦屁股鏈（`v0.39.121`～`v0.39.132`）」全棧實裝、PostgreSQL 排毒與真機驗收完成（2026-11-07 ～ 2026-11-08）**。
 62. **「滅世後的新生：刺竹林（`𓐂`）× 6 大純竹物件 × 23 項獨立產出與手作器物（`zl_item_*`）× 三層正交標籤契約 × 第八、九章『將一物的價值搾到一滴不剩』五大遊戲設計閉環」（2026-11-09 ～ 2026-11-10）**：
    - **① 萬物皆物件與三層正交標籤契約（`src/grid/zhulin/`、`src/grid/cell.rs`、`src/db/inventory.rs`）**：為【刺竹林】地形模版（`zl_terrain_thorny_bamboo_grove`）、6 個純竹場上物件與 23 個新世界採集／手作／野炊物品（`zl_item_*`）建立獨立 ID 與 `ZhulinTagTriad`；拔除採集、探索與背景模擬所有舊世 `harvest_*` 兜底分支並封存舊種子檔。
-   - **② 第八～十章刺竹一物極致搾取、「萬事萬物皆插件兼插座」與「輕操作、重體驗」零摩擦收斂（`docs/design/shalu_zhulin_terrain_and_objects.md` §8～§10.3、`src/grid/zhulin/objects/campfire.rs`、`src/server/action/object/resource.rs`、`src/server/handler/movement/room_move.rs`、`step_move.rs`、`grid_view_1.rs`、`web/sw-object-list.js`、`web/grid-map.js`）**：實裝 `竹葉營火`（`zl_bamboo_campfire`）地塊插件與主畫面插座（`[原地生火]`、`[烘火溫養]`、`[飲水進食]`、`[竹筒盛水]`、`[烘烤竹刃]`、`[籜裹煨筍]`、`[炭火炙烤]`、`[竹筒煲湯]`、`[投火竹爆]`）、`[劈竹開路]` 一次伐開 `疏竹小徑`、場景需求反向觸發就地手作（`[紮槌並開路]`／`[紮斧並開路]`／`[裁鏟並掘鞭]`／`[裁鏟並撬筍]`／`[裁筒盛水]`）、`[探索]` 純拾取物（`竹根木耳` 等）順手入袋，以及【行旅足跡輿圖】一鍵跨格 `[行往【地名】]` 搭配沿途足跡濃縮敘事（Journey Digest）。
+   - **② 第八～十章刺竹一物極致搾取、「萬事萬物皆插件兼插座」與「輕操作後重體驗」專業收斂（`docs/design/shalu_zhulin_terrain_and_objects.md` §8～§10.3、`src/grid/grid/square_grid.rs`、`src/grid/zhulin/objects/campfire.rs`、`affordance.rs`、`src/server/action/object/resource.rs`、`src/server/handler/movement/room_move.rs`、`step_move.rs`、`web/main.js`、`web/sw-object-list.js`、`web/sw-panes.js`）**：實裝 `竹葉營火`（`zl_bamboo_campfire`）地塊插件與主畫面插座（`[原地生火]`、`[烘火溫養]` `< 45` 驅寒門檻、`[暢飲竹水]`／`[享用熟食]` 分流並嚴守 `竹筒山珍湯` 飲畢退還空筒守衡、`[竹筒盛水]`／`[裁筒盛水]`、`[烘烤竹刃]`、`[籜裹煨筍]`、`[炭火炙烤]`、`[竹筒煲湯]`、`[投火竹爆]`）；修復 `zl_item_bamboo_rhizome`／`zl_item_dry_leaves`／`zl_weather_morning_dew_fog` 真實 ID 對齊，支援 `[紮槌並開路]`／`[紮斧並開路]` 與 `[紮槌並劈伐]`／`[紮斧並砍伐]` 並拔除無火隔空烤刀與盲裁竹稈；`[探索]` 聚焦林下隱蔽微生態與四方聽風，保留顯見 `竹根木耳` 親手採摘；【行旅足跡輿圖】`[行往【地名】]` 改採 `SquareGrid::find_travel_path` 加權尋路（優先走 `疏竹小徑`／`標記竹徑`）＋ `AutoWalkPlanMsg` **逐格正交自動邁步推進（絕不瞬移）**，遇阻、搭話或玩家手動操作即刻平順收步。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：

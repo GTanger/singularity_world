@@ -526,4 +526,54 @@ mod tests {
         let default_act = resolve_room_ambient_visitor_activity("尋常林間小道", 0);
         assert_eq!(default_act, Some("背著隨身行囊在附近駐足歇腳，打量四周風物"));
     }
+
+    #[test]
+    fn test_find_travel_path_prefers_cleared_bamboo_trail() {
+        use crate::grid::zhulin::{build_bamboo_terrain_cell, refresh_bamboo_cell_after_gather};
+
+        let mut grid = SquareGrid::new();
+        grid.world_seed = crate::grid::SHALU_ZHULIN_WORLD_SEED;
+        for x in 0..=3 {
+            for y in 0..=1 {
+                let mut cell = build_bamboo_terrain_cell(
+                    SquareCoord::new(x, y),
+                    "zhulin",
+                    false,
+                    crate::grid::SHALU_ZHULIN_WORLD_SEED,
+                );
+                let is_cleared_lane = y == 1 || (x == 0 && y == 0) || (x == 3 && y == 0);
+                if is_cleared_lane {
+                    for obj in &mut cell.objects {
+                        if obj.id == "zl_bamboo_culm" {
+                            obj.quantity = 0;
+                        }
+                    }
+                    refresh_bamboo_cell_after_gather(&mut cell);
+                } else {
+                    if !cell.objects.iter().any(|o| o.id == "zl_bamboo_culm" && o.quantity > 0) {
+                        cell.objects.push(crate::grid::zhulin::bamboo_culm::build_grid_object(3));
+                    }
+                    refresh_bamboo_cell_after_gather(&mut cell);
+                }
+                grid.insert(cell);
+            }
+        }
+
+        // 直線 (0,0)->(1,0)->(2,0)->(3,0) 需穿過兩格未開路刺竹叢（24+24+10=58）
+        // 取道北側疏竹小徑 (0,0)->(0,1)->(1,1)->(2,1)->(3,1)->(3,0) 全程輕快（10*5=50）
+        let path = grid
+            .find_travel_path(SquareCoord::new(0, 0), SquareCoord::new(3, 0))
+            .expect("travel path should exist");
+        assert_eq!(
+            path,
+            vec![
+                SquareCoord::new(0, 0),
+                SquareCoord::new(0, 1),
+                SquareCoord::new(1, 1),
+                SquareCoord::new(2, 1),
+                SquareCoord::new(3, 1),
+                SquareCoord::new(3, 0),
+            ]
+        );
+    }
 }

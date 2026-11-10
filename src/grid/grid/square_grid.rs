@@ -553,6 +553,87 @@ impl SquareGrid {
         }
         None
     }
+
+    /// 加權尋路（Dijkstra）；優先沿已開闢之「疏竹小徑」、「標記竹徑」、「竹林營火」與道路推進，回傳包含起點與終點的座標序列。
+    pub fn find_travel_path(&self, from: SquareCoord, to: SquareCoord) -> Option<Vec<SquareCoord>> {
+        use std::cmp::Reverse;
+        use std::collections::BinaryHeap;
+
+        if from == to {
+            return Some(vec![from]);
+        }
+        if !self.contains(from) || !self.contains(to) {
+            return None;
+        }
+
+        let step_weight = |cell: &GridCell| -> u32 {
+            if matches!(cell.terrain, Terrain::Road | Terrain::Bridge)
+                || crate::grid::zhulin::is_bamboo_trail_cleared(cell)
+                || crate::grid::zhulin::has_bamboo_trail_mark(cell)
+                || cell.has_room_tag("zl_campfire:active")
+                || cell
+                    .objects
+                    .iter()
+                    .any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
+            {
+                10
+            } else if (crate::grid::zhulin::is_bamboo_slot_cell(cell)
+                && !crate::grid::zhulin::is_bamboo_trail_cleared(cell))
+                || cell.terrain.move_cost() >= 1.5
+            {
+                24
+            } else {
+                14
+            }
+        };
+
+        let mut dist: HashMap<SquareCoord, u32> = HashMap::new();
+        let mut parent: HashMap<SquareCoord, SquareCoord> = HashMap::new();
+        let mut heap: BinaryHeap<Reverse<(u32, i32, i32)>> = BinaryHeap::new();
+
+        dist.insert(from, 0);
+        heap.push(Reverse((0, from.x, from.y)));
+
+        while let Some(Reverse((cost, cx, cy))) = heap.pop() {
+            let current = SquareCoord::new(cx, cy);
+            if current == to {
+                let mut path = vec![to];
+                let mut c = to;
+                while let Some(&p) = parent.get(&c) {
+                    path.push(p);
+                    c = p;
+                }
+                path.reverse();
+                return Some(path);
+            }
+            if dist.get(&current).is_some_and(|&best| cost > best) {
+                continue;
+            }
+            let candidates: Vec<SquareCoord> = if let Some(fc) = self.get(current)
+                && !fc.explicit_exits.is_empty()
+            {
+                fc.explicit_exits.iter().map(|e| e.target).collect()
+            } else {
+                current.neighbors().to_vec()
+            };
+            for next in candidates {
+                if !self.can_walk(current, next) {
+                    continue;
+                }
+                let Some(next_cell) = self.get(next) else {
+                    continue;
+                };
+                let next_cost = cost.saturating_add(step_weight(next_cell));
+                let is_better = dist.get(&next).is_none_or(|&prev| next_cost < prev);
+                if is_better {
+                    dist.insert(next, next_cost);
+                    parent.insert(next, current);
+                    heap.push(Reverse((next_cost, next.x, next.y)));
+                }
+            }
+        }
+        None
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────

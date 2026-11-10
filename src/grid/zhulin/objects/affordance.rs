@@ -918,7 +918,7 @@ pub fn try_craft_zhulin_item(
             _ => has_full_canteen,
         };
 
-        // 5b. 竹筒煲湯（消耗【盛水青竹筒】-> 產出【竹筒山珍湯】並歸還空【青竹水筒】）
+        // 5b. 竹筒煲湯（消耗【盛水青竹筒】-> 產出【竹筒山珍湯】，待飲畢後退還空【青竹水筒】）
         if want_soup {
             if !has_full_canteen {
                 return Some(Err(
@@ -938,12 +938,11 @@ pub fn try_craft_zhulin_item(
                 ignite_cell_campfire(gx, gy);
             }
             let _ = db::add_to_inventory(pid, ITEM_BAMBOO_TUBE_SOUP.id, 1);
-            let _ = db::add_to_inventory(pid, ITEM_BAMBOO_CANTEEN.id, 1);
             return Some(Ok((
                 ITEM_BAMBOO_TUBE_SOUP.id.to_string(),
                 ITEM_BAMBOO_TUBE_SOUP.name.to_string(),
                 format!(
-                    "{shelter_prefix}你將「{}」投入「盛水青竹筒」中，以乾竹葉塞口斜架於炭火旁慢煨。竹壁內的水分與竹膜清香漸次沸騰交融，煲出一筒熱氣騰騰的「{}」（空青竹水筒亦完好留存）！",
+                    "{shelter_prefix}你將「{}」投入「盛水青竹筒」中，以乾竹葉塞口斜架於炭火旁慢煨。竹壁內的水分與竹膜清香漸次沸騰交融，煲出一筒熱氣騰騰的「{}」（飲畢後可回收空青竹水筒）！",
                     def.name, ITEM_BAMBOO_TUBE_SOUP.name
                 ),
             )));
@@ -1065,6 +1064,8 @@ mod tests {
         assert!(sentence.contains("竹葉營火"));
         let room_obj = resolve_bamboo_slot_object_with_qty(campfire::ID, 3).expect("room obj");
         assert!(room_obj.sockets.contains(&"WarmHands".to_string()));
+        assert!(room_obj.sockets.contains(&"CampfireDrinkWater".to_string()));
+        assert!(room_obj.sockets.contains(&"CampfireEatFood".to_string()));
         assert!(room_obj.sockets.contains(&"CampfireRoastKnife".to_string()));
         assert!(room_obj.sockets.contains(&"CampfireRoastShoot".to_string()));
         assert!(room_obj.sockets.contains(&"CampfireBoilSoup".to_string()));

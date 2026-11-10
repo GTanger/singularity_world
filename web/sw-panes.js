@@ -1279,6 +1279,17 @@
 		formatItemName: formatItemName,
 		showInventoryFeedback: showInventoryFeedback,
 		getInventoryItemIds: function () { return _lastInventoryItemIds.slice(); },
+		getInventoryItemQty: function (itemId) {
+			if (!lastInventoryMsg || !Array.isArray(lastInventoryMsg.items)) return 0;
+			var total = 0;
+			for (var i = 0; i < lastInventoryMsg.items.length; i++) {
+				var it = lastInventoryMsg.items[i];
+				if (it && String(it.item_id || it.id || '') === String(itemId)) {
+					total += (Number(it.qty) || 1);
+				}
+			}
+			return total;
+		},
 		ITEM_NAME_MAP: ITEM_NAME_MAP
 	};
 })();

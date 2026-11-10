@@ -243,7 +243,7 @@ fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::mo
                 responses,
                 move_to_room_id: String::new(),
             });
-        } else if obj.has_tag("campfire") {
+        } else if obj.has_tag("campfire") && obj.id != "zl_bamboo_campfire" {
             let sockets = vec![
                 "Look".to_string(),
                 "WarmHands".to_string(),
