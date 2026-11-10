@@ -278,6 +278,12 @@ fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::mo
                     )
                 })
         {
+            let mut zl_slot_obj = zl_slot_obj;
+            if (obj.id == "zl_bamboo_culm" || obj.name == "合抱刺竹叢") && obj.quantity > 0 {
+                if !zl_slot_obj.sockets.iter().any(|s| s == "CarveMark") {
+                    zl_slot_obj.sockets.push("CarveMark".to_string());
+                }
+            }
             return Some(zl_slot_obj);
         }
         if let Some(mut zl_obj) = crate::grid::resolve_shalu_zhulin_object(&obj.id)

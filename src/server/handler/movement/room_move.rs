@@ -230,7 +230,7 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
                         | Terrain::FarmField
                 );
                 let is_outdoor_step = is_outdoor_wild || is_water_or_coastal;
-                let is_rugged = matches!(
+                let mut is_rugged = matches!(
                     cell.terrain,
                     Terrain::Mountain
                         | Terrain::Hills
@@ -243,6 +243,18 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
                         | Terrain::Desert
                         | Terrain::Tundra
                 ) || cell.terrain.move_cost() >= 1.5;
+                let is_bamboo_cleared = crate::grid::zhulin::is_bamboo_trail_cleared(&cell);
+                if is_bamboo_cleared {
+                    is_rugged = false;
+                    if (gx + gy).abs() % 4 == 0 {
+                        if let Ok(Some(current_ent)) = db::get_entity(&player_id) {
+                            let new_vit = (current_ent.vit + 1).min(100);
+                            if new_vit != current_ent.vit {
+                                let _ = db::update_vit(&player_id, new_vit);
+                            }
+                        }
+                    }
+                }
 
                 let now = crate::game::now_unix();
                 if is_outdoor_step && (gx + gy).abs() % 6 == 0 {

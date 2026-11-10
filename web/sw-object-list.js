@@ -367,19 +367,29 @@
     }
 
     function resolveSocketActionLabel(act, obj) {
+        var oid = String((obj && obj.id) || '');
+        var invIds = (window.SwPanes && typeof window.SwPanes.getInventoryItemIds === 'function') ? window.SwPanes.getInventoryItemIds() : [];
+        var hasAxe = invIds.indexOf('zl_item_bamboo_stone_axe') !== -1 || invIds.indexOf('zl_item_rhizome_club') !== -1;
+        var hasSpade = invIds.indexOf('zl_item_bamboo_spade') !== -1;
+        var hasFlake = invIds.indexOf('zl_item_sharp_stone_flake') !== -1 || invIds.indexOf('zl_item_fire_hardened_bamboo_knife') !== -1;
+
+        if (act === 'CarveMark') {
+            return (hasAxe || hasFlake) ? '刻竹記號' : '徒手難刻';
+        }
+
         if (act === 'Gather' && obj) {
-            var oid = String(obj.id || '');
-            var invIds = (window.SwPanes && typeof window.SwPanes.getInventoryItemIds === 'function') ? window.SwPanes.getInventoryItemIds() : [];
-            var hasAxe = invIds.indexOf('zl_item_bamboo_stone_axe') !== -1;
-            var hasSpade = invIds.indexOf('zl_item_bamboo_spade') !== -1;
-            var hasFlake = invIds.indexOf('zl_item_sharp_stone_flake') !== -1;
             var wt = (window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.weather) || (window.gameState && window.gameState() && window.gameState().weather) || null;
             var isMoistSoil = !!(wt && (wt.id === 'zl_weather_post_rain_mist' || wt.event_type === 'plum_rain'));
             if (oid === 'zl_dry_leaves') return '徒手拾攏';
             if (oid === 'zl_bamboo_sheath') return '徒手拾籜';
             if (oid === 'zl_bamboo_fungus') return '摘取木耳';
             if (oid === 'zl_bamboo_shoot') return (hasAxe || hasSpade || hasFlake) ? '持器掘筍' : (isMoistSoil ? '趁濕拔筍' : '徒手硬拔');
-            if (oid === 'zl_bamboo_culm') return hasAxe ? '揮斧砍伐' : '徒手難伐';
+            if (oid === 'zl_bamboo_culm') {
+                if (hasAxe) {
+                    return invIds.indexOf('zl_item_bamboo_stone_axe') !== -1 ? '揮斧砍伐' : '揮槌劈伐';
+                }
+                return '徒手難伐';
+            }
             if (oid === 'zl_bamboo_rhizome') return (hasAxe || hasSpade || hasFlake) ? '斬斷掘取' : '徒手難斷';
             if (oid === 'water_spring') return '掬水飲用';
             if (oid === 'creek_pebble') return '揀選卵石';
@@ -1464,23 +1474,40 @@
         var hasStandingBamboo = objs.some(function (o) {
             return o && (o.id === 'zl_bamboo_culm' || (o.name && o.name.indexOf('合抱刺竹叢') !== -1));
         });
+        var rDesc = String(st.description || (document.getElementById('sw-l3-terrain') && document.getElementById('sw-l3-terrain').textContent) || (md.terrain && md.terrain.description) || '');
+        var hasTrailMark = rDesc.indexOf('竹幹刻著醒目路標') !== -1;
+        var hasClearedTrail = rDesc.indexOf('疏竹小徑') !== -1;
+
+        if (!hasStandingBamboo && hasClearedTrail) {
+            var trailHint = '成竹已伐開疏竹小徑，林間豁然開朗、步履輕省';
+            if (hasTrailMark) trailHint += ' · 刻有十字路標';
+            return trailHint;
+        }
+
+        var hint = '';
         var isWilderness = !(md.in_private_room) && !/(街|巷|坊|鋪|行|店|樓|館|閣|堂|院|市|橋|門)/.test(rName);
         if (isWilderness) {
             if (wKey === 'zl_weather_mountain_rain' || wKey === 'rain') {
-                return hasStandingBamboo ? '濃密竹冠遮去漫天細雨，林下尚算乾爽（可避雨生火）' : '四野無遮，細雨直落浸濕地表（露天難生火）';
+                hint = hasStandingBamboo ? '濃密竹冠遮去漫天細雨，林下尚算乾爽（可避雨生火）' : '四野無遮，細雨直落浸濕地表（露天難生火）';
             } else if (wKey === 'zl_weather_sea_gale' || wKey === 'wind') {
-                return hasStandingBamboo ? '合抱竹叢擋住九降勁風，林間風勢微緩（可避風生火）' : '曠野九降勁風呼嘯直灌，火苗難聚（需尋竹林避風）';
+                hint = hasStandingBamboo ? '合抱竹叢擋住九降勁風，林間風勢微緩（可避風生火）' : '曠野九降勁風呼嘯直灌，火苗難聚（需尋竹林避風）';
             } else if (wKey === 'zl_weather_post_rain_mist' || wKey === 'plum_rain') {
-                return '雨後初霽水氣蒸騰，紅土濕軟鬆動（徒手拔筍零折損）';
+                hint = '雨後初霽水氣蒸騰，紅土濕軟鬆動（徒手拔筍零折損）';
             } else if (wKey === 'zl_weather_morning_dew_fog' || wKey === 'fog') {
-                return '晨霧低迴凝滿露珠，地表乾葉微潮（引火需三把乾葉）';
+                hint = '晨霧低迴凝滿露珠，地表乾葉微潮（引火需三把乾葉）';
             } else if (rName.indexOf('刺竹林') !== -1) {
-                return hasStandingBamboo
+                hint = hasStandingBamboo
                     ? (isNight ? '夜色籠罩濃密竹冠，林下乾爽宜於避風生火' : '竹冠篩落斑駁暖陽，林下乾爽宜於生火造物')
                     : (isNight ? '成竹已伐盡，夜風直拂、地面散落枯葉' : '成竹已伐盡，林間陽光直曬、地面散落枯葉');
             }
         }
-        return isNight ? '夜色靜謐，四下悄無聲息' : '四下清朗，林間悄無聲息';
+        if (!hint) {
+            hint = isNight ? '夜色靜謐，四下悄無聲息' : '四下清朗，林間悄無聲息';
+        }
+        if (hasTrailMark) {
+            hint += ' · 刻有十字路標';
+        }
+        return hint;
     }
 
         var existingEmptyHint = canvasEl.querySelector('.sw-canvas-empty-hint');
@@ -1738,11 +1765,10 @@
         // Core
         'Look': '觀察', 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟',
         'Queue': '候號', 'AcceptJob': '應工', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯', 'Work': '差事',
-        'Gather': '採集', 'Acquire': '採買入袋', 'Wash': '洗漱淨手', 'Sit': '坐下',
-        'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作',
-        'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
-        'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊',
-        // Wood / Fire / Camp
+'Gather': '採集', 'Acquire': '採買入袋', 'Wash': '洗漱淨手', 'Sit': '坐下',
+'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作',
+'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
+'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊', 'CarveMark': '刻竹記號',
         'MakeFire': '生火', 'AddFuel': '添柴', 'SplitWood': '劈柴', 'RefinePlank': '裁鋸木板',
         'BurnCharcoal': '悶燒木炭', 'CraftTorch': '紮製火把', 'CraftHandle': '車削木柄',
         'CollectCharcoal': '收取木炭', 'RoastFood': '炙烤食物', 'RepairStructure': '修繕加固',

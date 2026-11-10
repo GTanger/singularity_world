@@ -531,7 +531,9 @@ fn build_grid_view_objects(
                     if is_bamboo_slot && obj.quantity == 0 {
                         continue;
                     }
-                    let actions = if obj.quantity > 0 {
+                    let actions = if is_bamboo_slot && obj.id == "zl_bamboo_culm" && obj.quantity > 0 {
+                        vec!["Look".to_string(), "Gather".to_string(), "CarveMark".to_string()]
+                    } else if obj.quantity > 0 {
                         vec!["Look".to_string(), "Gather".to_string()]
                     } else {
                         vec!["Look".to_string()]
@@ -541,7 +543,12 @@ fn build_grid_view_objects(
                     let tag = obj.tag().to_string();
                     let category_tag = obj.category_tag().to_string();
                     let attribute_tags = obj.attribute_tags().iter().map(|s| (*s).to_string()).collect();
-                    let tags = obj.tags().into_iter().map(str::to_string).collect();
+                    let mut tags: Vec<String> = obj.tags().into_iter().map(str::to_string).collect();
+                    if is_bamboo_slot && crate::grid::zhulin::has_bamboo_trail_mark(cell) {
+                        if !tags.iter().any(|t| t == "zl_marked_trail") {
+                            tags.push("zl_marked_trail".to_string());
+                        }
+                    }
                     objs.push(super::super::protocol::ViewObject {
                         id,
                         name,

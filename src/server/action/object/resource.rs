@@ -70,7 +70,7 @@ fn try_grid_cell_object_action(
     let Some(coord) = parse_grid_room_id(player_room) else {
         return false;
     };
-    if action != "Gather" && action != "Harvest" && action != "Take" {
+    if action != "Gather" && action != "Harvest" && action != "Take" && action != "CarveMark" {
         return false;
     }
 
@@ -86,6 +86,46 @@ fn try_grid_cell_object_action(
         .flatten()
         .map(|e| e.inventory)
         .unwrap_or_default();
+    if action == "CarveMark" {
+        let mut carve_res = Err("無法在此處刻記號".to_string());
+        let mut updated = false;
+        let mut cell_snapshot = None;
+        crate::server::grid_manager::with_square_grid_mut(|grid| {
+            if let Some(cell) = grid.get_mut(coord) {
+                carve_res = crate::grid::zhulin::carve_bamboo_trail_mark(cell, &player_inv_json);
+                if carve_res.is_ok() {
+                    updated = true;
+                    cell_snapshot = Some((cell.explored, cell.freshness, cell.objects.clone()));
+                }
+            }
+        });
+        if updated {
+            if let Some((exp, fresh, objs)) = cell_snapshot {
+                let _ = db::update_cell_state(coord.x, coord.y, exp, fresh, &objs);
+            }
+        }
+        let (success, narrative) = match carve_res {
+            Ok(s) => (true, s),
+            Err(e) => (false, e),
+        };
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: action.into(),
+            target_id: obj.id.clone(),
+            target_name: obj.name.clone(),
+            narrative,
+            success,
+            actions: vec!["Look".into(), "Gather".into(), "CarveMark".into()],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        push_refresh(conn, pid);
+        refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
+        return true;
+    }
+
 
     let mut updated_state = None;
     let mut zero_quantity = false;
@@ -195,7 +235,7 @@ fn try_grid_cell_object_action(
         vec!["Look".into()]
     };
 
-    let narrative = if let Some(custom) = custom_narrative {
+    let mut narrative = if let Some(custom) = custom_narrative {
         custom
     } else if let Some(custom) = crate::grid::zhulin::gather_narrative_for_object(
         &obj_id,
@@ -210,6 +250,10 @@ fn try_grid_cell_object_action(
             obj.name, actual_harvested, clean_item
         )
     };
+    if obj_id == "zl_bamboo_shoot" && final_remaining_qty > 0 && (coord.x + coord.y + final_remaining_qty as i32).abs() % 3 == 0 {
+        let _ = db::add_to_inventory(pid, "zl_item_bamboo_weevil", 1);
+        narrative.push_str("翻挖筍殼間，你還順手抓到一隻肥美的「筍龜」收入行囊！");
+    }
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
         action: action.into(),

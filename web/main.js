@@ -220,6 +220,9 @@
 			if (spiritMax != null && spiritMax > 0 && spiritCur != null && Number(spiritCur) < Number(spiritMax) * 0.3) {
 				html += '<span class="sw-seal-chip is-warn">【倦】</span>';
 			}
+			if (window.SwPanes && typeof window.SwPanes.getToolBadgeHtml === 'function') {
+				html += window.SwPanes.getToolBadgeHtml();
+			}
 			sealsEl.innerHTML = html;
 		}
 	}
@@ -370,6 +373,7 @@
 						if (window.refreshGridView) window.refreshGridView();
 						window.SwAuth.showGame();
 						updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
+						send({ type: 'get_inventory' });
 						window.SwClock.draw();
 						renderStarplatePane(state.me);
 						startHeartbeat();
@@ -563,8 +567,10 @@
 						}
 					} else if (msg.narrative) {
 						var narrativeText = msg.narrative;
-						var invModalEl = document.getElementById('modal-inventory');
-						if (invModalEl && !invModalEl.hidden && window.SwPanes && typeof window.SwPanes.showInventoryFeedback === 'function') {
+						var invPaneEl = document.getElementById('player-modal-pane-inventory') || document.getElementById('modal-inventory');
+						var invOverlayEl = document.getElementById('player-modal-overlay');
+						var isInvAction = msg.action === 'craft_item' || msg.action === 'Use' || (invPaneEl && !invPaneEl.hidden && (!invOverlayEl || !invOverlayEl.hidden));
+						if (isInvAction && window.SwPanes && typeof window.SwPanes.showInventoryFeedback === 'function') {
 							window.SwPanes.showInventoryFeedback(narrativeText, msg.success === false);
 						}
 						if (msg.action === 'Look' && narrativeText.indexOf('【正在交談】') !== -1) {
@@ -988,8 +994,9 @@
 						var authMsg = document.getElementById('auth-message');
 						if (authMsg) authMsg.textContent = msg.message;
 					} else {
-						var invModalErrEl = document.getElementById('modal-inventory');
-						if (invModalErrEl && !invModalErrEl.hidden && window.SwPanes && typeof window.SwPanes.showInventoryFeedback === 'function') {
+						var invPaneErrEl = document.getElementById('player-modal-pane-inventory') || document.getElementById('modal-inventory');
+						var invOverlayErrEl = document.getElementById('player-modal-overlay');
+						if (invPaneErrEl && !invPaneErrEl.hidden && (!invOverlayErrEl || !invOverlayErrEl.hidden) && window.SwPanes && typeof window.SwPanes.showInventoryFeedback === 'function') {
 							window.SwPanes.showInventoryFeedback(msg.message, true);
 						}
 						appendLog('錯誤：' + msg.message);

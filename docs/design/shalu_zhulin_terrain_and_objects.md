@@ -158,3 +158,34 @@
    - 於行囊面板頂部設宣紙水墨即時回饋列（`#sw-inv-feedback-banner`），在行囊內點擊 `[敲擊打片]`、`[紮製石斧]`、`[裁製竹器]`、`[引火竹爆]` 或 `[煨烤熟食]` 時，當場於行囊內呈現打造結果或缺少的配材提示。
 4. **左下角隨身器物顯化**：
    - 於左下角自身狀態欄（`#sw-status-seals`）動態呈現行囊中最高階隨身器物（如 `持：竹柄石斧`、`持：尖石片`、`備：青竹水筒`），直觀反映生存演進。
+
+---
+
+## 第八章：「與其營造出虛假的繁華，不如將一物的價值搾到一滴不剩」——刺竹一物全部位極致搾取規範
+
+> **設計總綱（原話定錨）**：「與其營造出虛假的繁華，不如將一物的價值搾到一滴不剩。」
+> 在把單一物種（**刺竹**）從竹冠、竹稈、竹青、竹節、竹籜、竹葉、竹筍、地下竹鞭到共生竹耳的每一分物理價值搾乾之前，絕不橫向複製空洞的多竹種換皮模版。
+
+### 8.1 刺竹一物「全部位零死鎖自給鏈」（不依賴外區石材即可 100% 走通）
+
+| 刺竹部位 / 來源 | 產出物品 (`id`) | 三層正交標籤 (`category` / `attribute` / `exclusive`) | 極致價值搾取（一物多用與進階轉化） |
+| :--- | :--- | :--- | :--- |
+| **1. 林下枯枝 / 探索翻找** | **【風折老竹片】**<br>(`zl_item_aged_bamboo_slat`) | `material, flora, bamboo` / `splittable, silica_rind, heat_hardenable` / `zl_item_aged_bamboo_slat` | • **火烤硬化（解開無石頭死鎖）**：結合 `乾竹葉` 文火烘烤竹青外皮（富含二氧化矽），削製出 **【烤刃竹片刀】**（`zl_item_fire_hardened_bamboo_knife`，具 `sharp_edge` + `pry_edge`）。 |
+| **2. 枯黃竹籜（槽位 2/3）** | **【韌竹籜】**<br>(`zl_item_bamboo_sheath`) | `material, flora, bamboo, sheath` / `wrapping_sheet, weaving_fiber, moisture_proof` / `zl_item_bamboo_sheath` | • **搓繩**：`韌竹籜 ×2` 徒手搓製 **【竹籜繩】**（`zl_item_sheath_cord`，具 `cordage, binding_fiber`）。<br>• **裹煨**：包裹生刺竹筍埋入火灰慢煨去苦。 |
+| **3. 乾竹葉層（槽位 2/3）** | **【乾竹葉】**<br>(`zl_item_dry_bamboo_leaf`) | `material, flora, bamboo, tinder` / `kindling, dry_fiber, bedding` / `zl_item_dry_bamboo_leaf` | • **引火野炊**：`乾竹葉 ×2`（晨霧需 3 把）摩擦生火。<br>• **烘烤竹刃**：配合 `風折老竹片` 烤製 **【烤刃竹片刀】**。 |
+| **4. 盤錯竹鞭（槽位 2/3）** | **【老竹根鞭】**<br>(`zl_item_bamboo_rhizome`) | `material, flora, bamboo, rhizome` / `haft_material, dense_node, impact_resistant, spring_tension` / `zl_item_bamboo_rhizome` | • **持刃掘取**：有 `烤刃竹片刀` 或 `銳邊石片`（`sharp_edge`）即可斬斷鬚根掘出。<br>• **紮製重槌／石斧**：可與 `竹籜繩` 紮成 **【竹鞭根槌】**（或配石片紮成 `籜繩竹鞭石斧`），解鎖 `heavy_chop` 砍伐合抱刺竹叢！ |
+| **5. 合抱刺竹叢（槽位 1）** | **【刺竹稈】**<br>(`zl_item_bamboo_culm`) | `material, flora, bamboo, culm` / `hollow_jointed, splittable, structural_pole, flammable_pop` / `zl_item_bamboo_culm` | • **裁製雙器**：一節竹稈裁出 **【青竹水筒】**（`water_container`）＋ **【掘土竹鏟】**（`earth_dig + pry_edge`）。<br>• **劈篾編簍**：`刺竹稈 ×1` ＋ `竹籜繩 ×1` 編出 **【刺竹背簍】**（`zl_item_bamboo_basket`，行囊負重上限 $+15\text{kg}$）。<br>• **竹爆驅獸**：營火中投入竹稈觸發竹爆巨響，驅散寒氣並震懾周遭野獸。<br>• **刻竹留號**：持 `sharp_edge` 對場景內 `合抱刺竹叢` 執行 **`[刻記號]`**，於該格留下永久方向／資源刻痕。 |
+| **6. 破土竹筍（槽位 2/3）** | **【鮮刺竹筍】**<br>(`zl_item_bamboo_shoot`) | `food, flora, bamboo, shoot` / `raw_bitter, roastable, crisp_flesh, hydrating` / `zl_item_bamboo_shoot` | • **生熟分流**：生啃因含紫杉氰苷苦麻傷胃（僅微補 2 體力並提示苦麻）；以竹籜裹灰煨熟為 **【籜裹煨竹筍】**（恢復 18 體力、8 氣血）。 |
+| **7. 竹根木耳（槽位 2/3）** | **【野生竹耳】**<br>(`zl_item_bamboo_fungus`) | `food, fungi, bamboo, mushroom` / `edible, roastable, soup_ingredient, gelatinous` / `zl_item_bamboo_fungus` | • **竹筒炊湯**：結合盛水之 `青竹水筒` ＋ `野生竹耳`（或配竹筍）於營火煨煮出 **【竹筒山珍湯】**（`zl_item_bamboo_tube_soup`，大幅恢復 25 體力、15 氣血並歸還空竹筒）。 |
+
+### 8.2 上方「槽位採集」與右下角「`[探索]` 林下翻找＋聽風雷達」雙軌分工
+1. **封堵 `[探索]` 偷採槽位破口**：移除 `step_move.rs` 繞過工具門檻直接白送 `刺竹稈` 之舊邏輯。
+2. **林下微生態翻找**：在刺竹林點擊 `[探索]` 時，消耗 1 點體力翻找腐葉與竹根：
+   - 若行囊尚無刃具且未拾得竹片，優先從風折枯竹間尋獲 **【風折老竹片】**（確保 100% 零死鎖啟動）；
+   - 雨後或濕潤天候（`rhizome_awakening` / `fungus_blooming` / `moist_soil`）翻找腐葉，有機率翻出鮮甜的 **【雞肉絲菇】**（`zl_item_termite_mushroom`）；
+   - 格內有【破土竹筍】時，翻找筍頭有機率抓獲肥美的 **【筍龜（竹象鼻蟲）】**（`zl_item_bamboo_weevil`，可火烤成 **【焦香烤筍龜】**）。
+3. **竹海聽風辨位（鄰格聲響與氣息雷達）**：`[探索]` 同步掃描東南西北相鄰 4 格之槽位，主動回報哪一格有**「新筍破土的清香」**、**「腐木竹耳的濕潤菌息」**或**「疏竹開闊小徑」**，作為竹海尋寶的聽覺與嗅覺指南針。
+
+### 8.3 竹海空間改造：砍竹開路（疏竹小徑）與刻竹記號（`[刻記號]`）
+1. **砍竹開路**：當一格的【合抱刺竹叢】被砍伐清空後，該格化為平順好走的「疏竹小徑」，場景描述與環境提示同步反映林間豁然開朗，移動經過時不再受枝刺阻滯。
+2. **刻竹記號（`CarveMark`）**：當玩家行囊持有 `sharp_edge` 工具（`烤刃竹片刀`、`銳邊石片`、`籜繩竹鞭石斧`）時，點擊【合抱刺竹叢】除了伐竹外，額外浮現 **`[刻記號]`** 動詞膠囊；點擊後在竹幹刻下清晰路標（`zl_mark:1`），顯示於場景首句與中段環境感知區，徹底解決 800 格竹海迷路痛點。

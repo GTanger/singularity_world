@@ -160,17 +160,24 @@ pub fn compose_bamboo_description_from_objects(
     is_waterside: bool,
     objects: &[GridObject],
 ) -> String {
+    let has_standing_culm = objects
+        .iter()
+        .any(|o| o.id == bamboo_culm::ID && o.quantity > 0);
     let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
-    let base_clause = match w_def.id {
-        "zl_weather_sea_gale" => "原生刺竹林枝刺交錯，九降勁風吹得竹梢翻湧。",
-        "zl_weather_mountain_rain" => "原生刺竹林枝刺交錯，山雨霏微打在竹冠作響。",
-        "zl_weather_post_rain_mist" => "原生刺竹林枝刺交錯，雨後初霽水氣蒸騰濕潤。",
-        "zl_weather_morning_dew_fog" => "原生刺竹林枝刺交錯，林間晨霧流轉凝滿露珠。",
-        _ => {
-            if is_waterside {
-                BASE_DESC_WATERSIDE
-            } else {
-                BASE_DESC_DRY
+    let base_clause = if !has_standing_culm {
+        "刺竹已伐開一條疏竹小徑，林間步履輕省。"
+    } else {
+        match w_def.id {
+            "zl_weather_sea_gale" => "原生刺竹林枝刺交錯，九降勁風吹得竹梢翻湧。",
+            "zl_weather_mountain_rain" => "原生刺竹林枝刺交錯，山雨霏微打在竹冠作響。",
+            "zl_weather_post_rain_mist" => "原生刺竹林枝刺交錯，雨後初霽水氣蒸騰濕潤。",
+            "zl_weather_morning_dew_fog" => "原生刺竹林枝刺交錯，林間晨霧流轉凝滿露珠。",
+            _ => {
+                if is_waterside {
+                    BASE_DESC_WATERSIDE
+                } else {
+                    BASE_DESC_DRY
+                }
             }
         }
     };
@@ -184,18 +191,34 @@ pub fn compose_bamboo_description_from_objects(
     desc
 }
 
+/// 檢查竹林格是否已被砍開為平順的「疏竹小徑」
+#[must_use]
+pub fn is_bamboo_trail_cleared(cell: &GridCell) -> bool {
+    is_bamboo_slot_cell(cell)
+        && !cell
+            .objects
+            .iter()
+            .any(|o| o.id == bamboo_culm::ID && o.quantity > 0)
+}
+
+/// 檢查竹林格是否已刻有玩家留下的路標刻痕
+#[must_use]
+pub fn has_bamboo_trail_mark(cell: &GridCell) -> bool {
+    cell.has_room_tag("zl_marked_trail")
+}
+
 /// 若該格為【刺竹林】槽位地形格，依其當前非空白槽位（`quantity > 0`）動態重組描述
 pub fn compose_bamboo_description(cell: &GridCell) -> Option<String> {
     if !is_bamboo_slot_cell(cell) {
         return None;
     }
     let is_waterside = cell.has_room_tag("waterside");
-    Some(compose_bamboo_description_from_objects(
-        is_waterside,
-        &cell.objects,
-    ))
+    let mut desc = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
+    if has_bamboo_trail_mark(cell) && !desc.contains("竹幹刻著醒目路標") {
+        desc.push_str("竹幹刻著醒目路標。");
+    }
+    Some(desc)
 }
-
 /// 檢查格子是否為採用 3 槽位拉霸機制的【刺竹林】地形格
 pub fn is_bamboo_slot_cell(cell: &GridCell) -> bool {
     cell.name == BAMBOO_TERRAIN_NAME || cell.has_room_tag(BAMBOO_TERRAIN_TAG)
@@ -314,9 +337,13 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
     }
 
     let is_waterside = cell.has_room_tag("waterside");
-    cell.description = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
+    let mut new_desc = compose_bamboo_description_from_objects(is_waterside, &cell.objects);
+    if has_bamboo_trail_mark(cell) {
+        new_desc.push_str("竹幹刻著醒目路標。");
+    }
+    cell.description = new_desc;
 
-    // 保留生態中繼標籤（zl_roll_day:, zl_weather_epoch:, zl_pressure:）
+    // 保留生態中繼標籤與路標刻痕（zl_roll_day:, zl_weather_epoch:, zl_pressure:, zl_marked_trail）
     let preserved_meta_tags: Vec<String> = cell
         .tags
         .iter()
@@ -324,6 +351,7 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
             t.starts_with("zl_roll_day:")
                 || t.starts_with("zl_weather_epoch:")
                 || t.starts_with("zl_pressure:")
+                || *t == "zl_marked_trail"
         })
         .cloned()
         .collect();
@@ -531,6 +559,101 @@ pub fn lazy_refresh_bamboo_cell(
     true
 }
 
+/// 持利刃在刺竹叢竹幹刻下防迷路記號（`CarveMark`）
+pub fn carve_bamboo_trail_mark(cell: &mut GridCell, player_inv_json: &str) -> Result<String, String> {
+    if !objects::inventory_has_capability_tag(player_inv_json, "sharp_edge") {
+        return Err(
+            "刺竹外皮堅韌滑手，徒手無法留痕；需先備妥「烤刃竹片刀」或「銳邊石片」方能刻下路標。"
+                .to_string(),
+        );
+    }
+    if has_bamboo_trail_mark(cell) {
+        return Ok("這叢刺竹幹上已刻有醒目的十字刀痕路標，引領著你在竹海中的方向。".to_string());
+    }
+    cell.tags.push("zl_marked_trail".to_string());
+    if !cell.description.contains("竹幹刻著醒目路標") {
+        cell.description.push_str("竹幹刻著醒目路標。");
+    }
+    Ok(
+        "你持利刃在粗壯的刺竹青皮上深深削出十字刻痕，露出淺白竹肉，於茫茫竹海中留下一處醒目的「竹幹路標」。"
+            .to_string(),
+    )
+}
+
+/// 在刺竹林執行右下角 `[探索]`：翻找林下微生態（風折老竹片／筍龜／雞肉絲菇）並啟動四方聽風氣息雷達
+#[must_use]
+pub fn explore_bamboo_understory(
+    cell: &GridCell,
+    neighbor_cells: &[(&str, &GridCell)],
+    player_inv_json: &str,
+    weather: &crate::grid::zhulin::weather::ZhulinWeatherDef,
+) -> (Option<(&'static str, u32)>, String) {
+    let has_blade = objects::inventory_has_capability_tag(player_inv_json, "sharp_edge");
+    let has_slat = player_inv_json.contains("zl_item_aged_bamboo_slat");
+    let has_shoot_here = cell
+        .objects
+        .iter()
+        .any(|o| o.id == objects::bamboo_shoot::ID && o.quantity > 0);
+    let is_fungus_weather = weather.tags.has_tag("fungus_blooming")
+        || weather.tags.has_tag("moist_soil")
+        || weather.tags.has_tag("rhizome_awakening");
+
+    let (loot_opt, mut narrative) = if !has_blade && !has_slat {
+        (
+            Some((objects::ITEM_AGED_BAMBOO_SLAT.id, 1)),
+            "你撥開林下厚密的乾竹葉細細翻找，從風折枯竹間尋得一片竹青堅實的「風折老竹片」收入行囊（可配乾竹葉烘烤出「烤刃竹片刀」）。".to_string(),
+        )
+    } else if has_shoot_here {
+        (
+            Some((objects::ITEM_BAMBOO_WEEVIL.id, 1)),
+            "你俯身撥看破土春筍周圍的筍籜，順手逮住一隻正抱著嫩筍吸食汁液的肥美「筍龜」收入行囊！".to_string(),
+        )
+    } else if is_fungus_weather {
+        (
+            Some((objects::ITEM_TERMITE_MUSHROOM.id, 1)),
+            "你循著雨後濕潤的泥土氣息翻開腐竹葉，驚喜發現一叢傘蓋尖凸、潔白肥厚的「雞肉絲菇」，當即連柄採入行囊！".to_string(),
+        )
+    } else if has_blade {
+        (
+            Some((objects::bamboo_sheath::YIELD_ITEM_ID, 2)),
+            "你在刺竹林根部與落葉筍殼間巡看，拾得兩片韌性極佳的「韌竹籜」收入行囊（可對搓成「竹籜繩」）。".to_string(),
+        )
+    } else {
+        (
+            Some((objects::ITEM_AGED_BAMBOO_SLAT.id, 1)),
+            "你在刺竹林根部與落葉層間巡看，拾得一片自然陰乾的「風折老竹片」收入行囊。".to_string(),
+        )
+    };
+
+    let mut radar_hints: Vec<String> = Vec::new();
+    for &(dir_zh, ncell) in neighbor_cells {
+        if ncell
+            .objects
+            .iter()
+            .any(|o| o.id == objects::bamboo_shoot::ID && o.quantity > 0)
+        {
+            radar_hints.push(format!("{dir_zh}側竹林飄來新筍破土的清香"));
+        } else if ncell
+            .objects
+            .iter()
+            .any(|o| o.id == objects::bamboo_fungus::ID && o.quantity > 0)
+        {
+            radar_hints.push(format!("{dir_zh}側隱有腐竹木耳的微潤菌息"));
+        } else if is_bamboo_trail_cleared(ncell) {
+            radar_hints.push(format!("{dir_zh}側竹叢已闢出疏竹小徑"));
+        } else if has_bamboo_trail_mark(ncell) {
+            radar_hints.push(format!("{dir_zh}側竹幹留有刻痕路標"));
+        }
+    }
+    if !radar_hints.is_empty() {
+        narrative.push_str("你凝神傾聽四方竹韻：");
+        narrative.push_str(&radar_hints.join("，"));
+        narrative.push('。');
+    }
+
+    (loot_opt, narrative)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -668,7 +791,7 @@ mod tests {
             assert_eq!(brief.name, item_def.name);
             assert_eq!(brief.origin, "刺竹林");
         }
-        assert_eq!(ALL_ZHULIN_ITEMS.len(), 21);
+        assert_eq!(ALL_ZHULIN_ITEMS.len(), 31);
         for item in ALL_ZHULIN_ITEMS {
             assert!(!item.tags.category_tags.is_empty());
             assert!(!item.tags.attribute_tags.is_empty());
@@ -782,7 +905,7 @@ mod tests {
         );
         assert_eq!(
             classify_zhulin_item_capabilities("zl_item_bamboo_culm"),
-            Some(("raw".to_string(), true, "裁製竹器".to_string()))
+            Some(("raw".to_string(), true, "裁器編簍".to_string()))
         );
         assert_eq!(
             classify_zhulin_item_capabilities("zl_item_dry_leaves"),
@@ -790,8 +913,36 @@ mod tests {
         );
         assert_eq!(
             classify_zhulin_item_capabilities("zl_item_bamboo_shoot"),
-            Some(("raw".to_string(), true, "煨烤熟食".to_string()))
+            Some(("raw".to_string(), true, "竹火野炊".to_string()))
         );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_aged_bamboo_slat"),
+            Some(("raw".to_string(), true, "烘烤竹刃".to_string()))
+        );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_bamboo_sheath"),
+            Some(("raw".to_string(), true, "搓製籜繩".to_string()))
+        );
+        assert_eq!(
+            classify_zhulin_item_capabilities("zl_item_bamboo_canteen"),
+            Some(("finished".to_string(), true, "接雨盛水".to_string()))
+        );
+
+        // 純竹工具鏈驗證：烤刃竹片刀可無損掘筍與斬竹鞭；竹鞭根槌可伐合抱刺竹叢
+        let knife_bag = r#"[{"item_id":"zl_item_fire_hardened_bamboo_knife","qty":1}]"#;
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_shoot::ID, 1, knife_bag),
+            GatherCheckResult::Allowed { stock_cost: 1, yield_qty: 1, .. }
+        ));
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_rhizome::ID, 2, knife_bag),
+            GatherCheckResult::Allowed { stock_cost: 1, yield_qty: 1, .. }
+        ));
+        let club_bag = r#"[{"item_id":"zl_item_rhizome_club","qty":1}]"#;
+        assert!(matches!(
+            evaluate_zhulin_gather(bamboo_culm::ID, 6, club_bag),
+            GatherCheckResult::Allowed { stock_cost: 1, yield_qty: 1, .. }
+        ));
     }
 
     #[test]
@@ -891,5 +1042,56 @@ mod tests {
         let days_advanced = lazy_refresh_bamboo_cell(&mut cell, 3, &[], 300);
         assert!(days_advanced);
         assert_eq!(get_bamboo_cell_pressure(&cell), 0);
+    }
+
+    #[test]
+    fn explore_understory_bootstrap_and_trail_mark_carving_work() {
+        let mut cell = build_bamboo_terrain_cell(
+            SquareCoord::new(-2, 1),
+            "紅土西麓",
+            true,
+            2026_11_10,
+        );
+        let mut east_neighbor = build_bamboo_terrain_cell(
+            SquareCoord::new(-1, 1),
+            "紅土西麓",
+            true,
+            2026_11_10,
+        );
+        east_neighbor.objects.push(bamboo_shoot::build_grid_object(2));
+
+        let clear_weather = &crate::grid::zhulin::weather::clear_sun::WEATHER_DEF;
+        let post_rain = &crate::grid::zhulin::weather::post_rain_mist::WEATHER_DEF;
+
+        // 1. 無刃具且無竹片時，探索 100% 拾得【風折老竹片】破除啟動死鎖，並回報東側新筍清香
+        let (loot1, narr1) = explore_bamboo_understory(
+            &cell,
+            &[("東", &east_neighbor)],
+            "[]",
+            clear_weather,
+        );
+        assert_eq!(loot1, Some(("zl_item_aged_bamboo_slat", 1)));
+        assert!(narr1.contains("風折老竹片"));
+        assert!(narr1.contains("東側竹林飄來新筍破土的清香"));
+
+        // 2. 持有【烤刃竹片刀】且雨後初霽時，探索翻出【雞肉絲菇】
+        let knife_bag = r#"[{"item_id":"zl_item_fire_hardened_bamboo_knife","qty":1}]"#;
+        cell.objects.retain(|o| o.id != bamboo_shoot::ID);
+        let (loot2, narr2) = explore_bamboo_understory(&cell, &[], knife_bag, post_rain);
+        assert_eq!(loot2, Some(("zl_item_termite_mushroom", 1)));
+        assert!(narr2.contains("雞肉絲菇"));
+
+        // 3. 格內有【破土竹筍】時，探索抓獲【筍龜】
+        cell.objects.push(bamboo_shoot::build_grid_object(2));
+        let (loot3, narr3) = explore_bamboo_understory(&cell, &[], knife_bag, clear_weather);
+        assert_eq!(loot3, Some(("zl_item_bamboo_weevil", 1)));
+        assert!(narr3.contains("筍龜"));
+
+        // 4. 徒手刻記號擋回；持【烤刃竹片刀】成功刻下竹幹路標
+        assert!(carve_bamboo_trail_mark(&mut cell, "[]").is_err());
+        let mark_msg = carve_bamboo_trail_mark(&mut cell, knife_bag).expect("knife should carve mark");
+        assert!(mark_msg.contains("竹幹路標"));
+        assert!(has_bamboo_trail_mark(&cell));
+        assert!(cell.description.contains("竹幹刻著醒目路標"));
     }
 }

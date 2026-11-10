@@ -16,10 +16,13 @@ pub mod terrain_bamboo;
 pub mod weather;
 
 pub use objects::{
-    ALL_ZHULIN_ITEMS, BambooSlotKind, GatherCheckResult, ITEM_BAMBOO_CANTEEN, ITEM_BAMBOO_SPADE,
-    ITEM_BAMBOO_STONE_AXE, ITEM_ROASTED_BAMBOO_SHOOT, ITEM_SHARP_STONE_FLAKE, ZhulinItemDef,
-    ZhulinTagTriad, append_diegetic_stock_clause, bamboo_culm, bamboo_fungus, bamboo_rhizome,
-    bamboo_sheath, bamboo_shoot, classify_zhulin_item_capabilities, dry_leaves,
+    ALL_ZHULIN_ITEMS, BambooSlotKind, GatherCheckResult, ITEM_AGED_BAMBOO_SLAT,
+    ITEM_BAMBOO_BASKET, ITEM_BAMBOO_CANTEEN, ITEM_BAMBOO_CANTEEN_FULL, ITEM_BAMBOO_SPADE,
+    ITEM_BAMBOO_STONE_AXE, ITEM_BAMBOO_TUBE_SOUP, ITEM_BAMBOO_WEEVIL,
+    ITEM_FIRE_HARDENED_BAMBOO_KNIFE, ITEM_RHIZOME_CLUB, ITEM_ROASTED_BAMBOO_SHOOT,
+    ITEM_ROASTED_WEEVIL, ITEM_SHARP_STONE_FLAKE, ITEM_SHEATH_CORD, ITEM_TERMITE_MUSHROOM,
+    ZhulinItemDef, ZhulinTagTriad, append_diegetic_stock_clause, bamboo_culm, bamboo_fungus,
+    bamboo_rhizome, bamboo_sheath, bamboo_shoot, classify_zhulin_item_capabilities, dry_leaves,
     evaluate_fire_weather_shelter, evaluate_zhulin_gather, evaluate_zhulin_gather_with_weather,
     gather_narrative_for_object, inventory_has_capability_tag, lookup_zhulin_item_def,
     lookup_zhulin_object_tags, resolve_bamboo_slot_object, resolve_bamboo_slot_object_with_qty,
@@ -27,7 +30,8 @@ pub use objects::{
 };
 pub use terrain_bamboo::{
     BAMBOO_TERRAIN_NAME, BAMBOO_TERRAIN_TAG, TERRAIN_TAGS, build_bamboo_terrain_cell,
-    compose_bamboo_description, get_bamboo_cell_pressure, is_bamboo_slot_cell,
+    carve_bamboo_trail_mark, compose_bamboo_description, explore_bamboo_understory,
+    get_bamboo_cell_pressure, has_bamboo_trail_mark, is_bamboo_slot_cell, is_bamboo_trail_cleared,
     lazy_refresh_bamboo_cell, record_bamboo_gather_pressure, refresh_bamboo_cell_after_gather,
     roll_bamboo_three_slots, set_bamboo_cell_meta_tag,
 };

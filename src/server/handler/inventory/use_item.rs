@@ -1,7 +1,20 @@
 pub fn is_item_edible(item_id: &str, item_name: &str, item_type: &str) -> bool {
+    if matches!(
+        item_id,
+        "zl_item_bamboo_shoot"
+            | "zl_item_bamboo_fungus"
+            | "zl_item_termite_mushroom"
+            | "zl_item_roasted_bamboo_shoot"
+            | "zl_item_roasted_weevil"
+            | "zl_item_bamboo_tube_soup"
+            | "zl_item_bamboo_canteen_full"
+    ) {
+        return true;
+    }
     if item_id == "raw_meat"
         || item_id == "wt_down_feather"
         || item_id == "wt_beast_bone"
+        || item_id == "zl_item_bamboo_canteen"
         || item_name.contains("生獸肉")
         || item_name.contains("絨羽")
         || item_name.contains("獸骨")
@@ -272,24 +285,62 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     let is_cat_tea_or_drink = cat_entry.is_some_and(|c| matches!(c.category_num.trim(), "09" | "9"));
     let is_cat_cooked = cat_entry.is_some_and(|c| matches!(c.category_num.trim(), "08" | "8"));
 
+    let mut zl_canteen_returned = false;
+    let mut custom_zl_narrative: Option<String> = None;
     if let Some(arc) = crate::store::get_store() {
         let _ = arc.write().update_entity(&pid, |e| {
-            if is_meridian_salve || is_cat_med {
-                e.vit = (e.vit + 25).min(100);
-                e.qi = (e.qi + 20).min(100);
-            } else if is_calming_tea || is_cat_tea_or_drink {
-                e.qi = (e.qi + 30).min(100);
-            } else if is_culinary || is_cat_cooked {
-                e.vit = (e.vit + 20).min(100);
-                e.qi = (e.qi + 18).min(100);
-            } else if is_mutated {
-                e.vit = (e.vit + 15).min(100);
-                e.qi = (e.qi + 25).min(100);
-            } else {
-                e.vit = (e.vit + 8).min(100);
-                e.qi = (e.qi + 10).min(100);
+            match msg.item_id.as_str() {
+                "zl_item_bamboo_shoot" => {
+                    e.vit = (e.vit + 2).min(100);
+                    custom_zl_narrative = Some("你硬著頭皮生啃了一口「鮮刺竹筍」，生筍中的苦麻汁液令舌尖發麻、喉頭乾澀（僅微幅恢復 2 點氣力；若以竹籜裹灰煨烤或以青竹筒煲湯去苦，方能化為鮮甜飽腹的熟食）。".to_string());
+                }
+                "zl_item_bamboo_fungus" | "zl_item_termite_mushroom" => {
+                    e.vit = (e.vit + 5).min(100);
+                    custom_zl_narrative = Some(format!("你細細咀嚼手中的「{item_name}」，菌香微甘中帶著生鮮泥氣（恢復 5 點氣力；若置於火旁煨烤或投於盛水青竹筒中煲湯，滋味更顯鮮醇）。"));
+                }
+                "zl_item_roasted_bamboo_shoot" => {
+                    e.vit = (e.vit + 18).min(100);
+                    e.qi = (e.qi + 8).min(100);
+                    custom_zl_narrative = Some("你剝開焦香微裂的竹籜，咬下熱氣騰騰的「籜裹煨竹筍」，苦澀盡去、滿口清甜脆嫩，四肢百骸頓時湧起充沛氣力！".to_string());
+                }
+                "zl_item_roasted_weevil" => {
+                    e.vit = (e.vit + 15).min(100);
+                    e.qi = (e.qi + 6).min(100);
+                    custom_zl_narrative = Some("你嚼碎烤得金紅酥脆的「焦香烤筍龜」，濃郁脂香在口中化開，迅速補充了山林跋涉消耗的體能。".to_string());
+                }
+                "zl_item_bamboo_tube_soup" => {
+                    e.vit = (e.vit + 25).min(100);
+                    e.qi = (e.qi + 15).min(100);
+                    custom_zl_narrative = Some("你捧起溫熱的竹筒仰頭飲盡「竹筒山珍湯」，山泉、竹膜與野菌的鮮甜精華順喉而下，渾身寒氣與疲憊一掃而空！".to_string());
+                }
+                "zl_item_bamboo_canteen_full" => {
+                    e.vit = (e.vit + 12).min(100);
+                    e.qi = (e.qi + 5).min(100);
+                    zl_canteen_returned = true;
+                    custom_zl_narrative = Some("你拔開竹葉塞，仰頭暢飲「盛水青竹筒」中帶著淡淡竹青香的甘冽涼水，唇齒生津，並將空出的「青竹水筒」收回行囊備用。".to_string());
+                }
+                _ => {
+                    if is_meridian_salve || is_cat_med {
+                        e.vit = (e.vit + 25).min(100);
+                        e.qi = (e.qi + 20).min(100);
+                    } else if is_calming_tea || is_cat_tea_or_drink {
+                        e.qi = (e.qi + 30).min(100);
+                    } else if is_culinary || is_cat_cooked {
+                        e.vit = (e.vit + 20).min(100);
+                        e.qi = (e.qi + 18).min(100);
+                    } else if is_mutated {
+                        e.vit = (e.vit + 15).min(100);
+                        e.qi = (e.qi + 25).min(100);
+                    } else {
+                        e.vit = (e.vit + 8).min(100);
+                        e.qi = (e.qi + 10).min(100);
+                    }
+                }
             }
         });
+    }
+    if zl_canteen_returned {
+        let _ = db::add_to_inventory(&pid, "zl_item_bamboo_canteen", 1);
     }
     if is_meridian_salve || is_cat_med || is_calming_tea || is_cat_tea_or_drink || is_mutated {
         crate::pg::living_world::clear_entity_afflictions(&pid, true, crate::game::now_unix());
@@ -313,7 +364,9 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         .iter()
         .any(|k| item_name.contains(k));
 
-    let narrative = if is_meridian_salve {
+    let narrative = if let Some(custom) = custom_zl_narrative {
+        custom
+    } else if is_meridian_salve {
         format!("你取出一份{bracketed_name}塗抹於周身經絡要穴。溫潤的藥力順著經脈化開，氣血大暢，肌肉酸痛盡消（周身氣血與心神皆獲豐沛滋養）！")
     } else if is_calming_tea {
         format!("你沏開這份{bracketed_name}細細品飲。茶湯清洌甘甜，清氣透入眉宇，心神澄澈通達（心神頓時澄澈充盈）！")

@@ -15,10 +15,13 @@ pub mod bamboo_shoot;
 pub mod dry_leaves;
 
 pub use affordance::{
-    GatherCheckResult, ITEM_BAMBOO_CANTEEN, ITEM_BAMBOO_SPADE, ITEM_BAMBOO_STONE_AXE,
-    ITEM_ROASTED_BAMBOO_SHOOT, ITEM_SHARP_STONE_FLAKE, classify_zhulin_item_capabilities,
-    evaluate_fire_weather_shelter, evaluate_zhulin_gather, evaluate_zhulin_gather_with_weather,
-    inventory_has_capability_tag, try_craft_zhulin_item,
+    GatherCheckResult, ITEM_AGED_BAMBOO_SLAT, ITEM_BAMBOO_BASKET, ITEM_BAMBOO_CANTEEN,
+    ITEM_BAMBOO_CANTEEN_FULL, ITEM_BAMBOO_SPADE, ITEM_BAMBOO_STONE_AXE, ITEM_BAMBOO_TUBE_SOUP,
+    ITEM_BAMBOO_WEEVIL, ITEM_FIRE_HARDENED_BAMBOO_KNIFE, ITEM_RHIZOME_CLUB,
+    ITEM_ROASTED_BAMBOO_SHOOT, ITEM_ROASTED_WEEVIL, ITEM_SHARP_STONE_FLAKE, ITEM_SHEATH_CORD,
+    ITEM_TERMITE_MUSHROOM, classify_zhulin_item_capabilities, evaluate_fire_weather_shelter,
+    evaluate_zhulin_gather, evaluate_zhulin_gather_with_weather, inventory_has_capability_tag,
+    try_craft_zhulin_item,
 };
 use crate::grid::cell::GridObject;
 use crate::model::RoomObject;
@@ -220,6 +223,16 @@ pub const ALL_ZHULIN_ITEMS: &[ZhulinItemDef] = &[
     ITEM_BAMBOO_SPADE,
     ITEM_BAMBOO_CANTEEN,
     ITEM_ROASTED_BAMBOO_SHOOT,
+    ITEM_AGED_BAMBOO_SLAT,
+    ITEM_FIRE_HARDENED_BAMBOO_KNIFE,
+    ITEM_SHEATH_CORD,
+    ITEM_RHIZOME_CLUB,
+    ITEM_BAMBOO_BASKET,
+    ITEM_BAMBOO_CANTEEN_FULL,
+    ITEM_BAMBOO_TUBE_SOUP,
+    ITEM_BAMBOO_WEEVIL,
+    ITEM_ROASTED_WEEVIL,
+    ITEM_TERMITE_MUSHROOM,
 ];
 
 /// 依物品專屬 ID 查詢竹林產出物品物件定義
@@ -247,6 +260,16 @@ pub fn lookup_zhulin_item_def(item_id: &str) -> Option<&'static ZhulinItemDef> {
         "zl_item_bamboo_spade" => Some(&ITEM_BAMBOO_SPADE),
         "zl_item_bamboo_canteen" => Some(&ITEM_BAMBOO_CANTEEN),
         "zl_item_roasted_bamboo_shoot" => Some(&ITEM_ROASTED_BAMBOO_SHOOT),
+        "zl_item_aged_bamboo_slat" => Some(&ITEM_AGED_BAMBOO_SLAT),
+        "zl_item_fire_hardened_bamboo_knife" => Some(&ITEM_FIRE_HARDENED_BAMBOO_KNIFE),
+        "zl_item_sheath_cord" => Some(&ITEM_SHEATH_CORD),
+        "zl_item_rhizome_club" => Some(&ITEM_RHIZOME_CLUB),
+        "zl_item_bamboo_basket" => Some(&ITEM_BAMBOO_BASKET),
+        "zl_item_bamboo_canteen_full" => Some(&ITEM_BAMBOO_CANTEEN_FULL),
+        "zl_item_bamboo_tube_soup" => Some(&ITEM_BAMBOO_TUBE_SOUP),
+        "zl_item_bamboo_weevil" => Some(&ITEM_BAMBOO_WEEVIL),
+        "zl_item_roasted_weevil" => Some(&ITEM_ROASTED_WEEVIL),
+        "zl_item_termite_mushroom" => Some(&ITEM_TERMITE_MUSHROOM),
         _ => None,
     }
 }

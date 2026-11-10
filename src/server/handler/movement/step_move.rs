@@ -164,7 +164,8 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
     });
 
     // ── Empty 強制短路 ───────────────────────────────────────────────
-    let explore_msg = if freshness == Freshness::Empty {
+    let is_bamboo_slot = cell_info.as_ref().map(crate::grid::zhulin::is_bamboo_slot_cell).unwrap_or(false);
+    let explore_msg = if freshness == Freshness::Empty && !is_bamboo_slot {
         if let Err(e) = db::update_cell_state(gx, gy, true, Freshness::Empty, &current_cell_objects) {
             tracing::warn!("[explore_ws] cell_state 寫入 PG 失敗：{e}");
         }
@@ -215,7 +216,50 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
 
         let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
             .is_some_and(|g| g.has_peninsula_wilderness());
-        let (outcome, log, loot) = if !is_peninsula {
+        let (outcome, log, loot) = if cell_info.as_ref().map(crate::grid::zhulin::is_bamboo_slot_cell).unwrap_or(false) {
+            let grid_snap = crate::server::grid_manager::get_runtime_square_grid();
+            let north_cell = grid_snap.as_ref().and_then(|g| g.get(SquareCoord::new(gx, gy + 1)));
+            let south_cell = grid_snap.as_ref().and_then(|g| g.get(SquareCoord::new(gx, gy - 1)));
+            let east_cell = grid_snap.as_ref().and_then(|g| g.get(SquareCoord::new(gx + 1, gy)));
+            let west_cell = grid_snap.as_ref().and_then(|g| g.get(SquareCoord::new(gx - 1, gy)));
+            let mut neighbor_refs: Vec<(&str, &crate::grid::GridCell)> = Vec::new();
+            if let Some(c) = north_cell {
+                neighbor_refs.push(("北", c));
+            }
+            if let Some(c) = south_cell {
+                neighbor_refs.push(("南", c));
+            }
+            if let Some(c) = east_cell {
+                neighbor_refs.push(("東", c));
+            }
+            if let Some(c) = west_cell {
+                neighbor_refs.push(("西", c));
+            }
+            let inv_json = db::get_entity(&player_id)
+                .ok()
+                .flatten()
+                .map(|e| e.inventory)
+                .unwrap_or_default();
+            let now_unix = crate::game::now_unix();
+            let (_, gh, _, _gday) = game::game_time_now(now_unix, conn.cfg.game_time_epoch_unix, conn.cfg.game_time_scale);
+            let weather = crate::grid::zhulin::active_zhulin_weather_for_hour(None, gh.max(0) as u32);
+            let current_c = cell_info.as_ref().unwrap();
+            let (yield_opt, text) = crate::grid::zhulin::explore_bamboo_understory(current_c, &neighbor_refs, &inv_json, weather);
+            if let Some((item_id, qty)) = yield_opt {
+                let _ = db::add_to_inventory(&player_id, item_id, qty as i32);
+                let item_name = crate::grid::zhulin::lookup_zhulin_item_def(item_id)
+                    .map(|d| d.name)
+                    .unwrap_or(item_id);
+                let loot = vec![LootItem {
+                    item_id: item_id.into(),
+                    name: item_name.into(),
+                    qty: qty as i32,
+                }];
+                ("harvest".into(), text, loot)
+            } else {
+                ("trace".into(), text, vec![])
+            }
+        } else if !is_peninsula {
             if let Some(obj) = current_cell_objects.iter().find(|o| o.quantity > 0)
                 && let Some(item_id) = crate::grid::zhulin::yield_item_id_for_object(&obj.id)
                 && let Some(item_def) = crate::grid::zhulin::lookup_zhulin_item_def(item_id)

@@ -118,6 +118,19 @@
 		var held = [];
 		if (names.hold_l) held.push(names.hold_l);
 		if (names.hold_r) held.push(names.hold_r);
+		var zlTools = [];
+		var ids = Array.isArray(_lastInventoryItemIds) ? _lastInventoryItemIds : [];
+		if (ids.indexOf('zl_item_bamboo_stone_axe') !== -1) zlTools.push('竹柄石斧');
+		if (ids.indexOf('zl_item_rhizome_club') !== -1) zlTools.push('竹鞭根槌');
+		if (ids.indexOf('zl_item_bamboo_spade') !== -1) zlTools.push('掘土竹鏟');
+		if (ids.indexOf('zl_item_fire_hardened_bamboo_knife') !== -1) zlTools.push('烤刃竹片刀');
+		if (ids.indexOf('zl_item_sharp_stone_flake') !== -1) zlTools.push('溪床尖石片');
+		if (ids.indexOf('zl_item_bamboo_basket') !== -1) zlTools.push('刺竹背簍');
+		if (ids.indexOf('zl_item_bamboo_canteen_full') !== -1) zlTools.push('盛水青竹筒');
+		else if (ids.indexOf('zl_item_bamboo_canteen') !== -1) zlTools.push('青竹水筒');
+		for (var zi = 0; zi < zlTools.length; zi++) {
+			if (held.indexOf(zlTools[zi]) === -1) held.push(zlTools[zi]);
+		}
 		if (held.length) return held.join('、');
 		return '未持工具';
 	}
@@ -783,28 +796,52 @@
 	}
 	var _lastInventoryItemIds = [];
 	var _lastInvFeedback = null;
+	var _lastToolBadgeLabel = '';
 
-	function updateMainDockToolBadge(itemIds) {
-		var sealsEl = document.getElementById('sw-status-seals');
-		if (!sealsEl) return;
+	function computeMainDockToolLabel(itemIds) {
 		var ids = Array.isArray(itemIds) ? itemIds : [];
 		var toolLabel = '';
 		if (ids.indexOf('zl_item_bamboo_stone_axe') !== -1) {
 			toolLabel = '持：竹柄石斧';
+		} else if (ids.indexOf('zl_item_rhizome_club') !== -1) {
+			toolLabel = '持：竹鞭根槌';
 		} else if (ids.indexOf('zl_item_bamboo_spade') !== -1) {
 			toolLabel = '持：竹片挖鏟';
+		} else if (ids.indexOf('zl_item_fire_hardened_bamboo_knife') !== -1) {
+			toolLabel = '持：烤刃竹刀';
 		} else if (ids.indexOf('zl_item_sharp_stone_flake') !== -1) {
 			toolLabel = '持：尖石片';
+		} else if (ids.indexOf('zl_item_bamboo_canteen_full') !== -1) {
+			toolLabel = '備：盛水竹筒';
+		} else if (ids.indexOf('zl_item_bamboo_canteen') !== -1) {
+			toolLabel = '備：青竹水筒';
 		}
-		if (ids.indexOf('zl_item_bamboo_canteen') !== -1) {
-			toolLabel = toolLabel ? (toolLabel + '・竹筒') : '備：青竹水筒';
+		if (ids.indexOf('zl_item_bamboo_basket') !== -1) {
+			toolLabel = toolLabel ? (toolLabel + ' · 負：刺竹背簍') : '負：刺竹背簍';
 		}
-		if (toolLabel) {
-			sealsEl.textContent = toolLabel;
+		return toolLabel;
+	}
+
+	function getToolBadgeHtml() {
+		if (!_lastToolBadgeLabel) return '';
+		return '<span class="sw-seal-chip sw-tool-seal-chip" data-zl-tool="1">' + esc(_lastToolBadgeLabel) + '</span>';
+	}
+
+	function updateMainDockToolBadge(itemIds) {
+		_lastToolBadgeLabel = computeMainDockToolLabel(itemIds);
+		var sealsEl = document.getElementById('sw-status-seals');
+		if (!sealsEl) return;
+		var existingTool = sealsEl.querySelector('[data-zl-tool="1"]');
+		if (existingTool) existingTool.remove();
+		if (_lastToolBadgeLabel) {
+			var span = document.createElement('span');
+			span.className = 'sw-seal-chip sw-tool-seal-chip';
+			span.setAttribute('data-zl-tool', '1');
+			span.textContent = _lastToolBadgeLabel;
+			sealsEl.appendChild(span);
 			sealsEl.setAttribute('data-zl-tool', '1');
 			sealsEl.hidden = false;
 		} else if (sealsEl.getAttribute('data-zl-tool') === '1') {
-			sealsEl.textContent = '';
 			sealsEl.removeAttribute('data-zl-tool');
 		}
 	}
@@ -933,11 +970,22 @@
 					} else if (!isRaw) {
 						var isFoodOrDrink = Boolean(it.is_edible) || it.item_type === 'food' || it.item_type === 'consumable';
 						var useLabel = isFoodOrDrink ? '食用' : '使用';
+						if (itemId === 'zl_item_bamboo_canteen_full' || itemId === 'zl_item_bamboo_tube_soup') {
+							useLabel = '飲用';
+						} else if (itemId === 'zl_item_bamboo_shoot') {
+							useLabel = '生啃';
+						}
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + useLabel + '</button>';
 					}
 					if (Boolean(it.can_craft) || isRaw) {
 						if (Boolean(it.is_edible)) {
-							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">食用</button>';
+							var rawEatLabel = '食用';
+							if (itemId === 'zl_item_bamboo_canteen_full' || itemId === 'zl_item_bamboo_tube_soup') {
+								rawEatLabel = '飲用';
+							} else if (itemId === 'zl_item_bamboo_shoot') {
+								rawEatLabel = '生啃';
+							}
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + rawEatLabel + '</button>';
 						}
 						var craftLabel = it.craft_label || '加工煉製';
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">' + esc(craftLabel) + '</button>';
@@ -1211,6 +1259,7 @@
 		renderTacticalSection: function () {},
 		formatItemName: formatItemName,
 		showInventoryFeedback: showInventoryFeedback,
+		getToolBadgeHtml: getToolBadgeHtml,
 		getInventoryItemIds: function () { return _lastInventoryItemIds.slice(); },
 		ITEM_NAME_MAP: ITEM_NAME_MAP
 	};

@@ -467,7 +467,12 @@ fn entity_location_label(ent: &Character) -> (String, String) {
 }
 
 fn inventory_msg_for_character(ent: &Character) -> InventoryMsg {
-    let inv = get_inventory(&ent.inventory, ent.vit);
+    let mut inv = get_inventory(&ent.inventory, ent.vit);
+    let has_basket = inv.items.iter().any(|it| it.item_id == "zl_item_bamboo_basket")
+        || ent.equipment_slots.contains("zl_item_bamboo_basket");
+    if has_basket {
+        inv.max_weight += 15.0;
+    }
     InventoryMsg {
         msg_type: "inventory".into(),
         items: inv
