@@ -220,9 +220,6 @@
 			if (spiritMax != null && spiritMax > 0 && spiritCur != null && Number(spiritCur) < Number(spiritMax) * 0.3) {
 				html += '<span class="sw-seal-chip is-warn">【倦】</span>';
 			}
-			if (window.SwPanes && typeof window.SwPanes.getToolBadgeHtml === 'function') {
-				html += window.SwPanes.getToolBadgeHtml();
-			}
 			sealsEl.innerHTML = html;
 		}
 	}

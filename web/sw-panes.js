@@ -796,55 +796,6 @@
 	}
 	var _lastInventoryItemIds = [];
 	var _lastInvFeedback = null;
-	var _lastToolBadgeLabel = '';
-
-	function computeMainDockToolLabel(itemIds) {
-		var ids = Array.isArray(itemIds) ? itemIds : [];
-		var toolLabel = '';
-		if (ids.indexOf('zl_item_bamboo_stone_axe') !== -1) {
-			toolLabel = '持：竹柄石斧';
-		} else if (ids.indexOf('zl_item_rhizome_club') !== -1) {
-			toolLabel = '持：竹鞭根槌';
-		} else if (ids.indexOf('zl_item_bamboo_spade') !== -1) {
-			toolLabel = '持：竹片挖鏟';
-		} else if (ids.indexOf('zl_item_fire_hardened_bamboo_knife') !== -1) {
-			toolLabel = '持：烤刃竹刀';
-		} else if (ids.indexOf('zl_item_sharp_stone_flake') !== -1) {
-			toolLabel = '持：尖石片';
-		} else if (ids.indexOf('zl_item_bamboo_canteen_full') !== -1) {
-			toolLabel = '備：盛水竹筒';
-		} else if (ids.indexOf('zl_item_bamboo_canteen') !== -1) {
-			toolLabel = '備：青竹水筒';
-		}
-		if (ids.indexOf('zl_item_bamboo_basket') !== -1) {
-			toolLabel = toolLabel ? (toolLabel + ' · 負：刺竹背簍') : '負：刺竹背簍';
-		}
-		return toolLabel;
-	}
-
-	function getToolBadgeHtml() {
-		if (!_lastToolBadgeLabel) return '';
-		return '<span class="sw-seal-chip sw-tool-seal-chip" data-zl-tool="1">' + esc(_lastToolBadgeLabel) + '</span>';
-	}
-
-	function updateMainDockToolBadge(itemIds) {
-		_lastToolBadgeLabel = computeMainDockToolLabel(itemIds);
-		var sealsEl = document.getElementById('sw-status-seals');
-		if (!sealsEl) return;
-		var existingTool = sealsEl.querySelector('[data-zl-tool="1"]');
-		if (existingTool) existingTool.remove();
-		if (_lastToolBadgeLabel) {
-			var span = document.createElement('span');
-			span.className = 'sw-seal-chip sw-tool-seal-chip';
-			span.setAttribute('data-zl-tool', '1');
-			span.textContent = _lastToolBadgeLabel;
-			sealsEl.appendChild(span);
-			sealsEl.setAttribute('data-zl-tool', '1');
-			sealsEl.hidden = false;
-		} else if (sealsEl.getAttribute('data-zl-tool') === '1') {
-			sealsEl.removeAttribute('data-zl-tool');
-		}
-	}
 
 	function showInventoryFeedback(text, isError) {
 		var clean = String(text || '').replace(/<[^>]*>/g, '').trim();
@@ -871,7 +822,6 @@
 		_lastInventoryItemIds = (msg && Array.isArray(msg.items))
 			? msg.items.map(function (it) { return it && (it.item_id || it.id) ? String(it.item_id || it.id) : ''; }).filter(Boolean)
 			: [];
-		updateMainDockToolBadge(_lastInventoryItemIds);
 		if (lastStatusMsg && lastStatusMsg.is_self === true) renderStatusPane(lastStatusMsg);
 		var weightEl = document.getElementById('inventory-weight');
 		var listEl = document.getElementById('inventory-list');
@@ -1259,7 +1209,6 @@
 		renderTacticalSection: function () {},
 		formatItemName: formatItemName,
 		showInventoryFeedback: showInventoryFeedback,
-		getToolBadgeHtml: getToolBadgeHtml,
 		getInventoryItemIds: function () { return _lastInventoryItemIds.slice(); },
 		ITEM_NAME_MAP: ITEM_NAME_MAP
 	};
