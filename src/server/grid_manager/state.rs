@@ -24,7 +24,6 @@ pub fn init() {
             .get(crate::grid::SquareCoord::new(-1, 0))
             .map(|c| {
                 c.name == "刺竹林"
-                    && c.has_room_tag("windbreak")
                     && c.objects
                         .iter()
                         .any(|o| o.id == "zl_bamboo_culm" && o.max_quantity >= 6)

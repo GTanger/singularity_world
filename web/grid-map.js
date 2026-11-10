@@ -2469,7 +2469,7 @@
                                 moveBtn.textContent = dir ? ('前往此處（' + dir + '）') : ('行往【' + fName + '】');
                                 moveBtn.onclick = function () {
                                     if (window.gameSend) {
-                                        window.gameSend({ type: 'move', x: tx, y: ty, direction: dir || undefined });
+                                        window.gameSend({ type: 'move', x: tx, y: ty, direction: dir || '行旅' });
                                     }
                                     closeWorldMapModal();
                                 };
@@ -2521,7 +2521,7 @@
                     moveBtn.textContent = selDir ? ('前往此處（' + selDir + '）') : ('行往【' + selFName + '】');
                     moveBtn.onclick = function () {
                         if (window.gameSend) {
-                            window.gameSend({ type: 'move', x: targetX, y: targetY, direction: selDir || undefined });
+                            window.gameSend({ type: 'move', x: targetX, y: targetY, direction: selDir || '行旅' });
                         }
                         closeWorldMapModal();
                     };

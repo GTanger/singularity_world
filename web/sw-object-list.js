@@ -373,11 +373,39 @@
         var hasSpade = invIds.indexOf('zl_item_bamboo_spade') !== -1;
         var hasFlake = invIds.indexOf('zl_item_sharp_stone_flake') !== -1 || invIds.indexOf('zl_item_fire_hardened_bamboo_knife') !== -1;
 
+        var hasRhizome = invIds.indexOf('zl_item_aged_rhizome') !== -1;
+        var hasCord = invIds.indexOf('zl_item_sheath_cord') !== -1;
+        var hasSheath = invIds.indexOf('zl_item_bamboo_sheath') !== -1;
+        var hasCulm = invIds.indexOf('zl_item_bamboo_culm') !== -1;
+        var hasSlat = invIds.indexOf('zl_item_aged_bamboo_slat') !== -1;
+        var hasTinder = invIds.indexOf('zl_item_dry_bamboo_leaves') !== -1;
+        var hasEmptyCanteen = invIds.indexOf('zl_item_bamboo_canteen') !== -1;
+        var hasFullCanteen = invIds.indexOf('zl_item_bamboo_canteen_full') !== -1;
+        var hasCookedOrDrink = hasFullCanteen
+            || invIds.indexOf('zl_item_bamboo_shoot_soup') !== -1
+            || invIds.indexOf('zl_item_bamboo_fungus_soup') !== -1
+            || invIds.indexOf('zl_item_termite_mushroom_soup') !== -1
+            || invIds.indexOf('zl_item_roasted_bamboo_shoot') !== -1
+            || invIds.indexOf('zl_item_roasted_termite_mushroom') !== -1
+            || invIds.indexOf('zl_item_roasted_bamboo_fungus') !== -1
+            || invIds.indexOf('zl_item_roasted_bamboo_weevil') !== -1
+            || invIds.indexOf('zl_item_popped_bamboo_shoot') !== -1;
+        var wt = (window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.weather) || (window.gameState && window.gameState() && window.gameState().weather) || null;
+        var isMoistSoil = !!(wt && (wt.id === 'zl_weather_post_rain_mist' || wt.event_type === 'plum_rain'));
+        var isWetOrDewWeather = !!(wt && (wt.id === 'zl_weather_mountain_rain' || wt.id === 'zl_weather_morning_fog_dew' || wt.id === 'zl_weather_post_rain_mist' || wt.event_type === 'plum_rain'));
+        var roomObjs = (window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.objects) || [];
+        var hasRoomCampfire = Array.isArray(roomObjs) && roomObjs.some(function (o) { return o && o.id === 'zl_bamboo_campfire'; });
+        var roomName = String((window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.currentRoomName) || '');
+        var isWatersideRoom = /[泉溪水灘澗]/.test(roomName) || (Array.isArray(roomObjs) && roomObjs.some(function (o) { return o && (o.id === 'water_spring' || (Array.isArray(o.tags) && o.tags.indexOf('waterside') !== -1)); }));
+
         if (act === 'CarveMark') {
             return (hasAxe || hasFlake) ? '刻竹記號' : '徒手難刻';
         }
         if (act === 'ClearBambooTrail') {
-            return hasAxe ? '劈竹開路' : '無器難闢';
+            if (hasAxe) return '劈竹開路';
+            if (hasRhizome && invIds.indexOf('zl_item_sharp_stone_flake') !== -1 && (hasCord || hasSheath)) return '紮斧並開路';
+            if (hasRhizome && (hasCord || hasSheath)) return '紮槌並開路';
+            return '無器難闢';
         }
         if (act === 'IgniteCampfire') {
             return '原地生火';
@@ -385,35 +413,51 @@
         if (act === 'WarmHands' && oid === 'zl_bamboo_campfire') {
             return '烘火溫養';
         }
+        if (act === 'CampfireEatDrink') {
+            return hasCookedOrDrink ? '飲水進食' : '';
+        }
+        if (act === 'FillBambooCanteen') {
+            if (!isWatersideRoom && !isWetOrDewWeather) return '';
+            if (hasEmptyCanteen) return '竹筒盛水';
+            if (hasCulm && !hasFullCanteen) return '裁筒盛水';
+            return '';
+        }
         if (act === 'CampfireRoastKnife') {
-            return invIds.indexOf('zl_item_aged_bamboo_slat') !== -1 ? '烘烤竹刃' : '';
+            return hasSlat ? '烘烤竹刃' : '';
         }
         if (act === 'CampfireRoastShoot') {
-            return (invIds.indexOf('zl_item_bamboo_shoot') !== -1 && invIds.indexOf('zl_item_bamboo_sheath') !== -1) ? '籜裹煨筍' : '';
+            return (invIds.indexOf('zl_item_bamboo_shoot') !== -1 && hasSheath) ? '籜裹煨筍' : '';
         }
         if (act === 'CampfireRoastFungus') {
             return (invIds.indexOf('zl_item_bamboo_weevil') !== -1 || invIds.indexOf('zl_item_bamboo_fungus') !== -1 || invIds.indexOf('zl_item_termite_mushroom') !== -1) ? '炭火炙烤' : '';
         }
         if (act === 'CampfireBoilSoup') {
-            return (invIds.indexOf('zl_item_bamboo_canteen_full') !== -1 && (invIds.indexOf('zl_item_bamboo_shoot') !== -1 || invIds.indexOf('zl_item_bamboo_fungus') !== -1 || invIds.indexOf('zl_item_termite_mushroom') !== -1)) ? '竹筒煲湯' : '';
+            return (hasFullCanteen && (invIds.indexOf('zl_item_bamboo_shoot') !== -1 || invIds.indexOf('zl_item_bamboo_fungus') !== -1 || invIds.indexOf('zl_item_termite_mushroom') !== -1)) ? '竹筒煲湯' : '';
         }
         if (act === 'CampfirePopCulm') {
-            return invIds.indexOf('zl_item_bamboo_culm') !== -1 ? '投火竹爆' : '';
+            return hasCulm ? '投火竹爆' : '';
         }
         if (act === 'Gather' && obj) {
-            var wt = (window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.weather) || (window.gameState && window.gameState() && window.gameState().weather) || null;
-            var isMoistSoil = !!(wt && (wt.id === 'zl_weather_post_rain_mist' || wt.event_type === 'plum_rain'));
             if (oid === 'zl_dry_leaves') return '徒手拾攏';
             if (oid === 'zl_bamboo_sheath') return '徒手拾籜';
             if (oid === 'zl_bamboo_fungus') return '摘取木耳';
-            if (oid === 'zl_bamboo_shoot') return (hasAxe || hasSpade || hasFlake) ? '持器掘筍' : (isMoistSoil ? '趁濕拔筍' : '徒手硬拔');
+            if (oid === 'zl_bamboo_shoot') {
+                if (hasAxe || hasSpade || hasFlake) return '持器掘筍';
+                if (hasCulm) return '裁鏟並撬筍';
+                return isMoistSoil ? '趁濕拔筍' : '徒手硬拔';
+            }
             if (oid === 'zl_bamboo_culm') {
                 if (hasAxe) {
                     return invIds.indexOf('zl_item_bamboo_stone_axe') !== -1 ? '揮斧砍伐' : '揮槌劈伐';
                 }
                 return '徒手難伐';
             }
-            if (oid === 'zl_bamboo_rhizome') return (hasAxe || hasSpade || hasFlake) ? '斬斷掘取' : '徒手難斷';
+            if (oid === 'zl_bamboo_rhizome') {
+                if (hasAxe || hasSpade || hasFlake) return '斬斷掘取';
+                if (hasCulm) return '裁鏟並掘鞭';
+                if (hasSlat && (hasTinder || hasRoomCampfire)) return '烤刃並割鞭';
+                return '徒手難斷';
+            }
             if (oid === 'water_spring') return '掬水飲用';
             if (oid === 'creek_pebble') return '揀選卵石';
             if (oid === 'creek_clay') return '挖取陶土';
@@ -1793,6 +1837,7 @@
 'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
 'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊', 'CarveMark': '刻竹記號',
         'ClearBambooTrail': '劈竹開路', 'IgniteCampfire': '原地生火',
+        'CampfireEatDrink': '飲水進食', 'FillBambooCanteen': '竹筒盛水',
         'CampfireRoastKnife': '烘烤竹刃', 'CampfireRoastShoot': '籜裹煨筍',
         'CampfireRoastFungus': '炭火炙烤', 'CampfireBoilSoup': '竹筒煲湯',
         'CampfirePopCulm': '投火竹爆',

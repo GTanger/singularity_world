@@ -162,7 +162,7 @@
 59-61. **「第 27～47 刀 `ItemPhysicalClass` 強型別物理分類、`Store::load_entities_from_pg` 雙端清創、`GridCell` 場域語意守衛、324 戶文曜家戶座標對齊與拔除 `.replace` 擦屁股鏈（`v0.39.121`～`v0.39.132`）」全棧實裝、PostgreSQL 排毒與真機驗收完成（2026-11-07 ～ 2026-11-08）**。
 62. **「滅世後的新生：刺竹林（`𓐂`）× 6 大純竹物件 × 23 項獨立產出與手作器物（`zl_item_*`）× 三層正交標籤契約 × 第八、九章『將一物的價值搾到一滴不剩』五大遊戲設計閉環」（2026-11-09 ～ 2026-11-10）**：
    - **① 萬物皆物件與三層正交標籤契約（`src/grid/zhulin/`、`src/grid/cell.rs`、`src/db/inventory.rs`）**：為【刺竹林】地形模版（`zl_terrain_thorny_bamboo_grove`）、6 個純竹場上物件與 23 個新世界採集／手作／野炊物品（`zl_item_*`）建立獨立 ID 與 `ZhulinTagTriad`；拔除採集、探索與背景模擬所有舊世 `harvest_*` 兜底分支並封存舊種子檔。
-   - **② 第八、九章刺竹一物極致搾取與五大遊戲設計閉環（`docs/design/shalu_zhulin_terrain_and_objects.md`、`src/grid/zhulin/terrain_bamboo.rs`、`src/grid/zhulin/objects/affordance.rs`、`src/server/action/object/resource.rs`、`src/server/handler/movement/step_move.rs`、`web/sw-panes.js`）**：實裝純竹零死鎖自給鏈（`風折老竹片 → 烤刃竹片刀 → 老竹根鞭＋竹籜繩 → 竹鞭根槌 → 刺竹稈 → 青竹水筒＋掘土竹鏟／刺竹背簍`）、單格每日 `[探索]` 冷卻（`zl_explored_day:{day}`）＋四方聽風辨位雷達、營火落地格態（`zl_campfire:active`）、一物多用自選配方按鈕（`:canteen_spade / :basket / :fire_pop / :roast / :soup / :club / :stone_axe`）、純竹與石竹複合器物損耗分化，以及竹海三層空間生態梯度。
+   - **② 第八～十章刺竹一物極致搾取、「萬事萬物皆插件兼插座」與「輕操作、重體驗」零摩擦收斂（`docs/design/shalu_zhulin_terrain_and_objects.md` §8～§10.3、`src/grid/zhulin/objects/campfire.rs`、`src/server/action/object/resource.rs`、`src/server/handler/movement/room_move.rs`、`step_move.rs`、`grid_view_1.rs`、`web/sw-object-list.js`、`web/grid-map.js`）**：實裝 `竹葉營火`（`zl_bamboo_campfire`）地塊插件與主畫面插座（`[原地生火]`、`[烘火溫養]`、`[飲水進食]`、`[竹筒盛水]`、`[烘烤竹刃]`、`[籜裹煨筍]`、`[炭火炙烤]`、`[竹筒煲湯]`、`[投火竹爆]`）、`[劈竹開路]` 一次伐開 `疏竹小徑`、場景需求反向觸發就地手作（`[紮槌並開路]`／`[紮斧並開路]`／`[裁鏟並掘鞭]`／`[裁鏟並撬筍]`／`[裁筒盛水]`）、`[探索]` 純拾取物（`竹根木耳` 等）順手入袋，以及【行旅足跡輿圖】一鍵跨格 `[行往【地名】]` 搭配沿途足跡濃縮敘事（Journey Digest）。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：

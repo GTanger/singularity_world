@@ -128,7 +128,9 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
         cell.explored = explored;
         cell.freshness = freshness;
         cell.explicit_exits = explicit_exits;
-
+        if crate::grid::zhulin::is_bamboo_slot_cell(&cell) {
+            crate::grid::zhulin::refresh_bamboo_cell_after_gather(&mut cell);
+        }
         grid.insert(cell);
     }
 

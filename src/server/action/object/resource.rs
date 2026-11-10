@@ -60,8 +60,28 @@ fn format_runtime_gather_batch_narrative(
     }
 }
 
+const ZHULIN_COOKED_OR_DRINK_IDS: &[&str] = &[
+    "zl_item_bamboo_shoot_soup",
+    "zl_item_bamboo_fungus_soup",
+    "zl_item_termite_mushroom_soup",
+    "zl_item_roasted_bamboo_shoot",
+    "zl_item_roasted_termite_mushroom",
+    "zl_item_roasted_bamboo_fungus",
+    "zl_item_roasted_bamboo_weevil",
+    "zl_item_popped_bamboo_shoot",
+    "zl_item_bamboo_canteen_full",
+];
+
 fn campfire_socket_actions_for_inventory(inv_json: &str) -> Vec<String> {
     let mut acts = vec!["Look".to_string(), "WarmHands".to_string()];
+    if ZHULIN_COOKED_OR_DRINK_IDS.iter().any(|id| inv_json.contains(id)) {
+        acts.push("CampfireEatDrink".to_string());
+    }
+    if inv_json.contains("zl_item_bamboo_canteen")
+        || (inv_json.contains("zl_item_bamboo_culm") && !inv_json.contains("zl_item_bamboo_canteen_full"))
+    {
+        acts.push("FillBambooCanteen".to_string());
+    }
     if inv_json.contains("zl_item_aged_bamboo_slat") {
         acts.push("CampfireRoastKnife".to_string());
     }
@@ -100,6 +120,8 @@ fn try_grid_cell_object_action(
     let is_campfire_socket = matches!(
         action,
         "WarmHands"
+            | "CampfireEatDrink"
+            | "FillBambooCanteen"
             | "CampfireRoastKnife"
             | "CampfireRoastShoot"
             | "CampfireRoastFungus"
@@ -173,6 +195,98 @@ fn try_grid_cell_object_action(
                 tactical_choices: vec![],
             });
             push_refresh(conn, pid);
+            return true;
+        }
+        if action == "CampfireEatDrink" {
+            let chosen_id = ZHULIN_COOKED_OR_DRINK_IDS
+                .iter()
+                .copied()
+                .find(|id| player_inv_json.contains(id));
+            let (success, narrative) = if let Some(food_id) = chosen_id {
+                if db::remove_from_inventory(pid, food_id, 1).is_ok() {
+                    let is_canteen_or_soup = food_id == "zl_item_bamboo_canteen_full" || food_id.ends_with("_soup");
+                    if is_canteen_or_soup {
+                        let _ = db::add_to_inventory(pid, "zl_item_bamboo_canteen", 1);
+                    }
+                    if let Ok(Some(ent)) = db::get_entity(pid) {
+                        let _ = db::update_vit(pid, (ent.vit + 25).min(100));
+                    }
+                    let item_name = crate::grid::zhulin::lookup_zhulin_item_def(food_id)
+                        .map(|d| d.name)
+                        .unwrap_or("山林熟食");
+                    let vessel_note = if is_canteen_or_soup {
+                        "（空出的「青竹水筒」已收回行囊）"
+                    } else {
+                        ""
+                    };
+                    (
+                        true,
+                        format!(
+                            "你坐在竹葉營火旁享用「{}」，溫熱甘美的滋味順喉而下，旅途的疲憊頓時一掃而空！{}",
+                            item_name, vessel_note
+                        ),
+                    )
+                } else {
+                    (false, "行囊中尚無可享用的熟食或竹筒飲水。".to_string())
+                }
+            } else {
+                (false, "行囊中尚無可享用的熟食或竹筒飲水。".to_string())
+            };
+            let new_inv = db::get_entity(pid)
+                .ok()
+                .flatten()
+                .map(|e| e.inventory)
+                .unwrap_or_default();
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.into(),
+                target_id: obj.id.clone(),
+                target_name: obj.name.clone(),
+                narrative,
+                success,
+                actions: campfire_socket_actions_for_inventory(&new_inv),
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            push_refresh(conn, pid);
+            return true;
+        }
+        if action == "FillBambooCanteen" {
+            let mut jit_prefix = String::new();
+            if !player_inv_json.contains("zl_item_bamboo_canteen")
+                && player_inv_json.contains("zl_item_bamboo_culm")
+            {
+                if let Some(Ok(_)) = crate::grid::zhulin::try_craft_zhulin_item(pid, "zl_item_bamboo_culm:canteen_spade") {
+                    jit_prefix = "你就地將一節「刺竹稈」裁出「青竹水筒」與「掘土竹鏟」，隨即".to_string();
+                }
+            }
+            let (success, narrative) = match crate::grid::zhulin::try_craft_zhulin_item(pid, "zl_item_bamboo_canteen") {
+                Some(Ok((_act, _title, msg))) => (true, format!("{}{}", jit_prefix, msg)),
+                Some(Err(err_msg)) => (false, err_msg),
+                None => (false, "手頭尚缺「青竹水筒」或「刺竹稈」，無法盛水。".to_string()),
+            };
+            let new_inv = db::get_entity(pid)
+                .ok()
+                .flatten()
+                .map(|e| e.inventory)
+                .unwrap_or_default();
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.into(),
+                target_id: obj.id.clone(),
+                target_name: obj.name.clone(),
+                narrative,
+                success,
+                actions: campfire_socket_actions_for_inventory(&new_inv),
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            push_refresh(conn, pid);
+            refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
             return true;
         }
         let recipe_key = match action {
@@ -310,6 +424,22 @@ fn try_grid_cell_object_action(
     }
 
     if action == "ClearBambooTrail" {
+        let mut player_inv_json = player_inv_json;
+        let mut jit_prefix = String::new();
+        if !crate::grid::zhulin::inventory_has_capability_tag(&player_inv_json, "heavy_chop") {
+            if player_inv_json.contains("zl_item_aged_rhizome") {
+                if let Some(Ok((_id, crafted_name, _msg))) =
+                    crate::grid::zhulin::try_craft_zhulin_item(pid, "zl_item_aged_rhizome")
+                {
+                    jit_prefix = format!("你就地取行囊材料紮妥一把「{}」，隨即", crafted_name);
+                    player_inv_json = db::get_entity(pid)
+                        .ok()
+                        .flatten()
+                        .map(|e| e.inventory)
+                        .unwrap_or_default();
+                }
+            }
+        }
         if !crate::grid::zhulin::inventory_has_capability_tag(&player_inv_json, "heavy_chop") {
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
@@ -358,8 +488,8 @@ fn try_grid_cell_object_action(
             target_id: obj.id.clone(),
             target_name: obj.name.clone(),
             narrative: format!(
-                "你{}，將擋路的「合抱刺竹叢」連根伐開，闢出一條透光通風的【疏竹小徑】，並順手收起 {} 根筆直的「刺竹稈」入袋，林下也隨之落滿厚實乾竹葉！",
-                tool_desc, harvest_culms
+                "{}你{}，將擋路的「合抱刺竹叢」連根伐開，闢出一條透光通風的【疏竹小徑】，並順手收起 {} 根筆直的「刺竹稈」入袋，林下也隨之落滿厚實乾竹葉！",
+                jit_prefix, tool_desc, harvest_culms
             ),
             success: true,
             actions: vec!["Look".into()],
@@ -411,6 +541,39 @@ fn try_grid_cell_object_action(
         push_refresh(conn, pid);
         refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
         return true;
+    }
+
+    let mut player_inv_json = player_inv_json;
+    let mut jit_gather_prefix = String::new();
+    if (obj.id == "zl_bamboo_rhizome" || obj.id == "zl_bamboo_shoot")
+        && !crate::grid::zhulin::inventory_has_capability_tag(&player_inv_json, "dig_pry")
+        && !crate::grid::zhulin::inventory_has_capability_tag(&player_inv_json, "slice_cut")
+    {
+        if player_inv_json.contains("zl_item_bamboo_culm") {
+            if let Some(Ok(_)) =
+                crate::grid::zhulin::try_craft_zhulin_item(pid, "zl_item_bamboo_culm:canteen_spade")
+            {
+                jit_gather_prefix =
+                    "你就地將一節「刺竹稈」裁為「青竹水筒」與「掘土竹鏟」，隨即".to_string();
+                player_inv_json = db::get_entity(pid)
+                    .ok()
+                    .flatten()
+                    .map(|e| e.inventory)
+                    .unwrap_or_default();
+            }
+        } else if player_inv_json.contains("zl_item_aged_bamboo_slat") {
+            if let Some(Ok(_)) =
+                crate::grid::zhulin::try_craft_zhulin_item(pid, "zl_item_aged_bamboo_slat")
+            {
+                jit_gather_prefix =
+                    "你借竹火將「風折老竹片」烘烤硬化為「烤刃竹片刀」，隨即".to_string();
+                player_inv_json = db::get_entity(pid)
+                    .ok()
+                    .flatten()
+                    .map(|e| e.inventory)
+                    .unwrap_or_default();
+            }
+        }
     }
 
     let mut updated_state = None;
@@ -541,6 +704,9 @@ fn try_grid_cell_object_action(
             obj.name, actual_harvested, clean_item
         )
     };
+    if !jit_gather_prefix.is_empty() {
+        narrative = format!("{}{}", jit_gather_prefix, narrative);
+    }
     let has_stone_axe = player_inv_json.contains("zl_item_bamboo_stone_axe");
     let has_rhizome_club = player_inv_json.contains("zl_item_rhizome_club");
     let has_bamboo_spade = player_inv_json.contains("zl_item_bamboo_spade");

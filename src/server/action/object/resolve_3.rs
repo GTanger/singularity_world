@@ -286,6 +286,9 @@ fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::mo
                 if !zl_slot_obj.sockets.iter().any(|s| s == "CarveMark") {
                     zl_slot_obj.sockets.push("CarveMark".to_string());
                 }
+                if !zl_slot_obj.sockets.iter().any(|s| s == "FillBambooCanteen") {
+                    zl_slot_obj.sockets.push("FillBambooCanteen".to_string());
+                }
             } else if (obj.id == "zl_dry_leaves" || obj.name == "乾竹葉層") && obj.quantity > 0 {
                 let has_cf = cell
                     .objects

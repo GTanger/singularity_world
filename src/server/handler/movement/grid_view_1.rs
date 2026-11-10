@@ -588,6 +588,8 @@ fn build_grid_view_objects(
                         vec![
                             "Look".to_string(),
                             "WarmHands".to_string(),
+                            "CampfireEatDrink".to_string(),
+                            "FillBambooCanteen".to_string(),
                             "CampfireRoastKnife".to_string(),
                             "CampfireRoastShoot".to_string(),
                             "CampfireRoastFungus".to_string(),
@@ -600,6 +602,7 @@ fn build_grid_view_objects(
                             "Gather".to_string(),
                             "ClearBambooTrail".to_string(),
                             "CarveMark".to_string(),
+                            "FillBambooCanteen".to_string(),
                         ]
                     } else if is_bamboo_slot && obj.id == "zl_dry_leaves" && obj.quantity > 0 {
                         if has_campfire {

@@ -194,12 +194,15 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         let target_cell = grid_snap.as_ref().and_then(|g| g.get(target_coord).cloned());
 
         if let Some(cell) = target_cell {
+            let travel_path = if direction == "行旅" {
+                grid_snap
+                    .as_ref()
+                    .and_then(|g| g.find_path(SquareCoord::new(gx, gy), target_coord))
+            } else {
+                None
+            };
             let can_move = if direction == "行旅" {
-                cell.terrain.walkable()
-                    && grid_snap
-                        .as_ref()
-                        .and_then(|g| g.find_path(SquareCoord::new(gx, gy), target_coord))
-                        .is_some()
+                cell.terrain.walkable() && travel_path.is_some()
             } else {
                 grid_snap
                     .as_ref()
@@ -209,7 +212,6 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
             if can_move {
                 let old_room = crate::grid::grid_room_id_from_coord(gx, gy);
                 let (gx, gy) = (nx, ny);
-
                 let is_water_or_coastal = matches!(
                     cell.terrain,
                     Terrain::Water | Terrain::WaterDeep | Terrain::Beach | Terrain::Dock
@@ -350,6 +352,60 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
                     super::push_refresh(conn, &player_id);
                 }
                 send_grid_view(conn, &player_id, nx, ny, gh);
+                if let Some(path) = &travel_path {
+                    if path.len() > 2 {
+                        let mut trail_cnt = 0usize;
+                        let mut campfire_cnt = 0usize;
+                        let mut grove_cnt = 0usize;
+                        let mut water_cnt = 0usize;
+                        if let Some(g) = &grid_snap {
+                            for step_coord in &path[1..path.len() - 1] {
+                                if let Some(sc) = g.get(*step_coord) {
+                                    if sc.has_room_tag("zl_campfire:active")
+                                        || sc.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
+                                    {
+                                        campfire_cnt += 1;
+                                    } else if crate::grid::zhulin::is_bamboo_trail_cleared(sc)
+                                        || crate::grid::zhulin::has_bamboo_trail_mark(sc)
+                                    {
+                                        trail_cnt += 1;
+                                    } else if sc.has_room_tag("waterside") || sc.name.contains("水") || sc.name.contains("泉") || sc.name.contains("灘") {
+                                        water_cnt += 1;
+                                    } else {
+                                        grove_cnt += 1;
+                                    }
+                                }
+                            }
+                        }
+                        let mut parts = Vec::new();
+                        if trail_cnt > 0 {
+                            parts.push(format!("循著闢開的 {} 處疏竹小徑輕快穿行", trail_cnt));
+                        }
+                        if campfire_cnt > 0 {
+                            parts.push(format!("掠過 {} 處竹林營火的微溫炭香", campfire_cnt));
+                        }
+                        if grove_cnt > 0 {
+                            parts.push(format!("撥開 {} 處幽深竹蔭", grove_cnt));
+                        }
+                        if water_cnt > 0 {
+                            parts.push(format!("踏過 {} 處沁涼水岸", water_cnt));
+                        }
+                        let mid_clause = if parts.is_empty() {
+                            format!("跨越 {} 處林地", path.len() - 1)
+                        } else {
+                            parts.join("、")
+                        };
+                        let dest_label = if cell.name.trim().is_empty() {
+                            crate::grid::terrain_name_zh(cell.terrain)
+                        } else {
+                            cell.name.as_str()
+                        };
+                        conn.send_json(&super::super::protocol::NarrateMsg {
+                            msg_type: "narrate".into(),
+                            text: format!("你步入【{}】——沿途{}。", dest_label, mid_clause),
+                        });
+                    }
+                }
                 emit_presence_reflex_on_arrival(conn, &player_id, &new_room);
                 return;
             } else {

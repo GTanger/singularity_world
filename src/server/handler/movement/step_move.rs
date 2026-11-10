@@ -246,24 +246,49 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
             let mut current_c = cell_info.as_ref().unwrap().clone();
             let today_tag = format!("zl_explored_day:{gday}");
             current_c.tags.retain(|t| !t.starts_with("zl_explored_day:") || t == &today_tag);
-            let (yield_opt, text) = crate::grid::zhulin::explore_bamboo_understory(&current_c, &neighbor_refs, &inv_json, weather);
+            let (yield_opt, mut text) = crate::grid::zhulin::explore_bamboo_understory(&current_c, &neighbor_refs, &inv_json, weather);
+            let mut loot = Vec::new();
             if let Some((item_id, qty)) = yield_opt {
                 let _ = db::add_to_inventory(&player_id, item_id, qty as i32);
-                crate::server::grid_manager::with_square_grid_mut(|grid| {
-                    if let Some(c) = grid.get_mut(SquareCoord::new(gx, gy)) {
-                        crate::grid::zhulin::set_bamboo_cell_meta_tag(&mut c.tags, "zl_explored_day:", gday);
-                        crate::grid::zhulin::record_bamboo_gather_pressure(c);
-                        let _ = db::update_cell_state(gx, gy, c.explored, c.freshness, &c.objects);
-                    }
-                });
                 let item_name = crate::grid::zhulin::lookup_zhulin_item_def(item_id)
                     .map(|d| d.name)
                     .unwrap_or(item_id);
-                let loot = vec![LootItem {
+                loot.push(LootItem {
                     item_id: item_id.into(),
                     name: item_name.into(),
                     qty: qty as i32,
-                }];
+                });
+            }
+            let mut auto_fungus_qty = 0u32;
+            crate::server::grid_manager::with_square_grid_mut(|grid| {
+                if let Some(c) = grid.get_mut(SquareCoord::new(gx, gy)) {
+                    if let Some(f_obj) = c.objects.iter_mut().find(|o| o.id == "zl_bamboo_fungus" && o.quantity > 0) {
+                        auto_fungus_qty = f_obj.quantity;
+                        f_obj.quantity = 0;
+                    }
+                    if yield_opt.is_some() || auto_fungus_qty > 0 {
+                        crate::grid::zhulin::set_bamboo_cell_meta_tag(&mut c.tags, "zl_explored_day:", gday);
+                        crate::grid::zhulin::record_bamboo_gather_pressure(c);
+                        if auto_fungus_qty > 0 {
+                            crate::grid::zhulin::refresh_bamboo_cell_after_gather(c);
+                        }
+                        let _ = db::update_cell_state(gx, gy, c.explored, c.freshness, &c.objects);
+                    }
+                }
+            });
+            if auto_fungus_qty > 0 {
+                let _ = db::add_to_inventory(&player_id, "zl_item_bamboo_fungus", auto_fungus_qty as i32);
+                loot.push(LootItem {
+                    item_id: "zl_item_bamboo_fungus".into(),
+                    name: "野生竹耳".into(),
+                    qty: auto_fungus_qty as i32,
+                });
+                text.push_str(&format!(
+                    "你亦順手採下腐殖竹根處的 {} 朵「野生竹耳」收入行囊。",
+                    auto_fungus_qty
+                ));
+            }
+            if !loot.is_empty() {
                 ("harvest".into(), text, loot)
             } else {
                 ("trace".into(), text, vec![])
