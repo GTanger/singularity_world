@@ -422,8 +422,6 @@
 					dl.appendChild(dd);
 				})(equippedSlots[ei][0], equippedSlots[ei][1]);
 			}
-			sectionEquip.appendChild(dl);
-		} else {
 			var zlEquippedTools = [];
 			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_stone_axe') !== -1) zlEquippedTools.push(['【百工伐器】', '竹柄石斧（隨身生效・可伐合抱刺竹）']);
 			if (_lastInventoryItemIds.indexOf('zl_item_rhizome_club') !== -1) zlEquippedTools.push(['【百工槌器】', '竹鞭根槌（隨身生效・可伐合抱刺竹）']);
@@ -433,26 +431,22 @@
 			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_basket') !== -1) zlEquippedTools.push(['【負重背具】', '刺竹背簍（隨身生效・負重上限 +15 公斤）']);
 			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_canteen_full') !== -1) zlEquippedTools.push(['【行旅水具】', '盛水青竹筒（已盛滿山泉露水）']);
 			else if (_lastInventoryItemIds.indexOf('zl_item_bamboo_canteen') !== -1) zlEquippedTools.push(['【行旅水具】', '青竹水筒（可於雨霧或水畔接水）']);
-			if (zlEquippedTools.length > 0) {
-				var zlDl = document.createElement('dl');
-				zlDl.className = 'status-dl equip-dl';
-				for (var zti = 0; zti < zlEquippedTools.length; zti++) {
-					var zDt = document.createElement('dt');
-					zDt.textContent = zlEquippedTools[zti][0];
-					zlDl.appendChild(zDt);
-					var zDd = document.createElement('dd');
-					zDd.className = 'equip-has-item';
-					zDd.textContent = '▸ ' + zlEquippedTools[zti][1];
-					zlDl.appendChild(zDd);
-				}
-				sectionEquip.appendChild(zlDl);
-			} else {
-				var noneEl = document.createElement('div');
-				noneEl.className = 'equip-none-summary';
-				noneEl.style.cssText = 'padding: 4px 0 8px; font-size: 0.88em; color: var(--ink-muted, #7c6853);';
-				noneEl.textContent = '身著素常衣飾，雙手素常隨行。';
-				sectionEquip.appendChild(noneEl);
+			for (var zti = 0; zti < zlEquippedTools.length; zti++) {
+				var zDt = document.createElement('dt');
+				zDt.textContent = zlEquippedTools[zti][0];
+				dl.appendChild(zDt);
+				var zDd = document.createElement('dd');
+				zDd.className = 'equip-has-item';
+				zDd.textContent = '▸ ' + zlEquippedTools[zti][1];
+				dl.appendChild(zDd);
 			}
+			sectionEquip.appendChild(dl);
+		} else {
+			var noneEl = document.createElement('div');
+			noneEl.className = 'equip-none-summary';
+			noneEl.style.cssText = 'padding: 4px 0 8px; font-size: 0.88em; color: var(--ink-muted, #7c6853);';
+			noneEl.textContent = '身著素常衣飾，雙手素常隨行。';
+			sectionEquip.appendChild(noneEl);
 		}
 
 		if (unequippedSlots.length > 0) {
