@@ -781,9 +781,60 @@
 		if (w < 8.0) return '微沉';
 		return '沉重';
 	}
+	var _lastInventoryItemIds = [];
+	var _lastInvFeedback = null;
+
+	function updateMainDockToolBadge(itemIds) {
+		var sealsEl = document.getElementById('sw-status-seals');
+		if (!sealsEl) return;
+		var ids = Array.isArray(itemIds) ? itemIds : [];
+		var toolLabel = '';
+		if (ids.indexOf('zl_item_bamboo_stone_axe') !== -1) {
+			toolLabel = '持：竹柄石斧';
+		} else if (ids.indexOf('zl_item_bamboo_spade') !== -1) {
+			toolLabel = '持：竹片挖鏟';
+		} else if (ids.indexOf('zl_item_sharp_stone_flake') !== -1) {
+			toolLabel = '持：尖石片';
+		}
+		if (ids.indexOf('zl_item_bamboo_canteen') !== -1) {
+			toolLabel = toolLabel ? (toolLabel + '・竹筒') : '備：青竹水筒';
+		}
+		if (toolLabel) {
+			sealsEl.textContent = toolLabel;
+			sealsEl.setAttribute('data-zl-tool', '1');
+			sealsEl.hidden = false;
+		} else if (sealsEl.getAttribute('data-zl-tool') === '1') {
+			sealsEl.textContent = '';
+			sealsEl.removeAttribute('data-zl-tool');
+		}
+	}
+
+	function showInventoryFeedback(text, isError) {
+		var clean = String(text || '').replace(/<[^>]*>/g, '').trim();
+		if (!clean) return;
+		_lastInvFeedback = { text: clean, isError: !!isError, ts: Date.now() };
+		var listEl = document.getElementById('inventory-list');
+		if (!listEl) return;
+		var existing = document.getElementById('sw-inv-feedback-banner');
+		if (!existing) {
+			existing = document.createElement('div');
+			existing.id = 'sw-inv-feedback-banner';
+			existing.className = 'sw-inv-feedback-banner';
+			listEl.insertBefore(existing, listEl.firstChild);
+		}
+		var fbBg = isError ? 'rgba(158, 42, 43, 0.10)' : 'rgba(45, 106, 79, 0.10)';
+		var fbBorder = isError ? 'rgba(158, 42, 43, 0.45)' : 'rgba(45, 106, 79, 0.42)';
+		var fbColor = isError ? '#8c2324' : '#1b4332';
+		existing.style.cssText = 'margin:0 0 10px 0;padding:8px 12px;border-radius:6px;background:' + fbBg + ';border:1px solid ' + fbBorder + ';color:' + fbColor + ';font-size:13.5px;line-height:1.5;';
+		existing.textContent = clean;
+	}
 
 	function renderInventoryContent(msg) {
 		lastInventoryMsg = msg;
+		_lastInventoryItemIds = (msg && Array.isArray(msg.items))
+			? msg.items.map(function (it) { return it && (it.item_id || it.id) ? String(it.item_id || it.id) : ''; }).filter(Boolean)
+			: [];
+		updateMainDockToolBadge(_lastInventoryItemIds);
 		if (lastStatusMsg && lastStatusMsg.is_self === true) renderStatusPane(lastStatusMsg);
 		var weightEl = document.getElementById('inventory-weight');
 		var listEl = document.getElementById('inventory-list');
@@ -807,9 +858,15 @@
 		weightEl.innerHTML = '行囊狀態：<span class="' + burdenClass + '">' + esc(burdenDesc) + '</span>';
 		if (!msg.items || msg.items.length === 0) {
 			listEl.innerHTML = '<div class="inventory-empty">（背包空空如也）</div>';
+			if (_lastInvFeedback && (Date.now() - _lastInvFeedback.ts < 25000)) {
+				showInventoryFeedback(_lastInvFeedback.text, _lastInvFeedback.isError);
+			}
 			return;
 		}
 		listEl.innerHTML = '';
+		if (_lastInvFeedback && (Date.now() - _lastInvFeedback.ts < 25000)) {
+			showInventoryFeedback(_lastInvFeedback.text, _lastInvFeedback.isError);
+		}
 		for (var i = 0; i < msg.items.length; i++) {
 			(function (it) {
 				var rawId = String(it.item_id || '');
@@ -885,9 +942,13 @@
 						var craftLabel = it.craft_label || '加工煉製';
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">' + esc(craftLabel) + '</button>';
 					}
-					actionsHtml += '<button type="button" class="inv-action-btn" data-action="sell" data-sell-mode="one">售出</button>';
-					if (it.qty && it.qty > 1) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="sell" data-sell-mode="all">全部售出</button>';
+					var curPlaceName = String((window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.currentRoomName) || (document.getElementById('sw-place-name') && document.getElementById('sw-place-name').textContent) || '');
+					var isMarketVenue = /(行|鋪|肆|工坊|染坊|織坊|木坊|鐵坊|茶坊|酒坊|磨坊|店|樓|食堂|市集|攤|館|閣|局|場|廠|塢|站|社)/.test(curPlaceName);
+					if (isMarketVenue) {
+						actionsHtml += '<button type="button" class="inv-action-btn" data-action="sell" data-sell-mode="one">售出</button>';
+						if (it.qty && it.qty > 1) {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="sell" data-sell-mode="all">全部售出</button>';
+						}
 					}
 					actionsHtml += '<button type="button" class="inv-action-btn" data-action="drop" data-drop-mode="one">\u4e1f\u68c4</button>';
 					if (it.qty && it.qty > 1) {
@@ -1149,6 +1210,8 @@
 		updateTacticalState: function () {},
 		renderTacticalSection: function () {},
 		formatItemName: formatItemName,
+		showInventoryFeedback: showInventoryFeedback,
+		getInventoryItemIds: function () { return _lastInventoryItemIds.slice(); },
 		ITEM_NAME_MAP: ITEM_NAME_MAP
 	};
 })();

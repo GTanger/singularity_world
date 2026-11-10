@@ -25,9 +25,8 @@ pub const TERRAIN_TAGS: crate::grid::zhulin::objects::ZhulinTagTriad =
         attribute_tags: &["thorny_canopy", "dappled_shade", "wind_filtering", "three_slot_ecology"],
         exclusive_tag: "zl_terrain_thorny_bamboo_grove",
     };
-pub const BASE_DESC_DRY: &str = "枝刺交錯的原生刺竹林，竹蔭間光影斑駁。";
-pub const BASE_DESC_WATERSIDE: &str =
-    "枝刺交錯的原生刺竹林，受鄰近泉溪浸潤，竹蔭下泥土濕涼。";
+pub const BASE_DESC_DRY: &str = "原生刺竹林枝刺交錯，竹蔭間光影斑駁。";
+pub const BASE_DESC_WATERSIDE: &str = "原生刺竹林枝刺交錯，泉溪浸潤下竹蔭泥土濕涼。";
 
 /// 確定性雜湊輔助：將座標與槽位序號映射為 `u64` 亂數種子
 fn slot_hash(x: i32, y: i32, slot_idx: u64, seed: u64) -> u64 {
@@ -163,10 +162,10 @@ pub fn compose_bamboo_description_from_objects(
 ) -> String {
     let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
     let base_clause = match w_def.id {
-        "zl_weather_sea_gale" => "枝刺交錯的原生刺竹林，九降勁風吹得竹梢翻湧呼嘯。",
-        "zl_weather_mountain_rain" => "枝刺交錯的原生刺竹林，山雨霏微打在竹冠沙沙作響。",
-        "zl_weather_post_rain_mist" => "枝刺交錯的原生刺竹林，雨後初霽水氣蒸騰、紅土濕軟。",
-        "zl_weather_morning_dew_fog" => "枝刺交錯的原生刺竹林，林間晨霧流轉、竹葉凝滿露珠。",
+        "zl_weather_sea_gale" => "原生刺竹林枝刺交錯，九降勁風吹得竹梢翻湧。",
+        "zl_weather_mountain_rain" => "原生刺竹林枝刺交錯，山雨霏微打在竹冠作響。",
+        "zl_weather_post_rain_mist" => "原生刺竹林枝刺交錯，雨後初霽水氣蒸騰濕潤。",
+        "zl_weather_morning_dew_fog" => "原生刺竹林枝刺交錯，林間晨霧流轉凝滿露珠。",
         _ => {
             if is_waterside {
                 BASE_DESC_WATERSIDE

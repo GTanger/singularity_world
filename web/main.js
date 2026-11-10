@@ -563,7 +563,10 @@
 						}
 					} else if (msg.narrative) {
 						var narrativeText = msg.narrative;
-						var extractedDialogue = '';
+						var invModalEl = document.getElementById('modal-inventory');
+						if (invModalEl && !invModalEl.hidden && window.SwPanes && typeof window.SwPanes.showInventoryFeedback === 'function') {
+							window.SwPanes.showInventoryFeedback(narrativeText, msg.success === false);
+						}
 						if (msg.action === 'Look' && narrativeText.indexOf('【正在交談】') !== -1) {
 							var dlgIdx = narrativeText.indexOf('【正在交談】');
 							extractedDialogue = narrativeText.slice(dlgIdx).replace(/^【正在交談】\s*/, '').trim();
@@ -985,6 +988,10 @@
 						var authMsg = document.getElementById('auth-message');
 						if (authMsg) authMsg.textContent = msg.message;
 					} else {
+						var invModalErrEl = document.getElementById('modal-inventory');
+						if (invModalErrEl && !invModalErrEl.hidden && window.SwPanes && typeof window.SwPanes.showInventoryFeedback === 'function') {
+							window.SwPanes.showInventoryFeedback(msg.message, true);
+						}
 						appendLog('錯誤：' + msg.message);
 					}
 					break;

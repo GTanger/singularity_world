@@ -252,7 +252,7 @@
   user-select: text;
   scrollbar-width: thin;
   scrollbar-color: rgba(74, 54, 32, 0.22) transparent;
-  padding-bottom: 26px !important;
+  padding-bottom: 4px !important;
   box-sizing: border-box !important;
   border-bottom: none !important;
   box-sizing: border-box !important;
@@ -661,10 +661,10 @@
 #sw-l3-terrain .sw-desc-inline-acts,
 .sw-desc-inline-acts {
   position: absolute !important;
-  left: 50% !important;
-  right: auto !important;
+  left: auto !important;
+  right: 6px !important;
   bottom: 2px !important;
-  transform: translateX(-50%) !important;
+  transform: none !important;
   z-index: 65 !important;
   display: inline-flex;
   flex-wrap: nowrap;

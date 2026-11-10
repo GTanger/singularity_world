@@ -1,6 +1,6 @@
 # 新生世界竹林地區：地形格模版、三層標籤契約與拉霸採集物件設計規範
 
-- **狀態**：第一章至第六章（刺竹林地形格、6 大純竹物件與三層標籤契約、地域特產分化、三階採集門檻與啟動鏈、伐竹退化 × 雨後春筍惰性重抽 × 踩踏枯竭圈、5 大天氣物件化與三方標籤對撞）正式定案
+- **狀態**：第一章至第七章（刺竹林地形格、6 大純竹物件與三層標籤契約、地域特產分化、三階採集門檻與啟動鏈、伐竹退化 × 雨後春筍惰性重抽 × 踩踏枯竭圈、5 大天氣物件化與三方標籤對撞、觸感文字 UI 四大介面規範）正式定案
 - **日期**：2026-11-09
 - **核心原則**：
   1. **萬物皆物件（容器階層）**：整張地圖（`SquareGrid`）是一個大物件 $\supset$ 腳下的每一格（`GridCell`）本身是一個「地形物件（Terrain Object）」 $\supset$ 地形物件內部裝載 **3 個採集槽位（Slots）**。
@@ -144,3 +144,17 @@
 | **3** | `mountain_rain.rs` | **【山雨霏微】**<br>(`zl_weather_mountain_rain` / `微雨`) | `weather, precipitation, rain_shower` | `wetting, rain_harvestable, rhizome_soaking` | `wetting` 澆熄露天火苗，需於具備 `canopy_shelter`（濃密刺竹冠）下生火；`rain_harvestable` 可持青竹水筒就地接雨飲用。 |
 | **4** | `post_rain_mist.rs` | **【雨後初霽】**<br>(`zl_weather_post_rain_mist` / `雨霽`) | `weather, post_precipitation, humid_clearing` | `rhizome_awakening, fungus_blooming, moist_soil` | `rhizome_awakening` + `fungus_blooming` 觸發雨後春筍與木耳大爆發；`moist_soil` 泥土濕軟使徒手拔筍亦能 1:1 零折損。 |
 | **5** | `morning_dew_fog.rs` | **【晨霧凝露】**<br>(`zl_weather_morning_dew_fog` / `晨霧`) | `weather, condensation, mist_veil` | `dew_condensing, fungus_blooming, cool_damp` | 破曉清晨（05:00–08:00）自然浮現；`dew_condensing` 使地表乾葉微潮（單靠乾葉引火需多耗 1 把），並助長竹根木耳。 |
+
+---
+
+## 第七章：觸感文字 UI 與「天時 × 地形 × 器物」介面回饋規範
+
+1. **中段畫布區（`.sw-room-canvas`）升級為「天時 × 地形遮蔽」環境處境感知**：
+   - 維持 `124px` 零跳動（Zero-CLS）固定高度；當格內無其他人物時，不再千篇一律顯示「四下清朗」，而是依據「當前天氣物件 × 當前地形遮蔽標籤（`windbreak` / `canopy_shelter`）」動態顯示身體處境（如微雨竹冠下顯示`「濃密竹冠遮去漫天細雨，林下尚算乾爽」`、微雨露天顯示`「四野無遮，細雨直落浸濕地表」`、雨後初霽顯示`「雨後紅土濕軟鬆動，新筍破土欲出」`）。
+2. **場景內嵌物件點擊（Inline Popover）動詞觸感化（Verb-as-Affordance）與避讓排版**：
+   - 點擊場景內嵌物件時，操作膠囊靠右避讓末行文字，並依隨身工具與天氣標籤顯示具體觸感動詞（如 `乾竹葉層` $\to$ `[徒手拾攏]`、`破土竹筍` $\to$ `[徒手硬拔]` / `[趁濕拔筍]` / `[持器掘筍]`、`合抱刺竹叢` $\to$ `[徒手難伐]` / `[揮斧砍伐]`、`盤錯竹鞭` $\to$ `[徒手難斷]` / `[斬斷掘取]`）。
+3. **行囊面板淨化與行囊內嵌即時手作回饋條（In-Bag Live Feedback Banner）**：
+   - 非處於商鋪／市集場合時，行囊展開列自動隱藏無效的 `[售出]` 與 `[全部售出]` 按鈕。
+   - 於行囊面板頂部設宣紙水墨即時回饋列（`#sw-inv-feedback-banner`），在行囊內點擊 `[敲擊打片]`、`[紮製石斧]`、`[裁製竹器]`、`[引火竹爆]` 或 `[煨烤熟食]` 時，當場於行囊內呈現打造結果或缺少的配材提示。
+4. **左下角隨身器物顯化**：
+   - 於左下角自身狀態欄（`#sw-status-seals`）動態呈現行囊中最高階隨身器物（如 `持：竹柄石斧`、`持：尖石片`、`備：青竹水筒`），直觀反映生存演進。

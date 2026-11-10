@@ -42,8 +42,8 @@ pub const YIELD_ITEM_DEF: super::ZhulinItemDef = super::ZhulinItemDef {
 pub fn scene_sentence(qty: u32) -> &'static str {
     match qty {
         0 => "",
-        1 => "泥土表層裸露著最後一段曲折堅韌的盤錯竹鞭。",
-        _ => "土表半露著幾段節理緊密、如鐵線交纏的盤錯竹鞭。",
+        1 => "土表裸露著最後一段曲折堅韌的盤錯竹鞭。",
+        _ => "土表半露著節理如鐵線交纏的盤錯竹鞭。",
     }
 }
 

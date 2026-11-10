@@ -43,9 +43,9 @@ pub const YIELD_ITEM_DEF: super::ZhulinItemDef = super::ZhulinItemDef {
 pub fn scene_sentence(qty: u32) -> &'static str {
     match qty {
         0 => "",
-        1..=2 => "泥地上僅剩零星幾撮散落的乾竹葉層。",
-        3..=5 => "地面散落著半層乾竹葉層，幾處已露出底下紅土。",
-        _ => "地面鋪著一層乾燥蓬鬆的乾竹葉層與脫落筍殼。",
+        1..=2 => "泥地上僅剩零星散落的乾竹葉層。",
+        3..=5 => "地面散落著半層乾竹葉層，幾處露出紅土。",
+        _ => "地面鋪著乾燥蓬鬆的乾竹葉層與筍殼。",
     }
 }
 
