@@ -1475,7 +1475,9 @@
             } else if (wKey === 'zl_weather_morning_dew_fog' || wKey === 'fog') {
                 return '晨霧低迴凝滿露珠，地表乾葉微潮（引火需三把乾葉）';
             } else if (rName.indexOf('刺竹林') !== -1) {
-                return hasStandingBamboo ? '竹冠篩落斑駁暖陽，林下乾爽宜於生火造物' : '成竹已伐盡，林間陽光直曬、地面散落枯葉';
+                return hasStandingBamboo
+                    ? (isNight ? '夜色籠罩濃密竹冠，林下乾爽宜於避風生火' : '竹冠篩落斑駁暖陽，林下乾爽宜於生火造物')
+                    : (isNight ? '成竹已伐盡，夜風直拂、地面散落枯葉' : '成竹已伐盡，林間陽光直曬、地面散落枯葉');
             }
         }
         return isNight ? '夜色靜謐，四下悄無聲息' : '四下清朗，林間悄無聲息';
