@@ -4,6 +4,7 @@ pub fn is_item_edible(item_id: &str, item_name: &str, item_type: &str) -> bool {
         "zl_item_bamboo_shoot"
             | "zl_item_bamboo_fungus"
             | "zl_item_termite_mushroom"
+            | "zl_item_bamboo_weevil"
             | "zl_item_roasted_bamboo_shoot"
             | "zl_item_roasted_weevil"
             | "zl_item_bamboo_tube_soup"
@@ -297,6 +298,10 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
                 "zl_item_bamboo_fungus" | "zl_item_termite_mushroom" => {
                     e.vit = (e.vit + 5).min(100);
                     custom_zl_narrative = Some(format!("你細細咀嚼手中的「{item_name}」，菌香微甘中帶著生鮮泥氣（恢復 5 點氣力；若置於火旁煨烤或投於盛水青竹筒中煲湯，滋味更顯鮮醇）。"));
+                }
+                "zl_item_bamboo_weevil" => {
+                    e.vit = (e.vit + 2).min(100);
+                    custom_zl_narrative = Some("你硬生生嚼下活體「筍龜」，甲殼堅硬刮口且帶著生腥草氣（僅微幅恢復 2 點氣力；若搭配乾竹葉點擊「竹火野炊」炙烤成「焦香烤筍龜」，方能逼出濃郁脂香）。".to_string());
                 }
                 "zl_item_roasted_bamboo_shoot" => {
                     e.vit = (e.vit + 18).min(100);

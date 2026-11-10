@@ -424,11 +424,35 @@
 			}
 			sectionEquip.appendChild(dl);
 		} else {
-			var noneEl = document.createElement('div');
-			noneEl.className = 'equip-none-summary';
-			noneEl.style.cssText = 'padding: 4px 0 8px; font-size: 0.88em; color: var(--ink-muted, #7c6853);';
-			noneEl.textContent = '身著素常衣飾，雙手素常隨行。';
-			sectionEquip.appendChild(noneEl);
+			var zlEquippedTools = [];
+			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_stone_axe') !== -1) zlEquippedTools.push(['【百工伐器】', '竹柄石斧（隨身生效・可伐合抱刺竹）']);
+			if (_lastInventoryItemIds.indexOf('zl_item_rhizome_club') !== -1) zlEquippedTools.push(['【百工槌器】', '竹鞭根槌（隨身生效・可伐合抱刺竹）']);
+			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_spade') !== -1) zlEquippedTools.push(['【百工掘具】', '掘土竹鏟（隨身生效・無損掘筍掘鞭）']);
+			if (_lastInventoryItemIds.indexOf('zl_item_fire_hardened_bamboo_knife') !== -1) zlEquippedTools.push(['【百工刃具】', '烤刃竹片刀（隨身生效・切筍掘鞭刻記號）']);
+			if (_lastInventoryItemIds.indexOf('zl_item_sharp_stone_flake') !== -1) zlEquippedTools.push(['【百工石刃】', '溪床尖石片（隨身生效・切筍掘鞭刻記號）']);
+			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_basket') !== -1) zlEquippedTools.push(['【負重背具】', '刺竹背簍（隨身生效・負重上限 +15 公斤）']);
+			if (_lastInventoryItemIds.indexOf('zl_item_bamboo_canteen_full') !== -1) zlEquippedTools.push(['【行旅水具】', '盛水青竹筒（已盛滿山泉露水）']);
+			else if (_lastInventoryItemIds.indexOf('zl_item_bamboo_canteen') !== -1) zlEquippedTools.push(['【行旅水具】', '青竹水筒（可於雨霧或水畔接水）']);
+			if (zlEquippedTools.length > 0) {
+				var zlDl = document.createElement('dl');
+				zlDl.className = 'status-dl equip-dl';
+				for (var zti = 0; zti < zlEquippedTools.length; zti++) {
+					var zDt = document.createElement('dt');
+					zDt.textContent = zlEquippedTools[zti][0];
+					zlDl.appendChild(zDt);
+					var zDd = document.createElement('dd');
+					zDd.className = 'equip-has-item';
+					zDd.textContent = '▸ ' + zlEquippedTools[zti][1];
+					zlDl.appendChild(zDd);
+				}
+				sectionEquip.appendChild(zlDl);
+			} else {
+				var noneEl = document.createElement('div');
+				noneEl.className = 'equip-none-summary';
+				noneEl.style.cssText = 'padding: 4px 0 8px; font-size: 0.88em; color: var(--ink-muted, #7c6853);';
+				noneEl.textContent = '身著素常衣飾，雙手素常隨行。';
+				sectionEquip.appendChild(noneEl);
+			}
 		}
 
 		if (unequippedSlots.length > 0) {
@@ -801,20 +825,34 @@
 		var clean = String(text || '').replace(/<[^>]*>/g, '').trim();
 		if (!clean) return;
 		_lastInvFeedback = { text: clean, isError: !!isError, ts: Date.now() };
-		var listEl = document.getElementById('inventory-list');
-		if (!listEl) return;
-		var existing = document.getElementById('sw-inv-feedback-banner');
-		if (!existing) {
-			existing = document.createElement('div');
-			existing.id = 'sw-inv-feedback-banner';
-			existing.className = 'sw-inv-feedback-banner';
-			listEl.insertBefore(existing, listEl.firstChild);
-		}
 		var fbBg = isError ? 'rgba(158, 42, 43, 0.10)' : 'rgba(45, 106, 79, 0.10)';
 		var fbBorder = isError ? 'rgba(158, 42, 43, 0.45)' : 'rgba(45, 106, 79, 0.42)';
 		var fbColor = isError ? '#8c2324' : '#1b4332';
-		existing.style.cssText = 'margin:0 0 10px 0;padding:8px 12px;border-radius:6px;background:' + fbBg + ';border:1px solid ' + fbBorder + ';color:' + fbColor + ';font-size:13.5px;line-height:1.5;';
-		existing.textContent = clean;
+		var fbStyle = 'margin:0 0 10px 0;padding:8px 12px;border-radius:6px;background:' + fbBg + ';border:1px solid ' + fbBorder + ';color:' + fbColor + ';font-size:13.5px;line-height:1.5;';
+		var listEl = document.getElementById('inventory-list');
+		if (listEl) {
+			var existing = document.getElementById('sw-inv-feedback-banner');
+			if (!existing) {
+				existing = document.createElement('div');
+				existing.id = 'sw-inv-feedback-banner';
+				existing.className = 'sw-inv-feedback-banner';
+				listEl.insertBefore(existing, listEl.firstChild);
+			}
+			existing.style.cssText = fbStyle;
+			existing.textContent = clean;
+		}
+		var equipWrap = document.getElementById('equip-content');
+		if (equipWrap) {
+			var eqBanner = document.getElementById('sw-equip-feedback-banner');
+			if (!eqBanner) {
+				eqBanner = document.createElement('div');
+				eqBanner.id = 'sw-equip-feedback-banner';
+				eqBanner.className = 'sw-inv-feedback-banner';
+				equipWrap.insertBefore(eqBanner, equipWrap.firstChild);
+			}
+			eqBanner.style.cssText = fbStyle;
+			eqBanner.textContent = clean;
+		}
 	}
 
 	function renderInventoryContent(msg) {
@@ -823,6 +861,7 @@
 			? msg.items.map(function (it) { return it && (it.item_id || it.id) ? String(it.item_id || it.id) : ''; }).filter(Boolean)
 			: [];
 		if (lastStatusMsg && lastStatusMsg.is_self === true) renderStatusPane(lastStatusMsg);
+		renderEquipmentPane(lastEquipMsg);
 		var weightEl = document.getElementById('inventory-weight');
 		var listEl = document.getElementById('inventory-list');
 		if (!weightEl || !listEl) return;
@@ -918,21 +957,25 @@
 					} else if (isManual) {
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="study-manual">研讀參悟</button>';
 					} else if (!isRaw) {
-						var isFoodOrDrink = Boolean(it.is_edible) || it.item_type === 'food' || it.item_type === 'consumable';
-						var useLabel = isFoodOrDrink ? '食用' : '使用';
-						if (itemId === 'zl_item_bamboo_canteen_full' || itemId === 'zl_item_bamboo_tube_soup') {
-							useLabel = '飲用';
-						} else if (itemId === 'zl_item_bamboo_shoot') {
-							useLabel = '生啃';
+						var isFoodOrDrink = Boolean(it.is_edible) || it.item_type === 'food' || it.item_type === 'consumable' || it.item_type === 'drink' || it.item_type === 'medicine';
+						if (isFoodOrDrink) {
+							var useLabel = '食用';
+							if (itemId === 'zl_item_bamboo_canteen_full' || itemId === 'zl_item_bamboo_tube_soup') {
+								useLabel = '飲用';
+							} else if (itemId === 'zl_item_bamboo_shoot' || itemId === 'zl_item_bamboo_weevil') {
+								useLabel = '生啃';
+							}
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + useLabel + '</button>';
+						} else if (!it.can_craft) {
+							actionsHtml += '<span style="font-size:0.84em;color:var(--ink-muted,#6e5a44);padding:2px 4px;">隨身攜帶即於採集或造器時自動生效</span>';
 						}
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + useLabel + '</button>';
 					}
 					if (Boolean(it.can_craft) || isRaw) {
 						if (Boolean(it.is_edible)) {
 							var rawEatLabel = '食用';
 							if (itemId === 'zl_item_bamboo_canteen_full' || itemId === 'zl_item_bamboo_tube_soup') {
 								rawEatLabel = '飲用';
-							} else if (itemId === 'zl_item_bamboo_shoot') {
+							} else if (itemId === 'zl_item_bamboo_shoot' || itemId === 'zl_item_bamboo_weevil') {
 								rawEatLabel = '生啃';
 							}
 							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + rawEatLabel + '</button>';

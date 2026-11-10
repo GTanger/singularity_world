@@ -439,8 +439,9 @@ pub fn try_craft_zhulin_item(
     let entries = parse_bag_entries(&ent.inventory);
     let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
     let weather_tags = w_def.tags.attribute_tags;
+    let (gx, gy) = ent.grid_x.zip(ent.grid_y).unwrap_or((ent.x, ent.y));
     let cell_tags: Vec<String> = crate::server::grid_manager::get_runtime_grid_cell(
-        crate::grid::SquareCoord::new(ent.x, ent.y),
+        crate::grid::SquareCoord::new(gx, gy),
     )
     .map(|c| c.tags)
     .unwrap_or_default();
