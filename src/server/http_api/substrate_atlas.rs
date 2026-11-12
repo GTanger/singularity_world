@@ -6,8 +6,9 @@ use axum::response::{IntoResponse, Json, Response};
 use serde::Deserialize;
 use serde_json::{Value, json};
 
-use crate::grid::substrate::l0_cell::{L0Cell, SurfaceWaterKind, landmass};
-use crate::grid::substrate::render_synth::{synthesize_cell, walkable_on_landmass_01, zone_name_of};
+use crate::grid::substrate::facade::CellFacade;
+use crate::grid::substrate::l0_cell::{SurfaceWaterKind, landmass};
+use crate::grid::substrate::render_synth::{synthesize_cell, zone_name_of};
 use crate::grid::substrate::runtime::{self, AtlasLayerMode, SubstrateRuntime, WORLD_SEED};
 use crate::grid::substrate::slots::{FieldState, SlotStack, derive_pristine_slots};
 use crate::pg;
@@ -140,13 +141,6 @@ fn floors_label(max_z: u8) -> &'static str {
     }
 }
 
-/// 取得格內最終槽位：髒格覆寫優先，否則惰性推導。
-fn effective_slots(gx: i32, gy: i32, l0: L0Cell) -> SlotStack {
-    pg::pool()
-        .and_then(|p| pg::cell_overlay::load_slot_overlay(&p, gx, gy))
-        .unwrap_or_else(|| derive_pristine_slots(gx, gy, l0, WORLD_SEED))
-}
-
 #[derive(Deserialize)]
 pub struct BasemapQuery {
     mode: Option<String>,
@@ -273,7 +267,7 @@ pub async fn substrate_window(Query(q): Query<WindowQuery>) -> Response {
 pub async fn substrate_cell(Query(q): Query<CellQuery>) -> Response {
     let Some(rt) = runtime::global() else { return unavailable() };
     let (x, y) = (q.x, q.y);
-    let Some(l0) = rt.l0(x, y) else {
+    if rt.l0(x, y).is_none() {
         return Json(json!({
             "found": true, "x": x, "y": y,
             "landmass_id": landmass::SEA,
@@ -295,6 +289,9 @@ pub async fn substrate_cell(Query(q): Query<CellQuery>) -> Response {
             "base_energy": 80,
             "rain_cover": false,
             "rain_cover_label": "露天無遮",
+            "max_z": 0,
+            "step_ms": 280,
+            "overlay": Value::Null,
             "slots": {
                 "u2": "無深樁",
                 "u1": "外海床",
@@ -306,12 +303,24 @@ pub async fn substrate_cell(Query(q): Query<CellQuery>) -> Response {
             "canvas_cards": Vec::<Value>::new(),
         }))
         .into_response();
-    };
-    let slots = effective_slots(x, y, l0);
-    let slope = rt.slope(x, y);
-    let field = FieldState::default();
-    let v = synthesize_cell(x, y, l0, slope, rt.edge_cue(x, y).clone(), &slots, field);
-    let walk = walkable_on_landmass_01(l0, slope);
+    }
+    let pool = pg::pool();
+    let snap = CellFacade::snapshot_live(pool.as_deref(), x, y, FieldState::default());
+    let l0 = snap.l0;
+    let slots = &snap.slots;
+    let slope = snap.slope;
+    let v = &snap.synth;
+    let walk = v.walkable_on_landmass_01;
+    let overlay_meta = snap.overlay.as_ref().map(|o| {
+        json!({
+            "building_id": o.building_id,
+            "roll_day": o.roll_day,
+            "weather_epoch": o.weather_epoch,
+            "charge": o.charge,
+            "stamp": o.stamp,
+            "ver": o.ver,
+        })
+    });
     let cards: Vec<Value> = v
         .canvas_cards
         .iter()
@@ -350,6 +359,9 @@ pub async fn substrate_cell(Query(q): Query<CellQuery>) -> Response {
         "base_energy": l0.base_energy,
         "rain_cover": rain_cover,
         "rain_cover_label": rain_cover_label,
+        "max_z": snap.max_z,
+        "step_ms": snap.step_ms,
+        "overlay": overlay_meta,
         "slots": {
             "u2": pile,
             "u1": slots.u1.label_zh(),

@@ -98,6 +98,8 @@ pub fn dispatch_west_gate_expedition_npcs(store: &mut crate::store::Store) {
                 place_id: None,
                 grid_x: Some(sx),
                 grid_y: Some(sy),
+                grid_z: 0,
+                inventory_seq: 0,
                 thoughts: vec![],
             };
             crate::db::add_thought_to_entity_with_delta(
@@ -329,6 +331,8 @@ pub fn sync_white_tower_scheduled_residents(game_hour: i32) {
                 place_id: None,
                 grid_x: Some(x),
                 grid_y: Some(y),
+                grid_z: 0,
+                inventory_seq: 0,
                 thoughts: vec![],
             };
             let now_ts = crate::game::now_unix();

@@ -173,7 +173,7 @@ pub fn gather(
         ],
     )?;
     tx.execute(
-        "UPDATE entities SET inventory=$1 WHERE id=$2",
+        "UPDATE entities SET inventory=$1, inventory_seq=inventory_seq+1 WHERE id=$2",
         &[&inventory, &entity_id],
     )?;
     insert_ledger(

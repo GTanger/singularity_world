@@ -291,6 +291,7 @@ pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Res
         }
         if let Ok(b) = serde_json::to_string(&entries) {
             e.inventory = b;
+            e.inventory_seq = e.inventory_seq.saturating_add(1);
         }
     })
 }
@@ -324,6 +325,7 @@ pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow
         entries.retain(|e| e.qty > 0 && !e.item_id.is_empty());
         if let Ok(b) = serde_json::to_string(&entries) {
             e.inventory = b;
+            e.inventory_seq = e.inventory_seq.saturating_add(1);
         }
     })
 }

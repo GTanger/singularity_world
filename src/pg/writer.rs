@@ -50,9 +50,10 @@ pub enum WriteOp {
     },
     SetEntityPlace {
         entity_id: String,
-        place_id: String,
+        place_id: Option<String>,
         grid_x: Option<i32>,
         grid_y: Option<i32>,
+        grid_z: i16,
         room_id: String,
     },
     SetEntityJourney(EntityJourney),
@@ -65,6 +66,7 @@ pub enum WriteOp {
         entity_id: String,
         magnesium: i32,
         inventory: String,
+        inventory_seq: i64,
         current_activity: String,
     },
     /// 批量同步傳聞：upsert 存活的 + delete 過期的（decay_npc_rumors 每 30s 觸發）
@@ -268,9 +270,16 @@ fn handle_op(pool: &DbPool, op: &WriteOp) {
             place_id,
             grid_x,
             grid_y,
+            grid_z,
             room_id,
         } => super::world_place::set_entity_place(
-            pool, entity_id, place_id, *grid_x, *grid_y, room_id,
+            pool,
+            entity_id,
+            place_id.as_deref(),
+            *grid_x,
+            *grid_y,
+            *grid_z,
+            room_id,
         ),
         WriteOp::SetEntityJourney(journey) => super::world_journey::upsert(pool, journey),
         WriteOp::SetEntityActivity { entity_id, activity } => {
@@ -289,12 +298,16 @@ fn handle_op(pool: &DbPool, op: &WriteOp) {
             entity_id,
             magnesium,
             inventory,
+            inventory_seq,
             current_activity,
         } => {
             if let Ok(mut conn) = pool.get() {
                 conn.execute(
-                    "UPDATE entities SET magnesium=$1,inventory=$2,current_activity=$3 WHERE id=$4",
-                    &[magnesium, inventory, current_activity, entity_id],
+                    "UPDATE entities SET magnesium=$1, \
+                     inventory=CASE WHEN $2::bigint >= inventory_seq THEN $3 ELSE inventory END, \
+                     inventory_seq=GREATEST(inventory_seq,$2::bigint), current_activity=$4 \
+                     WHERE id=$5",
+                    &[magnesium, inventory_seq, inventory, current_activity, entity_id],
                 )
                 .map(|_| ())
                 .map_err(|e| anyhow::anyhow!(e))

@@ -703,13 +703,13 @@ pub fn step_offline_player_once(player_id: &str, now_unix: i64) -> Option<String
             if let Some(arc) = crate::store::get_store() {
                 let mut s = arc.write();
                 let mut current_act = String::new();
+                let legacy_place = s.existing_legacy_place_id(nx, ny);
                 let _ = s.update_entity(player_id, |e| {
                     e.grid_x = Some(nx);
                     e.grid_y = Some(ny);
                     e.target_x = if (nx, ny) == (target_x, target_y) { None } else { Some(target_x) };
                     e.target_y = if (nx, ny) == (target_x, target_y) { None } else { Some(target_y) };
-                    let place_id = crate::world::place::legacy_place_id(crate::grid::SquareCoord::new(nx, ny));
-                    e.place_id = Some(place_id);
+                    e.place_id = legacy_place;
                     current_act = e.current_activity.clone();
                 });
                 let _ = s.move_entity(player_id, &format!("grid:{nx}:{ny}"));

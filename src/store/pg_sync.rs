@@ -101,8 +101,8 @@ impl Store {
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
                     equipment_slots, inventory, disposition, current_activity,
-                    place_id, grid_x, grid_y, thoughts)
-                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+                    place_id, grid_x, grid_y, thoughts, grid_z, inventory_seq)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30)
                  ON CONFLICT (id) DO UPDATE SET
                     kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
                     move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
@@ -111,7 +111,9 @@ impl Store {
                     last_observed_at=EXCLUDED.last_observed_at, created_at=EXCLUDED.created_at,
                     gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
                     activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
-                    inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
+                    inventory=CASE WHEN EXCLUDED.inventory_seq >= entities.inventory_seq THEN EXCLUDED.inventory ELSE entities.inventory END,
+                    inventory_seq=GREATEST(entities.inventory_seq, EXCLUDED.inventory_seq), grid_z=EXCLUDED.grid_z,
+                    disposition=EXCLUDED.disposition,
                     current_activity=EXCLUDED.current_activity, place_id=EXCLUDED.place_id,
                     grid_x=EXCLUDED.grid_x, grid_y=EXCLUDED.grid_y, thoughts=EXCLUDED.thoughts",
                 &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
@@ -120,7 +122,7 @@ impl Store {
                   &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
                   &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
                   &e.current_activity, &e.place_id, &e.grid_x, &e.grid_y,
-                  &serde_json::to_string(&e.thoughts)?],
+                  &serde_json::to_string(&e.thoughts)?, &e.grid_z, &e.inventory_seq],
             )?;
         }
 
@@ -297,7 +299,7 @@ impl Store {
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
                     equipment_slots, inventory, disposition, current_activity,
-                    place_id, grid_x, grid_y, thoughts
+                    place_id, grid_x, grid_y, thoughts, grid_z, inventory_seq
              FROM entities",
             &[],
         ) else {
@@ -346,6 +348,8 @@ impl Store {
                 place_id: row.get(24),
                 grid_x: row.get(25),
                 grid_y: row.get(26),
+                grid_z: row.get(28),
+                inventory_seq: row.get(29),
                 thoughts: serde_json::from_str::<Vec<crate::entity::Thought>>(
                     &row.get::<_, String>(27),
                 )
@@ -422,7 +426,7 @@ impl Store {
                     let thoughts_json =
                         serde_json::to_string(&e.thoughts).unwrap_or_else(|_| "[]".to_string());
                     let _ = conn.execute(
-                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4, thoughts = $5, current_activity = $6, x = $7, y = $8, grid_x = $7, grid_y = $8 WHERE id = $9",
+                        "UPDATE entities SET gender = $1, display_title = $2, equipment_slots = $3, inventory = $4, inventory_seq = inventory_seq + 1, thoughts = $5, current_activity = $6, x = $7, y = $8, grid_x = $7, grid_y = $8 WHERE id = $9",
                         &[&e.gender, &e.display_title, &e.equipment_slots, &e.inventory, &thoughts_json, &e.current_activity, &e.x, &e.y, &e.id],
                     );
                 }
@@ -434,7 +438,7 @@ impl Store {
                     let thoughts_json =
                         serde_json::to_string(&e.thoughts).unwrap_or_else(|_| "[]".to_string());
                     let _ = conn.execute(
-                        "UPDATE entities SET equipment_slots = $1, inventory = $2, thoughts = $3 WHERE id = $4",
+                        "UPDATE entities SET equipment_slots = $1, inventory = $2, inventory_seq = inventory_seq + 1, thoughts = $3 WHERE id = $4",
                         &[&e.equipment_slots, &e.inventory, &thoughts_json, &e.id],
                     );
                 }

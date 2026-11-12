@@ -21,8 +21,14 @@ impl Store {
     pub fn set_entity_room(&mut self, entity_id: &str, room_id: &str) -> anyhow::Result<()> {
         if let Some(coord) = crate::grid::parse_grid_room_id(room_id) {
             let place_id = crate::world::place::legacy_place_id(coord);
-            if self.get_place(&place_id).is_some() {
+            if self
+                .get_place(&place_id)
+                .is_some_and(|p| p.traversable && p.status != "retired")
+            {
                 return self.set_entity_place(entity_id, &place_id);
+            }
+            if self.entities.contains_key(entity_id) {
+                return self.set_entity_grid_compat(entity_id, coord.x, coord.y);
             }
         }
         self.entity_rooms
@@ -205,6 +211,13 @@ impl Store {
         if e.inventory.is_empty() {
             e.inventory = "[]".to_string();
         }
+        if let Some(prev) = self.entities.get(&e.id) {
+            e.inventory_seq = if e.inventory != prev.inventory && e.inventory_seq <= prev.inventory_seq {
+                prev.inventory_seq.saturating_add(1)
+            } else {
+                e.inventory_seq.max(prev.inventory_seq)
+            };
+        }
         self.entities.insert(e.id.clone(), e.clone());
         crate::pg::entity::upsert_async(e);
         Ok(())
@@ -229,7 +242,14 @@ impl Store {
 
     pub fn update_entity(&mut self, id: &str, f: impl FnOnce(&mut Entity)) -> anyhow::Result<()> {
         if let Some(e) = self.entities.get_mut(id) {
+            let prev_inv = e.inventory.clone();
+            let prev_seq = e.inventory_seq;
             f(e);
+            if e.inventory != prev_inv && e.inventory_seq <= prev_seq {
+                e.inventory_seq = prev_seq.saturating_add(1);
+            } else if e.inventory_seq < prev_seq {
+                e.inventory_seq = prev_seq;
+            }
             let e_clone = e.clone();
             crate::pg::entity::upsert_async(e_clone);
         }
@@ -260,6 +280,23 @@ impl Store {
             .get_mut(entity_id)
             .ok_or_else(|| anyhow::anyhow!("實體不存在：{entity_id}"))?;
         entity.inventory = inventory.to_string();
+        entity.inventory_seq = entity.inventory_seq.saturating_add(1);
+        Ok(())
+    }
+
+    /// 權威交易已給定單調序號時，連同序號一併校正快取（序號不倒退）。
+    pub fn mirror_inventory_and_seq_from_authority(
+        &mut self,
+        entity_id: &str,
+        inventory: &str,
+        inventory_seq: i64,
+    ) -> anyhow::Result<()> {
+        let entity = self
+            .entities
+            .get_mut(entity_id)
+            .ok_or_else(|| anyhow::anyhow!("實體不存在：{entity_id}"))?;
+        entity.inventory = inventory.to_string();
+        entity.inventory_seq = entity.inventory_seq.max(inventory_seq);
         Ok(())
     }
 
@@ -277,11 +314,13 @@ impl Store {
             .ok_or_else(|| anyhow::anyhow!("實體不存在：{entity_id}"))?;
         entity.magnesium = magnesium;
         entity.inventory = inventory.to_string();
+        entity.inventory_seq = entity.inventory_seq.saturating_add(1);
         entity.current_activity = current_activity.to_string();
         crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityEconomySnapshot {
             entity_id: entity_id.to_string(),
             magnesium,
             inventory: inventory.to_string(),
+            inventory_seq: entity.inventory_seq,
             current_activity: current_activity.to_string(),
         });
         Ok(())
@@ -388,6 +427,8 @@ impl Store {
                     place_id: None,
                     grid_x: None,
                     grid_y: None,
+                    grid_z: 0,
+                    inventory_seq: 0,
                     thoughts: Vec::new(),
                 };
                 crate::db::add_thought_to_entity_with_delta(

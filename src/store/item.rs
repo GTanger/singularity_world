@@ -115,6 +115,7 @@ impl Store {
                 if inv_changed {
                     if let Ok(serialized) = serde_json::to_string(&entries) {
                         entity.inventory = serialized;
+                        entity.inventory_seq = entity.inventory_seq.saturating_add(1);
                     }
                 }
             }
@@ -123,6 +124,7 @@ impl Store {
                     entity_id: entity.id.clone(),
                     magnesium: entity.magnesium,
                     inventory: entity.inventory.clone(),
+                    inventory_seq: entity.inventory_seq,
                     current_activity: entity.current_activity.clone(),
                 });
                 changed += 1;

@@ -373,15 +373,17 @@ pub fn advance_scheduled_residents_one_step() -> Vec<(String, String, String)> {
 
         let (Some(cur_x), Some(cur_y)) = cur_coords else {
             let to_room_id = format!("grid:{target_x}:{target_y}");
-            let place_id = crate::world::place::legacy_place_id(crate::grid::SquareCoord::new(target_x, target_y));
+            let place_id;
             {
                 let mut store = store_arc.write();
+                place_id = store.existing_legacy_place_id(target_x, target_y);
                 if let Some(ent) = store.entities.get_mut(&id) {
                     ent.grid_x = Some(target_x);
                     ent.grid_y = Some(target_y);
                     ent.target_x = None;
                     ent.target_y = None;
-                    ent.place_id = Some(place_id.clone());
+                    ent.place_id = place_id.clone();
+                    ent.grid_z = 0;
                     ent.current_activity = target_activity.clone();
                 }
                 store.entity_rooms.insert(id.clone(), to_room_id.clone());
@@ -392,6 +394,7 @@ pub fn advance_scheduled_residents_one_step() -> Vec<(String, String, String)> {
                     place_id,
                     grid_x: Some(target_x),
                     grid_y: Some(target_y),
+                    grid_z: 0,
                     room_id: to_room_id,
                 });
                 crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityActivity {
@@ -444,7 +447,7 @@ pub fn advance_scheduled_residents_one_step() -> Vec<(String, String, String)> {
 
         let from_room_id = crate::grid::grid_room_id_from_coord(cur_x, cur_y);
         let to_room_id = crate::grid::grid_room_id_from_coord(nx, ny);
-        let place_id = crate::world::place::legacy_place_id(crate::grid::SquareCoord::new(nx, ny));
+        let place_id = store_arc.read().existing_legacy_place_id(nx, ny);
 
         let is_expedition = matches!(
             get_resident_goal(&id).as_deref(),
@@ -496,7 +499,8 @@ pub fn advance_scheduled_residents_one_step() -> Vec<(String, String, String)> {
                 ent.grid_y = Some(ny);
                 ent.target_x = if (nx, ny) == (target_x, target_y) { None } else { Some(target_x) };
                 ent.target_y = if (nx, ny) == (target_x, target_y) { None } else { Some(target_y) };
-                ent.place_id = Some(place_id.clone());
+                ent.place_id = place_id.clone();
+                ent.grid_z = 0;
                 ent.current_activity = final_activity.clone();
             }
             store.entity_rooms.insert(id.clone(), to_room_id.clone());
@@ -529,6 +533,7 @@ pub fn advance_scheduled_residents_one_step() -> Vec<(String, String, String)> {
                 place_id,
                 grid_x: Some(nx),
                 grid_y: Some(ny),
+                grid_z: 0,
                 room_id: to_room_id.clone(),
             });
             crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityActivity {

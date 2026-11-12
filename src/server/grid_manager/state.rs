@@ -46,12 +46,6 @@ pub fn init() {
     }
     grid.clear_dirty();
 
-    if let Some(store) = crate::store::get_store() {
-        if let Err(e) = store.write().sync_places_from_grid(&grid) {
-            tracing::warn!("grid_manager: sync_places_from_grid 失敗：{e}");
-        }
-    }
-
     let count = grid.len();
     let is_peninsula = grid.has_peninsula_wilderness();
     let _ = GRID_STATE.set(GridState {

@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-12
-- **當前狀態**：`in_progress`（已完成 `v2.3` 全系統七大範疇統一定案、微步 1～2 實裝驗收，以及**微步 3 審辯室紅隊修訂版五小刀計畫定案（Council `fba65005`）**；線上玩家行走區現況仍處於舊 `121×81` 平面格網，下一步實作**微步 3-0**）
+- **當前狀態**：`in_progress`（已完成 `v2.3` 全系統七大範疇統一定案、微步 1～2、**微步 3-0 底座契約修補與白塔 `legacy_grid` 退役／`CellFacade` 四錨點雙讀對帳實裝驗收**；線上玩家行走區仍維持雙讀過渡，下一步實作**微步 3a′**）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -20,6 +20,10 @@
 6. **微步 3 工程架構五小刀計畫定案（2026-11-12，Room `fba65005` 兩輪紅隊挑刺 ＋ 主模型原始碼收斂，Mnemopi `wm_0b52182326384f2a`）**：
    - **工程拒絕項**：拒絕「先改讀、後改寫」兩階段狀態撕裂、拒絕細狀態獨立子表（維持單列原子樂觀鎖 CAS）、拒絕額外 `6MB` 連通分量表（直用 `L0Cell.landmass_id`）、拒絕個人探索迷霧寫入 `cell_overlay`、拒絕 `307` 萬格同步寫入 `world_places`。
    - **拆分為五小刀依序實作**：`3-0`（底座修補、白塔 `legacy_grid` 解耦與 `CellFacade` 四錨點雙讀對帳）$\rightarrow$ `3a′`（`32×32` 分片正負雙快取、西麓騎樓街屋確定性模組、九宮格與單步切換）$\rightarrow$ `3b′`（竹林施作與 `entities.inventory` 同交易 CAS ＋ `inventory_seq` 序號守衛 ＋ 惰性 `settle()`）$\rightarrow$ `3c`（`grid_z (0..=3)` 三段房號、三維廣播與人數隔離、`floor:{z,exits}` 守 `CLS=0px`）$\rightarrow$ `3d`（新底板出生點、有界加權 A* 行旅與實體手機 `--phone-qa`）。
+7. **微步 3-0 實裝與線上六道閘門驗收完成（2026-11-12）**：
+   - `cell_overlay` 補齊 `building_id / roll_day / weather_epoch` SQL 讀寫並擴充 `charge SMALLINT DEFAULT -1`、`stamp INT DEFAULT 0`、`ver INT DEFAULT 1` 單列 CAS 樂觀鎖（`src/pg/cell_overlay.rs`）；`Entity` 與 `entities` 補齊 `grid_z` 與單調 `inventory_seq` 序號守衛（`pg/entity.rs`、`pg/writer.rs`、`pg/world_resource.rs`、`pg/world_trade.rs`、`db/inventory.rs`、`store/entity/part_04_store_crud.rs`）。
+   - 停用 `sync_places_from_grid` 建置路徑並將 PostgreSQL 既有 `9,801` 處 `legacy_grid` 場所與 `32,561` 條路線全數置為 `status='retired', traversable=false`，線上格網角色 `place_id` 置 `NULL` 且實測單步移動往返零回填（白塔契約 `305` 場所與四大驗算器 `violations=0` 全綠）。
+   - 落地 `src/grid/substrate/facade.rs`（`CellFacade`、`CellSnapshot`、`step_delay_ms`、`effective_max_z`）並接線 `/api/substrate/cell`，完成 `(0,0)` 伏流卵石灘、`(0,1)` 伏流冷泉、`(1,0)` 刺竹林、`(1,-1)` 古樟林坡四錨點雙讀對帳與 `tra-sw-gate --deploy` 六道關卡全綠。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -30,12 +34,13 @@
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
 - **Rust 實機代碼與體積邊界（單檔硬上限 `< 1,200` 行）**：
   - **新 `L0` 底板與立體槽位模組（微步 1～2）**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime}.rs`、`src/pg/cell_overlay.rs`、`src/server/http_api/substrate_atlas.rs`、`web/world_atlas.html`、`web/world-atlas.{js,css}`
+  - **微步 3-0 雙讀門面與背包序號守衛**：`src/grid/substrate/facade.rs`、`src/pg/cell_overlay.rs`、`src/pg/world_place/grid_sync.rs`、`src/store/place.rs`、`src/store/entity/part_04_store_crud.rs`
   - `src/grid/shalu_zhulin.rs`（`1,046` 行；線上仍為舊 `121×81` 平面格網）、`src/grid/zhulin/terrain_bamboo.rs`（`1,123` 行）、`src/grid/zhulin/objects/affordance.rs`（`1,073` 行）
 
 ## 三、 下一步接續提示 (Next Cue)
 
-- **微步 3 實作接續入口（依序推進五小刀，當前下一步：`3-0`）**：
-  1. **3-0 底座契約修補、白塔 `legacy_grid` 解耦與 `CellFacade` 雙讀對帳**：`cell_overlay` 補齊 `building_id/roll_day/weather_epoch` 讀寫並擴充 `charge/stamp/ver`；補齊 `Entity.grid_z` 與 `entities.inventory_seq`；停用 `sync_places_from_grid` 並全數改道 `legacy_grid` 回填路徑，退役 `legacy_grid` 場所與路線、格網角色 `place_id` 置 `NULL`（不動白塔 300 NPC 與 `codex`）；建立 `CellFacade` 完成 `(0,0)/(0,1)/(1,0)/(1,-1)` 雙讀對帳與白塔驗算器全綠。
+- **微步 3 實作接續入口（已完成 `3-0`，當前下一步：`3a′`）**：
+  1. **3-0（已完工）**：底座契約修補、白塔 `legacy_grid` 退役解耦、`inventory_seq` 守衛與 `CellFacade` 四錨點雙讀對帳。
   2. **3a′ 分片正負雙快取、西麓騎樓街屋與九宮格單步切換**：`32×32` 區塊正負快取、`pave_heat` 合併寫入、個人迷霧壓縮點陣圖、西麓騎樓街屋確定性推導模組，九宮格與單步移動切 `CellFacade + render_synth`。
   3. **3b′ 竹林就地施作與背包發物同交易切換**：劈竹、掘鞭、拾葉籜、營火切 `SlotStack + cell_overlay`，與 `entities.inventory`（`FOR UPDATE` ＋ `inventory_seq`）同交易提交，竹林路徑禁呼叫 `with_square_grid_mut`。
   4. **3c `Entity.grid_z (0..=3)` 立體樓層與人數隔離**：`grid:x:y[:z]` 解析、`(gx,gy,z)` 廣播與 `.sw-bustle-strip`、`.sw-cell-pop` 僅計 `z=0`、廢除 `IN_PRIVATE_ROOM`、前端 `floor:{z,exits}` 固定佔位守 `CLS=0px`。

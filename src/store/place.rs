@@ -25,18 +25,40 @@ impl Store {
         Ok(())
     }
 
+    /// 退役相容空操作：不再重建 `legacy_grid`，僅確保其場所與路線維持 `retired`。
     pub fn sync_places_from_grid(
         &mut self,
-        grid: &SquareGrid,
+        _grid: &SquareGrid,
     ) -> anyhow::Result<LocationMigrationReport> {
-        let pool = self
-            .db_pool
-            .clone()
-            .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
-        let report = crate::pg::world_place::sync_legacy_grid(&pool, grid)?;
+        let report = LocationMigrationReport {
+            legacy_places: 0,
+            legacy_routes: 0,
+            migrated_entities: 0,
+            unresolved_entities: 0,
+            mirrored_entities: 0,
+        };
+        let Some(pool) = self.db_pool.clone() else {
+            return Ok(report);
+        };
+        let mut conn = pool.get()?;
+        conn.batch_execute(
+            "UPDATE world_places SET status='retired',traversable=FALSE
+             WHERE source_kind='legacy_grid' AND (status<>'retired' OR traversable);
+             UPDATE world_routes SET status='retired'
+             WHERE source_kind='legacy_grid' AND status<>'retired'",
+        )?;
+        drop(conn);
         self.reload_place_graph()?;
-        anyhow::ensure!(self.load_entities_from_pg(), "位置遷移後無法重載 entities");
         Ok(report)
+    }
+
+    /// 僅當場所圖實際存在該格的舊式 id 時回傳；`legacy_grid` 退役後恆為 `None`。
+    pub fn existing_legacy_place_id(&self, x: i32, y: i32) -> Option<String> {
+        let id = legacy_place_id(crate::grid::SquareCoord::new(x, y));
+        self.place_graph
+            .place(&id)
+            .filter(|p| p.traversable && p.status != "retired")
+            .map(|_| id)
     }
 
     pub fn get_entity_place_id(&self, entity_id: &str) -> Option<String> {
@@ -125,26 +147,42 @@ impl Store {
         x: i32,
         y: i32,
     ) -> anyhow::Result<()> {
+        self.set_entity_grid_z(entity_id, x, y, 0)
+    }
+
+    /// 含樓層的格網定位；`legacy_grid` 已退役時 `place_id` 一律為 `None`。
+    pub fn set_entity_grid_z(
+        &mut self,
+        entity_id: &str,
+        x: i32,
+        y: i32,
+        z: i16,
+    ) -> anyhow::Result<()> {
         let place_id = legacy_place_id(crate::grid::SquareCoord::new(x, y));
-        if self.place_graph.place(&place_id).is_some() {
+        if z == 0
+            && self
+                .place_graph
+                .place(&place_id)
+                .is_some_and(|place| place.traversable)
+        {
             return self.set_entity_place(entity_id, &place_id);
         }
-        let has_legacy_places = self
-            .place_graph
-            .places()
-            .any(|place| place.source_kind == "legacy_grid");
-        anyhow::ensure!(!has_legacy_places, "座標沒有對應正式場所：{x},{y}");
         anyhow::ensure!(
             self.entities.contains_key(entity_id),
             "實體不存在：{entity_id}"
         );
-        let room_id = crate::grid::grid_room_id_from_coord(x, y);
+        let room_id = if z == 0 {
+            format!("grid:{x}:{y}")
+        } else {
+            format!("grid:{x}:{y}:{z}")
+        };
         if crate::pg::writer::is_active() {
             crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityPlace {
                 entity_id: entity_id.to_string(),
-                place_id: place_id.clone(),
+                place_id: None,
                 grid_x: Some(x),
                 grid_y: Some(y),
+                grid_z: z,
                 room_id: room_id.clone(),
             });
         } else {
@@ -155,19 +193,21 @@ impl Store {
             crate::pg::world_place::set_entity_place(
                 &pool,
                 entity_id,
-                &place_id,
+                None,
                 Some(x),
                 Some(y),
+                z,
                 &room_id,
             )?;
         }
         let entity = self
             .entities
             .get_mut(entity_id)
-            .expect("entity existence checked before committed location write");
-        entity.place_id = Some(place_id);
+            .ok_or_else(|| anyhow::anyhow!("實體不存在：{entity_id}"))?;
+        entity.place_id = None;
         entity.grid_x = Some(x);
         entity.grid_y = Some(y);
+        entity.grid_z = z;
         if entity.kind != "npc" && entity.current_activity.contains("於客舍內閉門靜養") {
             entity.current_activity = "漫步穿行於街坊之間".to_string();
         }
@@ -187,9 +227,10 @@ impl Store {
         if crate::pg::writer::is_active() {
             crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityPlace {
                 entity_id: entity_id.to_string(),
-                place_id: place.id.clone(),
+                place_id: Some(place.id.clone()),
                 grid_x,
                 grid_y,
+                grid_z: 0,
                 room_id: room_id.clone(),
             });
         } else {
@@ -199,17 +240,24 @@ impl Store {
                 .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
 
             crate::pg::world_place::set_entity_place(
-                &pool, entity_id, &place.id, grid_x, grid_y, &room_id,
+                &pool,
+                entity_id,
+                Some(&place.id),
+                grid_x,
+                grid_y,
+                0,
+                &room_id,
             )?;
         }
 
         let entity = self
             .entities
             .get_mut(entity_id)
-            .expect("entity existence checked before committed location write");
+            .ok_or_else(|| anyhow::anyhow!("實體不存在：{entity_id}"))?;
         entity.place_id = Some(place.id.clone());
         entity.grid_x = grid_x;
         entity.grid_y = grid_y;
+        entity.grid_z = 0;
         if entity.kind != "npc" && entity.current_activity.contains("於客舍內閉門靜養") {
             entity.current_activity = "漫步穿行於街坊之間".to_string();
         }
@@ -242,9 +290,10 @@ impl Store {
         let action_id = if crate::pg::writer::is_active() {
             crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityPlace {
                 entity_id: entity_id.to_string(),
-                place_id: place.id.clone(),
+                place_id: Some(place.id.clone()),
                 grid_x,
                 grid_y,
+                grid_z: 0,
                 room_id: room_id.clone(),
             });
             if let Some(j) = journey {

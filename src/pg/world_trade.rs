@@ -347,7 +347,7 @@ pub fn settle_market_sale(
     );
 
     tx.execute(
-        "UPDATE entities SET magnesium=$1,inventory=$2,current_activity=$3 WHERE id=$4",
+        "UPDATE entities SET magnesium=$1,inventory=$2,inventory_seq=inventory_seq+1,current_activity=$3 WHERE id=$4",
         &[
             &buyer_mg_after,
             &buyer_inventory_after_sale,
@@ -483,7 +483,7 @@ pub fn settle_market_sale(
             format!("在市集購得並享用{display_name}")
         };
         tx.execute(
-            "UPDATE entities SET inventory=$1,current_activity=$2 WHERE id=$3",
+            "UPDATE entities SET inventory=$1,inventory_seq=inventory_seq+1,current_activity=$2 WHERE id=$3",
             &[&final_inventory, &final_activity, &buyer.id],
         )?;
         let id = Uuid::new_v4().to_string();
@@ -668,7 +668,7 @@ fn settle_locked(
     let seller_activity = trade_activity(seller, place_id, item_id, true);
 
     tx.execute(
-        "UPDATE entities SET magnesium=$1,inventory=$2,current_activity=$3 WHERE id=$4",
+        "UPDATE entities SET magnesium=$1,inventory=$2,inventory_seq=inventory_seq+1,current_activity=$3 WHERE id=$4",
         &[
             &buyer_mg_after,
             &buyer_inventory_after,
@@ -677,7 +677,7 @@ fn settle_locked(
         ],
     )?;
     tx.execute(
-        "UPDATE entities SET magnesium=$1,inventory=$2,current_activity=$3 WHERE id=$4",
+        "UPDATE entities SET magnesium=$1,inventory=$2,inventory_seq=inventory_seq+1,current_activity=$3 WHERE id=$4",
         &[
             &seller_mg_after,
             &seller_inventory_after,

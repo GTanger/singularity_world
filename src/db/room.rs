@@ -96,6 +96,13 @@ pub fn set_entity_grid(entity_id: &str, x: i32, y: i32) -> anyhow::Result<()> {
     s.set_entity_grid(entity_id, x, y)
 }
 
+/// 含樓層的權威正方格座標；見 [`store::Store::set_entity_grid_z`]。
+pub fn set_entity_grid_z(entity_id: &str, x: i32, y: i32, z: i16) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write();
+    s.set_entity_grid_z(entity_id, x, y, z)
+}
+
 /// 有正方格座標的存活 NPC id 列表。
 #[must_use]
 pub fn get_npc_ids_with_grid() -> Vec<String> {

@@ -20,3 +20,9 @@ pub use l0_cell::{
     groundwater_bucket_lower_bound_m, landmass, pack_water_regime,
 };
 pub use moi_dem::{MOI_DEM_MIN_VALID_M, Moi20mDemWindow, TfwGeoTransform, rasterize_4conn_thick_segment};
+
+pub mod facade;
+pub use facade::{
+    AnchorDualRead, CellFacade, CellSnapshot, effective_max_z, step_delay_ms, verify_four_anchors,
+    verify_four_anchors_shalu_zhulin,
+};

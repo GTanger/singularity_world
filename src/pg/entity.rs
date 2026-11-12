@@ -9,9 +9,9 @@ const UPSERT_SQL: &str = "
 INSERT INTO entities (id,kind,display_char,x,y,move_state,target_x,target_y,
  walk_or_run,move_started_at,vit,qi,dex,magnesium,last_observed_at,created_at,
  gender,soul_seed,display_title,activated_nodes,equipment_slots,inventory,disposition,
- current_activity,place_id,grid_x,grid_y,thoughts)
+ current_activity,place_id,grid_x,grid_y,thoughts,grid_z,inventory_seq)
 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,
- $20,$21,$22,$23,$24,$25,$26,$27,$28)
+ $20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30)
 ON CONFLICT (id) DO UPDATE SET
  kind=EXCLUDED.kind,display_char=EXCLUDED.display_char,x=EXCLUDED.x,y=EXCLUDED.y,
  move_state=EXCLUDED.move_state,target_x=EXCLUDED.target_x,target_y=EXCLUDED.target_y,
@@ -20,7 +20,9 @@ ON CONFLICT (id) DO UPDATE SET
  last_observed_at=EXCLUDED.last_observed_at,created_at=EXCLUDED.created_at,
  gender=EXCLUDED.gender,soul_seed=EXCLUDED.soul_seed,display_title=EXCLUDED.display_title,
  activated_nodes=EXCLUDED.activated_nodes,equipment_slots=EXCLUDED.equipment_slots,
- inventory=EXCLUDED.inventory,disposition=EXCLUDED.disposition,
+ inventory=CASE WHEN EXCLUDED.inventory_seq >= entities.inventory_seq THEN EXCLUDED.inventory ELSE entities.inventory END,
+ inventory_seq=GREATEST(entities.inventory_seq, EXCLUDED.inventory_seq),grid_z=EXCLUDED.grid_z,
+ disposition=EXCLUDED.disposition,
  current_activity=EXCLUDED.current_activity,place_id=EXCLUDED.place_id,grid_x=EXCLUDED.grid_x,grid_y=EXCLUDED.grid_y,thoughts=EXCLUDED.thoughts";
 
 pub fn upsert(pool: &DbPool, entity: &Entity) -> anyhow::Result<()> {
@@ -71,6 +73,8 @@ fn execute_upsert(client: &mut impl GenericClient, entity: &Entity) -> anyhow::R
             &entity.grid_x,
             &entity.grid_y,
             &thoughts,
+            &entity.grid_z,
+            &entity.inventory_seq,
         ],
     )?;
     Ok(())

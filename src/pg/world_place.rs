@@ -96,16 +96,17 @@ pub fn load_graph(pool: &DbPool) -> anyhow::Result<PlaceGraph> {
 pub fn set_entity_place(
     pool: &DbPool,
     entity_id: &str,
-    place_id: &str,
+    place_id: Option<&str>,
     grid_x: Option<i32>,
     grid_y: Option<i32>,
+    grid_z: i16,
     room_id: &str,
 ) -> anyhow::Result<()> {
     let mut conn = pool.get()?;
     let mut tx = conn.transaction()?;
     let changed = tx.execute(
-        "UPDATE entities SET place_id=$1,grid_x=$2,grid_y=$3 WHERE id=$4",
-        &[&place_id, &grid_x, &grid_y, &entity_id],
+        "UPDATE entities SET place_id=$1, grid_x=$2, grid_y=$3, grid_z=$4 WHERE id=$5",
+        &[&place_id, &grid_x, &grid_y, &grid_z, &entity_id],
     )?;
     anyhow::ensure!(changed == 1, "實體不存在：{entity_id}");
     tx.execute(

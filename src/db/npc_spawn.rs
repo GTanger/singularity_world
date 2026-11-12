@@ -113,6 +113,8 @@ pub(crate) fn insert_npc_locked(
         place_id: None,
         grid_x: None,
         grid_y: None,
+        grid_z: 0,
+        inventory_seq: 0,
         thoughts: vec![],
     };
     s.put_entity(e)

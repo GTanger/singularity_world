@@ -167,7 +167,7 @@ mod room;
 pub use room::{
     SPAWN_ROOM_NAME, get_entity_place_id, get_exits_for_room, get_npc_ids_with_grid,
     get_npc_ids_with_room, get_objects_in_room, get_player_ids_with_room, get_room, get_room_name,
-    get_spawn_room_id, object_has_socket, set_entity_activity, set_entity_grid, set_entity_room,
+    get_spawn_room_id, object_has_socket, set_entity_activity, set_entity_grid, set_entity_grid_z, set_entity_room,
     terrain_from_room,
 };
 
@@ -325,6 +325,8 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         place_id: None,
         grid_x: None,
         grid_y: None,
+        grid_z: 0,
+        inventory_seq: 0,
         thoughts: vec![],
     };
     let pool = crate::pg::pool().ok_or(ErrNoStore)?;

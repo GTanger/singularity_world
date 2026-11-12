@@ -241,6 +241,14 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         "ALTER TABLE entities ADD COLUMN IF NOT EXISTS grid_y INTEGER",
         &[],
     );
+    let _ = conn.execute(
+        "ALTER TABLE entities ADD COLUMN IF NOT EXISTS grid_z SMALLINT NOT NULL DEFAULT 0",
+        &[],
+    );
+    let _ = conn.execute(
+        "ALTER TABLE entities ADD COLUMN IF NOT EXISTS inventory_seq BIGINT NOT NULL DEFAULT 0",
+        &[],
+    );
 
     // 實體房間對應
     conn.execute(

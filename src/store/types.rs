@@ -105,6 +105,12 @@ pub struct Entity {
     /// 正方格座標 y（北增）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grid_y: Option<i32>,
+    /// 樓層（0 為地面）。
+    #[serde(default)]
+    pub grid_z: i16,
+    /// 背包單調序號：防止舊快照回蓋較新的權威交易。
+    #[serde(default)]
+    pub inventory_seq: i64,
     /// NPC 內心活動列表（最近 100 條）；空 Vec 時省略序列化。
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thoughts: Vec<Thought>,

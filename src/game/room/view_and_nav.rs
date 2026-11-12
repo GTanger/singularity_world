@@ -321,11 +321,6 @@ fn reveal_missing_grid_route(entity_id: &str, direction: Direction) -> anyhow::R
         grid.can_walk(from, target) && grid.len() > before
     })
     .unwrap_or(false);
-    if changed {
-        let grid = crate::server::grid_manager::get_runtime_square_grid()
-            .ok_or_else(|| anyhow::anyhow!("grid not loaded"))?;
-        store.write().sync_places_from_grid(&grid)?;
-    }
     Ok(changed)
 }
 
