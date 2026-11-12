@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-12
-- **當前狀態**：`in_progress`（已完成 `v2.3` 前後端全套規格定案紀錄、**微步 1 `20m` 真實 DEM ＋ OSM 水系 `L0` 底板建構**，以及 **微步 2 立體四層槽契約（`U2/U1/S0/V1`）、PostgreSQL 稀疏覆寫表 `cell_overlay` + `entities.grid_z`、設計者全地圖 `/world_atlas` 真實山海 5 圖層切換與零重疊微觀單格檢視器、主畫面九宮格 `L0` 感官角標**）
+- **當前狀態**：`in_progress`（已完成 `v2.3` 第 1～5 章全系統「底板插座 × 正交小插件槽 × 觀測時動態合成」七大範疇統一定案、**微步 1 真實 `20m` DEM ＋ OSM 水系 `L0` 物理底板建構**、**微步 2 立體四層槽契約（`U2/U1/S0/V1`）＋ PostgreSQL `cell_overlay` ＋ 設計者 `/world_atlas` 全地圖驗收**；線上玩家行走區現況仍處於舊 `121×81` 平面格網，待推進**微步 3**）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -15,11 +15,13 @@
 4. **微步 1～2 實作與全地圖 `/world_atlas` 實裝驗收（`src/grid/substrate/` ＋ `cell_overlay` ＋ `substrate_atlas`，2026-11-12）**：
    - 接入內政部官方《不分幅全台 20m DEM》（`data/earth/moi_20m_dem/dem_20m.tif` + `.tfw`）與台灣 `OSM PBF` 水系（含 `Relation` 成員段與 MST 斷口橋接），完成四連通無斜縫界河加厚與多源 Flood-Fill 自然陸塊切割，產出 `data/runtime/landmass_01_substrate.swl0`（`Landmass #01` 全區 `3,077,437` 格 ≈ `1,231.0 km²`，其中非水域陸地 `2,959,767` 格 ≈ `1,183.9 km²`、西麓湧泉眼 `259` 處、原點 `(0,0)` 海拔 `+29.0m` 感官角標 `泉涼↑`），通過 5 項單元測試、東南西北跨河水密斷言與四宮格全彩母圖親眼視覺驗收。
    - 落地立體四層槽契約（`slots.rs`）、動態合成地名／符號／處境短句／三席畫布卡（`render_synth.rs`）、PostgreSQL 稀疏覆寫表 `cell_overlay` ＋ `entities.grid_z`（`pg/cell_overlay.rs`）、常駐 `SWL0` 執行期與 5 圖層純 Rust PNG 快取（`runtime.rs`），以及 `/api/substrate/{meta,basemap.png,window,cell}` 與設計者專用 `/world_atlas` 全開啟山海大地圖（嚴守玩家端 `index.html` 不暴露上帝視角連結定案）及主畫面九宮格 `edge_cue` 青墨角標。
+5. **全系統七大範疇統一「底板插座 × 正交小插件槽 × 觀測時動態合成」定律定案（2026-11-12，規格書 §5 ＋ Wiki ADR v2.3）**：
+   - 設計者檢視 `/world_atlas` 後拍板：拒絕「每格獨立大物件」與「地形類別死插件」，確立全世界七大範疇（①土地空間、②建築與店鋪、③人、④人際關係、⑤隨身器物與工具、⑥異獸與生態、⑦刻意不佔實體槽位之天氣與聚念場 `Field`）全面貫穿同一套「固定底板插座 × 正交小插件槽 × 觀測時動態合成（0 寫死標籤）」契約。
 
 ## 二、 關鍵檔案與正典錨點
 
 - **新生世界設計正典與 Wiki ADR**：
-  - `/home/tanger/Projects/singularity_world/docs/design/energetic_taiwan_landmass_and_substrate_spec.md`（§1～§4 完整定案）
+  - `/home/tanger/Projects/singularity_world/docs/design/energetic_taiwan_landmass_and_substrate_spec.md`（§1～§5 完整定案）
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/singularity_world/docs/design/shalu_zhulin_terrain_and_objects.md`（§1～§11 正式定案）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
@@ -29,4 +31,8 @@
 
 ## 三、 下一步接續提示 (Next Cue)
 
-- **微步 3 接續入口**：將線上玩家移動、視野與地塊施作（劈竹開路、掘土、竹葉營火等）逐步切換讀取 `SubstrateRuntime + cell_overlay`（保留白塔半島與竹林既有玩法無縫相容），並接通 `grid_z (0..=3)` 亭仔腳連廊與樓層步差體驗。
+- **微步 3 接續入口（線上玩家空間與就地施作切換至 `SubstrateRuntime + cell_overlay + grid_z`，建議拆 3a～3d 四小刀）**：
+  - **3a 視野與通行唯讀切換**：`grid_view_1.rs`、`room_move.rs` 單步通行與步頻改讀 `SubstrateRuntime + cell_overlay` 並由 `render_synth` 動態合成格名與符號，廢除 `name == "刺竹林"` 硬寫字串判定。
+  - **3b 竹林就地施作切換稀疏覆寫**：`resource.rs`／`affordance.rs` 之劈竹（清 `V1` 留 `U1`）、掘竹鞭（清 `U1` 連動彈出活體筍耳）、拾竹葉竹籜、生滅 `竹葉營火` 與踏入刷新 `pave_heat` 改寫 `SlotStack` ＋ `pg::cell_overlay` 稀疏 `UPSERT`（產物嚴守 `zl_item_*`）。
+  - **3c `Entity.grid_z (0..=3)` 與亭仔腳 `arcade_mask` 貫通**：補齊 `store::types::Entity`、`pg_sync` 與 `Character` 之 `grid_z`，實裝 `[進／出／上／下]` 樓層步差、同排雙向柱廊遮雨連走，以及九宮格 `.sw-cell-pop`（僅計 `z = 0`）與 `.sw-bustle-strip`（同 `(gx,gy,z)`）人數口徑除蟲，廢除 `IN_PRIVATE_ROOM`。
+  - **3d 出生點／輿圖尋路切換與防鬼打牆驗收**：`auth.rs` 出生判定與行旅足跡輿圖加權 A* 切入新底板（逐格正交邁步絕不瞬移），完整通過白塔三大驗算器、`checkrooms`、`CLS = 0px` 與實體手機 `--phone-qa`。
