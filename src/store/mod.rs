@@ -219,9 +219,15 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     s.load_rooms(rooms_path)?;
 
     // 2. 初始化 PostgreSQL 連線池
-    let pg_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
-        "postgres://postgres:singularity@localhost:5432/singularity".to_string()
-    });
+    let pg_url = if cfg!(test) {
+        std::env::var("SW_TEST_DATABASE_URL").unwrap_or_else(|_| {
+            "postgres://postgres:singularity@localhost:5432/singularity_test".to_string()
+        })
+    } else {
+        std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+            "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+        })
+    };
 
     s.db_pool = match sql::init_pool(&pg_url) {
         Ok(pool) => {

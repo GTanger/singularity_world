@@ -543,6 +543,8 @@ pub struct GridCellView {
     pub symbol: String,
     #[serde(default)]
     pub npc_count: u16,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub edge_cue: Option<String>,
 }
 
 // ─── v5 新增：探索 log 與世界狀態推播 ─────────────────────────────────

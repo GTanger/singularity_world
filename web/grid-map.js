@@ -2049,7 +2049,18 @@
                 div.className = 'sw-cell sw-cell-blocked';
             }
             var cellTitle = item.cellTitle;
+            var edgeCue = (!itemIsDiag && item.cellObj && item.cellObj.edge_cue) ? String(item.cellObj.edge_cue) : '';
+            if (edgeCue) {
+                cellTitle = cellTitle ? (cellTitle + ' · 感官：' + edgeCue) : edgeCue;
+            }
             div.title = cellTitle;
+
+            if (edgeCue) {
+                var cueSpan = document.createElement('span');
+                cueSpan.className = 'sw-cell-cue';
+                cueSpan.textContent = edgeCue;
+                div.appendChild(cueSpan);
+            }
 
             var symSpan = document.createElement('span');
             symSpan.className = 'sw-cell-sym' + (item.char === '𓐂' ? ' sw-sym-bamboo' : '');

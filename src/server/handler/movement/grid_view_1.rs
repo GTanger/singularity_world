@@ -73,6 +73,7 @@ fn build_grid_view_cells(
             walkable: effective_walkable,
             symbol,
             npc_count: cell_npc_count,
+            edge_cue: crate::grid::substrate::runtime::derive_edge_cue(cx, cy),
         });
     }
 
@@ -123,6 +124,7 @@ fn build_grid_view_cells(
                     walkable: cell.terrain.walkable(),
                     symbol: extra_sym,
                     npc_count: cell_npc_count,
+                    edge_cue: crate::grid::substrate::runtime::derive_edge_cue(wx, wy),
                 });
             }
         }

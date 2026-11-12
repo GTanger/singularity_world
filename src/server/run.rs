@@ -40,6 +40,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     let sessions = Arc::new(SessionStore::new());
     let state = AppState { hub, sessions, cfg };
     grid_manager::init();
+    crate::grid::substrate::runtime::init_global();
     if grid_manager::get_runtime_square_grid().is_some_and(|g| g.has_peninsula_wilderness()) {
         crate::game::object_ecology::ensure_ecology_items_in_store();
     }
@@ -114,6 +115,11 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/eco/entities", get(http_api::eco_entities))
         .route("/api/eco/npc-thoughts", get(http_api::handle_eco_npc_thoughts))
         .route("/api/eco/pulse", get(http_api::eco_pulse))
+        // 微步 2：全地圖底板唯讀端點
+        .route("/api/substrate/meta", get(http_api::substrate_meta))
+        .route("/api/substrate/basemap.png", get(http_api::substrate_basemap))
+        .route("/api/substrate/window", get(http_api::substrate_window))
+        .route("/api/substrate/cell", get(http_api::substrate_cell))
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())

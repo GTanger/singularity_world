@@ -6,6 +6,7 @@ mod admin;
 mod eco;
 mod player;
 mod rooms;
+mod substrate_atlas;
 
 pub use admin::{AdminQuery, design_constants, wipe_entities};
 pub use eco::{eco_entities, eco_map, eco_npc_thoughts, eco_pulse, handle_eco_entities, handle_eco_npc_thoughts};
@@ -14,3 +15,4 @@ pub use rooms::{
     add_exit, create_room, delete_room, get_room_admin, list_rooms, remove_exit, rename_room,
     rooms_data, update_room,
 };
+pub use substrate_atlas::{substrate_basemap, substrate_cell, substrate_meta, substrate_window};

@@ -2310,6 +2310,8 @@ dependencies = [
  "axum",
  "bcrypt",
  "byteorder",
+ "crc32fast",
+ "flate2",
  "futures-util",
  "geo",
  "noise",

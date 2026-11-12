@@ -23,6 +23,9 @@ reqwest = { version = "0.12", features = ["json", "blocking"] }
 anyhow = "1"
 sha2 = "0.10"
 thiserror = "2"
+# 微步 2：底圖 PNG 編碼（純 Rust）
+flate2 = "1"
+crc32fast = "1"
 # 日誌
 tracing = "0.1"
 tracing-subscriber = "0.3"

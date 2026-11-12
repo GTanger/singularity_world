@@ -17,6 +17,13 @@ use super::{
 
 impl Store {
     pub(super) fn atomic_write(path: &Path, data: &[u8]) -> anyhow::Result<()> {
+        #[cfg(test)]
+        {
+            let manifest_data = Path::new(env!("CARGO_MANIFEST_DIR")).join("data");
+            if path.starts_with(&manifest_data) {
+                return Ok(());
+            }
+        }
         if let Some(dir) = path.parent() {
             fs::create_dir_all(dir)?;
         }

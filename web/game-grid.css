@@ -1293,6 +1293,19 @@
   color: inherit;
 }
 
+.sw-cell-cue {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 600;
+  color: #2a4a6b;
+  letter-spacing: 0;
+  pointer-events: none;
+  opacity: 0.92;
+}
+
 /* 可通行鄰格：無框濃墨字印 */
 .sw-cell-walkable {
   color: var(--ink-heading, #2c1e0f);
@@ -1384,6 +1397,10 @@
 
 .sw-app[data-tide="night"] .sw-cell-label {
   color: #d8cfc0;
+}
+
+.sw-app[data-tide="night"] .sw-cell-cue {
+  color: #9ec5e8;
 }
 
 .sw-app[data-tide="night"] .sw-cell-walkable,
@@ -5159,6 +5176,11 @@ body.game-grid-body.sw-tide-ready {
     height: 42px !important;
     min-width: 72px !important;
     min-height: 42px !important;
+  }
+  .sw-cell-cue {
+    font-size: 8px;
+    top: 0;
+    right: 1px;
   }
 }
 

@@ -12,6 +12,7 @@ use parking_lot::RwLock;
 use std::sync::Arc;
 
 pub mod auth;
+pub mod cell_overlay;
 pub mod economy;
 pub mod entity;
 pub mod event;
@@ -41,6 +42,9 @@ pub fn set_pool(pool: DbPool) {
         *g = Some(Arc::new(pool.clone()));
     }
     writer::init(pool);
+    if let Some(p) = self::pool() {
+        let _ = cell_overlay::ensure_schema(&p);
+    }
 }
 
 /// 取得全域 pool 的 Arc clone（便宜，Arc 內部 refcount）
