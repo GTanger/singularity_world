@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-12
-- **當前狀態**：`in_progress`（已完成 `v2.3` 第 1～5 章全系統「底板插座 × 正交小插件槽 × 觀測時動態合成」七大範疇統一定案、**微步 1 真實 `20m` DEM ＋ OSM 水系 `L0` 物理底板建構**、**微步 2 立體四層槽契約（`U2/U1/S0/V1`）＋ PostgreSQL `cell_overlay` ＋ 設計者 `/world_atlas` 全地圖驗收**；線上玩家行走區現況仍處於舊 `121×81` 平面格網，待推進**微步 3**）
+- **當前狀態**：`in_progress`（已完成 `v2.3` 全系統七大範疇統一定案、微步 1～2 實裝驗收，以及**微步 3 審辯室紅隊修訂版五小刀計畫定案（Council `fba65005`）**；線上玩家行走區現況仍處於舊 `121×81` 平面格網，下一步實作**微步 3-0**）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -17,11 +17,14 @@
    - 落地立體四層槽契約（`slots.rs`）、動態合成地名／符號／處境短句／三席畫布卡（`render_synth.rs`）、PostgreSQL 稀疏覆寫表 `cell_overlay` ＋ `entities.grid_z`（`pg/cell_overlay.rs`）、常駐 `SWL0` 執行期與 5 圖層純 Rust PNG 快取（`runtime.rs`），以及 `/api/substrate/{meta,basemap.png,window,cell}` 與設計者專用 `/world_atlas` 全開啟山海大地圖（嚴守玩家端 `index.html` 不暴露上帝視角連結定案）及主畫面九宮格 `edge_cue` 青墨角標。
 5. **全系統七大範疇統一「底板插座 × 正交小插件槽 × 觀測時動態合成」定律定案（2026-11-12，規格書 §5 ＋ Wiki ADR v2.3）**：
    - 設計者檢視 `/world_atlas` 後拍板：拒絕「每格獨立大物件」與「地形類別死插件」，確立全世界七大範疇（①土地空間、②建築與店鋪、③人、④人際關係、⑤隨身器物與工具、⑥異獸與生態、⑦刻意不佔實體槽位之天氣與聚念場 `Field`）全面貫穿同一套「固定底板插座 × 正交小插件槽 × 觀測時動態合成（0 寫死標籤）」契約。
+6. **微步 3 工程架構五小刀計畫定案（2026-11-12，Room `fba65005` 兩輪紅隊挑刺 ＋ 主模型原始碼收斂，Mnemopi `wm_0b52182326384f2a`）**：
+   - **工程拒絕項**：拒絕「先改讀、後改寫」兩階段狀態撕裂、拒絕細狀態獨立子表（維持單列原子樂觀鎖 CAS）、拒絕額外 `6MB` 連通分量表（直用 `L0Cell.landmass_id`）、拒絕個人探索迷霧寫入 `cell_overlay`、拒絕 `307` 萬格同步寫入 `world_places`。
+   - **拆分為五小刀依序實作**：`3-0`（底座修補、白塔 `legacy_grid` 解耦與 `CellFacade` 四錨點雙讀對帳）$\rightarrow$ `3a′`（`32×32` 分片正負雙快取、西麓騎樓街屋確定性模組、九宮格與單步切換）$\rightarrow$ `3b′`（竹林施作與 `entities.inventory` 同交易 CAS ＋ `inventory_seq` 序號守衛 ＋ 惰性 `settle()`）$\rightarrow$ `3c`（`grid_z (0..=3)` 三段房號、三維廣播與人數隔離、`floor:{z,exits}` 守 `CLS=0px`）$\rightarrow$ `3d`（新底板出生點、有界加權 A* 行旅與實體手機 `--phone-qa`）。
 
 ## 二、 關鍵檔案與正典錨點
 
 - **新生世界設計正典與 Wiki ADR**：
-  - `/home/tanger/Projects/singularity_world/docs/design/energetic_taiwan_landmass_and_substrate_spec.md`（§1～§5 完整定案）
+  - `/home/tanger/Projects/singularity_world/docs/design/energetic_taiwan_landmass_and_substrate_spec.md`（§1～§5.3 完整定案，含微步 3 五小刀契約）
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/singularity_world/docs/design/shalu_zhulin_terrain_and_objects.md`（§1～§11 正式定案）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
@@ -31,8 +34,9 @@
 
 ## 三、 下一步接續提示 (Next Cue)
 
-- **微步 3 接續入口（線上玩家空間與就地施作切換至 `SubstrateRuntime + cell_overlay + grid_z`，建議拆 3a～3d 四小刀）**：
-  - **3a 視野與通行唯讀切換**：`grid_view_1.rs`、`room_move.rs` 單步通行與步頻改讀 `SubstrateRuntime + cell_overlay` 並由 `render_synth` 動態合成格名與符號，廢除 `name == "刺竹林"` 硬寫字串判定。
-  - **3b 竹林就地施作切換稀疏覆寫**：`resource.rs`／`affordance.rs` 之劈竹（清 `V1` 留 `U1`）、掘竹鞭（清 `U1` 連動彈出活體筍耳）、拾竹葉竹籜、生滅 `竹葉營火` 與踏入刷新 `pave_heat` 改寫 `SlotStack` ＋ `pg::cell_overlay` 稀疏 `UPSERT`（產物嚴守 `zl_item_*`）。
-  - **3c `Entity.grid_z (0..=3)` 與亭仔腳 `arcade_mask` 貫通**：補齊 `store::types::Entity`、`pg_sync` 與 `Character` 之 `grid_z`，實裝 `[進／出／上／下]` 樓層步差、同排雙向柱廊遮雨連走，以及九宮格 `.sw-cell-pop`（僅計 `z = 0`）與 `.sw-bustle-strip`（同 `(gx,gy,z)`）人數口徑除蟲，廢除 `IN_PRIVATE_ROOM`。
-  - **3d 出生點／輿圖尋路切換與防鬼打牆驗收**：`auth.rs` 出生判定與行旅足跡輿圖加權 A* 切入新底板（逐格正交邁步絕不瞬移），完整通過白塔三大驗算器、`checkrooms`、`CLS = 0px` 與實體手機 `--phone-qa`。
+- **微步 3 實作接續入口（依序推進五小刀，當前下一步：`3-0`）**：
+  1. **3-0 底座契約修補、白塔 `legacy_grid` 解耦與 `CellFacade` 雙讀對帳**：`cell_overlay` 補齊 `building_id/roll_day/weather_epoch` 讀寫並擴充 `charge/stamp/ver`；補齊 `Entity.grid_z` 與 `entities.inventory_seq`；停用 `sync_places_from_grid` 並全數改道 `legacy_grid` 回填路徑，退役 `legacy_grid` 場所與路線、格網角色 `place_id` 置 `NULL`（不動白塔 300 NPC 與 `codex`）；建立 `CellFacade` 完成 `(0,0)/(0,1)/(1,0)/(1,-1)` 雙讀對帳與白塔驗算器全綠。
+  2. **3a′ 分片正負雙快取、西麓騎樓街屋與九宮格單步切換**：`32×32` 區塊正負快取、`pave_heat` 合併寫入、個人迷霧壓縮點陣圖、西麓騎樓街屋確定性推導模組，九宮格與單步移動切 `CellFacade + render_synth`。
+  3. **3b′ 竹林就地施作與背包發物同交易切換**：劈竹、掘鞭、拾葉籜、營火切 `SlotStack + cell_overlay`，與 `entities.inventory`（`FOR UPDATE` ＋ `inventory_seq`）同交易提交，竹林路徑禁呼叫 `with_square_grid_mut`。
+  4. **3c `Entity.grid_z (0..=3)` 立體樓層與人數隔離**：`grid:x:y[:z]` 解析、`(gx,gy,z)` 廣播與 `.sw-bustle-strip`、`.sw-cell-pop` 僅計 `z=0`、廢除 `IN_PRIVATE_ROOM`、前端 `floor:{z,exits}` 固定佔位守 `CLS=0px`。
+  5. **3d 新底板出生點、有界加權 A* 與真機驗收**：`auth.rs` 出生點切換、有界加權 A*（`20,000` 節點／半徑 `128`／`10ms` 切片／併發 `2`）與木架 `Pixel 9 Pro XL` `--phone-qa` 親眼截圖驗收。
