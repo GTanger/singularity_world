@@ -81,6 +81,10 @@ name = "earth-elevation-preview"
 path = "src/bin/earth_elevation_preview.rs"
 
 [[bin]]
+name = "energetic-substrate-build"
+path = "src/bin/energetic_substrate_build.rs"
+
+[[bin]]
 name = "earth-landuse-preview"
 path = "src/bin/earth_landuse_preview.rs"
 

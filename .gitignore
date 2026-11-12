@@ -110,3 +110,4 @@ __pycache__/
 .claude/settings.local.json
 data/runtime/*.db*
 data/runtime/llm_skill_cache.json
+data/runtime/*.swl0

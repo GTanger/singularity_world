@@ -5,6 +5,7 @@ pub mod r#gen;
 #[allow(clippy::module_inception)]
 pub mod grid;
 pub mod reveal;
+pub mod substrate;
 pub mod village_template;
 pub mod shalu_zhulin;
 pub mod world_skeleton;
