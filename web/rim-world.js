@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a21';
+  const PAWN_ASSET_VER = '20261118a22';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -241,6 +241,68 @@
     g.fill();
   });
 
+  pawnImgs.itemAlloyBlade = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+    g.rotate(-0.62);
+    // 桃木短柄與銅格
+    g.fillStyle = '#7c5338';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 3.4;
+    g.beginPath();
+    g.roundRect(-8, 18, 16, 30, 5);
+    g.fill();
+    g.stroke();
+    g.fillStyle = '#b4925a';
+    g.beginPath();
+    g.roundRect(-16, 12, 32, 8, 3);
+    g.fill();
+    g.stroke();
+    // 導能冷鋼獵刀身＋微青導能血槽
+    g.fillStyle = '#d3dfe8';
+    g.beginPath();
+    g.moveTo(-10, 12);
+    g.lineTo(-9, -36);
+    g.quadraticCurveTo(0, -56, 12, -40);
+    g.quadraticCurveTo(13, -12, 8, 12);
+    g.closePath();
+    g.fill();
+    g.stroke();
+    g.strokeStyle = '#5a8fa6';
+    g.lineWidth = 2.6;
+    g.beginPath();
+    g.moveTo(-2, 4);
+    g.lineTo(-1, -34);
+    g.stroke();
+  });
+
+  pawnImgs.itemAlloyPick = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+    g.rotate(-0.45);
+    // 堅木長柄
+    g.fillStyle = '#9c7853';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 3.6;
+    g.beginPath();
+    g.roundRect(-6, -24, 12, 74, 5);
+    g.fill();
+    g.stroke();
+    // 鍛鋼雙頭開山鎬頭
+    g.fillStyle = '#5d6d7a';
+    g.beginPath();
+    g.moveTo(-42, -14);
+    g.quadraticCurveTo(0, -34, 42, -10);
+    g.lineTo(32, -2);
+    g.quadraticCurveTo(0, -18, -32, -5);
+    g.closePath();
+    g.fill();
+    g.stroke();
+    g.fillStyle = '#c8d6e0';
+    g.fillRect(-10, -27, 20, 14);
+    g.strokeRect(-10, -27, 20, 14);
+  });
+
   const PAWN_PAL = {
     ink: '#332620',
     sleeve: '#999ea2',
@@ -270,6 +332,7 @@
   let meDetail = null;
   let worldWeather = { code: 'clear', label: '晴風和暢', raining: false };
   let worldRooms = [];
+  let worldBuildings = [];
   let indoorCellSet = new Set();
   const roomRoofAlpha = new Map();
   let bedBadgeQueue = [];
@@ -565,6 +628,9 @@
         if (d.weather && typeof d.weather === 'object') {
           worldWeather = d.weather;
         }
+        if (Array.isArray(d.buildings)) {
+          worldBuildings = d.buildings;
+        }
         if (Array.isArray(d.rooms)) {
           worldRooms = d.rooms;
           const nextIndoor = new Set();
@@ -574,6 +640,11 @@
             }
             if (Array.isArray(rm.doors)) {
               for (const dp of rm.doors) nextIndoor.add(`${dp[0]},${dp[1]}`);
+            }
+          }
+          if (Array.isArray(d.cells)) {
+            for (const c of d.cells) {
+              if (c.s === 'arcade') nextIndoor.add(`${c.x},${c.y}`);
             }
           }
           indoorCellSet = nextIndoor;
@@ -594,6 +665,7 @@
           const nextMap = new Map();
           for (const c of d.cells) {
             nextMap.set(`${c.x},${c.y}`, c);
+            if (c.s === 'arcade') indoorCellSet.add(`${c.x},${c.y}`);
           }
           cellMap = nextMap;
         }
@@ -823,7 +895,7 @@
           lastInspectorSig = '';
           pollState(true);
         } else if (s.action) {
-          if (['chop', 'build', 'craft_blade', 'craft_pick', 'craft_hat', 'craft_pack', 'cook_shoot', 'cook_meat', 'drink', 'attack_actor'].includes(s.action)) {
+          if (['chop', 'build', 'craft_blade', 'craft_pick', 'craft_alloy_blade', 'craft_alloy_pick', 'craft_salve', 'craft_hat', 'craft_pack', 'cook_shoot', 'cook_tuber', 'cook_meat', 'drink', 'attack_actor'].includes(s.action)) {
             const me = actors.find((x) => x.is_player);
             const meSt = me ? renderActors.get(me.id) : null;
             if (me && meSt && Math.hypot(me.px - sel.mx, me.py - sel.my) <= 1.55) {
@@ -1582,7 +1654,7 @@
   function isClientCellWalkable(mx, my, isBeast) {
     const c = cellMap.get(`${mx},${my}`);
     if (!c) return true;
-    if (c.s === 'wall' || c.s === 'workbench' || c.s === 'campfire') return false;
+    if (c.s === 'wall' || c.s === 'workbench' || c.s === 'campfire' || c.s === 'lamp') return false;
     if (c.s === 'door') return !isBeast;
     if (c.s === 'bridge') return true;
     if (c.g === 'stream' || c.g === 'spring' || c.g === 'deep' || c.g === 'cliff') return false;
@@ -1725,7 +1797,9 @@
     if (ch === '筍' || /筍/.test(lbl)) return pawnImgs.itemShoot;
     if (ch === '石' || /石/.test(lbl)) return pawnImgs.rock;
     if (ch === '肉' || /肉/.test(lbl)) return pawnImgs.itemMeat;
-    if (ch === '刀' || ch === '刃' || /刀/.test(lbl)) return pawnImgs.itemBlade;
+    if (ch === '刃' || /導能獵刀/.test(lbl)) return pawnImgs.itemAlloyBlade;
+    if (ch === '鍤' || /開山鎬/.test(lbl)) return pawnImgs.itemAlloyPick;
+    if (ch === '刀' || /竹刀/.test(lbl) || /刀/.test(lbl)) return pawnImgs.itemBlade;
     if (ch === '斧' || ch === '鎬' || /斧|鎬/.test(lbl)) return pawnImgs.itemPick;
     return pawnImgs.itemBamboo;
   }
@@ -1889,6 +1963,38 @@
             ctx.beginPath();
             ctx.ellipse(p.x + cellPx * 0.18, p.y + cellPx * 0.16, cellPx * 0.07, cellPx * 0.05, -0.3, 0, Math.PI * 2);
             ctx.fill();
+            ctx.stroke();
+          }
+        } else if (g === 'sand') {
+          ctx.fillStyle = '#eadec5';
+          ctx.fillRect(rx, ry, rw, rh);
+          if (cellPx >= 16 && (h % 5) === 0 && (!c || !c.s)) {
+            ctx.strokeStyle = 'rgba(168, 144, 102, 0.28)';
+            ctx.lineWidth = 0.95;
+            ctx.beginPath();
+            ctx.moveTo(x0 + cellPx * 0.14, p.y - cellPx * 0.08);
+            ctx.quadraticCurveTo(p.x, p.y - cellPx * 0.16, x0 + cellPx * 0.86, p.y - cellPx * 0.06);
+            ctx.stroke();
+          }
+        } else if (g === 'mudflat') {
+          ctx.fillStyle = '#aaa294';
+          ctx.fillRect(rx, ry, rw, rh);
+          if (cellPx >= 15 && (h % 4) === 0 && (!c || !c.s)) {
+            ctx.fillStyle = 'rgba(122, 138, 144, 0.24)';
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y + cellPx * 0.08, cellPx * 0.24, cellPx * 0.11, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (g === 'rock') {
+          ctx.fillStyle = '#cfc8bc';
+          ctx.fillRect(rx, ry, rw, rh);
+          if (cellPx >= 16 && (h % 3) === 0 && (!c || !c.s)) {
+            ctx.strokeStyle = 'rgba(68, 56, 44, 0.26)';
+            ctx.lineWidth = 0.95;
+            ctx.beginPath();
+            ctx.moveTo(x0 + cellPx * 0.20, y0 + cellPx * 0.25);
+            ctx.lineTo(x0 + cellPx * 0.56, y0 + cellPx * 0.52);
+            ctx.lineTo(x0 + cellPx * 0.80, y0 + cellPx * 0.42);
             ctx.stroke();
           }
         } else if (isWaterGround(g)) {
@@ -2379,6 +2485,75 @@
             ctx.fillRect(p.x - cellPx * 0.42, p.y - cellPx * 0.34, cellPx * 0.84, cellPx * 0.68);
             ctx.strokeRect(p.x - cellPx * 0.42, p.y - cellPx * 0.34, cellPx * 0.84, cellPx * 0.68);
           }
+        } else if (c.s === 'paving') {
+          ctx.save();
+          ctx.fillStyle = (mx + my) % 2 === 0 ? '#e3dccb' : '#ded6c4';
+          ctx.fillRect(x0 - 0.3, y0 - 0.3, cellPx + 0.6, cellPx + 0.6);
+          if (cellPx >= 13) {
+            ctx.strokeStyle = 'rgba(84, 68, 52, 0.22)';
+            ctx.lineWidth = Math.max(0.75, cellPx * 0.022);
+            ctx.strokeRect(x0 + 0.5, y0 + 0.5, cellPx - 1, cellPx - 1);
+            const stagger = (my & 1) ? 0.34 : 0.66;
+            ctx.beginPath();
+            ctx.moveTo(x0, p.y);
+            ctx.lineTo(x0 + cellPx, p.y);
+            ctx.moveTo(x0 + cellPx * stagger, y0);
+            ctx.lineTo(x0 + cellPx * stagger, p.y);
+            ctx.moveTo(x0 + cellPx * (1 - stagger), p.y);
+            ctx.lineTo(x0 + cellPx * (1 - stagger), y0 + cellPx);
+            ctx.stroke();
+          }
+          ctx.restore();
+        } else if (c.s === 'arcade') {
+          ctx.save();
+          // 騎樓亭仔腳遮陽簷地坪（暖赭洗石磚＋簷柱陰影）
+          ctx.fillStyle = '#eadec7';
+          ctx.fillRect(x0 - 0.35, y0 - 0.35, cellPx + 0.7, cellPx + 0.7);
+          if (cellPx >= 12) {
+            ctx.fillStyle = 'rgba(72, 52, 32, 0.09)';
+            ctx.fillRect(x0, y0, cellPx, cellPx * 0.22);
+            ctx.strokeStyle = 'rgba(92, 68, 46, 0.24)';
+            ctx.lineWidth = Math.max(0.8, cellPx * 0.022);
+            ctx.strokeRect(x0 + 0.5, y0 + 0.5, cellPx - 1, cellPx - 1);
+            if (Math.abs(mx + my) % 2 === 0) {
+              const postR = Math.max(1.8, cellPx * 0.085);
+              ctx.fillStyle = '#8b6a4b';
+              ctx.strokeStyle = PAWN_PAL.ink;
+              ctx.lineWidth = 0.9;
+              ctx.beginPath();
+              ctx.arc(x0 + cellPx * 0.84, y0 + cellPx * 0.84, postR, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.stroke();
+            }
+          }
+          ctx.restore();
+        } else if (c.s === 'lamp') {
+          // 底敷石板並立導能恆光街燈柱
+          ctx.save();
+          ctx.fillStyle = '#dfd8c7';
+          ctx.fillRect(x0 - 0.25, y0 - 0.25, cellPx + 0.5, cellPx + 0.5);
+          ctx.fillStyle = 'rgba(44, 30, 15, 0.18)';
+          ctx.beginPath();
+          ctx.ellipse(p.x + cellPx * 0.07, p.y + cellPx * 0.14, cellPx * 0.24, cellPx * 0.16, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // 燈座石墩與燈籠頂帽
+          ctx.fillStyle = '#736c62';
+          ctx.strokeStyle = PAWN_PAL.ink;
+          ctx.lineWidth = Math.max(1.0, cellPx * 0.030);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, cellPx * 0.22, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = '#ffe18c';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y - cellPx * 0.08, cellPx * 0.14, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(255, 222, 138, 0.34)';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y - cellPx * 0.08, cellPx * 0.42, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
         } else if (c.s === 'bed') {
           drawBambooBed(mx, my, p.x, p.y, cellPx, findBedSleeper(mx, my));
         } else if (c.s === 'ridge' || c.s === 'herb_seed' || c.s === 'herb_plot' || c.s === 'crop_seed' || c.s === 'crop_plot') {
@@ -2948,20 +3123,20 @@
     drawTaperedLimb(shX, shY, 0.105 * S, slX, slY, 0.085 * S, PAWN_PAL.sleeve, PAWN_PAL.ink, lw);
   }
 
-  function drawRollAxe(handX, handY, axeYaw, axeRoll, S, lw) {
+  function drawRollAxe(handX, handY, axeYaw, axeRoll, S, lw, isAlloy) {
     const L = (0.64 + 0.16 * axeRoll) * S;
     ctx.save();
     ctx.translate(handX, handY);
     ctx.rotate(axeYaw);
 
-    drawTaperedLimb(0, 0.085 * L, 0.024 * S, 0, -0.50 * L, 0.028 * S, PAWN_PAL.wood, PAWN_PAL.ink, lw * 0.82);
+    drawTaperedLimb(0, 0.085 * L, 0.024 * S, 0, -0.50 * L, 0.028 * S, isAlloy ? '#8c694a' : PAWN_PAL.wood, PAWN_PAL.ink, lw * 0.82);
 
     const eyeY = -0.47 * L;
     const pollW = (0.042 + 0.015 * axeRoll) * S;
     const bladeOut = (0.026 + 0.215 * axeRoll) * S;
     const halfH = (0.070 + 0.045 * axeRoll) * S;
 
-    ctx.fillStyle = PAWN_PAL.iron;
+    ctx.fillStyle = isAlloy ? '#546b7a' : PAWN_PAL.iron;
     ctx.strokeStyle = PAWN_PAL.ink;
     ctx.lineWidth = lw * 0.85;
     ctx.lineJoin = 'round';
@@ -2974,7 +3149,7 @@
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = PAWN_PAL.steel;
+    ctx.fillStyle = isAlloy ? '#d9e6ee' : PAWN_PAL.steel;
     ctx.beginPath();
     ctx.moveTo(-bladeOut * 0.55, eyeY + halfH * 0.62);
     ctx.quadraticCurveTo(-bladeOut * 1.02, eyeY, -bladeOut * 0.70, eyeY - halfH * 0.90);
@@ -2983,7 +3158,7 @@
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = PAWN_PAL.wood;
+    ctx.fillStyle = isAlloy ? '#8c694a' : PAWN_PAL.wood;
     ctx.beginPath();
     ctx.ellipse(0, eyeY, 0.022 * S, 0.028 * S, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -2991,16 +3166,16 @@
     ctx.restore();
   }
 
-  // 動態翻轉烤刃竹刀（bladeRoll=0.12 僅見窄脊；揮砍轉腕展開淺竹青刀面與焦褐烤刃）
-  function drawRollBambooBlade(handX, handY, bladeYaw, bladeRoll, S, lw) {
+  // 動態翻轉竹刀與導能獵刀（bladeRoll=0.12 僅見窄脊；揮砍轉腕展開刀面與鋒刃）
+  function drawRollBambooBlade(handX, handY, bladeYaw, bladeRoll, S, lw, isAlloy) {
     const L = (0.68 + 0.16 * bladeRoll) * S;
     ctx.save();
     ctx.translate(handX, handY);
     ctx.rotate(bladeYaw);
 
-    // 短竹把與細木護格
-    drawTaperedLimb(0, 0.08 * L, 0.022 * S, 0, -0.07 * L, 0.024 * S, PAWN_PAL.wood, PAWN_PAL.ink, lw * 0.80);
-    ctx.fillStyle = PAWN_PAL.wood;
+    // 短竹把與護格
+    drawTaperedLimb(0, 0.08 * L, 0.022 * S, 0, -0.07 * L, 0.024 * S, isAlloy ? '#7c5338' : PAWN_PAL.wood, PAWN_PAL.ink, lw * 0.80);
+    ctx.fillStyle = isAlloy ? '#b4925a' : PAWN_PAL.wood;
     ctx.strokeStyle = PAWN_PAL.ink;
     ctx.lineWidth = lw * 0.80;
     ctx.beginPath();
@@ -3013,7 +3188,9 @@
     const spineW = (0.018 + 0.012 * bladeRoll) * S;
     const edgeOut = (0.018 + 0.128 * bladeRoll) * S;
 
-    ctx.fillStyle = bladeRoll > 0.35 ? PAWN_PAL.bambooBody : PAWN_PAL.bambooSpine;
+    ctx.fillStyle = isAlloy
+      ? (bladeRoll > 0.35 ? '#d4e1ea' : '#7c92a0')
+      : (bladeRoll > 0.35 ? PAWN_PAL.bambooBody : PAWN_PAL.bambooSpine);
     ctx.strokeStyle = PAWN_PAL.ink;
     ctx.lineWidth = lw * 0.85;
     ctx.lineJoin = 'round';
@@ -3026,9 +3203,9 @@
     ctx.fill();
     ctx.stroke();
 
-    // 火烤硬化深褐刃線（於翻轉展開時顯現）
-    if (bladeRoll > 0.30) {
-      ctx.fillStyle = PAWN_PAL.bambooChar;
+    // 導能冷輝／火烤硬化刃線
+    if (bladeRoll > 0.30 || isAlloy) {
+      ctx.fillStyle = isAlloy ? '#639bb3' : PAWN_PAL.bambooChar;
       ctx.beginPath();
       ctx.moveTo(-edgeOut * 0.62, baseY);
       ctx.quadraticCurveTo(-edgeOut * 1.03, lerp(baseY, tipY, 0.45), -edgeOut * 0.78, tipY + 0.10 * L);
@@ -3274,10 +3451,11 @@
     ctx.rotate(torsoYaw);
 
     if (a.tool && !isSitting) {
+      const isAlloy = /導能|開山|鋼/.test(a.tool);
       if (/刀|劍/.test(a.tool)) {
-        drawRollBambooBlade(haR[0], haR[1], axeYaw, axeRoll, S, lw);
+        drawRollBambooBlade(haR[0], haR[1], axeYaw, axeRoll, S, lw, isAlloy);
       } else {
-        drawRollAxe(haR[0], haR[1], axeYaw, axeRoll, S, lw);
+        drawRollAxe(haR[0], haR[1], axeYaw, axeRoll, S, lw, isAlloy);
       }
     }
 
@@ -3845,6 +4023,41 @@
       ctx.restore();
     }
 
+    // 繪製街鎮九棟商住／住宅木牌匾（掀頂時柔和退淡免遮家具）
+    if (cellPx >= 7.0 && Array.isArray(worldBuildings) && worldBuildings.length) {
+      ctx.save();
+      const fontSz = Math.round(Math.max(11, Math.min(14, cellPx * 0.44)));
+      ctx.font = `700 ${fontSz}px "Noto Sans TC", serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (const b of worldBuildings) {
+        const bp = microToScreen(b.label_x, b.label_y);
+        if (bp.x < -120 || bp.x > viewportW + 120 || bp.y < -80 || bp.y > viewportH + 80) continue;
+        let maxUnveiled = 0;
+        for (const rm of worldRooms) {
+          if (rm.x1 >= b.x0 && rm.x0 <= b.x1 && rm.y1 >= b.y0 && rm.y0 <= b.y1) {
+            const al = roomRoofAlpha.has(roomKeyOf(rm)) ? roomRoofAlpha.get(roomKeyOf(rm)) : 1.0;
+            if (al < 0.45) maxUnveiled = 1;
+          }
+        }
+        const badgeAlpha = maxUnveiled ? 0.28 : 0.94;
+        const py = maxUnveiled ? microToScreen(b.label_x, b.y1 + 0.55).y : bp.y;
+        const tw = ctx.measureText(b.name).width + 14;
+        const th = fontSz + 8;
+        ctx.globalAlpha = badgeAlpha * Math.min(1.0, (cellPx - 7.0) / 4.0);
+        ctx.fillStyle = '#efe3cd';
+        ctx.strokeStyle = '#3c2b1e';
+        ctx.lineWidth = 1.25;
+        ctx.beginPath();
+        ctx.roundRect(bp.x - tw / 2, py - th / 2, tw, th, 4);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#2c1e0f';
+        ctx.fillText(b.name, bp.x, py + 0.5);
+      }
+      ctx.restore();
+    }
+
     // 繪製掀起屋頂室內的睡榻標籤
     if (cellPx >= 12) {
       ctx.font = '600 10.5px "Noto Sans TC", sans-serif';
@@ -4275,14 +4488,17 @@
       const effW = getEffectiveWeather();
       if (cellPx >= 5.0) {
         for (const c of cellMap.values()) {
-          if (c.s !== 'campfire' && c.s !== 'workbench') continue;
+          if (c.s !== 'campfire' && c.s !== 'workbench' && c.s !== 'lamp') continue;
           const p = microToScreen(c.x, c.y);
           if (p.x < -220 || p.x > viewportW + 220 || p.y < -220 || p.y > viewportH + 220) continue;
           const wetCamp = c.s === 'campfire' && effW.raining && !indoorCellSet.has(`${c.x},${c.y}`);
+          const radius = c.s === 'lamp'
+            ? cellPx * 5.6
+            : cellPx * (c.s === 'campfire' ? (wetCamp ? 2.2 : 5.6) : 2.5);
           lights.push({
             x: p.x,
             y: p.y,
-            radius: cellPx * (c.s === 'campfire' ? (wetCamp ? 2.2 : 5.6) : 2.5),
+            radius,
             kind: c.s,
           });
         }

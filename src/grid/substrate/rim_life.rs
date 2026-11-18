@@ -477,7 +477,19 @@ pub fn complete_rescue_ally(
     world.actors[t_idx].pop_text = Some((format!("獲{r_glyph}扶起"), world.tick + 10));
     world.actors[t_idx].push_diary(format!("力竭時獲{r_name}扶起護送歸營調息"));
 
-    if let Some((fx, fy)) = nearest_campfire(world, t_pos) {
+    if let Some(bed) = super::rim_town::clinic_bed_near(&world.overlays) {
+        let occ = world.occupied_cells(Some(t_idx));
+        if let Some(p) =
+            super::rim_world::find_micro_path_crowded(rt, &world.overlays, t_pos, bed, false, false, &occ)
+        {
+            world.actors[t_idx].path = p.into();
+            world.actors[t_idx].task = PendingTask::SleepBed {
+                tx: bed.0,
+                ty: bed.1,
+            };
+        }
+        world.actors[t_idx].push_diary("護送至濟安診所病榻調養");
+    } else if let Some((fx, fy)) = nearest_campfire(world, t_pos) {
         let seat = world.pick_campfire_seat(rt, fx, fy, world.actors[t_idx].id);
         let occ = world.occupied_cells(Some(t_idx));
         if let Some(p) =
@@ -489,10 +501,10 @@ pub fn complete_rescue_ally(
     }
 
     world.actors[idx].task = PendingTask::None;
-    world.actors[idx].activity_tag = "扶傷返營".into();
+    world.actors[idx].activity_tag = "護送醫治".into();
     world.actors[idx].pop_text = Some((format!("扶起{t_glyph}"), world.tick + 10));
-    world.actors[idx].push_diary(format!("扶起負傷的{t_name}退回營火旁"));
-    world.push_event(format!("{r_glyph} 扶起負傷的 {t_name} 歸營"));
+    world.actors[idx].push_diary(format!("扶起負傷的{t_name}送往診所調息"));
+    world.push_event(format!("{r_glyph} 扶起負傷的 {t_name} 護送就醫"));
 }
 
 /// 玩家或居民直接食用行囊內的食物。

@@ -38,9 +38,8 @@ pub enum FarmOp {
 
 /// 聚落廣場、倉廩棚屋、田區與雙聚落步道淨空帶（林木再生時避開此範圍以免阻路）。
 pub fn is_settlement_keep_clear(mx: i32, my: i32) -> bool {
-    ((-14..=12).contains(&mx) && (-13..=6).contains(&my))
+    ((-22..=20).contains(&mx) && (-14..=6).contains(&my))
         || (mx == 0 && (3..=18).contains(&my))
-        || ((6..=28).contains(&mx) && (-8..=-2).contains(&my))
         || ((20..=39).contains(&mx) && (-18..=-3).contains(&my))
 }
 
@@ -513,13 +512,16 @@ pub fn complete_farm_plot(
 
     match op {
         FarmOp::Till => {
-            if world.actors[idx].equipped_tool != Some(RimItemKind::StonePick) {
-                if world.actors[idx].take_inv(RimItemKind::StonePick, 1) > 0 {
-                    if let Some(prev) = world.actors[idx].equipped_tool.replace(RimItemKind::StonePick) {
+            if !world.actors[idx].equipped_tool.is_some_and(RimItemKind::is_pick) {
+                let picked = [RimItemKind::AlloyPick, RimItemKind::StonePick]
+                    .into_iter()
+                    .find(|&p| world.actors[idx].take_inv(p, 1) > 0);
+                if let Some(pick) = picked {
+                    if let Some(prev) = world.actors[idx].equipped_tool.replace(pick) {
                         world.actors[idx].add_inv(prev, 1);
                     }
                 } else {
-                    world.actors[idx].pop_text = Some(("須持石刃木鎬方能翻土".into(), world.tick + 12));
+                    world.actors[idx].pop_text = Some(("須持開山鎬方能翻土".into(), world.tick + 12));
                     world.economy.parcel_queues.remove(&aid);
                     world.actors[idx].task = PendingTask::None;
                     return;

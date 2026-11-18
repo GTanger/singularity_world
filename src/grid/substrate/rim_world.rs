@@ -45,13 +45,16 @@ fn hash_micro(mx: i32, my: i32, salt: u64) -> u64 {
     z ^ (z >> 31)
 }
 
-/// `2m` 細格底層地形分類。
+/// `1m` 細格底層地形分類（對齊六類大地基底質與地形分區）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MicroGround {
     LoamGrass,
     RedGravel,
     PebbleBank,
+    CoastalSand,
+    TidalMudflat,
+    BareRock,
     ShallowStream,
     SpringPool,
     DeepWater,
@@ -71,6 +74,9 @@ impl MicroGround {
             Self::LoamGrass => "沃土草坪",
             Self::RedGravel => "紅土礫地",
             Self::PebbleBank => "溪畔卵石灘",
+            Self::CoastalSand => "海岸沙灘",
+            Self::TidalMudflat => "潮間泥灘",
+            Self::BareRock => "斷層裸岩",
             Self::ShallowStream => "清淺山澗",
             Self::SpringPool => "斷層冷泉潭",
             Self::DeepWater => "湍急深水",
@@ -131,6 +137,8 @@ pub enum RimItemKind {
     WoundSalve,
     SweetTuber,
     RoastedTuber,
+    AlloyBlade,
+    AlloyPick,
 }
 
 impl RimItemKind {
@@ -150,6 +158,8 @@ impl RimItemKind {
             Self::WoundSalve => "敷傷藥膏",
             Self::SweetTuber => "紅土甘薯",
             Self::RoastedTuber => "炭烤甘薯",
+            Self::AlloyBlade => "導能獵刀",
+            Self::AlloyPick => "鋼製開山鎬",
         }
     }
 
@@ -169,11 +179,24 @@ impl RimItemKind {
             Self::WoundSalve => "膏",
             Self::SweetTuber => "薯",
             Self::RoastedTuber => "烤",
+            Self::AlloyBlade => "刃",
+            Self::AlloyPick => "鍤",
         }
     }
 
     pub fn is_hand_tool(self) -> bool {
-        matches!(self, Self::BambooBlade | Self::StonePick)
+        matches!(
+            self,
+            Self::BambooBlade | Self::StonePick | Self::AlloyBlade | Self::AlloyPick
+        )
+    }
+
+    pub fn is_blade(self) -> bool {
+        matches!(self, Self::BambooBlade | Self::AlloyBlade)
+    }
+
+    pub fn is_pick(self) -> bool {
+        matches!(self, Self::StonePick | Self::AlloyPick)
     }
 
     pub fn is_edible(self) -> bool {
@@ -203,6 +226,8 @@ impl RimItemKind {
             Self::RoastedShoot | Self::BambooHat => 4,
             Self::BambooBlade | Self::RoastedTuber => 5,
             Self::RoastedMeat | Self::StonePick | Self::BambooPack | Self::WoundSalve => 6,
+            Self::AlloyBlade => 8,
+            Self::AlloyPick => 9,
         }
     }
 }
@@ -223,6 +248,9 @@ pub enum StructureKind {
     HerbMature,
     CropSeedling,
     CropMature,
+    StonePaving,
+    CoveredArcade,
+    StreetLamp,
 }
 
 impl StructureKind {
@@ -232,7 +260,7 @@ impl StructureKind {
             Self::BambooDoor => "竹編院門",
             Self::WoodBridge => "渡溪窄橋",
             Self::Campfire => "竹葉營火",
-            Self::Workbench => "百工工作台",
+            Self::Workbench => "木鐵工作檯",
             Self::Stockpile => "儲物地墊",
             Self::BambooBed => "竹編睡榻",
             Self::TilledRidge => "翻鬆空田壟",
@@ -240,31 +268,42 @@ impl StructureKind {
             Self::HerbMature => "青草藥圃",
             Self::CropSeedling => "甘薯新苗壟",
             Self::CropMature => "紅土甘薯壟",
+            Self::StonePaving => "石板街面",
+            Self::CoveredArcade => "騎樓亭仔腳",
+            Self::StreetLamp => "導能恆光街燈",
         }
     }
 
     pub fn bamboo_cost(self) -> u8 {
         match self {
             Self::Stockpile
+            | Self::StonePaving
             | Self::TilledRidge
             | Self::HerbSeedling
             | Self::HerbMature
             | Self::CropSeedling
             | Self::CropMature => 0,
             Self::Workbench | Self::BambooBed => 2,
-            Self::BambooWall | Self::BambooDoor | Self::WoodBridge | Self::Campfire => 1,
+            Self::BambooWall
+            | Self::BambooDoor
+            | Self::WoodBridge
+            | Self::Campfire
+            | Self::CoveredArcade
+            | Self::StreetLamp => 1,
         }
     }
 
     pub fn work_ticks_needed(self) -> u8 {
         match self {
-            Self::Stockpile => 1,
+            Self::Stockpile | Self::StonePaving => 1,
             Self::Campfire
             | Self::TilledRidge
             | Self::HerbSeedling
             | Self::HerbMature
             | Self::CropSeedling
-            | Self::CropMature => 3,
+            | Self::CropMature
+            | Self::CoveredArcade
+            | Self::StreetLamp => 3,
             Self::WoodBridge | Self::BambooWall | Self::BambooDoor | Self::BambooBed => 4,
             Self::Workbench => 6,
         }
@@ -283,10 +322,12 @@ impl StructureKind {
 
     pub fn blocks_actor(self, is_beast: bool) -> bool {
         match self {
-            Self::BambooWall | Self::Workbench | Self::Campfire => true,
+            Self::BambooWall | Self::Workbench | Self::Campfire | Self::StreetLamp => true,
             Self::BambooDoor | Self::BambooBed => is_beast,
             Self::WoodBridge
             | Self::Stockpile
+            | Self::StonePaving
+            | Self::CoveredArcade
             | Self::TilledRidge
             | Self::HerbSeedling
             | Self::HerbMature
@@ -401,12 +442,12 @@ pub fn derive_micro_pristine(
         }
     }
 
-    // 原點北側湧泉引出之連續蜿蜒淺澗（東西貫穿山麓帶，寬 4m［4 細格］水密無斜縫，架 4 格窄木橋即可渡溪）
+    // 原點北側湧泉局部引出之蜿蜒淺澗（限定街鎮山麓段 -46..=38，寬 4m［4 細格］，不再無限延展至全島沙灘與海面）
     let spring_stream_y = 11 + (((mx as f32) * 0.11).sin() * 2.4).round() as i32;
-    if (-1200..=1200).contains(&mx) && (-1..=2).contains(&(my - spring_stream_y)) {
+    if (-46..=38).contains(&mx) && (-1..=2).contains(&(my - spring_stream_y)) {
         return (MicroGround::ShallowStream, None);
     }
-    if (-1200..=1200).contains(&mx) && (-3..=4).contains(&(my - spring_stream_y)) {
+    if (-46..=38).contains(&mx) && (-3..=4).contains(&(my - spring_stream_y)) {
         let h = hash_micro(mx, my, 0x11);
         let prop = if h % 16 == 0 {
             Some(NaturalProp::RiverStone)
@@ -417,19 +458,52 @@ pub fn derive_micro_pristine(
     }
 
     let base_ground = match l0.map(|c| c.material()) {
+        Some(SubstrateMaterial::IntertidalMudflat) => MicroGround::TidalMudflat,
+        Some(SubstrateMaterial::CoastalWindSand) => MicroGround::CoastalSand,
         Some(SubstrateMaterial::RiverbedQuartzCobble) => MicroGround::PebbleBank,
         Some(SubstrateMaterial::LateriteGravel) => MicroGround::RedGravel,
+        Some(SubstrateMaterial::FaultBareRock) => MicroGround::BareRock,
         _ => MicroGround::LoamGrass,
     };
 
-    // 營地起手開闊坪（mx: -9..=9, my: -7..=6，約 19m × 14m）保持清爽不擋路
+    // 營地與街區核心起手開闊坪（mx: -9..=9, my: -7..=6）保持清爽不擋路
     if (-9..=9).contains(&mx) && (-7..=6).contains(&my) {
         return (base_ground, None);
     }
 
-    // 外圍依碎形雜湊成簇長出濃密莿竹叢、春筍與河灘硬石
-    let cluster = hash_micro(mx.div_euclid(4), my.div_euclid(4), 0xA5A5);
+    // 泥灘、沙灘、裸岩與卵石溪灘不生荊竹與春筍，徹底消除海灘／岩壁長竹異象
+    if matches!(
+        base_ground,
+        MicroGround::TidalMudflat | MicroGround::CoastalSand | MicroGround::BareRock
+    ) {
+        return (base_ground, None);
+    }
+
     let detail = hash_micro(mx, my, 0x5A5A);
+    if base_ground == MicroGround::PebbleBank {
+        let prop = if detail % 37 == 0 {
+            Some(NaturalProp::RiverStone)
+        } else {
+            None
+        };
+        return (base_ground, prop);
+    }
+
+    // 西側沖積低平原（海拔 < 18m）無成林山麓莿竹，僅偶見草藥與零星硬石
+    let coastal_low_plain = l0.and_then(|c| c.elevation_m()).is_some_and(|e| e < 18.0);
+    if coastal_low_plain {
+        let prop = if detail % 79 == 0 {
+            Some(NaturalProp::WildHerb)
+        } else if detail % 113 == 0 {
+            Some(NaturalProp::RiverStone)
+        } else {
+            None
+        };
+        return (base_ground, prop);
+    }
+
+    // 山麓與紅土台地（海拔 >= 18m）依碎形雜湊長出成簇莿竹林、春筍、硬石與草藥
+    let cluster = hash_micro(mx.div_euclid(4), my.div_euclid(4), 0xA5A5);
     if cluster % 10 < 5 {
         if detail % 10 < 5 {
             return (base_ground, Some(NaturalProp::BambooClump));
@@ -468,6 +542,9 @@ pub fn micro_step_cost(
         if st == StructureKind::WoodBridge {
             return Some(10);
         }
+        if matches!(st, StructureKind::StonePaving | StructureKind::CoveredArcade) {
+            return Some(8);
+        }
     }
 
     if matches!(
@@ -488,6 +565,9 @@ pub fn micro_step_cost(
 
     Some(match ground {
         MicroGround::PebbleBank => 12,
+        MicroGround::BareRock => 13,
+        MicroGround::CoastalSand => 14,
+        MicroGround::TidalMudflat => 18,
         MicroGround::RedGravel | MicroGround::LoamGrass => 10,
         _ => 14,
     })
@@ -701,8 +781,10 @@ mod tests {
     #[test]
     fn stream_blocks_until_wood_bridge_is_built() {
         let mut overlays = HashMap::new();
-        // mx=0, my=10..=13 位於 4m 寬蜿蜒山澗帶，未架橋前不可橫越至 (0, 18)
-        assert!(find_micro_path(None, &overlays, (0, 0), (0, 18), false, false).is_none());
+        // mx=0, my=10..=13 位於 4m 寬局部蜿蜒山澗帶，未架橋前不可直接涉水，只能巨幅繞行溪尾或無路可通
+        assert!(micro_step_cost(None, &overlays, 0, 11, false).is_none());
+        let unbridged = find_micro_path(None, &overlays, (0, 0), (0, 18), false, false);
+        assert!(unbridged.as_ref().is_none_or(|p| p.len() > 45));
 
         for y in 9..=14 {
             overlays.insert(
@@ -714,7 +796,8 @@ mod tests {
                 },
             );
         }
-        let path = find_micro_path(None, &overlays, (0, 0), (0, 18), false, false);
-        assert!(path.is_some());
+        let path = find_micro_path(None, &overlays, (0, 0), (0, 18), false, false)
+            .expect("架橋後應可直接渡溪");
+        assert!(path.len() <= 22 && path.contains(&(0, 11)));
     }
 }

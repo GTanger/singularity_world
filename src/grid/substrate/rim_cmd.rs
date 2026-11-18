@@ -65,6 +65,9 @@ impl RimWorldState {
                             "workbench" => Some(StructureKind::Workbench),
                             "stockpile" => Some(StructureKind::Stockpile),
                             "bed" => Some(StructureKind::BambooBed),
+                            "paving" => Some(StructureKind::StonePaving),
+                            "arcade" => Some(StructureKind::CoveredArcade),
+                            "lamp" => Some(StructureKind::StreetLamp),
                             _ => None,
                         }) else {
                             continue;
@@ -90,10 +93,10 @@ impl RimWorldState {
                             count += 1;
                             continue;
                         }
-                        if st == StructureKind::Stockpile {
+                        if matches!(st, StructureKind::Stockpile | StructureKind::StonePaving) {
                             let ov = self.overlays.entry((mx, my)).or_default();
                             ov.cleared_natural = true;
-                            ov.structure = Some(StructureKind::Stockpile);
+                            ov.structure = Some(st);
                             ov.blueprint = None;
                             count += 1;
                         } else {
@@ -273,9 +276,17 @@ impl RimWorldState {
                 self.actors[p_idx].activity_tag = format!("赴火炙{}", raw.short_char());
                 Ok(format!("前往營火旁備妥{}", raw.label()))
             }
-            "craft_blade" | "craft_pick" | "craft_hat" | "craft_pack" | "craft_salve" => {
+            "craft_blade"
+            | "craft_pick"
+            | "craft_alloy_blade"
+            | "craft_alloy_pick"
+            | "craft_hat"
+            | "craft_pack"
+            | "craft_salve" => {
                 let item = match action {
                     Some("craft_pick") => RimItemKind::StonePick,
+                    Some("craft_alloy_blade") => RimItemKind::AlloyBlade,
+                    Some("craft_alloy_pick") => RimItemKind::AlloyPick,
                     Some("craft_hat") => RimItemKind::BambooHat,
                     Some("craft_pack") => RimItemKind::BambooPack,
                     Some("craft_salve") => RimItemKind::WoundSalve,

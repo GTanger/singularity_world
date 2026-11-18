@@ -208,6 +208,11 @@ pub fn sheltered_cell_set(overlays: &HashMap<(i32, i32), MicroCellOverlay>) -> H
             set.insert(d);
         }
     }
+    for (&pos, ov) in overlays {
+        if ov.structure == Some(StructureKind::CoveredArcade) {
+            set.insert(pos);
+        }
+    }
     set
 }
 
@@ -330,17 +335,29 @@ pub fn try_seek_bed_or_rain_shelter(
         })
         .collect();
 
+    let my_key = world.actors[idx].actor_key.clone();
     let occ = world.occupied_cells(Some(idx));
-    if let Some(&(bx, by)) = world
-        .overlays
-        .iter()
-        .filter(|&(pos, ov)| {
-            ov.structure == Some(StructureKind::BambooBed) && !claimed_beds.contains(pos)
+    let own_bed = super::rim_town::preferred_bed_for(&my_key);
+    let best_bed = own_bed
+        .filter(|pos| {
+            world.overlays.get(pos).and_then(|o| o.structure) == Some(StructureKind::BambooBed)
+                && !claimed_beds.contains(pos)
+                && (pos.0 - start.0).abs() + (pos.1 - start.1).abs() <= 44
         })
-        .filter(|&(&(bx, by), _)| (bx - start.0).abs() + (by - start.1).abs() <= 28)
-        .min_by_key(|&(&(bx, by), _)| (bx - start.0).abs() + (by - start.1).abs())
-        .map(|(pos, _)| pos)
-    {
+        .or_else(|| {
+            world
+                .overlays
+                .iter()
+                .filter(|&(pos, ov)| {
+                    ov.structure == Some(StructureKind::BambooBed)
+                        && !claimed_beds.contains(pos)
+                        && !super::rim_town::is_other_household_bed(&my_key, *pos)
+                })
+                .filter(|&(&(bx, by), _)| (bx - start.0).abs() + (by - start.1).abs() <= 28)
+                .min_by_key(|&(&(bx, by), _)| (bx - start.0).abs() + (by - start.1).abs())
+                .map(|(&pos, _)| pos)
+        });
+    if let Some((bx, by)) = best_bed {
         if (bx - start.0).abs() + (by - start.1).abs() == 0 {
             world.actors[idx].activity_tag = "榻上安歇".into();
             return true;

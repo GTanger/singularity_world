@@ -65,6 +65,12 @@ pub fn is_bulk_material(item: RimItemKind) -> bool {
 
 pub fn stockpile_is_indoor(mx: i32, my: i32) -> bool {
     ((-12..=-7).contains(&mx) && (0..=4).contains(&my))
+        || ((-19..=-16).contains(&mx) && (-2..=0).contains(&my))
+        || ((8..=11).contains(&mx) && (-2..=0).contains(&my))
+        || ((15..=18).contains(&mx) && (-2..=0).contains(&my))
+        || ((-19..=-16).contains(&mx) && (-11..=-8).contains(&my))
+        || ((-12..=-7).contains(&mx) && (-11..=-8).contains(&my))
+        || ((11..=13).contains(&mx) && (-11..=-8).contains(&my))
         || ((22..=25).contains(&mx) && (-11..=-9).contains(&my))
         || ((29..=35).contains(&mx) && (-9..=-5).contains(&my))
 }
@@ -102,10 +108,12 @@ pub fn eco_spec(item: RimItemKind) -> (f32, f32, f32) {
         RimItemKind::BambooPack => (0.18, 0.85, 12.0),
         RimItemKind::RoastedMeat => (0.45, 0.95, 12.0),
         RimItemKind::WoundSalve => (0.25, 0.95, 12.0),
+        RimItemKind::AlloyBlade => (0.16, 0.88, 16.0),
+        RimItemKind::AlloyPick => (0.16, 0.88, 18.0),
     }
 }
 
-pub const ALL_ITEMS: [RimItemKind; 14] = [
+pub const ALL_ITEMS: [RimItemKind; 16] = [
     RimItemKind::BambooPole,
     RimItemKind::RiverStone,
     RimItemKind::BambooShoot,
@@ -120,6 +128,8 @@ pub const ALL_ITEMS: [RimItemKind; 14] = [
     RimItemKind::StonePick,
     RimItemKind::BambooHat,
     RimItemKind::BambooPack,
+    RimItemKind::AlloyBlade,
+    RimItemKind::AlloyPick,
 ];
 
 #[derive(Debug, Clone, Copy)]
@@ -425,8 +435,13 @@ pub fn record_tool_wear(world: &mut RimWorldState, idx: usize) {
     };
     let aid = world.actors[idx].id;
     let w = world.economy.tool_wear.entry(aid).or_insert(0);
+    let wear_cap = if matches!(tool, RimItemKind::AlloyBlade | RimItemKind::AlloyPick) {
+        48
+    } else {
+        28
+    };
     *w = w.saturating_add(1);
-    if *w >= 28 {
+    if *w >= wear_cap {
         *w = 0;
         world.actors[idx].equipped_tool = None;
         world.actors[idx].push_diary(format!("手中的{}磨耗已極，應聲折斷", tool.label()));
@@ -524,7 +539,12 @@ pub fn complete_storehouse_trade(world: &mut RimWorldState, idx: usize, tx: i32,
         }
     }
     if world.actors[idx].equipped_tool.is_none() {
-        for tool in [RimItemKind::StonePick, RimItemKind::BambooBlade] {
+        for tool in [
+            RimItemKind::AlloyPick,
+            RimItemKind::AlloyBlade,
+            RimItemKind::StonePick,
+            RimItemKind::BambooBlade,
+        ] {
             if buy_from_storehouse(world, idx, tool, None).is_ok()
                 && world.actors[idx].take_inv(tool, 1) > 0
             {
@@ -557,6 +577,8 @@ pub const fn item_code(item: RimItemKind) -> &'static str {
         RimItemKind::WoundSalve => "salve",
         RimItemKind::SweetTuber => "tuber",
         RimItemKind::RoastedTuber => "roast_tuber",
+        RimItemKind::AlloyBlade => "alloy_blade",
+        RimItemKind::AlloyPick => "alloy_pick",
     }
 }
 

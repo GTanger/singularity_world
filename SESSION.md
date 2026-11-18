@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-18
-- **當前狀態**：`active`（已完成 `v22.1`（`v=20261118a21`）：根治玩家干涉自動行事或疾奔走路時之回拉頓卡，打通序號校時、單調無反拉平滑預測、清隊保護與直徑尋路對齊；承接 `v9`～`v22` 全數閉環並同步遠端推存）
+- **當前狀態**：`active`（已完成 `v23`（`v=20261118a22`）：根除沙灘／岩壁偽竹林與跨島偽湧泉溪、完成西麓湧泉街 8 戶商住／純住宅／旅宿＋水尾寮倉房 9 棟自然台灣命名街屋、石板街道、避雨亭仔腳、導能恆光街燈、15 人一對一歸戶睡榻與導能獵刀／鋼製開山鎬鍛造）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -49,6 +49,9 @@
     - **真實 1m 農業與倉儲建築尺度**：廢除廣場小地墊與 `1×3` 花盆小圃並無損遷入新倉；西麓擴建 `56 m²` `西麓倉廩棚屋` `(-13..=-6, -1..=5)`（室內 15 格乾燥貨架）＋ 8 格露天`竹木石料場` ＋ 40 格四大 `5m×2m` 連畦農莊田區；水尾寮擴建 `30 m²` `山貨倉房` `(21..=26, -12..=-8)` ＋ 32 格四大 `4m×2m` 溪坪田區；點擊田壟自動蛇行串接整畦同態細格並直接收成入囊（不再灑滿地面），前哨白描渲染同步區分連貫長畦土壟、倉廩木架與露天枕木料場。
     - **全代數比例不變市場湧現 (`rim_economy.rs` + `rim_market.rs` + PostgreSQL `rim_settlement_vault`)**：徹底拔除 `meat < 8`／`herb < 12` 等硬寫配額，改依聚落人口 `N_s`、在途＋在倉有效儲滿度 `r_eff`、金庫流動性 `L_s` 與倉位物理擁擠懲罰即時算出一口馬歇爾等彈性買賣牌價（`quote_item`）；驅動打獵／整畦／烹烤／百工製具／全 14 物資雙向空間套利、生物乘載力平衡、工具磨損，以及嚴格「鎂」總量守恆之公倉買賣與對談易物。
     - **手操介入零回拉頓卡修復（`v22.1`, `v=20261118a21`）**：`rim_cmd.rs`／`rim_sim.rs`／`rim_api.rs` 於下達手操或關閉自主時清空 `stall_tracker` 與 `parcel_queues`、手操免疫 `側身禮讓` 劫持並改用與前端一致之 `find_micro_path`；`web/rim-world.js` 補齊 `pollSeq`/`meCmdInFlight`/`meArriveHoldUntil` 防過時輪詢覆寫、行進與抵達純單調預測零逆向回彈。
+52: 15. **2026-11-18 `v23` 真實六基底地貌分區與現代奇幻台灣街鎮生活圈（`v=20261118a22`）**：
+    - **六類 `L0` 基底分區與局部湧泉溪（`rim_world.rs`）**：修正 `derive_micro_pristine`，按 `CoastalSand`／`TidalMudflat`／`BareRock`／`PebbleBank`／`RedGravel`／`LoamGrass` 與海拔 `< 18m` 低平帶精確分區，消除西海岸沙灘泥灘荊竹與春筍，並將湧泉溪收斂為局部山麓溪段 `(-46..=38)`。
+    - **西麓湧泉街九棟建物、家戶與城鎮設施（`rim_town.rs` + `rim_seed.rs` + `rim_shelter.rs`）**：以自然台灣店名／家宅命名取代營地荒野，建置`春水小吃`（母子 2 人）、`三水商行`（掌櫃夥計 2 人）、`阿木鐵店`（師徒 2 人）、`濟安診所`（父女 2 人＋診間病榻）、`迎風宿屋`（1 人駐守＋雙客榻）、`許家農宅`（一家 3 口）、`陳青宅`（單身 1 人）、`阿茶茶寮`（夫妻 2 人）與`水尾寮倉房`（公倉）共 9 棟零空屋；串接`石板街面`、雨露遮蔽`騎樓亭仔腳`、防雨夜照`導能恆光街燈`、15 名常駐家戶 1 對 1 專屬睡榻歸戶就寢、`濟安診所`救治送榻與`導能獵刀`／`鋼製開山鎬`鍛製升級（`54/54` `grid::substrate` 單元測試通過）。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -57,12 +60,12 @@
   - `/home/tanger/Projects/singularity_world/docs/design/energetic_taiwan_landmass_and_substrate_spec.md`（§1～§5.3 完整定案，含微步 3 五小刀契約）
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
-- **活躍 2D 世界實作與單檔 `< 1,000` 行模組群**：
-  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_economy,rim_market,rim_portrait_gen}.rs`
+- **活躍 2D 世界實作與單檔 `< 950` 行模組群**：
+  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_town,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_economy,rim_market,rim_portrait_gen}.rs`
   - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`
 
 ## 三、 下一步接續提示 (Next Cue)
 
 - **依 `docs/DESIGN_KEYWORDS.md` 續推下一階段活態細節**：
-  1. **沿真實地形外推鄰近市鎮與五大店堂（`v23`）**：自西麓與水尾寮順平坦幹道鋪設首座鄰近市鎮街屋，串聯百工鍛造護具鞋靴、食堂熱食、總商行鎂晶匯兌與脈絡診所。
+  1. **沿平緩沖積帶拓延海岸漁村與海風聚落**：依 `L0` 西濱砂岸與潮間泥灘真實地形，串聯漁寮、曬鹽坪與往返西麓湧泉街的沿海小貨運路線。
   2. **20m 底板微步 `3a′`～`3d` 空間銜接**：持續將長期探索區塊快取、`grid_z` 樓層隔離與跨區有界尋路合入同一 2D 世界。

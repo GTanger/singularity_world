@@ -283,14 +283,16 @@
       ctx.save();
       ctx.drawImage(skyCanvas, 0, 0, w, h);
 
-      // 疊一層溫潤燭火暖琥珀暈（僅對營火與工案）
+      // 疊一層溫潤燭火／恆光街燈暖琥珀暈（街燈恆亮抗雨）
       if (Array.isArray(lights)) {
         for (const l of lights) {
-          if (l.kind !== 'campfire' && l.kind !== 'workbench') continue;
-          const warmR = l.radius * (l.kind === 'campfire' ? 0.72 : 0.65);
-          const alpha = (l.kind === 'campfire' ? 0.24 : 0.12) * (mask.nightAlpha / 0.48);
+          if (l.kind !== 'campfire' && l.kind !== 'workbench' && l.kind !== 'lamp') continue;
+          const warmR = l.radius * (l.kind === 'lamp' ? 0.78 : (l.kind === 'campfire' ? 0.72 : 0.65));
+          const alpha = (l.kind === 'campfire' ? 0.24 : (l.kind === 'lamp' ? 0.19 : 0.12)) * (mask.nightAlpha / 0.48);
           const g = ctx.createRadialGradient(l.x, l.y, 2, l.x, l.y, warmR);
-          g.addColorStop(0, `rgba(246, 178, 86, ${alpha.toFixed(3)})`);
+          g.addColorStop(0, l.kind === 'lamp'
+            ? `rgba(255, 224, 146, ${alpha.toFixed(3)})`
+            : `rgba(246, 178, 86, ${alpha.toFixed(3)})`);
           g.addColorStop(1, 'rgba(246, 178, 86, 0)');
           ctx.fillStyle = g;
           ctx.beginPath();

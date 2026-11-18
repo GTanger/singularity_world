@@ -78,7 +78,12 @@ pub fn try_assign_market_livelihood(
 
     // 工具磨損遺失時若有鎂優先向倉廩購換
     if world.actors[idx].equipped_tool.is_none() {
-        for tool in [RimItemKind::StonePick, RimItemKind::BambooBlade] {
+        for tool in [
+            RimItemKind::AlloyPick,
+            RimItemKind::AlloyBlade,
+            RimItemKind::StonePick,
+            RimItemKind::BambooBlade,
+        ] {
             if world.actors[idx].magnesium >= quote_item(world, s, tool).ask_mg
                 && let Some((&kpos, _)) = world
                     .overlays
@@ -228,6 +233,17 @@ pub fn try_assign_market_livelihood(
                 let p_bid = quote_item(world, s, prod).bid_mg as f32;
                 let m_ref = quote_item(world, s, mat).bid_mg as f32;
                 let margin = (p_bid - m_ref * 0.6).max(0.0);
+                consider((margin / (5.0 + d)) * forge_apt, Choice::Craft(wpos, prod));
+            }
+        }
+        let have_bamboo = world.actors[idx].inventory.iter().any(|x| x.item == RimItemKind::BambooPole && x.count > 0)
+            || world.find_nearest_ground_item(wpos, RimItemKind::BambooPole, false).is_some();
+        let have_stone = world.actors[idx].inventory.iter().any(|x| x.item == RimItemKind::RiverStone && x.count > 0)
+            || world.find_nearest_ground_item(wpos, RimItemKind::RiverStone, false).is_some();
+        if have_bamboo && have_stone {
+            for prod in [RimItemKind::AlloyBlade, RimItemKind::AlloyPick] {
+                let p_bid = quote_item(world, s, prod).bid_mg as f32;
+                let margin = (p_bid - 2.0).max(0.0);
                 consider((margin / (5.0 + d)) * forge_apt, Choice::Craft(wpos, prod));
             }
         }

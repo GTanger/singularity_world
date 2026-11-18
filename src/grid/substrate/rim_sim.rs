@@ -250,16 +250,40 @@ impl RimActor {
         let r = self.role_tag.as_str();
         if r.contains("獵戶") {
             "陌生獵戶".into()
-        } else if r.contains("木匠") || r.contains("匠") {
-            "陌生木匠".into()
+        } else if r.contains("鐵") {
+            if r.contains("學徒") {
+                "陌生鐵徒".into()
+            } else {
+                "陌生鐵匠".into()
+            }
+        } else if r.contains("醫") || r.contains("藥") {
+            if self.gender == "F" {
+                "陌生醫女".into()
+            } else {
+                "陌生醫師".into()
+            }
+        } else if r.contains("宿") {
+            "陌生掌櫃".into()
+        } else if r.contains("小吃") || r.contains("杓") || r.contains("廚") {
+            if self.gender == "F" {
+                "陌生廚娘".into()
+            } else {
+                "陌生幫廚".into()
+            }
+        } else if r.contains("茶") {
+            if self.gender == "F" {
+                "陌生茶娘".into()
+            } else {
+                "陌生焙師".into()
+            }
         } else if r.contains("山民") || r.contains("農") {
-            "陌生山民".into()
-        } else if r.contains("茶") || r.contains("廚") {
-            "陌生茶娘".into()
+            "陌生農戶".into()
+        } else if r.contains("掌櫃") || r.contains("夥計") {
+            "陌生店家".into()
         } else if r.contains("商") || r.contains("貨郎") {
             "陌生貨郎".into()
         } else {
-            "陌生旅人".into()
+            "陌生街坊".into()
         }
     }
 
@@ -457,6 +481,14 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, &mut overlays) {
                 migrated = true;
             }
+            let had_lamps = overlays
+                .get(&(-5, -4))
+                .and_then(|o| o.structure)
+                == Some(StructureKind::StreetLamp);
+            super::rim_town::apply_town_architecture(rt, &mut overlays);
+            if !had_lamps {
+                migrated = true;
+            }
             let economy = crate::pg::rim_persist::load_economy_book(&pool).unwrap_or_default();
             let mut events = VecDeque::new();
             events.push_back(ShortEvent {
@@ -474,6 +506,9 @@ fn load_or_seed_world() -> RimWorldState {
                 stall_tracker: HashMap::new(),
             };
             st.resolve_solid_collisions(rt, 6);
+            if migrated {
+                st.persist_if_needed(true);
+            }
             return st;
         }
     }
@@ -494,6 +529,7 @@ fn load_or_seed_world() -> RimWorldState {
         apply_outpost_architecture(rt, &mut overlays);
         let _ = super::rim_shelter::upgrade_existing_shelters(&mut overlays);
         let _ = super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, &mut overlays);
+        super::rim_town::apply_town_architecture(rt, &mut overlays);
         let mut actors = saved.actors;
         ensure_outpost_residents(&mut actors);
         let mut events: VecDeque<ShortEvent> = saved
@@ -658,7 +694,7 @@ impl RimWorldState {
             facing_rad: 1.57,
             hp: 100,
             max_hp: 100,
-            equipped_tool: Some(RimItemKind::BambooBlade),
+            equipped_tool: Some(RimItemKind::AlloyBlade),
             carrying: None,
             inventory: vec![
                 GroundStack {

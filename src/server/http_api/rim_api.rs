@@ -10,10 +10,15 @@ use serde_json::{Value, json};
 
 use crate::game::now_unix;
 use crate::grid::substrate::render_synth::zone_name_of;
+pub(super) use crate::grid::substrate::rim_economy::item_code as item_code_str;
 use crate::grid::substrate::rim_life::{
     eat_item, hunger_tag, magnesium_tag, stamina_tag, thirst_tag, toggle_wearable,
 };
 use crate::grid::substrate::rim_sim::{ActorFaction, RimWorldState, global_rim};
+pub(super) use crate::grid::substrate::rim_town::parse_item_code_str as parse_item_code;
+use crate::grid::substrate::rim_town::{
+    enrich_card_with_building, ground_code_str, structure_code_str, town_buildings_dto,
+};
 use crate::grid::substrate::rim_world::{
     BlueprintJob, MicroGround, NaturalProp, RimItemKind, StructureKind, derive_micro_pristine,
     micro_to_macro,
@@ -68,18 +73,6 @@ pub fn spawn_rim_tick_loop() {
     });
 }
 
-fn ground_code(g: MicroGround) -> &'static str {
-    match g {
-        MicroGround::LoamGrass => "grass",
-        MicroGround::RedGravel => "red",
-        MicroGround::PebbleBank => "pebble",
-        MicroGround::ShallowStream => "stream",
-        MicroGround::SpringPool => "spring",
-        MicroGround::DeepWater => "deep",
-        MicroGround::SteepCliff => "cliff",
-    }
-}
-
 fn prop_code(p: NaturalProp) -> &'static str {
     match p {
         NaturalProp::BambooClump => "bamboo",
@@ -89,68 +82,15 @@ fn prop_code(p: NaturalProp) -> &'static str {
     }
 }
 
-fn struct_code(s: StructureKind) -> &'static str {
-    match s {
-        StructureKind::BambooWall => "wall",
-        StructureKind::BambooDoor => "door",
-        StructureKind::WoodBridge => "bridge",
-        StructureKind::Campfire => "campfire",
-        StructureKind::Workbench => "workbench",
-        StructureKind::Stockpile => "stockpile",
-        StructureKind::BambooBed => "bed",
-        StructureKind::TilledRidge => "ridge",
-        StructureKind::HerbSeedling => "herb_seed",
-        StructureKind::HerbMature => "herb_plot",
-        StructureKind::CropSeedling => "crop_seed",
-        StructureKind::CropMature => "crop_plot",
-    }
-}
-
-pub(super) fn item_code_str(k: RimItemKind) -> &'static str {
-    match k {
-        RimItemKind::BambooPole => "bamboo",
-        RimItemKind::RiverStone => "stone",
-        RimItemKind::BambooShoot => "shoot",
-        RimItemKind::BeastMeat => "meat",
-        RimItemKind::RoastedShoot => "roast_shoot",
-        RimItemKind::RoastedMeat => "roast_meat",
-        RimItemKind::BambooBlade => "blade",
-        RimItemKind::StonePick => "pick",
-        RimItemKind::BambooHat => "hat",
-        RimItemKind::BambooPack => "pack",
-        RimItemKind::MountainHerb => "herb",
-        RimItemKind::WoundSalve => "salve",
-        RimItemKind::SweetTuber => "tuber",
-        RimItemKind::RoastedTuber => "roast_tuber",
-    }
-}
-
-pub(super) fn parse_item_code(s: &str) -> Option<RimItemKind> {
-    Some(match s {
-        "bamboo" => RimItemKind::BambooPole,
-        "stone" => RimItemKind::RiverStone,
-        "shoot" => RimItemKind::BambooShoot,
-        "meat" => RimItemKind::BeastMeat,
-        "roast_shoot" => RimItemKind::RoastedShoot,
-        "roast_meat" => RimItemKind::RoastedMeat,
-        "blade" => RimItemKind::BambooBlade,
-        "pick" => RimItemKind::StonePick,
-        "hat" => RimItemKind::BambooHat,
-        "pack" => RimItemKind::BambooPack,
-        "herb" => RimItemKind::MountainHerb,
-        "salve" => RimItemKind::WoundSalve,
-        "tuber" => RimItemKind::SweetTuber,
-        "roast_tuber" => RimItemKind::RoastedTuber,
-        _ => return None,
-    })
-}
-
 pub(super) fn zone_for_micro(
     rt: Option<&runtime::SubstrateRuntime>,
     mx: i32,
     my: i32,
 ) -> &'static str {
-    if mx >= 22 && my <= -2 {
+    if (-22..=20).contains(&mx) && (-14..=8).contains(&my) {
+        return "西麓湧泉街";
+    }
+    if (21..=39).contains(&mx) && (-18..=-2).contains(&my) {
         return "水尾寮溪坪";
     }
     let ((gx, gy), _) = micro_to_macro(mx, my);
@@ -287,7 +227,9 @@ fn build_selection_card(
         title = st.label().to_string();
         match st {
             StructureKind::Workbench => {
-                tags.push("百工造物".into());
+                tags.push("鍛造手藝".into());
+                sockets.push(json!({ "label": "鍛製導能獵刀", "action": "craft_alloy_blade" }));
+                sockets.push(json!({ "label": "鍛製鋼製開山鎬", "action": "craft_alloy_pick" }));
                 sockets.push(json!({ "label": "削製烤刃竹刀", "action": "craft_blade" }));
                 sockets.push(json!({ "label": "綁製石刃木鎬", "action": "craft_pick" }));
                 sockets.push(json!({ "label": "搗製敷傷藥膏", "action": "craft_salve" }));
@@ -337,6 +279,15 @@ fn build_selection_card(
                 }
                 sockets.push(json!({ "label": "上榻安歇養傷", "action": "sleep_bed" }));
             }
+            StructureKind::StonePaving => {
+                tags.push("平整好走".into());
+                sockets.push(json!({ "label": "行至此處", "action": "move" }));
+            }
+            StructureKind::CoveredArcade => {
+                tags.push("避雨通廊".into());
+                sockets.push(json!({ "label": "廊下避雨", "action": "move" }));
+            }
+            StructureKind::StreetLamp => tags.push("晴雨常明・照亮街巷".into()),
             other if other.is_garden_plot() => {
                 crate::grid::substrate::rim_ecology::describe_ecology_structure(
                     other,
@@ -382,6 +333,7 @@ fn build_selection_card(
     } else {
         tags.push("天險阻絕".into());
     }
+    enrich_card_with_building(mx, my, &mut title, &mut tags);
 
     json!({
         "mx": mx, "my": my, "gx": gx, "gy": gy, "zone": zone,
@@ -416,7 +368,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                 let ov = world.overlays.get(&(mx, my));
                 let cleared = ov.is_some_and(|o| o.cleared_natural || o.structure.is_some());
                 let prop = if cleared { None } else { nat.map(prop_code) };
-                let st = ov.and_then(|o| o.structure).map(struct_code);
+                let st = ov.and_then(|o| o.structure).map(structure_code_str);
                 let bp = ov.and_then(|o| o.blueprint).map(|b| match b {
                     BlueprintJob::Chop { progress } => json!({ "k": "chop", "p": progress }),
                     BlueprintJob::Build {
@@ -424,7 +376,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                         delivered_bamboo,
                         progress,
                     } => json!({
-                        "k": struct_code(structure),
+                        "k": structure_code_str(structure),
                         "mat": delivered_bamboo,
                         "need": structure.bamboo_cost(),
                         "p": progress
@@ -447,7 +399,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                     cells.push(json!({
                         "x": mx,
                         "y": my,
-                        "g": ground_code(ground),
+                        "g": ground_code_str(ground),
                         "p": prop,
                         "s": st,
                         "b": bp,
@@ -629,6 +581,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
             "raining": weather.is_raining(),
         },
         "rooms": enclosed_rooms,
+        "buildings": town_buildings_dto(),
         "me_detail": me_detail,
         "actors": actors,
         "cells": cells,
@@ -878,7 +831,7 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
                 let norm = crate::grid::substrate::rim_cmd::normalize_directive_code(&dir);
                 p.directive = norm.into();
                 let label = match norm {
-                    "craft" => "百工營造",
+                    "craft" => "手作營造",
                     "guard" => "護衛獵巡",
                     "rest" => "爐畔靜養",
                     _ => "林緣巡採",

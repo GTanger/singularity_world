@@ -43,7 +43,9 @@ pub fn effective_seed(actor: &RimActor) -> i64 {
 
 fn tool_to_carrier(tool: Option<RimItemKind>) -> (CarrierAffinity, &'static str, u32) {
     match tool {
+        Some(RimItemKind::AlloyBlade) => (CarrierAffinity::Blade, "導能獵刀", 1),
         Some(RimItemKind::BambooBlade) => (CarrierAffinity::Blade, "烤刃竹刀", 1),
+        Some(RimItemKind::AlloyPick) => (CarrierAffinity::Blunt, "鋼製開山鎬", 2),
         Some(RimItemKind::StonePick) => (CarrierAffinity::Blunt, "石刃木鎬", 2),
         _ => (CarrierAffinity::Unarmed, "徒手", 0),
     }
@@ -58,7 +60,11 @@ fn actor_practice_for(actor: &RimActor, carrier: CarrierAffinity) -> u32 {
 }
 
 fn role_craft_affinity(role_tag: &str) -> (&'static str, &'static str) {
-    if role_tag.contains("木匠") || role_tag.contains("匠") || role_tag.contains("百工") {
+    if role_tag.contains("鐵")
+        || role_tag.contains("木匠")
+        || role_tag.contains("匠")
+        || role_tag.contains("百工")
+    {
         ("forge", "harvest")
     } else if role_tag.contains("貨郎") || role_tag.contains("商") {
         ("wayfare", "harvest")
@@ -264,6 +270,8 @@ pub fn resolve_actor_vs_beast_exchange(
 
     if settler.cooldown_ticks == 0 {
         let base_dmg: f64 = match settler.equipped_tool {
+            Some(RimItemKind::AlloyBlade) => 27.0,
+            Some(RimItemKind::AlloyPick) => 25.0,
             Some(RimItemKind::BambooBlade) => 22.0,
             Some(RimItemKind::StonePick) => 21.0,
             _ => 12.0,
@@ -368,7 +376,7 @@ pub fn resolve_actor_vs_beast_exchange(
                 interceptor_is_a: true,
                 ..
             }
-        ) || (settler.equipped_tool == Some(RimItemKind::BambooBlade)
+        ) || (settler.equipped_tool.is_some_and(RimItemKind::is_blade)
             && tick.is_multiple_of(2));
         if dodged {
             beast.pop_text = Some(("撲勢被卸開".into(), tick + 5));

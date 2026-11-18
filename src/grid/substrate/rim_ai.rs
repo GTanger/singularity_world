@@ -91,6 +91,13 @@ impl RimWorldState {
             return;
         }
 
+        let (epoch, scale) = crate::game::game_time_cfg();
+        let (_, game_hour, _, _) =
+            crate::game::game_time_now(super::rim_sim::now_unix_sec(), epoch, scale);
+        if super::rim_town::try_town_night_sleep(self, rt, idx, game_hour as i32) {
+            return;
+        }
+
         // 若駐世方針為「rest（爐畔靜養）」，回就近營火調息不再遠出勞作
         if self.actors[idx].directive == "rest" {
             let occ = self.occupied_cells(Some(idx));
@@ -356,6 +363,7 @@ impl RimWorldState {
 
         let (ax, ay) = self.actors[idx].micro_pos();
         let tool_bonus: u8 = match self.actors[idx].equipped_tool {
+            Some(RimItemKind::AlloyBlade | RimItemKind::AlloyPick) => 3,
             Some(RimItemKind::StonePick | RimItemKind::BambooBlade) => 2,
             _ => 1,
         };
@@ -630,7 +638,7 @@ impl RimWorldState {
                                 self.tick + 8,
                             ));
                         }
-                    } else if matches!(g.item, RimItemKind::BambooBlade | RimItemKind::StonePick) {
+                    } else if g.item.is_hand_tool() {
                         let _ = self.take_ground_item(tx, ty, g.item, 1);
                         self.actors[idx].equipped_tool = Some(g.item);
                         self.actors[idx].pop_text =
@@ -662,7 +670,12 @@ impl RimWorldState {
                         } else {
                             1
                         };
-                        let need_stone = item == RimItemKind::StonePick;
+                        let need_stone = matches!(
+                            item,
+                            RimItemKind::StonePick
+                                | RimItemKind::AlloyBlade
+                                | RimItemKind::AlloyPick
+                        );
                         let inv_b = self.actors[idx]
                             .inventory
                             .iter()

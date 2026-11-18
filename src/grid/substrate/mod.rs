@@ -36,6 +36,7 @@ pub mod rim_portrait_gen;
 pub mod rim_seed;
 pub mod rim_shelter;
 pub mod rim_sim;
+pub mod rim_town;
 pub mod rim_world;
 pub use facade::{
     AnchorDualRead, CellFacade, CellSnapshot, effective_max_z, step_delay_ms, verify_four_anchors,
