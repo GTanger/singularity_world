@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a23';
+  const PAWN_ASSET_VER = '20261118a25';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -958,6 +958,7 @@
   }
 
   function openModal(kind) {
+    closeInspector();
     activeModal = kind;
     lastModalSig = '';
     const bd = $('rim-modal-backdrop');
@@ -1889,15 +1890,15 @@
 
     if (n > 1 && sizePx >= 17) {
       const txt = `×${n}`;
-      ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
+      ctx.font = 'bold 9.5px "Noto Sans TC", sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
       ctx.lineJoin = 'round';
-      ctx.lineWidth = 3.2;
-      ctx.strokeStyle = 'rgba(244, 237, 224, 0.95)';
-      ctx.strokeText(txt, sizePx * 0.38, sizePx * 0.38);
+      ctx.lineWidth = 2.8;
+      ctx.strokeStyle = 'rgba(244, 237, 224, 0.96)';
+      ctx.strokeText(txt, sizePx * 0.34, sizePx * 0.35);
       ctx.fillStyle = '#2c1e0f';
-      ctx.fillText(txt, sizePx * 0.38, sizePx * 0.38);
+      ctx.fillText(txt, sizePx * 0.34, sizePx * 0.35);
     }
     ctx.restore();
   }
@@ -2464,8 +2465,39 @@
         } else if (c.s === 'campfire') {
           const cfImg = pawnImgs.campfire;
           const flicker = 1 + Math.sin(nowMs * 0.012) * 0.09;
-          const wetCamp = effWeather.raining && !indoorCellSet.has(`${mx},${my}`);
-          if (cfImg && cfImg.complete && cfImg.naturalWidth) {
+          const isIndoorHearth = indoorCellSet.has(`${mx},${my}`);
+          const wetCamp = effWeather.raining && !isIndoorHearth;
+          if (isIndoorHearth) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
+            ctx.fillRect(x0 + cellPx * 0.08 + 1.5, y0 + cellPx * 0.12 + 2, cellPx * 0.84, cellPx * 0.76);
+            ctx.fillStyle = '#b98268';
+            ctx.strokeStyle = PAWN_PAL.ink;
+            ctx.lineWidth = Math.max(1.0, cellPx * 0.028);
+            ctx.beginPath();
+            ctx.roundRect(x0 + cellPx * 0.08, y0 + cellPx * 0.12, cellPx * 0.84, cellPx * 0.76, 4);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#d4c3aa';
+            ctx.fillRect(x0 + cellPx * 0.14, y0 + cellPx * 0.18, cellPx * 0.72, cellPx * 0.64);
+            ctx.strokeRect(x0 + cellPx * 0.14, y0 + cellPx * 0.18, cellPx * 0.72, cellPx * 0.64);
+            ctx.fillStyle = '#33363b';
+            ctx.beginPath();
+            ctx.arc(p.x - cellPx * 0.05, p.y, cellPx * 0.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#c89b66';
+            ctx.beginPath();
+            ctx.arc(p.x - cellPx * 0.05, p.y, cellPx * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.globalAlpha = 0.35 + Math.sin(nowMs * 0.014) * 0.10;
+            ctx.fillStyle = '#ff9c2a';
+            ctx.beginPath();
+            ctx.arc(p.x + cellPx * 0.26, p.y, cellPx * 0.09 * flicker, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          } else if (cfImg && cfImg.complete && cfImg.naturalWidth) {
             const hCf = hash2d(mx, my);
             drawPawnPart(cfImg, p.x, p.y, cellPx * 1.08, cellPx * 1.08, 0.50, 0.50, ((hCf % 4) * Math.PI) / 2);
             if (wetCamp) {
@@ -3904,6 +3936,155 @@
     }
   }
 
+  function isPosUnderOpaqueRoof(wx, wy) {
+    for (const rm of worldRooms) {
+      if (wx >= rm.x0 + 0.18 && wx <= rm.x1 - 0.18 && wy >= rm.y0 + 0.18 && wy <= rm.y1 - 0.18) {
+        const al = roomRoofAlpha.has(roomKeyOf(rm)) ? roomRoofAlpha.get(roomKeyOf(rm)) : 1.0;
+        if (al > 0.35) return true;
+      }
+    }
+    return false;
+  }
+
+  function drawSingleRoofBox(x0, x1, y0, y1, padW, padE, padN, padS, alpha, doors) {
+    const pTL = microToScreen(x0 - padW, y1 + padN);
+    const pBR = microToScreen(x1 + padE, y0 - padS);
+    const rx0 = pTL.x;
+    const ry0 = pTL.y;
+    const rw = pBR.x - pTL.x;
+    const rh = pBR.y - pTL.y;
+    if (alpha <= 0.02 || rw <= 12 || rh <= 12) return;
+
+    const midY = ry0 + rh * 0.5;
+    const lw = Math.max(1.15, cellPx * 0.030);
+    ctx.save();
+    ctx.globalAlpha = alpha * Math.min(1.0, (cellPx - 5.0) / 5.0);
+
+    ctx.fillStyle = 'rgba(34, 24, 14, 0.18)';
+    ctx.fillRect(rx0 + cellPx * 0.10, ry0 + cellPx * 0.12, rw, rh);
+
+    ctx.fillStyle = '#ddd0b7';
+    ctx.fillRect(rx0, ry0, rw, rh * 0.5);
+    ctx.fillStyle = '#ccc0a4';
+    ctx.fillRect(rx0, midY, rw, rh * 0.5);
+
+    if (cellPx >= 12) {
+      ctx.lineCap = 'round';
+      const layersPerSlope = 5;
+      for (const isSouth of [false, true]) {
+        const dir = isSouth ? 1 : -1;
+        for (let layer = 0; layer < layersPerSlope; layer++) {
+          const frac = (layer + 0.65) / layersPerSlope;
+          const bandY = isSouth ? midY + frac * (rh * 0.48) : midY - frac * (rh * 0.48);
+          ctx.strokeStyle = 'rgba(92, 68, 46, 0.28)';
+          ctx.lineWidth = lw * 0.72;
+          ctx.beginPath();
+          ctx.moveTo(rx0 + cellPx * 0.18, bandY);
+          ctx.lineTo(rx1Or(rx0, rw) - cellPx * 0.18, bandY);
+          ctx.stroke();
+
+          ctx.strokeStyle = 'rgba(51, 38, 32, 0.34)';
+          ctx.lineWidth = Math.max(0.75, cellPx * 0.017);
+          ctx.beginPath();
+          const step = Math.max(5.5, cellPx * 0.15);
+          let idx = 0;
+          for (let sx = rx0 + cellPx * 0.22; sx < rx0 + rw - cellPx * 0.22; sx += step) {
+            const hh = hash2d(idx + layer * 41 + x0, isSouth ? 91 : 37);
+            const jx = ((hh % 5) - 2) * 0.6;
+            const len = ((rh * 0.45) / layersPerSlope) * (0.72 + ((hh >>> 4) % 30) / 100);
+            ctx.moveTo(sx + jx, bandY - dir * len * 0.85);
+            ctx.lineTo(sx - jx * 0.5, bandY + dir * 1.3);
+            idx++;
+          }
+          ctx.stroke();
+        }
+      }
+    }
+
+    ctx.strokeStyle = PAWN_PAL.ink;
+    ctx.lineWidth = lw * 1.15;
+    ctx.strokeRect(rx0, ry0, rw, rh);
+
+    for (const gx of [rx0, rx0 + rw - cellPx * 0.18]) {
+      ctx.fillStyle = '#c5b08a';
+      ctx.fillRect(gx, ry0, cellPx * 0.18, rh);
+      ctx.strokeRect(gx, ry0, cellPx * 0.18, rh);
+    }
+
+    // 僅於非室內且非騎樓的純戶外院門繪製簡潔門簷（隔牆內門與騎樓下不亂長罩棚）
+    for (const dp of doors) {
+      const dx = dp[0];
+      const dy = dp[1];
+      let outX = dx;
+      let outY = dy;
+      if (dx === x0) outX = dx - 1;
+      else if (dx === x1) outX = dx + 1;
+      else if (dy === y1) outY = dy + 1;
+      else if (dy === y0) outY = dy - 1;
+      else continue;
+      if (worldRooms.some((r) => outX >= r.x0 && outX <= r.x1 && outY >= r.y0 && outY <= r.y1)) continue;
+      if (cellMap.get(`${outX},${outY}`)?.s === 'arcade') continue;
+      const dc = microToScreen(dx, dy);
+      ctx.fillStyle = '#d3c2a1';
+      ctx.strokeStyle = PAWN_PAL.ink;
+      ctx.lineWidth = lw;
+      if (dx === x0) {
+        ctx.fillRect(rx0 - cellPx * 0.18, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
+        ctx.strokeRect(rx0 - cellPx * 0.18, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
+      } else if (dx === x1) {
+        ctx.fillRect(rx0 + rw - 2, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
+        ctx.strokeRect(rx0 + rw - 2, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
+      } else if (dy === y1) {
+        ctx.fillRect(dc.x - cellPx * 0.40, ry0 - cellPx * 0.18, cellPx * 0.80, cellPx * 0.20);
+        ctx.strokeRect(dc.x - cellPx * 0.40, ry0 - cellPx * 0.18, cellPx * 0.80, cellPx * 0.20);
+      } else if (dy === y0) {
+        ctx.fillRect(dc.x - cellPx * 0.40, ry0 + rh - 2, cellPx * 0.80, cellPx * 0.20);
+        ctx.strokeRect(dc.x - cellPx * 0.40, ry0 + rh - 2, cellPx * 0.80, cellPx * 0.20);
+      }
+    }
+
+    const ridgeH = cellPx * 0.22;
+    ctx.fillStyle = '#e7d9bd';
+    ctx.fillRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
+    ctx.strokeRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
+
+    if (cellPx >= 14) {
+      ctx.strokeStyle = 'rgba(51, 38, 32, 0.48)';
+      ctx.lineWidth = lw * 0.65;
+      ctx.beginPath();
+      ctx.moveTo(rx0, midY);
+      ctx.lineTo(rx0 + rw, midY);
+      ctx.stroke();
+
+      ctx.strokeStyle = PAWN_PAL.ink;
+      ctx.lineWidth = Math.max(0.8, cellPx * 0.017);
+      ctx.beginPath();
+      const fStep = Math.max(6, cellPx * 0.16);
+      let fi = 0;
+      for (let sx = rx0 + cellPx * 0.25; sx < rx0 + rw - cellPx * 0.25; sx += fStep) {
+        const hh = hash2d(fi + x0, 503);
+        const tuft = cellPx * (0.045 + (hh % 4) * 0.015);
+        ctx.moveTo(sx, ry0);
+        ctx.lineTo(sx + ((hh % 3) - 1), ry0 - tuft);
+        ctx.moveTo(sx, ry0 + rh);
+        ctx.lineTo(sx + (((hh >>> 2) % 3) - 1), ry0 + rh + tuft);
+        fi++;
+      }
+      ctx.stroke();
+
+      const ties = Math.max(4, Math.round((x1 - x0) * 1.2));
+      for (let i = 0; i <= ties; i++) {
+        const tx = rx0 + (rw * (i + 0.35)) / (ties + 0.7);
+        ctx.fillStyle = '#9c7850';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = 0.9;
+        ctx.fillRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
+        ctx.strokeRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
+      }
+    }
+    ctx.restore();
+  }
+
   function drawBuildingRoofsB(dt, nowMs) {
     if (cellPx < 5.0 || !worldRooms.length) return;
     const me = actors.find((a) => a.is_player);
@@ -3915,7 +4096,7 @@
       const rk = roomKeyOf(rm);
       const doors = Array.isArray(rm.doors) ? rm.doors : [];
       const meInside = me && meX >= rm.x0 - 0.35 && meX <= rm.x1 + 0.35 && meY >= rm.y0 - 0.35 && meY <= rm.y1 + 0.35;
-      const nearDoor = me && doors.some((dp) => Math.hypot(meX - dp[0], meY - dp[1]) <= 1.25);
+      const nearDoor = me && doors.some((dp) => Math.hypot(meX - dp[0], meY - dp[1]) <= 1.1);
       const selInside = selectedCell && selectedCell.mx >= rm.x0 && selectedCell.mx <= rm.x1 && selectedCell.my >= rm.y0 && selectedCell.my <= rm.y1;
       const targetAlpha = (meInside || nearDoor || selInside) ? 0.0 : 1.0;
 
@@ -3924,150 +4105,53 @@
       if (Math.abs(alpha - targetAlpha) < 0.01) alpha = targetAlpha;
       roomRoofAlpha.set(rk, alpha);
 
-      const pTL = microToScreen(rm.x0 - 0.84, rm.y1 + 0.86);
-      const pBR = microToScreen(rm.x1 + 0.84, rm.y0 - 0.86);
-      const rx0 = pTL.x;
-      const ry0 = pTL.y;
-      const rw = pBR.x - pTL.x;
-      const rh = pBR.y - pTL.y;
-
-      // 掀頂後仍保留極淡滴水簷虛線，讓屋簷保護界線可察覺
+      const pTL = microToScreen(rm.x0 - 0.30, rm.y1 + 0.30);
+      const pBR = microToScreen(rm.x1 + 0.30, rm.y0 - 0.30);
       ctx.save();
       ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = 'rgba(92, 68, 46, 0.22)';
-      ctx.lineWidth = 1.05;
-      ctx.strokeRect(rx0, ry0, rw, rh);
-      ctx.restore();
-
-      if (alpha <= 0.02 || rw <= 12 || rh <= 12) continue;
-
-      const midY = ry0 + rh * 0.5;
-      const lw = Math.max(1.15, cellPx * 0.030);
-      ctx.save();
-      ctx.globalAlpha = alpha * Math.min(1.0, (cellPx - 5.0) / 5.0);
-
-      // 屋簷垂影
-      ctx.fillStyle = 'rgba(34, 24, 14, 0.20)';
-      ctx.fillRect(rx0 + cellPx * 0.14, ry0 + cellPx * 0.16, rw, rh);
-
-      // 南北雙坡底色
-      ctx.fillStyle = '#ddd0b7';
-      ctx.fillRect(rx0, ry0, rw, rh * 0.5);
-      ctx.fillStyle = '#ccc0a4';
-      ctx.fillRect(rx0, midY, rw, rh * 0.5);
-
-      // 手繪茅竹層疊脈絡
-      if (cellPx >= 12) {
-        ctx.lineCap = 'round';
-        const layersPerSlope = 5;
-        for (const isSouth of [false, true]) {
-          const dir = isSouth ? 1 : -1;
-          for (let layer = 0; layer < layersPerSlope; layer++) {
-            const frac = (layer + 0.65) / layersPerSlope;
-            const bandY = isSouth ? midY + frac * (rh * 0.48) : midY - frac * (rh * 0.48);
-            ctx.strokeStyle = 'rgba(92, 68, 46, 0.28)';
-            ctx.lineWidth = lw * 0.72;
-            ctx.beginPath();
-            ctx.moveTo(rx0 + cellPx * 0.18, bandY);
-            ctx.lineTo(rx1Or(rx0, rw) - cellPx * 0.18, bandY);
-            ctx.stroke();
-
-            ctx.strokeStyle = 'rgba(51, 38, 32, 0.34)';
-            ctx.lineWidth = Math.max(0.75, cellPx * 0.017);
-            ctx.beginPath();
-            const step = Math.max(5.5, cellPx * 0.15);
-            let idx = 0;
-            for (let sx = rx0 + cellPx * 0.22; sx < rx0 + rw - cellPx * 0.22; sx += step) {
-              const hh = hash2d(idx + layer * 41 + rm.x0, isSouth ? 91 : 37);
-              const jx = ((hh % 5) - 2) * 0.6;
-              const len = ((rh * 0.45) / layersPerSlope) * (0.72 + ((hh >>> 4) % 30) / 100);
-              ctx.moveTo(sx + jx, bandY - dir * len * 0.85);
-              ctx.lineTo(sx - jx * 0.5, bandY + dir * 1.3);
-              idx++;
-            }
-            ctx.stroke();
-          }
-        }
-      }
-
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = lw * 1.15;
-      ctx.strokeRect(rx0, ry0, rw, rh);
-
-      // 東西山牆壓竹封邊條
-      for (const gx of [rx0, rx0 + rw - cellPx * 0.20]) {
-        ctx.fillStyle = '#c5b08a';
-        ctx.fillRect(gx, ry0, cellPx * 0.20, rh);
-        ctx.strokeRect(gx, ry0, cellPx * 0.20, rh);
-      }
-
-      // 各院門出簷門亭小罩棚
-      for (const dp of doors) {
-        const dx = dp[0];
-        const dy = dp[1];
-        const dc = microToScreen(dx, dy);
-        ctx.fillStyle = '#d3c2a1';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = lw;
-        if (dx === rm.x0) {
-          ctx.fillRect(rx0 - cellPx * 0.26, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
-          ctx.strokeRect(rx0 - cellPx * 0.26, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
-        } else if (dx === rm.x1) {
-          ctx.fillRect(rx0 + rw - 2, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
-          ctx.strokeRect(rx0 + rw - 2, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
-        } else if (dy === rm.y1) {
-          ctx.fillRect(dc.x - cellPx * 0.44, ry0 - cellPx * 0.26, cellPx * 0.88, cellPx * 0.28);
-          ctx.strokeRect(dc.x - cellPx * 0.44, ry0 - cellPx * 0.26, cellPx * 0.88, cellPx * 0.28);
-        } else if (dy === rm.y0) {
-          ctx.fillRect(dc.x - cellPx * 0.44, ry0 + rh - 2, cellPx * 0.88, cellPx * 0.28);
-          ctx.strokeRect(dc.x - cellPx * 0.44, ry0 + rh - 2, cellPx * 0.88, cellPx * 0.28);
-        }
-      }
-
-      // 中央竹脊大樑＋藤篾縛結＋南北茅草鬚邊
-      const ridgeH = cellPx * 0.22;
-      ctx.fillStyle = '#e7d9bd';
-      ctx.fillRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
-      ctx.strokeRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
-
-      if (cellPx >= 14) {
-        ctx.strokeStyle = 'rgba(51, 38, 32, 0.48)';
-        ctx.lineWidth = lw * 0.65;
-        ctx.beginPath();
-        ctx.moveTo(rx0, midY);
-        ctx.lineTo(rx0 + rw, midY);
-        ctx.stroke();
-
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = Math.max(0.8, cellPx * 0.017);
-        ctx.beginPath();
-        const fStep = Math.max(6, cellPx * 0.16);
-        let fi = 0;
-        for (let sx = rx0 + cellPx * 0.25; sx < rx0 + rw - cellPx * 0.25; sx += fStep) {
-          const hh = hash2d(fi + rm.x0, 503);
-          const tuft = cellPx * (0.045 + (hh % 4) * 0.015);
-          ctx.moveTo(sx, ry0);
-          ctx.lineTo(sx + ((hh % 3) - 1), ry0 - tuft);
-          ctx.moveTo(sx, ry0 + rh);
-          ctx.lineTo(sx + (((hh >>> 2) % 3) - 1), ry0 + rh + tuft);
-          fi++;
-        }
-        ctx.stroke();
-
-        const ties = Math.max(4, Math.round((rm.x1 - rm.x0) * 1.2));
-        for (let i = 0; i <= ties; i++) {
-          const tx = rx0 + (rw * (i + 0.35)) / (ties + 0.7);
-          ctx.fillStyle = '#9c7850';
-          ctx.strokeStyle = PAWN_PAL.ink;
-          ctx.lineWidth = 0.9;
-          ctx.fillRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
-          ctx.strokeRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
-        }
-      }
+      ctx.strokeStyle = 'rgba(92, 68, 46, 0.20)';
+      ctx.lineWidth = 1.0;
+      ctx.strokeRect(pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y);
       ctx.restore();
     }
 
-    // 繪製街鎮九棟商住／住宅木牌匾（掀頂時柔和退淡免遮家具）
+    const handledRooms = new Set();
+    for (const b of (Array.isArray(worldBuildings) ? worldBuildings : [])) {
+      const bRooms = worldRooms.filter((r) => r.x0 >= b.x0 && r.x1 <= b.x1 && r.y0 >= b.y0 && r.y1 <= b.y1);
+      if (!bRooms.length) continue;
+      for (const r of bRooms) handledRooms.add(roomKeyOf(r));
+      const allClosed = bRooms.every((r) => (roomRoofAlpha.get(roomKeyOf(r)) ?? 1.0) > 0.94);
+      if (allClosed && bRooms.length >= 2) {
+        const minA = Math.min(...bRooms.map((r) => roomRoofAlpha.get(roomKeyOf(r)) ?? 1.0));
+        const allDoors = bRooms.flatMap((r) => (Array.isArray(r.doors) ? r.doors : []));
+        drawSingleRoofBox(b.x0, b.x1, b.y0, b.y1, 0.30, 0.30, 0.30, 0.30, minA, allDoors);
+      } else {
+        for (const rm of bRooms) {
+          const alpha = roomRoofAlpha.get(roomKeyOf(rm)) ?? 1.0;
+          const touchW = bRooms.some((o) => o !== rm && o.x1 === rm.x0 && o.y1 >= rm.y0 && o.y0 <= rm.y1);
+          const touchE = bRooms.some((o) => o !== rm && o.x0 === rm.x1 && o.y1 >= rm.y0 && o.y0 <= rm.y1);
+          const touchN = bRooms.some((o) => o !== rm && o.y0 === rm.y1 && o.x1 >= rm.x0 && o.x0 <= rm.x1);
+          const touchS = bRooms.some((o) => o !== rm && o.y1 === rm.y0 && o.x1 >= rm.x0 && o.x0 <= rm.x1);
+          drawSingleRoofBox(
+            rm.x0, rm.x1, rm.y0, rm.y1,
+            touchW ? 0.0 : 0.30,
+            touchE ? 0.0 : 0.30,
+            touchN ? 0.0 : 0.30,
+            touchS ? 0.0 : 0.30,
+            alpha,
+            Array.isArray(rm.doors) ? rm.doors : [],
+          );
+        }
+      }
+    }
+
+    for (const rm of worldRooms) {
+      if (handledRooms.has(roomKeyOf(rm))) continue;
+      const alpha = roomRoofAlpha.get(roomKeyOf(rm)) ?? 1.0;
+      drawSingleRoofBox(rm.x0, rm.x1, rm.y0, rm.y1, 0.30, 0.30, 0.30, 0.30, alpha, Array.isArray(rm.doors) ? rm.doors : []);
+    }
+
+    // 繪製街鎮九棟商住／住宅木牌匾（掀頂時移至建物屋脊上方免遮室內家具）
     if (cellPx >= 7.0 && Array.isArray(worldBuildings) && worldBuildings.length) {
       ctx.save();
       const fontSz = Math.round(Math.max(11, Math.min(14, cellPx * 0.44)));
@@ -4084,8 +4168,8 @@
             if (al < 0.45) maxUnveiled = 1;
           }
         }
-        const badgeAlpha = maxUnveiled ? 0.28 : 0.94;
-        const py = maxUnveiled ? microToScreen(b.label_x, b.y1 + 0.55).y : bp.y;
+        const badgeAlpha = maxUnveiled ? 0.80 : 0.94;
+        const py = maxUnveiled ? microToScreen(b.label_x, b.y1 + 0.15).y : bp.y;
         const tw = ctx.measureText(b.name).width + 14;
         const th = fontSz + 8;
         ctx.globalAlpha = badgeAlpha * Math.min(1.0, (cellPx - 7.0) / 4.0);
@@ -4190,27 +4274,43 @@
     ctx.restore();
   }
 
-  function drawActors(nowMs) {
+  function drawActors(nowMs, pass = 'all') {
+    const includeBase = pass === 'all' || pass === 'base';
+    const includeFront = pass === 'all' || pass === 'front';
+
     // 繪製本尊尋路預覽線（行走為淡墨細虛線，雙擊疾奔為鮮明硃砂快步線）
     const me = actors.find((a) => a.is_player);
     const meSt = me ? renderActors.get(me.id) : null;
     const isMeRunning = !!(meSt ? meSt.running : (me && me.running));
-    const drawPath = (meSt && meSt.path && meSt.path.length > 0) ? meSt.path : (me && me.path ? me.path : []);
-    if (me && drawPath.length > 0) {
+    const rawPath = (meSt && meSt.path && meSt.path.length > 0) ? meSt.path : (me && me.path ? me.path : []);
+    if (includeBase && me && rawPath.length > 0) {
       const cur = meSt || { x: me.px, y: me.py };
-      ctx.save();
-      ctx.strokeStyle = isMeRunning ? 'rgba(139, 32, 32, 0.82)' : 'rgba(107, 90, 71, 0.55)';
-      ctx.lineWidth = isMeRunning ? 2.6 : 1.8;
-      ctx.setLineDash(isMeRunning ? [7, 3] : [4, 5]);
-      ctx.beginPath();
-      const s0 = microToScreen(cur.x, cur.y);
-      ctx.moveTo(s0.x, s0.y);
-      for (const [px, py] of drawPath) {
-        const sp = microToScreen(px, py);
-        ctx.lineTo(sp.x, sp.y);
+      const drawPath = trimPassedWaypoints(rawPath, cur.x, cur.y);
+      if (drawPath.length > 0) {
+        ctx.save();
+        ctx.strokeStyle = isMeRunning ? 'rgba(139, 32, 32, 0.82)' : 'rgba(107, 90, 71, 0.55)';
+        ctx.lineWidth = isMeRunning ? 2.6 : 1.8;
+        ctx.setLineDash(isMeRunning ? [7, 3] : [4, 5]);
+        ctx.beginPath();
+        const s0 = microToScreen(cur.x, cur.y);
+        ctx.moveTo(s0.x, s0.y);
+        const [p0x, p0y] = drawPath[0];
+        if (Math.abs(p0x - cur.x) > 0.35 && Math.abs(p0y - cur.y) > 0.35) {
+          const cxR = Math.round(cur.x);
+          const cyR = Math.round(cur.y);
+          const optA = cellMap.get(`${Math.round(p0x)},${cyR}`)?.s === 'wall'
+            ? [cxR, Math.round(p0y)]
+            : [Math.round(p0x), cyR];
+          const se = microToScreen(optA[0], optA[1]);
+          ctx.lineTo(se.x, se.y);
+        }
+        for (const [px, py] of drawPath) {
+          const sp = microToScreen(px, py);
+          ctx.lineTo(sp.x, sp.y);
+        }
+        ctx.stroke();
+        ctx.restore();
       }
-      ctx.stroke();
-      ctx.restore();
     }
 
     const isMacroView = cellPx < 5.0;
@@ -4223,13 +4323,15 @@
       const cx = Math.round(camX);
       const cy = Math.round(camY);
 
-      for (let my = cy - halfH; my <= cy + halfH; my++) {
-        for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
-          const c = cellMap.get(`${mx},${my}`);
-          if (!c || !c.p) continue;
-          const sp = microToScreen(mx, my);
-          if (sp.x < -70 || sp.x > viewportW + 70 || sp.y < -70 || sp.y > viewportH + 70) continue;
-          renderItems.push({ kind: 'prop', sortY: sp.y, rank: 0, mx, my, pType: c.p, sp });
+      if (includeBase) {
+        for (let my = cy - halfH; my <= cy + halfH; my++) {
+          for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
+            const c = cellMap.get(`${mx},${my}`);
+            if (!c || !c.p) continue;
+            const sp = microToScreen(mx, my);
+            if (sp.x < -70 || sp.x > viewportW + 70 || sp.y < -70 || sp.y > viewportH + 70) continue;
+            renderItems.push({ kind: 'prop', sortY: sp.y, rank: 0, mx, my, pType: c.p, sp });
+          }
         }
       }
 
@@ -4247,10 +4349,12 @@
         const sp = microToScreen(pos.x, pos.y);
         if (sp.x < -60 || sp.x > viewportW + 60 || sp.y < -60 || sp.y > viewportH + 60) continue;
         if (isActorSleepingInBed(a, pos)) continue;
+        const covered = isPosUnderOpaqueRoof(pos.x, pos.y);
+        if ((covered && !includeBase) || (!covered && !includeFront)) continue;
         const rank = a.is_player ? 2 : 1;
         renderItems.push({ kind: 'actor', sortY: sp.y, rank, a, pos, sp });
         const badge = a.pop || a.carry;
-        if (badge && getRoomRoofAlphaAt(pos.x, pos.y) <= 0.5) {
+        if (badge && !covered) {
           labelDrawList.push({ a, sp, badge });
         }
       }
@@ -4303,7 +4407,8 @@
         }
       }
 
-      // 飄落竹葉（白描嫩葉）
+      // 飄落竹葉與施工標記僅於 base 層繪製一次
+      if (includeBase) {
       for (const lp of leafParticles) {
         const lpt = microToScreen(lp.x, lp.y);
         ctx.save();
@@ -4355,6 +4460,7 @@
           ctx.restore();
         }
       }
+      }
 
       // 所有角色頭頂浮籤永遠最後繪製，防止被竹叢與人物遮擋
       const S = Math.max(15.5, cellPx * 0.84);
@@ -4383,6 +4489,8 @@
 
     for (const a of sortedActors) {
       const pos = renderActors.get(a.id) || { x: a.px, y: a.py, facing: a.facing || 0 };
+      const covered = !isMacroView && isPosUnderOpaqueRoof(pos.x, pos.y);
+      if ((covered && !includeBase) || (!covered && !includeFront)) continue;
       const sp = microToScreen(pos.x, pos.y);
       if (sp.x < -40 || sp.x > viewportW + 40 || sp.y < -40 || sp.y > viewportH + 40) continue;
 
@@ -4523,8 +4631,9 @@
     ctx.fillRect(0, 0, viewportW, viewportH);
     drawMacroBasemap();
     drawMicroLayer(nowMs);
-    drawActors(nowMs);
+    drawActors(nowMs, 'base');
     drawBuildingRoofsB(dt, nowMs);
+    drawActors(nowMs, 'front');
     drawMountainRain(nowMs);
 
     if (window.SwSkyTime) {
@@ -4595,15 +4704,17 @@
   async function handleTapCell(sx, sy) {
     const { mx, my, fx, fy } = screenToMicro(sx, sy);
 
-    // 點中人物／異獸（同時比對渲染平滑位置）／自然物／設施／地面物品／溪流時，直接展開接觸物件插座卡
+    // 點中家具設備時須優先開啟家具（僅人在正上方才算先點中人）；空地／路面則放寬人物點選半徑
+    const cell = cellMap.get(`${mx},${my}`);
+    const hasFixture = Boolean(cell && ((cell.s && cell.s !== 'paving' && cell.s !== 'arcade' && cell.s !== 'wall') || cell.p || cell.b || cell.i));
     const hitActor = actors.find((a) => {
       if (a.is_player) return false;
       const st = renderActors.get(a.id);
       const ax = st ? st.x : a.px;
       const ay = st ? st.y : a.py;
-      return Math.hypot(ax - fx, ay - fy) <= 0.95 || Math.hypot(a.px - mx, a.py - my) <= 1.05;
+      if (hasFixture) return Math.hypot(ax - fx, ay - fy) <= 0.48;
+      return Math.hypot(ax - fx, ay - fy) <= 0.95 || Math.hypot(a.px - mx, a.py - my) <= 0.95;
     });
-    const cell = cellMap.get(`${mx},${my}`);
     const hasInteractive = hitActor || (cell && (cell.p || cell.s || cell.b || cell.i || cell.g === 'stream'));
 
     if (hasInteractive) {

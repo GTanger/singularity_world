@@ -163,7 +163,7 @@ pub fn try_assign_market_livelihood(
                 ov.structure,
                 Some(StructureKind::HerbMature | StructureKind::CropMature | StructureKind::TilledRidge)
             ) && !claimed.contains(&pos)
-                && (pos.0 - home.0).abs() + (pos.1 - home.1).abs() <= 26
+                && (pos.0 - home.0).abs() + (pos.1 - home.1).abs() <= 42
         })
         .max_by_key(|&(&pos, ov)| {
             let p_val = match ov.structure {

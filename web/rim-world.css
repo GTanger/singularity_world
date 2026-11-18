@@ -215,13 +215,13 @@ html, body {
 }
 
 .rim-modal {
-  width: min(360px, 100%);
+  width: min(392px, 100%);
   max-height: 82%;
   overflow-y: auto;
   background: var(--paper-light);
   border: 1px solid var(--ink-faint);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 14px 16px 18px;
   box-shadow: 0 8px 24px rgba(44, 30, 15, 0.18);
 }
 
@@ -244,6 +244,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 8px;
   font-family: 'Noto Sans TC', sans-serif;
   font-size: 13px;
 }

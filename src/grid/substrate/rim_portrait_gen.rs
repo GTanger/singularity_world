@@ -254,11 +254,25 @@ pub fn synthesize_portrait_texts(req: &PortraitRequest) -> PortraitTexts {
             "雙手空手自然垂放身側".to_string(),
             "both empty hands resting naturally relaxed at sides holding nothing".to_string(),
         )
+    } else if tool_raw.contains("導能") || tool_raw.contains("獵刀") {
+        (
+            format!("舉起左手穩握直立向上的冷鋼「{tool_raw}」（桃木短柄與銅格護手，帶微青導能刃紋）"),
+            format!(
+                "raised left hand cleanly gripping an upright forged cold-steel hunting blade ({tool_raw}) with hardwood grip, bronze guard, and subtle celadon rune fuller pointing straight up"
+            ),
+        )
     } else if tool_raw.contains('刀') || tool_raw.contains('劍') {
         (
             format!("舉起左手穩握直立向上的青竹「{tool_raw}」（四指實心緊包纏繩刀柄）"),
             format!(
                 "raised left hand cleanly wrapping all fingers around the cord-wrapped hilt of an upright pale celadon-green bamboo machete ({tool_raw}) pointing straight up"
+            ),
+        )
+    } else if tool_raw.contains("開山鎬") || tool_raw.contains("鋼") {
+        (
+            format!("舉起左手緊握直立「{tool_raw}」（堅木長柄配深鐵鍛鋼雙頭鎬刃）"),
+            format!(
+                "raised left hand firmly gripping the sturdy wooden shaft of a forged iron-steel double-pointed pickaxe ({tool_raw}) held upright vertically"
             ),
         )
     } else if tool_raw.contains('鎬') {

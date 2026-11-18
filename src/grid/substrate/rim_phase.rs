@@ -422,10 +422,14 @@ pub fn try_assign_caravan_route(
 ) -> bool {
     let role = world.actors[idx].role_tag.as_str();
     let dir = world.actors[idx].directive.as_str();
-    if (!role.contains("貨郎") && !role.contains("商"))
+    if !role.contains("貨郎")
         || dir == "follow"
         || dir == "rest"
         || world.actors[idx].downed_ticks > 0
+        || world.actors[idx].hunger < 45
+        || world.actors[idx].thirst < 45
+        || world.actors[idx].stamina < 45
+        || !world.tick.is_multiple_of(8)
     {
         return false;
     }
@@ -459,14 +463,11 @@ pub fn try_assign_caravan_route(
 /// 貨郎抵達目標聚落時卸貨、裝載餘缺物資並切換下一趟行商航段。
 pub fn complete_caravan_arrival(
     world: &mut RimWorldState,
-    rt: Option<&SubstrateRuntime>,
+    _rt: Option<&SubstrateRuntime>,
     idx: usize,
     leg: u8,
 ) {
     use super::rim_economy::{SettlementId, prepare_caravan_arbitrage_cargo};
-    let start = world.actors[idx].micro_pos();
-    let west_anchor = (1, -1);
-    let east_anchor = (32, -7);
 
     if leg == 0 {
         prepare_caravan_arbitrage_cargo(world, idx, SettlementId::WestOutpost);
@@ -474,37 +475,21 @@ pub fn complete_caravan_arrival(
         world.actors[idx].caravan_leg = 1;
         world.actors[idx].push_diary("挑山貨抵西麓湧泉清倉並換裝順價行貨");
         world.actors[idx].pop_text = Some(("抵西麓換貨".into(), world.tick + 10));
-        world.push_event(format!("{} 挑貨抵西麓按價交割換貨", world.actors[idx].glyph));
-
-        if let Some(p) = find_first_path_near(world, rt, idx, start, east_anchor) {
-            world.actors[idx].path = p.into();
-            world.actors[idx].task = PendingTask::CaravanMove {
-                tx: east_anchor.0,
-                ty: east_anchor.1,
-                leg: 1,
-            };
-            world.actors[idx].activity_tag = "返程水尾寮".into();
-        } else {
-            world.actors[idx].task = PendingTask::None;
+        if !world.events.front().is_some_and(|e| e.text.contains("交割換貨")) {
+            world.push_event(format!("{}挑貨抵西麓按價交割換貨", world.actors[idx].name));
         }
+        world.actors[idx].path.clear();
+        world.actors[idx].task = PendingTask::None;
+        world.actors[idx].activity_tag = "歇腳整貨".into();
     } else {
         prepare_caravan_arbitrage_cargo(world, idx, SettlementId::Shuoweiliao);
         world.actors[idx].craft_wayfare = world.actors[idx].craft_wayfare.saturating_add(2);
         world.actors[idx].caravan_leg = 0;
         world.actors[idx].push_diary("返抵水尾寮茶寮交割並配貨赴西麓");
         world.actors[idx].pop_text = Some(("挑貨赴西麓".into(), world.tick + 10));
-
-        if let Some(p) = find_first_path_near(world, rt, idx, start, west_anchor) {
-            world.actors[idx].path = p.into();
-            world.actors[idx].task = PendingTask::CaravanMove {
-                tx: west_anchor.0,
-                ty: west_anchor.1,
-                leg: 0,
-            };
-            world.actors[idx].activity_tag = "挑貨往西麓".into();
-        } else {
-            world.actors[idx].task = PendingTask::None;
-        }
+        world.actors[idx].path.clear();
+        world.actors[idx].task = PendingTask::None;
+        world.actors[idx].activity_tag = "返抵理貨".into();
     }
 }
 

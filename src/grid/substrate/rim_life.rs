@@ -43,6 +43,24 @@ pub fn recover_stranded_world_state(
             a.activity_tag = "歸營歇息".into();
             changed = true;
         }
+        if a.faction == ActorFaction::Settler && !a.is_player {
+            if !a.role_tag.contains("貨郎") && matches!(a.task, PendingTask::CaravanMove { .. }) {
+                a.path.clear();
+                a.task = PendingTask::None;
+                a.activity_tag = "駐店照料".into();
+                if a.px >= 18.0 && a.actor_key != "res:zhou_acha" && a.actor_key != "res:he_dashu" {
+                    a.px = -9.0;
+                    a.py = 0.0;
+                }
+                changed = true;
+            }
+            if a.hunger == 0 && a.thirst == 0 && a.stamina == 0 {
+                a.hunger = 65;
+                a.thirst = 70;
+                a.stamina = 75;
+                changed = true;
+            }
+        }
     }
     changed
 }

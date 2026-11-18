@@ -492,12 +492,12 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, &mut overlays) {
                 migrated = true;
             }
-            let had_lamps = overlays
-                .get(&(-5, -4))
+            let town_v24b = overlays
+                .get(&(10, -1))
                 .and_then(|o| o.structure)
-                == Some(StructureKind::StreetLamp);
+                == Some(StructureKind::Workbench);
             super::rim_town::apply_town_architecture(rt, &mut overlays);
-            if !had_lamps {
+            if !town_v24b {
                 migrated = true;
             }
             let economy = crate::pg::rim_persist::load_economy_book(&pool).unwrap_or_default();
@@ -517,6 +517,11 @@ fn load_or_seed_world() -> RimWorldState {
                 stall_tracker: HashMap::new(),
             };
             st.resolve_solid_collisions(rt, 6);
+            let prev_vault = st.economy.vault_mg;
+            super::rim_economy::step_economy_tick(&mut st);
+            if st.economy.vault_mg != prev_vault {
+                migrated = true;
+            }
             if migrated {
                 st.persist_if_needed(true);
             }

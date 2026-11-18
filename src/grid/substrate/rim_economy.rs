@@ -98,7 +98,7 @@ pub fn eco_spec(item: RimItemKind) -> (f32, f32, f32) {
         RimItemKind::RiverStone => (0.25, 0.75, 2.0),
         RimItemKind::BambooShoot => (0.50, 0.75, 4.0),
         RimItemKind::SweetTuber => (0.50, 0.75, 4.0),
-        RimItemKind::BeastMeat => (0.45, 0.85, 6.0),
+        RimItemKind::BeastMeat => (0.45, 0.85, 7.0),
         RimItemKind::MountainHerb => (0.35, 0.85, 6.0),
         RimItemKind::RoastedShoot => (0.40, 0.90, 8.0),
         RimItemKind::RoastedTuber => (0.40, 0.90, 9.0),
@@ -107,9 +107,9 @@ pub fn eco_spec(item: RimItemKind) -> (f32, f32, f32) {
         RimItemKind::StonePick => (0.18, 0.85, 12.0),
         RimItemKind::BambooPack => (0.18, 0.85, 12.0),
         RimItemKind::RoastedMeat => (0.45, 0.95, 12.0),
-        RimItemKind::WoundSalve => (0.25, 0.95, 12.0),
+        RimItemKind::WoundSalve => (0.25, 0.95, 9.0),
         RimItemKind::AlloyBlade => (0.16, 0.88, 16.0),
-        RimItemKind::AlloyPick => (0.16, 0.88, 18.0),
+        RimItemKind::AlloyPick => (0.16, 0.88, 14.0),
     }
 }
 
@@ -288,11 +288,12 @@ pub fn quote_item(world: &RimWorldState, s: SettlementId, item: RimItemKind) -> 
     let (c_i, eta, par_mg) = eco_spec(item);
     let v_cap = (3.0 * c_i * pop).max(2.0);
     let r_eff = (v_store + v_committed + 0.5) / v_cap;
-    let p_mid = par_mg * r_eff.powf(-eta);
+    let eff = r_eff.clamp(0.28, 4.0);
+    let p_mid = par_mg * eff.powf(-eta * 0.62);
 
     let vault = f32::from(world.economy.vault_mg[s.index()] as u16);
     let m_star = 28.0 * pop;
-    let l_factor = (vault / m_star).max(0.0).sqrt().clamp(0.55, 1.45);
+    let l_factor = (vault / m_star).max(0.0).sqrt().clamp(0.84, 1.22);
     let rho = if total_slots > 0.0 {
         (used_slots / total_slots).clamp(0.0, 1.0)
     } else {
@@ -487,6 +488,35 @@ pub fn step_economy_tick(world: &mut RimWorldState) {
                 world.economy.vault_mg[s.index()] -= total_out;
                 for &w_idx in &workers {
                     world.actors[w_idx].magnesium = world.actors[w_idx].magnesium.saturating_add(each);
+                }
+            }
+        } else if cur < 72 {
+            for &w_idx in &workers {
+                if !world.actors[w_idx].is_player && world.actors[w_idx].magnesium >= 44 {
+                    for raw in [
+                        RimItemKind::SweetTuber,
+                        RimItemKind::BambooShoot,
+                        RimItemKind::MountainHerb,
+                        RimItemKind::BeastMeat,
+                        RimItemKind::BambooPole,
+                        RimItemKind::RiverStone,
+                    ] {
+                        if world.actors[w_idx].magnesium >= 44
+                            && buy_from_storehouse(world, w_idx, raw, None).is_ok()
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            if world.economy.vault_mg[s.index()] < 60 {
+                for &w_idx in &workers {
+                    if !world.actors[w_idx].is_player && world.actors[w_idx].magnesium > 42 {
+                        let remit = (world.actors[w_idx].magnesium - 36) / 2;
+                        world.actors[w_idx].magnesium -= remit;
+                        world.economy.vault_mg[s.index()] =
+                            world.economy.vault_mg[s.index()].saturating_add(remit);
+                    }
                 }
             }
         }

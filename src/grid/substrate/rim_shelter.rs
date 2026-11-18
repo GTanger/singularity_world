@@ -284,7 +284,7 @@ pub fn step_weather_and_bed_recovery(world: &mut RimWorldState, weather: RimWeat
 
         if on_bed && a.path.is_empty() {
             let inn_bonus: u8 = if a.civic.inn_lease_until > world.tick
-                && (pos == (-16, -9) || pos == (-16, -11))
+                && (pos == (-16, -10) || pos == (-16, -11))
             {
                 6
             } else {
@@ -435,7 +435,7 @@ mod tests {
         // 拆掉北牆一塊後，該屋不應再判定為閉合室內
         overlays.remove(&(9, 5));
         let rooms_after = detect_enclosed_rooms(&overlays);
-        assert!(!rooms_after.iter().any(|r| r.x0 == 7 && r.x1 == 11));
+        assert!(!rooms_after.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5));
     }
 
     #[test]

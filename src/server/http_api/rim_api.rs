@@ -108,11 +108,24 @@ fn build_selection_card(
     let ((gx, gy), _) = micro_to_macro(mx, my);
     let zone = zone_for_micro(rt, mx, my);
 
-    // 優先檢查是否有異獸或他人站在該格附近
+    let has_fixture = world.overlays.get(&(mx, my)).is_some_and(|o| {
+        o.blueprint.is_some()
+            || o.ground_item.is_some()
+            || o.structure.is_some_and(|s| {
+                !matches!(
+                    s,
+                    StructureKind::StonePaving
+                        | StructureKind::CoveredArcade
+                        | StructureKind::BambooWall
+                )
+            })
+    });
+    let actor_r = if has_fixture { 0.48 } else { 0.95 };
+    // 優先檢查是否有異獸或他人站在該格附近（若為門市櫃檯／案檯／床榻等實物，僅正立其上才優先選中）
     if let Some(actor) = world.actors.iter().find(|a| {
         a.entity_id.as_deref() != viewer_pid
             && a.hp > 0
-            && (a.px - mx as f32).hypot(a.py - my as f32) <= 1.05
+            && (a.px - mx as f32).hypot(a.py - my as f32) <= actor_r
     }) {
         let vis_name = actor.display_name_for(viewer_pid);
         let mut tags = vec![actor.role_tag.clone(), actor.health_state_tag()];
@@ -309,7 +322,9 @@ fn build_selection_card(
             _ => {}
         }
         }
-        sockets.push(json!({ "label": "標記拆除", "tool": "deconstruct" }));
+        if !crate::grid::substrate::rim_town::is_protected_town_structure(mx, my, st) {
+            sockets.push(json!({ "label": "標記拆除", "tool": "deconstruct" }));
+        }
     } else if !cleared && let Some(prop) = nat {
         title = prop.label().to_string();
         for &t in prop.tags() {

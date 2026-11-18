@@ -16,10 +16,10 @@ use super::runtime::SubstrateRuntime;
 
 /// 八處顯式成片田畦邊界 `(x0, x1, y0, y1)`（西麓南坡 4 畦 + 水尾寮溪坪 4 畦）。
 const FARM_PARCELS: [(i32, i32, i32, i32); 8] = [
-    (-3, 1, -8, -7),
-    (3, 7, -8, -7),
-    (-3, 1, -11, -10),
-    (3, 7, -11, -10),
+    (-19, -15, -16, -15),
+    (-13, -9, -16, -15),
+    (-19, -15, -19, -18),
+    (-13, -9, -19, -18),
     (29, 32, -13, -12),
     (34, 37, -13, -12),
     (29, 32, -16, -15),
@@ -38,7 +38,7 @@ pub enum FarmOp {
 
 /// 聚落廣場、倉廩棚屋、田區與雙聚落步道淨空帶（林木再生時避開此範圍以免阻路）。
 pub fn is_settlement_keep_clear(mx: i32, my: i32) -> bool {
-    ((-22..=20).contains(&mx) && (-14..=6).contains(&my))
+    ((-22..=20).contains(&mx) && (-21..=6).contains(&my))
         || (mx == 0 && (3..=18).contains(&my))
         || ((20..=39).contains(&mx) && (-18..=-3).contains(&my))
 }
@@ -92,7 +92,7 @@ pub fn reconcile_real_scale_layout_and_clutter(
             None
         }
     });
-    seed_struct(-13..=-10, -5..=-3, &|_, y| (y != -4).then_some(StructureKind::Stockpile));
+    seed_struct(-13..=-10, 6..=7, &|_, _| Some(StructureKind::Stockpile));
     seed_struct(21..=26, -12..=-8, &|x, y| {
         if x == 21 || x == 26 || y == -12 || y == -8 {
             Some(if x == 24 && (y == -8 || y == -12) { StructureKind::BambooDoor } else { StructureKind::BambooWall })
@@ -107,22 +107,26 @@ pub fn reconcile_real_scale_layout_and_clutter(
         changed |= ensure_cell_struct(overlays, (33, -10), Some(StructureKind::BambooDoor));
     }
 
-    // 4. 清理舊廣場露天地墊 (-4..=-3, -4..=-1) 與舊花盆田 (1..=3, -5..=-4)／(26, -6..=-5)，無損遷物至新倉廩
+    // 4. 清理舊廣場露天地墊、舊街心料場 (-13..=-10,-5..=-3) 與舊街心農田 (-4..=8,-12..=-6)，無損遷物至新倉
     let mut migrate_items: Vec<GroundStack> = Vec::new();
-    let legacy_stock: Vec<(i32, i32)> = (-4..=-3).flat_map(|x| (-4..=-1).map(move |y| (x, y))).collect();
-    for pos in legacy_stock {
+    let old_stock_pos = (-4..=-3).flat_map(|x| (-4..=-1).map(move |y| (x, y)))
+        .chain((-13..=-10).flat_map(|x| (-5..=-3).map(move |y| (x, y))));
+    for pos in old_stock_pos {
         if let Some(ov) = overlays.get_mut(&pos)
             && ov.structure == Some(StructureKind::Stockpile)
         {
             if let Some(g) = ov.ground_item.take() {
                 migrate_items.push(g);
             }
-            ov.structure = None;
+            ov.structure = (pos.1 == -5).then_some(StructureKind::StonePaving);
             ov.eco_ticks = 0;
             changed = true;
         }
     }
-    for pos in [(1, -5), (2, -5), (3, -5), (2, -4), (3, -4), (26, -6), (26, -5)] {
+    let old_plot_pos = [(1, -5), (2, -5), (3, -5), (2, -4), (3, -4), (26, -6), (26, -5)]
+        .into_iter()
+        .chain((-4..=8).flat_map(|x| (-12..=-6).map(move |y| (x, y))));
+    for pos in old_plot_pos {
         if let Some(ov) = overlays.get_mut(&pos)
             && ov.structure.is_some_and(StructureKind::is_garden_plot)
         {
@@ -181,7 +185,7 @@ pub fn reconcile_real_scale_layout_and_clutter(
             }
         }
     };
-    seed_zone((-3, -7), -4..=8, -12..=-6, &FARM_PARCELS[..4], StructureKind::CropSeedling);
+    seed_zone((-19, -15), -20..=-8, -20..=-14, &FARM_PARCELS[..4], StructureKind::CropSeedling);
     seed_zone((29, -12), 28..=38, -17..=-11, &FARM_PARCELS[4..], StructureKind::HerbSeedling);
 
     // 若新倉廩尚未備入初期青草藥，於室內貨架備好 2 份
@@ -907,7 +911,7 @@ mod tests {
 
         let a = eco_actor(1, None, Vec::new());
         let mut w = eco_world(ov, vec![a]);
-        enqueue_contiguous_parcel(&mut w, 0, -3, -7, FarmOp::Harvest);
+        enqueue_contiguous_parcel(&mut w, 0, -19, -15, FarmOp::Harvest);
         assert_eq!(w.economy.parcel_queues.get(&1).map_or(0, VecDeque::len), 4);
     }
 }

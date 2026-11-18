@@ -141,9 +141,9 @@ impl RimWorldState {
 
         let occ = self.occupied_cells(Some(idx));
 
-        // 開譜曆夜間（19:00～04:59）：無急務之自主居民回到就近營火旁空席圍爐歇息
+        // 開譜曆深夜（21:00～03:59）：無急務且未就榻之自主居民於就近營火圍爐；04:00 早市啟戶駐店
         let game_hour = crate::game::current_game_hour();
-        let is_night = !(5..19).contains(&game_hour);
+        let is_night = !(4..21).contains(&game_hour);
         if is_night && self.actors[idx].entity_id.is_none() {
             if let Some(&(fx, fy)) = self
                 .overlays
@@ -173,6 +173,9 @@ impl RimWorldState {
 
         // 雙聚落行腳貨郎自主挑貨往返水尾寮與西麓湧泉
         if !is_night && super::rim_phase::try_assign_caravan_route(self, rt, idx) {
+            return;
+        }
+        if !is_night && super::rim_town::try_assign_town_duty_or_stroll(self, rt, idx, game_hour, true) {
             return;
         }
 
@@ -318,17 +321,7 @@ impl RimWorldState {
             return;
         }
 
-        if self.tick % 19 == (self.actors[idx].id as u64 % 19) {
-            let angle = (self.tick as f32 * 0.7) + self.actors[idx].id as f32;
-            let gx = home.0 + (angle.cos() * 3.5).round() as i32;
-            let gy = home.1 + (angle.sin() * 3.5).round() as i32;
-            if let Some(p) =
-                find_micro_path_crowded(rt, &self.overlays, start, (gx, gy), false, false, &occ)
-            {
-                self.actors[idx].path = p.into();
-                self.actors[idx].activity_tag = "營畔歇息".into();
-            }
-        }
+        let _ = super::rim_town::try_assign_town_duty_or_stroll(self, rt, idx, game_hour, false);
     }
 
     pub(crate) fn advance_actor(&mut self, rt: Option<&SubstrateRuntime>, idx: usize) {

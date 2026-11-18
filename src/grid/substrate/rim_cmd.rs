@@ -47,7 +47,7 @@ impl RimWorldState {
                             if ov.blueprint.is_some() {
                                 ov.blueprint = None;
                                 count += 1;
-                            } else if ov.structure.is_some() {
+                            } else if ov.structure.is_some_and(|st| !super::rim_town::is_protected_town_structure(mx, my, st)) {
                                 ov.blueprint = Some(BlueprintJob::Deconstruct { progress: 0 });
                                 count += 1;
                             }

@@ -64,8 +64,8 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         name: "阿木鐵店",
         kind_label: "商住一體",
         household_note: "師徒 2 人一戶",
-        bbox: (7, 12, -3, 5),
-        shop_zone: Some((7, 12, -3, 1)),
+        bbox: (7, 11, -3, 5),
+        shop_zone: Some((7, 11, -3, 1)),
         home_zone: Some((7, 11, 1, 5)),
         clinic_bed: None,
         guest_beds: &[],
@@ -98,7 +98,7 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         shop_zone: Some((-20, -15, -9, -7)),
         home_zone: Some((-20, -15, -12, -9)),
         clinic_bed: None,
-        guest_beds: &[(-16, -11), (-16, -9)],
+        guest_beds: &[(-16, -11), (-16, -10)],
         owner_beds: &[("res:xie_chengfeng", (-19, -11))],
     },
     TownBuildingSpec {
@@ -261,7 +261,7 @@ pub fn apply_town_architecture(
         set_town_cell(overlays, (10, 4), None);
     }
 
-    // 2. 三水商行 (-13..=-6, -1..=5)：加設中隔牆 y=1 分出前店後宅、安兩張專屬睡榻
+    // 2. 三水商行 (-13..=-6, -1..=5)：加設中隔牆 y=1 與北側後門 (-10,5) 赴料場、安兩張專屬睡榻
     for x in -13..=-6 {
         let st = if x == -9 {
             StructureKind::BambooDoor
@@ -270,15 +270,22 @@ pub fn apply_town_architecture(
         };
         vacate_and_set(overlays, (x, 1), Some(st), (-12, 4));
     }
+    vacate_and_set(overlays, (-10, 5), Some(StructureKind::BambooDoor), (-12, 4));
     for bed in [(-7, 4), (-7, 2)] {
         if overlays.get(&bed).and_then(|o| o.structure) != Some(StructureKind::BambooBed) {
             vacate_and_set(overlays, bed, Some(StructureKind::BambooBed), (-11, 4));
         }
     }
 
-    // 3. 阿木鐵店前店 (7..=12, -3..=1)：保留後寢臥 (7..=11, 1..=5)，南開門並置鍛鐵檯與貨架
-    build_rect_room(rt, overlays, (7, 12, -3, 1), &[(9, -3), (9, 1)]);
-    vacate_and_set(overlays, (11, -1), Some(StructureKind::Workbench), (8, -1));
+    // 3. 阿木鐵店前店 (7..=11, -3..=1)：與後寢臥 (7..=11, 1..=5) 切齊，x=12..=13 留 2m 石板巷
+    for y in -4..=5 {
+        vacate_and_set(overlays, (12, y), Some(StructureKind::StonePaving), (8, -1));
+    }
+    if overlays.get(&(11, -1)).and_then(|o| o.structure) == Some(StructureKind::Workbench) {
+        vacate_and_set(overlays, (11, -1), Some(StructureKind::BambooWall), (8, -1));
+    }
+    build_rect_room(rt, overlays, (7, 11, -3, 1), &[(9, -3), (9, 1)]);
+    vacate_and_set(overlays, (10, -1), Some(StructureKind::Workbench), (8, -1));
     lay_if_clear(rt, overlays, (8, -1), StructureKind::Stockpile);
 
     // 4. 春水小吃 (-20..=-15, -3..=5)：前灶食後母子臥房
@@ -317,15 +324,16 @@ pub fn apply_town_architecture(
         });
     }
 
-    // 6. 迎風宿屋 (-20..=-15, -12..=-7)：1 掌櫃榻＋2 客榻
-    build_rect_room(rt, overlays, (-20, -15, -12, -7), &[(-18, -7)]);
-    lay_if_clear(rt, overlays, (-19, -8), StructureKind::Stockpile);
-    for bed in [(-19, -11), (-16, -11), (-16, -9)] {
+    // 6. 迎風宿屋 (-20..=-15, -12..=-7)：中牆 (-18,-9) 隔開前櫃檯廳與後客寢區，1 掌櫃榻＋2 客榻
+    build_rect_room(rt, overlays, (-20, -15, -9, -7), &[(-18, -7), (-18, -9)]);
+    build_rect_room(rt, overlays, (-20, -15, -12, -9), &[(-18, -9)]);
+    vacate_and_set(overlays, (-19, -8), Some(StructureKind::Stockpile), (-18, -8));
+    for bed in [(-19, -11), (-16, -11), (-16, -10)] {
         vacate_and_set(overlays, bed, Some(StructureKind::BambooBed), (-19, -8));
     }
 
-    // 7. 許家農宅 (-13..=-6, -12..=-7)：一家 3 口純住宅，東門直通西坡農田
-    build_rect_room(rt, overlays, (-13, -6, -12, -7), &[(-9, -7), (-6, -9)]);
+    // 7. 許家農宅 (-13..=-6, -12..=-7)：一家 3 口純住宅，南門 (-9,-12) 直通南坡田畦
+    build_rect_room(rt, overlays, (-13, -6, -12, -7), &[(-9, -7), (-6, -9), (-9, -12)]);
     vacate_and_set(overlays, (-11, -8), Some(StructureKind::Campfire), (-7, -8));
     lay_if_clear(rt, overlays, (-7, -8), StructureKind::Stockpile);
     for bed in [(-12, -11), (-10, -11), (-8, -11)] {
@@ -350,7 +358,7 @@ pub fn apply_town_architecture(
         lay_if_clear(rt, overlays, (x, -2), StructureKind::CoveredArcade);
         lay_if_clear(rt, overlays, (x, -6), StructureKind::CoveredArcade);
     }
-    for x in 7..=12 {
+    for x in 7..=11 {
         lay_if_clear(rt, overlays, (x, -4), StructureKind::CoveredArcade);
     }
     for x in 14..=19 {
@@ -395,6 +403,12 @@ pub fn apply_town_architecture(
         for y in 5..=8 {
             lay_if_clear(rt, overlays, (x, y), StructureKind::StonePaving);
         }
+    }
+    for x in -20..=-9 {
+        lay_if_clear(rt, overlays, (x, -13), StructureKind::StonePaving);
+    }
+    for y in -19..=-13 {
+        lay_if_clear(rt, overlays, (-14, y), StructureKind::StonePaving);
     }
     for x in 20..=27 {
         for y in -6..=-3 {
@@ -442,7 +456,8 @@ pub fn is_other_household_bed(actor_key: &str, pos: (i32, i32)) -> bool {
 pub fn clinic_bed_near(overlays: &HashMap<(i32, i32), MicroCellOverlay>) -> Option<(i32, i32)> {
     for &pos in &[
         (18, -1),
-        (-16, -9),
+        (15, 4),
+        (-16, -10),
         (-16, -11),
         (8, 4),
         (-7, 4),
@@ -463,7 +478,7 @@ pub fn try_town_night_sleep(
     idx: usize,
     game_hour: i32,
 ) -> bool {
-    if !(game_hour >= 21 || game_hour < 5) {
+    if !(game_hour >= 22 || game_hour < 4) {
         return false;
     }
     let actor = &world.actors[idx];
@@ -558,6 +573,78 @@ pub fn parse_item_code_str(s: &str) -> Option<RimItemKind> {
         "alloy_pick" => RimItemKind::AlloyPick,
         _ => return None,
     })
+}
+
+pub fn is_protected_town_structure(mx: i32, my: i32, st: StructureKind) -> bool {
+    building_at(mx, my).is_some()
+        || matches!(
+            st,
+            StructureKind::StonePaving | StructureKind::CoveredArcade | StructureKind::StreetLamp
+        )
+        || st.is_garden_plot()
+        || (mx == 0 && (9..=15).contains(&my) && st == StructureKind::WoodBridge)
+        || ((-13..=-10).contains(&mx) && (6..=7).contains(&my))
+        || ((21..=23).contains(&mx) && my == -14)
+}
+
+/// 白晝引導店主駐店看店、其餘街坊於宅前街巷閒步（取代舊版全員聚集原點「營畔歇息」）。
+pub fn try_assign_town_duty_or_stroll(
+    world: &mut RimWorldState,
+    rt: Option<&SubstrateRuntime>,
+    idx: usize,
+    game_hour: i32,
+    duty_only: bool,
+) -> bool {
+    const TOWN_POSTS: [(&str, (i32, i32), &str); 10] = [
+        ("res:liu_chunshui", (-17, -1), "灶畔掌杓"),
+        ("res:lin_sanshui", (-10, 0), "掌櫃看店"),
+        ("res:lin_amu", (10, -2), "爐前司鍛"),
+        ("res:zhang_jian", (15, -2), "診間候診"),
+        ("res:xie_chengfeng", (-17, -8), "櫃檯迎客"),
+        ("res:zhou_acha", (31, -6), "茶灶看火"),
+        ("res:liu_abao", (-18, 0), "招呼堂食"),
+        ("res:gao_afa", (-8, 0), "盤點山貨"),
+        ("res:zhang_xiaoan", (8, -2), "整理鐵器"),
+        ("res:zhang_suxin", (17, -2), "分揀百草"),
+    ];
+    if game_hour >= 22 || game_hour < 4 {
+        return false;
+    }
+    let actor = &world.actors[idx];
+    if actor.faction != ActorFaction::Settler || actor.is_player || actor.hp <= 0 {
+        return false;
+    }
+    let start = actor.micro_pos();
+    let occ = world.occupied_cells(Some(idx));
+    let posts = if duty_only { &TOWN_POSTS[..6] } else { &TOWN_POSTS[..] };
+    if let Some(&(_, post, tag)) = posts.iter().find(|&&(k, _, _)| k == actor.actor_key)
+        && actor.hunger >= 35
+        && actor.thirst >= 35
+    {
+        if (start.0 - post.0).abs() + (start.1 - post.1).abs() <= 1 {
+            world.actors[idx].activity_tag = tag.into();
+            return true;
+        }
+        if !matches!(actor.task, PendingTask::CookAt { .. } | PendingTask::CraftAt { .. })
+            && let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, post, false, false, &occ)
+        {
+            world.actors[idx].path = p.into();
+            world.actors[idx].activity_tag = tag.into();
+            return true;
+        }
+    }
+    if !duty_only && world.tick % 19 == (world.actors[idx].id as u64 % 19) {
+        let base = preferred_bed_for(&world.actors[idx].actor_key).unwrap_or(start);
+        let angle = (world.tick as f32 * 0.7) + world.actors[idx].id as f32;
+        let gx = base.0 + (angle.cos() * 3.0).round() as i32;
+        let gy = base.1 + (angle.sin() * 3.0).round() as i32;
+        if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, (gx, gy), false, false, &occ) {
+            world.actors[idx].path = p.into();
+            world.actors[idx].activity_tag = "宅前歇息".into();
+            return true;
+        }
+    }
+    false
 }
 
 pub fn building_at(mx: i32, my: i32) -> Option<&'static TownBuildingSpec> {
@@ -748,11 +835,13 @@ mod tests {
         let (overlays, actors, _) = seed_outpost(None);
         let rooms = detect_enclosed_rooms(&overlays);
         assert!(rooms.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5));
-        assert!(rooms.iter().any(|r| r.x0 == 7 && r.x1 == 12 && r.y0 == -3 && r.y1 == 1));
+        assert!(rooms.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == -3 && r.y1 == 1));
         assert!(rooms.iter().any(|r| r.x0 == 14 && r.x1 == 19 && r.y0 == -3 && r.y1 == 1));
         assert!(rooms.iter().any(|r| r.x0 == 14 && r.x1 == 19 && r.y0 == 1 && r.y1 == 5));
         assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -3 && r.y1 == 1));
         assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == 1 && r.y1 == 5));
+        assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -9 && r.y1 == -7));
+        assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -12 && r.y1 == -9));
         assert!(rooms.iter().any(|r| r.x0 == 10 && r.x1 == 14 && r.y0 == -12 && r.y1 == -7));
 
         let mut seen_keys = HashSet::new();
@@ -778,9 +867,9 @@ mod tests {
         }
         assert_eq!(seen_keys.len(), 15);
         assert_eq!(clinic_bed_near(&overlays), Some((18, -1)));
-        assert_eq!(
-            overlays.get(&(-16, -9)).and_then(|o| o.structure),
-            Some(StructureKind::BambooBed)
+        assert!(
+            overlays.get(&(-16, -10)).and_then(|o| o.structure) == Some(StructureKind::BambooBed)
+                || overlays.get(&(-16, -11)).and_then(|o| o.structure) == Some(StructureKind::BambooBed)
         );
     }
 
