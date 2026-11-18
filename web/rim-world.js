@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a22';
+  const PAWN_ASSET_VER = '20261118a23';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -573,7 +573,9 @@
       selfBtn.classList.toggle('rim-chip-warn', !!meDetail.autopilot);
     }
     if (gearEl) {
-      gearEl.textContent = `持：${meDetail.equipped_label || '空手'}`;
+      const edge = meDetail.tool_note ? String(meDetail.tool_note).split('｜').pop() : '';
+      const baseGear = `持：${meDetail.equipped_label || '空手'}`;
+      gearEl.textContent = edge ? `${baseGear}・${edge}` : baseGear;
     }
     if (!selectedCell && meDetail.zone) {
       const zEl = $('rim-zone-title');
@@ -892,6 +894,10 @@
             item_code: s.item_code,
           });
           if (r && r.msg) showToast(r.msg);
+          if (s.cmd === 'shop_cmd' && r && r.ok) {
+            applyServerPathToMe(r);
+            if (Array.isArray(r.path) && r.path.length > 0) closeInspector();
+          }
           lastInspectorSig = '';
           pollState(true);
         } else if (s.action) {
@@ -922,6 +928,26 @@
       };
       sockWrap.appendChild(btn);
     }
+  }
+
+  function applyServerPathToMe(r) {
+    if (!r || !r.ok || !Array.isArray(r.path) || r.path.length === 0) return;
+    const me = actors.find((a) => a.is_player);
+    if (!me) return;
+    const st = renderActors.get(me.id);
+    if (!st) return;
+    const mapped = r.path.map((p) => [p[0], p[1]]);
+    const nextPath = trimPassedWaypoints(mapped, st.x, st.y);
+    meMoveSeq += 1;
+    meMoveLockUntil = performance.now() + 900;
+    meArriveHoldUntil = 0;
+    st.path = nextPath.length > 0 ? nextPath : mapped;
+    st.srvMoving = true;
+    st.autopilot = false;
+    if (typeof r.speed === 'number' && r.speed > 0) st.speed = r.speed;
+    st.running = Boolean(r.running);
+    followMe = true;
+    $('btn-focus-me')?.classList.add('rim-chip-active');
   }
 
   function closeModal() {
@@ -1069,6 +1095,23 @@
         stateRow.appendChild(sp);
       }
       secState.appendChild(stateRow);
+      if (d.has_debt) {
+        const repayRow = document.createElement('div');
+        repayRow.className = 'rim-row-pills';
+        const repayBtn = document.createElement('button');
+        repayBtn.type = 'button';
+        repayBtn.className = 'rim-chip-btn';
+        repayBtn.textContent = '結清濟安診所診金';
+        repayBtn.onclick = async () => {
+          const r = await sendCmd({ cmd: 'shop_cmd', mx: 15, my: -1, item_code: 'repay_debt' });
+          if (r && r.msg) showToast(r.msg);
+          if (r && r.ok) applyServerPathToMe(r);
+          closeModal();
+          pollState(true);
+        };
+        repayRow.appendChild(repayBtn);
+        secState.appendChild(repayRow);
+      }
 
       const { hero } = buildModalHero(d, secState);
       bodyEl.appendChild(hero);
@@ -1495,7 +1538,8 @@
       const heldRow = document.createElement('div');
       heldRow.className = 'rim-inv-row';
       const heldName = document.createElement('strong');
-      heldName.textContent = `手持：${d.equipped_label || '空手'}`;
+      const heldBase = `手持：${d.equipped_label || '空手'}`;
+      heldName.textContent = d.tool_note ? `${heldBase}（${d.tool_note}）` : heldBase;
       heldRow.appendChild(heldName);
 
       if (d.equipped_code) {

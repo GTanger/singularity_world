@@ -35,6 +35,7 @@ pub mod rim_physics;
 pub mod rim_portrait_gen;
 pub mod rim_seed;
 pub mod rim_shelter;
+pub mod rim_shops;
 pub mod rim_sim;
 pub mod rim_town;
 pub mod rim_world;

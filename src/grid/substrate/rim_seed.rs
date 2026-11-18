@@ -616,8 +616,22 @@ pub fn ensure_outpost_residents(actors: &mut Vec<RimActor>) {
                     existing.py = spec.pos.1;
                 }
             }
+            if existing.civic.tool_maker.is_none() && existing.equipped_tool.is_some() {
+                existing.civic.tool_maker = Some(if spec.key == "res:lin_amu" {
+                    "林阿木自鍛".into()
+                } else {
+                    "阿木鐵店・林阿木鍛造".into()
+                });
+            }
             continue;
         }
+        let tool_maker = spec.tool.map(|_| {
+            if spec.key == "res:lin_amu" {
+                "林阿木自鍛".to_string()
+            } else {
+                "阿木鐵店・林阿木鍛造".to_string()
+            }
+        });
         actors.push(RimActor {
             id: next_id,
             code: spec.key.into(),
@@ -673,6 +687,10 @@ pub fn ensure_outpost_residents(actors: &mut Vec<RimActor>) {
             caravan_leg: if spec.role.contains("貨郎") { 1 } else { 0 },
             wet_ticks: 0,
             recent_diary: VecDeque::new(),
+            civic: super::rim_shops::ActorCivicState {
+                tool_maker,
+                ..Default::default()
+            },
         });
         next_id += 1;
     }

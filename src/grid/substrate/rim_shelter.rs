@@ -283,8 +283,15 @@ pub fn step_weather_and_bed_recovery(world: &mut RimWorldState, weather: RimWeat
         }
 
         if on_bed && a.path.is_empty() {
-            a.stamina = a.stamina.saturating_add(18).min(100);
-            a.hp = (a.hp + 3).min(a.max_hp);
+            let inn_bonus: u8 = if a.civic.inn_lease_until > world.tick
+                && (pos == (-16, -9) || pos == (-16, -11))
+            {
+                6
+            } else {
+                0
+            };
+            a.stamina = a.stamina.saturating_add(18 + inn_bonus).min(100);
+            a.hp = (a.hp + 3 + if inn_bonus > 0 { 2 } else { 0 }).min(a.max_hp);
             if a.injury_ticks > 0 {
                 a.injury_ticks = a.injury_ticks.saturating_sub(5);
                 if a.injury_ticks == 0 {

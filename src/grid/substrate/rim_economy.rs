@@ -444,6 +444,7 @@ pub fn record_tool_wear(world: &mut RimWorldState, idx: usize) {
     if *w >= wear_cap {
         *w = 0;
         world.actors[idx].equipped_tool = None;
+        world.actors[idx].civic.tool_maker = None;
         world.actors[idx].push_diary(format!("手中的{}磨耗已極，應聲折斷", tool.label()));
         world.actors[idx].pop_text = Some((format!("{}磨損", tool.label()), world.tick + 10));
         let g = world.actors[idx].glyph.clone();
@@ -753,6 +754,7 @@ mod tests {
             caravan_leg: 0,
             wet_ticks: 0,
             recent_diary: VecDeque::new(),
+            civic: Default::default(),
         }
     }
 

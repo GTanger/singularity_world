@@ -224,7 +224,20 @@ fn build_selection_card(
             crate::grid::substrate::rim_sim::now_unix_sec(),
         );
         let sheltered = crate::grid::substrate::rim_shelter::sheltered_cell_set(&world.overlays);
+        let viewer_idx = viewer_pid.and_then(|vp| {
+            world.actors.iter().position(|a| a.entity_id.as_deref() == Some(vp))
+        });
         title = st.label().to_string();
+        if !crate::grid::substrate::rim_shops::describe_shop_fixture_card(
+            world,
+            viewer_idx,
+            mx,
+            my,
+            st,
+            &mut title,
+            &mut tags,
+            &mut sockets,
+        ) {
         match st {
             StructureKind::Workbench => {
                 tags.push("鍛造手藝".into());
@@ -250,9 +263,6 @@ fn build_selection_card(
                 sockets.push(json!({ "label": "走近烤火", "action": "move" }));
             }
             StructureKind::Stockpile => {
-                let viewer_idx = viewer_pid.and_then(|vp| {
-                    world.actors.iter().position(|a| a.entity_id.as_deref() == Some(vp))
-                });
                 title = if crate::grid::substrate::rim_economy::stockpile_is_indoor(mx, my) {
                     "倉廩木架儲位".into()
                 } else {
@@ -297,6 +307,7 @@ fn build_selection_card(
                 );
             }
             _ => {}
+        }
         }
         sockets.push(json!({ "label": "標記拆除", "tool": "deconstruct" }));
     } else if !cleared && let Some(prop) = nat {
@@ -531,6 +542,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
             } else if weather.is_raining() && p.equipped_hat {
                 feels.push("竹笠擋雨");
             }
+            crate::grid::substrate::rim_shops::push_civic_feels(world.tick, p, &mut feels);
             json!({
                 "id": p.id,
                 "name": p.name,
@@ -551,6 +563,8 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                 "directive": crate::grid::substrate::rim_cmd::normalize_directive_code(&p.directive),
                 "equipped_code": p.equipped_tool.map(item_code_str),
                 "equipped_label": p.equipped_tool.map_or("空手", RimItemKind::label),
+                "tool_note": crate::grid::substrate::rim_shops::tool_detail_note(&world, p),
+                "has_debt": p.civic.debt_mg > 0,
                 "skills": p.natural_skills(),
                 "recent_diary": p.recent_diary.iter().take(6).cloned().collect::<Vec<_>>(),
                 "injury_part": p.injury_part,
@@ -892,6 +906,22 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
             world.touch_player_activity(&pid);
             if ok { world.push_event(msg.clone()); world.persist_if_needed(true); }
             Json(json!({ "ok": ok, "msg": msg })).into_response()
+        }
+        "shop_cmd" => {
+            let (Some(mx), Some(my), Some(code)) = (body.mx, body.my, body.item_code.as_deref()) else {
+                return (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "缺少店面或項目" }))).into_response();
+            };
+            let Some(p_idx) = world.actors.iter().position(|a| a.entity_id.as_deref() == Some(pid.as_str())) else {
+                return StatusCode::NOT_FOUND.into_response();
+            };
+            let (ok, msg, path) = crate::grid::substrate::rim_shops::handle_shop_cmd(&mut world, runtime::global(), p_idx, mx, my, code);
+            world.touch_player_activity(&pid);
+            if ok {
+                if path.is_empty() { world.push_event(msg.clone()); }
+                world.persist_if_needed(true);
+            }
+            let p = &world.actors[p_idx];
+            Json(json!({ "ok": ok, "msg": msg, "path": path, "px": p.px, "py": p.py, "running": p.running, "speed": if p.running { 4.2 } else { 1.45 } })).into_response()
         }
         _ => (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "無法執行此動作" }))).into_response(),
     }

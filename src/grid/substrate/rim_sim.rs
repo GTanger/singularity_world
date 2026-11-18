@@ -101,6 +101,11 @@ pub enum PendingTask {
         tx: i32,
         ty: i32,
     },
+    ShopPatron {
+        tx: i32,
+        ty: i32,
+        op: super::rim_shops::ShopServiceOp,
+    },
 }
 
 fn default_gender() -> String {
@@ -198,6 +203,8 @@ pub struct RimActor {
     pub wet_ticks: u8,
     #[serde(default)]
     pub recent_diary: VecDeque<String>,
+    #[serde(default)]
+    pub civic: super::rim_shops::ActorCivicState,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -232,6 +239,8 @@ pub struct ActorPhaseBlob {
     pub wet_ticks: u8,
     #[serde(default)]
     pub recent_diary: Vec<String>,
+    #[serde(default)]
+    pub civic: super::rim_shops::ActorCivicState,
 }
 
 impl RimActor {
@@ -342,6 +351,7 @@ impl RimActor {
             caravan_leg: self.caravan_leg,
             wet_ticks: self.wet_ticks,
             recent_diary: self.recent_diary.iter().cloned().collect(),
+            civic: self.civic.clone(),
         };
         serde_json::to_string(&blob).unwrap_or_else(|_| "{}".into())
     }
@@ -366,6 +376,7 @@ impl RimActor {
             self.caravan_leg = b.caravan_leg;
             self.wet_ticks = b.wet_ticks;
             self.recent_diary = b.recent_diary.into_iter().take(8).collect();
+            self.civic = b.civic;
         }
     }
 
@@ -735,6 +746,10 @@ impl RimWorldState {
             caravan_leg: 0,
             wet_ticks: 0,
             recent_diary: VecDeque::new(),
+            civic: super::rim_shops::ActorCivicState {
+                tool_maker: Some("阿木鐵店・林阿木鍛造".into()),
+                ..Default::default()
+            },
         });
         self.dirty_unsaved_ticks += 5;
         let p_idx = self.actors.len() - 1;
@@ -807,6 +822,7 @@ impl RimWorldState {
         super::rim_life::step_settler_metabolism(self);
         super::rim_ecology::step_land_ecology(self, rt);
         super::rim_ecology::step_wildlife_carrying_capacity(self, rt);
+        super::rim_shops::step_town_shops(self);
         super::rim_economy::step_economy_tick(self);
 
         for idx in 0..self.actors.len() {

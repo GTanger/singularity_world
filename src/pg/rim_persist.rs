@@ -230,6 +230,7 @@ pub fn load_all_actors(pool: &DbPool) -> Result<Vec<RimActor>, String> {
             caravan_leg: 0,
             wet_ticks: 0,
             recent_diary: std::collections::VecDeque::new(),
+            civic: Default::default(),
         };
         actor.apply_phase_json(&phase_raw);
         out.push(actor);

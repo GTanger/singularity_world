@@ -91,10 +91,11 @@ impl RimWorldState {
             return;
         }
 
-        let (epoch, scale) = crate::game::game_time_cfg();
-        let (_, game_hour, _, _) =
-            crate::game::game_time_now(super::rim_sim::now_unix_sec(), epoch, scale);
-        if super::rim_town::try_town_night_sleep(self, rt, idx, game_hour as i32) {
+        if super::rim_shops::try_autonomous_shop_patronage(self, rt, idx) {
+            return;
+        }
+        let game_hour = crate::game::current_game_hour();
+        if super::rim_town::try_town_night_sleep(self, rt, idx, game_hour) {
             return;
         }
 
@@ -728,6 +729,8 @@ impl RimWorldState {
                                 && self.actors[idx].equipped_tool.is_none()
                             {
                                 self.actors[idx].equipped_tool = Some(item);
+                                self.actors[idx].civic.tool_maker =
+                                    Some(format!("{}自製", self.actors[idx].name));
                             } else {
                                 self.actors[idx].add_inv(item, 1);
                             }
@@ -821,6 +824,9 @@ impl RimWorldState {
             }
             PendingTask::StorehouseTrade { tx, ty } => {
                 super::rim_economy::complete_storehouse_trade(self, idx, tx, ty);
+            }
+            PendingTask::ShopPatron { tx, ty, op } => {
+                super::rim_shops::complete_shop_patron(self, rt, idx, tx, ty, op);
             }
         }
     }
