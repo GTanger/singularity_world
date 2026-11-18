@@ -179,8 +179,11 @@ impl RimWorldState {
             return;
         }
 
-        // 若同伴為『patrol（自由巡護）』，於各自聚落附近巡守不遠走
-        if self.actors[idx].entity_id.is_none() && self.actors[idx].directive == "patrol" {
+        // 若同伴為『patrol（自由巡護）』且非專職巡山獵戶，於各自聚落附近巡守不遠走
+        if self.actors[idx].entity_id.is_none()
+            && self.actors[idx].directive == "patrol"
+            && !self.actors[idx].role_tag.contains('獵')
+        {
             if self.tick % 13 == (self.actors[idx].id as u64 % 13) {
                 let angle = (self.tick as f32 * 0.55) + self.actors[idx].id as f32;
                 let gx = home.0 + (angle.cos() * 4.5).round() as i32;
@@ -339,14 +342,16 @@ impl RimWorldState {
                 }
                 if self.tick % 3 == 0 {
                     let s = self.actors[idx].micro_pos();
-                    if let Some(p) =
-                        find_micro_path(rt, &self.overlays, s, t.micro_pos(), true, is_beast)
-                    {
+                    let occ = self.occupied_cells(Some(idx));
+                    if let Some(p) = find_micro_path_crowded(
+                        rt, &self.overlays, s, t.micro_pos(), true, is_beast, &occ,
+                    ) {
                         self.actors[idx].path = p.into();
                     }
                 }
             } else {
                 self.actors[idx].task = PendingTask::None;
+                self.actors[idx].path.clear();
                 self.actors[idx].activity_tag = "收勢待命".into();
             }
         }

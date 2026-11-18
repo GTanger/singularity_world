@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
-- **更新日期**：2026-11-18
-- **當前狀態**：`active`（已完成 `v24.1`（`v=20261118a25`）：視覺與城鎮合理性清創——方正街屋零互插合併屋頂、門外角色不削頭／紅線正交不穿牆、遷走街心菜園與料場還回完整本街石板、全鎮建物街路禁拆保護、店主白天駐店與解除掌櫃夥計挑貨飢渴死循環、等彈性物價平滑防暴衝、室內磚灶大鍋＋彈窗互斥與單字前綴清除）
+- **更新日期**：2026-11-19
+- **當前狀態**：`active`（已完成 `v25`（`v=20261119a02`）：全視覺切換至開源 CDDA `Chibi_Ultica` 圖集（`UltiCa` 四連通世界地形／紅瓦與台式青黑瓦屋頂／南立面牆門／家具／農作／16 類道具 ＋ `MSXotto+` 0ms 即時紙娃娃系統，完全汰除手繪白描與舊 `web/assets/pawn` 零散圖檔），並根治「全鎮排隊追打無害鐵羽竹雞＋目標死亡後仍走到定點才回頭」四連 AI 缺陷，通過 `60/60` 單元測試、桌機＋`Pixel 9 Pro XL` 真機視覺驗收、無先驗盲審 `0 Critical / 0 High` 與 30 秒線上軌跡稽核）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -58,6 +58,10 @@
 17. **2026-11-18 `v24.1` 視覺與城鎮空間／經濟合理性全面清創（`v=20261118a25`）**：
     - **空間格局、屋頂合併與人物分層（`rim_town.rs` + `rim_ecology.rs` + `web/rim-world.js`）**：將`阿木鐵店`收正為 `7..=11`（拓出 `x=12..=13` 2m 東巷）、`迎風宿屋`增設中牆隔開櫃檯廳與後客榻區（`(-16,-10)`）；把西麓露天料場遷至`三水商行`北院 `(-13..=-10,6..=7)`（加開後門 `(-10,5)`）、4 畦旱田遷至`許家農宅`南坡（加開南門 `(-9,-12)`）還回暢通本街；前端合併整棟完好屋頂、`0.30` 緊湊屋簷、移除室內隔門雨遮與騎樓門罩、戶外／掀頂角色後繪免削頭、導航紅線改正交、室內繪為磚灶大鍋、開彈窗自動收右下檢視卡且禁止拆除全鎮既有門店與公共街路。
     - **店主駐店與物價平滑（`rim_phase.rs` + `rim_life.rs` + `rim_shops.rs` + `rim_economy.rs`）**：限縮跨聚落挑貨僅歸`貨郎`且取消返程無限鎖死與單字洗版、復原飢渴角色並排派六店主白晝駐店；平滑 `quote_item` 缺貨彈性倍數使藥膏（~12–20 鎂）與鍛造武器（~24–38 鎂）回歸合理區間，且鐵店磨刃（4 鎂）同步落款`阿木鐵店・林阿木校刃`（`58/58` 單元測試通過）。
+18. **2026-11-19 `v25` 全世界視覺遷移 CDDA `Chibi_Ultica` 圖集與即時紙娃娃系統 ＋ 追獵排隊 AI 修復（`v=20261119a02`）**：
+    - **純素材庫邊界與單圖集打包（`scripts/build_cdda_atlas.py` + `web/assets/cdda/{atlas.png,atlas.json,CREDITS.md}`）**：依操作者定案（僅以 CDDA 免去手製素材環節，嚴守《奇點世界》台灣現代奇幻生活圈調性，不引進廢土與繁瑣求生），自官方 `ChibiUltica-2026-11-15.zip` 精煉打包 `294` 枚 `CC-BY-SA 3.0` 圖素至 `1024×374` 單張圖集（`145 KB`），涵蓋四連通 16 態紅瓦／台式青黑瓦屋頂、木／磚／土牆、河岸木橋、室內塌塌米與木地、16 類道具與 `MSXotto+` 紙娃娃分層，並完整移除舊 `web/assets/pawn/`。
+    - **前端整數像素網格、統一南北 Y-Sort 與 0ms 紙娃娃（`web/{cdda-tiles.js,rim-portrait.js,rim-world.js,rim-world.css,index.html,sw.js}`）**：以共用整數邊界消除毛細縫，保留南立面牆門與屋簷陰影（無溢街）、室內外家具／自然物／紙娃娃角色統一南北 Y-Sort，裝備行囊／自身／當面交談立繪與 `24×24` 道具圖示均為 0ms 同步渲染（卸戴竹笠／背簍／持器即時連動）。
+    - **根治全鎮排隊打鳥與死鳥折返跑 AI 缺陷（`rim_market.rs` + `rim_ai.rs`）**：區分具威脅野獸與無害`鐵羽竹雞`（僅專職獵戶可主動獵鳥、單隻竹雞限 1 名追獵者、防禦野豬上限 2 人並採避讓擁擠尋路）；目標陣亡時立即 `path.clear()` 終止殘餘路徑，`60/60` 單元測試與 30 秒線上軌跡稽核（`0` 非獵戶追鳥、`0` 店主離崗、`0` 死後殘餘路徑）全數通過。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -68,7 +72,7 @@
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
 - **活躍 2D 世界實作與單檔 `< 950` 行模組群**：
   - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_town,rim_shops,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_economy,rim_market,rim_portrait_gen}.rs`
-  - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`
+  - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,cdda-tiles.js,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`、`scripts/build_cdda_atlas.py`、`web/assets/cdda/{atlas.png,atlas.json,CREDITS.md}`
 
 ## 三、 下一步接續提示 (Next Cue)
 

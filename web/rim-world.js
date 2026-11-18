@@ -16,314 +16,16 @@
   let meta = null;
   let basemapImg = null;
 
-  // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a25';
-  const PAWN_ASSET_FILES = {
-    hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
-    head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
-    pack: `assets/pawn/m1_4_pack.png?v=${PAWN_ASSET_VER}`,
-    bootTop: `assets/pawn/m2_5_boot_top.png?v=${PAWN_ASSET_VER}`,
-    bamboo: `assets/pawn/m1_8_bamboo.png?v=${PAWN_ASSET_VER}`,
-    rock: `assets/pawn/m1_9_rock.png?v=${PAWN_ASSET_VER}`,
-    campfire: `assets/pawn/obj_campfire.png?v=${PAWN_ASSET_VER}`,
-    workbench: `assets/pawn/obj_workbench.png?v=${PAWN_ASSET_VER}`,
-    stockpile: `assets/pawn/obj_stockpile.png?v=${PAWN_ASSET_VER}`,
-    bridge: `assets/pawn/obj_bridge.png?v=${PAWN_ASSET_VER}`,
-    post: `assets/pawn/obj_post.png?v=${PAWN_ASSET_VER}`,
-    shoot: `assets/pawn/obj_shoot.png?v=${PAWN_ASSET_VER}`,
-    itemShoot: `assets/pawn/item_shoot.png?v=${PAWN_ASSET_VER}`,
-    itemBamboo: `assets/pawn/item_bamboo.png?v=${PAWN_ASSET_VER}`,
-    itemMeat: `assets/pawn/item_meat.png?v=${PAWN_ASSET_VER}`,
-    itemRoastShoot: `assets/pawn/item_roast_shoot.png?v=${PAWN_ASSET_VER}`,
-    itemRoastMeat: `assets/pawn/item_roast_meat.png?v=${PAWN_ASSET_VER}`,
-    itemBlade: `assets/pawn/item_blade.png?v=${PAWN_ASSET_VER}`,
-    itemPick: `assets/pawn/item_pick.png?v=${PAWN_ASSET_VER}`,
-    boar: `assets/pawn/beast_boar.png?v=${PAWN_ASSET_VER}`,
-    pheasant: `assets/pawn/beast_pheasant.png?v=${PAWN_ASSET_VER}`,
-  };
-  const pawnImgs = {};
-  let pawnLoadedCount = 0;
+  // ─ 角色與建物輔助狀態（全視覺改由 CddaTiles 渲染） ─
   let selectedSkillIdx = 0;
-  const pawnTotalAssets = Object.keys(PAWN_ASSET_FILES).length;
-  for (const [key, url] of Object.entries(PAWN_ASSET_FILES)) {
-    const im = new Image();
-    im.onload = () => {
-      pawnLoadedCount++;
-      if (pawnLoadedCount === pawnTotalAssets) window.__swPawnAssetsReady = true;
-    };
-    im.onerror = () => {
-      pawnLoadedCount++;
-      if (pawnLoadedCount === pawnTotalAssets) window.__swPawnAssetsReady = true;
-    };
-    im.src = url;
-    pawnImgs[key] = im;
+  function buildingCodeAt(mx, my) {
+    if (!Array.isArray(worldBuildings)) return '';
+    for (const b of worldBuildings) {
+      if (mx >= b.x0 && mx <= b.x1 && my >= b.y0 && my <= b.y1) return b.code || '';
+    }
+    return '';
   }
 
-  function isDrawableReady(img) {
-    return Boolean(
-      img &&
-        ((img.complete && img.naturalWidth > 0) ||
-          (typeof HTMLCanvasElement !== 'undefined' && img instanceof HTMLCanvasElement && img.width > 0))
-    );
-  }
-
-  function makeBaimiaoSprite(drawFn) {
-    const c = document.createElement('canvas');
-    c.width = 128;
-    c.height = 128;
-    const g = c.getContext('2d');
-    if (g) {
-      g.save();
-      g.translate(64, 64);
-      drawFn(g);
-      g.restore();
-    }
-    return c;
-  }
-
-  // 五張 128×128 離屏手繪白描淡彩植物與藥薯圖素（取代粗劣小畫家感圖塊）
-  pawnImgs.wildHerb = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.lineCap = 'round';
-    for (let i = 0; i < 7; i++) {
-      const ang = (i * Math.PI * 2) / 7 + (i % 2 ? 0.14 : -0.1);
-      g.save();
-      g.rotate(ang);
-      g.fillStyle = i % 2 === 0 ? '#507a64' : '#6c957b';
-      g.strokeStyle = '#332620';
-      g.lineWidth = 3.2;
-      g.beginPath();
-      g.moveTo(0, 0);
-      g.quadraticCurveTo(-13, -18, -7, -34);
-      g.quadraticCurveTo(0, -47, 0, -49);
-      g.quadraticCurveTo(0, -47, 7, -34);
-      g.quadraticCurveTo(13, -18, 0, 0);
-      g.fill();
-      g.stroke();
-      g.strokeStyle = 'rgba(232, 226, 208, 0.55)';
-      g.lineWidth = 1.6;
-      g.beginPath();
-      g.moveTo(0, -6);
-      g.lineTo(0, -40);
-      g.stroke();
-      g.restore();
-    }
-    for (const [fx, fy, fr] of [[-11, -13, 6.2], [12, -8, 5.6], [-2, 13, 5.8], [9, 10, 4.8]]) {
-      g.fillStyle = '#f2eaf5';
-      g.strokeStyle = '#332620';
-      g.lineWidth = 2.4;
-      g.beginPath();
-      g.arc(fx, fy, fr, 0, Math.PI * 2);
-      g.fill();
-      g.stroke();
-      g.fillStyle = '#cfa048';
-      g.beginPath();
-      g.arc(fx, fy, fr * 0.38, 0, Math.PI * 2);
-      g.fill();
-    }
-  });
-
-  pawnImgs.itemHerb = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.lineCap = 'round';
-    g.rotate(-0.36);
-    for (const [ang, len, col] of [[-0.30, 42, '#4d7660'], [0.02, 46, '#658f74'], [0.32, 41, '#58826a']]) {
-      g.save();
-      g.rotate(ang);
-      g.fillStyle = col;
-      g.strokeStyle = '#332620';
-      g.lineWidth = 3.2;
-      g.beginPath();
-      g.moveTo(0, 26);
-      g.quadraticCurveTo(-13, 0, -7, -len + 8);
-      g.quadraticCurveTo(0, -len, 7, -len + 8);
-      g.quadraticCurveTo(13, 0, 0, 26);
-      g.fill();
-      g.stroke();
-      g.restore();
-    }
-    // 束藥麻繩
-    g.fillStyle = '#bf9c6a';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 3;
-    g.beginPath();
-    g.roundRect(-14, 14, 28, 12, 4);
-    g.fill();
-    g.stroke();
-    // 藥花
-    g.fillStyle = '#f4ecf7';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 2.4;
-    for (const [fx, fy] of [[-12, -32], [6, -38], [16, -26]]) {
-      g.beginPath();
-      g.arc(fx, fy, 6, 0, Math.PI * 2);
-      g.fill();
-      g.stroke();
-    }
-  });
-
-  pawnImgs.itemSalve = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.fillStyle = '#d9dfc9';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 3.8;
-    g.beginPath();
-    g.arc(0, 2, 34, 0, Math.PI * 2);
-    g.fill();
-    g.stroke();
-    // 翡翠綠藥膏泥
-    g.fillStyle = '#4e785d';
-    g.beginPath();
-    g.arc(0, 2, 23, 0, Math.PI * 2);
-    g.fill();
-    g.stroke();
-    g.fillStyle = 'rgba(214, 235, 212, 0.42)';
-    g.beginPath();
-    g.ellipse(-7, -6, 9, 4.5, -0.5, 0, Math.PI * 2);
-    g.fill();
-    // 硃砂藥封與木塞紐
-    g.fillStyle = '#8b2020';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 2.4;
-    g.beginPath();
-    g.roundRect(14, -28, 18, 22, 4);
-    g.fill();
-    g.stroke();
-  });
-
-  pawnImgs.itemTuber = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.rotate(-0.42);
-    g.fillStyle = '#9f5747';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 3.8;
-    g.beginPath();
-    g.moveTo(-40, 0);
-    g.bezierCurveTo(-24, -24, 20, -26, 40, -2);
-    g.bezierCurveTo(22, 25, -22, 24, -40, 0);
-    g.closePath();
-    g.fill();
-    g.stroke();
-    g.fillStyle = '#bc7361';
-    g.beginPath();
-    g.ellipse(-6, -8, 18, 6.5, -0.05, 0, Math.PI * 2);
-    g.fill();
-    g.strokeStyle = '#332620';
-    g.lineWidth = 2.2;
-    g.beginPath();
-    g.moveTo(40, -2);
-    g.quadraticCurveTo(49, -6, 52, -1);
-    g.stroke();
-  });
-
-  pawnImgs.itemRoastTuber = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.rotate(-0.35);
-    g.fillStyle = '#68392c';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 3.8;
-    g.beginPath();
-    g.moveTo(-40, 2);
-    g.bezierCurveTo(-22, -24, 20, -25, 40, 0);
-    g.bezierCurveTo(22, 26, -22, 24, -40, 2);
-    g.closePath();
-    g.fill();
-    g.stroke();
-    // 裂開的金黃烤薯肉
-    g.fillStyle = '#e5aa48';
-    g.beginPath();
-    g.ellipse(0, -1, 22, 11, 0, 0, Math.PI * 2);
-    g.fill();
-    g.stroke();
-    g.fillStyle = '#f6d47d';
-    g.beginPath();
-    g.ellipse(-4, -3, 11, 4.5, 0, 0, Math.PI * 2);
-    g.fill();
-  });
-
-  pawnImgs.itemAlloyBlade = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.lineCap = 'round';
-    g.rotate(-0.62);
-    // 桃木短柄與銅格
-    g.fillStyle = '#7c5338';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 3.4;
-    g.beginPath();
-    g.roundRect(-8, 18, 16, 30, 5);
-    g.fill();
-    g.stroke();
-    g.fillStyle = '#b4925a';
-    g.beginPath();
-    g.roundRect(-16, 12, 32, 8, 3);
-    g.fill();
-    g.stroke();
-    // 導能冷鋼獵刀身＋微青導能血槽
-    g.fillStyle = '#d3dfe8';
-    g.beginPath();
-    g.moveTo(-10, 12);
-    g.lineTo(-9, -36);
-    g.quadraticCurveTo(0, -56, 12, -40);
-    g.quadraticCurveTo(13, -12, 8, 12);
-    g.closePath();
-    g.fill();
-    g.stroke();
-    g.strokeStyle = '#5a8fa6';
-    g.lineWidth = 2.6;
-    g.beginPath();
-    g.moveTo(-2, 4);
-    g.lineTo(-1, -34);
-    g.stroke();
-  });
-
-  pawnImgs.itemAlloyPick = makeBaimiaoSprite((g) => {
-    g.lineJoin = 'round';
-    g.lineCap = 'round';
-    g.rotate(-0.45);
-    // 堅木長柄
-    g.fillStyle = '#9c7853';
-    g.strokeStyle = '#332620';
-    g.lineWidth = 3.6;
-    g.beginPath();
-    g.roundRect(-6, -24, 12, 74, 5);
-    g.fill();
-    g.stroke();
-    // 鍛鋼雙頭開山鎬頭
-    g.fillStyle = '#5d6d7a';
-    g.beginPath();
-    g.moveTo(-42, -14);
-    g.quadraticCurveTo(0, -34, 42, -10);
-    g.lineTo(32, -2);
-    g.quadraticCurveTo(0, -18, -32, -5);
-    g.closePath();
-    g.fill();
-    g.stroke();
-    g.fillStyle = '#c8d6e0';
-    g.fillRect(-10, -27, 20, 14);
-    g.strokeRect(-10, -27, 20, 14);
-  });
-
-  const PAWN_PAL = {
-    ink: '#332620',
-    sleeve: '#999ea2',
-    skin: '#f3d9c3',
-    bracer: '#8e776b',
-    glove: '#70594d',
-    pants: '#535879',
-    wood: '#d9c0a3',
-    iron: '#6e7072',
-    steel: '#d6d8d9',
-    bambooBody: '#ddd0ad',
-    bambooChar: '#5a432b',
-    bambooSpine: '#685038',
-  };
-  const VEST_PALETTES = [
-    ['#8f705b', '#6f5443'], // 茶褐防刮皮背心
-    ['#62717f', '#45525e'], // 青黛粗布背心
-    ['#767f68', '#565e4b'], // 竹青艾褐短褂
-    ['#946b57', '#6e4c3c'], // 赭石獵裝背心
-    ['#7b7365', '#595246'], // 亞麻灰褐布衣
-  ];
   const CHOP_DURATION = 0.52;
   const WORKING_ACT_RE = /^(親手採伐|採伐|親手築造|築造|拆除|打造|製作|烹製|赴火|拆招|迎擊|上前交鋒|揮鎬翻土|翻妥|播種|扦插|採收|採挖|搗藥|搗製|敷藥|赴火炙)/;
 
@@ -479,6 +181,14 @@
       x: viewportW / 2 + (mx - camX) * cellPx,
       y: viewportH / 2 - (my - camY) * cellPx,
     };
+  }
+
+  function tileEdges(mx, my) {
+    const x0 = Math.round(viewportW / 2 + (mx - 0.5 - camX) * cellPx);
+    const x1 = Math.round(viewportW / 2 + (mx + 0.5 - camX) * cellPx);
+    const y0 = Math.round(viewportH / 2 - (my + 0.5 - camY) * cellPx);
+    const y1 = Math.round(viewportH / 2 - (my - 0.5 - camY) * cellPx);
+    return { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0 };
   }
 
   async function loadSubstrateMeta() {
@@ -827,6 +537,7 @@
           name: sel.actor_profile.name || sel.title || '角色',
           glyph: sel.actor_profile.glyph || (sel.actor_profile.name ? String(sel.actor_profile.name).slice(0, 1) : '人'),
           gender: sel.actor_profile.gender || 'M',
+          role: sel.actor_profile.role || '',
           soul_seed: sel.actor_profile.soul_seed || '0',
           wearHat: sel.actor_profile.wear_hat !== false,
           showPack: Boolean(sel.actor_profile.show_pack || sel.actor_profile.carry),
@@ -1019,6 +730,7 @@
     hero.appendChild(info);
 
     if (window.SwPortrait) {
+      const meActor = actors.find((a) => a.is_player);
       window.SwPortrait.render(cv, {
         mode: 'full',
         width: 136,
@@ -1027,8 +739,9 @@
         name: d.name || '自身',
         glyph: d.glyph || (d.name ? String(d.name).slice(0, 1) : '我'),
         gender: d.gender || 'M',
+        role: d.role || (meActor && meActor.role) || '',
         soul_seed: d.soul_seed || '0',
-        wearHat: d.wear_hat !== false,
+        wearHat: typeof d.equipped_hat === 'boolean' ? d.equipped_hat : (d.wear_hat !== false),
         showPack: Boolean(d.equipped_pack || d.show_pack),
         tool: d.equipped_code ? (d.equipped_label || d.equipped_code) : null,
         hpRatio: typeof d.hp_ratio === 'number' ? d.hp_ratio : 1.0,
@@ -1233,10 +946,10 @@
       secByok.className = 'rim-byok-box';
       const byokLbl = document.createElement('div');
       byokLbl.className = 'rim-sec-label';
-      byokLbl.textContent = '生圖與對話金鑰（選填）';
+      byokLbl.textContent = '進階對話金鑰（選填）';
       const byokMeta = document.createElement('div');
       byokMeta.style.cssText = 'font-size:11.5px;color:#6b5a47;line-height:1.4;';
-      byokMeta.textContent = '指定 OpenRouter 繪圖模型：google/gemini-3.1-flash-image';
+      byokMeta.textContent = '供深度街坊交談選用；留空即使用本機常駐對話模型';
       const byokState = document.createElement('div');
       byokState.id = 'rim-byok-status';
       byokState.style.cssText = 'font-size:11.5px;color:#2a4a6b;font-weight:600;';
@@ -1270,11 +983,6 @@
       btnClearKey.className = 'rim-chip-btn';
       btnClearKey.style.padding = '5px 10px';
       btnClearKey.textContent = '清除金鑰';
-      const btnRegen = document.createElement('button');
-      btnRegen.type = 'button';
-      btnRegen.className = 'rim-chip-btn';
-      btnRegen.style.padding = '5px 10px';
-      btnRegen.textContent = '重繪人像';
 
       const syncByokLabel = (info) => {
         if (!info || !info.ok) {
@@ -1284,7 +992,7 @@
         hasKeyConfigured = Boolean(info.has_key);
         byokState.textContent = hasKeyConfigured
           ? '目前狀態：已設定個人金鑰'
-          : '目前狀態：未設定個人金鑰（使用預設繪製）';
+          : '目前狀態：未設定個人金鑰（使用本機對話）';
         if (document.activeElement !== byokInp) {
           byokInp.value = hasKeyConfigured ? MASK_VAL : '';
         }
@@ -1323,22 +1031,8 @@
         saveKeyValue(v);
       };
       btnClearKey.onclick = () => saveKeyValue('');
-      btnRegen.onclick = async () => {
-        try {
-          await fetch('/api/rim/portrait/regen', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reset_base: true }),
-          });
-          if (window.SwPortrait) window.SwPortrait.clearCache();
-          showToast('已開始重新繪製人像');
-        } catch (_) {
-          showToast('重繪請求失敗');
-        }
-      };
 
-      byokBtns.append(btnSaveKey, btnClearKey, btnRegen);
+      byokBtns.append(btnSaveKey, btnClearKey);
       secByok.append(byokLbl, byokMeta, byokState, byokInp, byokBtns);
       bodyEl.appendChild(secByok);
 
@@ -1392,6 +1086,7 @@
           name: npc.name,
           glyph: npc.glyph,
           gender: npc.gender,
+          role: npc.role || '',
           soul_seed: npc.soul_seed,
           wearHat: npc.wear_hat !== false,
           showPack: Boolean(npc.show_pack),
@@ -1495,24 +1190,36 @@
       for (const it of offers) {
         const row = document.createElement('div');
         row.className = 'rim-inv-row';
+        const mainWrap = document.createElement('span');
+        mainWrap.className = 'rim-inv-main';
+        if (window.CddaTiles) {
+          mainWrap.appendChild(window.CddaTiles.createItemIconCanvas(it.code, 22));
+        }
         const lbl = document.createElement('span');
         const mtag = it.market_tag ? `（${it.market_tag}）` : '';
         lbl.textContent = `對方現貨：${it.label} × ${it.count}${mtag}`;
+        mainWrap.appendChild(lbl);
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'rim-socket-btn';
         btn.disabled = !it.can_afford;
         btn.textContent = `換取（${it.price_mg} 鎂）`;
         btn.onclick = () => doTrade(it.code, 'buy');
-        row.append(lbl, btn);
+        row.append(mainWrap, btn);
         tradeCol.appendChild(row);
       }
       for (const it of sellable) {
         const row = document.createElement('div');
         row.className = 'rim-inv-row';
+        const mainWrap = document.createElement('span');
+        mainWrap.className = 'rim-inv-main';
+        if (window.CddaTiles) {
+          mainWrap.appendChild(window.CddaTiles.createItemIconCanvas(it.code, 22));
+        }
         const lbl = document.createElement('span');
         const mtag = it.market_tag ? `（${it.market_tag}）` : '';
         lbl.textContent = `我方行囊：${it.label} × ${it.count}${mtag}`;
+        mainWrap.appendChild(lbl);
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'rim-chip-btn';
@@ -1520,7 +1227,7 @@
         btn.disabled = !it.npc_can_pay;
         btn.textContent = it.price_mg > 0 ? `讓出（得 ${it.price_mg} 鎂）` : '倉滿暫停收購';
         btn.onclick = () => doTrade(it.code, 'sell');
-        row.append(lbl, btn);
+        row.append(mainWrap, btn);
         tradeCol.appendChild(row);
       }
       if (offers.length === 0 && sellable.length === 0) {
@@ -1538,10 +1245,16 @@
       secHeld.innerHTML = `<div class="rim-sec-label">當前隨身穿戴</div>`;
       const heldRow = document.createElement('div');
       heldRow.className = 'rim-inv-row';
+      const heldMain = document.createElement('span');
+      heldMain.className = 'rim-inv-main';
+      if (d.equipped_code && window.CddaTiles) {
+        heldMain.appendChild(window.CddaTiles.createItemIconCanvas(d.equipped_code, 24));
+      }
       const heldName = document.createElement('strong');
       const heldBase = `手持：${d.equipped_label || '空手'}`;
       heldName.textContent = d.tool_note ? `${heldBase}（${d.tool_note}）` : heldBase;
-      heldRow.appendChild(heldName);
+      heldMain.appendChild(heldName);
+      heldRow.appendChild(heldMain);
 
       if (d.equipped_code) {
         const unequipBtn = document.createElement('button');
@@ -1602,9 +1315,15 @@
         for (const item of invList) {
           const row = document.createElement('div');
           row.className = 'rim-inv-row';
+          const mainWrap = document.createElement('span');
+          mainWrap.className = 'rim-inv-main';
+          if (window.CddaTiles) {
+            mainWrap.appendChild(window.CddaTiles.createItemIconCanvas(item.code, 24));
+          }
           const lbl = document.createElement('span');
           lbl.textContent = `${item.label} × ${item.count}`;
-          row.appendChild(lbl);
+          mainWrap.appendChild(lbl);
+          row.appendChild(mainWrap);
 
           const btns = document.createElement('div');
           btns.className = 'rim-row-pills';
@@ -1827,82 +1546,6 @@
     return false;
   }
 
-  function resolveItemSprite(item) {
-    const ch = String(item.c || '');
-    const lbl = String(item.label || '');
-    if (ch === '藥' || /青草藥/.test(lbl)) return pawnImgs.itemHerb;
-    if (ch === '膏' || /藥膏/.test(lbl)) return pawnImgs.itemSalve;
-    if (ch === '烤' || /烤甘薯/.test(lbl)) return pawnImgs.itemRoastTuber;
-    if (ch === '薯' || /甘薯/.test(lbl)) return pawnImgs.itemTuber;
-    if (ch === '笠' || /竹笠/.test(lbl)) return pawnImgs.hat;
-    if (ch === '簍' || /背簍/.test(lbl)) return pawnImgs.pack;
-    if (ch === '煨' || /煨/.test(lbl)) return pawnImgs.itemRoastShoot;
-    if (ch === '炙' || /炙/.test(lbl)) return pawnImgs.itemRoastMeat;
-    if (ch === '竹' || (/竹/.test(lbl) && !/刀|筍|笠|簍/.test(lbl))) return pawnImgs.itemBamboo;
-    if (ch === '筍' || /筍/.test(lbl)) return pawnImgs.itemShoot;
-    if (ch === '石' || /石/.test(lbl)) return pawnImgs.rock;
-    if (ch === '肉' || /肉/.test(lbl)) return pawnImgs.itemMeat;
-    if (ch === '刃' || /導能獵刀/.test(lbl)) return pawnImgs.itemAlloyBlade;
-    if (ch === '鍤' || /開山鎬/.test(lbl)) return pawnImgs.itemAlloyPick;
-    if (ch === '刀' || /竹刀/.test(lbl) || /刀/.test(lbl)) return pawnImgs.itemBlade;
-    if (ch === '斧' || ch === '鎬' || /斧|鎬/.test(lbl)) return pawnImgs.itemPick;
-    return pawnImgs.itemBamboo;
-  }
-
-  // 地上與儲物席之宣紙白描物品圖素堆疊（去方框貼紙，僅在複數時於角邊低調標示 ×數量）
-  function drawTopDownItem(item, cx, cy, sizePx) {
-    const img = resolveItemSprite(item);
-    const n = Math.max(1, Number(item.n) || 1);
-    const ch = String(item.c || '');
-    const layers = ch === '石' ? Math.min(n, 3) : Math.min(n, 2);
-    const spritePx = Math.max(13, sizePx * (layers > 1 ? 0.72 : 0.80));
-
-    ctx.save();
-    ctx.translate(cx, cy);
-
-    // 淡柔接地宣紙水影
-    ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
-    ctx.beginPath();
-    ctx.ellipse(0, sizePx * 0.04, spritePx * 0.42, spritePx * 0.30, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    if (isDrawableReady(img)) {
-      if (layers === 1) {
-        const tilt = ch === '石' ? 0.25 : 0.0;
-        drawPawnPart(img, 0, 0, spritePx, spritePx, 0.50, 0.50, tilt);
-      } else {
-        const offsets = layers === 2
-          ? [[-0.08, 0.05, -0.14], [0.07, -0.05, 0.11]]
-          : [[-0.12, 0.07, -0.22], [0.11, 0.05, 0.24], [0.0, -0.09, 0.05]];
-        for (const [ox, oy, rot] of offsets) {
-          drawPawnPart(img, ox * sizePx, oy * sizePx, spritePx * 0.92, spritePx * 0.92, 0.50, 0.50, rot);
-        }
-      }
-    } else {
-      ctx.fillStyle = '#c8b496';
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = 1.1;
-      ctx.beginPath();
-      ctx.arc(0, 0, spritePx * 0.30, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    }
-
-    if (n > 1 && sizePx >= 17) {
-      const txt = `×${n}`;
-      ctx.font = 'bold 9.5px "Noto Sans TC", sans-serif';
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'bottom';
-      ctx.lineJoin = 'round';
-      ctx.lineWidth = 2.8;
-      ctx.strokeStyle = 'rgba(244, 237, 224, 0.96)';
-      ctx.strokeText(txt, sizePx * 0.34, sizePx * 0.35);
-      ctx.fillStyle = '#2c1e0f';
-      ctx.fillText(txt, sizePx * 0.34, sizePx * 0.35);
-    }
-    ctx.restore();
-  }
-
   function drawMacroBasemap() {
     if (!meta || !basemapImg) return;
     // 1 個 20m 母格 = 20 個 1m 細格；母格 (gx, gy) 涵蓋細格 [gx*20 .. gx*20+19]
@@ -1940,6 +1583,9 @@
   function drawMicroLayer(nowMs) {
     if (cellPx < 5.0) return;
     const alpha = Math.min(1.0, (cellPx - 5.0) / 5.0);
+    const tiles = window.CddaTiles;
+    const ready = Boolean(tiles && tiles.isReady());
+
     ctx.save();
     ctx.globalAlpha = alpha;
 
@@ -1948,751 +1594,109 @@
     const cx = Math.round(camX);
     const cy = Math.round(camY);
 
-    // 鋪設宣紙白描暖底草坪基底（無格線連續地表）
     const tl = microToScreen(cx - halfW - 0.5, cy + halfH + 0.5);
     const spanW = (halfW * 2 + 1) * cellPx;
     const spanH = (halfH * 2 + 1) * cellPx;
-    ctx.fillStyle = '#efe8d8';
+    ctx.fillStyle = ready ? '#2f3b28' : '#efe8d8';
     ctx.fillRect(tl.x, tl.y, spanW, spanH);
-
-    // Pass 1：純地形層（草地、赭土、卵石砂灘、水系與水岸墨線），避免後畫地形覆蓋營火暖暈
-    for (let my = cy - halfH; my <= cy + halfH; my++) {
-      for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
-        const p = microToScreen(mx, my);
-        const x0 = p.x - cellPx / 2;
-        const y0 = p.y - cellPx / 2;
-        const c = cellMap.get(`${mx},${my}`);
-        const g = c ? c.g : 'grass';
-        const h = hash2d(mx, my);
-
-        const pad = 0.45;
-        const rx = x0 - pad;
-        const ry = y0 - pad;
-        const rw = cellPx + pad * 2;
-        const rh = cellPx + pad * 2;
-
-        if (g === 'grass') {
-          if (cellPx >= 16 && (h % 11) < 2 && (!c || (!c.s && !c.p))) {
-            const ox = (((h >>> 4) % 9) - 4) * 0.05 * cellPx;
-            const oy = (((h >>> 8) % 9) - 4) * 0.05 * cellPx;
-            ctx.strokeStyle = 'rgba(60, 48, 34, 0.18)';
-            ctx.lineWidth = 1.1;
-            ctx.beginPath();
-            ctx.moveTo(p.x + ox, p.y + oy);
-            ctx.lineTo(p.x + ox - 3, p.y + oy - 3);
-            ctx.moveTo(p.x + ox, p.y + oy);
-            ctx.lineTo(p.x + ox + 3, p.y + oy - 2);
-            ctx.stroke();
-          }
-        } else if (g === 'red') {
-          ctx.fillStyle = '#e5d3bd';
-          ctx.fillRect(rx, ry, rw, rh);
-          if (cellPx >= 18 && (h % 4) === 0 && (!c || !c.s)) {
-            ctx.fillStyle = 'rgba(60, 48, 34, 0.24)';
-            ctx.beginPath();
-            ctx.arc(p.x - cellPx * 0.18, p.y + cellPx * 0.10, 1.3, 0, Math.PI * 2);
-            ctx.arc(p.x + cellPx * 0.20, p.y - cellPx * 0.14, 1.1, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        } else if (g === 'pebble') {
-          ctx.fillStyle = '#f4ede0';
-          ctx.fillRect(rx, ry, rw, rh);
-          if (cellPx >= 18 && (h % 5) === 0 && (!c || !c.s)) {
-            ctx.fillStyle = '#e6ddd0';
-            ctx.strokeStyle = 'rgba(60, 48, 34, 0.24)';
-            ctx.lineWidth = 0.9;
-            ctx.beginPath();
-            ctx.ellipse(p.x - cellPx * 0.16, p.y - cellPx * 0.08, cellPx * 0.10, cellPx * 0.07, 0.4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.ellipse(p.x + cellPx * 0.18, p.y + cellPx * 0.16, cellPx * 0.07, cellPx * 0.05, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-          }
-        } else if (g === 'sand') {
-          ctx.fillStyle = '#eadec5';
-          ctx.fillRect(rx, ry, rw, rh);
-          if (cellPx >= 16 && (h % 5) === 0 && (!c || !c.s)) {
-            ctx.strokeStyle = 'rgba(168, 144, 102, 0.28)';
-            ctx.lineWidth = 0.95;
-            ctx.beginPath();
-            ctx.moveTo(x0 + cellPx * 0.14, p.y - cellPx * 0.08);
-            ctx.quadraticCurveTo(p.x, p.y - cellPx * 0.16, x0 + cellPx * 0.86, p.y - cellPx * 0.06);
-            ctx.stroke();
-          }
-        } else if (g === 'mudflat') {
-          ctx.fillStyle = '#aaa294';
-          ctx.fillRect(rx, ry, rw, rh);
-          if (cellPx >= 15 && (h % 4) === 0 && (!c || !c.s)) {
-            ctx.fillStyle = 'rgba(122, 138, 144, 0.24)';
-            ctx.beginPath();
-            ctx.ellipse(p.x, p.y + cellPx * 0.08, cellPx * 0.24, cellPx * 0.11, 0.2, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        } else if (g === 'rock') {
-          ctx.fillStyle = '#cfc8bc';
-          ctx.fillRect(rx, ry, rw, rh);
-          if (cellPx >= 16 && (h % 3) === 0 && (!c || !c.s)) {
-            ctx.strokeStyle = 'rgba(68, 56, 44, 0.26)';
-            ctx.lineWidth = 0.95;
-            ctx.beginPath();
-            ctx.moveTo(x0 + cellPx * 0.20, y0 + cellPx * 0.25);
-            ctx.lineTo(x0 + cellPx * 0.56, y0 + cellPx * 0.52);
-            ctx.lineTo(x0 + cellPx * 0.80, y0 + cellPx * 0.42);
-            ctx.stroke();
-          }
-        } else if (isWaterGround(g)) {
-          ctx.fillStyle = g === 'spring' ? '#c2d7df' : (g === 'deep' ? '#9ebbc8' : '#d8e4e7');
-          ctx.fillRect(rx, ry, rw, rh);
-
-          // 手繪宣紙水岸（濕沙柔暈 + 淡焦墨有機邊線）
-          if (!c || c.s !== 'bridge') {
-            const gN = cellMap.get(`${mx},${my + 1}`)?.g || 'grass';
-            const gS = cellMap.get(`${mx},${my - 1}`)?.g || 'grass';
-            const gW = cellMap.get(`${mx - 1},${my}`)?.g || 'grass';
-            const gE = cellMap.get(`${mx + 1},${my}`)?.g || 'grass';
-            const bow = (((h % 7) - 3) * 0.022) * cellPx;
-            const edges = [];
-            if (!isWaterGround(gN)) edges.push([x0, y0, x0 + cellPx, y0, 0, bow]);
-            if (!isWaterGround(gS)) edges.push([x0, y0 + cellPx, x0 + cellPx, y0 + cellPx, 0, -bow]);
-            if (!isWaterGround(gW)) edges.push([x0, y0, x0, y0 + cellPx, bow, 0]);
-            if (!isWaterGround(gE)) edges.push([x0 + cellPx, y0, x0 + cellPx, y0 + cellPx, -bow, 0]);
-            if (edges.length > 0) {
-              ctx.save();
-              ctx.lineCap = 'round';
-              ctx.strokeStyle = 'rgba(154, 138, 114, 0.28)';
-              ctx.lineWidth = Math.max(2.0, cellPx * 0.085);
-              ctx.beginPath();
-              for (const [ax, ay, bx, by, ox, oy] of edges) {
-                ctx.moveTo(ax, ay);
-                ctx.quadraticCurveTo((ax + bx) * 0.5 + ox, (ay + by) * 0.5 + oy, bx, by);
-              }
-              ctx.stroke();
-              ctx.strokeStyle = 'rgba(61, 48, 35, 0.62)';
-              ctx.lineWidth = 1.05;
-              ctx.stroke();
-              ctx.restore();
-            }
-          }
-
-          if (cellPx >= 14 && (h % 3) !== 0) {
-            const wave = Math.sin(nowMs * 0.0028 + mx * 0.8 + my * 0.5) * (cellPx * 0.09);
-            ctx.strokeStyle = 'rgba(60, 74, 84, 0.30)';
-            ctx.lineWidth = 1.05;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(p.x - cellPx * 0.24, p.y + wave * 0.35);
-            ctx.quadraticCurveTo(p.x - cellPx * 0.06, p.y - cellPx * 0.06, p.x + cellPx * 0.12, p.y + wave * 0.15);
-            ctx.quadraticCurveTo(p.x + cellPx * 0.20, p.y + cellPx * 0.05, p.x + cellPx * 0.28, p.y - wave * 0.30);
-            ctx.stroke();
-          }
-        } else if (g === 'cliff') {
-          ctx.fillStyle = '#c8bfb2';
-          ctx.fillRect(rx, ry, rw, rh);
-          if (cellPx >= 14) {
-            ctx.fillStyle = 'rgba(168, 158, 144, 0.36)';
-            ctx.beginPath();
-            ctx.moveTo(x0 + cellPx * 0.12, y0 + cellPx * 0.32);
-            ctx.lineTo(x0 + cellPx * 0.58, y0 + cellPx * 0.14);
-            ctx.lineTo(x0 + cellPx * 0.84, y0 + cellPx * 0.56);
-            ctx.lineTo(x0 + cellPx * 0.36, y0 + cellPx * 0.78);
-            ctx.closePath();
-            ctx.fill();
-            ctx.strokeStyle = '#4a3e33';
-            ctx.lineWidth = 1.1;
-            ctx.stroke();
-          }
-        }
-      }
-    }
 
     bedBadgeQueue = [];
 
-    // 單平面圍合室內：於底層土地之上鋪設溫潤竹席地板與內牆細簷陰影
+    // Pass 1A：純地形地塊（整數邊界消除縮放毛細縫）
+    for (let my = cy + halfH; my >= cy - halfH; my--) {
+      for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
+        const e = tileEdges(mx, my);
+        if (e.x1 < 0 || e.x0 > viewportW || e.y1 < 0 || e.y0 > viewportH) continue;
+        const c = cellMap.get(`${mx},${my}`);
+        const g = c ? c.g : 'grass';
+        if (ready) {
+          tiles.drawGroundTile(ctx, g, mx, my, e.x0, e.y0, e.x1, e.y1, cellMap, hash2d);
+        } else {
+          ctx.fillStyle = isWaterGround(g) ? '#b8d0d8' : (g === 'sand' ? '#dfd2b8' : '#dfe6d2');
+          ctx.fillRect(e.x0, e.y0, e.w, e.h);
+        }
+      }
+    }
+
+    // Pass 1B：單平面室內鋪地（住居塌塌米／工坊店鋪木地板＋北／西牆腳微陰影）
     const effWeather = getEffectiveWeather();
     for (const rm of worldRooms) {
       if (!Array.isArray(rm.cells) || !rm.cells.length) continue;
+      const isHomeZone = rm.cells.some((pt) => cellMap.get(`${pt[0]},${pt[1]}`)?.s === 'bed');
       for (const pt of rm.cells) {
         const ix = pt[0];
         const iy = pt[1];
-        const p = microToScreen(ix, iy);
-        if (p.x < -cellPx || p.x > viewportW + cellPx || p.y < -cellPx || p.y > viewportH + cellPx) continue;
-        const x0 = p.x - cellPx / 2;
-        const y0 = p.y - cellPx / 2;
-        ctx.fillStyle = '#f0e3ca';
-        ctx.fillRect(x0 - 0.35, y0 - 0.35, cellPx + 0.7, cellPx + 0.7);
-        if (cellPx >= 15) {
-          ctx.strokeStyle = 'rgba(128, 96, 62, 0.14)';
-          ctx.lineWidth = 0.9;
-          ctx.beginPath();
-          ctx.moveTo(x0 + cellPx * 0.25, y0);
-          ctx.lineTo(x0 + cellPx * 0.25, y0 + cellPx);
-          ctx.moveTo(x0 + cellPx * 0.75, y0);
-          ctx.lineTo(x0 + cellPx * 0.75, y0 + cellPx);
-          ctx.moveTo(x0, y0 + cellPx * 0.5);
-          ctx.lineTo(x0 + cellPx, y0 + cellPx * 0.5);
-          ctx.stroke();
+        const e = tileEdges(ix, iy);
+        if (e.x1 < 0 || e.x0 > viewportW || e.y1 < 0 || e.y0 > viewportH) continue;
+        if (ready) {
+          tiles.drawInteriorFloor(ctx, isHomeZone, ix, e.x0, e.y0, e.x1, e.y1);
+        } else {
+          ctx.fillStyle = '#d8c8a8';
+          ctx.fillRect(e.x0, e.y0, e.w, e.h);
         }
-        // 北／西內牆內側細微簷蔭
         if (iy === rm.y1 - 1) {
-          ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
-          ctx.fillRect(x0, y0, cellPx, cellPx * 0.24);
+          ctx.fillStyle = 'rgba(20, 14, 10, 0.14)';
+          ctx.fillRect(e.x0, e.y0, e.w, Math.max(2, e.h * 0.22));
         }
         if (ix === rm.x0 + 1) {
-          ctx.fillStyle = 'rgba(44, 30, 15, 0.06)';
-          ctx.fillRect(x0, y0, cellPx * 0.20, cellPx);
+          ctx.fillStyle = 'rgba(20, 14, 10, 0.10)';
+          ctx.fillRect(e.x0, e.y0, Math.max(2, e.w * 0.18), e.h);
         }
       }
     }
 
-    // Pass 2：營火暖暈（先暈染於全數地面之上，絕不被鄰格切角）、建成設施、物資籤及中景簡約物
-    for (let my = cy - halfH; my <= cy + halfH; my++) {
+    // Pass 1C：石磚街巷、騎樓地坪、木橋、田壟與門檻鋪面
+    for (let my = cy + halfH; my >= cy - halfH; my--) {
       for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
         const c = cellMap.get(`${mx},${my}`);
-        if (!c || c.s !== 'campfire') continue;
-        const p = microToScreen(mx, my);
-        const flicker = 1 + Math.sin(nowMs * 0.012) * 0.09;
-        const wetCamp = effWeather.raining && !indoorCellSet.has(`${mx},${my}`);
-        const rad = cellPx * (wetCamp ? 0.92 : 1.65) * flicker;
-        const grad = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, rad);
-        grad.addColorStop(0, wetCamp ? 'rgba(208, 102, 34, 0.14)' : 'rgba(218, 118, 36, 0.24)');
-        grad.addColorStop(1, 'rgba(218, 118, 36, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
-        ctx.fill();
+        if (!c || !c.s) continue;
+        const e = tileEdges(mx, my);
+        if (e.x1 < 0 || e.x0 > viewportW || e.y1 < 0 || e.y0 > viewportH) continue;
+        if (
+          c.s === 'paving' || c.s === 'lamp' || c.s === 'arcade' || c.s === 'bridge' ||
+          c.s === 'ridge' || c.s === 'herb_seed' || c.s === 'herb_plot' ||
+          c.s === 'crop_seed' || c.s === 'crop_plot'
+        ) {
+          if (ready) {
+            tiles.drawFloorOrRoad(ctx, c.s, mx, my, e.x0, e.y0, e.x1, e.y1, cellMap);
+          }
+        } else if (c.s === 'door') {
+          if (ready) {
+            tiles.drawFillTile(ctx, 'ground_floor', e.x0, e.y0, e.x1, e.y1);
+          }
+        }
       }
     }
 
-    for (let my = cy - halfH; my <= cy + halfH; my++) {
+    // Pass 1D：營火地面暖暈與散落物資
+    for (let my = cy + halfH; my >= cy - halfH; my--) {
       for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
         const c = cellMap.get(`${mx},${my}`);
         if (!c) continue;
-        const p = microToScreen(mx, my);
-        const x0 = p.x - cellPx / 2;
-        const y0 = p.y - cellPx / 2;
-
-        if (c.s === 'stockpile') {
-          const isIndoorShelf = indoorCellSet.has(`${mx},${my}`);
-          if (isIndoorShelf) {
-            ctx.save();
-            ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
-            ctx.fillRect(x0 + cellPx * 0.08 + 1.8, y0 + cellPx * 0.14 + 2, cellPx * 0.84, cellPx * 0.72);
-            ctx.fillStyle = '#cfa978';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = Math.max(0.95, cellPx * 0.028);
-            ctx.fillRect(x0 + cellPx * 0.08, y0 + cellPx * 0.14, cellPx * 0.84, cellPx * 0.72);
-            ctx.strokeRect(x0 + cellPx * 0.08, y0 + cellPx * 0.14, cellPx * 0.84, cellPx * 0.72);
-            ctx.strokeStyle = 'rgba(72, 48, 28, 0.45)';
-            ctx.lineWidth = Math.max(0.75, cellPx * 0.02);
-            for (const sy of [0.38, 0.62]) {
-              ctx.beginPath();
-              ctx.moveTo(x0 + cellPx * 0.10, y0 + cellPx * sy);
-              ctx.lineTo(x0 + cellPx * 0.90, y0 + cellPx * sy);
-              ctx.stroke();
-            }
-            ctx.fillStyle = '#5c4028';
-            const post = Math.max(1.8, cellPx * 0.09);
-            for (const [pxp, pyp] of [[0.08, 0.14], [0.83, 0.14], [0.08, 0.77], [0.83, 0.77]]) {
-              ctx.fillRect(x0 + cellPx * pxp, y0 + cellPx * pyp, post, post);
-            }
-            ctx.restore();
-          } else {
-            ctx.save();
-            ctx.fillStyle = 'rgba(196, 178, 142, 0.36)';
-            ctx.fillRect(x0 + cellPx * 0.06, y0 + cellPx * 0.08, cellPx * 0.88, cellPx * 0.84);
-            ctx.fillStyle = '#7b5e3b';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = Math.max(0.85, cellPx * 0.024);
-            for (const ry of [0.24, 0.68]) {
-              ctx.fillRect(x0 + cellPx * 0.06, y0 + cellPx * ry, cellPx * 0.88, cellPx * 0.10);
-              ctx.strokeRect(x0 + cellPx * 0.06, y0 + cellPx * ry, cellPx * 0.88, cellPx * 0.10);
-            }
-            const matImg = pawnImgs.stockpile;
-            if (matImg && matImg.complete && matImg.naturalWidth) {
-              ctx.globalAlpha = 0.45;
-              const hMat = hash2d(mx, my);
-              drawPawnPart(matImg, p.x, p.y, cellPx * 0.86, cellPx * 0.86, 0.50, 0.50, ((hMat % 4) * Math.PI) / 2);
-            }
-            ctx.restore();
-          }
-        } else if (c.s === 'bridge') {
-          const spanNS = hasBridgeAt(mx, my + 1) || hasBridgeAt(mx, my - 1) || !(hasBridgeAt(mx - 1, my) || hasBridgeAt(mx + 1, my));
-          const brImg = pawnImgs.bridge;
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          if (!spanNS) ctx.rotate(Math.PI / 2);
-          ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
-          ctx.fillRect(-cellPx * 0.44 + 2, -cellPx * 0.52 + 2, cellPx * 0.88, cellPx * 1.04);
-          if (brImg && brImg.complete && brImg.naturalWidth) {
-            drawPawnPart(brImg, 0, 0, cellPx * 0.98, cellPx * 1.05, 0.50, 0.50, 0);
-          } else {
-            ctx.fillStyle = '#dec6a3';
-            ctx.fillRect(-cellPx * 0.45, -cellPx * 0.5, cellPx * 0.90, cellPx);
-          }
-          ctx.restore();
-        } else if (c.s === 'wall') {
-          const nConn = hasWallAt(mx, my + 1);
-          const sConn = hasWallAt(mx, my - 1);
-          const wConn = hasWallAt(mx - 1, my);
-          const eConn = hasWallAt(mx + 1, my);
-          const thick = cellPx * 0.46;
-          const halfT = thick / 2;
-
-          // 牆簷水暈陰影
-          ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
-          ctx.fillRect(p.x - halfT + 2.2, p.y - halfT + 2.8, thick, thick);
-          if (nConn) ctx.fillRect(p.x - halfT + 2.2, y0 + 2, thick, cellPx / 2);
-          if (sConn) ctx.fillRect(p.x - halfT + 2.2, p.y + 2.8, thick, cellPx / 2 - 1);
-          if (wConn) ctx.fillRect(x0 + 2, p.y - halfT + 2.8, cellPx / 2, thick);
-          if (eConn) ctx.fillRect(p.x + 2.2, p.y - halfT + 2.8, cellPx / 2 - 1, thick);
-
-          // 雙層竹編夯土底脊
-          ctx.fillStyle = '#cbb693';
-          ctx.fillRect(p.x - halfT, p.y - halfT, thick, thick);
-          if (nConn) ctx.fillRect(p.x - halfT, y0 - 0.5, thick, cellPx / 2 + 0.5);
-          if (sConn) ctx.fillRect(p.x - halfT, p.y, thick, cellPx / 2 + 0.5);
-          if (wConn) ctx.fillRect(x0 - 0.5, p.y - halfT, cellPx / 2 + 0.5, thick);
-          if (eConn) ctx.fillRect(p.x, p.y - halfT, cellPx / 2 + 0.5, thick);
-
-          const ridgeT = thick * 0.48;
-          const halfR = ridgeT / 2;
-          ctx.fillStyle = '#e2d3b5';
-          ctx.fillRect(p.x - halfR, p.y - halfR, ridgeT, ridgeT);
-          if (nConn) ctx.fillRect(p.x - halfR, y0 - 0.5, ridgeT, cellPx / 2 + 0.5);
-          if (sConn) ctx.fillRect(p.x - halfR, p.y, ridgeT, cellPx / 2 + 0.5);
-          if (wConn) ctx.fillRect(x0 - 0.5, p.y - halfR, cellPx / 2 + 0.5, ridgeT);
-          if (eConn) ctx.fillRect(p.x, p.y - halfR, cellPx / 2 + 0.5, ridgeT);
-
-          // 開放外緣焦墨輪廓（相鄰牆體無縫融合）
-          ctx.strokeStyle = PAWN_PAL.ink;
-          ctx.lineWidth = 1.25;
-          ctx.beginPath();
-          if (!nConn) {
-            ctx.moveTo(p.x - halfT, p.y - halfT);
-            ctx.lineTo(p.x + halfT, p.y - halfT);
-          } else {
-            ctx.moveTo(p.x - halfT, y0);
-            ctx.lineTo(p.x - halfT, p.y - halfT);
-            ctx.moveTo(p.x + halfT, y0);
-            ctx.lineTo(p.x + halfT, p.y - halfT);
-          }
-          if (!sConn) {
-            ctx.moveTo(p.x - halfT, p.y + halfT);
-            ctx.lineTo(p.x + halfT, p.y + halfT);
-          } else {
-            ctx.moveTo(p.x - halfT, p.y + halfT);
-            ctx.lineTo(p.x - halfT, y0 + cellPx);
-            ctx.moveTo(p.x + halfT, p.y + halfT);
-            ctx.lineTo(p.x + halfT, y0 + cellPx);
-          }
-          if (!wConn) {
-            ctx.moveTo(p.x - halfT, p.y - halfT);
-            ctx.lineTo(p.x - halfT, p.y + halfT);
-          } else {
-            ctx.moveTo(x0, p.y - halfT);
-            ctx.lineTo(p.x - halfT, p.y - halfT);
-            ctx.moveTo(x0, p.y + halfT);
-            ctx.lineTo(p.x - halfT, p.y + halfT);
-          }
-          if (!eConn) {
-            ctx.moveTo(p.x + halfT, p.y - halfT);
-            ctx.lineTo(p.x + halfT, p.y + halfT);
-          } else {
-            ctx.moveTo(p.x + halfT, p.y - halfT);
-            ctx.lineTo(x0 + cellPx, p.y - halfT);
-            ctx.moveTo(p.x + halfT, p.y + halfT);
-            ctx.lineTo(x0 + cellPx, p.y + halfT);
-          }
-          ctx.stroke();
-
-          // 剖竹內縫線、雙道藤篾縛節 ＋ 轉角原木立柱（obj_post.png）
-          if (cellPx >= 15) {
-            ctx.strokeStyle = 'rgba(51, 38, 32, 0.45)';
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            if (nConn) {
-              ctx.moveTo(p.x - halfR, y0);
-              ctx.lineTo(p.x - halfR, p.y - halfR);
-              ctx.moveTo(p.x + halfR, y0);
-              ctx.lineTo(p.x + halfR, p.y - halfR);
-            }
-            if (sConn) {
-              ctx.moveTo(p.x - halfR, p.y + halfR);
-              ctx.lineTo(p.x - halfR, y0 + cellPx);
-              ctx.moveTo(p.x + halfR, p.y + halfR);
-              ctx.lineTo(p.x + halfR, y0 + cellPx);
-            }
-            if (wConn) {
-              ctx.moveTo(x0, p.y - halfR);
-              ctx.lineTo(p.x - halfR, p.y - halfR);
-              ctx.moveTo(x0, p.y + halfR);
-              ctx.lineTo(p.x - halfR, p.y + halfR);
-            }
-            if (eConn) {
-              ctx.moveTo(p.x + halfR, p.y - halfR);
-              ctx.lineTo(x0 + cellPx, p.y - halfR);
-              ctx.moveTo(p.x + halfR, p.y + halfR);
-              ctx.lineTo(x0 + cellPx, p.y + halfR);
-            }
-            ctx.stroke();
-          }
-
-          if (cellPx >= 16) {
-            ctx.strokeStyle = 'rgba(92, 68, 46, 0.58)';
-            ctx.lineWidth = 1.05;
-            ctx.beginPath();
-            for (const f of [0.24, 0.76]) {
-              if ((nConn && f < 0.5) || (sConn && f > 0.5)) {
-                const ny = y0 + cellPx * f;
-                for (const d of [-1.8, 1.8]) {
-                  ctx.moveTo(p.x - halfT + 1.2, ny + d);
-                  ctx.lineTo(p.x + halfT - 1.2, ny + d);
-                }
-              }
-              if ((wConn && f < 0.5) || (eConn && f > 0.5)) {
-                const nx = x0 + cellPx * f;
-                for (const d of [-1.8, 1.8]) {
-                  ctx.moveTo(nx + d, p.y - halfT + 1.2);
-                  ctx.lineTo(nx + d, p.y + halfT - 1.2);
-                }
-              }
-            }
-            ctx.stroke();
-
-            const connCount = Number(nConn) + Number(sConn) + Number(wConn) + Number(eConn);
-            const isCornerOrEnd = ((nConn || sConn) && (wConn || eConn)) || connCount <= 1;
-            if (isCornerOrEnd) {
-              const postSz = Math.max(8, thick * 1.18);
-              const postImg = pawnImgs.post;
-              if (postImg && postImg.complete && postImg.naturalWidth) {
-                drawPawnPart(postImg, p.x, p.y, postSz, postSz, 0.50, 0.50, (hash2d(mx, my) % 628) / 100);
-              } else {
-                ctx.fillStyle = '#8f705b';
-                ctx.strokeStyle = PAWN_PAL.ink;
-                ctx.lineWidth = 1.05;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, Math.max(2.6, thick * 0.34), 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-              }
-            }
-          }
-        } else if (c.s === 'door') {
-          const vertDoor = hasWallAt(mx, my + 1) || hasWallAt(mx, my - 1);
-          const isOpen = isActorNearCell(mx, my, 1.05);
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          if (vertDoor) ctx.rotate(Math.PI / 2);
-
-          // 兩端先鋪與相鄰竹牆同寬（cellPx * 0.46）之牆頭短榫，徹底消除縮頸感
-          const wallThick = cellPx * 0.46;
-          const halfWT = wallThick / 2;
-          const ridgeWT = wallThick * 0.48;
-          const stubW = cellPx * 0.16;
-          for (const sx of [-1, 1]) {
-            const xLeft = sx < 0 ? -cellPx / 2 : cellPx / 2 - stubW;
-            ctx.fillStyle = '#cbb693';
-            ctx.fillRect(xLeft, -halfWT, stubW, wallThick);
-            ctx.fillStyle = '#e2d3b5';
-            ctx.fillRect(xLeft, -ridgeWT / 2, stubW, ridgeWT);
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = 1.25;
-            ctx.beginPath();
-            ctx.moveTo(xLeft, -halfWT);
-            ctx.lineTo(xLeft + stubW, -halfWT);
-            ctx.moveTo(xLeft, halfWT);
-            ctx.lineTo(xLeft + stubW, halfWT);
-            ctx.stroke();
-          }
-
-          // 門檻暖石／木踏板
-          ctx.fillStyle = 'rgba(218, 198, 166, 0.62)';
-          ctx.strokeStyle = 'rgba(92, 68, 46, 0.38)';
-          ctx.lineWidth = 0.9;
-          ctx.fillRect(-cellPx * 0.44, -cellPx * 0.16, cellPx * 0.88, cellPx * 0.32);
-          ctx.strokeRect(-cellPx * 0.44, -cellPx * 0.16, cellPx * 0.88, cellPx * 0.32);
-
-          // 左右兩側原木麻繩門柱（寬度齊平牆脊）
-          const postSz = Math.max(8, cellPx * 0.48);
-          const postImg = pawnImgs.post;
-          for (const sx of [-1, 1]) {
-            const jx = sx * (cellPx * 0.5 - postSz * 0.34);
-            if (postImg && postImg.complete && postImg.naturalWidth) {
-              drawPawnPart(postImg, jx, 0, postSz, postSz, 0.50, 0.50, sx * 0.6);
-            } else {
-              ctx.fillStyle = '#836348';
-              ctx.strokeStyle = PAWN_PAL.ink;
-              ctx.lineWidth = 1.1;
-              ctx.beginPath();
-              ctx.arc(jx, 0, postSz * 0.42, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.stroke();
-            }
-          }
-
-          const span = cellPx * 0.68;
-          const hingeX = -span * 0.5;
-          const leafW = span;
-          const leafThick = Math.max(4.5, cellPx * 0.17);
-          if (isOpen) {
-            ctx.strokeStyle = 'rgba(51, 38, 32, 0.24)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([2, 2]);
-            ctx.beginPath();
-            ctx.arc(hingeX, 0, leafW, -1.25, 0);
-            ctx.stroke();
-            ctx.setLineDash([]);
-          }
-
-          // 竹編三束柴扉門扇
-          ctx.save();
-          ctx.translate(hingeX, 0);
-          ctx.rotate(isOpen ? -1.22 : 0);
-          ctx.fillStyle = '#e2ccb0';
-          ctx.strokeStyle = PAWN_PAL.ink;
-          ctx.lineWidth = 1.15;
-          ctx.fillRect(0, -leafThick / 2, leafW, leafThick);
-          ctx.strokeRect(0, -leafThick / 2, leafW, leafThick);
-          ctx.fillStyle = '#a07e54';
-          for (const bx of [0.22, 0.52, 0.80]) {
-            ctx.fillRect(leafW * bx - 1.5, -leafThick * 0.55, 3, leafThick * 1.1);
-            ctx.strokeRect(leafW * bx - 1.5, -leafThick * 0.55, 3, leafThick * 1.1);
-          }
-          ctx.restore();
-          ctx.restore();
-        } else if (c.s === 'campfire') {
-          const cfImg = pawnImgs.campfire;
+        if (c.s === 'campfire') {
+          const p = microToScreen(mx, my);
           const flicker = 1 + Math.sin(nowMs * 0.012) * 0.09;
-          const isIndoorHearth = indoorCellSet.has(`${mx},${my}`);
-          const wetCamp = effWeather.raining && !isIndoorHearth;
-          if (isIndoorHearth) {
-            ctx.save();
-            ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
-            ctx.fillRect(x0 + cellPx * 0.08 + 1.5, y0 + cellPx * 0.12 + 2, cellPx * 0.84, cellPx * 0.76);
-            ctx.fillStyle = '#b98268';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = Math.max(1.0, cellPx * 0.028);
-            ctx.beginPath();
-            ctx.roundRect(x0 + cellPx * 0.08, y0 + cellPx * 0.12, cellPx * 0.84, cellPx * 0.76, 4);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#d4c3aa';
-            ctx.fillRect(x0 + cellPx * 0.14, y0 + cellPx * 0.18, cellPx * 0.72, cellPx * 0.64);
-            ctx.strokeRect(x0 + cellPx * 0.14, y0 + cellPx * 0.18, cellPx * 0.72, cellPx * 0.64);
-            ctx.fillStyle = '#33363b';
-            ctx.beginPath();
-            ctx.arc(p.x - cellPx * 0.05, p.y, cellPx * 0.25, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#c89b66';
-            ctx.beginPath();
-            ctx.arc(p.x - cellPx * 0.05, p.y, cellPx * 0.15, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.globalAlpha = 0.35 + Math.sin(nowMs * 0.014) * 0.10;
-            ctx.fillStyle = '#ff9c2a';
-            ctx.beginPath();
-            ctx.arc(p.x + cellPx * 0.26, p.y, cellPx * 0.09 * flicker, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-          } else if (cfImg && cfImg.complete && cfImg.naturalWidth) {
-            const hCf = hash2d(mx, my);
-            drawPawnPart(cfImg, p.x, p.y, cellPx * 1.08, cellPx * 1.08, 0.50, 0.50, ((hCf % 4) * Math.PI) / 2);
-            if (wetCamp) {
-              ctx.save();
-              ctx.fillStyle = 'rgba(62, 54, 48, 0.42)';
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, cellPx * 0.20, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.fillStyle = 'rgba(218, 88, 34, 0.46)';
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, cellPx * 0.08, 0, Math.PI * 2);
-              ctx.fill();
-              const tSec = nowMs * 0.001;
-              for (let sm = 0; sm < 3; sm++) {
-                const ph = (tSec * 0.55 + sm * 0.33 + (mx % 5) * 0.1) % 1.0;
-                ctx.fillStyle = `rgba(235, 232, 224, ${(1 - ph) * 0.40})`;
-                ctx.beginPath();
-                ctx.arc(p.x + Math.sin(tSec * 2 + sm) * 3.5, p.y - ph * cellPx * 0.68, cellPx * (0.08 + ph * 0.13), 0, Math.PI * 2);
-                ctx.fill();
-              }
-              ctx.restore();
-            } else {
-              // 疊加呼吸動態火芯微光（令白描營火自然閃動而不遮掩手繪筆觸）
-              ctx.save();
-              ctx.globalAlpha = 0.24 + Math.sin(nowMs * 0.014) * 0.08;
-              ctx.fillStyle = '#ff9c2a';
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, cellPx * 0.14 * flicker, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.globalAlpha = 0.34 + Math.cos(nowMs * 0.019) * 0.10;
-              ctx.fillStyle = '#ffe27a';
-              ctx.beginPath();
-              ctx.arc(p.x, p.y, cellPx * 0.07 * flicker, 0, Math.PI * 2);
-              ctx.fill();
-              if (cellPx >= 20) {
-                const spk1 = Math.sin(nowMs * 0.008 + mx);
-                const spk2 = Math.cos(nowMs * 0.011 + my);
-                ctx.globalAlpha = 0.55;
-                ctx.fillStyle = '#ffbc42';
-                ctx.beginPath();
-                ctx.arc(p.x + spk1 * cellPx * 0.10, p.y - Math.abs(spk2) * cellPx * 0.18, 1.4, 0, Math.PI * 2);
-                ctx.fill();
-              }
-              ctx.restore();
-            }
-          } else {
-            ctx.fillStyle = wetCamp ? '#9c4b22' : '#c85a1e';
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, Math.max(3.5, cellPx * (wetCamp ? 0.12 : 0.20) * flicker), 0, Math.PI * 2);
-            ctx.fill();
-          }
-        } else if (c.s === 'workbench') {
-          const wbImg = pawnImgs.workbench;
-          if (wbImg && wbImg.complete && wbImg.naturalWidth) {
-            ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
-            ctx.fillRect(p.x - cellPx * 0.45 + 2, p.y - cellPx * 0.32 + 2.5, cellPx * 0.90, cellPx * 0.64);
-            drawPawnPart(wbImg, p.x, p.y, cellPx * 1.08, cellPx * 0.86, 0.50, 0.50, 0);
-          } else {
-            ctx.fillStyle = '#d9c0a3';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.fillRect(p.x - cellPx * 0.42, p.y - cellPx * 0.34, cellPx * 0.84, cellPx * 0.68);
-            ctx.strokeRect(p.x - cellPx * 0.42, p.y - cellPx * 0.34, cellPx * 0.84, cellPx * 0.68);
-          }
-        } else if (c.s === 'paving') {
-          ctx.save();
-          ctx.fillStyle = (mx + my) % 2 === 0 ? '#e3dccb' : '#ded6c4';
-          ctx.fillRect(x0 - 0.3, y0 - 0.3, cellPx + 0.6, cellPx + 0.6);
-          if (cellPx >= 13) {
-            ctx.strokeStyle = 'rgba(84, 68, 52, 0.22)';
-            ctx.lineWidth = Math.max(0.75, cellPx * 0.022);
-            ctx.strokeRect(x0 + 0.5, y0 + 0.5, cellPx - 1, cellPx - 1);
-            const stagger = (my & 1) ? 0.34 : 0.66;
-            ctx.beginPath();
-            ctx.moveTo(x0, p.y);
-            ctx.lineTo(x0 + cellPx, p.y);
-            ctx.moveTo(x0 + cellPx * stagger, y0);
-            ctx.lineTo(x0 + cellPx * stagger, p.y);
-            ctx.moveTo(x0 + cellPx * (1 - stagger), p.y);
-            ctx.lineTo(x0 + cellPx * (1 - stagger), y0 + cellPx);
-            ctx.stroke();
-          }
-          ctx.restore();
-        } else if (c.s === 'arcade') {
-          ctx.save();
-          // 騎樓亭仔腳遮陽簷地坪（暖赭洗石磚＋簷柱陰影）
-          ctx.fillStyle = '#eadec7';
-          ctx.fillRect(x0 - 0.35, y0 - 0.35, cellPx + 0.7, cellPx + 0.7);
-          if (cellPx >= 12) {
-            ctx.fillStyle = 'rgba(72, 52, 32, 0.09)';
-            ctx.fillRect(x0, y0, cellPx, cellPx * 0.22);
-            ctx.strokeStyle = 'rgba(92, 68, 46, 0.24)';
-            ctx.lineWidth = Math.max(0.8, cellPx * 0.022);
-            ctx.strokeRect(x0 + 0.5, y0 + 0.5, cellPx - 1, cellPx - 1);
-            if (Math.abs(mx + my) % 2 === 0) {
-              const postR = Math.max(1.8, cellPx * 0.085);
-              ctx.fillStyle = '#8b6a4b';
-              ctx.strokeStyle = PAWN_PAL.ink;
-              ctx.lineWidth = 0.9;
-              ctx.beginPath();
-              ctx.arc(x0 + cellPx * 0.84, y0 + cellPx * 0.84, postR, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.stroke();
-            }
-          }
-          ctx.restore();
-        } else if (c.s === 'lamp') {
-          // 底敷石板並立導能恆光街燈柱
-          ctx.save();
-          ctx.fillStyle = '#dfd8c7';
-          ctx.fillRect(x0 - 0.25, y0 - 0.25, cellPx + 0.5, cellPx + 0.5);
-          ctx.fillStyle = 'rgba(44, 30, 15, 0.18)';
+          const wetCamp = effWeather.raining && !indoorCellSet.has(`${mx},${my}`);
+          const rad = cellPx * (wetCamp ? 0.92 : 1.75) * flicker;
+          const grad = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, rad);
+          grad.addColorStop(0, wetCamp ? 'rgba(208, 102, 34, 0.16)' : 'rgba(232, 132, 42, 0.28)');
+          grad.addColorStop(1, 'rgba(232, 132, 42, 0)');
+          ctx.fillStyle = grad;
           ctx.beginPath();
-          ctx.ellipse(p.x + cellPx * 0.07, p.y + cellPx * 0.14, cellPx * 0.24, cellPx * 0.16, 0, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
           ctx.fill();
-          // 燈座石墩與燈籠頂帽
-          ctx.fillStyle = '#736c62';
-          ctx.strokeStyle = PAWN_PAL.ink;
-          ctx.lineWidth = Math.max(1.0, cellPx * 0.030);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, cellPx * 0.22, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          ctx.fillStyle = '#ffe18c';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y - cellPx * 0.08, cellPx * 0.14, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          ctx.fillStyle = 'rgba(255, 222, 138, 0.34)';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y - cellPx * 0.08, cellPx * 0.42, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        } else if (c.s === 'bed') {
-          drawBambooBed(mx, my, p.x, p.y, cellPx, findBedSleeper(mx, my));
-        } else if (c.s === 'ridge' || c.s === 'herb_seed' || c.s === 'herb_plot' || c.s === 'crop_seed' || c.s === 'crop_plot') {
-          drawGardenPlot(c.s, mx, my, p.x, p.y, cellPx, nowMs, effWeather.raining);
         }
-
-        // 中景尺度（5 <= cellPx < 12）自然物繪製簡潔白描圓叢點；近景（>= 12）則移入 Y-Sort 佇列
-        if (cellPx < 12.0) {
-          if (c.p === 'bamboo') {
-            const r = Math.max(2.2, cellPx * 0.28);
-            ctx.fillStyle = '#6c8c62';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = 1.0;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-          } else if (c.p === 'shoot') {
-            ctx.fillStyle = '#8fa868';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = 0.9;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, Math.max(1.8, cellPx * 0.16), 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-          } else if (c.p === 'herb') {
-            ctx.fillStyle = '#527c65';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = 0.9;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, Math.max(1.9, cellPx * 0.18), 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-          } else if (c.p === 'stone') {
-            ctx.fillStyle = '#9e988e';
-            ctx.strokeStyle = PAWN_PAL.ink;
-            ctx.lineWidth = 0.9;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, Math.max(2.0, cellPx * 0.22), 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-          }
-          if (c.b) {
-            const isChop = c.b.k === 'chop' || c.b.k === 'decon';
-            ctx.strokeStyle = isChop ? '#8b2020' : '#2a4a6b';
-            ctx.lineWidth = 1.4;
-            ctx.setLineDash([3, 3]);
-            ctx.strokeRect(x0 + 2, y0 + 2, cellPx - 4, cellPx - 4);
-            ctx.setLineDash([]);
-          }
-        }
-
-        // 地上散落或儲物席白描物資圖標
-        if (c.i && cellPx >= 13) {
-          drawTopDownItem(c.i, p.x, p.y, cellPx);
+        if (c.i && c.s !== 'stockpile' && cellPx >= 13 && ready) {
+          const e = tileEdges(mx, my);
+          tiles.drawItemSprite(ctx, c.i, (e.x0 + e.x1) * 0.5, (e.y0 + e.y1) * 0.5, e.w);
         }
       }
     }
 
-    // 接觸插座焦點柔圓標記（不畫棋盤硬框）
+    // 接觸插座焦點柔圓標記
     if (selectedCell) {
       const sp = microToScreen(selectedCell.mx, selectedCell.my);
-      ctx.strokeStyle = '#8b2020';
+      ctx.strokeStyle = '#d9483b';
       ctx.lineWidth = 2.0;
       ctx.setLineDash([5, 3]);
       ctx.beginPath();
@@ -3082,227 +2086,12 @@
     }
   }
 
-  // ═══ 宣紙白描簡約全俯視角色與自然物繪製器官（與 pawn-demo v8 同源） ═══
+  // ═══ CDDA Chibi_Ultica / MSXotto+ 即時圖塊與紙娃娃繪製器官 ═══
 
-  function drawPawnPart(img, x, y, w, h, ax, ay, rotRad = 0) {
-    if (!isDrawableReady(img)) return;
-    ctx.save();
-    ctx.translate(x, y);
-    if (rotRad) ctx.rotate(rotRad);
-    ctx.drawImage(img, -w * ax, -h * ay, w, h);
-    ctx.restore();
-  }
-
-  // 無縫外公切線漸縮膠囊體：d <= |r0-r1| 時自動退化為單圓，徹底根絕斷肢凸起
-  function drawTaperedLimb(x0, y0, r0, x1, y1, r1, fill, ink, lw) {
-    const dx = x1 - x0;
-    const dy = y1 - y0;
-    const d = Math.hypot(dx, dy);
-    ctx.save();
-    ctx.fillStyle = fill;
-    ctx.strokeStyle = ink;
-    ctx.lineWidth = lw;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    if (d <= Math.abs(r0 - r1) + 0.05) {
-      const cx = r0 >= r1 ? x0 : x1;
-      const cy = r0 >= r1 ? y0 : y1;
-      ctx.arc(cx, cy, Math.max(r0, r1), 0, Math.PI * 2);
-    } else {
-      const theta = Math.atan2(dy, dx);
-      const cosA = Math.max(-1, Math.min(1, (r0 - r1) / d));
-      const alpha = Math.acos(cosA);
-      ctx.arc(x0, y0, r0, theta + alpha, theta + Math.PI * 2 - alpha, false);
-      ctx.arc(x1, y1, r1, theta - alpha, theta + alpha, false);
-      ctx.closePath();
-    }
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawVestTorso(S, lw, vestFill, vestTrim) {
-    ctx.save();
-    ctx.lineWidth = lw;
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.fillStyle = vestFill;
-
-    ctx.beginPath();
-    ctx.moveTo(0, -0.23 * S);
-    ctx.bezierCurveTo(0.24 * S, -0.24 * S, 0.43 * S, -0.15 * S, 0.43 * S, 0.0);
-    ctx.bezierCurveTo(0.43 * S, 0.14 * S, 0.28 * S, 0.22 * S, 0, 0.22 * S);
-    ctx.bezierCurveTo(-0.28 * S, 0.22 * S, -0.43 * S, 0.14 * S, -0.43 * S, 0.0);
-    ctx.bezierCurveTo(-0.43 * S, -0.15 * S, -0.24 * S, -0.24 * S, 0, -0.23 * S);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // 淺灰內衫領口
-    ctx.fillStyle = PAWN_PAL.sleeve;
-    ctx.beginPath();
-    ctx.ellipse(0, -0.17 * S, 0.16 * S, 0.07 * S, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // 背心前襟滾邊縫線
-    ctx.strokeStyle = vestTrim;
-    ctx.lineWidth = lw * 0.72;
-    ctx.beginPath();
-    ctx.moveTo(-0.07 * S, -0.22 * S);
-    ctx.lineTo(0, -0.11 * S);
-    ctx.lineTo(0.07 * S, -0.22 * S);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawArticulatedArm(shX, shY, elX, elY, haX, haY, S, lw, isRight) {
-    const midX = lerp(elX, haX, 0.42);
-    const midY = lerp(elY, haY, 0.42);
-    drawTaperedLimb(elX, elY, 0.072 * S, midX, midY, 0.070 * S, PAWN_PAL.skin, PAWN_PAL.ink, lw * 0.9);
-    drawTaperedLimb(midX, midY, 0.072 * S, haX, haY, 0.064 * S, PAWN_PAL.bracer, PAWN_PAL.ink, lw * 0.9);
-
-    const fAng = Math.atan2(haY - elY, haX - elX);
-    ctx.save();
-    ctx.translate(lerp(midX, haX, 0.5), lerp(midY, haY, 0.5));
-    ctx.rotate(fAng);
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.6;
-    ctx.beginPath();
-    ctx.moveTo(-0.04 * S, -0.04 * S);
-    ctx.lineTo(0.04 * S, 0.04 * S);
-    ctx.moveTo(-0.04 * S, 0.04 * S);
-    ctx.lineTo(0.04 * S, -0.04 * S);
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.save();
-    ctx.translate(haX, haY);
-    ctx.rotate(fAng + Math.PI / 2);
-    ctx.fillStyle = PAWN_PAL.glove;
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.9;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 0.068 * S, 0.076 * S, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    const thumbX = isRight ? -0.048 * S : 0.048 * S;
-    ctx.fillStyle = PAWN_PAL.skin;
-    ctx.beginPath();
-    ctx.arc(thumbX, -0.032 * S, 0.022 * S, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-
-    const slX = lerp(shX, elX, 0.88);
-    const slY = lerp(shY, elY, 0.88);
-    drawTaperedLimb(shX, shY, 0.105 * S, slX, slY, 0.085 * S, PAWN_PAL.sleeve, PAWN_PAL.ink, lw);
-  }
-
-  function drawRollAxe(handX, handY, axeYaw, axeRoll, S, lw, isAlloy) {
-    const L = (0.64 + 0.16 * axeRoll) * S;
-    ctx.save();
-    ctx.translate(handX, handY);
-    ctx.rotate(axeYaw);
-
-    drawTaperedLimb(0, 0.085 * L, 0.024 * S, 0, -0.50 * L, 0.028 * S, isAlloy ? '#8c694a' : PAWN_PAL.wood, PAWN_PAL.ink, lw * 0.82);
-
-    const eyeY = -0.47 * L;
-    const pollW = (0.042 + 0.015 * axeRoll) * S;
-    const bladeOut = (0.026 + 0.215 * axeRoll) * S;
-    const halfH = (0.070 + 0.045 * axeRoll) * S;
-
-    ctx.fillStyle = isAlloy ? '#546b7a' : PAWN_PAL.iron;
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.85;
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(pollW, eyeY - halfH * 0.45);
-    ctx.lineTo(pollW, eyeY + halfH * 0.45);
-    ctx.lineTo(-bladeOut * 0.60, eyeY + halfH * 0.72);
-    ctx.quadraticCurveTo(-bladeOut * 1.08, eyeY, -bladeOut * 0.75, eyeY - halfH);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = isAlloy ? '#d9e6ee' : PAWN_PAL.steel;
-    ctx.beginPath();
-    ctx.moveTo(-bladeOut * 0.55, eyeY + halfH * 0.62);
-    ctx.quadraticCurveTo(-bladeOut * 1.02, eyeY, -bladeOut * 0.70, eyeY - halfH * 0.90);
-    ctx.quadraticCurveTo(-bladeOut * 0.76, eyeY, -bladeOut * 0.38, eyeY + halfH * 0.50);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = isAlloy ? '#8c694a' : PAWN_PAL.wood;
-    ctx.beginPath();
-    ctx.ellipse(0, eyeY, 0.022 * S, 0.028 * S, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // 動態翻轉竹刀與導能獵刀（bladeRoll=0.12 僅見窄脊；揮砍轉腕展開刀面與鋒刃）
-  function drawRollBambooBlade(handX, handY, bladeYaw, bladeRoll, S, lw, isAlloy) {
-    const L = (0.68 + 0.16 * bladeRoll) * S;
-    ctx.save();
-    ctx.translate(handX, handY);
-    ctx.rotate(bladeYaw);
-
-    // 短竹把與護格
-    drawTaperedLimb(0, 0.08 * L, 0.022 * S, 0, -0.07 * L, 0.024 * S, isAlloy ? '#7c5338' : PAWN_PAL.wood, PAWN_PAL.ink, lw * 0.80);
-    ctx.fillStyle = isAlloy ? '#b4925a' : PAWN_PAL.wood;
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.80;
-    ctx.beginPath();
-    ctx.roundRect(-0.045 * S, -0.095 * L, 0.090 * S, 0.026 * S, 2);
-    ctx.fill();
-    ctx.stroke();
-
-    const baseY = -0.10 * L;
-    const tipY = -0.68 * L;
-    const spineW = (0.018 + 0.012 * bladeRoll) * S;
-    const edgeOut = (0.018 + 0.128 * bladeRoll) * S;
-
-    ctx.fillStyle = isAlloy
-      ? (bladeRoll > 0.35 ? '#d4e1ea' : '#7c92a0')
-      : (bladeRoll > 0.35 ? PAWN_PAL.bambooBody : PAWN_PAL.bambooSpine);
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.85;
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(spineW, baseY);
-    ctx.lineTo(spineW * 0.72, tipY + 0.04 * L);
-    ctx.quadraticCurveTo(-edgeOut * 0.25, tipY - 0.03 * L, -edgeOut * 0.82, tipY + 0.10 * L);
-    ctx.quadraticCurveTo(-edgeOut * 1.05, lerp(baseY, tipY, 0.45), -edgeOut * 0.68, baseY);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // 導能冷輝／火烤硬化刃線
-    if (bladeRoll > 0.30 || isAlloy) {
-      ctx.fillStyle = isAlloy ? '#639bb3' : PAWN_PAL.bambooChar;
-      ctx.beginPath();
-      ctx.moveTo(-edgeOut * 0.62, baseY);
-      ctx.quadraticCurveTo(-edgeOut * 1.03, lerp(baseY, tipY, 0.45), -edgeOut * 0.78, tipY + 0.10 * L);
-      ctx.quadraticCurveTo(-edgeOut * 0.68, lerp(baseY, tipY, 0.45), -edgeOut * 0.38, baseY);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  function drawBaimiaoHuman(a, pos, sp, nowMs) {
-    const S = Math.max(15.5, cellPx * 0.84);
-    const lw = Math.max(1.15, 0.040 * S);
+  function drawCddaHuman(a, pos, sp, nowMs) {
+    const tiles = window.CddaTiles;
+    const S = Math.max(20, Math.round(cellPx));
     const mb = pos.moveBlend || 0;
-    const rb = pos.runBlend || 0;
-    const s = Math.sin(pos.walkPhase || 0);
-    const c = Math.cos(pos.walkPhase || 0);
-
-    const h = hashStr(`${a.id}|${a.soul_seed || ''}`);
-    const [vestFill, vestTrim] = VEST_PALETTES[h % VEST_PALETTES.length];
     const showHat = a.is_player
       ? (meDetail ? Boolean(meDetail.equipped_hat) : a.wear_hat !== false)
       : (typeof a.wear_hat === 'boolean' ? a.wear_hat : Number(a.id) % 2 === 1);
@@ -3310,148 +2099,29 @@
       Boolean(a.carry) ||
       Boolean(a.show_pack) ||
       Boolean(a.is_player && meDetail && meDetail.equipped_pack);
-
-    const actStr = String(a.act || '');
-    const isSitting = /歇息|盤坐|圍爐|調息/.test(actStr) && mb < 0.15;
-    const isGathering = /拾取|採筍|採摘|搬回/.test(actStr) && mb < 0.25 && pos.chopTimer <= 0;
-    const isCrafting = /^(打造|製作|烹製)/.test(actStr) && pos.chopTimer > 0;
-
-    let torsoYaw = -s * (0.09 + 0.05 * rb) * mb;
-
-    const idleElL = [-0.41 * S, 0.03 * S];
-    const idleHaL = [-0.42 * S, -0.09 * S];
-    const moveElL = [
-      -0.41 * S,
-      0.03 * S + Math.max(0, s) * (0.10 + 0.08 * rb) * S + Math.min(0, s) * (0.06 * rb) * S,
-    ];
-    const moveHaL = [
-      lerp(-0.42, -0.40, rb) * S,
-      lerp(-0.09, -0.18, rb) * S + s * (0.18 + 0.08 * rb) * S,
-    ];
-    let elL = lerpPt(idleElL, moveElL, mb);
-    let haL = lerpPt(idleHaL, moveHaL, mb);
-
-    const idleElR = [0.41 * S, 0.03 * S];
-    const idleHaR = [0.42 * S, -0.11 * S];
-    const moveElR = [
-      0.41 * S,
-      0.03 * S + Math.max(0, -s) * (0.08 + 0.06 * rb) * S + Math.min(0, -s) * (0.05 * rb) * S,
-    ];
-    const moveHaR = [
-      lerp(0.42, 0.40, rb) * S,
-      lerp(-0.11, -0.20, rb) * S - s * (0.14 + 0.06 * rb) * S,
-    ];
-    let elR = lerpPt(idleElR, moveElR, mb);
-    let haR = lerpPt(idleHaR, moveHaR, mb);
-
-    let axeYaw = -0.04 - s * 0.10 * mb;
-    let axeRoll = 0.12;
-    let slashPhase = 0;
-
-    if (isSitting) {
-      const breath = Math.sin((nowMs || 0) * 0.0022 + Number(a.id || 0)) * 0.015 * S;
-      elL = [-0.36 * S, -0.02 * S];
-      haL = [-0.21 * S, -0.21 * S + breath];
-      elR = [0.36 * S, -0.02 * S];
-      haR = [0.21 * S, -0.21 * S + breath];
-      torsoYaw = Math.sin((nowMs || 0) * 0.0014 + Number(a.id || 0)) * 0.04;
-      axeYaw = -0.35;
-      axeRoll = 0.10;
-    } else if (isGathering) {
-      const gp = 0.5 - 0.5 * Math.cos((nowMs || 0) * 0.008 + Number(a.id || 0));
-      torsoYaw = 0.18 * gp;
-      elL = [-0.39 * S, 0.04 * S];
-      haL = [-0.34 * S, -0.12 * S];
-      elR = [0.34 * S, -0.12 * S];
-      haR = [0.12 * S, (-0.30 - 0.14 * gp) * S];
-      axeYaw = -0.18;
-    } else if (isCrafting) {
-      const p = 1 - pos.chopTimer / CHOP_DURATION;
-      const tap = Math.max(0, Math.sin(p * Math.PI * 2));
-      torsoYaw = -0.10 + 0.14 * tap;
-      elL = [-0.32 * S, -0.08 * S];
-      haL = [-0.12 * S, -0.34 * S];
-      elR = [0.36 * S, -0.12 * S];
-      haR = [0.16 * S, (-0.28 - 0.14 * tap) * S];
-      axeYaw = lerp(-0.12, -0.52, tap);
-      axeRoll = 0.52;
-    } else if (pos.chopTimer > 0) {
-      const p = 1 - pos.chopTimer / CHOP_DURATION;
-      const baseElL = elL, baseHaL = haL, baseElR = elR, baseHaR = haR, baseYaw = axeYaw;
-      const wElL = [-0.41 * S, -0.04 * S], wHaL = [-0.42 * S, -0.22 * S];
-      const wElR = [0.46 * S, 0.10 * S], wHaR = [0.55 * S, 0.02 * S];
-      const sElL = [-0.44 * S, 0.12 * S], sHaL = [-0.45 * S, 0.02 * S];
-      const sElR = [0.34 * S, -0.22 * S], sHaR = [0.16 * S, -0.48 * S];
-      const fElL = [-0.44 * S, 0.14 * S], fHaL = [-0.44 * S, 0.04 * S];
-      const fElR = [0.24 * S, -0.24 * S], fHaR = [0.02 * S, -0.46 * S];
-
-      if (p < 0.28) {
-        const k = smoothstep(p / 0.28);
-        torsoYaw += k * 0.48;
-        elL = lerpPt(baseElL, wElL, k);
-        haL = lerpPt(baseHaL, wHaL, k);
-        elR = lerpPt(baseElR, wElR, k);
-        haR = lerpPt(baseHaR, wHaR, k);
-        axeYaw = lerp(baseYaw, 0.78, k);
-        axeRoll = lerp(0.12, 0.86, k);
-      } else if (p < 0.54) {
-        const k = smoothstep((p - 0.28) / 0.26);
-        torsoYaw += lerp(0.48, -0.44, k);
-        elL = lerpPt(wElL, sElL, k);
-        haL = lerpPt(wHaL, sHaL, k);
-        elR = lerpPt(wElR, sElR, k);
-        haR = lerpPt(wHaR, sHaR, k);
-        axeYaw = lerp(0.78, -0.78, k);
-        axeRoll = 0.88;
-        if (p > 0.34) slashPhase = (p - 0.34) / 0.20;
-      } else if (p < 0.74) {
-        const k = smoothstep((p - 0.54) / 0.20);
-        torsoYaw += lerp(-0.44, -0.50, k);
-        elL = lerpPt(sElL, fElL, k);
-        haL = lerpPt(sHaL, fHaL, k);
-        elR = lerpPt(sElR, fElR, k);
-        haR = lerpPt(sHaR, fHaR, k);
-        axeYaw = lerp(-0.78, -0.96, k);
-        axeRoll = 0.82;
-      } else {
-        const k = smoothstep((p - 0.74) / 0.26);
-        torsoYaw += lerp(-0.50, 0, k);
-        elL = lerpPt(fElL, baseElL, k);
-        haL = lerpPt(fHaL, baseHaL, k);
-        elR = lerpPt(fElR, baseElR, k);
-        haR = lerpPt(fHaR, baseHaR, k);
-        axeYaw = lerp(-0.96, baseYaw, k);
-        axeRoll = lerp(0.82, 0.12, k);
-      }
-    }
+    const tool = a.is_player && meDetail
+      ? (meDetail.equipped_code || meDetail.equipped_label || a.tool)
+      : a.tool;
 
     ctx.save();
-    ctx.translate(sp.x, sp.y);
 
-    // 雙擊疾奔身後水墨殘影（與世界座標方向對齊）
     if ((pos.running || a.running) && pos.path && pos.path.length > 0 && typeof pos.facing === 'number') {
       for (const k of [1, 2]) {
-        const bx = -Math.cos(pos.facing) * (k * 0.26 * S);
-        const by = Math.sin(pos.facing) * (k * 0.26 * S);
-        ctx.strokeStyle = k === 1 ? 'rgba(139, 32, 32, 0.30)' : 'rgba(139, 32, 32, 0.14)';
-        ctx.lineWidth = Math.max(1.2, lw * 0.9);
+        const bx = sp.x - Math.cos(pos.facing) * (k * 0.26 * cellPx);
+        const by = sp.y + Math.sin(pos.facing) * (k * 0.26 * cellPx);
+        ctx.strokeStyle = k === 1 ? 'rgba(139, 32, 32, 0.36)' : 'rgba(139, 32, 32, 0.16)';
+        ctx.lineWidth = 1.6;
         ctx.beginPath();
-        ctx.arc(bx, by, (0.44 - k * 0.04) * S, 0, Math.PI * 2);
+        ctx.ellipse(bx, by + cellPx * 0.24, cellPx * (0.30 - k * 0.04), cellPx * (0.16 - k * 0.02), 0, 0, Math.PI * 2);
         ctx.stroke();
       }
     }
 
-    // 柔和接地水暈陰影 & 本尊硃砂氣韻細圈
-    ctx.fillStyle = 'rgba(44, 30, 15, 0.09)';
-    ctx.beginPath();
-    ctx.ellipse(0, 2, S * (isSitting ? 0.52 : 0.48), S * (isSitting ? 0.44 : 0.40), 0, 0, Math.PI * 2);
-    ctx.fill();
-
     if (a.is_player) {
-      ctx.strokeStyle = 'rgba(139, 32, 32, 0.52)';
-      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = 'rgba(196, 44, 44, 0.85)';
+      ctx.lineWidth = 2.0;
       ctx.beginPath();
-      ctx.arc(0, 0, S * 0.50, 0, Math.PI * 2);
+      ctx.ellipse(sp.x, sp.y + cellPx * 0.28, cellPx * 0.34, cellPx * 0.18, 0, 0, Math.PI * 2);
       ctx.stroke();
     }
 
@@ -3459,481 +2129,104 @@
     if (isDowned) {
       ctx.save();
       ctx.setLineDash([4, 3]);
-      ctx.strokeStyle = 'rgba(139, 32, 32, 0.85)';
+      ctx.strokeStyle = 'rgba(196, 44, 44, 0.88)';
       ctx.lineWidth = 2.0;
       ctx.beginPath();
-      ctx.arc(0, 0, S * 0.64, 0, Math.PI * 2);
+      ctx.arc(sp.x, sp.y, cellPx * 0.46, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     } else if (typeof a.hp_ratio === 'number' && a.hp_ratio < 0.99) {
-      ctx.strokeStyle = '#8b2020';
+      ctx.strokeStyle = '#c4322c';
       ctx.lineWidth = 2.2;
       ctx.beginPath();
-      ctx.arc(0, 0, S * 0.56, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * a.hp_ratio);
+      ctx.arc(sp.x, sp.y, cellPx * 0.44, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * a.hp_ratio);
       ctx.stroke();
     }
 
-    // ★ 世界座標 +my 為北（螢幕上方 -Y）；局部骨架前方向為 -Y，因此旋轉必須為 (Math.PI / 2 - pos.facing) ★
-    ctx.rotate(Math.PI / 2 - pos.facing + (isDowned ? 1.35 : 0));
-
-    // ─ 骨盆與雙腿層 ─
-    const pelvisRot = isSitting ? 0 : s * (0.09 + 0.04 * rb) * mb;
-    const stepHalfW = (0.115 - 0.02 * rb) * S;
-    const frontAmp = lerp(0.32, 0.45, rb) * S;
-    const rearAmp = lerp(0.18, 0.29, rb) * S;
-
-    ctx.save();
-    ctx.rotate(pelvisRot);
-    if (isSitting) {
-      // 俯視盤坐：雙膝朝前外張，小腿與靴履交叉收回腿下
-      for (const side of [-1, 1]) {
-        drawTaperedLimb(side * 0.14 * S, 0.02 * S, 0.11 * S, side * 0.34 * S, -0.16 * S, 0.095 * S, PAWN_PAL.pants, PAWN_PAL.ink, lw * 0.9);
-        drawTaperedLimb(side * 0.34 * S, -0.16 * S, 0.09 * S, -side * 0.05 * S, -0.24 * S, 0.072 * S, PAWN_PAL.pants, PAWN_PAL.ink, lw * 0.9);
-        drawPawnPart(pawnImgs.bootTop, -side * 0.11 * S, -0.24 * S, 0.15 * S, 0.24 * S, 0.50, 0.55, side * 0.52);
+    let lungeX = 0;
+    let lungeY = 0;
+    let slashAlpha = 0;
+    if (pos.chopTimer > 0) {
+      const p = 1 - pos.chopTimer / CHOP_DURATION;
+      const thrust = Math.sin(Math.min(1, p / 0.65) * Math.PI);
+      const fac = typeof pos.facing === 'number' ? pos.facing : 0;
+      lungeX = Math.cos(fac) * thrust * cellPx * 0.14;
+      lungeY = -Math.sin(fac) * thrust * cellPx * 0.10;
+      if (p > 0.22 && p < 0.68) {
+        slashAlpha = 1.0 - Math.abs((p - 0.45) / 0.23);
       }
-    } else {
-      const legs = [
-        { side: -1, phi: pos.walkPhase || 0, idleY: -0.09 * S },
-        { side: 1, phi: (pos.walkPhase || 0) + Math.PI, idleY: -0.01 * S },
-      ];
-      const legComputed = legs.map((lg) => {
-        const spf = Math.sin(lg.phi);
-        const moveY = spf >= 0 ? -spf * frontAmp : -spf * rearAmp;
-        const footY = lerp(lg.idleY, moveY, mb);
-        const heelShrink = spf < 0 ? 1 - 0.18 * (-spf) * mb * (0.4 + 0.6 * rb) : 1.0;
-        return { side: lg.side, hipX: lg.side * stepHalfW, footY, bootH: 0.35 * S * heelShrink };
+    }
+
+    const bobY = -Math.abs(Math.sin(pos.walkPhase || 0)) * mb * (cellPx * 0.08);
+    if (tiles && tiles.isReady()) {
+      tiles.drawHumanPaperDoll(ctx, a, sp.x + lungeX, sp.y + cellPx * 0.08 + lungeY, S, {
+        facing: pos.facing,
+        wearHat: showHat,
+        showPack,
+        tool,
+        bobY,
       });
-      legComputed.sort((u, v) => v.footY - u.footY);
-
-      for (const st of legComputed) {
-        drawPawnPart(pawnImgs.bootTop, st.hipX, st.footY, 0.175 * S, st.bootH, 0.50, 0.55, st.side * 0.02);
-        if (st.footY < -0.14 * S) {
-          drawTaperedLimb(st.hipX, -0.02 * S, 0.105 * S, st.hipX, st.footY + 0.02 * S, 0.088 * S, PAWN_PAL.pants, PAWN_PAL.ink, lw * 0.9);
-        }
-      }
-    }
-
-    ctx.fillStyle = PAWN_PAL.pants;
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw;
-    ctx.beginPath();
-    ctx.ellipse(0, 0.01 * S, 0.28 * S, 0.18 * S, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-
-    // ─ 胸肩雙臂與右手器械層 ─
-    ctx.save();
-    ctx.rotate(torsoYaw);
-
-    if (a.tool && !isSitting) {
-      const isAlloy = /導能|開山|鋼/.test(a.tool);
-      if (/刀|劍/.test(a.tool)) {
-        drawRollBambooBlade(haR[0], haR[1], axeYaw, axeRoll, S, lw, isAlloy);
-      } else {
-        drawRollAxe(haR[0], haR[1], axeYaw, axeRoll, S, lw, isAlloy);
-      }
-    }
-
-    if (slashPhase > 0) {
-      ctx.save();
-      ctx.strokeStyle = a.tool ? 'rgba(44, 30, 15, 0.64)' : 'rgba(44, 30, 15, 0.34)';
-      ctx.lineWidth = lw * 1.1;
-      ctx.beginPath();
-      ctx.arc(0.03 * S, -0.14 * S, (a.tool ? 0.78 : 0.54) * S, -Math.PI * 0.84, -Math.PI * 0.16);
-      ctx.stroke();
-      if (a.tool) {
-        ctx.strokeStyle = 'rgba(44, 30, 15, 0.28)';
-        ctx.lineWidth = lw * 0.7;
-        ctx.beginPath();
-        ctx.arc(0.03 * S, -0.14 * S, 0.68 * S, -Math.PI * 0.78, -Math.PI * 0.22);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    drawArticulatedArm(-0.36 * S, 0, elL[0], elL[1], haL[0], haL[1], S, lw, false);
-    drawArticulatedArm(0.36 * S, 0, elR[0], elR[1], haR[0], haR[1], S, lw, true);
-    drawVestTorso(S, lw, vestFill, vestTrim);
-
-    if (showPack) {
-      drawPawnPart(pawnImgs.pack, 0, 0.27 * S + Math.abs(c) * 0.018 * S * mb, 0.78 * S, 0.72 * S, 0.50, 0.48, -torsoYaw * 0.28);
-    }
-    ctx.restore();
-
-    // ─ 頭部頂層 ─
-    const headBobScale = 1 + Math.abs(c) * 0.020 * mb;
-    if (showHat) {
-      drawPawnPart(pawnImgs.hat, 0, -0.03 * S, 0.88 * S * headBobScale, 0.88 * S * headBobScale, 0.50, 0.50, s * 0.025 * mb);
     } else {
-      drawPawnPart(pawnImgs.head, 0, -0.03 * S, 0.44 * S * headBobScale, 0.56 * S * headBobScale, 0.50, 0.55, s * 0.03 * mb);
+      ctx.fillStyle = a.is_player ? '#8b2020' : '#2a4a6b';
+      ctx.beginPath();
+      ctx.arc(sp.x, sp.y, Math.max(6, cellPx * 0.30), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (slashAlpha > 0) {
+      const fac = typeof pos.facing === 'number' ? pos.facing : 0;
+      const ang = -fac;
+      ctx.strokeStyle = `rgba(255, 244, 214, ${0.78 * slashAlpha})`;
+      ctx.lineWidth = Math.max(2, cellPx * 0.08);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(sp.x, sp.y - cellPx * 0.12, cellPx * 0.48, ang - 0.85, ang + 0.85);
+      ctx.stroke();
     }
 
     ctx.restore();
+    void nowMs;
   }
 
-  function drawBaimiaoBeast(a, pos, sp) {
-    const S = Math.max(15.5, cellPx * 0.84);
-    const mb = pos.moveBlend || 0;
-    const s = Math.sin(pos.walkPhase || 0);
-    const isPheasant = a.glyph === '雉' || /雞|雉|禽/.test(a.name || a.role || '');
-
+  function drawCddaBeast(a, pos, sp) {
+    const tiles = window.CddaTiles;
     ctx.save();
-    ctx.translate(sp.x, sp.y);
-
-    ctx.fillStyle = 'rgba(44, 30, 15, 0.09)';
-    ctx.beginPath();
-    ctx.ellipse(0, 2, S * (isPheasant ? 0.34 : 0.46), S * (isPheasant ? 0.28 : 0.36), 0, 0, Math.PI * 2);
-    ctx.fill();
-
     if (typeof a.hp_ratio === 'number' && a.hp_ratio < 0.99) {
-      ctx.strokeStyle = '#8b2020';
+      ctx.strokeStyle = '#c4322c';
       ctx.lineWidth = 2.0;
       ctx.beginPath();
-      ctx.arc(0, 0, S * 0.52, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * a.hp_ratio);
+      ctx.arc(sp.x, sp.y, cellPx * 0.42, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * a.hp_ratio);
       ctx.stroke();
     }
-
-    ctx.rotate(Math.PI / 2 - pos.facing);
-
-    const gaitSway = s * 0.055 * mb;
-    const bobScale = 1 + Math.abs(s) * 0.025 * mb;
-    const img = isPheasant ? pawnImgs.pheasant : pawnImgs.boar;
-
-    if (img && img.complete && img.naturalWidth) {
-      if (mb > 0.08 && !isPheasant) {
-        const diagA = s * 0.11 * S * mb;
-        const diagB = -s * 0.11 * S * mb;
-        ctx.fillStyle = '#3a2c24';
-        for (const [lx, ly] of [
-          [-0.20 * S, -0.18 * S - diagA],
-          [0.20 * S, 0.18 * S + diagA],
-          [0.20 * S, -0.18 * S - diagB],
-          [-0.20 * S, 0.18 * S + diagB],
-        ]) {
-          ctx.beginPath();
-          ctx.ellipse(lx, ly, 0.042 * S, 0.062 * S, 0, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      const w = (isPheasant ? 0.96 : 1.04) * S * bobScale;
-      const h = (isPheasant ? 1.08 : 1.18) * S * bobScale;
-      drawPawnPart(img, 0, 0, w, h, 0.50, 0.50, gaitSway);
+    if (tiles && tiles.isReady()) {
+      tiles.drawBeast(ctx, a, sp.x, sp.y + cellPx * 0.06, cellPx, pos.facing, pos.moveBlend, pos.walkPhase);
     } else {
-      ctx.fillStyle = isPheasant ? '#6f685f' : '#78523d';
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = Math.max(1.15, 0.038 * S);
+      ctx.fillStyle = '#7c3f23';
       ctx.beginPath();
-      ctx.ellipse(0, 0, S * 0.24, S * 0.34, 0, 0, Math.PI * 2);
+      ctx.arc(sp.x, sp.y, Math.max(5, cellPx * 0.25), 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
     }
-
     ctx.restore();
   }
 
-  const PLOT_KINDS = new Set(['ridge', 'herb_seed', 'herb_plot', 'crop_seed', 'crop_plot']);
-
-  function drawGardenPlot(kind, mx, my, cx, cy, cellPx, nowMs, isRaining) {
-    const wConn = PLOT_KINDS.has(cellMap.get(`${mx - 1},${my}`)?.s);
-    const eConn = PLOT_KINDS.has(cellMap.get(`${mx + 1},${my}`)?.s);
-    const leftEdge = wConn ? -cellPx * 0.505 : -cellPx * 0.45;
-    const rightEdge = eConn ? cellPx * 0.505 : cellPx * 0.45;
-    const w = rightEdge - leftEdge;
-    const h = cellPx * 0.86;
-    const lw = Math.max(0.95, cellPx * 0.025);
-    const sway = Math.sin(nowMs * 0.0028 + mx * 1.4 + my * 0.9) * (cellPx * 0.024);
-
-    ctx.save();
-    ctx.translate(cx, cy);
-
-    // 1. 宣紙白描沃土畦底（同畦左右無縫連成整條長畦；雨天呈深潤土色）
-    const radL = wConn ? 0 : Math.max(3, cellPx * 0.10);
-    const radR = eConn ? 0 : Math.max(3, cellPx * 0.10);
-    ctx.fillStyle = isRaining ? '#846b50' : '#9c8367';
-    ctx.beginPath();
-    ctx.roundRect(leftEdge, -h / 2, w, h, [radL, radR, radR, radL]);
-    ctx.fill();
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw;
-    ctx.beginPath();
-    ctx.moveTo(leftEdge, -h / 2);
-    ctx.lineTo(rightEdge, -h / 2);
-    ctx.moveTo(leftEdge, h / 2);
-    ctx.lineTo(rightEdge, h / 2);
-    if (!wConn) {
-      ctx.moveTo(leftEdge, -h / 2);
-      ctx.lineTo(leftEdge, h / 2);
-    }
-    if (!eConn) {
-      ctx.moveTo(rightEdge, -h / 2);
-      ctx.lineTo(rightEdge, h / 2);
-    }
-    ctx.stroke();
-
-    // 2. 三道立體連續翻鬆土壟條
-    for (const ry of [-h * 0.27, 0, h * 0.27]) {
-      const rLeft = wConn ? -cellPx * 0.505 : leftEdge + cellPx * 0.08;
-      const rRight = eConn ? cellPx * 0.505 : rightEdge - cellPx * 0.08;
-      const rh = h * 0.20;
-      const rrL = wConn ? 0 : Math.max(2, rh * 0.42);
-      const rrR = eConn ? 0 : Math.max(2, rh * 0.42);
-      ctx.fillStyle = isRaining ? '#94785b' : '#b79c7c';
-      ctx.beginPath();
-      ctx.roundRect(rLeft, ry - rh / 2, rRight - rLeft, rh, [rrL, rrR, rrR, rrL]);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(51, 38, 32, 0.36)';
-      ctx.lineWidth = Math.max(0.75, lw * 0.72);
-      ctx.beginPath();
-      ctx.moveTo(wConn ? -cellPx * 0.505 : rLeft + cellPx * 0.03, ry + rh * 0.48);
-      ctx.lineTo(eConn ? cellPx * 0.505 : rRight - cellPx * 0.03, ry + rh * 0.48);
-      ctx.stroke();
-    }
-
-    if (cellPx < 13) {
-      if (kind === 'herb_seed' || kind === 'herb_plot') {
-        ctx.fillStyle = kind === 'herb_plot' ? '#4d7761' : '#80a67d';
-        ctx.beginPath();
-        ctx.arc(0, 0, Math.max(2, cellPx * (kind === 'herb_plot' ? 0.26 : 0.16)), 0, Math.PI * 2);
-        ctx.fill();
-      } else if (kind === 'crop_seed' || kind === 'crop_plot') {
-        ctx.fillStyle = kind === 'crop_plot' ? '#587a45' : '#86a766';
-        ctx.beginPath();
-        ctx.arc(0, 0, Math.max(2, cellPx * (kind === 'crop_plot' ? 0.26 : 0.16)), 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-      return;
-    }
-
-    if (kind === 'herb_seed') {
-      const spots = [[-0.22, -0.26], [0.16, -0.24], [-0.04, 0.0], [-0.20, 0.26], [0.21, 0.25]];
-      for (const [sx, sy] of spots) {
-        ctx.save();
-        ctx.translate(sx * cellPx + sway * 0.4, sy * cellPx);
-        ctx.fillStyle = '#7ea67b';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = lw * 0.8;
-        for (const a of [-0.65, 0.65]) {
-          ctx.save();
-          ctx.rotate(a);
-          ctx.beginPath();
-          ctx.ellipse(0, -cellPx * 0.06, cellPx * 0.036, cellPx * 0.072, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          ctx.restore();
-        }
-        ctx.restore();
-      }
-    } else if (kind === 'herb_plot') {
-      const clusters = [[-0.22, -0.24], [0.18, -0.22], [-0.02, 0.02], [-0.21, 0.24], [0.20, 0.23]];
-      for (let i = 0; i < clusters.length; i++) {
-        const [bx, by] = clusters[i];
-        ctx.save();
-        ctx.translate(bx * cellPx + sway * 0.65, by * cellPx);
-        for (let k = 0; k < 5; k++) {
-          const ang = (k * Math.PI * 2) / 5 + (i * 0.4);
-          ctx.save();
-          ctx.rotate(ang);
-          ctx.fillStyle = k % 2 === 0 ? '#4d7660' : '#6c937a';
-          ctx.strokeStyle = PAWN_PAL.ink;
-          ctx.lineWidth = lw * 0.78;
-          ctx.beginPath();
-          ctx.ellipse(0, -cellPx * 0.085, cellPx * 0.042, cellPx * 0.095, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-          ctx.restore();
-        }
-        ctx.fillStyle = '#f3ebf6';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = lw * 0.72;
-        ctx.beginPath();
-        ctx.arc(0, 0, cellPx * 0.046, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#cfa048';
-        ctx.beginPath();
-        ctx.arc(0, 0, cellPx * 0.020, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-    } else if (kind === 'crop_seed') {
-      ctx.strokeStyle = '#5a7b45';
-      ctx.lineWidth = lw * 1.1;
-      ctx.beginPath();
-      ctx.moveTo(-w * 0.34, -h * 0.22);
-      ctx.quadraticCurveTo(0, -h * 0.04, w * 0.32, h * 0.20);
-      ctx.stroke();
-      for (const [lx, ly, rot] of [[-0.24, -0.22, -0.4], [0.14, -0.18, 0.5], [-0.08, 0.04, -0.6], [0.22, 0.22, 0.3]]) {
-        ctx.save();
-        ctx.translate(lx * cellPx + sway * 0.3, ly * cellPx);
-        ctx.rotate(rot);
-        ctx.fillStyle = '#85a664';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = lw * 0.78;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, cellPx * 0.072, cellPx * 0.052, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-      }
-    } else if (kind === 'crop_plot') {
-      // 甘薯心形茂葉叢＋紫赭紅塊根露頭
-      ctx.strokeStyle = '#537341';
-      ctx.lineWidth = lw * 1.15;
-      ctx.beginPath();
-      ctx.moveTo(-w * 0.34, -h * 0.26);
-      ctx.bezierCurveTo(-w * 0.1, h * 0.12, w * 0.14, -h * 0.15, w * 0.34, h * 0.24);
-      ctx.stroke();
-
-      for (const [lx, ly, rot, sc] of [
-        [-0.24, -0.24, -0.5, 1.0], [0.06, -0.25, 0.4, 0.92], [0.24, -0.16, 1.1, 0.96],
-        [-0.22, 0.04, -1.2, 1.05], [0.04, 0.02, 0.2, 1.08], [0.25, 0.14, 0.8, 0.95],
-        [-0.14, 0.25, -0.3, 1.0], [0.12, 0.26, 0.6, 0.92],
-      ]) {
-        const s = cellPx * 0.088 * sc;
-        ctx.save();
-        ctx.translate(lx * cellPx + sway * 0.55, ly * cellPx);
-        ctx.rotate(rot);
-        ctx.fillStyle = sc > 1.0 ? '#587a45' : '#769859';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = lw * 0.78;
-        ctx.beginPath();
-        ctx.moveTo(0, -s);
-        ctx.bezierCurveTo(s * 1.15, -s * 0.65, s * 0.95, s * 0.95, 0, s * 0.75);
-        ctx.bezierCurveTo(-s * 0.95, s * 0.95, -s * 1.15, -s * 0.65, 0, -s);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-      }
-      // 露土甘薯塊根頭
-      for (const [tx, ty, trot] of [[-0.12, -0.11, -0.4], [0.14, 0.06, 0.5], [-0.04, 0.22, 0.15]]) {
-        ctx.save();
-        ctx.translate(tx * cellPx, ty * cellPx);
-        ctx.rotate(trot);
-        ctx.fillStyle = '#a15847';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = lw * 0.85;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, cellPx * 0.11, cellPx * 0.066, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
+  function isCellUnderClosedRoof(mx, my) {
+    for (const rm of worldRooms) {
+      if (mx >= rm.x0 && mx <= rm.x1 && my >= rm.y0 + 1 && my <= rm.y1) {
+        const al = roomRoofAlpha.has(roomKeyOf(rm)) ? roomRoofAlpha.get(roomKeyOf(rm)) : 1.0;
+        if (al > 0.35) return true;
       }
     }
-
-    ctx.restore();
+    return false;
   }
 
-  function drawBambooBed(mx, my, cx, cy, cellPx, sleeper) {
-    const w = cellPx * 1.32;
-    const h = cellPx * 0.84;
-    const lw = Math.max(1.05, cellPx * 0.028);
-    ctx.save();
-    ctx.translate(cx, cy);
-
-    ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
-    ctx.fillRect(-w / 2 + 2.2, -h / 2 + 2.6, w, h);
-
-    ctx.fillStyle = '#d4bd97';
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw;
-    ctx.beginPath();
-    ctx.roundRect(-w / 2, -h / 2, w, h, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#eadcc2';
-    ctx.fillRect(-w * 0.44, -h * 0.40, w * 0.88, h * 0.80);
-    ctx.strokeStyle = 'rgba(92, 68, 46, 0.24)';
-    ctx.lineWidth = 0.8;
-    ctx.beginPath();
-    for (let i = -3; i <= 3; i++) {
-      const sx = (w * 0.42 * i) / 4;
-      ctx.moveTo(sx, -h * 0.39);
-      ctx.lineTo(sx, h * 0.39);
+  function isSouthWallOfClosedRoom(mx, my) {
+    for (const rm of worldRooms) {
+      if (mx >= rm.x0 && mx <= rm.x1 && my === rm.y0) {
+        const al = roomRoofAlpha.has(roomKeyOf(rm)) ? roomRoofAlpha.get(roomKeyOf(rm)) : 1.0;
+        if (al > 0.35) return true;
+      }
     }
-    ctx.stroke();
-
-    const postR = cellPx * 0.072;
-    for (const [px, py] of [
-      [-w * 0.47, -h * 0.46], [w * 0.47, -h * 0.46],
-      [-w * 0.47, h * 0.46], [w * 0.47, h * 0.46],
-    ]) {
-      ctx.fillStyle = '#9c7c57';
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = lw * 0.9;
-      ctx.beginPath();
-      ctx.arc(px, py, postR, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    }
-
-    // 東側竹枕
-    ctx.fillStyle = '#f5efe2';
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.9;
-    ctx.beginPath();
-    ctx.roundRect(w * 0.20, -h * 0.31, w * 0.21, h * 0.62, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    if (sleeper) {
-      const S = cellPx * 0.72;
-      const sh = hashStr(`${sleeper.id}|${sleeper.soul_seed || ''}`);
-      const [vestFill] = VEST_PALETTES[sh % VEST_PALETTES.length];
-      ctx.save();
-      ctx.translate(w * 0.16, 0);
-      ctx.rotate(-Math.PI / 2);
-      ctx.fillStyle = vestFill;
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = lw;
-      ctx.beginPath();
-      ctx.ellipse(0, 0.16 * S, 0.36 * S, 0.18 * S, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      drawPawnPart(pawnImgs.head, 0, -0.06 * S, 0.44 * S, 0.54 * S, 0.5, 0.5, 0);
-      ctx.restore();
-    }
-
-    // 礦物靛藍被褥＋米白翻領緣
-    const qLeft = -w * 0.43;
-    const qW = sleeper ? w * 0.55 : w * 0.48;
-    ctx.fillStyle = '#62717f';
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw;
-    ctx.beginPath();
-    ctx.roundRect(qLeft, -h * 0.37, qW, h * 0.74, 3);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.strokeStyle = 'rgba(34, 43, 52, 0.42)';
-    ctx.lineWidth = 0.9;
-    ctx.beginPath();
-    ctx.moveTo(qLeft + qW * 0.22, -h * 0.26);
-    ctx.lineTo(qLeft + qW * 0.75, -h * 0.10);
-    ctx.moveTo(qLeft + qW * 0.18, h * 0.16);
-    ctx.lineTo(qLeft + qW * 0.72, h * 0.22);
-    ctx.stroke();
-
-    ctx.fillStyle = '#efe7d6';
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 0.85;
-    ctx.fillRect(qLeft + qW - w * 0.08, -h * 0.37, w * 0.08, h * 0.74);
-    ctx.strokeRect(qLeft + qW - w * 0.08, -h * 0.37, w * 0.08, h * 0.74);
-    ctx.restore();
-
-    if (sleeper) {
-      bedBadgeQueue.push({
-        mx,
-        my,
-        cx,
-        by: cy - h * 0.5 - 11,
-        txt: `${sleeper.name || sleeper.glyph || ''}・榻上安歇`,
-        isPlayer: !!sleeper.is_player,
-      });
-    }
+    return false;
   }
 
   function isPosUnderOpaqueRoof(wx, wy) {
@@ -3946,140 +2239,39 @@
     return false;
   }
 
-  function drawSingleRoofBox(x0, x1, y0, y1, padW, padE, padN, padS, alpha, doors) {
-    const pTL = microToScreen(x0 - padW, y1 + padN);
-    const pBR = microToScreen(x1 + padE, y0 - padS);
-    const rx0 = pTL.x;
-    const ry0 = pTL.y;
-    const rw = pBR.x - pTL.x;
-    const rh = pBR.y - pTL.y;
-    if (alpha <= 0.02 || rw <= 12 || rh <= 12) return;
+  function drawCddaRoofRect(x0, x1, y0, y1, alpha, bCode) {
+    const tiles = window.CddaTiles;
+    const visAlpha = alpha * Math.min(1.0, (cellPx - 5.0) / 5.0);
+    if (visAlpha <= 0.02) return;
 
-    const midY = ry0 + rh * 0.5;
-    const lw = Math.max(1.15, cellPx * 0.030);
+    const rx0 = x0;
+    const rx1 = x1;
+    const ry0 = Math.min(y1, y0 + 1);
+    const ry1 = y1;
+    const isRoofAt = (nx, ny) => nx >= rx0 && nx <= rx1 && ny >= ry0 && ny <= ry1;
+
     ctx.save();
-    ctx.globalAlpha = alpha * Math.min(1.0, (cellPx - 5.0) / 5.0);
+    ctx.globalAlpha = visAlpha;
 
-    ctx.fillStyle = 'rgba(34, 24, 14, 0.18)';
-    ctx.fillRect(rx0 + cellPx * 0.10, ry0 + cellPx * 0.12, rw, rh);
+    // 屋簷垂落南面牆頂之柔和陰影條（保留南立面牆體與大門可見，不溢出街道）
+    for (let mx = rx0; mx <= rx1; mx++) {
+      const se = tileEdges(mx, y0);
+      if (se.x1 < 0 || se.x0 > viewportW || se.y1 < 0 || se.y0 > viewportH) continue;
+      ctx.fillStyle = 'rgba(18, 12, 8, 0.24)';
+      ctx.fillRect(se.x0, se.y0, se.w, Math.max(3, Math.round(cellPx * 0.16)));
+    }
 
-    ctx.fillStyle = '#ddd0b7';
-    ctx.fillRect(rx0, ry0, rw, rh * 0.5);
-    ctx.fillStyle = '#ccc0a4';
-    ctx.fillRect(rx0, midY, rw, rh * 0.5);
-
-    if (cellPx >= 12) {
-      ctx.lineCap = 'round';
-      const layersPerSlope = 5;
-      for (const isSouth of [false, true]) {
-        const dir = isSouth ? 1 : -1;
-        for (let layer = 0; layer < layersPerSlope; layer++) {
-          const frac = (layer + 0.65) / layersPerSlope;
-          const bandY = isSouth ? midY + frac * (rh * 0.48) : midY - frac * (rh * 0.48);
-          ctx.strokeStyle = 'rgba(92, 68, 46, 0.28)';
-          ctx.lineWidth = lw * 0.72;
-          ctx.beginPath();
-          ctx.moveTo(rx0 + cellPx * 0.18, bandY);
-          ctx.lineTo(rx1Or(rx0, rw) - cellPx * 0.18, bandY);
-          ctx.stroke();
-
-          ctx.strokeStyle = 'rgba(51, 38, 32, 0.34)';
-          ctx.lineWidth = Math.max(0.75, cellPx * 0.017);
-          ctx.beginPath();
-          const step = Math.max(5.5, cellPx * 0.15);
-          let idx = 0;
-          for (let sx = rx0 + cellPx * 0.22; sx < rx0 + rw - cellPx * 0.22; sx += step) {
-            const hh = hash2d(idx + layer * 41 + x0, isSouth ? 91 : 37);
-            const jx = ((hh % 5) - 2) * 0.6;
-            const len = ((rh * 0.45) / layersPerSlope) * (0.72 + ((hh >>> 4) % 30) / 100);
-            ctx.moveTo(sx + jx, bandY - dir * len * 0.85);
-            ctx.lineTo(sx - jx * 0.5, bandY + dir * 1.3);
-            idx++;
-          }
-          ctx.stroke();
+    const ready = Boolean(tiles && tiles.isReady());
+    for (let my = ry1; my >= ry0; my--) {
+      for (let mx = rx0; mx <= rx1; mx++) {
+        const e = tileEdges(mx, my);
+        if (e.x1 < 0 || e.x0 > viewportW || e.y1 < 0 || e.y0 > viewportH) continue;
+        if (ready) {
+          tiles.drawRoofTile(ctx, mx, my, e.x0, e.y0, e.x1, e.y1, bCode, isRoofAt);
+        } else {
+          ctx.fillStyle = '#8b573b';
+          ctx.fillRect(e.x0, e.y0, e.w, e.h);
         }
-      }
-    }
-
-    ctx.strokeStyle = PAWN_PAL.ink;
-    ctx.lineWidth = lw * 1.15;
-    ctx.strokeRect(rx0, ry0, rw, rh);
-
-    for (const gx of [rx0, rx0 + rw - cellPx * 0.18]) {
-      ctx.fillStyle = '#c5b08a';
-      ctx.fillRect(gx, ry0, cellPx * 0.18, rh);
-      ctx.strokeRect(gx, ry0, cellPx * 0.18, rh);
-    }
-
-    // 僅於非室內且非騎樓的純戶外院門繪製簡潔門簷（隔牆內門與騎樓下不亂長罩棚）
-    for (const dp of doors) {
-      const dx = dp[0];
-      const dy = dp[1];
-      let outX = dx;
-      let outY = dy;
-      if (dx === x0) outX = dx - 1;
-      else if (dx === x1) outX = dx + 1;
-      else if (dy === y1) outY = dy + 1;
-      else if (dy === y0) outY = dy - 1;
-      else continue;
-      if (worldRooms.some((r) => outX >= r.x0 && outX <= r.x1 && outY >= r.y0 && outY <= r.y1)) continue;
-      if (cellMap.get(`${outX},${outY}`)?.s === 'arcade') continue;
-      const dc = microToScreen(dx, dy);
-      ctx.fillStyle = '#d3c2a1';
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = lw;
-      if (dx === x0) {
-        ctx.fillRect(rx0 - cellPx * 0.18, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
-        ctx.strokeRect(rx0 - cellPx * 0.18, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
-      } else if (dx === x1) {
-        ctx.fillRect(rx0 + rw - 2, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
-        ctx.strokeRect(rx0 + rw - 2, dc.y - cellPx * 0.40, cellPx * 0.20, cellPx * 0.80);
-      } else if (dy === y1) {
-        ctx.fillRect(dc.x - cellPx * 0.40, ry0 - cellPx * 0.18, cellPx * 0.80, cellPx * 0.20);
-        ctx.strokeRect(dc.x - cellPx * 0.40, ry0 - cellPx * 0.18, cellPx * 0.80, cellPx * 0.20);
-      } else if (dy === y0) {
-        ctx.fillRect(dc.x - cellPx * 0.40, ry0 + rh - 2, cellPx * 0.80, cellPx * 0.20);
-        ctx.strokeRect(dc.x - cellPx * 0.40, ry0 + rh - 2, cellPx * 0.80, cellPx * 0.20);
-      }
-    }
-
-    const ridgeH = cellPx * 0.22;
-    ctx.fillStyle = '#e7d9bd';
-    ctx.fillRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
-    ctx.strokeRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
-
-    if (cellPx >= 14) {
-      ctx.strokeStyle = 'rgba(51, 38, 32, 0.48)';
-      ctx.lineWidth = lw * 0.65;
-      ctx.beginPath();
-      ctx.moveTo(rx0, midY);
-      ctx.lineTo(rx0 + rw, midY);
-      ctx.stroke();
-
-      ctx.strokeStyle = PAWN_PAL.ink;
-      ctx.lineWidth = Math.max(0.8, cellPx * 0.017);
-      ctx.beginPath();
-      const fStep = Math.max(6, cellPx * 0.16);
-      let fi = 0;
-      for (let sx = rx0 + cellPx * 0.25; sx < rx0 + rw - cellPx * 0.25; sx += fStep) {
-        const hh = hash2d(fi + x0, 503);
-        const tuft = cellPx * (0.045 + (hh % 4) * 0.015);
-        ctx.moveTo(sx, ry0);
-        ctx.lineTo(sx + ((hh % 3) - 1), ry0 - tuft);
-        ctx.moveTo(sx, ry0 + rh);
-        ctx.lineTo(sx + (((hh >>> 2) % 3) - 1), ry0 + rh + tuft);
-        fi++;
-      }
-      ctx.stroke();
-
-      const ties = Math.max(4, Math.round((x1 - x0) * 1.2));
-      for (let i = 0; i <= ties; i++) {
-        const tx = rx0 + (rw * (i + 0.35)) / (ties + 0.7);
-        ctx.fillStyle = '#9c7850';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = 0.9;
-        ctx.fillRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
-        ctx.strokeRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
       }
     }
     ctx.restore();
@@ -4104,15 +2296,6 @@
       alpha += (targetAlpha - alpha) * (1.0 - Math.exp(-9.0 * dt));
       if (Math.abs(alpha - targetAlpha) < 0.01) alpha = targetAlpha;
       roomRoofAlpha.set(rk, alpha);
-
-      const pTL = microToScreen(rm.x0 - 0.30, rm.y1 + 0.30);
-      const pBR = microToScreen(rm.x1 + 0.30, rm.y0 - 0.30);
-      ctx.save();
-      ctx.setLineDash([4, 4]);
-      ctx.strokeStyle = 'rgba(92, 68, 46, 0.20)';
-      ctx.lineWidth = 1.0;
-      ctx.strokeRect(pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y);
-      ctx.restore();
     }
 
     const handledRooms = new Set();
@@ -4123,24 +2306,11 @@
       const allClosed = bRooms.every((r) => (roomRoofAlpha.get(roomKeyOf(r)) ?? 1.0) > 0.94);
       if (allClosed && bRooms.length >= 2) {
         const minA = Math.min(...bRooms.map((r) => roomRoofAlpha.get(roomKeyOf(r)) ?? 1.0));
-        const allDoors = bRooms.flatMap((r) => (Array.isArray(r.doors) ? r.doors : []));
-        drawSingleRoofBox(b.x0, b.x1, b.y0, b.y1, 0.30, 0.30, 0.30, 0.30, minA, allDoors);
+        drawCddaRoofRect(b.x0, b.x1, b.y0, b.y1, minA, b.code || '');
       } else {
         for (const rm of bRooms) {
           const alpha = roomRoofAlpha.get(roomKeyOf(rm)) ?? 1.0;
-          const touchW = bRooms.some((o) => o !== rm && o.x1 === rm.x0 && o.y1 >= rm.y0 && o.y0 <= rm.y1);
-          const touchE = bRooms.some((o) => o !== rm && o.x0 === rm.x1 && o.y1 >= rm.y0 && o.y0 <= rm.y1);
-          const touchN = bRooms.some((o) => o !== rm && o.y0 === rm.y1 && o.x1 >= rm.x0 && o.x0 <= rm.x1);
-          const touchS = bRooms.some((o) => o !== rm && o.y1 === rm.y0 && o.x1 >= rm.x0 && o.x0 <= rm.x1);
-          drawSingleRoofBox(
-            rm.x0, rm.x1, rm.y0, rm.y1,
-            touchW ? 0.0 : 0.30,
-            touchE ? 0.0 : 0.30,
-            touchN ? 0.0 : 0.30,
-            touchS ? 0.0 : 0.30,
-            alpha,
-            Array.isArray(rm.doors) ? rm.doors : [],
-          );
+          drawCddaRoofRect(rm.x0, rm.x1, rm.y0, rm.y1, alpha, b.code || '');
         }
       }
     }
@@ -4148,10 +2318,10 @@
     for (const rm of worldRooms) {
       if (handledRooms.has(roomKeyOf(rm))) continue;
       const alpha = roomRoofAlpha.get(roomKeyOf(rm)) ?? 1.0;
-      drawSingleRoofBox(rm.x0, rm.x1, rm.y0, rm.y1, 0.30, 0.30, 0.30, 0.30, alpha, Array.isArray(rm.doors) ? rm.doors : []);
+      drawCddaRoofRect(rm.x0, rm.x1, rm.y0, rm.y1, alpha, buildingCodeAt(rm.x0, rm.y0));
     }
 
-    // 繪製街鎮九棟商住／住宅木牌匾（掀頂時移至建物屋脊上方免遮室內家具）
+    // 繪製街鎮商住木牌匾（掀頂時移至建物屋脊上方免遮室內家具）
     if (cellPx >= 7.0 && Array.isArray(worldBuildings) && worldBuildings.length) {
       ctx.save();
       const fontSz = Math.round(Math.max(11, Math.min(14, cellPx * 0.44)));
@@ -4185,29 +2355,7 @@
       }
       ctx.restore();
     }
-
-    // 繪製掀起屋頂室內的睡榻標籤
-    if (cellPx >= 12) {
-      ctx.font = '600 10.5px "Noto Sans TC", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (const bl of bedBadgeQueue) {
-        if (getRoomRoofAlphaAt(bl.mx, bl.my) > 0.5) continue;
-        const tw = ctx.measureText(bl.txt).width + 10;
-        ctx.fillStyle = 'rgba(247, 240, 227, 0.94)';
-        ctx.strokeStyle = bl.isPlayer ? '#8b2020' : '#a89880';
-        ctx.lineWidth = 1;
-        ctx.fillRect(bl.cx - tw / 2, bl.by - 8, tw, 16);
-        ctx.strokeRect(bl.cx - tw / 2, bl.by - 8, tw, 16);
-        ctx.fillStyle = bl.isPlayer ? '#8b2020' : '#2c1e0f';
-        ctx.fillText(bl.txt, bl.cx, bl.by + 0.5);
-      }
-    }
     void nowMs;
-  }
-
-  function rx1Or(x0, w) {
-    return x0 + w;
   }
 
   function drawMountainRain(nowMs) {
@@ -4274,11 +2422,17 @@
     ctx.restore();
   }
 
+  const STRUCT_Y_SET = new Set([
+    'wall', 'door', 'campfire', 'workbench', 'stockpile', 'bed', 'lamp',
+    'herb_seed', 'herb_plot', 'crop_seed', 'crop_plot',
+  ]);
+
   function drawActors(nowMs, pass = 'all') {
     const includeBase = pass === 'all' || pass === 'base';
     const includeFront = pass === 'all' || pass === 'front';
+    const tiles = window.CddaTiles;
 
-    // 繪製本尊尋路預覽線（行走為淡墨細虛線，雙擊疾奔為鮮明硃砂快步線）
+    // 本尊尋路預覽線
     const me = actors.find((a) => a.is_player);
     const meSt = me ? renderActors.get(me.id) : null;
     const isMeRunning = !!(meSt ? meSt.running : (me && me.running));
@@ -4288,7 +2442,7 @@
       const drawPath = trimPassedWaypoints(rawPath, cur.x, cur.y);
       if (drawPath.length > 0) {
         ctx.save();
-        ctx.strokeStyle = isMeRunning ? 'rgba(139, 32, 32, 0.82)' : 'rgba(107, 90, 71, 0.55)';
+        ctx.strokeStyle = isMeRunning ? 'rgba(218, 48, 48, 0.88)' : 'rgba(248, 240, 224, 0.72)';
         ctx.lineWidth = isMeRunning ? 2.6 : 1.8;
         ctx.setLineDash(isMeRunning ? [7, 3] : [4, 5]);
         ctx.beginPath();
@@ -4316,172 +2470,241 @@
     const isMacroView = cellPx < 5.0;
     const isNearView = cellPx >= 12.0;
 
-    if (isNearView) {
+    if (cellPx >= 5.0) {
       const renderItems = [];
+      const blueprintMarkers = [];
+      const labelDrawList = [];
       const halfW = Math.min(40, Math.ceil(viewportW / cellPx / 2) + 2);
       const halfH = Math.min(40, Math.ceil(viewportH / cellPx / 2) + 2);
       const cx = Math.round(camX);
       const cy = Math.round(camY);
 
-      if (includeBase) {
-        for (let my = cy - halfH; my <= cy + halfH; my++) {
-          for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
-            const c = cellMap.get(`${mx},${my}`);
-            if (!c || !c.p) continue;
-            const sp = microToScreen(mx, my);
-            if (sp.x < -70 || sp.x > viewportW + 70 || sp.y < -70 || sp.y > viewportH + 70) continue;
-            renderItems.push({ kind: 'prop', sortY: sp.y, rank: 0, mx, my, pType: c.p, sp });
+      for (let my = cy + halfH; my >= cy - halfH; my--) {
+        for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
+          const c = cellMap.get(`${mx},${my}`);
+          if (!c) continue;
+          const e = tileEdges(mx, my);
+          if (e.x1 < -cellPx || e.x0 > viewportW + cellPx || e.y1 < -cellPx * 2 || e.y0 > viewportH + cellPx) {
+            continue;
+          }
+          const covered = isCellUnderClosedRoof(mx, my);
+          const isWallStruct = c.s === 'wall' || c.s === 'door';
+          const inBase = covered || (isWallStruct && isSouthWallOfClosedRoom(mx, my));
+          if ((inBase && includeBase) || (!inBase && includeFront)) {
+            if (c.s === 'wall') {
+              renderItems.push({ kind: 'wall', sortY: e.y1, rank: 1, mx, my, e });
+            } else if (c.s === 'door') {
+              renderItems.push({ kind: 'door', sortY: e.y1, rank: 1, mx, my, e });
+            } else if (c.s && STRUCT_Y_SET.has(c.s)) {
+              const isCrop = c.s === 'herb_seed' || c.s === 'herb_plot' || c.s === 'crop_seed' || c.s === 'crop_plot';
+              renderItems.push({
+                kind: 'struct',
+                sortY: e.y1,
+                rank: isCrop ? 0 : 2,
+                mx,
+                my,
+                sKind: c.s,
+                c,
+                e,
+              });
+            }
+            if (c.p === 'bamboo' || c.p === 'shoot' || c.p === 'herb' || c.p === 'stone') {
+              renderItems.push({ kind: 'prop', sortY: e.y1, rank: 2, mx, my, pType: c.p, e });
+            }
+          }
+          if (c.b && ((covered && includeBase) || (!covered && includeFront))) {
+            blueprintMarkers.push({ mx, my, c, e });
           }
         }
       }
 
-      const labelDrawList = [];
-      for (const a of actors) {
-        const pos = renderActors.get(a.id) || {
-          x: a.px,
-          y: a.py,
-          facing: a.facing || 0,
-          walkPhase: 0,
-          moveBlend: 0,
-          runBlend: 0,
-          chopTimer: 0,
-        };
-        const sp = microToScreen(pos.x, pos.y);
-        if (sp.x < -60 || sp.x > viewportW + 60 || sp.y < -60 || sp.y > viewportH + 60) continue;
-        if (isActorSleepingInBed(a, pos)) continue;
-        const covered = isPosUnderOpaqueRoof(pos.x, pos.y);
-        if ((covered && !includeBase) || (!covered && !includeFront)) continue;
-        const rank = a.is_player ? 2 : 1;
-        renderItems.push({ kind: 'actor', sortY: sp.y, rank, a, pos, sp });
-        const badge = a.pop || a.carry;
-        if (badge && !covered) {
-          labelDrawList.push({ a, sp, badge });
+      if (isNearView) {
+        for (const a of actors) {
+          const pos = renderActors.get(a.id) || {
+            x: a.px,
+            y: a.py,
+            facing: a.facing || 0,
+            walkPhase: 0,
+            moveBlend: 0,
+            runBlend: 0,
+            chopTimer: 0,
+          };
+          const sp = microToScreen(pos.x, pos.y);
+          if (sp.x < -70 || sp.x > viewportW + 70 || sp.y < -70 || sp.y > viewportH + 70) continue;
+          if (isActorSleepingInBed(a, pos)) continue;
+          const covered = isPosUnderOpaqueRoof(pos.x, pos.y);
+          if ((covered && !includeBase) || (!covered && !includeFront)) continue;
+          const rank = a.is_player ? 4 : 3;
+          renderItems.push({
+            kind: 'actor',
+            sortY: Math.round(sp.y + cellPx * 0.42),
+            rank,
+            a,
+            pos,
+            sp,
+          });
+          const badge = a.pop || a.carry;
+          if (badge && !covered) {
+            labelDrawList.push({ a, sp, badge });
+          }
         }
       }
 
       renderItems.sort((u, v) => (u.sortY - v.sortY) || (u.rank - v.rank));
 
       for (const item of renderItems) {
-        if (item.kind === 'prop') {
-          const h = hash2d(item.mx, item.my);
-          const sp = item.sp;
-          if (item.pType === 'bamboo') {
-            const baseRot = ((h % 628) / 100);
-            const remShake = bambooShakeMap.get(`${item.mx},${item.my}`) || 0;
-            const shakeAng = remShake > 0 ? Math.sin(nowMs * 0.06) * 0.11 * (remShake / 0.28) : 0;
-            drawPawnPart(pawnImgs.bamboo, sp.x, sp.y, cellPx * 1.54, cellPx * 1.62, 0.50, 0.50, baseRot + shakeAng);
-          } else if (item.pType === 'stone') {
-            const scale = 0.84 + ((h % 20) / 100);
-            ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
-            ctx.beginPath();
-            ctx.arc(sp.x + 2, sp.y + 3, cellPx * 0.34 * scale, 0, Math.PI * 2);
-            ctx.fill();
-            drawPawnPart(pawnImgs.rock, sp.x, sp.y, cellPx * 0.88 * scale, cellPx * 0.94 * scale, 0.50, 0.50, ((h >>> 5) % 628) / 100);
-          } else if (item.pType === 'shoot') {
-            ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
-            ctx.beginPath();
-            ctx.ellipse(sp.x, sp.y + cellPx * 0.09, cellPx * 0.24, cellPx * 0.14, 0, 0, Math.PI * 2);
-            ctx.fill();
-            const shImg = pawnImgs.shoot;
-            if (isDrawableReady(shImg)) {
-              drawPawnPart(shImg, sp.x, sp.y - cellPx * 0.04, cellPx * 0.84, cellPx * 0.84, 0.50, 0.50, ((h % 9) - 4) * 0.06);
-            } else {
-              ctx.fillStyle = '#9ab07a';
-              ctx.beginPath();
-              ctx.arc(sp.x, sp.y, Math.max(3, cellPx * 0.18), 0, Math.PI * 2);
-              ctx.fill();
-            }
-          } else if (item.pType === 'herb') {
-            ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
-            ctx.beginPath();
-            ctx.ellipse(sp.x, sp.y + cellPx * 0.08, cellPx * 0.26, cellPx * 0.15, 0, 0, Math.PI * 2);
-            ctx.fill();
-            drawPawnPart(pawnImgs.wildHerb, sp.x, sp.y, cellPx * 0.90, cellPx * 0.90, 0.50, 0.50, ((h % 11) - 5) * 0.14);
-          }
-        } else {
-          if (item.a.faction === 'wild_beast') {
-            drawBaimiaoBeast(item.a, item.pos, item.sp);
+        const e = item.e;
+        if (item.kind === 'wall') {
+          if (tiles && tiles.isReady()) {
+            tiles.drawWallTile(ctx, item.mx, item.my, e.x0, e.y0, e.x1, e.y1, buildingCodeAt(item.mx, item.my), hasWallAt);
           } else {
-            drawBaimiaoHuman(item.a, item.pos, item.sp, nowMs);
+            ctx.fillStyle = '#8d7a64';
+            ctx.fillRect(e.x0, e.y0, e.w, e.h);
           }
+        } else if (item.kind === 'door') {
+          if (tiles && tiles.isReady()) {
+            tiles.drawDoorTile(ctx, e.x0, e.y0, e.x1, e.y1, isActorNearCell(item.mx, item.my, 1.05));
+          } else {
+            ctx.fillStyle = '#b48a5a';
+            ctx.fillRect(e.x0, e.y0, e.w, e.h);
+          }
+        } else if (item.kind === 'struct') {
+          const sleeper = item.sKind === 'bed' ? findBedSleeper(item.mx, item.my) : null;
+          if (tiles && tiles.isReady()) {
+            tiles.drawStructureProp(
+              ctx,
+              item.sKind,
+              item.mx,
+              item.my,
+              e.x0,
+              e.y0,
+              e.x1,
+              e.y1,
+              indoorCellSet.has(`${item.mx},${item.my}`),
+              buildingCodeAt(item.mx, item.my),
+              nowMs,
+              item.c.i,
+              sleeper,
+            );
+          }
+          if (item.sKind === 'bed' && sleeper) {
+            bedBadgeQueue.push({
+              mx: item.mx,
+              my: item.my,
+              cx: (e.x0 + e.x1) * 0.5,
+              by: e.y0 - 10,
+              txt: `${sleeper.name || sleeper.glyph || ''}・榻上安歇`,
+              isPlayer: !!sleeper.is_player,
+            });
+          }
+        } else if (item.kind === 'prop') {
+          if (tiles && tiles.isReady()) {
+            tiles.drawNaturalProp(
+              ctx,
+              item.pType,
+              item.mx,
+              item.my,
+              e.x0,
+              e.y0,
+              e.x1,
+              e.y1,
+              nowMs,
+              bambooShakeMap.get(`${item.mx},${item.my}`) || 0,
+              hash2d,
+            );
+          }
+        } else if (item.a.faction === 'wild_beast') {
+          drawCddaBeast(item.a, item.pos, item.sp);
+        } else {
+          drawCddaHuman(item.a, item.pos, item.sp, nowMs);
         }
       }
 
-      // 飄落竹葉與施工標記僅於 base 層繪製一次
-      if (includeBase) {
-      for (const lp of leafParticles) {
-        const lpt = microToScreen(lp.x, lp.y);
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, lp.life / 0.62);
-        ctx.translate(lpt.x, lpt.y);
-        ctx.rotate(lp.rot);
-        ctx.fillStyle = '#c5d3b5';
-        ctx.strokeStyle = PAWN_PAL.ink;
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 4.8, 1.9, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // 近景施工與採伐標記置於竹叢之後顯示（附宣紙底角章，避免被茂密竹葉遮擋）
-      for (let my = cy - halfH; my <= cy + halfH; my++) {
-        for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
-          const c = cellMap.get(`${mx},${my}`);
-          if (!c || !c.b) continue;
-          const sp = microToScreen(mx, my);
-          if (sp.x < -50 || sp.x > viewportW + 50 || sp.y < -50 || sp.y > viewportH + 50) continue;
-          const isChop = c.b.k === 'chop' || c.b.k === 'decon';
-          const color = isChop ? '#8b2020' : '#2a4a6b';
-          const x0 = sp.x - cellPx / 2;
-          const y0 = sp.y - cellPx / 2;
+      if (includeFront) {
+        for (const lp of leafParticles) {
+          const lpt = microToScreen(lp.x, lp.y);
           ctx.save();
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 1.6;
-          ctx.setLineDash([4, 3]);
-          ctx.strokeRect(x0 + 2, y0 + 2, cellPx - 4, cellPx - 4);
-          ctx.setLineDash([]);
-          if (cellPx >= 16) {
-            const tag = c.b.k === 'chop' ? '伐' : (c.b.k === 'decon' ? '拆' : '築');
-            ctx.fillStyle = 'rgba(247, 240, 227, 0.92)';
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(sp.x - 8, sp.y - 8, 16, 16, 3);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = color;
-            ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(tag, sp.x, sp.y + 0.5);
-          }
+          ctx.globalAlpha = Math.max(0, lp.life / 0.62);
+          ctx.translate(lpt.x, lpt.y);
+          ctx.rotate(lp.rot);
+          ctx.fillStyle = '#7fa36b';
+          ctx.strokeStyle = '#2c1e0f';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 4.8, 1.9, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
           ctx.restore();
         }
       }
+
+      for (const bm of blueprintMarkers) {
+        const isChop = bm.c.b.k === 'chop' || bm.c.b.k === 'decon';
+        const color = isChop ? '#c4322c' : '#2a4a6b';
+        const be = bm.e;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([4, 3]);
+        ctx.strokeRect(be.x0 + 2, be.y0 + 2, be.w - 4, be.h - 4);
+        ctx.setLineDash([]);
+        if (cellPx >= 16) {
+          const tag = bm.c.b.k === 'chop' ? '伐' : (bm.c.b.k === 'decon' ? '拆' : '築');
+          const bcx = (be.x0 + be.x1) * 0.5;
+          const bcy = (be.y0 + be.y1) * 0.5;
+          ctx.fillStyle = 'rgba(247, 240, 227, 0.92)';
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.roundRect(bcx - 8, bcy - 8, 16, 16, 3);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = color;
+          ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(tag, bcx, bcy + 0.5);
+        }
+        ctx.restore();
       }
 
-      // 所有角色頭頂浮籤永遠最後繪製，防止被竹叢與人物遮擋
-      const S = Math.max(15.5, cellPx * 0.84);
-      for (const lbl of labelDrawList) {
-        ctx.font = '600 11px "Noto Sans TC", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const tw = ctx.measureText(lbl.badge).width + 10;
-        const by = lbl.sp.y - S * 0.58 - 10;
-        ctx.fillStyle = 'rgba(247, 240, 227, 0.94)';
-        ctx.strokeStyle = lbl.a.pop ? '#8b2020' : '#a89880';
-        ctx.lineWidth = 1;
-        ctx.fillRect(lbl.sp.x - tw / 2, by - 8, tw, 16);
-        ctx.strokeRect(lbl.sp.x - tw / 2, by - 8, tw, 16);
-        ctx.fillStyle = lbl.a.pop ? '#8b2020' : '#2c1e0f';
-        ctx.fillText(lbl.badge, lbl.sp.x, by + 0.5);
+      if (isNearView) {
+        for (const lbl of labelDrawList) {
+          ctx.font = '600 11px "Noto Sans TC", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const tw = ctx.measureText(lbl.badge).width + 10;
+          const by = lbl.sp.y - cellPx * 0.96 - 10;
+          ctx.fillStyle = 'rgba(247, 240, 227, 0.94)';
+          ctx.strokeStyle = lbl.a.pop ? '#8b2020' : '#a89880';
+          ctx.lineWidth = 1;
+          ctx.fillRect(lbl.sp.x - tw / 2, by - 8, tw, 16);
+          ctx.strokeRect(lbl.sp.x - tw / 2, by - 8, tw, 16);
+          ctx.fillStyle = lbl.a.pop ? '#8b2020' : '#2c1e0f';
+          ctx.fillText(lbl.badge, lbl.sp.x, by + 0.5);
+        }
+
+        if (includeFront && bedBadgeQueue.length) {
+          ctx.font = '600 10.5px "Noto Sans TC", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          for (const bl of bedBadgeQueue) {
+            if (getRoomRoofAlphaAt(bl.mx, bl.my) > 0.5) continue;
+            const tw = ctx.measureText(bl.txt).width + 10;
+            ctx.fillStyle = 'rgba(247, 240, 227, 0.94)';
+            ctx.strokeStyle = bl.isPlayer ? '#8b2020' : '#a89880';
+            ctx.lineWidth = 1;
+            ctx.fillRect(bl.cx - tw / 2, bl.by - 8, tw, 16);
+            ctx.strokeRect(bl.cx - tw / 2, bl.by - 8, tw, 16);
+            ctx.fillStyle = bl.isPlayer ? '#8b2020' : '#2c1e0f';
+            ctx.fillText(bl.txt, bl.cx, bl.by + 0.5);
+          }
+        }
+        return;
       }
-      return;
     }
 
-    // 中景過渡（5 <= cellPx < 12）與遠景鳥瞰（cellPx < 5）：乾淨無字宣紙圓章與方位定位標
+    // 中景過渡（5 <= cellPx < 12）與遠景鳥瞰（cellPx < 5）角色標記
     const sortedActors = [...actors].sort((a, b) => {
       const rank = (x) => (x.is_player ? 3 : (x.faction === 'wild_beast' ? 1 : 2));
       return rank(a) - rank(b);
@@ -4627,7 +2850,7 @@
         clk.textContent = txt;
       }
     }
-    ctx.fillStyle = '#efe8d8';
+    ctx.fillStyle = (cellPx >= 5.0 && window.CddaTiles && window.CddaTiles.isReady()) ? '#2f3b28' : '#efe8d8';
     ctx.fillRect(0, 0, viewportW, viewportH);
     drawMacroBasemap();
     drawMicroLayer(nowMs);
@@ -4894,6 +3117,7 @@
     resize();
     if (!engineStarted) {
       engineStarted = true;
+      if (window.CddaTiles) window.CddaTiles.onReady(() => renderScene(performance.now()));
       loadSubstrateMeta();
       setInterval(() => pollState(false), 110);
       requestAnimationFrame(frame);

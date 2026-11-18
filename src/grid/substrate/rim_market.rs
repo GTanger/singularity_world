@@ -5,14 +5,50 @@ use super::rim_economy::{
     ALL_ITEMS, SettlementId, buy_from_storehouse, find_best_stockpile_slot_for, quote_item,
     sell_to_storehouse, settlement_of_pos,
 };
-use super::rim_sim::{ActorFaction, PendingTask, RimWorldState};
+use super::rim_sim::{ActorFaction, PendingTask, RimActor, RimWorldState};
 use super::rim_world::{
-    NaturalProp, RimItemKind, StructureKind, derive_micro_pristine, find_micro_path,
-    find_micro_path_crowded,
+    NaturalProp, RimItemKind, StructureKind, derive_micro_pristine, find_micro_path_crowded,
 };
 use super::runtime::SubstrateRuntime;
 
-/// 聚落近身護衛（防禦入營野獸）。
+fn is_dangerous_beast(b: &RimActor) -> bool {
+    b.faction == ActorFaction::WildBeast
+        && b.hp > 0
+        && (b.max_hp >= 70 || b.name.contains('豬') || b.glyph == "豚")
+}
+
+fn count_active_chasers(world: &RimWorldState, beast_id: usize, exclude_idx: usize) -> usize {
+    world
+        .actors
+        .iter()
+        .enumerate()
+        .filter(|&(i, a)| {
+            i != exclude_idx
+                && a.hp > 0
+                && matches!(a.task, PendingTask::ChaseTarget { target_id } if target_id == beast_id)
+        })
+        .count()
+}
+
+fn is_hunting_capable(a: &RimActor) -> bool {
+    if a.directive == "guard" || a.role_tag.contains('獵') || a.role_tag.contains('護') {
+        return true;
+    }
+    let r = a.role_tag.as_str();
+    !(r.contains('掌')
+        || r.contains("幫廚")
+        || r.contains("學徒")
+        || r.contains('農')
+        || r.contains('醫')
+        || r.contains('宿')
+        || r.contains('商')
+        || r.contains('夥')
+        || r.contains("貨郎")
+        || r.contains('焙')
+        || r.contains('匠'))
+}
+
+/// 聚落近身護衛（僅對具威脅之大型猛獸迎擊，排除溫馴竹雞並限制追擊人數防排隊）。
 pub fn try_guard_or_market_livelihood(
     world: &mut RimWorldState,
     rt: Option<&SubstrateRuntime>,
@@ -20,16 +56,28 @@ pub fn try_guard_or_market_livelihood(
     start: (i32, i32),
     home_pt: (i32, i32),
 ) -> bool {
-    let dir_now = world.actors[idx].directive.as_str();
+    let actor = &world.actors[idx];
+    let dir_now = actor.directive.as_str();
+    let is_shop_role = actor.role_tag.contains('掌')
+        || actor.role_tag.contains("醫")
+        || actor.role_tag.contains("宿");
     let close_r: f32 = if dir_now == "rest" { 5.0 } else { 10.5 };
-    if let Some(beast) = world.actors.iter().find(|b| {
-        b.faction == ActorFaction::WildBeast
-            && b.hp > 0
-            && (b.px - home_pt.0 as f32).hypot(b.py - home_pt.1 as f32) <= close_r
-    }) {
+    if let Some(beast) = world
+        .actors
+        .iter()
+        .filter(|b| {
+            is_dangerous_beast(b)
+                && (b.px - home_pt.0 as f32).hypot(b.py - home_pt.1 as f32) <= close_r
+                && (!is_shop_role
+                    || (b.px - actor.px).hypot(b.py - actor.py) <= 4.5)
+                && count_active_chasers(world, b.id, idx) < 2
+        })
+        .min_by_key(|b| ((b.px - actor.px).hypot(b.py - actor.py) * 10.0) as i32)
+    {
         let b_id = beast.id;
         let b_pos = beast.micro_pos();
-        if let Some(p) = find_micro_path(rt, &world.overlays, start, b_pos, true, false) {
+        let occ = world.occupied_cells(Some(idx));
+        if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, b_pos, true, false, &occ) {
             world.actors[idx].path = p.into();
             world.actors[idx].task = PendingTask::ChaseTarget { target_id: b_id };
             world.actors[idx].activity_tag = "迎擊護營".into();
@@ -49,7 +97,9 @@ pub fn try_assign_market_livelihood(
     claimed: &[(i32, i32)],
     occ: &[(i32, i32)],
 ) -> bool {
-    if world.actors[idx].directive == "patrol" || world.actors[idx].directive == "rest" {
+    if world.actors[idx].directive == "rest"
+        || (world.actors[idx].directive == "patrol" && !world.actors[idx].role_tag.contains('獵'))
+    {
         return false;
     }
     let s = settlement_of_pos(start.0, start.1);
@@ -134,16 +184,19 @@ pub fn try_assign_market_livelihood(
         + f32::from(world.actors[idx].directive == "craft") * 0.40
         + (world.actors[idx].craft_forge as f32 * 0.05).min(0.5);
 
-    // A) 按真實肉價出獵（不設任何寫死配額，過剩時 bid=0 自然退出）
+    // A) 按真實肉價與本業分工出獵（排除非獵戶農商幫工，並依獵物大小鎖定追獵人數）
     let meat_bid = quote_item(world, s, RimItemKind::BeastMeat).bid_mg as f32;
     if meat_bid > 0.0
+        && is_hunting_capable(&world.actors[idx])
         && let Some(b) = world
             .actors
             .iter()
             .filter(|b| {
+                let cap = if is_dangerous_beast(b) { 2 } else { 1 };
                 b.faction == ActorFaction::WildBeast
                     && b.hp > 0
                     && (b.px - home.0 as f32).hypot(b.py - home.1 as f32) <= 28.0
+                    && count_active_chasers(world, b.id, idx) < cap
             })
             .min_by_key(|b| ((b.px - start.0 as f32).hypot(b.py - start.1 as f32) * 10.0) as i32)
     {
@@ -279,7 +332,7 @@ pub fn try_assign_market_livelihood(
     };
     match choice {
         Choice::Hunt(b_id, b_pos) => {
-            if let Some(p) = find_micro_path(rt, &world.overlays, start, b_pos, true, false) {
+            if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, b_pos, true, false, occ) {
                 world.actors[idx].path = p.into();
                 world.actors[idx].task = PendingTask::ChaseTarget { target_id: b_id };
                 world.actors[idx].activity_tag = "按價出獵".into();
@@ -386,5 +439,144 @@ pub fn prepare_caravan_arbitrage_cargo(
         if loaded >= 4 {
             break;
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::VecDeque;
+
+    fn test_actor(id: usize, name: &str, role: &str, dir: &str, pos: (f32, f32)) -> RimActor {
+        RimActor {
+            id,
+            code: format!("t_{id}"),
+            actor_key: format!("t_{id}"),
+            entity_id: None,
+            glyph: name.chars().next().unwrap_or('人').to_string(),
+            name: name.into(),
+            gender: "M".into(),
+            soul_seed: 200 + id as i64,
+            role_tag: role.into(),
+            faction: ActorFaction::Settler,
+            is_player: false,
+            autopilot: true,
+            running: false,
+            px: pos.0,
+            py: pos.1,
+            facing_rad: 0.0,
+            hp: 100,
+            max_hp: 100,
+            equipped_tool: Some(RimItemKind::AlloyBlade),
+            carrying: None,
+            inventory: Vec::new(),
+            directive: dir.into(),
+            path: VecDeque::new(),
+            task: PendingTask::None,
+            activity_tag: String::new(),
+            pop_text: None,
+            cooldown_ticks: 0,
+            last_active_unix: 0,
+            hunger: 90,
+            thirst: 90,
+            stamina: 90,
+            magnesium: 20,
+            equipped_hat: false,
+            equipped_pack: false,
+            known_by: Vec::new(),
+            practice_unarmed: 0,
+            practice_blade: 0,
+            practice_blunt: 0,
+            craft_harvest: 0,
+            craft_forge: 0,
+            craft_culinary: 0,
+            craft_wayfare: 0,
+            anatomy_winged: 0,
+            anatomy_hoofed: 0,
+            injury_part: None,
+            injury_ticks: 0,
+            downed_ticks: 0,
+            caravan_leg: 0,
+            wet_ticks: 0,
+            recent_diary: VecDeque::new(),
+            civic: Default::default(),
+        }
+    }
+
+    #[test]
+    fn guard_ignores_harmless_pheasant_and_caps_chasers_on_boar() {
+        let mut w = RimWorldState::fresh_seed();
+        w.overlays.clear();
+        let p_guard = test_actor(1, "甲", "巡山獵戶", "patrol", (0.0, 0.0));
+        let p2 = test_actor(2, "乙", "巡山獵戶", "patrol", (1.0, 0.0));
+        let p3 = test_actor(3, "丙", "巡山獵戶", "patrol", (-1.0, 0.0));
+        let mut pheasant = test_actor(91, "鐵羽竹雞", "山海野獸", "", (4.0, 0.0));
+        pheasant.glyph = "雉".into();
+        pheasant.faction = ActorFaction::WildBeast;
+        pheasant.hp = 55;
+        pheasant.max_hp = 55;
+
+        w.actors = vec![p_guard, p2, p3, pheasant];
+        assert!(
+            !try_guard_or_market_livelihood(&mut w, None, 0, (0, 0), (0, 0)),
+            "溫馴鐵羽竹雞不應觸發聚落全員迎擊護營"
+        );
+
+        w.actors[3].name = "紅土野山豬".into();
+        w.actors[3].glyph = "豚".into();
+        w.actors[3].hp = 80;
+        w.actors[3].max_hp = 80;
+        assert!(try_guard_or_market_livelihood(&mut w, None, 0, (0, 0), (0, 0)));
+        assert!(try_guard_or_market_livelihood(&mut w, None, 1, (1, 0), (0, 0)));
+        assert!(
+            !try_guard_or_market_livelihood(&mut w, None, 2, (-1, 0), (0, 0)),
+            "同一隻山豬最多兩名成員迎擊，不可全鎮出動排隊"
+        );
+    }
+
+    #[test]
+    fn non_hunters_never_hunt_and_dead_prey_clears_path_immediately() {
+        let mut w = RimWorldState::fresh_seed();
+        let helper = test_actor(10, "寶", "小吃幫廚", "assist", (0.0, 0.0));
+        let hunter_a = test_actor(11, "青", "巡山獵戶", "patrol", (1.0, 0.0));
+        let hunter_b = test_actor(12, "護", "巡山獵戶", "patrol", (-1.0, 0.0));
+        let mut pheasant = test_actor(99, "鐵羽竹雞", "山海野獸", "", (5.0, 0.0));
+        pheasant.glyph = "雉".into();
+        pheasant.faction = ActorFaction::WildBeast;
+        pheasant.hp = 55;
+        pheasant.max_hp = 55;
+        for y in -18..=18 {
+            for x in -18..=18 {
+                w.overlays.entry((x, y)).or_default().cleared_natural = true;
+            }
+        }
+        w.overlays.entry((-8, 0)).or_default().ground_item = None;
+
+        w.actors = vec![helper, hunter_a, hunter_b, pheasant];
+        assert!(!is_hunting_capable(&w.actors[0]));
+        assert!(try_assign_market_livelihood(
+            &mut w,
+            None,
+            1,
+            (1, 0),
+            (0, 0),
+            &[],
+            &[]
+        ));
+        assert_eq!(w.actors[1].task, PendingTask::ChaseTarget { target_id: 99 });
+        let _ = try_assign_market_livelihood(&mut w, None, 2, (-1, 0), (0, 0), &[], &[]);
+        assert!(
+            !matches!(w.actors[2].task, PendingTask::ChaseTarget { target_id: 99 }),
+            "已被鎖定之竹雞不應讓第二位獵人重複排隊追獵"
+        );
+
+        w.actors[3].hp = 0;
+        assert!(!w.actors[1].path.is_empty());
+        w.advance_actor(None, 1);
+        assert_eq!(w.actors[1].task, PendingTask::None);
+        assert!(
+            w.actors[1].path.is_empty(),
+            "獵物死亡當拍追蹤者必須立即清空殘留路徑，嚴禁繼續走到死鳥原點"
+        );
     }
 }
