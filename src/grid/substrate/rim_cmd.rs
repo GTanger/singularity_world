@@ -253,11 +253,11 @@ impl RimWorldState {
                 self.actors[p_idx].activity_tag = "前往飲泉".into();
                 Ok("循溪岸前往掬泉解渴".into())
             }
-            "cook_shoot" | "cook_meat" => {
-                let raw = if action == Some("cook_meat") {
-                    RimItemKind::BeastMeat
-                } else {
-                    RimItemKind::BambooShoot
+            "cook_shoot" | "cook_meat" | "cook_tuber" => {
+                let raw = match action {
+                    Some("cook_meat") => RimItemKind::BeastMeat,
+                    Some("cook_tuber") => RimItemKind::SweetTuber,
+                    _ => RimItemKind::BambooShoot,
                 };
                 let Some(path) = find_micro_path(rt, &self.overlays, start, (mx, my), true, false)
                 else {
@@ -272,11 +272,12 @@ impl RimWorldState {
                 self.actors[p_idx].activity_tag = format!("赴火炙{}", raw.short_char());
                 Ok(format!("前往營火旁備妥{}", raw.label()))
             }
-            "craft_blade" | "craft_pick" | "craft_hat" | "craft_pack" => {
+            "craft_blade" | "craft_pick" | "craft_hat" | "craft_pack" | "craft_salve" => {
                 let item = match action {
                     Some("craft_pick") => RimItemKind::StonePick,
                     Some("craft_hat") => RimItemKind::BambooHat,
                     Some("craft_pack") => RimItemKind::BambooPack,
+                    Some("craft_salve") => RimItemKind::WoundSalve,
                     _ => RimItemKind::BambooBlade,
                 };
                 let Some(path) = find_micro_path(rt, &self.overlays, start, (mx, my), true, false)
@@ -291,6 +292,23 @@ impl RimWorldState {
                 };
                 self.actors[p_idx].activity_tag = format!("製作{}", item.label());
                 Ok(format!("前往工作台製作{}", item.label()))
+            }
+            "till_ridge" | "plant_herb" | "plant_tuber" | "harvest_plot" => {
+                use super::rim_ecology::FarmOp;
+                let (op, act_tag, ok_msg) = match action {
+                    Some("till_ridge") => (FarmOp::Till, "揮鎬翻土", "前往持鎬翻鬆田壟"),
+                    Some("plant_herb") => (FarmOp::PlantHerb, "播種藥苗", "前往栽下青草藥苗"),
+                    Some("plant_tuber") => (FarmOp::PlantTuber, "扦插甘薯", "前往扦插紅土甘薯"),
+                    _ => (FarmOp::Harvest, "採收圃畦", "前往採收成熟作物"),
+                };
+                let Some(path) = find_micro_path(rt, &self.overlays, start, (mx, my), true, false)
+                else {
+                    return Err("無法走近該處田地".into());
+                };
+                self.actors[p_idx].path = path.into();
+                self.actors[p_idx].task = PendingTask::FarmPlot { tx: mx, ty: my, op };
+                self.actors[p_idx].activity_tag = act_tag.into();
+                Ok(ok_msg.into())
             }
             _ => Err("無法執行此動作".into()),
         }

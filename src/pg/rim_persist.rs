@@ -59,6 +59,7 @@ ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS equipped_hat BOOLEAN NOT NU
 ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS equipped_pack BOOLEAN NOT NULL DEFAULT true;
 ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS known_by_json TEXT NOT NULL DEFAULT '[]';
 ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS phase_json TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE rim_micro_overlay ADD COLUMN IF NOT EXISTS eco_ticks SMALLINT NOT NULL DEFAULT 0;
 ";
 
 /// 冪等建立 2D 世界工作階段、實體與微格覆寫資料表。
@@ -103,7 +104,7 @@ pub fn load_all_overlays(pool: &DbPool) -> Result<HashMap<(i32, i32), MicroCellO
     let mut conn = pool.get().map_err(|e| e.to_string())?;
     let rows = conn
         .query(
-            "SELECT mx, my, cleared_natural, structure, blueprint_json, ground_item_json
+            "SELECT mx, my, cleared_natural, structure, blueprint_json, ground_item_json, eco_ticks
              FROM rim_micro_overlay",
             &[],
         )
@@ -116,12 +117,14 @@ pub fn load_all_overlays(pool: &DbPool) -> Result<HashMap<(i32, i32), MicroCellO
         let structure: Option<String> = row.get(3);
         let blueprint_json: Option<String> = row.get(4);
         let ground_item_json: Option<String> = row.get(5);
+        let eco_ticks: i16 = row.get(6);
         let ov = MicroCellOverlay {
             cleared_natural,
             structure: structure.and_then(|s| serde_json::from_str::<StructureKind>(&s).ok()),
             blueprint: blueprint_json.and_then(|s| serde_json::from_str::<BlueprintJob>(&s).ok()),
             ground_item: ground_item_json
                 .and_then(|s| serde_json::from_str::<GroundStack>(&s).ok()),
+            eco_ticks: eco_ticks.max(0) as u16,
         };
         if !ov.is_pristine() {
             out.insert((mx, my), ov);
@@ -260,9 +263,10 @@ pub fn flush_snapshot(
         let st_json = ov.structure.and_then(|s| serde_json::to_string(&s).ok());
         let bp_json = ov.blueprint.and_then(|b| serde_json::to_string(&b).ok());
         let it_json = ov.ground_item.and_then(|i| serde_json::to_string(&i).ok());
+        let eco_i16 = ov.eco_ticks.min(i16::MAX as u16) as i16;
         tx.execute(
-            "INSERT INTO rim_micro_overlay (mx, my, gx, gy, cleared_natural, structure, blueprint_json, ground_item_json, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, now())
+            "INSERT INTO rim_micro_overlay (mx, my, gx, gy, cleared_natural, structure, blueprint_json, ground_item_json, eco_ticks, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, now())
              ON CONFLICT (mx, my) DO UPDATE SET
                gx = EXCLUDED.gx,
                gy = EXCLUDED.gy,
@@ -270,6 +274,7 @@ pub fn flush_snapshot(
                structure = EXCLUDED.structure,
                blueprint_json = EXCLUDED.blueprint_json,
                ground_item_json = EXCLUDED.ground_item_json,
+               eco_ticks = EXCLUDED.eco_ticks,
                updated_at = now()",
             &[
                 &mx,
@@ -280,6 +285,7 @@ pub fn flush_snapshot(
                 &st_json,
                 &bp_json,
                 &it_json,
+                &eco_i16,
             ],
         )
         .map_err(|e| e.to_string())?;

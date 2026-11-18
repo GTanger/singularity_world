@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-18
-- **當前狀態**：`active`（已完成 `v20`（`v=20261118a18`）：接通開譜曆山雨時序、單平面圍合室內判定、`竹編睡榻`休養與**做法 B（屋外見頂、進屋掀頂）**宣紙白描茅竹屋頂閉環；承接 `v9`～`v19` 全數閉環並於 `c88e8457` 完成遠端推存）
+- **當前狀態**：`active`（已完成 `v21`（`v=20261118a19`）：土地動態演變閉環 —— 持鎬翻土開壟、青草藥圃／紅土甘薯旱田栽收、案台搗製`敷傷藥膏`消傷，以及山林砍伐竹筍與野生藥草雨露自然萌發再生；承接 `v9`～`v20` 全數閉環並同步遠端推存）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -39,9 +39,12 @@
     - 新增 `src/grid/substrate/{rim_phase,rim_cmd}.rs` 並於 PostgreSQL `rim_actor_state` 冪等擴充 `phase_json` 持久化：將先天骨相（`InnateBonePhase::from_seed`）與實地採作／烹煮／解剖／戰鬥歷練接入 `crate::combat::human_phase` 三相武鬥、時序斷招與庖丁解牛（熟練解牛出肉增至 `3` 份），每位居民依其命盤與歷練凝出專屬去數值武百工招式名號。
     - 取消戰敗原地抹除與玩家瞬移重生，實作`力竭倒地`（側臥視覺姿態）、患處傷勢降速、`RescueAlly` 健全同袍就近背回營火，以及營火畔調理復原；並打通`西麓湧泉 ↔ 水尾寮`貨郎守恆擔貨往返與 `recent_diary` 見聞自動寫入 `POST /api/rim/talk` 事實提示詞。
     - 前端 `[自身]` 彈窗補齊可點按身手名號與白話詳解、`林緣巡採／百工營造／護衛獵巡／爐畔靜養`四擇行事取向與`近期駐世經歷`，居民檢視卡同步顯示專屬身手名號（`38/38` `grid::substrate` 單元測試通過）。
-12. **2026-11-18 `v20` 開譜曆山雨、單平面圍合室內、`竹編睡榻`與「做法 B 屋外見頂進屋掀頂」閉環（`v=20261118a18`）**：
+12. **2026-11-18 `v20` 開譜曆山雨、單平面圍合室內、`竹編睡榻`與「做法 B 屋外見頂進屋掀頂」閉環（`v=20261118a18`，`a416b465`）**：
     - 新增 `src/grid/substrate/rim_shelter.rs`（`494` 行）：依開譜曆季節與兩時辰窗口決定`晴風和暢／山嵐微雨／瀟瀟山雨`；四連通洪泛自動掃描竹木圍牆與院門閉合區域為單平面`EnclosedRoom`，並為既有西麓草寮 `(8,4),(8,2)` 與水尾寮茶寮（補西門 `(28,-7)`、床榻 `(35,-5),(35,-9)`）及玩家自建屋舍統一提供屋簷遮蔽、屋外戴笠擋雨 vs. 無笠濕冷疲勞，以及上榻加速消傷回氣（`42/42` `grid::substrate` 單元測試通過）。
     - 前端按拍板定案的**做法 B（屋外見頂、進屋掀頂）**於屋外繪製正 `90°` 俯視宣紙白描茅竹斜脊屋頂與出簷門罩，進門、靠近或選取室內時平滑掀開，露地營火受雨轉弱冒煙、室內溫潤竹席＋`竹編睡榻`棉被階層與夜雨門燈餘暈同步生效。
+13. **2026-11-18 `v21` 土地動態演變：翻土開壟、藥圃甘薯旱田、敷傷藥膏治傷與山林雨露再生閉環（`v=20261118a19`）**：
+    - 新增 `src/grid/substrate/rim_ecology.rs` 並於 PostgreSQL `rim_micro_overlay` 冪等擴充 `eco_ticks`：持`石刃木鎬`（含行囊自動換持）可於沃土紅礫翻鬆出`翻鬆空田壟`，單擊播栽`青草藥苗壟 -> 青草藥圃`或`甘薯新苗壟 -> 紅土甘薯壟`，成熟收成 `青草藥 × 2`／`紅土甘薯 × 2`（營火可烤成`炭烤甘薯`）且原地保留田壟免瑣碎重翻，山雨加倍催芽；案台可用`青草藥`搗製`敷傷藥膏`，於 `[裝備／行囊]` 點 `[敷貼治傷]` 或由負傷同伴自主敷藥／搗藥，立即消除 `injury_part` 傷勢。
+    - 聚落淨空帶外被採空之竹叢／春筍／`山林青草藥`隨開譜曆雨露累積 `eco_ticks` 後自然萌發長回並自動清除覆寫列（`ov.is_pristine() == true`，防資料庫膨脹）；前端於 `web/rim-world.js` 補齊手繪宣紙白描隆起土壟、鋸齒藥草蓮座與紫白花苞、心形甘薯葉與露土塊根及 5 張 128×128 離屏白描物資圖素（`46/46` `grid::substrate` 單元測試通過）。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -51,12 +54,11 @@
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
 - **活躍 2D 世界實作與單檔 `< 1,000` 行模組群**：
-  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_portrait_gen}.rs`
+  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_portrait_gen}.rs`
   - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`
 
 ## 三、 下一步接續提示 (Next Cue)
 
 - **依 `docs/DESIGN_KEYWORDS.md` 續推下一階段活態細節**：
-  1. **土地動態演變（`v21`）—— 翻土開壟、草藥藥圃與春筍再生**：讓`石刃木鎬`能翻墾田壟／藥圃種植食糧與山藥草、草藥於案台搗製敷傷膏消解部位傷勢，並使被伐空竹叢與春筍隨開譜曆雨露自然萌發再生。
-  2. **沿真實地形外推鄰近市鎮與五大店堂（`v22`）**：自西麓與水尾寮順平坦幹道鋪設首座鄰近市鎮街屋，串聯百工鍛造護具鞋靴、食堂熱食、總商行鎂晶匯兌與脈絡診所。
-  3. **20m 底板微步 `3a′`～`3d` 空間銜接**：持續將長期探索區塊快取、`grid_z` 樓層隔離與跨區有界尋路合入同一 2D 世界。
+  1. **沿真實地形外推鄰近市鎮與五大店堂（`v22`）**：自西麓與水尾寮順平坦幹道鋪設首座鄰近市鎮街屋，串聯百工鍛造護具鞋靴、食堂熱食、總商行鎂晶匯兌與脈絡診所。
+  2. **20m 底板微步 `3a′`～`3d` 空間銜接**：持續將長期探索區塊快取、`grid_z` 樓層隔離與跨區有界尋路合入同一 2D 世界。

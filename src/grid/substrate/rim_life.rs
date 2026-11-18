@@ -197,12 +197,16 @@ pub fn try_satisfy_urgent_needs(
 
     // 2. 腹中微飢時進食、取近處熟食、就火煨烤、拾近處食材或就近採筍（錨定營火 32m 內）
     if world.actors[idx].hunger < 45 {
-        for dish in [RimItemKind::RoastedMeat, RimItemKind::RoastedShoot] {
+        for dish in [
+            RimItemKind::RoastedMeat,
+            RimItemKind::RoastedTuber,
+            RimItemKind::RoastedShoot,
+        ] {
             if world.actors[idx].take_inv(dish, 1) > 0 {
-                let gain = if dish == RimItemKind::RoastedMeat {
-                    48
-                } else {
-                    38
+                let gain = match dish {
+                    RimItemKind::RoastedMeat => 48,
+                    RimItemKind::RoastedTuber => 44,
+                    _ => 38,
                 };
                 world.actors[idx].hunger = world.actors[idx].hunger.saturating_add(gain).min(100);
                 world.actors[idx].stamina = world.actors[idx].stamina.saturating_add(16).min(100);
@@ -225,7 +229,11 @@ pub fn try_satisfy_urgent_needs(
                 _ => None,
             })
             .collect();
-        for dish in [RimItemKind::RoastedMeat, RimItemKind::RoastedShoot] {
+        for dish in [
+            RimItemKind::RoastedMeat,
+            RimItemKind::RoastedTuber,
+            RimItemKind::RoastedShoot,
+        ] {
             if let Some((gx, gy)) = world.find_nearest_ground_item(start, dish, false)
                 && !claimed.contains(&(gx, gy))
                 && (gx - start.0).abs() + (gy - start.1).abs() <= 22
@@ -237,14 +245,18 @@ pub fn try_satisfy_urgent_needs(
                 return true;
             }
         }
-        let raw_opt = [RimItemKind::BeastMeat, RimItemKind::BambooShoot]
-            .into_iter()
-            .find(|raw| {
-                world.actors[idx]
-                    .inventory
-                    .iter()
-                    .any(|s| s.item == *raw && s.count > 0)
-            });
+        let raw_opt = [
+            RimItemKind::BeastMeat,
+            RimItemKind::SweetTuber,
+            RimItemKind::BambooShoot,
+        ]
+        .into_iter()
+        .find(|raw| {
+            world.actors[idx]
+                .inventory
+                .iter()
+                .any(|s| s.item == *raw && s.count > 0)
+        });
         if let Some(raw) = raw_opt {
             if let Some(&(fx, fy)) = world
                 .overlays
@@ -264,12 +276,18 @@ pub fn try_satisfy_urgent_needs(
                 world.actors[idx].activity_tag = "赴火炊食".into();
                 return true;
             }
-            if world.actors[idx].hunger < 25 && raw == RimItemKind::BambooShoot {
-                let _ = eat_item(&mut world.actors[idx], RimItemKind::BambooShoot);
+            if world.actors[idx].hunger < 25
+                && matches!(raw, RimItemKind::BambooShoot | RimItemKind::SweetTuber)
+            {
+                let _ = eat_item(&mut world.actors[idx], raw);
                 return true;
             }
         }
-        for raw in [RimItemKind::BeastMeat, RimItemKind::BambooShoot] {
+        for raw in [
+            RimItemKind::BeastMeat,
+            RimItemKind::SweetTuber,
+            RimItemKind::BambooShoot,
+        ] {
             if let Some((gx, gy)) = world.find_nearest_ground_item(start, raw, false)
                 && !claimed.contains(&(gx, gy))
                 && (gx - start.0).abs() + (gy - start.1).abs() <= 22
@@ -487,9 +505,17 @@ pub fn eat_item(actor: &mut RimActor, item: RimItemKind) -> Result<&'static str,
     }
     let (hg, stam, hp_gain, msg) = match item {
         RimItemKind::RoastedMeat => (48_u8, 18_u8, 12_i32, "細嚼溫熱炙肉，腹內頓時踏實"),
+        RimItemKind::RoastedTuber => (44_u8, 14_u8, 2_i32, "趁熱吃下鬆軟炭烤甘薯，腹中暖意融融"),
         RimItemKind::RoastedShoot => (38_u8, 14_u8, 8_i32, "撥開微焦籜葉吃罷煨筍，齒頰回甘"),
+        RimItemKind::SweetTuber => (24_u8, 6_u8, 1_i32, "生嚼紅土甘薯，清甜解渴"),
         _ => (16_u8, 4_u8, 2_i32, "生嚼脆嫩鮮筍，略解腹飢"),
     };
+    if item == RimItemKind::SweetTuber {
+        actor.thirst = actor.thirst.saturating_add(4).min(100);
+        actor.push_diary("生嚼甘甜紅土甘薯充飢");
+    } else if item == RimItemKind::RoastedTuber {
+        actor.push_diary("趁熱吃下鬆軟炭烤甘薯");
+    }
     actor.hunger = actor.hunger.saturating_add(hg).min(100);
     actor.stamina = actor.stamina.saturating_add(stam).min(100);
     actor.hp = (actor.hp + hp_gain).min(actor.max_hp);
@@ -700,8 +726,7 @@ mod tests {
                     MicroCellOverlay {
                         cleared_natural: true,
                         structure: None,
-                        blueprint: None,
-                        ground_item: None,
+                        ..Default::default()
                     },
                 );
             }
@@ -748,8 +773,7 @@ mod tests {
                         MicroCellOverlay {
                             cleared_natural: true,
                             structure: (x == 0 && y == 0).then_some(StructureKind::Campfire),
-                            blueprint: None,
-                            ground_item: None,
+                            ..Default::default()
                         },
                     );
                     continue;
@@ -763,9 +787,7 @@ mod tests {
                         (x, y),
                         MicroCellOverlay {
                             cleared_natural: true,
-                            structure: None,
-                            blueprint: None,
-                            ground_item: None,
+                            ..Default::default()
                         },
                     );
                 }

@@ -26,6 +26,7 @@ pub use moi_dem::{
 pub mod facade;
 pub mod rim_ai;
 pub mod rim_cmd;
+pub mod rim_ecology;
 pub mod rim_life;
 pub mod rim_phase;
 pub mod rim_physics;

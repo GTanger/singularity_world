@@ -85,6 +85,7 @@ fn prop_code(p: NaturalProp) -> &'static str {
         NaturalProp::BambooClump => "bamboo",
         NaturalProp::BambooShoot => "shoot",
         NaturalProp::RiverStone => "stone",
+        NaturalProp::WildHerb => "herb",
     }
 }
 
@@ -97,6 +98,11 @@ fn struct_code(s: StructureKind) -> &'static str {
         StructureKind::Workbench => "workbench",
         StructureKind::Stockpile => "stockpile",
         StructureKind::BambooBed => "bed",
+        StructureKind::TilledRidge => "ridge",
+        StructureKind::HerbSeedling => "herb_seed",
+        StructureKind::HerbMature => "herb_plot",
+        StructureKind::CropSeedling => "crop_seed",
+        StructureKind::CropMature => "crop_plot",
     }
 }
 
@@ -112,6 +118,10 @@ pub(super) fn item_code_str(k: RimItemKind) -> &'static str {
         RimItemKind::StonePick => "pick",
         RimItemKind::BambooHat => "hat",
         RimItemKind::BambooPack => "pack",
+        RimItemKind::MountainHerb => "herb",
+        RimItemKind::WoundSalve => "salve",
+        RimItemKind::SweetTuber => "tuber",
+        RimItemKind::RoastedTuber => "roast_tuber",
     }
 }
 
@@ -127,6 +137,10 @@ pub(super) fn parse_item_code(s: &str) -> Option<RimItemKind> {
         "pick" => RimItemKind::StonePick,
         "hat" => RimItemKind::BambooHat,
         "pack" => RimItemKind::BambooPack,
+        "herb" => RimItemKind::MountainHerb,
+        "salve" => RimItemKind::WoundSalve,
+        "tuber" => RimItemKind::SweetTuber,
+        "roast_tuber" => RimItemKind::RoastedTuber,
         _ => return None,
     })
 }
@@ -276,6 +290,7 @@ fn build_selection_card(
                 tags.push("百工造物".into());
                 sockets.push(json!({ "label": "削製烤刃竹刀", "action": "craft_blade" }));
                 sockets.push(json!({ "label": "綁製石刃木鎬", "action": "craft_pick" }));
+                sockets.push(json!({ "label": "搗製敷傷藥膏", "action": "craft_salve" }));
                 sockets.push(json!({ "label": "劈篾編竹笠", "action": "craft_hat" }));
                 sockets.push(json!({ "label": "編紮竹背簍", "action": "craft_pack" }));
             }
@@ -287,6 +302,7 @@ fn build_selection_card(
                 }
                 tags.push("駐足回氣".into());
                 sockets.push(json!({ "label": "籜裹煨筍", "action": "cook_shoot" }));
+                sockets.push(json!({ "label": "炭火煨甘薯", "action": "cook_tuber" }));
                 sockets.push(json!({ "label": "炭火炙肉", "action": "cook_meat" }));
                 sockets.push(json!({ "label": "圍爐盤坐歇息", "action": "rest" }));
                 sockets.push(json!({ "label": "走近烤火", "action": "move" }));
@@ -317,6 +333,15 @@ fn build_selection_card(
                 }
                 sockets.push(json!({ "label": "上榻安歇養傷", "action": "sleep_bed" }));
             }
+            other if other.is_garden_plot() => {
+                crate::grid::substrate::rim_ecology::describe_ecology_structure(
+                    other,
+                    weather.is_raining(),
+                    &mut tags,
+                    &mut sockets,
+                );
+            }
+            _ => {}
         }
         sockets.push(json!({ "label": "標記拆除", "tool": "deconstruct" }));
     } else if !cleared && let Some(prop) = nat {
@@ -341,6 +366,9 @@ fn build_selection_card(
             );
         }
         sockets.push(json!({ "label": "行至此處", "action": "move" }));
+        if matches!(ground, MicroGround::LoamGrass | MicroGround::RedGravel) {
+            sockets.push(json!({ "label": "持鎬翻土開壟", "action": "till_ridge" }));
+        }
         sockets.push(json!({ "label": "在此生起營火", "tool": "campfire" }));
         sockets.push(json!({ "label": "在此立竹木牆", "tool": "wall" }));
         sockets.push(json!({ "label": "在此安竹編門", "tool": "door" }));
@@ -522,6 +550,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                         "count": s.count,
                         "is_tool": s.item.is_hand_tool(),
                         "is_edible": s.item.is_edible(),
+                        "is_medical": s.item.is_medical(),
                         "is_wearable": s.item.is_wearable(),
                     })
                 })
@@ -748,6 +777,25 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
             match eat_item(p, item) {
                 Ok(msg) => {
                     p.pop_text = Some((format!("吃罷{}", item.label()), tick + 10));
+                    world.touch_player_activity(&pid);
+                    world.persist_if_needed(true);
+                    Json(json!({ "ok": true, "msg": msg })).into_response()
+                }
+                Err(err) => Json(json!({ "ok": false, "msg": err })).into_response(),
+            }
+        }
+        "apply_salve" => {
+            let tick = world.tick;
+            let Some(p) = world
+                .actors
+                .iter_mut()
+                .find(|a| a.entity_id.as_deref() == Some(pid.as_str()))
+            else {
+                return Json(json!({ "ok": false, "msg": "尚未進入世界" })).into_response();
+            };
+            match crate::grid::substrate::rim_ecology::apply_wound_salve(p) {
+                Ok(msg) => {
+                    p.pop_text = Some(("敷妥藥膏".into(), tick + 10));
                     world.touch_player_activity(&pid);
                     world.persist_if_needed(true);
                     Json(json!({ "ok": true, "msg": msg })).into_response()

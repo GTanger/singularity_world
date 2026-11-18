@@ -777,8 +777,7 @@ mod tests {
                     MicroCellOverlay {
                         cleared_natural: true,
                         structure: (x == 0 && y == 0).then_some(StructureKind::Campfire),
-                        blueprint: None,
-                        ground_item: None,
+                        ..Default::default()
                     },
                 );
             }
@@ -840,6 +839,7 @@ mod tests {
                         structure: st,
                         blueprint: None,
                         ground_item: gi,
+                        eco_ticks: 0,
                     },
                 );
             }

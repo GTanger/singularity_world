@@ -92,6 +92,11 @@ pub enum PendingTask {
         tx: i32,
         ty: i32,
     },
+    FarmPlot {
+        tx: i32,
+        ty: i32,
+        op: super::rim_ecology::FarmOp,
+    },
 }
 
 fn default_gender() -> String {
@@ -441,6 +446,9 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_shelter::upgrade_existing_shelters(&mut overlays) {
                 migrated = true;
             }
+            if super::rim_ecology::upgrade_ecology_plots(rt, &mut overlays) {
+                migrated = true;
+            }
             let mut events = VecDeque::new();
             events.push_back(ShortEvent {
                 tick: 0,
@@ -475,6 +483,7 @@ fn load_or_seed_world() -> RimWorldState {
             .collect();
         apply_outpost_architecture(rt, &mut overlays);
         let _ = super::rim_shelter::upgrade_existing_shelters(&mut overlays);
+        let _ = super::rim_ecology::upgrade_ecology_plots(rt, &mut overlays);
         let mut actors = saved.actors;
         ensure_outpost_residents(&mut actors);
         let mut events: VecDeque<ShortEvent> = saved
@@ -742,6 +751,7 @@ impl RimWorldState {
         self.tick = self.tick.wrapping_add(1);
         let rt = runtime::global();
         super::rim_life::step_settler_metabolism(self);
+        super::rim_ecology::step_land_ecology(self, rt);
 
         if self.tick.is_multiple_of(120)
             && self

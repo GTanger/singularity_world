@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const ASSET_VER = '20261118a18';
+  const ASSET_VER = '20261118a19';
   const imgCache = new Map();       // queryKey -> { img, status }
   const inflightMap = new Map();    // queryKey -> Promise
   const retryTimers = new WeakMap();

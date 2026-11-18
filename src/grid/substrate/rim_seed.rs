@@ -14,12 +14,9 @@ pub fn apply_outpost_architecture(
     overlays: &mut HashMap<(i32, i32), MicroCellOverlay>,
 ) {
     // 1. 湧泉廣場核心：(0,0) 營火、(-4..-3, -2..-1) 儲物墊、(4,-1) 工作台；確保 (-5..=5, -3..=3) 其餘暢通
-    overlays.entry((0, 0)).or_insert_with(|| MicroCellOverlay {
-        cleared_natural: true,
-        structure: Some(StructureKind::Campfire),
-        blueprint: None,
-        ground_item: None,
-    });
+    overlays
+        .entry((0, 0))
+        .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::Campfire)));
     let init_stock = [
         ((-4, -1), Some((RimItemKind::BambooPole, 5))),
         ((-3, -1), Some((RimItemKind::BambooPole, 4))),
@@ -32,61 +29,40 @@ pub fn apply_outpost_architecture(
             structure: Some(StructureKind::Stockpile),
             blueprint: None,
             ground_item: stack.map(|(item, count)| GroundStack { item, count }),
+            eco_ticks: 0,
         });
     }
-    overlays.entry((4, -1)).or_insert_with(|| MicroCellOverlay {
-        cleared_natural: true,
-        structure: Some(StructureKind::Workbench),
-        blueprint: None,
-        ground_item: None,
-    });
+    overlays
+        .entry((4, -1))
+        .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::Workbench)));
 
     // 2. 東側竹編草寮 (7..=11, 1..=5)，西側 (7,3) 設竹編院門
     for x in 7..=11 {
         for y in 1..=5 {
             let is_border = x == 7 || x == 11 || y == 1 || y == 5;
-            if is_border {
-                let st = if x == 7 && y == 3 {
+            let st = is_border.then(|| {
+                if x == 7 && y == 3 {
                     StructureKind::BambooDoor
                 } else {
                     StructureKind::BambooWall
-                };
-                overlays.entry((x, y)).or_insert_with(|| MicroCellOverlay {
-                    cleared_natural: true,
-                    structure: Some(st),
-                    blueprint: None,
-                    ground_item: None,
-                });
-            } else {
-                overlays.entry((x, y)).or_insert_with(|| MicroCellOverlay {
-                    cleared_natural: true,
-                    structure: None,
-                    blueprint: None,
-                    ground_item: None,
-                });
-            }
+                }
+            });
+            overlays
+                .entry((x, y))
+                .or_insert_with(|| MicroCellOverlay::cleared(st));
         }
     }
     // 門前 (6,3) 清道 & 門外南側 (6,1) 夜巡暖爐營火
-    overlays.entry((6, 3)).or_insert_with(|| MicroCellOverlay {
-        cleared_natural: true,
-        structure: None,
-        blueprint: None,
-        ground_item: None,
-    });
-    overlays.entry((6, 1)).or_insert_with(|| MicroCellOverlay {
-        cleared_natural: true,
-        structure: Some(StructureKind::Campfire),
-        blueprint: None,
-        ground_item: None,
-    });
+    overlays
+        .entry((6, 3))
+        .or_insert_with(|| MicroCellOverlay::cleared(None));
+    overlays
+        .entry((6, 1))
+        .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::Campfire)));
     // 室內案台與物資儲位
-    overlays.entry((10, 4)).or_insert_with(|| MicroCellOverlay {
-        cleared_natural: true,
-        structure: Some(StructureKind::Workbench),
-        blueprint: None,
-        ground_item: None,
-    });
+    overlays
+        .entry((10, 4))
+        .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::Workbench)));
     overlays.entry((10, 2)).or_insert_with(|| MicroCellOverlay {
         cleared_natural: true,
         structure: Some(StructureKind::Stockpile),
@@ -95,6 +71,7 @@ pub fn apply_outpost_architecture(
             item: RimItemKind::BambooShoot,
             count: 3,
         }),
+        eco_ticks: 0,
     });
     overlays.entry((9, 2)).or_insert_with(|| MicroCellOverlay {
         cleared_natural: true,
@@ -104,6 +81,7 @@ pub fn apply_outpost_architecture(
             item: RimItemKind::BambooPole,
             count: 4,
         }),
+        eco_ticks: 0,
     });
     for bed_pos in [(8, 4), (8, 2)] {
         let e = overlays.entry(bed_pos).or_default();
@@ -117,23 +95,18 @@ pub fn apply_outpost_architecture(
     for my in 3..=18 {
         let (g, _) = derive_micro_pristine(rt, 0, my);
         if g == MicroGround::ShallowStream {
-            overlays.entry((0, my)).or_insert_with(|| MicroCellOverlay {
-                cleared_natural: true,
-                structure: Some(StructureKind::WoodBridge),
-                blueprint: None,
-                ground_item: None,
-            });
+            overlays
+                .entry((0, my))
+                .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::WoodBridge)));
         } else if my >= 7 && !g.is_water() && g != MicroGround::SteepCliff {
-            overlays.entry((0, my)).or_insert_with(|| MicroCellOverlay {
-                cleared_natural: true,
-                structure: None,
-                blueprint: None,
-                ground_item: None,
-            });
+            overlays
+                .entry((0, my))
+                .or_insert_with(|| MicroCellOverlay::cleared(None));
         }
     }
 
     apply_shuoweiliao_outpost(rt, overlays);
+    let _ = super::rim_ecology::upgrade_ecology_plots(rt, overlays);
 }
 
 /// 冪等鋪設東南向小徑與「水尾寮・溪畔茶寮」(mx: 28..=36, my: -10..=-4)。
@@ -153,21 +126,11 @@ pub fn apply_shuoweiliao_outpost(
             if g == MicroGround::ShallowStream {
                 overlays
                     .entry((mx, my))
-                    .or_insert_with(|| MicroCellOverlay {
-                        cleared_natural: true,
-                        structure: Some(StructureKind::WoodBridge),
-                        blueprint: None,
-                        ground_item: None,
-                    });
+                    .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::WoodBridge)));
             } else if !g.is_water() && g != MicroGround::SteepCliff {
                 overlays
                     .entry((mx, my))
-                    .or_insert_with(|| MicroCellOverlay {
-                        cleared_natural: true,
-                        structure: None,
-                        blueprint: None,
-                        ground_item: None,
-                    });
+                    .or_insert_with(|| MicroCellOverlay::cleared(None));
             }
         }
     }
@@ -178,12 +141,9 @@ pub fn apply_shuoweiliao_outpost(
                 continue;
             }
             if g == MicroGround::ShallowStream || g == MicroGround::SpringPool {
-                overlays.entry((x, y)).or_insert_with(|| MicroCellOverlay {
-                    cleared_natural: true,
-                    structure: Some(StructureKind::WoodBridge),
-                    blueprint: None,
-                    ground_item: None,
-                });
+                overlays
+                    .entry((x, y))
+                    .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::WoodBridge)));
                 continue;
             }
             let is_border = x == 28 || x == 36 || y == -10 || y == -4;
@@ -217,6 +177,7 @@ pub fn apply_shuoweiliao_outpost(
                 structure: st,
                 blueprint: None,
                 ground_item,
+                eco_ticks: 0,
             });
             if ((x == 28 && y == -7)
                 || (x == 35 && (y == -5 || y == -9))
@@ -229,6 +190,7 @@ pub fn apply_shuoweiliao_outpost(
             }
         }
     }
+    let _ = super::rim_ecology::upgrade_ecology_plots(rt, overlays);
 }
 
 struct ResidentSpec<'a> {

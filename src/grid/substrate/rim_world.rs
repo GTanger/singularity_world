@@ -86,6 +86,7 @@ pub enum NaturalProp {
     BambooClump,
     BambooShoot,
     RiverStone,
+    WildHerb,
 }
 
 impl NaturalProp {
@@ -98,6 +99,7 @@ impl NaturalProp {
             Self::BambooClump => "濃密莿竹叢",
             Self::BambooShoot => "鮮嫩春筍",
             Self::RiverStone => "河灘硬石",
+            Self::WildHerb => "山林青草藥",
         }
     }
 
@@ -106,6 +108,7 @@ impl NaturalProp {
             Self::BambooClump => &["擋路", "可砍伐得竹材"],
             Self::BambooShoot => &["可採集", "山珍"],
             Self::RiverStone => &["可拾取", "石材"],
+            Self::WildHerb => &["可採摘", "藥材"],
         }
     }
 }
@@ -124,6 +127,10 @@ pub enum RimItemKind {
     StonePick,
     BambooHat,
     BambooPack,
+    MountainHerb,
+    WoundSalve,
+    SweetTuber,
+    RoastedTuber,
 }
 
 impl RimItemKind {
@@ -139,6 +146,10 @@ impl RimItemKind {
             Self::StonePick => "石刃木鎬",
             Self::BambooHat => "細編竹笠",
             Self::BambooPack => "竹編背簍",
+            Self::MountainHerb => "青草藥",
+            Self::WoundSalve => "敷傷藥膏",
+            Self::SweetTuber => "紅土甘薯",
+            Self::RoastedTuber => "炭烤甘薯",
         }
     }
 
@@ -154,6 +165,10 @@ impl RimItemKind {
             Self::StonePick => "鎬",
             Self::BambooHat => "笠",
             Self::BambooPack => "簍",
+            Self::MountainHerb => "藥",
+            Self::WoundSalve => "膏",
+            Self::SweetTuber => "薯",
+            Self::RoastedTuber => "烤",
         }
     }
 
@@ -164,8 +179,16 @@ impl RimItemKind {
     pub fn is_edible(self) -> bool {
         matches!(
             self,
-            Self::RoastedShoot | Self::RoastedMeat | Self::BambooShoot
+            Self::RoastedShoot
+                | Self::RoastedMeat
+                | Self::BambooShoot
+                | Self::SweetTuber
+                | Self::RoastedTuber
         )
+    }
+
+    pub fn is_medical(self) -> bool {
+        matches!(self, Self::WoundSalve)
     }
 
     pub fn is_wearable(self) -> bool {
@@ -175,11 +198,11 @@ impl RimItemKind {
     pub fn base_magnesium_price(self) -> u32 {
         match self {
             Self::BambooPole | Self::RiverStone => 1,
-            Self::BambooShoot => 2,
-            Self::BeastMeat => 3,
+            Self::BambooShoot | Self::SweetTuber => 2,
+            Self::BeastMeat | Self::MountainHerb => 3,
             Self::RoastedShoot | Self::BambooHat => 4,
-            Self::BambooBlade => 5,
-            Self::RoastedMeat | Self::StonePick | Self::BambooPack => 6,
+            Self::BambooBlade | Self::RoastedTuber => 5,
+            Self::RoastedMeat | Self::StonePick | Self::BambooPack | Self::WoundSalve => 6,
         }
     }
 }
@@ -195,6 +218,11 @@ pub enum StructureKind {
     Workbench,
     Stockpile,
     BambooBed,
+    TilledRidge,
+    HerbSeedling,
+    HerbMature,
+    CropSeedling,
+    CropMature,
 }
 
 impl StructureKind {
@@ -207,12 +235,22 @@ impl StructureKind {
             Self::Workbench => "百工工作台",
             Self::Stockpile => "儲物地墊",
             Self::BambooBed => "竹編睡榻",
+            Self::TilledRidge => "翻鬆空田壟",
+            Self::HerbSeedling => "青草藥苗壟",
+            Self::HerbMature => "青草藥圃",
+            Self::CropSeedling => "甘薯新苗壟",
+            Self::CropMature => "紅土甘薯壟",
         }
     }
 
     pub fn bamboo_cost(self) -> u8 {
         match self {
-            Self::Stockpile => 0,
+            Self::Stockpile
+            | Self::TilledRidge
+            | Self::HerbSeedling
+            | Self::HerbMature
+            | Self::CropSeedling
+            | Self::CropMature => 0,
             Self::Workbench | Self::BambooBed => 2,
             Self::BambooWall | Self::BambooDoor | Self::WoodBridge | Self::Campfire => 1,
         }
@@ -221,17 +259,39 @@ impl StructureKind {
     pub fn work_ticks_needed(self) -> u8 {
         match self {
             Self::Stockpile => 1,
-            Self::Campfire => 3,
+            Self::Campfire
+            | Self::TilledRidge
+            | Self::HerbSeedling
+            | Self::HerbMature
+            | Self::CropSeedling
+            | Self::CropMature => 3,
             Self::WoodBridge | Self::BambooWall | Self::BambooDoor | Self::BambooBed => 4,
             Self::Workbench => 6,
         }
+    }
+
+    pub fn is_garden_plot(self) -> bool {
+        matches!(
+            self,
+            Self::TilledRidge
+                | Self::HerbSeedling
+                | Self::HerbMature
+                | Self::CropSeedling
+                | Self::CropMature
+        )
     }
 
     pub fn blocks_actor(self, is_beast: bool) -> bool {
         match self {
             Self::BambooWall | Self::Workbench | Self::Campfire => true,
             Self::BambooDoor | Self::BambooBed => is_beast,
-            Self::WoodBridge | Self::Stockpile => false,
+            Self::WoodBridge
+            | Self::Stockpile
+            | Self::TilledRidge
+            | Self::HerbSeedling
+            | Self::HerbMature
+            | Self::CropSeedling
+            | Self::CropMature => false,
         }
     }
 }
@@ -267,9 +327,21 @@ pub struct MicroCellOverlay {
     pub structure: Option<StructureKind>,
     pub blueprint: Option<BlueprintJob>,
     pub ground_item: Option<GroundStack>,
+    #[serde(default)]
+    pub eco_ticks: u16,
 }
 
 impl MicroCellOverlay {
+    pub const fn cleared(structure: Option<StructureKind>) -> Self {
+        Self {
+            cleared_natural: true,
+            structure,
+            blueprint: None,
+            ground_item: None,
+            eco_ticks: 0,
+        }
+    }
+
     pub fn is_pristine(&self) -> bool {
         !self.cleared_natural
             && self.structure.is_none()
@@ -367,6 +439,12 @@ pub fn derive_micro_pristine(
         }
     } else if detail % 37 == 0 {
         return (base_ground, Some(NaturalProp::RiverStone));
+    }
+
+    if matches!(base_ground, MicroGround::LoamGrass | MicroGround::RedGravel)
+        && detail % 43 == 0
+    {
+        return (base_ground, Some(NaturalProp::WildHerb));
     }
 
     (base_ground, None)
@@ -632,8 +710,7 @@ mod tests {
                 MicroCellOverlay {
                     cleared_natural: true,
                     structure: Some(StructureKind::WoodBridge),
-                    blueprint: None,
-                    ground_item: None,
+                    ..Default::default()
                 },
             );
         }

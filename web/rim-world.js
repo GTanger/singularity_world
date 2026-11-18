@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a18';
+  const PAWN_ASSET_VER = '20261118a19';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -59,6 +59,188 @@
     pawnImgs[key] = im;
   }
 
+  function isDrawableReady(img) {
+    return Boolean(
+      img &&
+        ((img.complete && img.naturalWidth > 0) ||
+          (typeof HTMLCanvasElement !== 'undefined' && img instanceof HTMLCanvasElement && img.width > 0))
+    );
+  }
+
+  function makeBaimiaoSprite(drawFn) {
+    const c = document.createElement('canvas');
+    c.width = 128;
+    c.height = 128;
+    const g = c.getContext('2d');
+    if (g) {
+      g.save();
+      g.translate(64, 64);
+      drawFn(g);
+      g.restore();
+    }
+    return c;
+  }
+
+  // 五張 128×128 離屏手繪白描淡彩植物與藥薯圖素（取代粗劣小畫家感圖塊）
+  pawnImgs.wildHerb = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+    for (let i = 0; i < 7; i++) {
+      const ang = (i * Math.PI * 2) / 7 + (i % 2 ? 0.14 : -0.1);
+      g.save();
+      g.rotate(ang);
+      g.fillStyle = i % 2 === 0 ? '#507a64' : '#6c957b';
+      g.strokeStyle = '#332620';
+      g.lineWidth = 3.2;
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.quadraticCurveTo(-13, -18, -7, -34);
+      g.quadraticCurveTo(0, -47, 0, -49);
+      g.quadraticCurveTo(0, -47, 7, -34);
+      g.quadraticCurveTo(13, -18, 0, 0);
+      g.fill();
+      g.stroke();
+      g.strokeStyle = 'rgba(232, 226, 208, 0.55)';
+      g.lineWidth = 1.6;
+      g.beginPath();
+      g.moveTo(0, -6);
+      g.lineTo(0, -40);
+      g.stroke();
+      g.restore();
+    }
+    for (const [fx, fy, fr] of [[-11, -13, 6.2], [12, -8, 5.6], [-2, 13, 5.8], [9, 10, 4.8]]) {
+      g.fillStyle = '#f2eaf5';
+      g.strokeStyle = '#332620';
+      g.lineWidth = 2.4;
+      g.beginPath();
+      g.arc(fx, fy, fr, 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+      g.fillStyle = '#cfa048';
+      g.beginPath();
+      g.arc(fx, fy, fr * 0.38, 0, Math.PI * 2);
+      g.fill();
+    }
+  });
+
+  pawnImgs.itemHerb = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+    g.rotate(-0.36);
+    for (const [ang, len, col] of [[-0.30, 42, '#4d7660'], [0.02, 46, '#658f74'], [0.32, 41, '#58826a']]) {
+      g.save();
+      g.rotate(ang);
+      g.fillStyle = col;
+      g.strokeStyle = '#332620';
+      g.lineWidth = 3.2;
+      g.beginPath();
+      g.moveTo(0, 26);
+      g.quadraticCurveTo(-13, 0, -7, -len + 8);
+      g.quadraticCurveTo(0, -len, 7, -len + 8);
+      g.quadraticCurveTo(13, 0, 0, 26);
+      g.fill();
+      g.stroke();
+      g.restore();
+    }
+    // 束藥麻繩
+    g.fillStyle = '#bf9c6a';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 3;
+    g.beginPath();
+    g.roundRect(-14, 14, 28, 12, 4);
+    g.fill();
+    g.stroke();
+    // 藥花
+    g.fillStyle = '#f4ecf7';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 2.4;
+    for (const [fx, fy] of [[-12, -32], [6, -38], [16, -26]]) {
+      g.beginPath();
+      g.arc(fx, fy, 6, 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+    }
+  });
+
+  pawnImgs.itemSalve = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.fillStyle = '#d9dfc9';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 3.8;
+    g.beginPath();
+    g.arc(0, 2, 34, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+    // 翡翠綠藥膏泥
+    g.fillStyle = '#4e785d';
+    g.beginPath();
+    g.arc(0, 2, 23, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+    g.fillStyle = 'rgba(214, 235, 212, 0.42)';
+    g.beginPath();
+    g.ellipse(-7, -6, 9, 4.5, -0.5, 0, Math.PI * 2);
+    g.fill();
+    // 硃砂藥封與木塞紐
+    g.fillStyle = '#8b2020';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 2.4;
+    g.beginPath();
+    g.roundRect(14, -28, 18, 22, 4);
+    g.fill();
+    g.stroke();
+  });
+
+  pawnImgs.itemTuber = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.rotate(-0.42);
+    g.fillStyle = '#9f5747';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 3.8;
+    g.beginPath();
+    g.moveTo(-40, 0);
+    g.bezierCurveTo(-24, -24, 20, -26, 40, -2);
+    g.bezierCurveTo(22, 25, -22, 24, -40, 0);
+    g.closePath();
+    g.fill();
+    g.stroke();
+    g.fillStyle = '#bc7361';
+    g.beginPath();
+    g.ellipse(-6, -8, 18, 6.5, -0.05, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = '#332620';
+    g.lineWidth = 2.2;
+    g.beginPath();
+    g.moveTo(40, -2);
+    g.quadraticCurveTo(49, -6, 52, -1);
+    g.stroke();
+  });
+
+  pawnImgs.itemRoastTuber = makeBaimiaoSprite((g) => {
+    g.lineJoin = 'round';
+    g.rotate(-0.35);
+    g.fillStyle = '#68392c';
+    g.strokeStyle = '#332620';
+    g.lineWidth = 3.8;
+    g.beginPath();
+    g.moveTo(-40, 2);
+    g.bezierCurveTo(-22, -24, 20, -25, 40, 0);
+    g.bezierCurveTo(22, 26, -22, 24, -40, 2);
+    g.closePath();
+    g.fill();
+    g.stroke();
+    // 裂開的金黃烤薯肉
+    g.fillStyle = '#e5aa48';
+    g.beginPath();
+    g.ellipse(0, -1, 22, 11, 0, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+    g.fillStyle = '#f6d47d';
+    g.beginPath();
+    g.ellipse(-4, -3, 11, 4.5, 0, 0, Math.PI * 2);
+    g.fill();
+  });
+
   const PAWN_PAL = {
     ink: '#332620',
     sleeve: '#999ea2',
@@ -81,7 +263,7 @@
     ['#7b7365', '#595246'], // 亞麻灰褐布衣
   ];
   const CHOP_DURATION = 0.52;
-  const WORKING_ACT_RE = /^(親手採伐|採伐|親手築造|築造|拆除|打造|製作|烹製|赴火|拆招|迎擊|上前交鋒)/;
+  const WORKING_ACT_RE = /^(親手採伐|採伐|親手築造|築造|拆除|打造|製作|烹製|赴火|拆招|迎擊|上前交鋒|揮鎬翻土|翻妥|播種|扦插|採收|採挖|搗藥|搗製|敷藥|赴火炙)/;
 
   let cellMap = new Map();
   let actors = [];
@@ -1308,6 +1490,19 @@
             };
             btns.appendChild(eatBtn);
           }
+          if (item.is_medical) {
+            const healBtn = document.createElement('button');
+            healBtn.type = 'button';
+            healBtn.className = 'rim-socket-btn';
+            healBtn.textContent = '敷貼治傷';
+            healBtn.onclick = async () => {
+              const r = await sendCmd({ cmd: 'apply_salve', item_code: item.code });
+              if (r && r.msg) showToast(r.msg);
+              lastModalSig = '';
+              await pollState(true);
+            };
+            btns.appendChild(healBtn);
+          }
           const dropBtn = document.createElement('button');
           dropBtn.type = 'button';
           dropBtn.className = 'rim-chip-btn';
@@ -1479,6 +1674,10 @@
   function resolveItemSprite(item) {
     const ch = String(item.c || '');
     const lbl = String(item.label || '');
+    if (ch === '藥' || /青草藥/.test(lbl)) return pawnImgs.itemHerb;
+    if (ch === '膏' || /藥膏/.test(lbl)) return pawnImgs.itemSalve;
+    if (ch === '烤' || /烤甘薯/.test(lbl)) return pawnImgs.itemRoastTuber;
+    if (ch === '薯' || /甘薯/.test(lbl)) return pawnImgs.itemTuber;
     if (ch === '笠' || /竹笠/.test(lbl)) return pawnImgs.hat;
     if (ch === '簍' || /背簍/.test(lbl)) return pawnImgs.pack;
     if (ch === '煨' || /煨/.test(lbl)) return pawnImgs.itemRoastShoot;
@@ -1509,7 +1708,7 @@
     ctx.ellipse(0, sizePx * 0.04, spritePx * 0.42, spritePx * 0.30, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    if (img && img.complete && img.naturalWidth) {
+    if (isDrawableReady(img)) {
       if (layers === 1) {
         const tilt = ch === '石' ? 0.25 : 0.0;
         drawPawnPart(img, 0, 0, spritePx, spritePx, 0.50, 0.50, tilt);
@@ -2114,6 +2313,8 @@
           }
         } else if (c.s === 'bed') {
           drawBambooBed(mx, my, p.x, p.y, cellPx, findBedSleeper(mx, my));
+        } else if (c.s === 'ridge' || c.s === 'herb_seed' || c.s === 'herb_plot' || c.s === 'crop_seed' || c.s === 'crop_plot') {
+          drawGardenPlot(c.s, mx, my, p.x, p.y, cellPx, nowMs, effWeather.raining);
         }
 
         // 中景尺度（5 <= cellPx < 12）自然物繪製簡潔白描圓叢點；近景（>= 12）則移入 Y-Sort 佇列
@@ -2133,6 +2334,14 @@
             ctx.lineWidth = 0.9;
             ctx.beginPath();
             ctx.arc(p.x, p.y, Math.max(1.8, cellPx * 0.16), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          } else if (c.p === 'herb') {
+            ctx.fillStyle = '#527c65';
+            ctx.strokeStyle = PAWN_PAL.ink;
+            ctx.lineWidth = 0.9;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.max(1.9, cellPx * 0.18), 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
           } else if (c.p === 'stone') {
@@ -2209,7 +2418,7 @@
         if (c.b && d < bestDist) {
           bestDist = d;
           bestBp = { mx: nx, my: ny };
-        } else if ((c.p === 'bamboo' || c.s === 'workbench') && !bestWork) {
+        } else if ((c.p === 'bamboo' || c.p === 'herb' || c.s === 'workbench' || c.s === 'ridge' || c.s === 'herb_plot' || c.s === 'crop_plot') && !bestWork) {
           bestWork = { mx: nx, my: ny };
         }
       }
@@ -2517,7 +2726,7 @@
   // ═══ 宣紙白描簡約全俯視角色與自然物繪製器官（與 pawn-demo v8 同源） ═══
 
   function drawPawnPart(img, x, y, w, h, ax, ay, rotRad = 0) {
-    if (!img || !img.complete || !img.naturalWidth) return;
+    if (!isDrawableReady(img)) return;
     ctx.save();
     ctx.translate(x, y);
     if (rotRad) ctx.rotate(rotRad);
@@ -3061,6 +3270,176 @@
     ctx.restore();
   }
 
+  function drawGardenPlot(kind, mx, my, cx, cy, cellPx, nowMs, isRaining) {
+    const w = cellPx * 0.90;
+    const h = cellPx * 0.86;
+    const lw = Math.max(0.95, cellPx * 0.025);
+    const sway = Math.sin(nowMs * 0.0028 + mx * 1.4 + my * 0.9) * (cellPx * 0.024);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // 1. 宣紙白描沃土畦底（雨天呈深潤土色）
+    ctx.fillStyle = isRaining ? '#846b50' : '#9c8367';
+    ctx.strokeStyle = PAWN_PAL.ink;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.roundRect(-w / 2, -h / 2, w, h, Math.max(3, cellPx * 0.10));
+    ctx.fill();
+    ctx.stroke();
+
+    // 2. 三道立體翻鬆土壟條
+    for (const ry of [-h * 0.27, 0, h * 0.27]) {
+      const rw = w * 0.82;
+      const rh = h * 0.20;
+      ctx.fillStyle = isRaining ? '#94785b' : '#b79c7c';
+      ctx.beginPath();
+      ctx.roundRect(-rw / 2, ry - rh / 2, rw, rh, Math.max(2, rh * 0.42));
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(51, 38, 32, 0.36)';
+      ctx.lineWidth = Math.max(0.75, lw * 0.72);
+      ctx.beginPath();
+      ctx.moveTo(-rw * 0.42, ry + rh * 0.48);
+      ctx.lineTo(rw * 0.42, ry + rh * 0.48);
+      ctx.stroke();
+    }
+
+    if (cellPx < 13) {
+      if (kind === 'herb_seed' || kind === 'herb_plot') {
+        ctx.fillStyle = kind === 'herb_plot' ? '#4d7761' : '#80a67d';
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(2, cellPx * (kind === 'herb_plot' ? 0.26 : 0.16)), 0, Math.PI * 2);
+        ctx.fill();
+      } else if (kind === 'crop_seed' || kind === 'crop_plot') {
+        ctx.fillStyle = kind === 'crop_plot' ? '#587a45' : '#86a766';
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(2, cellPx * (kind === 'crop_plot' ? 0.26 : 0.16)), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+      return;
+    }
+
+    if (kind === 'herb_seed') {
+      const spots = [[-0.22, -0.26], [0.16, -0.24], [-0.04, 0.0], [-0.20, 0.26], [0.21, 0.25]];
+      for (const [sx, sy] of spots) {
+        ctx.save();
+        ctx.translate(sx * cellPx + sway * 0.4, sy * cellPx);
+        ctx.fillStyle = '#7ea67b';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = lw * 0.8;
+        for (const a of [-0.65, 0.65]) {
+          ctx.save();
+          ctx.rotate(a);
+          ctx.beginPath();
+          ctx.ellipse(0, -cellPx * 0.06, cellPx * 0.036, cellPx * 0.072, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.restore();
+      }
+    } else if (kind === 'herb_plot') {
+      const clusters = [[-0.22, -0.24], [0.18, -0.22], [-0.02, 0.02], [-0.21, 0.24], [0.20, 0.23]];
+      for (let i = 0; i < clusters.length; i++) {
+        const [bx, by] = clusters[i];
+        ctx.save();
+        ctx.translate(bx * cellPx + sway * 0.65, by * cellPx);
+        for (let k = 0; k < 5; k++) {
+          const ang = (k * Math.PI * 2) / 5 + (i * 0.4);
+          ctx.save();
+          ctx.rotate(ang);
+          ctx.fillStyle = k % 2 === 0 ? '#4d7660' : '#6c937a';
+          ctx.strokeStyle = PAWN_PAL.ink;
+          ctx.lineWidth = lw * 0.78;
+          ctx.beginPath();
+          ctx.ellipse(0, -cellPx * 0.085, cellPx * 0.042, cellPx * 0.095, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.fillStyle = '#f3ebf6';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = lw * 0.72;
+        ctx.beginPath();
+        ctx.arc(0, 0, cellPx * 0.046, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#cfa048';
+        ctx.beginPath();
+        ctx.arc(0, 0, cellPx * 0.020, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    } else if (kind === 'crop_seed') {
+      ctx.strokeStyle = '#5a7b45';
+      ctx.lineWidth = lw * 1.1;
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.34, -h * 0.22);
+      ctx.quadraticCurveTo(0, -h * 0.04, w * 0.32, h * 0.20);
+      ctx.stroke();
+      for (const [lx, ly, rot] of [[-0.24, -0.22, -0.4], [0.14, -0.18, 0.5], [-0.08, 0.04, -0.6], [0.22, 0.22, 0.3]]) {
+        ctx.save();
+        ctx.translate(lx * cellPx + sway * 0.3, ly * cellPx);
+        ctx.rotate(rot);
+        ctx.fillStyle = '#85a664';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = lw * 0.78;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, cellPx * 0.072, cellPx * 0.052, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    } else if (kind === 'crop_plot') {
+      // 甘薯心形茂葉叢＋紫赭紅塊根露頭
+      ctx.strokeStyle = '#537341';
+      ctx.lineWidth = lw * 1.15;
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.34, -h * 0.26);
+      ctx.bezierCurveTo(-w * 0.1, h * 0.12, w * 0.14, -h * 0.15, w * 0.34, h * 0.24);
+      ctx.stroke();
+
+      for (const [lx, ly, rot, sc] of [
+        [-0.24, -0.24, -0.5, 1.0], [0.06, -0.25, 0.4, 0.92], [0.24, -0.16, 1.1, 0.96],
+        [-0.22, 0.04, -1.2, 1.05], [0.04, 0.02, 0.2, 1.08], [0.25, 0.14, 0.8, 0.95],
+        [-0.14, 0.25, -0.3, 1.0], [0.12, 0.26, 0.6, 0.92],
+      ]) {
+        const s = cellPx * 0.088 * sc;
+        ctx.save();
+        ctx.translate(lx * cellPx + sway * 0.55, ly * cellPx);
+        ctx.rotate(rot);
+        ctx.fillStyle = sc > 1.0 ? '#587a45' : '#769859';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = lw * 0.78;
+        ctx.beginPath();
+        ctx.moveTo(0, -s);
+        ctx.bezierCurveTo(s * 1.15, -s * 0.65, s * 0.95, s * 0.95, 0, s * 0.75);
+        ctx.bezierCurveTo(-s * 0.95, s * 0.95, -s * 1.15, -s * 0.65, 0, -s);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+      // 露土甘薯塊根頭
+      for (const [tx, ty, trot] of [[-0.12, -0.11, -0.4], [0.14, 0.06, 0.5], [-0.04, 0.22, 0.15]]) {
+        ctx.save();
+        ctx.translate(tx * cellPx, ty * cellPx);
+        ctx.rotate(trot);
+        ctx.fillStyle = '#a15847';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = lw * 0.85;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, cellPx * 0.11, cellPx * 0.066, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    ctx.restore();
+  }
+
   function drawBambooBed(mx, my, cx, cy, cellPx, sleeper) {
     const w = cellPx * 1.32;
     const h = cellPx * 0.84;
@@ -3511,7 +3890,7 @@
             ctx.ellipse(sp.x, sp.y + cellPx * 0.09, cellPx * 0.24, cellPx * 0.14, 0, 0, Math.PI * 2);
             ctx.fill();
             const shImg = pawnImgs.shoot;
-            if (shImg && shImg.complete && shImg.naturalWidth) {
+            if (isDrawableReady(shImg)) {
               drawPawnPart(shImg, sp.x, sp.y - cellPx * 0.04, cellPx * 0.84, cellPx * 0.84, 0.50, 0.50, ((h % 9) - 4) * 0.06);
             } else {
               ctx.fillStyle = '#9ab07a';
@@ -3519,6 +3898,12 @@
               ctx.arc(sp.x, sp.y, Math.max(3, cellPx * 0.18), 0, Math.PI * 2);
               ctx.fill();
             }
+          } else if (item.pType === 'herb') {
+            ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
+            ctx.beginPath();
+            ctx.ellipse(sp.x, sp.y + cellPx * 0.08, cellPx * 0.26, cellPx * 0.15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            drawPawnPart(pawnImgs.wildHerb, sp.x, sp.y, cellPx * 0.90, cellPx * 0.90, 0.50, 0.50, ((h % 11) - 5) * 0.14);
           }
         } else {
           if (item.a.faction === 'wild_beast') {

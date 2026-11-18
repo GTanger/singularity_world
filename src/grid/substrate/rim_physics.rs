@@ -592,8 +592,7 @@ mod tests {
                     MicroCellOverlay {
                         cleared_natural: true,
                         structure: (x == 3).then_some(StructureKind::BambooWall),
-                        blueprint: None,
-                        ground_item: None,
+                        ..Default::default()
                     },
                 );
             }
@@ -653,8 +652,7 @@ mod tests {
                         cleared_natural: true,
                         structure: (x == 0 && (9..=14).contains(&y))
                             .then_some(StructureKind::WoodBridge),
-                        blueprint: None,
-                        ground_item: None,
+                        ..Default::default()
                     },
                 );
             }

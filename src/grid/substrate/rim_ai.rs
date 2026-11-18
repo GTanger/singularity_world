@@ -99,6 +99,11 @@ impl RimWorldState {
             return;
         }
 
+        // 負傷時優先敷用或前往案台搗製敷傷藥膏消解部位傷勢
+        if super::rim_ecology::try_urgent_salve_heal(self, rt, idx) {
+            return;
+        }
+
         // 傷疲靜養或山雨無笠時，優先前往空閒竹編睡榻或入屋避雨
         let weather = super::rim_shelter::weather_at_unix(super::rim_sim::now_unix_sec());
         if super::rim_shelter::try_seek_bed_or_rain_shelter(self, rt, idx, weather) {
@@ -207,7 +212,8 @@ impl RimWorldState {
                 PendingTask::ChopAt { tx, ty }
                 | PendingTask::WorkBuild { tx, ty }
                 | PendingTask::DeconstructAt { tx, ty }
-                | PendingTask::PickupEquip { tx, ty } => Some((tx, ty)),
+                | PendingTask::PickupEquip { tx, ty }
+                | PendingTask::FarmPlot { tx, ty, .. } => Some((tx, ty)),
                 PendingTask::FetchForBuild { dst_x, dst_y, .. }
                 | PendingTask::HaulToStockpile {
                     src_x: dst_x,
@@ -318,6 +324,10 @@ impl RimWorldState {
             return;
         }
 
+        if super::rim_ecology::try_autonomous_farming(self, rt, idx, start, home, &claimed, &occ) {
+            return;
+        }
+
         if super::rim_phase::try_proactive_directive_work(
             self, rt, idx, start, home, &claimed, &occ,
         ) {
@@ -408,15 +418,19 @@ impl RimWorldState {
                         NaturalProp::BambooClump => (RimItemKind::BambooPole, 2),
                         NaturalProp::BambooShoot => (RimItemKind::BambooShoot, 1),
                         NaturalProp::RiverStone => (RimItemKind::RiverStone, 1),
+                        NaturalProp::WildHerb => (RimItemKind::MountainHerb, 2),
                     };
-                    let inv_shoots: u16 = self.actors[idx]
+                    let inv_forage: u16 = self.actors[idx]
                         .inventory
                         .iter()
-                        .filter(|s| s.item == RimItemKind::BambooShoot)
+                        .filter(|s| s.item == drop_item)
                         .map(|s| s.count)
                         .sum();
                     if (self.actors[idx].entity_id.is_some() && !self.actors[idx].autopilot)
-                        || (prop == NaturalProp::BambooShoot && inv_shoots < 6)
+                        || (matches!(
+                            prop,
+                            NaturalProp::BambooShoot | NaturalProp::WildHerb
+                        ) && inv_forage < 6)
                     {
                         self.actors[idx].add_inv(drop_item, drop_cnt);
                     } else {
@@ -617,7 +631,13 @@ impl RimWorldState {
                 {
                     if self.actors[idx].entity_id.is_some()
                         || g.item.is_edible()
-                        || matches!(g.item, RimItemKind::BambooShoot | RimItemKind::BeastMeat)
+                        || g.item.is_medical()
+                        || matches!(
+                            g.item,
+                            RimItemKind::BambooShoot
+                                | RimItemKind::BeastMeat
+                                | RimItemKind::MountainHerb
+                        )
                     {
                         let max_take = if self.actors[idx].entity_id.is_some() {
                             6
@@ -650,6 +670,11 @@ impl RimWorldState {
                 self.actors[idx].task = PendingTask::None;
             }
             PendingTask::CraftAt { tx, ty, item } => {
+                if item == RimItemKind::WoundSalve {
+                    super::rim_ecology::complete_craft_salve(self, idx, tx, ty);
+                    self.actors[idx].task = PendingTask::None;
+                    return;
+                }
                 if (ax - tx).abs() <= 1 && (ay - ty).abs() <= 1 {
                     let has_bench = self.overlays.get(&(tx, ty)).and_then(|o| o.structure)
                         == Some(StructureKind::Workbench);
@@ -760,6 +785,7 @@ impl RimWorldState {
                 {
                     let dish = match raw {
                         RimItemKind::BeastMeat => RimItemKind::RoastedMeat,
+                        RimItemKind::SweetTuber => RimItemKind::RoastedTuber,
                         _ => RimItemKind::RoastedShoot,
                     };
                     let mut got = self.actors[idx].take_inv(raw, 1);
@@ -798,6 +824,9 @@ impl RimWorldState {
             }
             PendingTask::SleepBed { tx, ty } => {
                 super::rim_shelter::complete_sleep_bed(self, idx, tx, ty);
+            }
+            PendingTask::FarmPlot { tx, ty, op } => {
+                super::rim_ecology::complete_farm_plot(self, rt, idx, tx, ty, op);
             }
         }
     }
