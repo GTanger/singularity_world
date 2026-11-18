@@ -3,7 +3,7 @@
 use super::rim_sim::{PendingTask, RimWorldState, now_unix_sec};
 use super::rim_world::{
     BlueprintJob, MicroGround, NaturalProp, RimItemKind, StructureKind, derive_micro_pristine,
-    find_micro_path, find_micro_path_crowded,
+    find_micro_path,
 };
 use super::runtime;
 
@@ -136,9 +136,12 @@ impl RimWorldState {
             return Err("此刻力竭未起，尚待同伴扶持或緩氣".into());
         }
         let start = self.actors[p_idx].micro_pos();
+        let aid = self.actors[p_idx].id;
         self.actors[p_idx].autopilot = false;
         self.actors[p_idx].running = run;
         self.actors[p_idx].last_active_unix = now_unix_sec();
+        self.stall_tracker.remove(&aid);
+        self.economy.parcel_queues.remove(&aid);
         self.dirty_unsaved_ticks += 4;
 
         if let Some(tid) = target_actor
@@ -158,9 +161,7 @@ impl RimWorldState {
 
         match action.unwrap_or("move") {
             "move" => {
-                let occ = self.occupied_cells(Some(p_idx));
-                let Some(path) =
-                    find_micro_path_crowded(rt, &self.overlays, start, (mx, my), true, false, &occ)
+                let Some(path) = find_micro_path(rt, &self.overlays, start, (mx, my), true, false)
                 else {
                     self.actors[p_idx].running = false;
                     return Err("水深或密林阻隔，需架橋或開路".into());
@@ -313,5 +314,111 @@ impl RimWorldState {
             }
             _ => Err("無法執行此動作".into()),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::super::rim_ecology::FarmOp;
+    use super::super::rim_sim::{ActorFaction, RimActor, RimWorldState};
+    use super::super::rim_world::MicroCellOverlay;
+    use super::*;
+    use std::collections::{HashMap, VecDeque};
+
+    fn cmd_actor(id: usize, eid: Option<&str>, px: f32, py: f32) -> RimActor {
+        RimActor {
+            id,
+            code: format!("c_{id}"),
+            actor_key: format!("c_{id}"),
+            entity_id: eid.map(str::to_string),
+            glyph: if eid.is_some() { "我" } else { "友" }.into(),
+            name: "測試角色".into(),
+            gender: "M".into(),
+            soul_seed: 7,
+            role_tag: "測試".into(),
+            faction: ActorFaction::Settler,
+            is_player: eid.is_some(),
+            autopilot: eid.is_some(),
+            running: false,
+            px,
+            py,
+            facing_rad: 0.0,
+            hp: 100,
+            max_hp: 100,
+            equipped_tool: None,
+            carrying: None,
+            inventory: Vec::new(),
+            directive: "forage".into(),
+            path: VecDeque::new(),
+            task: PendingTask::None,
+            activity_tag: String::new(),
+            pop_text: None,
+            cooldown_ticks: 0,
+            last_active_unix: 0,
+            hunger: 88,
+            thirst: 88,
+            stamina: 92,
+            magnesium: 18,
+            equipped_hat: false,
+            equipped_pack: false,
+            known_by: Vec::new(),
+            practice_unarmed: 0,
+            practice_blade: 0,
+            practice_blunt: 0,
+            craft_harvest: 0,
+            craft_forge: 0,
+            craft_culinary: 0,
+            craft_wayfare: 0,
+            anatomy_winged: 0,
+            anatomy_hoofed: 0,
+            injury_part: None,
+            injury_ticks: 0,
+            downed_ticks: 0,
+            caravan_leg: 0,
+            wet_ticks: 0,
+            recent_diary: VecDeque::new(),
+        }
+    }
+
+    #[test]
+    fn player_intervention_clears_autopilot_queues_and_moves_monotonically() {
+        let mut overlays = HashMap::new();
+        for x in -6..=4 {
+            for y in -2..=2 {
+                overlays.insert((x, y), MicroCellOverlay::cleared(None));
+            }
+        }
+        let mut player = cmd_actor(1, Some("tester"), 0.0, 0.0);
+        player.path = VecDeque::from([(1, 0), (2, 0), (3, 0)]);
+        let npc = cmd_actor(2, None, -1.0, 1.0);
+        let mut world = RimWorldState {
+            tick: 0,
+            overlays,
+            actors: vec![player, npc],
+            events: VecDeque::new(),
+            economy: Default::default(),
+            dirty_unsaved_ticks: 0,
+            sub_step: 0,
+            stall_tracker: HashMap::from([(1, ((0.0, 0.0), 3))]),
+        };
+        world
+            .economy
+            .parcel_queues
+            .insert(1, VecDeque::from([(1, 0, FarmOp::Harvest), (2, 0, FarmOp::Harvest)]));
+
+        assert!(world.command_player("tester", -5, 0, Some("move"), None, true).is_ok());
+        assert!(!world.actors[0].autopilot);
+        assert!(!world.economy.parcel_queues.contains_key(&1));
+        assert!(!world.stall_tracker.contains_key(&1));
+
+        let mut prev_x = world.actors[0].px;
+        for _ in 0..40 {
+            world.step_physics_50ms();
+            let cur_x = world.actors[0].px;
+            assert!(cur_x <= prev_x + 1e-4, "player rubber-banded: prev={prev_x} cur={cur_x}");
+            assert_ne!(world.actors[0].activity_tag, "側身禮讓");
+            prev_x = cur_x;
+        }
+        assert!(world.actors[0].px < -2.5, "px={}", world.actors[0].px);
     }
 }

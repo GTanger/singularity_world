@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a20';
+  const PAWN_ASSET_VER = '20261118a21';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -276,6 +276,8 @@
   let renderActors = new Map(); // id -> { x, y, srvX, srvY, facing, targetFacing, speed, running, path, walkPhase, moveBlend, runBlend, chopTimer, chopDidImpact, lastPop }
   let meMoveSeq = 0;
   let meMoveLockUntil = 0;
+  let meCmdInFlight = 0;
+  let meArriveHoldUntil = 0;
   const bambooShakeMap = new Map(); // "mx,my" -> remaining sec
   const leafParticles = []; // { x, y, vx, vy, rot, life }
   let selectedCell = null; // { mx, my }
@@ -548,6 +550,8 @@
         params.set('sel_x', String(selectedCell.mx));
         params.set('sel_y', String(selectedCell.my));
       }
+      const pollSeq = meMoveSeq;
+      const pollStartedDuringCmd = meCmdInFlight > 0;
       const res = await fetch(`/api/rim/state?${params.toString()}`, { credentials: 'same-origin' });
       if (res.status === 401) {
         enterAuthScreen('登入狀態已失效，請重新輸入密碼登入');
@@ -610,6 +614,8 @@
                 targetFacing: a.facing || 0,
                 speed: a.speed || 1.35,
                 running: !!a.running,
+                autopilot: !!a.autopilot,
+                srvMoving: srvPath.length > 0,
                 path: srvPath,
                 walkPhase: (Number(a.id) || 0) * 1.1,
                 moveBlend: 0,
@@ -620,16 +626,40 @@
               };
               renderActors.set(a.id, st);
             } else {
-              st.srvX = a.px;
-              st.srvY = a.py;
-              if (!a.is_player || performance.now() >= meMoveLockUntil) {
+              const isManualMe = !!a.is_player && !a.autopilot;
+              const staleMePoll =
+                !!a.is_player && (pollSeq !== meMoveSeq || pollStartedDuringCmd || meCmdInFlight > 0);
+              if (!staleMePoll) {
+                st.srvX = a.px;
+                st.srvY = a.py;
+                st.srvMoving = srvPath.length > 0;
+                st.autopilot = !!a.autopilot;
+              }
+              if (!staleMePoll && (!a.is_player || performance.now() >= meMoveLockUntil)) {
                 st.speed = a.speed || 1.35;
                 st.running = !!a.running;
-                st.path = srvPath.length > 0 ? trimPassedWaypoints(srvPath, st.x, st.y) : [];
+                if (!isManualMe) {
+                  st.path = srvPath.length > 0 ? trimPassedWaypoints(srvPath, st.x, st.y) : [];
+                } else if (srvPath.length === 0) {
+                  st.path = [];
+                } else if (st.path && st.path.length > 0) {
+                  const cg = st.path[st.path.length - 1];
+                  const sg = srvPath[srvPath.length - 1];
+                  if (cg[0] !== sg[0] || cg[1] !== sg[1]) {
+                    st.path = trimPassedWaypoints(srvPath, st.x, st.y);
+                  }
+                } else if (
+                  performance.now() >= meArriveHoldUntil &&
+                  Math.hypot(srvPath[srvPath.length - 1][0] - st.x, srvPath[srvPath.length - 1][1] - st.y) > 0.35
+                ) {
+                  st.path = trimPassedWaypoints(srvPath, st.x, st.y);
+                }
               }
-              if (typeof a.facing === 'number') st.targetFacing = a.facing;
+              if (typeof a.facing === 'number' && !staleMePoll && (!isManualMe || !st.path || st.path.length === 0)) {
+                st.targetFacing = a.facing;
+              }
               const err = Math.hypot(a.px - st.x, a.py - st.y);
-              if (err > 2.8) {
+              if (!staleMePoll && (!isManualMe ? err > 2.8 : (performance.now() >= meMoveLockUntil && err > 4.5))) {
                 st.x = a.px;
                 st.y = a.py;
               }
@@ -802,12 +832,12 @@
               meSt.chopDidImpact = false;
             }
           }
-          const r = await sendCmd({
-            cmd: 'act',
+          const r = await dispatchPlayerAct({
             mx: sel.mx,
             my: sel.my,
             action: s.action === 'attack_actor' ? 'move' : s.action,
             target_actor: s.target_actor,
+            run: false,
           });
           if (r && !r.ok && r.msg) {
             showToast(r.msg);
@@ -1013,6 +1043,9 @@
         ? '目前為自主行事（點擊收回親手操控）'
         : '切換為自主行事（暫離時自動巡走採作）';
       autoBtn.onclick = async () => {
+        ++meMoveSeq;
+        meMoveLockUntil = performance.now() + 350;
+        meArriveHoldUntil = 0;
         await sendCmd({ cmd: 'toggle_autopilot' });
         lastModalSig = '';
         await pollState(true);
@@ -2511,8 +2544,12 @@
       if (!st) continue;
       prevPos.set(a.id, [st.x, st.y]);
       const isBeast = a.faction === 'wild_beast';
+      const isManualMe = !!a.is_player && !a.autopilot;
+      const hadPath = !!(st.path && st.path.length > 0);
+      let moveUx = Math.cos(st.targetFacing || 0);
+      let moveUy = Math.sin(st.targetFacing || 0);
 
-      if (st.path && st.path.length > 0) {
+      if (hadPath) {
         let budget = (st.speed || 1.35) * dt;
         while (budget > 0.0002 && st.path.length > 0) {
           const [nx, ny] = st.path[0];
@@ -2550,6 +2587,8 @@
           }
           let ux = dx / dist;
           let uy = dy / dist;
+          moveUx = ux;
+          moveUy = uy;
           let steerThreat = false;
           for (const other of actors) {
             if (other.id === a.id) continue;
@@ -2585,10 +2624,44 @@
           st.y = nextY;
           budget = 0;
         }
+        if (a.is_player && st.path.length === 0) {
+          meArriveHoldUntil = performance.now() + 700;
+        }
+        if (isManualMe) {
+          if (meCmdInFlight === 0 && performance.now() >= meMoveLockUntil) {
+            const ex = st.srvX - st.x;
+            const ey = st.srvY - st.y;
+            const errD = Math.hypot(ex, ey);
+            const along = ex * moveUx + ey * moveUy;
+            if (along < 0 && errD < 2.4) {
+              const cxErr = ex - along * moveUx;
+              const cyErr = ey - along * moveUy;
+              const cDrift = Math.min(1.0, 1.2 * dt);
+              st.x += cxErr * cDrift;
+              st.y += cyErr * cDrift;
+            } else {
+              const drift = errD >= 2.4 ? Math.min(1.0, 1.8 * dt) : Math.min(1.0, 0.35 * dt);
+              st.x += ex * drift;
+              st.y += ey * drift;
+            }
+          }
+        } else {
+          const errD = Math.hypot(st.srvX - st.x, st.srvY - st.y);
+          const drift = errD > 0.85 ? Math.min(1.0, 2.8 * dt) : Math.min(1.0, 0.14 * dt);
+          st.x += (st.srvX - st.x) * drift;
+          st.y += (st.srvY - st.y) * drift;
+        }
+      } else if (isManualMe) {
         const errD = Math.hypot(st.srvX - st.x, st.srvY - st.y);
-        const drift = errD > 0.85 ? Math.min(1.0, 2.8 * dt) : Math.min(1.0, 0.14 * dt);
-        st.x += (st.srvX - st.x) * drift;
-        st.y += (st.srvY - st.y) * drift;
+        const holdBehind =
+          meCmdInFlight > 0 ||
+          performance.now() < meMoveLockUntil ||
+          (st.srvMoving && performance.now() < meArriveHoldUntil && errD <= 2.4);
+        if (!holdBehind && errD > 0.04) {
+          const settle = 1.0 - Math.exp(-8.0 * dt);
+          st.x += (st.srvX - st.x) * settle;
+          st.y += (st.srvY - st.y) * settle;
+        }
       } else {
         const settle = 1.0 - Math.exp(-10.0 * dt);
         st.x += (st.srvX - st.x) * settle;
@@ -4259,7 +4332,7 @@
     forceCellsNext = true;
   }
 
-  function handleTapCell(sx, sy) {
+  async function handleTapCell(sx, sy) {
     const { mx, my, fx, fy } = screenToMicro(sx, sy);
 
     // 點中人物／異獸（同時比對渲染平滑位置）／自然物／設施／地面物品／溪流時，直接展開接觸物件插座卡
@@ -4292,35 +4365,10 @@
       ? { ms: 0, sx: -999, sy: -999, mx: -999, my: -999 }
       : { ms: now, sx, sy, mx, my };
 
-    const me = actors.find((a) => a.is_player);
-    const meSt = me ? renderActors.get(me.id) : null;
-    const moveSeq = ++meMoveSeq;
-    meMoveLockUntil = performance.now() + 320;
-    if (meSt) {
-      meSt.running = isDoubleTap;
-      meSt.speed = isDoubleTap ? 3.8 : 1.35;
-      const preview = findClientPath(Math.round(meSt.x), Math.round(meSt.y), mx, my);
-      if (preview && preview.length > 0) {
-        meSt.path = trimPassedWaypoints(preview, meSt.x, meSt.y);
-      }
+    const r = await dispatchPlayerAct({ mx, my, action: 'move', run: isDoubleTap });
+    if (r && !r.ok && r.msg) {
+      showToast(r.msg);
     }
-
-    sendCmd({ cmd: 'act', mx, my, action: 'move', run: isDoubleTap }).then((r) => {
-      if (moveSeq !== meMoveSeq) return;
-      if (r && !r.ok) {
-        if (meSt) meSt.path = [];
-        if (r.msg) showToast(r.msg);
-      } else if (r && r.ok && Array.isArray(r.path) && meSt) {
-        if (typeof r.px === 'number' && typeof r.py === 'number') {
-          meSt.srvX = r.px;
-          meSt.srvY = r.py;
-        }
-        meSt.path = trimPassedWaypoints(r.path, meSt.x, meSt.y);
-        meSt.speed = r.speed || (isDoubleTap ? 3.8 : 1.35);
-        meSt.running = !!r.running;
-        meMoveLockUntil = performance.now() + 180;
-      }
-    });
   }
 
   // 滑鼠右鍵直接開啟地面／溪流／物件現場插座卡
@@ -4480,6 +4528,44 @@
       requestAnimationFrame(frame);
     }
     pollState(true);
+  }
+
+  async function dispatchPlayerAct({ mx, my, action = 'move', target_actor, run = false }) {
+    const me = actors.find((a) => a.is_player);
+    const meSt = me ? renderActors.get(me.id) : null;
+    const moveSeq = ++meMoveSeq;
+    meCmdInFlight++;
+    meMoveLockUntil = performance.now() + 450;
+    meArriveHoldUntil = 0;
+    if (me) me.autopilot = false;
+    if (meSt) {
+      meSt.autopilot = false;
+      meSt.running = !!run;
+      meSt.speed = run ? 3.8 : 1.35;
+      const preview = findClientPath(Math.round(meSt.x), Math.round(meSt.y), mx, my);
+      meSt.path = preview && preview.length > 0 ? trimPassedWaypoints(preview, meSt.x, meSt.y) : [];
+    }
+    try {
+      const r = await sendCmd({ cmd: 'act', mx, my, action, target_actor, run });
+      if (moveSeq === meMoveSeq && meSt) {
+        if (!r || !r.ok) {
+          meSt.path = [];
+        } else if (Array.isArray(r.path)) {
+          if (typeof r.px === 'number' && typeof r.py === 'number') {
+            meSt.srvX = r.px;
+            meSt.srvY = r.py;
+          }
+          meSt.srvMoving = r.path.length > 0;
+          meSt.path = r.path.length > 0 ? trimPassedWaypoints(r.path, meSt.x, meSt.y) : [];
+          meSt.speed = r.speed || (run ? 3.8 : 1.35);
+          meSt.running = !!r.running;
+          meMoveLockUntil = performance.now() + 420;
+        }
+      }
+      return r;
+    } finally {
+      meCmdInFlight = Math.max(0, meCmdInFlight - 1);
+    }
   }
 
   // ═══ 宣紙登入／創角閘門（正式帳密登入＋PostgreSQL 同源 Cookie 階段） ═══

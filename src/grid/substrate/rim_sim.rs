@@ -723,6 +723,7 @@ impl RimWorldState {
             .iter_mut()
             .find(|a| a.entity_id.as_deref() == Some(pid))
         {
+            let aid = a.id;
             a.px = 0.0;
             a.py = -2.0;
             a.facing_rad = 1.57;
@@ -732,6 +733,8 @@ impl RimWorldState {
             a.hp = a.max_hp;
             a.activity_tag = "駐足觀望".into();
             a.last_active_unix = now_unix_sec();
+            self.stall_tracker.remove(&aid);
+            self.economy.parcel_queues.remove(&aid);
         }
         apply_outpost_architecture(runtime::global(), &mut self.overlays);
         self.dirty_unsaved_ticks += 20;
@@ -813,7 +816,9 @@ impl RimWorldState {
                     }
                 }
             }
-            if !self.actors[idx].path.is_empty() {
+            let manual_player =
+                self.actors[idx].entity_id.is_some() && !self.actors[idx].autopilot;
+            if !manual_player && !self.actors[idx].path.is_empty() {
                 let id = self.actors[idx].id;
                 let (px, py) = (self.actors[idx].px, self.actors[idx].py);
                 let entry = self.stall_tracker.entry(id).or_insert(((px, py), 0));

@@ -722,11 +722,8 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
         }
         "toggle_autopilot" => {
             let mut now_ap = false;
-            if let Some(p) = world
-                .actors
-                .iter_mut()
-                .find(|a| a.entity_id.as_deref() == Some(pid.as_str()))
-            {
+            let mut manual_aid = None;
+            if let Some(p) = world.actors.iter_mut().find(|a| a.entity_id.as_deref() == Some(pid.as_str())) {
                 p.autopilot = !p.autopilot;
                 if p.autopilot {
                     p.activity_tag = "自主行事".into();
@@ -734,8 +731,13 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
                     p.task = crate::grid::substrate::rim_sim::PendingTask::None;
                     p.path.clear();
                     p.activity_tag = "駐足待命".into();
+                    manual_aid = Some(p.id);
                 }
                 now_ap = p.autopilot;
+            }
+            if let Some(aid) = manual_aid {
+                world.stall_tracker.remove(&aid);
+                world.economy.parcel_queues.remove(&aid);
             }
             world.touch_player_activity(&pid);
             world.persist_if_needed(true);

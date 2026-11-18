@@ -12,8 +12,8 @@
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-mono-tc@5/index.min.css">
-	<link rel="stylesheet" href="style.css?v=20261118a20">
-	<link rel="stylesheet" href="rim-world.css?v=20261118a20">
+	<link rel="stylesheet" href="style.css?v=20261118a21">
+	<link rel="stylesheet" href="rim-world.css?v=20261118a21">
 </head>
 <body>
 	<!-- 登入／創角宣紙閘門 -->
@@ -116,22 +116,22 @@
 		</nav>
 	</div>
 
-	<script src="rim-sky-time.js?v=20261118a20"></script>
-	<script src="rim-portrait.js?v=20261118a20"></script>
-	<script src="rim-world.js?v=20261118a20"></script>
+	<script src="rim-sky-time.js?v=20261118a21"></script>
+	<script src="rim-portrait.js?v=20261118a21"></script>
+	<script src="rim-world.js?v=20261118a21"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			var hadController = !!navigator.serviceWorker.controller;
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261118a20')) return;
-				sessionStorage.setItem('sw_reloaded_v20261118a20', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261118a21')) return;
+				sessionStorage.setItem('sw_reloaded_v20261118a21', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261118a20', { updateViaCache: 'none' }).catch(function () {});
+				navigator.serviceWorker.register('/sw.js?v=20261118a21', { updateViaCache: 'none' }).catch(function () {});
 			});
 		}
 	</script>
