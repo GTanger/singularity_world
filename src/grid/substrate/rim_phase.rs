@@ -6,10 +6,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::rim_sim::{ActorFaction, PendingTask, RimActor, RimWorldState};
-use super::rim_world::{
-    NaturalProp, RimItemKind, StructureKind, derive_micro_pristine, find_micro_path,
-    find_micro_path_crowded,
-};
+use super::rim_world::{RimItemKind, find_micro_path_crowded};
 use super::runtime::SubstrateRuntime;
 use crate::combat::human_phase::{
     BeastAnatomy, InnateBonePhase, ThreePhaseVerdict, derive_personal_craft_routine,
@@ -458,37 +455,18 @@ pub fn complete_caravan_arrival(
     idx: usize,
     leg: u8,
 ) {
+    use super::rim_economy::{SettlementId, prepare_caravan_arbitrage_cargo};
     let start = world.actors[idx].micro_pos();
     let west_anchor = (1, -1);
     let east_anchor = (32, -7);
 
     if leg == 0 {
-        for dish in [RimItemKind::RoastedShoot, RimItemKind::BambooShoot] {
-            if world.actors[idx].take_inv(dish, 1) > 0 {
-                if let Some((kx, ky)) = world.find_available_stockpile_slot((-3, -1), dish) {
-                    world.add_ground_item(kx, ky, dish, 1);
-                } else {
-                    world.add_ground_item(start.0, start.1, dish, 1);
-                }
-            }
-        }
-        if let Some((bx, by)) =
-            world.find_nearest_ground_item((-3, -1), RimItemKind::BambooPole, false)
-            && (bx + 3).abs() + (by + 1).abs() <= 6
-            && world
-                .overlays
-                .get(&(bx, by))
-                .and_then(|o| o.ground_item)
-                .is_some_and(|g| g.count >= 4)
-            && world.take_ground_item(bx, by, RimItemKind::BambooPole, 1) > 0
-        {
-            world.actors[idx].add_inv(RimItemKind::BambooPole, 1);
-        }
+        prepare_caravan_arbitrage_cargo(world, idx, SettlementId::WestOutpost);
         world.actors[idx].craft_wayfare = world.actors[idx].craft_wayfare.saturating_add(2);
         world.actors[idx].caravan_leg = 1;
-        world.actors[idx].push_diary("挑水尾寮山筍抵西麓湧泉互通有無");
+        world.actors[idx].push_diary("挑山貨抵西麓湧泉清倉並換裝順價行貨");
         world.actors[idx].pop_text = Some(("抵西麓換貨".into(), world.tick + 10));
-        world.push_event(format!("{} 挑貨抵西麓湧泉換妥竹材", world.actors[idx].glyph));
+        world.push_event(format!("{} 挑貨抵西麓按價交割換貨", world.actors[idx].glyph));
 
         if let Some(p) = find_first_path_near(world, rt, idx, start, east_anchor) {
             world.actors[idx].path = p.into();
@@ -502,32 +480,10 @@ pub fn complete_caravan_arrival(
             world.actors[idx].task = PendingTask::None;
         }
     } else {
-        if world.actors[idx].take_inv(RimItemKind::BambooPole, 1) > 0 {
-            if let Some((kx, ky)) =
-                world.find_available_stockpile_slot((34, -8), RimItemKind::BambooPole)
-            {
-                world.add_ground_item(kx, ky, RimItemKind::BambooPole, 1);
-            } else {
-                world.add_ground_item(start.0, start.1, RimItemKind::BambooPole, 1);
-            }
-        }
-        for dish in [RimItemKind::RoastedShoot, RimItemKind::BambooShoot] {
-            if let Some((sx, sy)) = world.find_nearest_ground_item((34, -8), dish, false)
-                && (sx - 34).abs() + (sy + 8).abs() <= 6
-                && world
-                    .overlays
-                    .get(&(sx, sy))
-                    .and_then(|o| o.ground_item)
-                    .is_some_and(|g| g.count >= 2)
-                && world.take_ground_item(sx, sy, dish, 1) > 0
-            {
-                world.actors[idx].add_inv(dish, 1);
-                break;
-            }
-        }
+        prepare_caravan_arbitrage_cargo(world, idx, SettlementId::Shuoweiliao);
         world.actors[idx].craft_wayfare = world.actors[idx].craft_wayfare.saturating_add(2);
         world.actors[idx].caravan_leg = 0;
-        world.actors[idx].push_diary("返抵水尾寮茶寮清點竹材與山筍");
+        world.actors[idx].push_diary("返抵水尾寮茶寮交割並配貨赴西麓");
         world.actors[idx].pop_text = Some(("挑貨赴西麓".into(), world.tick + 10));
 
         if let Some(p) = find_first_path_near(world, rt, idx, start, west_anchor) {
@@ -542,75 +498,6 @@ pub fn complete_caravan_arrival(
             world.actors[idx].task = PendingTask::None;
         }
     }
-}
-
-/// 依角色現行駐世方針（`craft`／`forage`）於無待建藍圖時執行自主造具或林緣採筍。
-pub fn try_proactive_directive_work(
-    world: &mut RimWorldState,
-    rt: Option<&SubstrateRuntime>,
-    idx: usize,
-    start: (i32, i32),
-    home: (i32, i32),
-    claimed: &[(i32, i32)],
-    occ: &[(i32, i32)],
-) -> bool {
-    if world.actors[idx].directive == "craft"
-        && world.actors[idx].equipped_tool.is_none()
-        && let Some((&(wx, wy), _)) = world
-            .overlays
-            .iter()
-            .filter(|(_, ov)| ov.structure == Some(StructureKind::Workbench))
-            .min_by_key(|&(&(cx, cy), _)| (cx - start.0).abs() + (cy - start.1).abs())
-        && (wx - start.0).abs() + (wy - start.1).abs() <= 24
-        && let Some(p) =
-            find_micro_path_crowded(rt, &world.overlays, start, (wx, wy), true, false, occ)
-    {
-        world.actors[idx].path = p.into();
-        world.actors[idx].task = PendingTask::CraftAt {
-            tx: wx,
-            ty: wy,
-            item: RimItemKind::BambooBlade,
-        };
-        world.actors[idx].activity_tag = "赴台製刀".into();
-        return true;
-    }
-
-    if matches!(world.actors[idx].directive.as_str(), "forage" | "自主巡採")
-        && world.tick.is_multiple_of(5)
-    {
-        let bag_stock: u16 = world.actors[idx]
-            .inventory
-            .iter()
-            .filter(|s| matches!(s.item, RimItemKind::BambooShoot | RimItemKind::BambooPole))
-            .map(|s| s.count)
-            .sum();
-        if bag_stock < 8
-            && let Some(pos) = (-18..=18)
-                .flat_map(|dy| (-18..=18).map(move |dx| (home.0 + dx, home.1 + dy)))
-                .filter(|pos| !claimed.contains(pos))
-                .find(|&(cx, cy)| {
-                    let cleared = world
-                        .overlays
-                        .get(&(cx, cy))
-                        .is_some_and(|o| o.cleared_natural || o.structure.is_some());
-                    !cleared
-                        && matches!(
-                            derive_micro_pristine(rt, cx, cy).1,
-                            Some(NaturalProp::BambooShoot)
-                        )
-                })
-            && let Some(p) = find_micro_path(rt, &world.overlays, start, pos, true, false)
-        {
-            world.actors[idx].path = p.into();
-            world.actors[idx].task = PendingTask::ChopAt {
-                tx: pos.0,
-                ty: pos.1,
-            };
-            world.actors[idx].activity_tag = "林緣巡採".into();
-            return true;
-        }
-    }
-    false
 }
 
 /// 結算場上所有人獸近身碰撞交鋒並落地戰利品與見聞事件。
@@ -648,26 +535,29 @@ pub fn resolve_world_combat_round(world: &mut RimWorldState) {
                 };
                 resolve_actor_vs_beast_exchange(s_mut, b_mut, tick)
             };
-            if let Some(out) = outcome
-                && out.loot_meat > 0
-            {
-                let bag_meat: u16 = world.actors[settler_idx]
-                    .inventory
-                    .iter()
-                    .filter(|s| s.item == RimItemKind::BeastMeat)
-                    .map(|s| s.count)
-                    .sum();
-                let to_bag = out.loot_meat.min(4_u16.saturating_sub(bag_meat));
-                if to_bag > 0 {
-                    world.actors[settler_idx].add_inv(RimItemKind::BeastMeat, to_bag);
-                }
-                let rem = out.loot_meat - to_bag;
-                if rem > 0 {
-                    let (bx, by) = world.actors[beast_idx].micro_pos();
-                    world.add_ground_item(bx, by, RimItemKind::BeastMeat, rem);
-                }
-                if let Some(ev) = out.kill_event {
-                    world.push_event(ev);
+            if let Some(out) = outcome {
+                super::rim_economy::record_tool_wear(world, settler_idx);
+                if out.loot_meat > 0 {
+                    world.economy.hunting_pressure =
+                        world.economy.hunting_pressure.saturating_add(16).min(240);
+                    let bag_meat: u16 = world.actors[settler_idx]
+                        .inventory
+                        .iter()
+                        .filter(|s| s.item == RimItemKind::BeastMeat)
+                        .map(|s| s.count)
+                        .sum();
+                    let to_bag = out.loot_meat.min(8_u16.saturating_sub(bag_meat));
+                    if to_bag > 0 {
+                        world.actors[settler_idx].add_inv(RimItemKind::BeastMeat, to_bag);
+                    }
+                    let rem = out.loot_meat - to_bag;
+                    if rem > 0 {
+                        let (bx, by) = world.actors[beast_idx].micro_pos();
+                        world.add_ground_item(bx, by, RimItemKind::BeastMeat, rem);
+                    }
+                    if let Some(ev) = out.kill_event {
+                        world.push_event(ev);
+                    }
                 }
             }
         }
@@ -811,6 +701,7 @@ mod tests {
             overlays,
             actors: vec![rescuer, victim],
             events: VecDeque::new(),
+            economy: Default::default(),
             dirty_unsaved_ticks: 0,
             sub_step: 0,
             stall_tracker: HashMap::new(),
@@ -867,6 +758,7 @@ mod tests {
             overlays,
             actors: vec![merchant],
             events: VecDeque::new(),
+            economy: Default::default(),
             dirty_unsaved_ticks: 0,
             sub_step: 0,
             stall_tracker: HashMap::new(),

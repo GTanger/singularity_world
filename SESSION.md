@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-18
-- **當前狀態**：`active`（已完成 `v21`（`v=20261118a19`）：土地動態演變閉環 —— 持鎬翻土開壟、青草藥圃／紅土甘薯旱田栽收、案台搗製`敷傷藥膏`消傷，以及山林砍伐竹筍與野生藥草雨露自然萌發再生；承接 `v9`～`v20` 全數閉環並同步遠端推存）
+- **當前狀態**：`active`（已完成 `v22`（`v=20261118a20`）：1m 真實尺度成片農田與大型乾燥倉廩＋全代數無配額供需價格湧現引擎；承接 `v9`～`v21` 全數閉環並同步遠端推存）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -45,6 +45,9 @@
 13. **2026-11-18 `v21` 土地動態演變：翻土開壟、藥圃甘薯旱田、敷傷藥膏治傷與山林雨露再生閉環（`v=20261118a19`）**：
     - 新增 `src/grid/substrate/rim_ecology.rs` 並於 PostgreSQL `rim_micro_overlay` 冪等擴充 `eco_ticks`：持`石刃木鎬`（含行囊自動換持）可於沃土紅礫翻鬆出`翻鬆空田壟`，單擊播栽`青草藥苗壟 -> 青草藥圃`或`甘薯新苗壟 -> 紅土甘薯壟`，成熟收成 `青草藥 × 2`／`紅土甘薯 × 2`（營火可烤成`炭烤甘薯`）且原地保留田壟免瑣碎重翻，山雨加倍催芽；案台可用`青草藥`搗製`敷傷藥膏`，於 `[裝備／行囊]` 點 `[敷貼治傷]` 或由負傷同伴自主敷藥／搗藥，立即消除 `injury_part` 傷勢。
     - 聚落淨空帶外被採空之竹叢／春筍／`山林青草藥`隨開譜曆雨露累積 `eco_ticks` 後自然萌發長回並自動清除覆寫列（`ov.is_pristine() == true`，防資料庫膨脹）；前端於 `web/rim-world.js` 補齊手繪宣紙白描隆起土壟、鋸齒藥草蓮座與紫白花苞、心形甘薯葉與露土塊根及 5 張 128×128 離屏白描物資圖素，並擴充西麓 `2×4` 儲物席、將狩獵／採收接入存量節流＋獵獲優先入囊＋露天生鮮自然消解以防滿地肉堆（`47/47` `grid::substrate` 單元測試通過）。
+14. **2026-11-18 `v22` 1m 真實尺度農莊倉廩與無配額供需湧現經濟引擎（`v=20261118a20`）**：
+    - **真實 1m 農業與倉儲建築尺度**：廢除廣場小地墊與 `1×3` 花盆小圃並無損遷入新倉；西麓擴建 `56 m²` `西麓倉廩棚屋` `(-13..=-6, -1..=5)`（室內 15 格乾燥貨架）＋ 8 格露天`竹木石料場` ＋ 40 格四大 `5m×2m` 連畦農莊田區；水尾寮擴建 `30 m²` `山貨倉房` `(21..=26, -12..=-8)` ＋ 32 格四大 `4m×2m` 溪坪田區；點擊田壟自動蛇行串接整畦同態細格並直接收成入囊（不再灑滿地面），前哨白描渲染同步區分連貫長畦土壟、倉廩木架與露天枕木料場。
+    - **全代數比例不變市場湧現 (`rim_economy.rs` + `rim_market.rs` + PostgreSQL `rim_settlement_vault`)**：徹底拔除 `meat < 8`／`herb < 12` 等硬寫配額，改依聚落人口 `N_s`、在途＋在倉有效儲滿度 `r_eff`、金庫流動性 `L_s` 與倉位物理擁擠懲罰即時算出一口馬歇爾等彈性買賣牌價（`quote_item`）；驅動打獵／整畦／烹烤／百工製具／全 14 物資雙向空間套利、生物乘載力平衡、工具磨損，以及嚴格「鎂」總量守恆之公倉買賣與對談易物。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -54,11 +57,11 @@
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
 - **活躍 2D 世界實作與單檔 `< 1,000` 行模組群**：
-  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_portrait_gen}.rs`
+  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_economy,rim_market,rim_portrait_gen}.rs`
   - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`
 
 ## 三、 下一步接續提示 (Next Cue)
 
 - **依 `docs/DESIGN_KEYWORDS.md` 續推下一階段活態細節**：
-  1. **沿真實地形外推鄰近市鎮與五大店堂（`v22`）**：自西麓與水尾寮順平坦幹道鋪設首座鄰近市鎮街屋，串聯百工鍛造護具鞋靴、食堂熱食、總商行鎂晶匯兌與脈絡診所。
+  1. **沿真實地形外推鄰近市鎮與五大店堂（`v23`）**：自西麓與水尾寮順平坦幹道鋪設首座鄰近市鎮街屋，串聯百工鍛造護具鞋靴、食堂熱食、總商行鎂晶匯兌與脈絡診所。
   2. **20m 底板微步 `3a′`～`3d` 空間銜接**：持續將長期探索區塊快取、`grid_z` 樓層隔離與跨區有界尋路合入同一 2D 世界。

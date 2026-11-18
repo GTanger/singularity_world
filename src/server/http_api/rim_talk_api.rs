@@ -10,9 +10,10 @@ use crate::ai::openai_chat::{
     DEFAULT_OPENROUTER_BASE_URL, DEFAULT_OPENROUTER_TALK_MODEL,
     call_openai_compatible_chat_with_history, get_player_openrouter_key,
 };
-use crate::grid::substrate::rim_life::{
-    execute_barter, hunger_tag, magnesium_tag, stamina_tag, thirst_tag,
+use crate::grid::substrate::rim_economy::{
+    quote_item, settlement_market_barter, settlement_of_pos,
 };
+use crate::grid::substrate::rim_life::{hunger_tag, magnesium_tag, stamina_tag, thirst_tag};
 use crate::grid::substrate::rim_sim::{ActorFaction, RimActor, RimWorldState, global_rim};
 use crate::grid::substrate::rim_world::RimItemKind;
 
@@ -38,18 +39,21 @@ pub struct RimTradeBody {
     pub mode: String,
 }
 
-fn collect_trade_lists(player: &RimActor, npc: &RimActor) -> (Vec<Value>, Vec<Value>) {
+fn collect_trade_lists(world: &RimWorldState, player: &RimActor, npc: &RimActor) -> (Vec<Value>, Vec<Value>) {
+    let s = settlement_of_pos(npc.micro_pos().0, npc.micro_pos().1);
     let npc_offers: Vec<Value> = npc
         .inventory
         .iter()
         .filter(|s| s.count > 0)
-        .map(|s| {
-            let price = s.item.base_magnesium_price();
+        .map(|st| {
+            let q = quote_item(world, s, st.item);
+            let price = q.ask_mg.max(1);
             json!({
-                "code": item_code_str(s.item),
-                "label": s.item.label(),
-                "count": s.count,
+                "code": item_code_str(st.item),
+                "label": st.item.label(),
+                "count": st.count,
                 "price_mg": price,
+                "market_tag": q.status_tag,
                 "can_afford": player.magnesium >= price,
             })
         })
@@ -59,15 +63,16 @@ fn collect_trade_lists(player: &RimActor, npc: &RimActor) -> (Vec<Value>, Vec<Va
         .inventory
         .iter()
         .filter(|s| s.count > 0)
-        .map(|s| {
-            let buy_p = s.item.base_magnesium_price();
-            let sell_p = (buy_p * 4 / 5).max(1);
+        .map(|st| {
+            let q = quote_item(world, s, st.item);
+            let sell_p = q.bid_mg;
             json!({
-                "code": item_code_str(s.item),
-                "label": s.item.label(),
-                "count": s.count,
+                "code": item_code_str(st.item),
+                "label": st.item.label(),
+                "count": st.count,
                 "price_mg": sell_p,
-                "npc_can_pay": npc.magnesium >= sell_p,
+                "market_tag": q.status_tag,
+                "npc_can_pay": sell_p > 0 && npc.magnesium >= sell_p,
             })
         })
         .collect();
@@ -89,7 +94,7 @@ fn build_talk_snapshot(
         .iter()
         .find(|a| a.id == target_actor && a.faction == ActorFaction::Settler)?;
 
-    let (npc_offers, player_sellable) = collect_trade_lists(p, npc);
+    let (npc_offers, player_sellable) = collect_trade_lists(world, p, npc);
     let npc_pos = npc.micro_pos();
     let zone = zone_for_micro(
         crate::grid::substrate::runtime::global(),
@@ -422,13 +427,12 @@ pub async fn rim_trade_post(headers: HeaderMap, Json(body): Json<RimTradeBody>) 
             .into_response();
     }
 
-    let trade_res = if p_idx < n_idx {
-        let (left, right) = world.actors.split_at_mut(n_idx);
-        execute_barter(&mut left[p_idx], &mut right[0], item, player_buys)
-    } else {
-        let (left, right) = world.actors.split_at_mut(p_idx);
-        execute_barter(&mut right[0], &mut left[n_idx], item, player_buys)
-    };
+    let s = settlement_of_pos(
+        world.actors[n_idx].micro_pos().0,
+        world.actors[n_idx].micro_pos().1,
+    );
+    let trade_res = settlement_market_barter(&mut world, p_idx, n_idx, item, s, player_buys)
+        .map(|(_, msg)| msg);
 
     match trade_res {
         Ok(msg) => {

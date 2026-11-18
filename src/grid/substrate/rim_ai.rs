@@ -50,7 +50,7 @@ impl RimWorldState {
         }
 
         let home_pt = if start.0 >= 22 { (32, -7) } else { (0, 0) };
-        if super::rim_ecology::try_guard_or_hunt_beast(self, rt, idx, start, home_pt) {
+        if super::rim_economy::try_guard_or_market_livelihood(self, rt, idx, start, home_pt) {
             return;
         }
 
@@ -194,6 +194,7 @@ impl RimWorldState {
                 | PendingTask::WorkBuild { tx, ty }
                 | PendingTask::DeconstructAt { tx, ty }
                 | PendingTask::PickupEquip { tx, ty }
+                | PendingTask::StorehouseTrade { tx, ty }
                 | PendingTask::FarmPlot { tx, ty, .. } => Some((tx, ty)),
                 PendingTask::FetchForBuild { dst_x, dst_y, .. }
                 | PendingTask::HaulToStockpile {
@@ -305,13 +306,7 @@ impl RimWorldState {
             return;
         }
 
-        if super::rim_ecology::try_autonomous_farming(self, rt, idx, start, home, &claimed, &occ) {
-            return;
-        }
-
-        if super::rim_phase::try_proactive_directive_work(
-            self, rt, idx, start, home, &claimed, &occ,
-        ) {
+        if super::rim_economy::try_assign_market_livelihood(self, rt, idx, start, home, &claimed, &occ) {
             return;
         }
 
@@ -432,6 +427,7 @@ impl RimWorldState {
                     self.actors[idx].task = PendingTask::None;
                     self.actors[idx].activity_tag = "採伐完畢".into();
                     self.push_event(format!("{glyph} 砍開{}", prop.label()));
+                    super::rim_economy::record_tool_wear(self, idx);
                 } else {
                     entry.blueprint = Some(BlueprintJob::Chop {
                         progress: next_prog,
@@ -537,6 +533,7 @@ impl RimWorldState {
                     self.actors[idx].task = PendingTask::None;
                     self.actors[idx].activity_tag = "完工待命".into();
                     self.push_event(format!("{glyph} 建成［{}］", structure.label()));
+                    super::rim_economy::record_tool_wear(self, idx);
                 } else if let Some(ov) = self.overlays.get_mut(&(tx, ty)) {
                     ov.blueprint = Some(BlueprintJob::Build {
                         structure,
@@ -809,6 +806,9 @@ impl RimWorldState {
             PendingTask::FarmPlot { tx, ty, op } => {
                 super::rim_ecology::complete_farm_plot(self, rt, idx, tx, ty, op);
             }
+            PendingTask::StorehouseTrade { tx, ty } => {
+                super::rim_economy::complete_storehouse_trade(self, idx, tx, ty);
+            }
         }
     }
 
@@ -913,15 +913,6 @@ impl RimWorldState {
         from: (i32, i32),
         item: RimItemKind,
     ) -> Option<(i32, i32)> {
-        self.overlays
-            .iter()
-            .filter(|(_, ov)| {
-                ov.structure == Some(StructureKind::Stockpile)
-                    && ov
-                        .ground_item
-                        .is_none_or(|g| g.item == item && g.count < 20)
-            })
-            .min_by_key(|(pos, _)| (pos.0 - from.0).abs() + (pos.1 - from.1).abs())
-            .map(|(&pos, _)| pos)
+        super::rim_economy::find_best_stockpile_slot_for(&self.overlays, from, item, None)
     }
 }

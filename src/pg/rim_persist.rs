@@ -60,6 +60,12 @@ ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS equipped_pack BOOLEAN NOT N
 ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS known_by_json TEXT NOT NULL DEFAULT '[]';
 ALTER TABLE rim_actor_state ADD COLUMN IF NOT EXISTS phase_json TEXT NOT NULL DEFAULT '{}';
 ALTER TABLE rim_micro_overlay ADD COLUMN IF NOT EXISTS eco_ticks SMALLINT NOT NULL DEFAULT 0;
+CREATE TABLE IF NOT EXISTS rim_settlement_vault (
+    vault_id SMALLINT PRIMARY KEY,
+    vault_mg BIGINT NOT NULL DEFAULT 120,
+    hunting_pressure INTEGER NOT NULL DEFAULT 0,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 ";
 
 /// 冪等建立 2D 世界工作階段、實體與微格覆寫資料表。
@@ -232,10 +238,34 @@ pub fn load_all_actors(pool: &DbPool) -> Result<Vec<RimActor>, String> {
 }
 
 /// 原子交易寫入 2D 地圖髒格覆寫與人物狀態，並同步玩家 `entities.grid_x/grid_y/current_activity`。
+pub fn load_economy_book(
+    pool: &DbPool,
+) -> Result<crate::grid::substrate::rim_economy::RimEconomyBook, String> {
+    let mut book = crate::grid::substrate::rim_economy::RimEconomyBook::default();
+    let mut conn = pool.get().map_err(|e| e.to_string())?;
+    let rows = conn
+        .query(
+            "SELECT vault_id, vault_mg, hunting_pressure FROM rim_settlement_vault ORDER BY vault_id ASC",
+            &[],
+        )
+        .map_err(|e| e.to_string())?;
+    for r in rows {
+        let vid: i16 = r.get(0);
+        let mg: i64 = r.get(1);
+        let hp: i32 = r.get(2);
+        if (0..=1).contains(&vid) {
+            book.vault_mg[vid as usize] = mg.clamp(0, i64::from(u32::MAX)) as u32;
+            book.hunting_pressure = book.hunting_pressure.max(hp.clamp(0, i32::from(u16::MAX)) as u16);
+        }
+    }
+    Ok(book)
+}
+
 pub fn flush_snapshot(
     pool: &DbPool,
     overlays: &HashMap<(i32, i32), MicroCellOverlay>,
     actors: &[RimActor],
+    economy: &crate::grid::substrate::rim_economy::RimEconomyBook,
 ) -> Result<(), String> {
     let mut conn = pool.get().map_err(|e| e.to_string())?;
     let mut tx = conn.transaction().map_err(|e| e.to_string())?;
@@ -406,6 +436,21 @@ pub fn flush_snapshot(
             tx.execute("DELETE FROM rim_actor_state WHERE actor_key = $1", &[&k])
                 .map_err(|e| e.to_string())?;
         }
+    }
+
+    let pressure_i32 = i32::from(economy.hunting_pressure);
+    for vid in 0_i16..=1_i16 {
+        let vmg_i64 = i64::from(economy.vault_mg[vid as usize]);
+        tx.execute(
+            "INSERT INTO rim_settlement_vault (vault_id, vault_mg, hunting_pressure, updated_at)
+             VALUES ($1, $2, $3, now())
+             ON CONFLICT (vault_id) DO UPDATE SET
+               vault_mg = EXCLUDED.vault_mg,
+               hunting_pressure = EXCLUDED.hunting_pressure,
+               updated_at = now()",
+            &[&vid, &vmg_i64, &pressure_i32],
+        )
+        .map_err(|e| e.to_string())?;
     }
 
     tx.commit().map_err(|e| e.to_string())?;

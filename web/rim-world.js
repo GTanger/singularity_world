@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a19';
+  const PAWN_ASSET_VER = '20261118a20';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -781,11 +781,15 @@
         } else if (s.cmd === 'talk') {
           openTalkModal(s.target_actor);
         } else if (s.cmd) {
-          await sendCmd({
+          const r = await sendCmd({
             cmd: s.cmd,
             target_actor: s.target_actor,
             directive: s.directive,
+            mx: sel.mx,
+            my: sel.my,
+            item_code: s.item_code,
           });
+          if (r && r.msg) showToast(r.msg);
           lastInspectorSig = '';
           pollState(true);
         } else if (s.action) {
@@ -1343,7 +1347,8 @@
         const row = document.createElement('div');
         row.className = 'rim-inv-row';
         const lbl = document.createElement('span');
-        lbl.textContent = `對方現貨：${it.label} × ${it.count}`;
+        const mtag = it.market_tag ? `（${it.market_tag}）` : '';
+        lbl.textContent = `對方現貨：${it.label} × ${it.count}${mtag}`;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'rim-socket-btn';
@@ -1357,13 +1362,14 @@
         const row = document.createElement('div');
         row.className = 'rim-inv-row';
         const lbl = document.createElement('span');
-        lbl.textContent = `我方行囊：${it.label} × ${it.count}`;
+        const mtag = it.market_tag ? `（${it.market_tag}）` : '';
+        lbl.textContent = `我方行囊：${it.label} × ${it.count}${mtag}`;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'rim-chip-btn';
         btn.style.cssText = 'padding:4px 9px;font-size:12px;';
         btn.disabled = !it.npc_can_pay;
-        btn.textContent = `讓出（得 ${it.price_mg} 鎂）`;
+        btn.textContent = it.price_mg > 0 ? `讓出（得 ${it.price_mg} 鎂）` : '倉滿暫停收購';
         btn.onclick = () => doTrade(it.code, 'sell');
         row.append(lbl, btn);
         tradeCol.appendChild(row);
@@ -1984,19 +1990,48 @@
         const y0 = p.y - cellPx / 2;
 
         if (c.s === 'stockpile') {
-          const matImg = pawnImgs.stockpile;
-          if (matImg && matImg.complete && matImg.naturalWidth) {
+          const isIndoorShelf = indoorCellSet.has(`${mx},${my}`);
+          if (isIndoorShelf) {
             ctx.save();
-            ctx.globalAlpha = 0.88;
-            const hMat = hash2d(mx, my);
-            drawPawnPart(matImg, p.x, p.y, cellPx * 0.94, cellPx * 0.94, 0.50, 0.50, ((hMat % 4) * Math.PI) / 2);
+            ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
+            ctx.fillRect(x0 + cellPx * 0.08 + 1.8, y0 + cellPx * 0.14 + 2, cellPx * 0.84, cellPx * 0.72);
+            ctx.fillStyle = '#cfa978';
+            ctx.strokeStyle = PAWN_PAL.ink;
+            ctx.lineWidth = Math.max(0.95, cellPx * 0.028);
+            ctx.fillRect(x0 + cellPx * 0.08, y0 + cellPx * 0.14, cellPx * 0.84, cellPx * 0.72);
+            ctx.strokeRect(x0 + cellPx * 0.08, y0 + cellPx * 0.14, cellPx * 0.84, cellPx * 0.72);
+            ctx.strokeStyle = 'rgba(72, 48, 28, 0.45)';
+            ctx.lineWidth = Math.max(0.75, cellPx * 0.02);
+            for (const sy of [0.38, 0.62]) {
+              ctx.beginPath();
+              ctx.moveTo(x0 + cellPx * 0.10, y0 + cellPx * sy);
+              ctx.lineTo(x0 + cellPx * 0.90, y0 + cellPx * sy);
+              ctx.stroke();
+            }
+            ctx.fillStyle = '#5c4028';
+            const post = Math.max(1.8, cellPx * 0.09);
+            for (const [pxp, pyp] of [[0.08, 0.14], [0.83, 0.14], [0.08, 0.77], [0.83, 0.77]]) {
+              ctx.fillRect(x0 + cellPx * pxp, y0 + cellPx * pyp, post, post);
+            }
             ctx.restore();
           } else {
-            ctx.fillStyle = 'rgba(218, 198, 158, 0.34)';
-            ctx.fillRect(x0 + 2, y0 + 2, cellPx - 4, cellPx - 4);
-            ctx.strokeStyle = '#7e6645';
-            ctx.lineWidth = 1.15;
-            ctx.strokeRect(x0 + 2.5, y0 + 2.5, cellPx - 5, cellPx - 5);
+            ctx.save();
+            ctx.fillStyle = 'rgba(196, 178, 142, 0.36)';
+            ctx.fillRect(x0 + cellPx * 0.06, y0 + cellPx * 0.08, cellPx * 0.88, cellPx * 0.84);
+            ctx.fillStyle = '#7b5e3b';
+            ctx.strokeStyle = PAWN_PAL.ink;
+            ctx.lineWidth = Math.max(0.85, cellPx * 0.024);
+            for (const ry of [0.24, 0.68]) {
+              ctx.fillRect(x0 + cellPx * 0.06, y0 + cellPx * ry, cellPx * 0.88, cellPx * 0.10);
+              ctx.strokeRect(x0 + cellPx * 0.06, y0 + cellPx * ry, cellPx * 0.88, cellPx * 0.10);
+            }
+            const matImg = pawnImgs.stockpile;
+            if (matImg && matImg.complete && matImg.naturalWidth) {
+              ctx.globalAlpha = 0.45;
+              const hMat = hash2d(mx, my);
+              drawPawnPart(matImg, p.x, p.y, cellPx * 0.86, cellPx * 0.86, 0.50, 0.50, ((hMat % 4) * Math.PI) / 2);
+            }
+            ctx.restore();
           }
         } else if (c.s === 'bridge') {
           const spanNS = hasBridgeAt(mx, my + 1) || hasBridgeAt(mx, my - 1) || !(hasBridgeAt(mx - 1, my) || hasBridgeAt(mx + 1, my));
@@ -3270,8 +3305,14 @@
     ctx.restore();
   }
 
+  const PLOT_KINDS = new Set(['ridge', 'herb_seed', 'herb_plot', 'crop_seed', 'crop_plot']);
+
   function drawGardenPlot(kind, mx, my, cx, cy, cellPx, nowMs, isRaining) {
-    const w = cellPx * 0.90;
+    const wConn = PLOT_KINDS.has(cellMap.get(`${mx - 1},${my}`)?.s);
+    const eConn = PLOT_KINDS.has(cellMap.get(`${mx + 1},${my}`)?.s);
+    const leftEdge = wConn ? -cellPx * 0.505 : -cellPx * 0.45;
+    const rightEdge = eConn ? cellPx * 0.505 : cellPx * 0.45;
+    const w = rightEdge - leftEdge;
     const h = cellPx * 0.86;
     const lw = Math.max(0.95, cellPx * 0.025);
     const sway = Math.sin(nowMs * 0.0028 + mx * 1.4 + my * 0.9) * (cellPx * 0.024);
@@ -3279,28 +3320,46 @@
     ctx.save();
     ctx.translate(cx, cy);
 
-    // 1. 宣紙白描沃土畦底（雨天呈深潤土色）
+    // 1. 宣紙白描沃土畦底（同畦左右無縫連成整條長畦；雨天呈深潤土色）
+    const radL = wConn ? 0 : Math.max(3, cellPx * 0.10);
+    const radR = eConn ? 0 : Math.max(3, cellPx * 0.10);
     ctx.fillStyle = isRaining ? '#846b50' : '#9c8367';
+    ctx.beginPath();
+    ctx.roundRect(leftEdge, -h / 2, w, h, [radL, radR, radR, radL]);
+    ctx.fill();
     ctx.strokeStyle = PAWN_PAL.ink;
     ctx.lineWidth = lw;
     ctx.beginPath();
-    ctx.roundRect(-w / 2, -h / 2, w, h, Math.max(3, cellPx * 0.10));
-    ctx.fill();
+    ctx.moveTo(leftEdge, -h / 2);
+    ctx.lineTo(rightEdge, -h / 2);
+    ctx.moveTo(leftEdge, h / 2);
+    ctx.lineTo(rightEdge, h / 2);
+    if (!wConn) {
+      ctx.moveTo(leftEdge, -h / 2);
+      ctx.lineTo(leftEdge, h / 2);
+    }
+    if (!eConn) {
+      ctx.moveTo(rightEdge, -h / 2);
+      ctx.lineTo(rightEdge, h / 2);
+    }
     ctx.stroke();
 
-    // 2. 三道立體翻鬆土壟條
+    // 2. 三道立體連續翻鬆土壟條
     for (const ry of [-h * 0.27, 0, h * 0.27]) {
-      const rw = w * 0.82;
+      const rLeft = wConn ? -cellPx * 0.505 : leftEdge + cellPx * 0.08;
+      const rRight = eConn ? cellPx * 0.505 : rightEdge - cellPx * 0.08;
       const rh = h * 0.20;
+      const rrL = wConn ? 0 : Math.max(2, rh * 0.42);
+      const rrR = eConn ? 0 : Math.max(2, rh * 0.42);
       ctx.fillStyle = isRaining ? '#94785b' : '#b79c7c';
       ctx.beginPath();
-      ctx.roundRect(-rw / 2, ry - rh / 2, rw, rh, Math.max(2, rh * 0.42));
+      ctx.roundRect(rLeft, ry - rh / 2, rRight - rLeft, rh, [rrL, rrR, rrR, rrL]);
       ctx.fill();
       ctx.strokeStyle = 'rgba(51, 38, 32, 0.36)';
       ctx.lineWidth = Math.max(0.75, lw * 0.72);
       ctx.beginPath();
-      ctx.moveTo(-rw * 0.42, ry + rh * 0.48);
-      ctx.lineTo(rw * 0.42, ry + rh * 0.48);
+      ctx.moveTo(wConn ? -cellPx * 0.505 : rLeft + cellPx * 0.03, ry + rh * 0.48);
+      ctx.lineTo(eConn ? cellPx * 0.505 : rRight - cellPx * 0.03, ry + rh * 0.48);
       ctx.stroke();
     }
 

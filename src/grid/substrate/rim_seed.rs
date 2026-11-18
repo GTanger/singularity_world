@@ -13,25 +13,10 @@ pub fn apply_outpost_architecture(
     rt: Option<&SubstrateRuntime>,
     overlays: &mut HashMap<(i32, i32), MicroCellOverlay>,
 ) {
-    // 1. 湧泉廣場核心：(0,0) 營火、(-4..-3, -2..-1) 儲物墊、(4,-1) 工作台；確保 (-5..=5, -3..=3) 其餘暢通
+    // 1. 湧泉廣場核心：(0,0) 營火、(4,-1) 工作台；確保 (-5..=5, -3..=3) 其餘暢通
     overlays
         .entry((0, 0))
         .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::Campfire)));
-    let init_stock = [
-        ((-4, -1), Some((RimItemKind::BambooPole, 5))),
-        ((-3, -1), Some((RimItemKind::BambooPole, 4))),
-        ((-4, -2), Some((RimItemKind::RiverStone, 2))),
-        ((-3, -2), None),
-    ];
-    for ((x, y), stack) in init_stock {
-        overlays.entry((x, y)).or_insert_with(|| MicroCellOverlay {
-            cleared_natural: true,
-            structure: Some(StructureKind::Stockpile),
-            blueprint: None,
-            ground_item: stack.map(|(item, count)| GroundStack { item, count }),
-            eco_ticks: 0,
-        });
-    }
     overlays
         .entry((4, -1))
         .or_insert_with(|| MicroCellOverlay::cleared(Some(StructureKind::Workbench)));
@@ -106,7 +91,18 @@ pub fn apply_outpost_architecture(
     }
 
     apply_shuoweiliao_outpost(rt, overlays);
-    let _ = super::rim_ecology::upgrade_ecology_plots(rt, overlays);
+    let _ = super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, overlays);
+    for (pos, item, count) in [
+        ((-13, -3), RimItemKind::BambooPole, 9),
+        ((-12, -3), RimItemKind::RiverStone, 2),
+    ] {
+        if let Some(ov) = overlays.get_mut(&pos)
+            && ov.structure == Some(StructureKind::Stockpile)
+            && ov.ground_item.is_none()
+        {
+            ov.ground_item = Some(GroundStack { item, count });
+        }
+    }
 }
 
 /// 冪等鋪設東南向小徑與「水尾寮・溪畔茶寮」(mx: 28..=36, my: -10..=-4)。
@@ -190,7 +186,7 @@ pub fn apply_shuoweiliao_outpost(
             }
         }
     }
-    let _ = super::rim_ecology::upgrade_ecology_plots(rt, overlays);
+    let _ = super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, overlays);
 }
 
 struct ResidentSpec<'a> {

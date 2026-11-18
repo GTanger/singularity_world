@@ -308,13 +308,17 @@ fn build_selection_card(
                 sockets.push(json!({ "label": "走近烤火", "action": "move" }));
             }
             StructureKind::Stockpile => {
-                tags.push("同伴自動歸倉處".into());
-                if let Some(g) = ov.and_then(|o| o.ground_item) {
-                    tags.push(format!("堆放{}", g.item.label()));
-                    sockets.push(
-                        json!({ "label": format!("抱取{}", g.item.label()), "action": "pickup" }),
-                    );
-                }
+                let viewer_idx = viewer_pid.and_then(|vp| {
+                    world.actors.iter().position(|a| a.entity_id.as_deref() == Some(vp))
+                });
+                title = if crate::grid::substrate::rim_economy::stockpile_is_indoor(mx, my) {
+                    "倉廩木架儲位".into()
+                } else {
+                    "竹木石料場".into()
+                };
+                crate::grid::substrate::rim_economy::describe_stockpile_card(
+                    world, viewer_idx, mx, my, ov.and_then(|o| o.ground_item), &mut tags, &mut sockets,
+                );
             }
             StructureKind::WoodBridge => {
                 tags.push("跨澗通行".into());
@@ -922,10 +926,18 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
             world.persist_if_needed(true);
             Json(json!({ "ok": true, "msg": "已回到營火旁歇息" })).into_response()
         }
-        _ => (
-            StatusCode::BAD_REQUEST,
-            Json(json!({ "ok": false, "msg": "無法執行此動作" })),
-        )
-            .into_response(),
+        "vault_buy" | "vault_sell" => {
+            let (Some(mx), Some(my), Some(code)) = (body.mx, body.my, body.item_code.as_deref()) else {
+                return (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "缺少倉位或品項" }))).into_response();
+            };
+            let Some(p_idx) = world.actors.iter().position(|a| a.entity_id.as_deref() == Some(pid.as_str())) else {
+                return StatusCode::NOT_FOUND.into_response();
+            };
+            let (ok, msg) = crate::grid::substrate::rim_economy::handle_vault_cmd(&mut world, p_idx, body.cmd == "vault_buy", mx, my, code);
+            world.touch_player_activity(&pid);
+            if ok { world.push_event(msg.clone()); world.persist_if_needed(true); }
+            Json(json!({ "ok": ok, "msg": msg })).into_response()
+        }
+        _ => (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "無法執行此動作" }))).into_response(),
     }
 }

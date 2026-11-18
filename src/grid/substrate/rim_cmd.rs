@@ -294,12 +294,12 @@ impl RimWorldState {
                 Ok(format!("前往工作台製作{}", item.label()))
             }
             "till_ridge" | "plant_herb" | "plant_tuber" | "harvest_plot" => {
-                use super::rim_ecology::FarmOp;
+                use super::rim_ecology::{FarmOp, enqueue_contiguous_parcel};
                 let (op, act_tag, ok_msg) = match action {
-                    Some("till_ridge") => (FarmOp::Till, "揮鎬翻土", "前往持鎬翻鬆田壟"),
-                    Some("plant_herb") => (FarmOp::PlantHerb, "播種藥苗", "前往栽下青草藥苗"),
-                    Some("plant_tuber") => (FarmOp::PlantTuber, "扦插甘薯", "前往扦插紅土甘薯"),
-                    _ => (FarmOp::Harvest, "採收圃畦", "前往採收成熟作物"),
+                    Some("till_ridge") => (FarmOp::Till, "整畦翻土", "前往持鎬整畦翻鬆田壟"),
+                    Some("plant_herb") => (FarmOp::PlantHerb, "整畦栽藥", "前往整畦栽下青草藥苗"),
+                    Some("plant_tuber") => (FarmOp::PlantTuber, "整畦栽薯", "前往整畦扦插紅土甘薯"),
+                    _ => (FarmOp::Harvest, "整畦採收", "前往整畦採收成熟作物"),
                 };
                 let Some(path) = find_micro_path(rt, &self.overlays, start, (mx, my), true, false)
                 else {
@@ -307,6 +307,7 @@ impl RimWorldState {
                 };
                 self.actors[p_idx].path = path.into();
                 self.actors[p_idx].task = PendingTask::FarmPlot { tx: mx, ty: my, op };
+                enqueue_contiguous_parcel(self, p_idx, mx, my, op);
                 self.actors[p_idx].activity_tag = act_tag.into();
                 Ok(ok_msg.into())
             }

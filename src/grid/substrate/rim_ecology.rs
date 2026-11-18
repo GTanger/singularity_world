@@ -1,17 +1,30 @@
-//! 土地動態演變（持鎬翻土開壟、青草藥圃／紅土甘薯旱田栽收、敷傷藥膏治傷與山林雨露再生）模組。
+//! 土地動態演變（1m 真實倉廩與成片連壟農田、單次整畦連作、敷傷藥膏與山林雨露再生）模組。
 
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
+use super::rim_economy::find_best_stockpile_slot_for;
 use super::rim_shelter::RimWeatherKind;
 use super::rim_sim::{ActorFaction, PendingTask, RimActor, RimWorldState};
 use super::rim_world::{
     GroundStack, MicroCellOverlay, MicroGround, NaturalProp, RimItemKind, StructureKind,
-    derive_micro_pristine, find_micro_path, find_micro_path_crowded,
+    derive_micro_pristine, find_micro_path,
 };
 use super::runtime::SubstrateRuntime;
+
+/// 八處顯式成片田畦邊界 `(x0, x1, y0, y1)`（西麓南坡 4 畦 + 水尾寮溪坪 4 畦）。
+const FARM_PARCELS: [(i32, i32, i32, i32); 8] = [
+    (-3, 1, -8, -7),
+    (3, 7, -8, -7),
+    (-3, 1, -11, -10),
+    (3, 7, -11, -10),
+    (29, 32, -13, -12),
+    (34, 37, -13, -12),
+    (29, 32, -16, -15),
+    (34, 37, -16, -15),
+];
 
 /// 田壟農事單一步驟（翻土、播種藥苗、扦插甘薯、採收留壟）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -23,48 +36,159 @@ pub enum FarmOp {
     Harvest,
 }
 
-/// 聚落廣場與雙聚落步道淨空帶（林木再生時避開此範圍以免阻路）。
+/// 聚落廣場、倉廩棚屋、田區與雙聚落步道淨空帶（林木再生時避開此範圍以免阻路）。
 pub fn is_settlement_keep_clear(mx: i32, my: i32) -> bool {
-    ((-6..=12).contains(&mx) && (-6..=6).contains(&my))
+    ((-14..=12).contains(&mx) && (-13..=6).contains(&my))
         || (mx == 0 && (3..=18).contains(&my))
         || ((6..=28).contains(&mx) && (-8..=-2).contains(&my))
-        || ((25..=37).contains(&mx) && (-11..=-3).contains(&my))
+        || ((20..=39).contains(&mx) && (-18..=-3).contains(&my))
 }
 
-/// 冪等於既有西麓湧泉與水尾寮向陽地鋪設示範藥圃／甘薯旱田，並於空儲位補入初期青草藥。
-pub fn upgrade_ecology_plots(
+fn ensure_cell_struct(
+    overlays: &mut HashMap<(i32, i32), MicroCellOverlay>,
+    pos: (i32, i32),
+    st: Option<StructureKind>,
+) -> bool {
+    let e = overlays.entry(pos).or_default();
+    if e.structure != st || !e.cleared_natural || e.blueprint.is_some() {
+        e.cleared_natural = true;
+        e.structure = st;
+        e.blueprint = None;
+        e.eco_ticks = 0;
+        return true;
+    }
+    false
+}
+
+/// 冪等建置 1m 真實尺度倉廩棚屋、竹木石料場與 72 格成片農莊田畦，並無損遷入舊有廣場窄墊與花盆田物資。
+pub fn reconcile_real_scale_layout_and_clutter(
     rt: Option<&SubstrateRuntime>,
     overlays: &mut HashMap<(i32, i32), MicroCellOverlay>,
 ) -> bool {
-    if overlays
-        .values()
-        .any(|o| o.structure.is_some_and(StructureKind::is_garden_plot))
-    {
-        return false;
-    }
     let mut changed = false;
-    let plots = [
-        ((2, -4), StructureKind::HerbMature),
-        ((3, -4), StructureKind::HerbSeedling),
-        ((2, -5), StructureKind::CropMature),
-        ((3, -5), StructureKind::TilledRidge),
-        ((26, -6), StructureKind::HerbMature),
-        ((26, -5), StructureKind::CropMature),
-    ];
-    for (pos, st) in plots {
-        let (g, _) = derive_micro_pristine(rt, pos.0, pos.1);
-        if g.is_water() || g == MicroGround::SteepCliff {
-            continue;
+
+    // 1. 西麓倉廩棚屋 (-13..=-6, -1..=5)、竹木石料場 (-13..=-10, -5/-3) 與水尾寮山貨倉房 (21..=26, -12..=-8)
+    let mut seed_struct = |rx: std::ops::RangeInclusive<i32>, ry: std::ops::RangeInclusive<i32>, f: &dyn Fn(i32, i32) -> Option<StructureKind>| {
+        for x in rx {
+            for y in ry.clone() {
+                let (g, _) = derive_micro_pristine(rt, x, y);
+                if g.is_water() || g == MicroGround::SteepCliff {
+                    continue;
+                }
+                let e = overlays.entry((x, y)).or_default();
+                if e.structure.is_none() && e.blueprint.is_none() && e.ground_item.is_none() {
+                    e.cleared_natural = true;
+                    e.structure = f(x, y);
+                    changed = true;
+                }
+            }
         }
-        let e = overlays.entry(pos).or_default();
-        if e.structure.is_none() && e.blueprint.is_none() && e.ground_item.is_none() {
-            e.cleared_natural = true;
-            e.structure = Some(st);
-            e.eco_ticks = 0;
+    };
+    seed_struct(-13..=-6, -1..=5, &|x, y| {
+        if x == -13 || x == -6 || y == -1 || y == 5 {
+            Some(if (x == -6 && y == 2) || (x == -9 && y == -1) { StructureKind::BambooDoor } else { StructureKind::BambooWall })
+        } else if y == 4 || (y == 2 && (-12..=-9).contains(&x)) || (y == 0 && x != -9) {
+            Some(StructureKind::Stockpile)
+        } else {
+            None
+        }
+    });
+    seed_struct(-13..=-10, -5..=-3, &|_, y| (y != -4).then_some(StructureKind::Stockpile));
+    seed_struct(21..=26, -12..=-8, &|x, y| {
+        if x == 21 || x == 26 || y == -12 || y == -8 {
+            Some(if x == 24 && (y == -8 || y == -12) { StructureKind::BambooDoor } else { StructureKind::BambooWall })
+        } else if y == -11 || (y == -9 && x != 24) {
+            Some(StructureKind::Stockpile)
+        } else {
+            None
+        }
+    });
+    seed_struct(21..=23, -14..=-14, &|_, _| Some(StructureKind::Stockpile));
+    if overlays.get(&(32, -10)).and_then(|o| o.structure) == Some(StructureKind::BambooWall) {
+        changed |= ensure_cell_struct(overlays, (33, -10), Some(StructureKind::BambooDoor));
+    }
+
+    // 4. 清理舊廣場露天地墊 (-4..=-3, -4..=-1) 與舊花盆田 (1..=3, -5..=-4)／(26, -6..=-5)，無損遷物至新倉廩
+    let mut migrate_items: Vec<GroundStack> = Vec::new();
+    let legacy_stock: Vec<(i32, i32)> = (-4..=-3).flat_map(|x| (-4..=-1).map(move |y| (x, y))).collect();
+    for pos in legacy_stock {
+        if let Some(ov) = overlays.get_mut(&pos)
+            && ov.structure == Some(StructureKind::Stockpile)
+        {
+            if let Some(g) = ov.ground_item.take() {
+                migrate_items.push(g);
+            }
+            ov.structure = None;
+            ov.eco_ticks = 0;
             changed = true;
         }
     }
-    if let Some(slot) = overlays.get_mut(&(-3, -2))
+    for pos in [(1, -5), (2, -5), (3, -5), (2, -4), (3, -4), (26, -6), (26, -5)] {
+        if let Some(ov) = overlays.get_mut(&pos)
+            && ov.structure.is_some_and(StructureKind::is_garden_plot)
+        {
+            if let Some(g) = ov.ground_item.take() {
+                migrate_items.push(g);
+            }
+            ov.structure = None;
+            ov.eco_ticks = 0;
+            changed = true;
+        }
+    }
+    for g in migrate_items {
+        let mut rem = g.count;
+        while rem > 0 {
+            if let Some(dst) = find_best_stockpile_slot_for(overlays, (-9, 1), g.item, None) {
+                let entry = overlays.entry(dst).or_default();
+                match &mut entry.ground_item {
+                    None => entry.ground_item = Some(GroundStack { item: g.item, count: 1 }),
+                    Some(st) => st.count = st.count.saturating_add(1),
+                }
+                rem -= 1;
+            } else {
+                break;
+            }
+        }
+    }
+
+    // 5. 西麓南坡 4 大 5m×2m 田畦（40 格）與水尾寮溪坪 4 大 4m×2m 田畦（32 格），中夾 1m 夯土田埂
+    let mut seed_zone = |probe: (i32, i32), rx: std::ops::RangeInclusive<i32>, ry: std::ops::RangeInclusive<i32>, parcels: &[(i32, i32, i32, i32)], third_st: StructureKind| {
+        if overlays.get(&probe).and_then(|o| o.structure).is_some_and(StructureKind::is_garden_plot) {
+            return;
+        }
+        for x in rx {
+            for y in ry.clone() {
+                let (g, _) = derive_micro_pristine(rt, x, y);
+                if !g.is_water() && g != MicroGround::SteepCliff {
+                    overlays.entry((x, y)).or_default().cleared_natural = true;
+                }
+            }
+        }
+        for (idx, &(x0, x1, y0, y1)) in parcels.iter().enumerate() {
+            for y in y0..=y1 {
+                for x in x0..=x1 {
+                    let (g, _) = derive_micro_pristine(rt, x, y);
+                    if g.is_water() || g == MicroGround::SteepCliff {
+                        continue;
+                    }
+                    let st = match idx {
+                        0 => if y == y1 { StructureKind::CropMature } else { StructureKind::CropSeedling },
+                        1 => if y == y1 { StructureKind::HerbMature } else { StructureKind::HerbSeedling },
+                        2 => third_st,
+                        _ => StructureKind::TilledRidge,
+                    };
+                    changed |= ensure_cell_struct(overlays, (x, y), Some(st));
+                }
+            }
+        }
+    };
+    seed_zone((-3, -7), -4..=8, -12..=-6, &FARM_PARCELS[..4], StructureKind::CropSeedling);
+    seed_zone((29, -12), 28..=38, -17..=-11, &FARM_PARCELS[4..], StructureKind::HerbSeedling);
+
+    // 若新倉廩尚未備入初期青草藥，於室內貨架備好 2 份
+    let has_herb = overlays.values().any(|o| o.ground_item.is_some_and(|g| g.item == RimItemKind::MountainHerb));
+    if !has_herb
+        && let Some(slot) = overlays.get_mut(&(-12, 4))
         && slot.structure == Some(StructureKind::Stockpile)
         && slot.ground_item.is_none()
     {
@@ -74,16 +198,136 @@ pub fn upgrade_ecology_plots(
         });
         changed = true;
     }
+
     changed
 }
 
-/// 推進田壟新苗抽長與聚落外已砍伐林木／藥草之雨露自然再生（實時依天氣調速）。
+/// 單次整畦排程：玩家或農夫對任一田壟下達翻土／播種／採收後，自動串連同一田畦內同態相連細格（不跨田埂）。
+pub fn enqueue_contiguous_parcel(
+    world: &mut RimWorldState,
+    idx: usize,
+    seed_x: i32,
+    seed_y: i32,
+    op: FarmOp,
+) {
+    let matches_op = |ov: Option<&MicroCellOverlay>| -> bool {
+        let st = ov.and_then(|o| o.structure);
+        match op {
+            FarmOp::Till => st.is_none(),
+            FarmOp::PlantHerb | FarmOp::PlantTuber => st == Some(StructureKind::TilledRidge),
+            FarmOp::Harvest => matches!(st, Some(StructureKind::HerbMature | StructureKind::CropMature)),
+        }
+    };
+
+    let (x0, x1, y0, y1) = FARM_PARCELS
+        .iter()
+        .copied()
+        .find(|&(a, b, c, d)| (a..=b).contains(&seed_x) && (c..=d).contains(&seed_y))
+        .unwrap_or((seed_x - 3, seed_x + 3, seed_y, seed_y));
+
+    let mut q = VecDeque::new();
+    for y in y0..=y1 {
+        let row: Vec<i32> = if (y - y0) % 2 == 0 {
+            (x0..=x1).collect()
+        } else {
+            (x0..=x1).rev().collect()
+        };
+        for x in row {
+            if (x, y) == (seed_x, seed_y) {
+                continue;
+            }
+            if matches_op(world.overlays.get(&(x, y))) {
+                q.push_back((x, y, op));
+                if q.len() >= 9 {
+                    break;
+                }
+            }
+        }
+        if q.len() >= 9 {
+            break;
+        }
+    }
+    let aid = world.actors[idx].id;
+    world.economy.parcel_queues.insert(aid, q);
+}
+
+/// 生態承載力野獸演替（隨外林空間與近期獵捕壓力動態刷新於聚落遠郊密林，不再駐點 30 秒空投）。
+pub fn step_wildlife_carrying_capacity(world: &mut RimWorldState, _rt: Option<&SubstrateRuntime>) {
+    let interval: u64 = 180 + u64::from(world.economy.hunting_pressure.min(180)) * 2;
+    if !world.tick.is_multiple_of(interval) {
+        return;
+    }
+    let target_beasts = if world.economy.hunting_pressure > 60 { 1 } else { 2 };
+    let cur_beasts = world
+        .actors
+        .iter()
+        .filter(|a| a.faction == ActorFaction::WildBeast && a.hp > 0)
+        .count();
+    if cur_beasts >= target_beasts {
+        return;
+    }
+    let next_id = world.actors.iter().map(|a| a.id).max().unwrap_or(10) + 1;
+    let b_key = format!("beast_{next_id}");
+    world.actors.push(RimActor {
+        id: next_id,
+        code: b_key.clone(),
+        actor_key: b_key,
+        entity_id: None,
+        glyph: if next_id.is_multiple_of(2) { "豚" } else { "雉" }.into(),
+        name: if next_id.is_multiple_of(2) { "紅土野山豬" } else { "鐵羽竹雞" }.into(),
+        gender: if next_id.is_multiple_of(2) { "M" } else { "F" }.into(),
+        soul_seed: 70_000 + next_id as i64,
+        role_tag: "山海野獸".into(),
+        faction: ActorFaction::WildBeast,
+        is_player: false,
+        autopilot: true,
+        running: false,
+        px: if next_id.is_multiple_of(2) { 18.0 } else { -22.0 },
+        py: if next_id.is_multiple_of(2) { 20.0 } else { 14.0 },
+        facing_rad: 0.0,
+        hp: if next_id.is_multiple_of(2) { 80 } else { 55 },
+        max_hp: if next_id.is_multiple_of(2) { 80 } else { 55 },
+        equipped_tool: None,
+        carrying: None,
+        inventory: Vec::new(),
+        directive: String::new(),
+        path: VecDeque::new(),
+        task: PendingTask::None,
+        activity_tag: "林間遊走".into(),
+        pop_text: None,
+        cooldown_ticks: 0,
+        last_active_unix: 0,
+        hunger: 85,
+        thirst: 85,
+        stamina: 90,
+        magnesium: 0,
+        equipped_hat: false,
+        equipped_pack: false,
+        known_by: Vec::new(),
+        practice_unarmed: 0,
+        practice_blade: 0,
+        practice_blunt: 0,
+        craft_harvest: 0,
+        craft_forge: 0,
+        craft_culinary: 0,
+        craft_wayfare: 0,
+        anatomy_winged: 0,
+        anatomy_hoofed: 0,
+        injury_part: None,
+        injury_ticks: 0,
+        downed_ticks: 0,
+        caravan_leg: 0,
+        wet_ticks: 0,
+        recent_diary: VecDeque::new(),
+    });
+}
+
+/// 推進田壟新苗抽長、聚落外林木再生與露天無保護生鮮之自然消解。
 pub fn step_land_ecology(world: &mut RimWorldState, rt: Option<&SubstrateRuntime>) {
     let weather = super::rim_shelter::weather_at_unix(super::rim_sim::now_unix_sec());
     step_land_ecology_with_weather(world, rt, weather);
 }
 
-/// 可指定天氣之生態演替步進（山雨加倍催芽，滿額且無建築佔位時令覆寫格回歸原生並由資料庫自清）。
 pub fn step_land_ecology_with_weather(
     world: &mut RimWorldState,
     rt: Option<&SubstrateRuntime>,
@@ -136,17 +380,15 @@ pub fn step_land_ecology_with_weather(
             let (_, nat) = derive_micro_pristine(rt, mx, my);
             if !matches!(
                 nat,
-                Some(
-                    NaturalProp::BambooClump | NaturalProp::BambooShoot | NaturalProp::WildHerb
-                )
+                Some(NaturalProp::BambooClump | NaturalProp::BambooShoot | NaturalProp::WildHerb)
             ) {
                 continue;
             }
-            let occupied = world
+            if world
                 .actors
                 .iter()
-                .any(|a| a.hp > 0 && (a.px - mx as f32).hypot(a.py - my as f32) < 0.85);
-            if occupied {
+                .any(|a| a.hp > 0 && (a.px - mx as f32).hypot(a.py - my as f32) < 0.85)
+            {
                 continue;
             }
             let mut regrown = false;
@@ -165,9 +407,8 @@ pub fn step_land_ecology_with_weather(
         }
     }
 
-    // 露天未入儲物墊之生鮮肉果隨日曬雨淋／山鳥叼食自然消解（儲物墊內妥善存放者不損）
     if world.tick.is_multiple_of(80) {
-        let perishable_keys: Vec<(i32, i32)> = world
+        let keys: Vec<(i32, i32)> = world
             .overlays
             .iter()
             .filter_map(|(&pos, ov)| {
@@ -186,8 +427,8 @@ pub fn step_land_ecology_with_weather(
             })
             .collect();
 
-        for pos in perishable_keys {
-            let mut should_prune = false;
+        for pos in keys {
+            let mut prune = false;
             if let Some(ov) = world.overlays.get_mut(&pos) {
                 ov.eco_ticks = ov.eco_ticks.saturating_add(step);
                 if ov.eco_ticks >= 24 {
@@ -196,175 +437,15 @@ pub fn step_land_ecology_with_weather(
                         g.count = g.count.saturating_sub(1);
                         ov.ground_item = (g.count > 0).then_some(g);
                     }
-                    should_prune = ov.is_pristine();
+                    prune = ov.is_pristine();
                     world.dirty_unsaved_ticks += 2;
                 }
             }
-            if should_prune {
+            if prune {
                 world.overlays.remove(&pos);
             }
         }
     }
-}
-
-/// 統計全聚落（地面、儲物墊與所有居民行囊手抱）某物資總量。
-pub fn item_total_in_world(world: &RimWorldState, kind: RimItemKind) -> u32 {
-    let ground: u32 = world
-        .overlays
-        .values()
-        .filter_map(|ov| ov.ground_item)
-        .filter(|g| g.item == kind)
-        .map(|g| u32::from(g.count))
-        .sum();
-    let carried: u32 = world
-        .actors
-        .iter()
-        .filter(|a| a.faction == ActorFaction::Settler)
-        .map(|a| {
-            let inv: u32 = a
-                .inventory
-                .iter()
-                .filter(|s| s.item == kind)
-                .map(|s| u32::from(s.count))
-                .sum();
-            let carry = a
-                .carrying
-                .filter(|c| c.item == kind)
-                .map_or(0, |c| u32::from(c.count));
-            inv + carry
-        })
-        .sum();
-    ground + carried
-}
-
-/// 冪等擴充西麓 `2×4` 儲物席與水尾寮儲物格，並將既有滿地陳舊散落生鮮最多整齊歸倉 6 份後清除餘積。
-pub fn reconcile_larder_and_loose_clutter(
-    rt: Option<&SubstrateRuntime>,
-    overlays: &mut HashMap<(i32, i32), MicroCellOverlay>,
-) -> bool {
-    let mut changed = false;
-    let extra_stockpiles = [(-4, -3), (-3, -3), (-4, -4), (-3, -4), (33, -8)];
-    for pos in extra_stockpiles {
-        let (g, _) = derive_micro_pristine(rt, pos.0, pos.1);
-        if g.is_water() || g == MicroGround::SteepCliff {
-            continue;
-        }
-        let e = overlays.entry(pos).or_default();
-        if e.structure.is_none() && e.blueprint.is_none() {
-            e.cleared_natural = true;
-            e.structure = Some(StructureKind::Stockpile);
-            e.eco_ticks = 0;
-            changed = true;
-        }
-    }
-
-    let perishables = [
-        RimItemKind::BeastMeat,
-        RimItemKind::BambooShoot,
-        RimItemKind::MountainHerb,
-        RimItemKind::SweetTuber,
-    ];
-    let loose_positions: Vec<((i32, i32), RimItemKind)> = overlays
-        .iter()
-        .filter_map(|(&pos, ov)| {
-            (ov.structure != Some(StructureKind::Stockpile))
-                .then_some(ov.ground_item)
-                .flatten()
-                .filter(|g| g.count > 0 && perishables.contains(&g.item))
-                .map(|g| (pos, g.item))
-        })
-        .collect();
-    if loose_positions.is_empty() {
-        return changed;
-    }
-
-    let mut stock_counts: HashMap<RimItemKind, u16> = HashMap::new();
-    for ov in overlays.values() {
-        if ov.structure == Some(StructureKind::Stockpile)
-            && let Some(g) = ov.ground_item
-        {
-            *stock_counts.entry(g.item).or_insert(0) += g.count;
-        }
-    }
-
-    for (pos, item) in loose_positions {
-        let Some(ov) = overlays.get_mut(&pos) else {
-            continue;
-        };
-        let taken_count = ov.ground_item.take().map_or(0, |g| g.count);
-        ov.eco_ticks = 0;
-        let prune = ov.is_pristine();
-        if prune {
-            overlays.remove(&pos);
-        }
-        changed = true;
-
-        let cur = *stock_counts.get(&item).unwrap_or(&0);
-        let allow = 6_u16.saturating_sub(cur).min(taken_count);
-        if allow > 0 {
-            let slot_pos = overlays
-                .iter()
-                .filter(|(_, o)| {
-                    o.structure == Some(StructureKind::Stockpile)
-                        && o.ground_item
-                            .is_none_or(|g| g.item == item && g.count + allow <= 20)
-                })
-                .min_by_key(|&(&(sx, sy), ref o)| {
-                    let match_bias = if o.ground_item.is_some_and(|g| g.item == item) { 0 } else { 100 };
-                    match_bias + (sx + 4).abs() + (sy + 2).abs()
-                })
-                .map(|(&p, _)| p);
-            if let Some(sp) = slot_pos
-                && let Some(dst) = overlays.get_mut(&sp)
-            {
-                match &mut dst.ground_item {
-                    None => {
-                        dst.ground_item = Some(GroundStack { item, count: allow });
-                    }
-                    Some(g) if g.item == item => {
-                        g.count = g.count.saturating_add(allow);
-                    }
-                    _ => {}
-                }
-                *stock_counts.entry(item).or_insert(0) += allow;
-            }
-        }
-    }
-    changed
-}
-
-/// 聚落迎擊護營與按需出獵（肉食充裕時只守聚落周遭，不無止境遠出宰殺）。
-pub fn try_guard_or_hunt_beast(
-    world: &mut RimWorldState,
-    rt: Option<&SubstrateRuntime>,
-    idx: usize,
-    start: (i32, i32),
-    home_pt: (i32, i32),
-) -> bool {
-    let dir_now = world.actors[idx].directive.as_str();
-    let meat_stock = item_total_in_world(world, RimItemKind::BeastMeat)
-        + item_total_in_world(world, RimItemKind::RoastedMeat);
-    let beast_guard_radius: f32 = match dir_now {
-        "guard" if meat_stock < 8 => 24.0,
-        "guard" => 11.5,
-        "rest" => 5.0,
-        _ => 9.0,
-    };
-    if let Some(beast) = world.actors.iter().find(|b| {
-        b.faction == ActorFaction::WildBeast
-            && b.hp > 0
-            && (b.px - home_pt.0 as f32).hypot(b.py - home_pt.1 as f32) <= beast_guard_radius
-    }) {
-        let b_id = beast.id;
-        let b_pos = beast.micro_pos();
-        if let Some(p) = find_micro_path(rt, &world.overlays, start, b_pos, true, false) {
-            world.actors[idx].path = p.into();
-            world.actors[idx].task = PendingTask::ChaseTarget { target_id: b_id };
-            world.actors[idx].activity_tag = "迎擊護營".into();
-            return true;
-        }
-    }
-    false
 }
 
 /// 敷貼一劑`敷傷藥膏`，立即消解部位負傷減速並恢復氣血精力。
@@ -384,18 +465,13 @@ pub fn apply_wound_salve(actor: &mut RimActor) -> Result<&'static str, &'static 
     Ok("清涼藥膏貼合患處，筋骨痛楚頓減")
 }
 
-/// 於工作台將一份`青草藥`搗製為`敷傷藥膏`（嚴格物質守恆）。
+/// 於工作台將一份`青草藥`搗製為`敷傷藥膏`。
 pub fn complete_craft_salve(world: &mut RimWorldState, idx: usize, tx: i32, ty: i32) {
     let (ax, ay) = world.actors[idx].micro_pos();
     if (ax - tx).abs() > 1 || (ay - ty).abs() > 1 {
         return;
     }
-    let has_bench = world
-        .overlays
-        .get(&(tx, ty))
-        .and_then(|o| o.structure)
-        == Some(StructureKind::Workbench);
-    if !has_bench {
+    if world.overlays.get(&(tx, ty)).and_then(|o| o.structure) != Some(StructureKind::Workbench) {
         return;
     }
     let mut got = world.actors[idx].take_inv(RimItemKind::MountainHerb, 1);
@@ -413,11 +489,11 @@ pub fn complete_craft_salve(world: &mut RimWorldState, idx: usize, tx: i32, ty: 
         let glyph = world.actors[idx].glyph.clone();
         world.push_event(format!("{glyph} 搗製好［敷傷藥膏］"));
     } else {
-        world.actors[idx].pop_text = Some(("行囊或儲物墊缺青草藥".into(), world.tick + 10));
+        world.actors[idx].pop_text = Some(("行囊或倉廩缺青草藥".into(), world.tick + 10));
     }
 }
 
-/// 結算抵達田壟／菜圃格後的翻土、播種或採收（採罷保留田壟以免瑣碎重複翻土）。
+/// 結算抵達田壟格後的翻土、播種或採收，並自動串接同畦下一格（整畦單次決策不勞作）。
 pub fn complete_farm_plot(
     world: &mut RimWorldState,
     rt: Option<&SubstrateRuntime>,
@@ -426,8 +502,10 @@ pub fn complete_farm_plot(
     ty: i32,
     op: FarmOp,
 ) {
+    let aid = world.actors[idx].id;
     let (ax, ay) = world.actors[idx].micro_pos();
     if (ax - tx).abs() > 1 || (ay - ty).abs() > 1 {
+        world.economy.parcel_queues.remove(&aid);
         world.actors[idx].task = PendingTask::None;
         return;
     }
@@ -441,51 +519,34 @@ pub fn complete_farm_plot(
                         world.actors[idx].add_inv(prev, 1);
                     }
                 } else {
-                    world.actors[idx].pop_text =
-                        Some(("須持石刃木鎬方能翻土".into(), world.tick + 12));
+                    world.actors[idx].pop_text = Some(("須持石刃木鎬方能翻土".into(), world.tick + 12));
+                    world.economy.parcel_queues.remove(&aid);
                     world.actors[idx].task = PendingTask::None;
                     return;
                 }
             }
             let (ground, _) = derive_micro_pristine(rt, tx, ty);
             let can_till = matches!(ground, MicroGround::LoamGrass | MicroGround::RedGravel)
-                && world
-                    .overlays
-                    .get(&(tx, ty))
-                    .is_none_or(|o| o.structure.is_none() && o.blueprint.is_none());
+                && world.overlays.get(&(tx, ty)).is_none_or(|o| o.structure.is_none() && o.blueprint.is_none());
             if can_till {
                 let ov = world.overlays.entry((tx, ty)).or_default();
                 ov.cleared_natural = true;
                 ov.structure = Some(StructureKind::TilledRidge);
                 ov.blueprint = None;
                 ov.eco_ticks = 0;
-                world.actors[idx].craft_harvest =
-                    world.actors[idx].craft_harvest.saturating_add(1);
+                super::rim_economy::record_tool_wear(world, idx);
+                world.actors[idx].craft_harvest = world.actors[idx].craft_harvest.saturating_add(1);
                 world.actors[idx].push_diary("揮鎬翻鬆一畦旱田壟");
-                world.actors[idx].activity_tag = "翻妥田壟".into();
-                world.actors[idx].pop_text = Some(("翻妥空田壟".into(), world.tick + 10));
-                world.dirty_unsaved_ticks += 4;
+                world.actors[idx].pop_text = Some(("翻妥空田壟".into(), world.tick + 8));
+                world.dirty_unsaved_ticks += 3;
             }
         }
         FarmOp::PlantHerb | FarmOp::PlantTuber => {
-            if world
-                .overlays
-                .get(&(tx, ty))
-                .and_then(|o| o.structure)
-                == Some(StructureKind::TilledRidge)
-            {
+            if world.overlays.get(&(tx, ty)).and_then(|o| o.structure) == Some(StructureKind::TilledRidge) {
                 let (seed_item, target_st, msg_ok) = if op == FarmOp::PlantHerb {
-                    (
-                        RimItemKind::MountainHerb,
-                        StructureKind::HerbSeedling,
-                        "於田壟栽下青草藥苗",
-                    )
+                    (RimItemKind::MountainHerb, StructureKind::HerbSeedling, "於田壟栽下青草藥苗")
                 } else {
-                    (
-                        RimItemKind::SweetTuber,
-                        StructureKind::CropSeedling,
-                        "於田壟扦插紅土甘薯藤",
-                    )
+                    (RimItemKind::SweetTuber, StructureKind::CropSeedling, "於田壟扦插紅土甘薯藤")
                 };
                 if world.actors[idx].take_inv(seed_item, 1) == 0
                     && let Some((sx, sy)) = world.find_nearest_ground_item((tx, ty), seed_item, false)
@@ -496,12 +557,10 @@ pub fn complete_farm_plot(
                     ov.structure = Some(target_st);
                     ov.eco_ticks = 0;
                 }
-                world.actors[idx].craft_harvest =
-                    world.actors[idx].craft_harvest.saturating_add(1);
+                world.actors[idx].craft_harvest = world.actors[idx].craft_harvest.saturating_add(1);
                 world.actors[idx].push_diary(msg_ok);
-                world.actors[idx].activity_tag = "播栽完畢".into();
-                world.actors[idx].pop_text = Some(("播下新苗".into(), world.tick + 10));
-                world.dirty_unsaved_ticks += 4;
+                world.actors[idx].pop_text = Some(("播下新苗".into(), world.tick + 8));
+                world.dirty_unsaved_ticks += 3;
             }
         }
         FarmOp::Harvest => {
@@ -516,40 +575,42 @@ pub fn complete_farm_plot(
                     ov.structure = Some(StructureKind::TilledRidge);
                     ov.eco_ticks = 0;
                 }
-                let bag_cnt: u16 = world.actors[idx]
-                    .inventory
-                    .iter()
-                    .filter(|s| s.item == item)
-                    .map(|s| s.count)
-                    .sum();
-                if (world.actors[idx].entity_id.is_some() && !world.actors[idx].autopilot)
-                    || bag_cnt < 4
-                {
-                    world.actors[idx].add_inv(item, 2);
-                } else {
-                    world.add_ground_item(tx, ty, item, 2);
-                }
-                world.actors[idx].craft_harvest =
-                    world.actors[idx].craft_harvest.saturating_add(2);
-                world.actors[idx].push_diary(format!("在田壟採收{}", item.label()));
-                world.actors[idx].activity_tag = "採收完畢".into();
-                world.actors[idx].pop_text =
-                    Some((format!("收得{}×2", item.short_char()), world.tick + 10));
+                // 收成直接入行囊（背簍），滿整畦後回倉廩一次結算歸倉，不在田上丟滿地
+                world.actors[idx].add_inv(item, 2);
+                world.actors[idx].craft_harvest = world.actors[idx].craft_harvest.saturating_add(2);
+                world.actors[idx].push_diary(format!("在田壟收成{}", item.label()));
+                world.actors[idx].pop_text = Some((format!("收得{}×2", item.short_char()), world.tick + 8));
                 let glyph = world.actors[idx].glyph.clone();
                 world.push_event(format!("{glyph} 收成［{}］", item.label()));
-                world.dirty_unsaved_ticks += 4;
+                world.dirty_unsaved_ticks += 3;
             }
         }
     }
+
+    // 接續同畦佇列下一格（單次整畦施作）
+    while let Some((nx, ny, next_op)) = world
+        .economy
+        .parcel_queues
+        .get_mut(&aid)
+        .and_then(VecDeque::pop_front)
+    {
+        if let Some(p) = find_micro_path(rt, &world.overlays, (ax, ay), (nx, ny), true, false) {
+            world.actors[idx].path = p.into();
+            world.actors[idx].task = PendingTask::FarmPlot {
+                tx: nx,
+                ty: ny,
+                op: next_op,
+            };
+            world.actors[idx].activity_tag = "整畦接續".into();
+            return;
+        }
+    }
     world.actors[idx].task = PendingTask::None;
+    world.actors[idx].activity_tag = "整畦完畢".into();
 }
 
-/// 自主居民／離線代理負傷時優先敷用或前往案台搗製`敷傷藥膏`。
-pub fn try_urgent_salve_heal(
-    world: &mut RimWorldState,
-    rt: Option<&SubstrateRuntime>,
-    idx: usize,
-) -> bool {
+/// 負傷時優先自行敷藥或赴案台搗製`敷傷藥膏`。
+pub fn try_urgent_salve_heal(world: &mut RimWorldState, rt: Option<&SubstrateRuntime>, idx: usize) -> bool {
     let me = &world.actors[idx];
     if me.faction != ActorFaction::Settler || (me.injury_ticks == 0 && me.injury_part.is_none()) {
         return false;
@@ -568,10 +629,7 @@ pub fn try_urgent_salve_heal(
         world.actors[idx].activity_tag = "取藥治傷".into();
         return true;
     }
-    let has_herb = world.actors[idx]
-        .inventory
-        .iter()
-        .any(|s| s.item == RimItemKind::MountainHerb && s.count > 0)
+    let has_herb = world.actors[idx].inventory.iter().any(|s| s.item == RimItemKind::MountainHerb && s.count > 0)
         || world
             .find_nearest_ground_item(start, RimItemKind::MountainHerb, false)
             .is_some_and(|pos| (pos.0 - start.0).abs() + (pos.1 - start.1).abs() <= 24);
@@ -597,82 +655,7 @@ pub fn try_urgent_salve_heal(
     false
 }
 
-/// 空閒同伴自主照料聚落附近之成熟圃畦與空置田壟（採收並補種）。
-pub fn try_autonomous_farming(
-    world: &mut RimWorldState,
-    rt: Option<&SubstrateRuntime>,
-    idx: usize,
-    start: (i32, i32),
-    home: (i32, i32),
-    claimed: &[(i32, i32)],
-    occ: &[(i32, i32)],
-) -> bool {
-    if !matches!(
-        world.actors[idx].directive.as_str(),
-        "" | "forage" | "craft" | "assist" | "自主巡採"
-    ) || !world.tick.is_multiple_of(3)
-    {
-        return false;
-    }
-    let allow_herb = item_total_in_world(world, RimItemKind::MountainHerb) < 12;
-    let allow_tuber = item_total_in_world(world, RimItemKind::SweetTuber)
-        + item_total_in_world(world, RimItemKind::RoastedTuber)
-        < 12;
-    if let Some((&pos, _)) = world
-        .overlays
-        .iter()
-        .filter(|&(&pos, ov)| {
-            let want = match ov.structure {
-                Some(StructureKind::HerbMature) => allow_herb,
-                Some(StructureKind::CropMature) => allow_tuber,
-                _ => false,
-            };
-            want && !claimed.contains(&pos)
-                && (pos.0 - home.0).abs() + (pos.1 - home.1).abs() <= 24
-        })
-        .min_by_key(|&(&pos, _)| (pos.0 - start.0).abs() + (pos.1 - start.1).abs())
-        && let Some(p) =
-            find_micro_path_crowded(rt, &world.overlays, start, pos, true, false, occ)
-    {
-        world.actors[idx].path = p.into();
-        world.actors[idx].task = PendingTask::FarmPlot {
-            tx: pos.0,
-            ty: pos.1,
-            op: FarmOp::Harvest,
-        };
-        world.actors[idx].activity_tag = "採收圃畦".into();
-        return true;
-    }
-    if let Some((&pos, _)) = world
-        .overlays
-        .iter()
-        .filter(|&(&pos, ov)| {
-            ov.structure == Some(StructureKind::TilledRidge)
-                && !claimed.contains(&pos)
-                && (pos.0 - home.0).abs() + (pos.1 - home.1).abs() <= 24
-        })
-        .min_by_key(|&(&pos, _)| (pos.0 - start.0).abs() + (pos.1 - start.1).abs())
-        && let Some(p) =
-            find_micro_path_crowded(rt, &world.overlays, start, pos, true, false, occ)
-    {
-        let op = if (pos.0 + pos.1).rem_euclid(2) == 0 {
-            FarmOp::PlantHerb
-        } else {
-            FarmOp::PlantTuber
-        };
-        world.actors[idx].path = p.into();
-        world.actors[idx].task = PendingTask::FarmPlot {
-            tx: pos.0,
-            ty: pos.1,
-            op,
-        };
-        world.actors[idx].activity_tag = "補栽新苗".into();
-        return true;
-    }
-    false
-}
-
-/// 填充農田／藥圃結構於右側詳情卡之自然白話標籤與單步插座動作。
+/// 填充農田／藥圃結構於右側詳情卡之自然白話標籤與單步整畦插座動作。
 pub fn describe_ecology_structure(
     st: StructureKind,
     raining: bool,
@@ -681,27 +664,27 @@ pub fn describe_ecology_structure(
 ) {
     match st {
         StructureKind::TilledRidge => {
-            tags.extend(["鬆軟田壟".into(), "可播種".into()]);
-            sockets.push(json!({ "label": "栽種青草藥苗", "action": "plant_herb" }));
-            sockets.push(json!({ "label": "扦插紅土甘薯", "action": "plant_tuber" }));
+            tags.extend(["鬆軟田壟".into(), "單步整畦播栽".into()]);
+            sockets.push(json!({ "label": "整畦栽種青草藥", "action": "plant_herb" }));
+            sockets.push(json!({ "label": "整畦扦插紅土甘薯", "action": "plant_tuber" }));
         }
         StructureKind::HerbSeedling => {
             tags.push(if raining { "雨露滋養・抽芽中" } else { "新苗抽長中" }.into());
-            tags.push("藥材圃畦".into());
+            tags.push("成片藥圃畦".into());
             sockets.push(json!({ "label": "走近察看", "action": "move" }));
         }
         StructureKind::HerbMature => {
             tags.extend(["藥葉繁茂・可採收".into(), "採後留壟".into()]);
-            sockets.push(json!({ "label": "採收青草藥", "action": "harvest_plot" }));
+            sockets.push(json!({ "label": "整畦順手採收", "action": "harvest_plot" }));
         }
         StructureKind::CropSeedling => {
             tags.push(if raining { "雨露滋養・展藤中" } else { "蔓藤生長中" }.into());
-            tags.push("旱田塊根".into());
+            tags.push("成片甘薯畦".into());
             sockets.push(json!({ "label": "走近察看", "action": "move" }));
         }
         StructureKind::CropMature => {
             tags.extend(["塊根飽滿・可採收".into(), "採後留壟".into()]);
-            sockets.push(json!({ "label": "採挖紅土甘薯", "action": "harvest_plot" }));
+            sockets.push(json!({ "label": "整畦採挖甘薯", "action": "harvest_plot" }));
         }
         _ => {}
     }
@@ -776,6 +759,7 @@ mod tests {
             dirty_unsaved_ticks: 0,
             sub_step: 0,
             stall_tracker: HashMap::new(),
+            economy: Default::default(),
         }
     }
 
@@ -905,37 +889,21 @@ mod tests {
     }
 
     #[test]
-    fn larder_expansion_demand_cap_and_outdoor_scavenging_prevent_meat_flood() {
+    fn real_scale_relocation_preserves_goods_and_parcel_enqueues_contiguous_bed() {
         let mut ov = HashMap::new();
-        ov.insert((-4, -1), stack_cell(Some(StructureKind::Stockpile), RimItemKind::BambooPole, 5));
-        for x in -10..=-6 {
-            ov.insert((x, -4), stack_cell(None, RimItemKind::BeastMeat, 3));
-        }
-        assert!(reconcile_larder_and_loose_clutter(None, &mut ov));
-        assert_eq!(ov.get(&(-4, -3)).and_then(|o| o.structure), Some(StructureKind::Stockpile));
+        ov.insert((-4, -3), stack_cell(Some(StructureKind::Stockpile), RimItemKind::BeastMeat, 5));
+        assert!(reconcile_real_scale_layout_and_clutter(None, &mut ov));
+        assert!(ov.get(&(-4, -3)).and_then(|o| o.structure).is_none());
+        assert_eq!(
+            ov.get(&(-12, 4)).and_then(|o| o.structure),
+            Some(StructureKind::Stockpile)
+        );
+        assert_eq!(meat_in(&ov, true), 5);
         assert_eq!(meat_in(&ov, false), 0);
-        assert_eq!(meat_in(&ov, true), 6);
 
-        let mut guard = eco_actor(1, Some(RimItemKind::BambooBlade), Vec::new());
-        guard.directive = "guard".into();
-        guard.px = 0.0;
-        guard.py = 0.0;
-        let mut boar = eco_actor(2, None, Vec::new());
-        boar.faction = ActorFaction::WildBeast;
-        boar.is_player = false;
-        boar.entity_id = None;
-        boar.px = 18.0;
-        boar.py = 0.0;
-        ov.insert((-3, -3), stack_cell(Some(StructureKind::Stockpile), RimItemKind::BeastMeat, 4));
-        let mut w = eco_world(ov, vec![guard, boar]);
-        assert!(!try_guard_or_hunt_beast(&mut w, None, 0, (0, 0), (0, 0)));
-
-        w.overlays.insert((5, -5), stack_cell(None, RimItemKind::BeastMeat, 1));
-        for t in 1..=12 {
-            w.tick = t * 80;
-            step_land_ecology_with_weather(&mut w, None, RimWeatherKind::SummerSquall);
-        }
-        assert!(w.overlays.get(&(5, -5)).and_then(|o| o.ground_item).is_none());
-        assert_eq!(meat_in(&w.overlays, true), 10);
+        let a = eco_actor(1, None, Vec::new());
+        let mut w = eco_world(ov, vec![a]);
+        enqueue_contiguous_parcel(&mut w, 0, -3, -7, FarmOp::Harvest);
+        assert_eq!(w.economy.parcel_queues.get(&1).map_or(0, VecDeque::len), 4);
     }
 }

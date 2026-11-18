@@ -97,6 +97,10 @@ pub enum PendingTask {
         ty: i32,
         op: super::rim_ecology::FarmOp,
     },
+    StorehouseTrade {
+        tx: i32,
+        ty: i32,
+    },
 }
 
 fn default_gender() -> String {
@@ -385,6 +389,8 @@ pub struct RimWorldState {
     pub overlays: HashMap<(i32, i32), MicroCellOverlay>,
     pub actors: Vec<RimActor>,
     pub events: VecDeque<ShortEvent>,
+    #[serde(default)]
+    pub economy: super::rim_economy::RimEconomyBook,
     #[serde(skip)]
     pub dirty_unsaved_ticks: u32,
     #[serde(skip)]
@@ -409,6 +415,8 @@ struct PersistedRim {
     cells: Vec<(i32, i32, MicroCellOverlay)>,
     actors: Vec<RimActor>,
     events: VecDeque<ShortEvent>,
+    #[serde(default)]
+    economy: super::rim_economy::RimEconomyBook,
 }
 
 fn load_or_seed_world() -> RimWorldState {
@@ -446,12 +454,10 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_shelter::upgrade_existing_shelters(&mut overlays) {
                 migrated = true;
             }
-            if super::rim_ecology::upgrade_ecology_plots(rt, &mut overlays) {
+            if super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, &mut overlays) {
                 migrated = true;
             }
-            if super::rim_ecology::reconcile_larder_and_loose_clutter(rt, &mut overlays) {
-                migrated = true;
-            }
+            let economy = crate::pg::rim_persist::load_economy_book(&pool).unwrap_or_default();
             let mut events = VecDeque::new();
             events.push_back(ShortEvent {
                 tick: 0,
@@ -462,6 +468,7 @@ fn load_or_seed_world() -> RimWorldState {
                 overlays,
                 actors: db_actors,
                 events,
+                economy,
                 dirty_unsaved_ticks: if migrated { 25 } else { 0 },
                 sub_step: 0,
                 stall_tracker: HashMap::new(),
@@ -486,8 +493,7 @@ fn load_or_seed_world() -> RimWorldState {
             .collect();
         apply_outpost_architecture(rt, &mut overlays);
         let _ = super::rim_shelter::upgrade_existing_shelters(&mut overlays);
-        let _ = super::rim_ecology::upgrade_ecology_plots(rt, &mut overlays);
-        let _ = super::rim_ecology::reconcile_larder_and_loose_clutter(rt, &mut overlays);
+        let _ = super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, &mut overlays);
         let mut actors = saved.actors;
         ensure_outpost_residents(&mut actors);
         let mut events: VecDeque<ShortEvent> = saved
@@ -506,6 +512,7 @@ fn load_or_seed_world() -> RimWorldState {
             overlays,
             actors,
             events,
+            economy: saved.economy,
             dirty_unsaved_ticks: 1,
             sub_step: 0,
             stall_tracker: HashMap::new(),
@@ -528,6 +535,7 @@ impl RimWorldState {
             overlays,
             actors,
             events,
+            economy: Default::default(),
             dirty_unsaved_ticks: 1,
             sub_step: 0,
             stall_tracker: HashMap::new(),
@@ -555,17 +563,19 @@ impl RimWorldState {
             }
             let overlays = self.overlays.clone();
             let actors = self.actors.clone();
+            let economy = self.economy.clone();
             if let Ok(handle) = tokio::runtime::Handle::try_current() {
                 handle.spawn_blocking(move || {
-                    if let Err(e) =
-                        crate::pg::rim_persist::flush_snapshot(&pool, &overlays, &actors)
-                    {
+                    if let Err(e) = crate::pg::rim_persist::flush_snapshot(
+                        &pool, &overlays, &actors, &economy,
+                    ) {
                         tracing::warn!("rim_persist flush error: {e}");
                     }
                     FLUSH_IN_FLIGHT.store(false, Ordering::Release);
                 });
             } else {
-                let _ = crate::pg::rim_persist::flush_snapshot(&pool, &overlays, &actors);
+                let _ =
+                    crate::pg::rim_persist::flush_snapshot(&pool, &overlays, &actors, &economy);
                 FLUSH_IN_FLIGHT.store(false, Ordering::Release);
             }
             return;
@@ -580,6 +590,7 @@ impl RimWorldState {
                 .collect(),
             actors: self.actors.clone(),
             events: self.events.clone(),
+            economy: self.economy.clone(),
         };
         if let Ok(json) = serde_json::to_string(&payload) {
             if let Some(parent) = save_path().parent() {
@@ -756,82 +767,8 @@ impl RimWorldState {
         let rt = runtime::global();
         super::rim_life::step_settler_metabolism(self);
         super::rim_ecology::step_land_ecology(self, rt);
-
-        if self.tick.is_multiple_of(360)
-            && self
-                .actors
-                .iter()
-                .filter(|a| a.faction == ActorFaction::WildBeast && a.hp > 0)
-                .count()
-                < 2
-        {
-            let next_id = self.actors.iter().map(|a| a.id).max().unwrap_or(10) + 1;
-            let b_key = format!("beast_{next_id}");
-            self.actors.push(RimActor {
-                id: next_id,
-                code: b_key.clone(),
-                actor_key: b_key,
-                entity_id: None,
-                glyph: if next_id.is_multiple_of(2) {
-                    "豚".into()
-                } else {
-                    "雉".into()
-                },
-                name: if next_id.is_multiple_of(2) {
-                    "紅土野山豬".into()
-                } else {
-                    "鐵羽竹雞".into()
-                },
-                gender: if next_id.is_multiple_of(2) {
-                    "M".into()
-                } else {
-                    "F".into()
-                },
-                soul_seed: 70_000 + next_id as i64,
-                role_tag: "山海野獸".into(),
-                faction: ActorFaction::WildBeast,
-                is_player: false,
-                autopilot: true,
-                running: false,
-                px: if next_id.is_multiple_of(2) { 18.0 } else { -22.0 },
-                py: if next_id.is_multiple_of(2) { 20.0 } else { 14.0 },
-                facing_rad: 0.0,
-                hp: if next_id.is_multiple_of(2) { 80 } else { 55 },
-                max_hp: if next_id.is_multiple_of(2) { 80 } else { 55 },
-                equipped_tool: None,
-                carrying: None,
-                inventory: Vec::new(),
-                directive: String::new(),
-                path: VecDeque::new(),
-                task: PendingTask::None,
-                activity_tag: "林間遊走".into(),
-                pop_text: None,
-                cooldown_ticks: 0,
-                last_active_unix: 0,
-                hunger: 85,
-                thirst: 85,
-                stamina: 90,
-                magnesium: 0,
-                equipped_hat: false,
-                equipped_pack: false,
-                known_by: Vec::new(),
-                practice_unarmed: 0,
-                practice_blade: 0,
-                practice_blunt: 0,
-                craft_harvest: 0,
-                craft_forge: 0,
-                craft_culinary: 0,
-                craft_wayfare: 0,
-                anatomy_winged: 0,
-                anatomy_hoofed: 0,
-                injury_part: None,
-                injury_ticks: 0,
-                downed_ticks: 0,
-                caravan_leg: 0,
-                wet_ticks: 0,
-                recent_diary: VecDeque::new(),
-            });
-        }
+        super::rim_ecology::step_wildlife_carrying_capacity(self, rt);
+        super::rim_economy::step_economy_tick(self);
 
         for idx in 0..self.actors.len() {
             if self.actors[idx].hp <= 0 {
