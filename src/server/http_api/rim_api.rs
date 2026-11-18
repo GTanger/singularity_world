@@ -96,6 +96,7 @@ fn struct_code(s: StructureKind) -> &'static str {
         StructureKind::Campfire => "campfire",
         StructureKind::Workbench => "workbench",
         StructureKind::Stockpile => "stockpile",
+        StructureKind::BambooBed => "bed",
     }
 }
 
@@ -265,6 +266,10 @@ fn build_selection_card(
             }
         }
     } else if let Some(st) = ov.and_then(|o| o.structure) {
+        let weather = crate::grid::substrate::rim_shelter::weather_at_unix(
+            crate::grid::substrate::rim_sim::now_unix_sec(),
+        );
+        let sheltered = crate::grid::substrate::rim_shelter::sheltered_cell_set(&world.overlays);
         title = st.label().to_string();
         match st {
             StructureKind::Workbench => {
@@ -275,7 +280,11 @@ fn build_selection_card(
                 sockets.push(json!({ "label": "編紮竹背簍", "action": "craft_pack" }));
             }
             StructureKind::Campfire => {
-                tags.push("溫暖照明".into());
+                if weather.is_raining() && !sheltered.contains(&(mx, my)) {
+                    tags.push("受雨轉弱・冒煙".into());
+                } else {
+                    tags.push("溫暖照明".into());
+                }
                 tags.push("駐足回氣".into());
                 sockets.push(json!({ "label": "籜裹煨筍", "action": "cook_shoot" }));
                 sockets.push(json!({ "label": "炭火炙肉", "action": "cook_meat" }));
@@ -299,6 +308,14 @@ fn build_selection_card(
             StructureKind::BambooDoor => {
                 tags.push("同伴可通・擋野獸".into());
                 sockets.push(json!({ "label": "穿門而過", "action": "move" }));
+            }
+            StructureKind::BambooBed => {
+                tags.push("遮風安歇".into());
+                tags.push("調養傷疲".into());
+                if sheltered.contains(&(mx, my)) {
+                    tags.push("屋簷庇護".into());
+                }
+                sockets.push(json!({ "label": "上榻安歇養傷", "action": "sleep_bed" }));
             }
         }
         sockets.push(json!({ "label": "標記拆除", "tool": "deconstruct" }));
@@ -329,6 +346,7 @@ fn build_selection_card(
         sockets.push(json!({ "label": "在此安竹編門", "tool": "door" }));
         sockets.push(json!({ "label": "在此設工作台", "tool": "workbench" }));
         sockets.push(json!({ "label": "在此鋪儲物墊", "tool": "stockpile" }));
+        sockets.push(json!({ "label": "在此設竹編睡榻", "tool": "bed" }));
     } else {
         tags.push("天險阻絕".into());
     }
@@ -469,6 +487,20 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
         })
         .collect();
 
+    let weather = crate::grid::substrate::rim_shelter::weather_at_unix(
+        crate::grid::substrate::rim_sim::now_unix_sec(),
+    );
+    let enclosed_rooms = crate::grid::substrate::rim_shelter::detect_enclosed_rooms(&world.overlays);
+    let mut sheltered_cells = std::collections::HashSet::new();
+    for room in &enclosed_rooms {
+        for &c in &room.cells {
+            sheltered_cells.insert(c);
+        }
+        for &d in &room.doors {
+            sheltered_cells.insert(d);
+        }
+    }
+
     let me_detail = viewer_pid
         .as_deref()
         .and_then(|pid| {
@@ -495,6 +527,25 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                 })
                 .collect();
             let hp_ratio = (p.hp as f32 / p.max_hp.max(1) as f32).clamp(0.0, 1.0);
+            let on_bed = world
+                .overlays
+                .get(&(pmx, pmy))
+                .and_then(|o| o.structure)
+                == Some(StructureKind::BambooBed);
+            let mut feels = vec![
+                hunger_tag(p.hunger),
+                thirst_tag(p.thirst),
+                stamina_tag(p.stamina),
+            ];
+            if on_bed && p.path.is_empty() {
+                feels.push("榻上安眠");
+            } else if sheltered_cells.contains(&(pmx, pmy)) {
+                feels.push("屋簷庇護");
+            } else if p.wet_ticks >= 16 {
+                feels.push("衣衫濕冷");
+            } else if weather.is_raining() && p.equipped_hat {
+                feels.push("竹笠擋雨");
+            }
             json!({
                 "id": p.id,
                 "name": p.name,
@@ -508,11 +559,7 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
                 "hp_ratio": hp_ratio,
                 "zone": player_zone,
                 "health": p.health_state_tag(),
-                "feels": [
-                    hunger_tag(p.hunger),
-                    thirst_tag(p.thirst),
-                    stamina_tag(p.stamina),
-                ],
+                "feels": feels,
                 "magnesium_tag": magnesium_tag(p.magnesium),
                 "act": p.activity_tag,
                 "autopilot": p.autopilot,
@@ -543,6 +590,12 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
         "tick": world.tick,
         "world_clock": world_clock,
         "sky_time": sky_time,
+        "weather": {
+            "code": weather.code(),
+            "label": weather.label(),
+            "raining": weather.is_raining(),
+        },
+        "rooms": enclosed_rooms,
         "me_detail": me_detail,
         "actors": actors,
         "cells": cells,

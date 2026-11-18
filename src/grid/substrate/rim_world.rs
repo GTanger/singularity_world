@@ -194,6 +194,7 @@ pub enum StructureKind {
     Campfire,
     Workbench,
     Stockpile,
+    BambooBed,
 }
 
 impl StructureKind {
@@ -205,13 +206,14 @@ impl StructureKind {
             Self::Campfire => "竹葉營火",
             Self::Workbench => "百工工作台",
             Self::Stockpile => "儲物地墊",
+            Self::BambooBed => "竹編睡榻",
         }
     }
 
     pub fn bamboo_cost(self) -> u8 {
         match self {
             Self::Stockpile => 0,
-            Self::Workbench => 2,
+            Self::Workbench | Self::BambooBed => 2,
             Self::BambooWall | Self::BambooDoor | Self::WoodBridge | Self::Campfire => 1,
         }
     }
@@ -220,7 +222,7 @@ impl StructureKind {
         match self {
             Self::Stockpile => 1,
             Self::Campfire => 3,
-            Self::WoodBridge | Self::BambooWall | Self::BambooDoor => 4,
+            Self::WoodBridge | Self::BambooWall | Self::BambooDoor | Self::BambooBed => 4,
             Self::Workbench => 6,
         }
     }
@@ -228,7 +230,7 @@ impl StructureKind {
     pub fn blocks_actor(self, is_beast: bool) -> bool {
         match self {
             Self::BambooWall | Self::Workbench | Self::Campfire => true,
-            Self::BambooDoor => is_beast,
+            Self::BambooDoor | Self::BambooBed => is_beast,
             Self::WoodBridge | Self::Stockpile => false,
         }
     }

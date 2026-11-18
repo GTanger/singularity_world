@@ -111,6 +111,8 @@ pub fn step_settler_metabolism(world: &mut RimWorldState) {
     if !world.tick.is_multiple_of(24) {
         return;
     }
+    let weather = super::rim_shelter::weather_at_unix(super::rim_sim::now_unix_sec());
+    let sheltered = super::rim_shelter::sheltered_cell_set(&world.overlays);
     for idx in 0..world.actors.len() {
         if world.actors[idx].faction != ActorFaction::Settler || world.actors[idx].hp <= 0 {
             continue;
@@ -120,6 +122,12 @@ pub fn step_settler_metabolism(world: &mut RimWorldState) {
             ov.structure == Some(StructureKind::Campfire)
                 && (fx - ax).abs() <= 4
                 && (fy - ay).abs() <= 4
+        });
+        let near_dry_fire = world.overlays.iter().any(|(&(fx, fy), ov)| {
+            ov.structure == Some(StructureKind::Campfire)
+                && (fx - ax).abs() <= 4
+                && (fy - ay).abs() <= 4
+                && (!weather.is_raining() || sheltered.contains(&(fx, fy)))
         });
         let moving = !world.actors[idx].path.is_empty();
         let running = world.actors[idx].running;
@@ -139,7 +147,8 @@ pub fn step_settler_metabolism(world: &mut RimWorldState) {
         }
 
         if near_fire && !moving {
-            a.stamina = a.stamina.saturating_add(12).min(100);
+            let gain = if near_dry_fire { 12 } else { 5 };
+            a.stamina = a.stamina.saturating_add(gain).min(100);
         } else if running {
             a.stamina = a.stamina.saturating_sub(3 + hat_shield);
         } else if moving {
@@ -153,6 +162,7 @@ pub fn step_settler_metabolism(world: &mut RimWorldState) {
             a.hp = a.hp.saturating_sub(1);
         }
     }
+    super::rim_shelter::step_weather_and_bed_recovery(world, weather);
 }
 
 /// 空閒同伴／離線自主角色優先照顧自身飲水、炊食與歇息。
@@ -626,6 +636,7 @@ mod tests {
             injury_ticks: 0,
             downed_ticks: 0,
             caravan_leg: 0,
+            wet_ticks: 0,
             recent_diary: VecDeque::new(),
         }
     }

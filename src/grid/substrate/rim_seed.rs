@@ -105,6 +105,13 @@ pub fn apply_outpost_architecture(
             count: 4,
         }),
     });
+    for bed_pos in [(8, 4), (8, 2)] {
+        let e = overlays.entry(bed_pos).or_default();
+        if e.structure.is_none() && e.ground_item.is_none() {
+            e.cleared_natural = true;
+            e.structure = Some(StructureKind::BambooBed);
+        }
+    }
 
     // 3. 北澗渡溪木橋：沿 mx=0 偵測 ShallowStream 自動鋪設 WoodBridge，並打通南北兩岸林木
     for my in 3..=18 {
@@ -179,9 +186,9 @@ pub fn apply_shuoweiliao_outpost(
                 });
                 continue;
             }
-            let is_border = (x == 28 || x == 36 || y == -10 || y == -4) && !(x == 28 && y == -7);
+            let is_border = x == 28 || x == 36 || y == -10 || y == -4;
             let st = if is_border {
-                if x == 32 && y == -4 {
+                if (x == 32 && y == -4) || (x == 28 && y == -7) {
                     Some(StructureKind::BambooDoor)
                 } else {
                     Some(StructureKind::BambooWall)
@@ -192,6 +199,8 @@ pub fn apply_shuoweiliao_outpost(
                 Some(StructureKind::Workbench)
             } else if x == 34 && y == -8 {
                 Some(StructureKind::Stockpile)
+            } else if (x == 35 && y == -5) || (x == 35 && y == -9) {
+                Some(StructureKind::BambooBed)
             } else {
                 None
             };
@@ -209,13 +218,14 @@ pub fn apply_shuoweiliao_outpost(
                 blueprint: None,
                 ground_item,
             });
-            if x == 31
-                && y == -7
-                && let Some(ov) = overlays.get_mut(&(31, -7))
+            if ((x == 28 && y == -7)
+                || (x == 35 && (y == -5 || y == -9))
+                || (x == 31 && y == -7))
+                && let Some(ov) = overlays.get_mut(&(x, y))
                 && ov.structure.is_none()
             {
                 ov.cleared_natural = true;
-                ov.structure = Some(StructureKind::Campfire);
+                ov.structure = st;
             }
         }
     }
@@ -481,6 +491,7 @@ pub fn ensure_outpost_residents(actors: &mut Vec<RimActor>) {
             injury_ticks: 0,
             downed_ticks: 0,
             caravan_leg: if spec.role.contains("貨郎") { 1 } else { 0 },
+            wet_ticks: 0,
             recent_diary: VecDeque::new(),
         });
         next_id += 1;

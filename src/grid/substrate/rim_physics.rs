@@ -577,6 +577,7 @@ mod tests {
             injury_ticks: 0,
             downed_ticks: 0,
             caravan_leg: 0,
+            wet_ticks: 0,
             recent_diary: VecDeque::new(),
         }
     }

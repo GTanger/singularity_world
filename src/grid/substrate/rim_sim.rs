@@ -88,6 +88,10 @@ pub enum PendingTask {
         ty: i32,
         leg: u8,
     },
+    SleepBed {
+        tx: i32,
+        ty: i32,
+    },
 }
 
 fn default_gender() -> String {
@@ -182,6 +186,8 @@ pub struct RimActor {
     #[serde(default)]
     pub caravan_leg: u8,
     #[serde(default)]
+    pub wet_ticks: u8,
+    #[serde(default)]
     pub recent_diary: VecDeque<String>,
 }
 
@@ -213,6 +219,8 @@ pub struct ActorPhaseBlob {
     pub downed_ticks: u8,
     #[serde(default)]
     pub caravan_leg: u8,
+    #[serde(default)]
+    pub wet_ticks: u8,
     #[serde(default)]
     pub recent_diary: Vec<String>,
 }
@@ -299,6 +307,7 @@ impl RimActor {
             injury_ticks: self.injury_ticks,
             downed_ticks: self.downed_ticks,
             caravan_leg: self.caravan_leg,
+            wet_ticks: self.wet_ticks,
             recent_diary: self.recent_diary.iter().cloned().collect(),
         };
         serde_json::to_string(&blob).unwrap_or_else(|_| "{}".into())
@@ -322,6 +331,7 @@ impl RimActor {
             self.injury_ticks = b.injury_ticks;
             self.downed_ticks = b.downed_ticks;
             self.caravan_leg = b.caravan_leg;
+            self.wet_ticks = b.wet_ticks;
             self.recent_diary = b.recent_diary.into_iter().take(8).collect();
         }
     }
@@ -428,6 +438,9 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_life::recover_stranded_world_state(&mut overlays, &mut db_actors) {
                 migrated = true;
             }
+            if super::rim_shelter::upgrade_existing_shelters(&mut overlays) {
+                migrated = true;
+            }
             let mut events = VecDeque::new();
             events.push_back(ShortEvent {
                 tick: 0,
@@ -461,6 +474,7 @@ fn load_or_seed_world() -> RimWorldState {
             .map(|(x, y, ov)| ((x, y), ov))
             .collect();
         apply_outpost_architecture(rt, &mut overlays);
+        let _ = super::rim_shelter::upgrade_existing_shelters(&mut overlays);
         let mut actors = saved.actors;
         ensure_outpost_residents(&mut actors);
         let mut events: VecDeque<ShortEvent> = saved
@@ -659,6 +673,7 @@ impl RimWorldState {
             injury_ticks: 0,
             downed_ticks: 0,
             caravan_leg: 0,
+            wet_ticks: 0,
             recent_diary: VecDeque::new(),
         });
         self.dirty_unsaved_ticks += 5;
@@ -799,6 +814,7 @@ impl RimWorldState {
                 injury_ticks: 0,
                 downed_ticks: 0,
                 caravan_leg: 0,
+                wet_ticks: 0,
                 recent_diary: VecDeque::new(),
             });
         }

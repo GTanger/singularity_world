@@ -99,6 +99,12 @@ impl RimWorldState {
             return;
         }
 
+        // 傷疲靜養或山雨無笠時，優先前往空閒竹編睡榻或入屋避雨
+        let weather = super::rim_shelter::weather_at_unix(super::rim_sim::now_unix_sec());
+        if super::rim_shelter::try_seek_bed_or_rain_shelter(self, rt, idx, weather) {
+            return;
+        }
+
         // 若駐世方針為「rest（爐畔靜養）」，回就近營火調息不再遠出勞作
         if self.actors[idx].directive == "rest" {
             let occ = self.occupied_cells(Some(idx));
@@ -789,6 +795,9 @@ impl RimWorldState {
                 } else {
                     self.actors[idx].task = PendingTask::None;
                 }
+            }
+            PendingTask::SleepBed { tx, ty } => {
+                super::rim_shelter::complete_sleep_bed(self, idx, tx, ty);
             }
         }
     }

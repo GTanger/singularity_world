@@ -64,6 +64,7 @@ impl RimWorldState {
                             "campfire" => Some(StructureKind::Campfire),
                             "workbench" => Some(StructureKind::Workbench),
                             "stockpile" => Some(StructureKind::Stockpile),
+                            "bed" => Some(StructureKind::BambooBed),
                             _ => None,
                         }) else {
                             continue;
@@ -179,6 +180,17 @@ impl RimWorldState {
                 self.actors[p_idx].task = PendingTask::RestAt { tx: mx, ty: my };
                 self.actors[p_idx].activity_tag = "前往歇息".into();
                 Ok("前往圍爐歇息".into())
+            }
+            "sleep_bed" => {
+                let Some(path) = find_micro_path(rt, &self.overlays, start, (mx, my), false, false)
+                else {
+                    self.actors[p_idx].running = false;
+                    return Err("竹編睡榻通路受阻".into());
+                };
+                self.actors[p_idx].path = path.into();
+                self.actors[p_idx].task = PendingTask::SleepBed { tx: mx, ty: my };
+                self.actors[p_idx].activity_tag = "前往就榻".into();
+                Ok("前往登榻歇息".into())
             }
             "chop" => {
                 self.designate_rect(mx, my, mx, my, "chop");

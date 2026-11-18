@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-18
-- **當前狀態**：`active`（已完成 `v19`（`v=20261118a17`）：接通「人版」先天相與武百工歷練成相（`human_phase`）、力竭倒地與同袍救援、西麓↔水尾寮貨郎行旅與駐世經歷入話；承接 `v15`～`v18` 之雙端非重疊碰撞、全地圖白描圖素與 `google/gemini-3.1-flash-image` 靜態立繪）
+- **當前狀態**：`active`（已完成 `v20`（`v=20261118a18`）：接通開譜曆山雨時序、單平面圍合室內判定、`竹編睡榻`休養與**做法 B（屋外見頂、進屋掀頂）**宣紙白描茅竹屋頂閉環；承接 `v9`～`v19` 全數閉環並於 `c88e8457` 完成遠端推存）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -35,10 +35,13 @@
 10. **2026-11-18 `v16`～`v18` 實體非重疊碰撞、全地圖白描圖素升級與 `gemini-3.1-flash-image` 切換（`v=20261118a16`）**：
     - 新增 `src/grid/substrate/rim_physics.rs`（`670` 行）實作 4-pass 硬 PBD 圓對圓實體防重疊碰撞與狹路讓行，並與前端 `findClientPath`/`trimPassedWaypoints` 達成 `0ms` 無卡頓移動與自動採筍入囊（`34/34` 單元測試通過）。
     - 補齊 15 張正 `90°` 垂直俯視「宣紙白描淡彩」去背 PNG 圖素（營火、百工案台、竹編草席、渡溪木橋、原木角柱、春筍、全物資與工具、紅土野山豬／鐵羽竹雞），拔除 `[竹5]` 白底方框改為實物堆疊與 `×N` 描邊字，通過桌機與 `Pixel 9 Pro XL` 雙機真機驗收；並將 OpenRouter BYOK 預設繪圖模型由 `google/gemini-2.5-flash-image` 升級為 `google/gemini-3.1-flash-image`。
-11. **2026-11-18 `v19` 人版歷練成相、力竭救援與雙聚落貨郎經歷閉環（`v=20261118a17`）**：
+11. **2026-11-18 `v19` 人版歷練成相、力竭救援與雙聚落貨郎經歷閉環（`v=20261118a17`，`c88e8457`）**：
     - 新增 `src/grid/substrate/{rim_phase,rim_cmd}.rs` 並於 PostgreSQL `rim_actor_state` 冪等擴充 `phase_json` 持久化：將先天骨相（`InnateBonePhase::from_seed`）與實地採作／烹煮／解剖／戰鬥歷練接入 `crate::combat::human_phase` 三相武鬥、時序斷招與庖丁解牛（熟練解牛出肉增至 `3` 份），每位居民依其命盤與歷練凝出專屬去數值武百工招式名號。
     - 取消戰敗原地抹除與玩家瞬移重生，實作`力竭倒地`（側臥視覺姿態）、患處傷勢降速、`RescueAlly` 健全同袍就近背回營火，以及營火畔調理復原；並打通`西麓湧泉 ↔ 水尾寮`貨郎守恆擔貨往返與 `recent_diary` 見聞自動寫入 `POST /api/rim/talk` 事實提示詞。
     - 前端 `[自身]` 彈窗補齊可點按身手名號與白話詳解、`林緣巡採／百工營造／護衛獵巡／爐畔靜養`四擇行事取向與`近期駐世經歷`，居民檢視卡同步顯示專屬身手名號（`38/38` `grid::substrate` 單元測試通過）。
+12. **2026-11-18 `v20` 開譜曆山雨、單平面圍合室內、`竹編睡榻`與「做法 B 屋外見頂進屋掀頂」閉環（`v=20261118a18`）**：
+    - 新增 `src/grid/substrate/rim_shelter.rs`（`494` 行）：依開譜曆季節與兩時辰窗口決定`晴風和暢／山嵐微雨／瀟瀟山雨`；四連通洪泛自動掃描竹木圍牆與院門閉合區域為單平面`EnclosedRoom`，並為既有西麓草寮 `(8,4),(8,2)` 與水尾寮茶寮（補西門 `(28,-7)`、床榻 `(35,-5),(35,-9)`）及玩家自建屋舍統一提供屋簷遮蔽、屋外戴笠擋雨 vs. 無笠濕冷疲勞，以及上榻加速消傷回氣（`42/42` `grid::substrate` 單元測試通過）。
+    - 前端按拍板定案的**做法 B（屋外見頂、進屋掀頂）**於屋外繪製正 `90°` 俯視宣紙白描茅竹斜脊屋頂與出簷門罩，進門、靠近或選取室內時平滑掀開，露地營火受雨轉弱冒煙、室內溫潤竹席＋`竹編睡榻`棉被階層與夜雨門燈餘暈同步生效。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -48,12 +51,12 @@
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
 - **活躍 2D 世界實作與單檔 `< 1,000` 行模組群**：
-  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_portrait_gen}.rs`
+  - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_portrait_gen}.rs`
   - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`
 
 ## 三、 下一步接續提示 (Next Cue)
 
 - **依 `docs/DESIGN_KEYWORDS.md` 續推下一階段活態細節**：
-  1. **天時天候與庇護壓迫感閉環**：將既有 `48` 候晝夜與雨勢天候事件接上露宿風寒體感（室內屋簷下遮雨保暖 vs. 露地營火取暖、竹笠擋雨），不新增介面數值條而以自然動詞與體感標籤反饋。
-  2. **聚落經濟與長期營建**：從貨郎行旅與近期駐世經歷進一步接出工案修繕、儲物調撥與聚落糧荒／過剩自治應對，使兩聚落互補隨季節天候動態演進。
-  3. **20m 底板微步 `3a′`～`3d` 空間銜接與版控收斂**：適時為演進成果執行 `tra-sw-gate --checkpoint` 提交里程碑，並持續將長期探索區塊快取、`grid_z` 樓層隔離與跨區有界尋路合入同一 2D 世界。
+  1. **土地動態演變（`v21`）—— 翻土開壟、草藥藥圃與春筍再生**：讓`石刃木鎬`能翻墾田壟／藥圃種植食糧與山藥草、草藥於案台搗製敷傷膏消解部位傷勢，並使被伐空竹叢與春筍隨開譜曆雨露自然萌發再生。
+  2. **沿真實地形外推鄰近市鎮與五大店堂（`v22`）**：自西麓與水尾寮順平坦幹道鋪設首座鄰近市鎮街屋，串聯百工鍛造護具鞋靴、食堂熱食、總商行鎂晶匯兌與脈絡診所。
+  3. **20m 底板微步 `3a′`～`3d` 空間銜接**：持續將長期探索區塊快取、`grid_z` 樓層隔離與跨區有界尋路合入同一 2D 世界。

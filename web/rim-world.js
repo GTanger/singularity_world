@@ -17,7 +17,7 @@
   let basemapImg = null;
 
   // ─ 宣紙白描簡約俯視素材與確定性動態系統 (對齊 pawn-demo v8 標準) ─
-  const PAWN_ASSET_VER = '20261118a17';
+  const PAWN_ASSET_VER = '20261118a18';
   const PAWN_ASSET_FILES = {
     hat: `assets/pawn/m1_1_hat.png?v=${PAWN_ASSET_VER}`,
     head: `assets/pawn/m1_2_head.png?v=${PAWN_ASSET_VER}`,
@@ -86,6 +86,11 @@
   let cellMap = new Map();
   let actors = [];
   let meDetail = null;
+  let worldWeather = { code: 'clear', label: '晴風和暢', raining: false };
+  let worldRooms = [];
+  let indoorCellSet = new Set();
+  const roomRoofAlpha = new Map();
+  let bedBadgeQueue = [];
   let renderActors = new Map(); // id -> { x, y, srvX, srvY, facing, targetFacing, speed, running, path, walkPhase, moveBlend, runBlend, chopTimer, chopDidImpact, lastPop }
   let meMoveSeq = 0;
   let meMoveLockUntil = 0;
@@ -141,6 +146,50 @@
 
   function isWaterGround(g) {
     return g === 'stream' || g === 'spring' || g === 'deep';
+  }
+
+  function getEffectiveWeather() {
+    if (window.__swQaWeather === 'rain') {
+      return { code: 'rain', label: '瀟瀟山雨', raining: true };
+    }
+    if (window.__swQaWeather === 'clear') {
+      return { code: 'clear', label: '晴風和暢', raining: false };
+    }
+    return worldWeather || { code: 'clear', label: '晴風和暢', raining: false };
+  }
+
+  function roomKeyOf(rm) {
+    return `${rm.x0},${rm.y0},${rm.x1},${rm.y1}`;
+  }
+
+  function getRoomRoofAlphaAt(mx, my) {
+    for (const rm of worldRooms) {
+      if (mx >= rm.x0 && mx <= rm.x1 && my >= rm.y0 && my <= rm.y1) {
+        return roomRoofAlpha.has(roomKeyOf(rm)) ? roomRoofAlpha.get(roomKeyOf(rm)) : 1.0;
+      }
+    }
+    return 0.0;
+  }
+
+  function findBedSleeper(mx, my) {
+    for (const a of actors) {
+      if (a.faction === 'wild_beast' || a.act === '力竭倒地') continue;
+      if (!/榻上安歇/.test(String(a.act || ''))) continue;
+      const st = renderActors.get(a.id);
+      const ax = st ? st.x : a.px;
+      const ay = st ? st.y : a.py;
+      if (Math.hypot(ax - mx, ay - my) <= 0.58) return a;
+    }
+    return null;
+  }
+
+  function isActorSleepingInBed(a, pos) {
+    if (!a || a.faction === 'wild_beast' || a.act === '力竭倒地') return false;
+    if (!/榻上安歇/.test(String(a.act || ''))) return false;
+    const gx = Math.round(pos.x);
+    const gy = Math.round(pos.y);
+    const cell = cellMap.get(`${gx},${gy}`);
+    return Boolean(cell && cell.s === 'bed' && Math.hypot(pos.x - gx, pos.y - gy) <= 0.58);
   }
 
   let viewportW = 1;
@@ -327,11 +376,29 @@
         if (d.sky_time && window.SwSkyTime) {
           window.SwSkyTime.syncFromServer(d.sky_time);
         }
+        if (d.weather && typeof d.weather === 'object') {
+          worldWeather = d.weather;
+        }
+        if (Array.isArray(d.rooms)) {
+          worldRooms = d.rooms;
+          const nextIndoor = new Set();
+          for (const rm of worldRooms) {
+            if (Array.isArray(rm.cells)) {
+              for (const pt of rm.cells) nextIndoor.add(`${pt[0]},${pt[1]}`);
+            }
+            if (Array.isArray(rm.doors)) {
+              for (const dp of rm.doors) nextIndoor.add(`${dp[0]},${dp[1]}`);
+            }
+          }
+          indoorCellSet = nextIndoor;
+        }
+        const effWeather = getEffectiveWeather();
         const clk = $('rim-world-clock');
         if (clk) {
-          clk.textContent = window.SwSkyTime
+          const baseClk = window.SwSkyTime
             ? window.SwSkyTime.getClockInfo().clockText
             : (d.world_clock || clk.textContent);
+          clk.textContent = effWeather.label ? `${baseClk}・${effWeather.label}` : baseClk;
         }
         if (d.me_detail) {
           meDetail = d.me_detail;
@@ -1651,6 +1718,45 @@
       }
     }
 
+    bedBadgeQueue = [];
+
+    // 單平面圍合室內：於底層土地之上鋪設溫潤竹席地板與內牆細簷陰影
+    const effWeather = getEffectiveWeather();
+    for (const rm of worldRooms) {
+      if (!Array.isArray(rm.cells) || !rm.cells.length) continue;
+      for (const pt of rm.cells) {
+        const ix = pt[0];
+        const iy = pt[1];
+        const p = microToScreen(ix, iy);
+        if (p.x < -cellPx || p.x > viewportW + cellPx || p.y < -cellPx || p.y > viewportH + cellPx) continue;
+        const x0 = p.x - cellPx / 2;
+        const y0 = p.y - cellPx / 2;
+        ctx.fillStyle = '#f0e3ca';
+        ctx.fillRect(x0 - 0.35, y0 - 0.35, cellPx + 0.7, cellPx + 0.7);
+        if (cellPx >= 15) {
+          ctx.strokeStyle = 'rgba(128, 96, 62, 0.14)';
+          ctx.lineWidth = 0.9;
+          ctx.beginPath();
+          ctx.moveTo(x0 + cellPx * 0.25, y0);
+          ctx.lineTo(x0 + cellPx * 0.25, y0 + cellPx);
+          ctx.moveTo(x0 + cellPx * 0.75, y0);
+          ctx.lineTo(x0 + cellPx * 0.75, y0 + cellPx);
+          ctx.moveTo(x0, y0 + cellPx * 0.5);
+          ctx.lineTo(x0 + cellPx, y0 + cellPx * 0.5);
+          ctx.stroke();
+        }
+        // 北／西內牆內側細微簷蔭
+        if (iy === rm.y1 - 1) {
+          ctx.fillStyle = 'rgba(44, 30, 15, 0.08)';
+          ctx.fillRect(x0, y0, cellPx, cellPx * 0.24);
+        }
+        if (ix === rm.x0 + 1) {
+          ctx.fillStyle = 'rgba(44, 30, 15, 0.06)';
+          ctx.fillRect(x0, y0, cellPx * 0.20, cellPx);
+        }
+      }
+    }
+
     // Pass 2：營火暖暈（先暈染於全數地面之上，絕不被鄰格切角）、建成設施、物資籤及中景簡約物
     for (let my = cy - halfH; my <= cy + halfH; my++) {
       for (let mx = cx - halfW; mx <= cx + halfW; mx++) {
@@ -1658,12 +1764,14 @@
         if (!c || c.s !== 'campfire') continue;
         const p = microToScreen(mx, my);
         const flicker = 1 + Math.sin(nowMs * 0.012) * 0.09;
-        const grad = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, cellPx * 1.65 * flicker);
-        grad.addColorStop(0, 'rgba(218, 118, 36, 0.24)');
+        const wetCamp = effWeather.raining && !indoorCellSet.has(`${mx},${my}`);
+        const rad = cellPx * (wetCamp ? 0.92 : 1.65) * flicker;
+        const grad = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, rad);
+        grad.addColorStop(0, wetCamp ? 'rgba(208, 102, 34, 0.14)' : 'rgba(218, 118, 36, 0.24)');
         grad.addColorStop(1, 'rgba(218, 118, 36, 0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, cellPx * 1.65, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, rad, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -1939,35 +2047,57 @@
         } else if (c.s === 'campfire') {
           const cfImg = pawnImgs.campfire;
           const flicker = 1 + Math.sin(nowMs * 0.012) * 0.09;
+          const wetCamp = effWeather.raining && !indoorCellSet.has(`${mx},${my}`);
           if (cfImg && cfImg.complete && cfImg.naturalWidth) {
             const hCf = hash2d(mx, my);
             drawPawnPart(cfImg, p.x, p.y, cellPx * 1.08, cellPx * 1.08, 0.50, 0.50, ((hCf % 4) * Math.PI) / 2);
-            // 疊加呼吸動態火芯微光（令白描營火自然閃動而不遮掩手繪筆觸）
-            ctx.save();
-            ctx.globalAlpha = 0.24 + Math.sin(nowMs * 0.014) * 0.08;
-            ctx.fillStyle = '#ff9c2a';
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, cellPx * 0.14 * flicker, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.globalAlpha = 0.34 + Math.cos(nowMs * 0.019) * 0.10;
-            ctx.fillStyle = '#ffe27a';
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, cellPx * 0.07 * flicker, 0, Math.PI * 2);
-            ctx.fill();
-            if (cellPx >= 20) {
-              const spk1 = Math.sin(nowMs * 0.008 + mx);
-              const spk2 = Math.cos(nowMs * 0.011 + my);
-              ctx.globalAlpha = 0.55;
-              ctx.fillStyle = '#ffbc42';
+            if (wetCamp) {
+              ctx.save();
+              ctx.fillStyle = 'rgba(62, 54, 48, 0.42)';
               ctx.beginPath();
-              ctx.arc(p.x + spk1 * cellPx * 0.10, p.y - Math.abs(spk2) * cellPx * 0.18, 1.4, 0, Math.PI * 2);
+              ctx.arc(p.x, p.y, cellPx * 0.20, 0, Math.PI * 2);
               ctx.fill();
+              ctx.fillStyle = 'rgba(218, 88, 34, 0.46)';
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, cellPx * 0.08, 0, Math.PI * 2);
+              ctx.fill();
+              const tSec = nowMs * 0.001;
+              for (let sm = 0; sm < 3; sm++) {
+                const ph = (tSec * 0.55 + sm * 0.33 + (mx % 5) * 0.1) % 1.0;
+                ctx.fillStyle = `rgba(235, 232, 224, ${(1 - ph) * 0.40})`;
+                ctx.beginPath();
+                ctx.arc(p.x + Math.sin(tSec * 2 + sm) * 3.5, p.y - ph * cellPx * 0.68, cellPx * (0.08 + ph * 0.13), 0, Math.PI * 2);
+                ctx.fill();
+              }
+              ctx.restore();
+            } else {
+              // 疊加呼吸動態火芯微光（令白描營火自然閃動而不遮掩手繪筆觸）
+              ctx.save();
+              ctx.globalAlpha = 0.24 + Math.sin(nowMs * 0.014) * 0.08;
+              ctx.fillStyle = '#ff9c2a';
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, cellPx * 0.14 * flicker, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.globalAlpha = 0.34 + Math.cos(nowMs * 0.019) * 0.10;
+              ctx.fillStyle = '#ffe27a';
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, cellPx * 0.07 * flicker, 0, Math.PI * 2);
+              ctx.fill();
+              if (cellPx >= 20) {
+                const spk1 = Math.sin(nowMs * 0.008 + mx);
+                const spk2 = Math.cos(nowMs * 0.011 + my);
+                ctx.globalAlpha = 0.55;
+                ctx.fillStyle = '#ffbc42';
+                ctx.beginPath();
+                ctx.arc(p.x + spk1 * cellPx * 0.10, p.y - Math.abs(spk2) * cellPx * 0.18, 1.4, 0, Math.PI * 2);
+                ctx.fill();
+              }
+              ctx.restore();
             }
-            ctx.restore();
           } else {
-            ctx.fillStyle = '#c85a1e';
+            ctx.fillStyle = wetCamp ? '#9c4b22' : '#c85a1e';
             ctx.beginPath();
-            ctx.arc(p.x, p.y, Math.max(3.5, cellPx * 0.20 * flicker), 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, Math.max(3.5, cellPx * (wetCamp ? 0.12 : 0.20) * flicker), 0, Math.PI * 2);
             ctx.fill();
           }
         } else if (c.s === 'workbench') {
@@ -1982,6 +2112,8 @@
             ctx.fillRect(p.x - cellPx * 0.42, p.y - cellPx * 0.34, cellPx * 0.84, cellPx * 0.68);
             ctx.strokeRect(p.x - cellPx * 0.42, p.y - cellPx * 0.34, cellPx * 0.84, cellPx * 0.68);
           }
+        } else if (c.s === 'bed') {
+          drawBambooBed(mx, my, p.x, p.y, cellPx, findBedSleeper(mx, my));
         }
 
         // 中景尺度（5 <= cellPx < 12）自然物繪製簡潔白描圓叢點；近景（>= 12）則移入 Y-Sort 佇列
@@ -2929,6 +3061,367 @@
     ctx.restore();
   }
 
+  function drawBambooBed(mx, my, cx, cy, cellPx, sleeper) {
+    const w = cellPx * 1.32;
+    const h = cellPx * 0.84;
+    const lw = Math.max(1.05, cellPx * 0.028);
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    ctx.fillStyle = 'rgba(44, 30, 15, 0.14)';
+    ctx.fillRect(-w / 2 + 2.2, -h / 2 + 2.6, w, h);
+
+    ctx.fillStyle = '#d4bd97';
+    ctx.strokeStyle = PAWN_PAL.ink;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.roundRect(-w / 2, -h / 2, w, h, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#eadcc2';
+    ctx.fillRect(-w * 0.44, -h * 0.40, w * 0.88, h * 0.80);
+    ctx.strokeStyle = 'rgba(92, 68, 46, 0.24)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    for (let i = -3; i <= 3; i++) {
+      const sx = (w * 0.42 * i) / 4;
+      ctx.moveTo(sx, -h * 0.39);
+      ctx.lineTo(sx, h * 0.39);
+    }
+    ctx.stroke();
+
+    const postR = cellPx * 0.072;
+    for (const [px, py] of [
+      [-w * 0.47, -h * 0.46], [w * 0.47, -h * 0.46],
+      [-w * 0.47, h * 0.46], [w * 0.47, h * 0.46],
+    ]) {
+      ctx.fillStyle = '#9c7c57';
+      ctx.strokeStyle = PAWN_PAL.ink;
+      ctx.lineWidth = lw * 0.9;
+      ctx.beginPath();
+      ctx.arc(px, py, postR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // 東側竹枕
+    ctx.fillStyle = '#f5efe2';
+    ctx.strokeStyle = PAWN_PAL.ink;
+    ctx.lineWidth = lw * 0.9;
+    ctx.beginPath();
+    ctx.roundRect(w * 0.20, -h * 0.31, w * 0.21, h * 0.62, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    if (sleeper) {
+      const S = cellPx * 0.72;
+      const sh = hashStr(`${sleeper.id}|${sleeper.soul_seed || ''}`);
+      const [vestFill] = VEST_PALETTES[sh % VEST_PALETTES.length];
+      ctx.save();
+      ctx.translate(w * 0.16, 0);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = vestFill;
+      ctx.strokeStyle = PAWN_PAL.ink;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.ellipse(0, 0.16 * S, 0.36 * S, 0.18 * S, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      drawPawnPart(pawnImgs.head, 0, -0.06 * S, 0.44 * S, 0.54 * S, 0.5, 0.5, 0);
+      ctx.restore();
+    }
+
+    // 礦物靛藍被褥＋米白翻領緣
+    const qLeft = -w * 0.43;
+    const qW = sleeper ? w * 0.55 : w * 0.48;
+    ctx.fillStyle = '#62717f';
+    ctx.strokeStyle = PAWN_PAL.ink;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.roundRect(qLeft, -h * 0.37, qW, h * 0.74, 3);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(34, 43, 52, 0.42)';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(qLeft + qW * 0.22, -h * 0.26);
+    ctx.lineTo(qLeft + qW * 0.75, -h * 0.10);
+    ctx.moveTo(qLeft + qW * 0.18, h * 0.16);
+    ctx.lineTo(qLeft + qW * 0.72, h * 0.22);
+    ctx.stroke();
+
+    ctx.fillStyle = '#efe7d6';
+    ctx.strokeStyle = PAWN_PAL.ink;
+    ctx.lineWidth = lw * 0.85;
+    ctx.fillRect(qLeft + qW - w * 0.08, -h * 0.37, w * 0.08, h * 0.74);
+    ctx.strokeRect(qLeft + qW - w * 0.08, -h * 0.37, w * 0.08, h * 0.74);
+    ctx.restore();
+
+    if (sleeper) {
+      bedBadgeQueue.push({
+        mx,
+        my,
+        cx,
+        by: cy - h * 0.5 - 11,
+        txt: `${sleeper.name || sleeper.glyph || ''}・榻上安歇`,
+        isPlayer: !!sleeper.is_player,
+      });
+    }
+  }
+
+  function drawBuildingRoofsB(dt, nowMs) {
+    if (cellPx < 5.0 || !worldRooms.length) return;
+    const me = actors.find((a) => a.is_player);
+    const meSt = me ? renderActors.get(me.id) : null;
+    const meX = meSt ? meSt.x : (me ? me.px : -9999);
+    const meY = meSt ? meSt.y : (me ? me.py : -9999);
+
+    for (const rm of worldRooms) {
+      const rk = roomKeyOf(rm);
+      const doors = Array.isArray(rm.doors) ? rm.doors : [];
+      const meInside = me && meX >= rm.x0 - 0.35 && meX <= rm.x1 + 0.35 && meY >= rm.y0 - 0.35 && meY <= rm.y1 + 0.35;
+      const nearDoor = me && doors.some((dp) => Math.hypot(meX - dp[0], meY - dp[1]) <= 1.25);
+      const selInside = selectedCell && selectedCell.mx >= rm.x0 && selectedCell.mx <= rm.x1 && selectedCell.my >= rm.y0 && selectedCell.my <= rm.y1;
+      const targetAlpha = (meInside || nearDoor || selInside) ? 0.0 : 1.0;
+
+      let alpha = roomRoofAlpha.has(rk) ? roomRoofAlpha.get(rk) : targetAlpha;
+      alpha += (targetAlpha - alpha) * (1.0 - Math.exp(-9.0 * dt));
+      if (Math.abs(alpha - targetAlpha) < 0.01) alpha = targetAlpha;
+      roomRoofAlpha.set(rk, alpha);
+
+      const pTL = microToScreen(rm.x0 - 0.84, rm.y1 + 0.86);
+      const pBR = microToScreen(rm.x1 + 0.84, rm.y0 - 0.86);
+      const rx0 = pTL.x;
+      const ry0 = pTL.y;
+      const rw = pBR.x - pTL.x;
+      const rh = pBR.y - pTL.y;
+
+      // 掀頂後仍保留極淡滴水簷虛線，讓屋簷保護界線可察覺
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(92, 68, 46, 0.22)';
+      ctx.lineWidth = 1.05;
+      ctx.strokeRect(rx0, ry0, rw, rh);
+      ctx.restore();
+
+      if (alpha <= 0.02 || rw <= 12 || rh <= 12) continue;
+
+      const midY = ry0 + rh * 0.5;
+      const lw = Math.max(1.15, cellPx * 0.030);
+      ctx.save();
+      ctx.globalAlpha = alpha * Math.min(1.0, (cellPx - 5.0) / 5.0);
+
+      // 屋簷垂影
+      ctx.fillStyle = 'rgba(34, 24, 14, 0.20)';
+      ctx.fillRect(rx0 + cellPx * 0.14, ry0 + cellPx * 0.16, rw, rh);
+
+      // 南北雙坡底色
+      ctx.fillStyle = '#ddd0b7';
+      ctx.fillRect(rx0, ry0, rw, rh * 0.5);
+      ctx.fillStyle = '#ccc0a4';
+      ctx.fillRect(rx0, midY, rw, rh * 0.5);
+
+      // 手繪茅竹層疊脈絡
+      if (cellPx >= 12) {
+        ctx.lineCap = 'round';
+        const layersPerSlope = 5;
+        for (const isSouth of [false, true]) {
+          const dir = isSouth ? 1 : -1;
+          for (let layer = 0; layer < layersPerSlope; layer++) {
+            const frac = (layer + 0.65) / layersPerSlope;
+            const bandY = isSouth ? midY + frac * (rh * 0.48) : midY - frac * (rh * 0.48);
+            ctx.strokeStyle = 'rgba(92, 68, 46, 0.28)';
+            ctx.lineWidth = lw * 0.72;
+            ctx.beginPath();
+            ctx.moveTo(rx0 + cellPx * 0.18, bandY);
+            ctx.lineTo(rx1Or(rx0, rw) - cellPx * 0.18, bandY);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(51, 38, 32, 0.34)';
+            ctx.lineWidth = Math.max(0.75, cellPx * 0.017);
+            ctx.beginPath();
+            const step = Math.max(5.5, cellPx * 0.15);
+            let idx = 0;
+            for (let sx = rx0 + cellPx * 0.22; sx < rx0 + rw - cellPx * 0.22; sx += step) {
+              const hh = hash2d(idx + layer * 41 + rm.x0, isSouth ? 91 : 37);
+              const jx = ((hh % 5) - 2) * 0.6;
+              const len = ((rh * 0.45) / layersPerSlope) * (0.72 + ((hh >>> 4) % 30) / 100);
+              ctx.moveTo(sx + jx, bandY - dir * len * 0.85);
+              ctx.lineTo(sx - jx * 0.5, bandY + dir * 1.3);
+              idx++;
+            }
+            ctx.stroke();
+          }
+        }
+      }
+
+      ctx.strokeStyle = PAWN_PAL.ink;
+      ctx.lineWidth = lw * 1.15;
+      ctx.strokeRect(rx0, ry0, rw, rh);
+
+      // 東西山牆壓竹封邊條
+      for (const gx of [rx0, rx0 + rw - cellPx * 0.20]) {
+        ctx.fillStyle = '#c5b08a';
+        ctx.fillRect(gx, ry0, cellPx * 0.20, rh);
+        ctx.strokeRect(gx, ry0, cellPx * 0.20, rh);
+      }
+
+      // 各院門出簷門亭小罩棚
+      for (const dp of doors) {
+        const dx = dp[0];
+        const dy = dp[1];
+        const dc = microToScreen(dx, dy);
+        ctx.fillStyle = '#d3c2a1';
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = lw;
+        if (dx === rm.x0) {
+          ctx.fillRect(rx0 - cellPx * 0.26, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
+          ctx.strokeRect(rx0 - cellPx * 0.26, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
+        } else if (dx === rm.x1) {
+          ctx.fillRect(rx0 + rw - 2, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
+          ctx.strokeRect(rx0 + rw - 2, dc.y - cellPx * 0.44, cellPx * 0.28, cellPx * 0.88);
+        } else if (dy === rm.y1) {
+          ctx.fillRect(dc.x - cellPx * 0.44, ry0 - cellPx * 0.26, cellPx * 0.88, cellPx * 0.28);
+          ctx.strokeRect(dc.x - cellPx * 0.44, ry0 - cellPx * 0.26, cellPx * 0.88, cellPx * 0.28);
+        } else if (dy === rm.y0) {
+          ctx.fillRect(dc.x - cellPx * 0.44, ry0 + rh - 2, cellPx * 0.88, cellPx * 0.28);
+          ctx.strokeRect(dc.x - cellPx * 0.44, ry0 + rh - 2, cellPx * 0.88, cellPx * 0.28);
+        }
+      }
+
+      // 中央竹脊大樑＋藤篾縛結＋南北茅草鬚邊
+      const ridgeH = cellPx * 0.22;
+      ctx.fillStyle = '#e7d9bd';
+      ctx.fillRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
+      ctx.strokeRect(rx0 - 2, midY - ridgeH / 2, rw + 4, ridgeH);
+
+      if (cellPx >= 14) {
+        ctx.strokeStyle = 'rgba(51, 38, 32, 0.48)';
+        ctx.lineWidth = lw * 0.65;
+        ctx.beginPath();
+        ctx.moveTo(rx0, midY);
+        ctx.lineTo(rx0 + rw, midY);
+        ctx.stroke();
+
+        ctx.strokeStyle = PAWN_PAL.ink;
+        ctx.lineWidth = Math.max(0.8, cellPx * 0.017);
+        ctx.beginPath();
+        const fStep = Math.max(6, cellPx * 0.16);
+        let fi = 0;
+        for (let sx = rx0 + cellPx * 0.25; sx < rx0 + rw - cellPx * 0.25; sx += fStep) {
+          const hh = hash2d(fi + rm.x0, 503);
+          const tuft = cellPx * (0.045 + (hh % 4) * 0.015);
+          ctx.moveTo(sx, ry0);
+          ctx.lineTo(sx + ((hh % 3) - 1), ry0 - tuft);
+          ctx.moveTo(sx, ry0 + rh);
+          ctx.lineTo(sx + (((hh >>> 2) % 3) - 1), ry0 + rh + tuft);
+          fi++;
+        }
+        ctx.stroke();
+
+        const ties = Math.max(4, Math.round((rm.x1 - rm.x0) * 1.2));
+        for (let i = 0; i <= ties; i++) {
+          const tx = rx0 + (rw * (i + 0.35)) / (ties + 0.7);
+          ctx.fillStyle = '#9c7850';
+          ctx.strokeStyle = PAWN_PAL.ink;
+          ctx.lineWidth = 0.9;
+          ctx.fillRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
+          ctx.strokeRect(tx - cellPx * 0.05, midY - ridgeH * 0.56, cellPx * 0.10, ridgeH * 1.12);
+        }
+      }
+      ctx.restore();
+    }
+
+    // 繪製掀起屋頂室內的睡榻標籤
+    if (cellPx >= 12) {
+      ctx.font = '600 10.5px "Noto Sans TC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (const bl of bedBadgeQueue) {
+        if (getRoomRoofAlphaAt(bl.mx, bl.my) > 0.5) continue;
+        const tw = ctx.measureText(bl.txt).width + 10;
+        ctx.fillStyle = 'rgba(247, 240, 227, 0.94)';
+        ctx.strokeStyle = bl.isPlayer ? '#8b2020' : '#a89880';
+        ctx.lineWidth = 1;
+        ctx.fillRect(bl.cx - tw / 2, bl.by - 8, tw, 16);
+        ctx.strokeRect(bl.cx - tw / 2, bl.by - 8, tw, 16);
+        ctx.fillStyle = bl.isPlayer ? '#8b2020' : '#2c1e0f';
+        ctx.fillText(bl.txt, bl.cx, bl.by + 0.5);
+      }
+    }
+    void nowMs;
+  }
+
+  function rx1Or(x0, w) {
+    return x0 + w;
+  }
+
+  function drawMountainRain(nowMs) {
+    const effW = getEffectiveWeather();
+    if (!effW.raining || cellPx < 8.0) return;
+    const isLight = effW.code === 'drizzle';
+    const tSec = nowMs * 0.001;
+
+    const unveiledRects = [];
+    for (const rm of worldRooms) {
+      const rk = roomKeyOf(rm);
+      const alpha = roomRoofAlpha.has(rk) ? roomRoofAlpha.get(rk) : 1.0;
+      if (alpha <= 0.5) {
+        const pTL = microToScreen(rm.x0 - 0.84, rm.y1 + 0.86);
+        const pBR = microToScreen(rm.x1 + 0.84, rm.y0 - 0.86);
+        unveiledRects.push([pTL.x, pTL.y, pBR.x - pTL.x, pBR.y - pTL.y]);
+      }
+    }
+
+    ctx.save();
+    // 雨水漣漪（略過已掀頂室內）
+    const rippleCount = isLight ? 18 : 30;
+    for (let i = 0; i < rippleCount; i++) {
+      const seed = hash2d(i, 709);
+      const phase = (tSec * 1.45 + (seed % 100) / 100) % 1.0;
+      const rx = ((hash2d(i, 19) % 1000) / 1000) * viewportW;
+      const ry = ((hash2d(i, 53) % 1000) / 1000) * viewportH;
+      if (unveiledRects.some((r) => rx >= r[0] && rx <= r[0] + r[2] && ry >= r[1] && ry <= r[1] + r[3])) {
+        continue;
+      }
+      ctx.strokeStyle = `rgba(82, 108, 122, ${(1 - phase) * (isLight ? 0.30 : 0.44)})`;
+      ctx.lineWidth = 1.05;
+      const rad = 1.5 + phase * (cellPx * 0.16);
+      ctx.beginPath();
+      ctx.ellipse(rx, ry, rad, rad * 0.56, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // 細墨雨絲（裁剪排除掀頂室內）
+    if (unveiledRects.length > 0) {
+      ctx.beginPath();
+      ctx.rect(0, 0, viewportW, viewportH);
+      for (const r of unveiledRects) {
+        ctx.rect(r[0], r[1], r[2], r[3]);
+      }
+      ctx.clip('evenodd');
+    }
+
+    ctx.strokeStyle = isLight ? 'rgba(72, 92, 104, 0.24)' : 'rgba(66, 86, 98, 0.34)';
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    const dropCount = isLight ? 56 : 108;
+    for (let i = 0; i < dropCount; i++) {
+      const sx = (hash2d(i, 101) % 1000) / 1000;
+      const sy = (hash2d(i, 211) % 1000) / 1000;
+      const speed = (isLight ? 0.68 : 0.90) + ((hash2d(i, 307) % 35) / 100);
+      const py = ((sy + tSec * speed) % 1.08 - 0.04) * viewportH;
+      const px = (((sx - tSec * speed * 0.14) % 1.08 + 1.08) % 1.08) * viewportW;
+      const len = cellPx * (0.34 + ((hash2d(i, 409) % 20) / 100));
+      ctx.moveTo(px, py);
+      ctx.lineTo(px - len * 0.24, py + len);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function drawActors(nowMs) {
     // 繪製本尊尋路預覽線（行走為淡墨細虛線，雙擊疾奔為鮮明硃砂快步線）
     const me = actors.find((a) => a.is_player);
@@ -2985,10 +3478,13 @@
         };
         const sp = microToScreen(pos.x, pos.y);
         if (sp.x < -60 || sp.x > viewportW + 60 || sp.y < -60 || sp.y > viewportH + 60) continue;
+        if (isActorSleepingInBed(a, pos)) continue;
         const rank = a.is_player ? 2 : 1;
         renderItems.push({ kind: 'actor', sortY: sp.y, rank, a, pos, sp });
         const badge = a.pop || a.carry;
-        if (badge) labelDrawList.push({ a, sp, badge });
+        if (badge && getRoomRoofAlphaAt(pos.x, pos.y) <= 0.5) {
+          labelDrawList.push({ a, sp, badge });
+        }
       }
 
       renderItems.sort((u, v) => (u.sortY - v.sortY) || (u.rank - v.rank));
@@ -3243,8 +3739,10 @@
     const clockInfo = window.SwSkyTime ? window.SwSkyTime.applyDocumentSkyCss() : null;
     if (clockInfo) {
       const clk = $('rim-world-clock');
-      if (clk && clk.textContent !== clockInfo.clockText) {
-        clk.textContent = clockInfo.clockText;
+      const effW = getEffectiveWeather();
+      const txt = effW.label ? `${clockInfo.clockText}・${effW.label}` : clockInfo.clockText;
+      if (clk && clk.textContent !== txt) {
+        clk.textContent = txt;
       }
     }
     ctx.fillStyle = '#efe8d8';
@@ -3252,20 +3750,44 @@
     drawMacroBasemap();
     drawMicroLayer(nowMs);
     drawActors(nowMs);
+    drawBuildingRoofsB(dt, nowMs);
+    drawMountainRain(nowMs);
 
     if (window.SwSkyTime) {
       const lights = [];
+      const effW = getEffectiveWeather();
       if (cellPx >= 5.0) {
         for (const c of cellMap.values()) {
           if (c.s !== 'campfire' && c.s !== 'workbench') continue;
           const p = microToScreen(c.x, c.y);
           if (p.x < -220 || p.x > viewportW + 220 || p.y < -220 || p.y > viewportH + 220) continue;
+          const wetCamp = c.s === 'campfire' && effW.raining && !indoorCellSet.has(`${c.x},${c.y}`);
           lights.push({
             x: p.x,
             y: p.y,
-            radius: cellPx * (c.s === 'campfire' ? 5.6 : 2.5),
+            radius: cellPx * (c.s === 'campfire' ? (wetCamp ? 2.2 : 5.6) : 2.5),
             kind: c.s,
           });
+        }
+        for (const rm of worldRooms) {
+          const rk = roomKeyOf(rm);
+          const alpha = roomRoofAlpha.has(rk) ? roomRoofAlpha.get(rk) : 1.0;
+          if (alpha <= 0.5) {
+            const c = microToScreen((rm.x0 + rm.x1) * 0.5, (rm.y0 + rm.y1) * 0.5);
+            lights.push({
+              x: c.x,
+              y: c.y,
+              radius: cellPx * Math.max(rm.x1 - rm.x0, rm.y1 - rm.y0) * 0.68,
+              kind: 'campfire',
+            });
+          } else if (Array.isArray(rm.doors)) {
+            for (const dp of rm.doors) {
+              const ox = dp[0] === rm.x0 ? -0.65 : (dp[0] === rm.x1 ? 0.65 : 0);
+              const oy = dp[1] === rm.y1 ? 0.65 : (dp[1] === rm.y0 ? -0.65 : 0);
+              const gp = microToScreen(dp[0] + ox, dp[1] + oy);
+              lights.push({ x: gp.x, y: gp.y, radius: cellPx * 2.2, kind: 'workbench' });
+            }
+          }
         }
         const me = actors.find((a) => a.is_player);
         if (me) {
