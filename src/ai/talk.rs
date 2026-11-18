@@ -43,7 +43,12 @@ fn sprintf_one_percent_s(template: &str, value: &str) -> String {
 
 /// 依據場所名稱組裝場域物件設定與活躍事件包／劇本包 prompt 上下文
 pub fn build_room_venue_and_event_pack_prompt_context(room_name: &str) -> String {
-    let clean_room = room_name.trim().split('（').next().unwrap_or(room_name.trim()).trim();
+    let clean_room = room_name
+        .trim()
+        .split('（')
+        .next()
+        .unwrap_or(room_name.trim())
+        .trim();
     if clean_room.is_empty() {
         return String::new();
     }
@@ -68,7 +73,11 @@ pub fn build_room_venue_and_event_pack_prompt_context(room_name: &str) -> String
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap_or_default()
             .as_secs() as i64;
-        if let Some((ev, sc)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(clean_room, None, now_unix) {
+        if let Some((ev, sc)) =
+            crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                clean_room, None, now_unix,
+            )
+        {
             out.push_str(&format!(
                 "【現場當務與差事】「{}」（{}）｜現場氛圍與差事緣由：{}（僅作背景參考，若來客未問及此事，請自然回應來客話題，切勿強行背誦無關器物）\n",
                 ev.event_title, sc.title, ev.trigger_and_causal_chain
@@ -114,7 +123,9 @@ pub fn player_npc_talk_build_prompts(
             }
             sb.push_str(&sc);
         }
-        sb.push_str(&build_room_venue_and_event_pack_prompt_context(room_display_name));
+        sb.push_str(&build_room_venue_and_event_pack_prompt_context(
+            room_display_name,
+        ));
     }
     sb.push_str(&player_npc_behavior_rules());
     sb.push_str(&player_npc_traditional_rule());
@@ -215,7 +226,11 @@ fn resolve_dialogue_api_key(endpoint: &str) -> String {
     std::env::var("PLAYER_TALK_API_KEY")
         .ok()
         .filter(|s| !s.trim().is_empty())
-        .or_else(|| std::env::var("OPENAI_API_KEY").ok().filter(|s| !s.trim().is_empty()))
+        .or_else(|| {
+            std::env::var("OPENAI_API_KEY")
+                .ok()
+                .filter(|s| !s.trim().is_empty())
+        })
         .unwrap_or_default()
 }
 /// 去除思考模型輸出的 `<think>...</think>` 標籤及其內部內容。
@@ -355,7 +370,9 @@ pub fn call_ai_talk(
         ) {
             Ok(reply) => return Ok(reply),
             Err(e) => {
-                tracing::warn!("openai-compatible dialogue call failed ({e}), trying local dialogue server");
+                tracing::warn!(
+                    "openai-compatible dialogue call failed ({e}), trying local dialogue server"
+                );
             }
         }
     } else if !base_url.trim().is_empty() && !model.trim().is_empty() {
@@ -587,9 +604,7 @@ pub fn parse_npc_npc_dialogue_json(
     let mut anchors = Vec::new();
     for mut a in std::mem::take(&mut d.anchors) {
         a = a.trim().to_string();
-        if a.is_empty()
-            || is_npc_npc_meta_or_assistant_line(&a)
-            || a.chars().all(|c| c.is_ascii())
+        if a.is_empty() || is_npc_npc_meta_or_assistant_line(&a) || a.chars().all(|c| c.is_ascii())
         {
             continue;
         }
@@ -817,7 +832,11 @@ pub fn call_ai_talk_npc_to_npc(
             if let Ok(resp) = client.post(&url).json(&body).send() {
                 if resp.status().is_success() {
                     if let Ok(out) = resp.json::<OllamaChatResponse>() {
-                        if let Ok(res) = parse_npc_npc_response_text(&out.message.content, speaker_name, listener_name) {
+                        if let Ok(res) = parse_npc_npc_response_text(
+                            &out.message.content,
+                            speaker_name,
+                            listener_name,
+                        ) {
                             return Ok(res);
                         }
                     }
@@ -907,14 +926,8 @@ mod tests {
 
     #[test]
     fn test_player_npc_talk_build_prompts_includes_venue_and_pack() {
-        let (system_prompt, _) = player_npc_talk_build_prompts(
-            "你好",
-            "石磨匠",
-            &[],
-            &[],
-            "",
-            "老堰頭・水輪石磨工坊",
-        );
+        let (system_prompt, _) =
+            player_npc_talk_build_prompts("你好", "石磨匠", &[], &[], "", "老堰頭・水輪石磨工坊");
         assert!(system_prompt.contains("水輪石磨工坊"));
         assert!(system_prompt.contains("當值石磨匠師"));
     }

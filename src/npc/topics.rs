@@ -180,9 +180,16 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
     if is_social && t.id == "閒聊" {
         w += 2;
     }
-    if ["workshop", "blacksmith", "grindstone", "shop", "courier", "herb"]
-        .iter()
-        .any(|k| room_has_tag(&mask.room_tags, k))
+    if [
+        "workshop",
+        "blacksmith",
+        "grindstone",
+        "shop",
+        "courier",
+        "herb",
+    ]
+    .iter()
+    .any(|k| room_has_tag(&mask.room_tags, k))
         && t.requires_work
     {
         w += 2;
@@ -381,17 +388,19 @@ mod tests {
     fn find_topic_id_by_hint_matches_legacy() {
         try_load_npc_npc_topics(&topics_path()).expect("load topics");
         assert_eq!(
-            find_npc_npc_topic_id_by_hint("換班、交接時的情境，核對水門刻度、工坊器具、帳冊與當值交接"),
+            find_npc_npc_topic_id_by_hint(
+                "換班、交接時的情境，核對水門刻度、工坊器具、帳冊與當值交接"
+            ),
             "交班"
         );
         assert_eq!(
-            find_npc_npc_topic_id_by_hint("圍繞各聚落百工器物、水輪石磨、鹽坪結晶、山茶烘焙與日常差事自然交流"),
+            find_npc_npc_topic_id_by_hint(
+                "圍繞各聚落百工器物、水輪石磨、鹽坪結晶、山茶烘焙與日常差事自然交流"
+            ),
             "閒聊"
         );
         assert_eq!(
-            find_npc_npc_topic_id_by_hint(
-                "鎮上傳聞山海古道、霜林口、山野異獸與豐茂林地動靜"
-            ),
+            find_npc_npc_topic_id_by_hint("鎮上傳聞山海古道、霜林口、山野異獸與豐茂林地動靜"),
             "城外聞"
         );
         assert_eq!(find_npc_npc_topic_id_by_hint(""), "");

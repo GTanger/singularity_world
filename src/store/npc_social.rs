@@ -130,7 +130,12 @@ impl Store {
         })
     }
 
-    pub fn set_npc_thread(&mut self, id_a: &str, id_b: &str, mut t: NpcThread) -> anyhow::Result<()> {
+    pub fn set_npc_thread(
+        &mut self,
+        id_a: &str,
+        id_b: &str,
+        mut t: NpcThread,
+    ) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
         t.thread_key = key.clone();
         let anchors_raw = serde_json::to_string(&t.anchors).unwrap_or_else(|_| "[]".to_string());

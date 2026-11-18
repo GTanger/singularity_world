@@ -108,7 +108,9 @@ pub fn get_item_descs(equipment_slots: &str) -> HashMap<String, String> {
         } else if let Some(_name) = crate::db::inventory::fallback_item_name(item_id) {
             let desc = match item_id {
                 "starter_body_m" | "starter_body_f" | "粗布短褂" => "質樸舒適的棉麻日常上衣。",
-                "starter_legs_m" | "starter_legs_f" | "粗布長褲" => "耐磨且便於活動的日常休閒長褲。",
+                "starter_legs_m" | "starter_legs_f" | "粗布長褲" => {
+                    "耐磨且便於活動的日常休閒長褲。"
+                }
                 "starter_feet_m" | "starter_feet_f" | "草鞋" => "輕便透氣的平底布鞋。",
                 _ => "採集或探索獲得的物產。",
             };
@@ -148,14 +150,26 @@ mod tests {
     fn starter_equipment_resolves_modern_names() {
         let slots_m = starter_equipment("M");
         let names_m = get_item_names(&slots_m);
-        assert_eq!(names_m.get("body").map(|s| s.as_str()), Some("棉麻日常上衣"));
-        assert_eq!(names_m.get("legs").map(|s| s.as_str()), Some("耐磨休閒長褲"));
+        assert_eq!(
+            names_m.get("body").map(|s| s.as_str()),
+            Some("棉麻日常上衣")
+        );
+        assert_eq!(
+            names_m.get("legs").map(|s| s.as_str()),
+            Some("耐磨休閒長褲")
+        );
         assert_eq!(names_m.get("feet").map(|s| s.as_str()), Some("輕便布鞋"));
 
         let slots_f = starter_equipment("F");
         let names_f = get_item_names(&slots_f);
-        assert_eq!(names_f.get("body").map(|s| s.as_str()), Some("棉麻日常上衣"));
-        assert_eq!(names_f.get("legs").map(|s| s.as_str()), Some("耐磨休閒長褲"));
+        assert_eq!(
+            names_f.get("body").map(|s| s.as_str()),
+            Some("棉麻日常上衣")
+        );
+        assert_eq!(
+            names_f.get("legs").map(|s| s.as_str()),
+            Some("耐磨休閒長褲")
+        );
         assert_eq!(names_f.get("feet").map(|s| s.as_str()), Some("輕便布鞋"));
     }
 }

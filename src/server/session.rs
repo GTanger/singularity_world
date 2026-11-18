@@ -78,8 +78,9 @@ pub(crate) fn player_location_key(player_id: &str) -> String {
 
 /// 以 `PlayerID` 為 key 的線上 session（對齊既有 `SessionStore`）。
 /// 全域在線玩家 ID 集合（葉節點，無鎖競爭與反向依賴，供活世界模擬與因果步進高頻查詢）。
-pub static ONLINE_PLAYER_IDS: std::sync::LazyLock<parking_lot::RwLock<std::collections::HashSet<String>>> =
-    std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashSet::new()));
+pub static ONLINE_PLAYER_IDS: std::sync::LazyLock<
+    parking_lot::RwLock<std::collections::HashSet<String>>,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashSet::new()));
 
 /// 查詢指定實體是否在線
 pub fn is_entity_online(entity_id: &str) -> bool {

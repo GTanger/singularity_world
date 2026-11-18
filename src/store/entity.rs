@@ -86,9 +86,7 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
                 }
             }
         }
-        if eq_modified
-            && let Ok(new_eq) = serde_json::to_string(&map)
-        {
+        if eq_modified && let Ok(new_eq) = serde_json::to_string(&map) {
             e.equipment_slots = new_eq;
             changed = true;
         }
@@ -103,14 +101,13 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
     let (canon_supply_id, _) =
         crate::game::object_ecology::ItemPhysicalClass::canonical_vocation_supply_item(&work_ctx);
 
-    if !e.inventory.trim().is_empty()
-        || is_household_npc
-    {
-        let mut entries: Vec<crate::db::inventory::InventoryEntry> = if e.inventory.trim().is_empty() {
-            Vec::new()
-        } else {
-            serde_json::from_str(&e.inventory).unwrap_or_default()
-        };
+    if !e.inventory.trim().is_empty() || is_household_npc {
+        let mut entries: Vec<crate::db::inventory::InventoryEntry> =
+            if e.inventory.trim().is_empty() {
+                Vec::new()
+            } else {
+                serde_json::from_str(&e.inventory).unwrap_or_default()
+            };
         let orig_len = entries.len();
         let mut inv_modified = false;
         entries.retain_mut(|entry| {
@@ -156,7 +153,11 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
     };
     let work_name = if is_household_npc {
         let w = wenyao_household_slot_for(&e.id).work_name;
-        if w.is_empty() { "文曜・百工修繕坊" } else { w }
+        if w.is_empty() {
+            "文曜・百工修繕坊"
+        } else {
+            w
+        }
     } else {
         "文曜・百工修繕坊"
     };
@@ -164,7 +165,8 @@ pub fn sanitize_npc_equipment_and_inventory(e: &mut super::Entity) -> bool {
     for t in &mut e.thoughts {
         if let Some(flavor) = t.flavor.as_mut() {
             let orig = flavor.clone();
-            *flavor = sanitize_thought_flavor_by_grid_and_class(flavor, home_name, work_name, "文曜");
+            *flavor =
+                sanitize_thought_flavor_by_grid_and_class(flavor, home_name, work_name, "文曜");
             if *flavor != orig {
                 thoughts_modified = true;
             }
@@ -187,15 +189,7 @@ pub fn sanitize_thought_flavor_by_grid_and_class(
     _settlement: &str,
 ) -> String {
     let mut result = flavor.to_string();
-    let action_verbs = [
-        "完成",
-        "用過",
-        "飲過",
-        "把隨身的",
-        "泡過",
-        "歇息",
-        "坐街邊",
-    ];
+    let action_verbs = ["完成", "用過", "飲過", "把隨身的", "泡過", "歇息", "坐街邊"];
 
     if let Some(start_idx) = result.find("在") {
         let after_at = &result[start_idx + "在".len()..];
@@ -226,7 +220,8 @@ pub fn sanitize_thought_flavor_by_grid_and_class(
                 || result.contains("冷開水")
                 || result.contains("竹水筒")
                 || result.contains("公井");
-            let is_bathing = verb == "泡過" || result.contains("溫水") || result.contains("熱湯洗塵");
+            let is_bathing =
+                verb == "泡過" || result.contains("溫水") || result.contains("熱湯洗塵");
             let is_maintaining = verb == "把隨身的"
                 || result.contains("重新紮緊")
                 || result.contains("修整校準")
@@ -236,11 +231,12 @@ pub fn sanitize_thought_flavor_by_grid_and_class(
                 || crate::grid::is_private_residence_room_name(raw_venue))
                 && (!home_name.contains(clean_venue) && !home_name.contains(raw_venue));
 
-            let is_street_for_indoor_activity = (crate::grid::is_street_or_gate_room_name(clean_venue)
-                || crate::grid::is_street_or_gate_room_name(raw_venue)
-                || clean_venue.contains("天井")
-                || raw_venue.contains("天井"))
-                && (is_drinking || is_eating || is_bathing || is_maintaining);
+            let is_street_for_indoor_activity =
+                (crate::grid::is_street_or_gate_room_name(clean_venue)
+                    || crate::grid::is_street_or_gate_room_name(raw_venue)
+                    || clean_venue.contains("天井")
+                    || raw_venue.contains("天井"))
+                    && (is_drinking || is_eating || is_bathing || is_maintaining);
 
             if is_residence || is_street_for_indoor_activity {
                 let target_venue = if is_drinking {
@@ -270,15 +266,18 @@ pub fn sanitize_thought_flavor_by_grid_and_class(
             let after_open = &result[start_v + "把隨身的「".len()..];
             if let Some(end_rel) = after_open.find('」') {
                 let vessel_name = &after_open[..end_rel];
-                let phys = crate::game::object_ecology::ItemPhysicalClass::classify("", vessel_name);
+                let phys =
+                    crate::game::object_ecology::ItemPhysicalClass::classify("", vessel_name);
                 let action_phrase = phys.maintenance_action_phrase();
                 let target_replacement = format!("{action_phrase}，器況煥然一新，幹起活來順手多了");
-                if result.contains("洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了") {
+                if result.contains("洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了")
+                {
                     result = result.replace(
                         "洗淨擦拭、重新紮緊，器況煥然一新，用起來順手多了",
                         &target_replacement,
                     );
-                } else if result.contains("細細修整校準，器況煥然一新，幹起活來順手多了") {
+                } else if result.contains("細細修整校準，器況煥然一新，幹起活來順手多了")
+                {
                     result = result.replace(
                         "細細修整校準，器況煥然一新，幹起活來順手多了",
                         &target_replacement,

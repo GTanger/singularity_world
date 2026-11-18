@@ -349,7 +349,11 @@ pub fn player_npc_temporal_acquaintance_stats(
         }
     }
 
-    (first_met_at, last_prior_session_at, prior_session_turn_count)
+    (
+        first_met_at,
+        last_prior_session_at,
+        prior_session_turn_count,
+    )
 }
 
 #[derive(Debug, Deserialize)]
@@ -404,7 +408,11 @@ pub fn pick_style_examples(entity_id: &str, n: usize) -> Vec<String> {
         return Vec::new();
     }
     let title = crate::store::get_store()
-        .and_then(|arc| arc.read().get_entity(entity_id).map(|e| e.display_title.clone()))
+        .and_then(|arc| {
+            arc.read()
+                .get_entity(entity_id)
+                .map(|e| e.display_title.clone())
+        })
         .unwrap_or_default();
     let slot_tag = crate::store::wenyao_household_slot_for(entity_id).brief_tag;
     let combined_hint = format!("{entity_id} {title} {slot_tag}");
@@ -427,15 +435,13 @@ pub fn pick_style_examples(entity_id: &str, n: usize) -> Vec<String> {
         }
     }
 
-    let dialogue_pool = mapped_file
-        .and_then(load_dialogue_file)
-        .or_else(|| {
-            let assignments = get_assignments_for_entity(entity_id).ok()?;
-            let a = assignments.first()?;
-            let occs = load_occupations_file()?;
-            let occ = occs.occupations.get(&a.occupation_id)?;
-            load_dialogue_file(&occ.dialogue_file)
-        });
+    let dialogue_pool = mapped_file.and_then(load_dialogue_file).or_else(|| {
+        let assignments = get_assignments_for_entity(entity_id).ok()?;
+        let a = assignments.first()?;
+        let occs = load_occupations_file()?;
+        let occ = occs.occupations.get(&a.occupation_id)?;
+        load_dialogue_file(&occ.dialogue_file)
+    });
 
     let Some(pool) = dialogue_pool else {
         return Vec::new();

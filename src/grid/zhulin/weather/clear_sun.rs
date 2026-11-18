@@ -1,5 +1,5 @@
-use crate::grid::zhulin::objects::ZhulinTagTriad;
 use super::ZhulinWeatherDef;
+use crate::grid::zhulin::objects::ZhulinTagTriad;
 
 pub const ID: &str = "zl_weather_clear_sun";
 pub const LEGACY_KEY: &str = "clear";

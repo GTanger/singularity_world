@@ -5,11 +5,10 @@ use std::sync::{LazyLock, RwLock};
 
 use crate::ai::narrative::{CombatBoutFactPacket, compose_combat_bouts_concurrent};
 use crate::combat::wordplate::{
-    derive_elementary_motions_from_chars, infer_item_carrier_affinity, CarrierAffinity,
-    PostureState, StarInlay, StarSentence, TacticalLoadout, TacticalSlot, TargetPart, WordCasket,
-    WordRegistry,
+    CarrierAffinity, PostureState, StarInlay, StarSentence, TacticalLoadout, TacticalSlot,
+    TargetPart, WordCasket, WordRegistry, derive_elementary_motions_from_chars,
+    infer_item_carrier_affinity,
 };
-use crate::pg::living_world::AfflictionKind;
 use crate::db::{
     self, EVT_DEATH, FAV_SLAY, FAV_SUBDUE, ThoughtSource, add_thought, adjust_favorability,
     get_assignments_for_entity, get_room_ids_for_venue, log_npc_event,
@@ -19,6 +18,7 @@ use crate::entity::{Character, EntityKind};
 use crate::event::{self, types};
 use crate::gametext;
 use crate::npc::npc_behavior_reaction_line;
+use crate::pg::living_world::AfflictionKind;
 use crate::server::handler::{get_player_tactical_loadout, get_player_word_casket};
 
 use super::super::broadcast::send_narrate_to_room;
@@ -124,7 +124,6 @@ pub fn handle_tactical_choice(conn: &WsConnection, msg: &crate::server::protocol
         }
     }
 
-
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
         action: "TacticalChoice".into(),
@@ -160,10 +159,17 @@ pub(super) fn do_entity_combat(
     let mut narrative = narrative;
     if fight_winner == "defender" && !subdue && (a_broken || attacker_hp <= 18) {
         let (dest_x, dest_y, dest_name) =
-            crate::server::handler::movement::find_nearest_clinic_for_combat(attacker.x, attacker.y);
+            crate::server::handler::movement::find_nearest_clinic_for_combat(
+                attacker.x, attacker.y,
+            );
         let (gx, gy) = (attacker.x, attacker.y);
-        let dropped_names =
-            crate::server::handler::movement::faint_drop_items_to_ground(pid, &attacker.inventory, gx, gy, now);
+        let dropped_names = crate::server::handler::movement::faint_drop_items_to_ground(
+            pid,
+            &attacker.inventory,
+            gx,
+            gy,
+            now,
+        );
         let _ = db::set_entity_grid(pid, dest_x, dest_y);
         attacker_hp = 30;
         crate::pg::living_world::record_entity_affliction(
@@ -222,7 +228,10 @@ pub(super) fn do_entity_combat(
             parties
                 .values()
                 .find(|p| {
-                    let near_prey = (attacker.x - p.prey_coord.0).abs().max((attacker.y - p.prey_coord.1).abs()) <= 12;
+                    let near_prey = (attacker.x - p.prey_coord.0)
+                        .abs()
+                        .max((attacker.y - p.prey_coord.1).abs())
+                        <= 12;
                     let same_prey = p.prey_name == target.display_title;
                     let is_pledged = pledged_zone.as_deref() == Some(p.zone_name.as_str());
                     near_prey || (is_pledged && same_prey)
@@ -239,7 +248,9 @@ pub(super) fn do_entity_combat(
                 target.display_title
             ));
             if fight_winner == "attacker" {
-                if let Some((loot_id, loot_name, _)) = crate::game::ambient_creature_loot(&target.display_title) {
+                if let Some((loot_id, loot_name, _)) =
+                    crate::game::ambient_creature_loot(&target.display_title)
+                {
                     let _ = db::add_to_inventory(pid, loot_id, 1);
                     if let Some(arc) = crate::store::get_store() {
                         let _ = arc.write().update_entity(pid, |e| {
@@ -262,7 +273,9 @@ pub(super) fn do_entity_combat(
         }
     }
     if target_is_beast && fight_winner == "attacker" {
-        if let Some((loot_id, loot_name, shanhai_note)) = crate::game::ambient_creature_loot(&target.display_title) {
+        if let Some((loot_id, loot_name, shanhai_note)) =
+            crate::game::ambient_creature_loot(&target.display_title)
+        {
             let (gx, gy) = if let Some(rest) = target_id.strip_prefix("shanhai_") {
                 let parts: Vec<&str> = rest.split('_').collect();
                 if parts.len() == 4
@@ -387,19 +400,18 @@ pub(super) fn do_entity_combat(
     } else {
         super::player_visible_target_name(pid, &target)
     };
-    let _ = event::append(now, pid, types::COMBAT, &format!("與{}交手", combat_log_target));
+    let _ = event::append(
+        now,
+        pid,
+        types::COMBAT,
+        &format!("與{}交手", combat_log_target),
+    );
     let _ = update_vit(pid, attacker_hp);
     let _ = update_vit(target_id, defender_hp);
     if let Some(pool) = &crate::pg::pool() {
         if !target_is_beast {
             let _ = crate::pg::living_world::record_relationship_delta(
-                pool,
-                target_id,
-                pid,
-                "grudge",
-                2,
-                action,
-                now,
+                pool, target_id, pid, "grudge", 2, action, now,
             );
             let _ = crate::pg::living_world::open_obligation(
                 pool,
@@ -439,7 +451,11 @@ pub(super) fn do_entity_combat(
             pid,
             &player_name,
             player_room,
-            if subdue { "combat_subdue" } else { "combat_slay" },
+            if subdue {
+                "combat_subdue"
+            } else {
+                "combat_slay"
+            },
             &target.display_title,
             0,
             now,
@@ -457,23 +473,24 @@ pub(super) fn do_entity_combat(
         if let Some(pool) = &crate::pg::pool() {
             let _ = crate::pg::living_world::mark_entity_dead(pool, target_id, "combat:slay", now);
         }
-        let death_name = crate::store::resolve_npc_person_name(target_id, &target.display_title, None);
+        let death_name =
+            crate::store::resolve_npc_person_name(target_id, &target.display_title, None);
         let final_death_name = if !death_name.is_empty() && death_name != "陌生人" {
             death_name
         } else if !target.display_title.is_empty() {
-            target.display_title.rsplit(['|', '｜']).next().unwrap_or(&target.display_title).trim().to_string()
+            target
+                .display_title
+                .rsplit(['|', '｜'])
+                .next()
+                .unwrap_or(&target.display_title)
+                .trim()
+                .to_string()
         } else if target.id.is_ascii() || target.id.trim().is_empty() {
             "陌生人".to_string()
         } else {
             target.id.clone()
         };
-        broadcast_npc_death(
-            conn,
-            player_room,
-            target_id,
-            &final_death_name,
-            now,
-        );
+        broadcast_npc_death(conn, player_room, target_id, &final_death_name, now);
         let _ = remove_assignments_for_entity(target_id);
         let _ = remove_schedule_for_entity(target_id);
     }

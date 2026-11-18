@@ -1,11 +1,12 @@
-use crate::grid::zhulin::objects::ZhulinTagTriad;
 use super::ZhulinWeatherDef;
+use crate::grid::zhulin::objects::ZhulinTagTriad;
 
 pub const ID: &str = "zl_weather_post_rain_mist";
 pub const LEGACY_KEY: &str = "plum_rain";
 pub const NAME: &str = "雨後初霽";
 pub const SHORT_LABEL: &str = "雨霽";
-pub const AMBIENT_PROSE: &str = "雨勢初歇、雲隙透出天光，林間水氣蒸騰，濕軟紅土散發濃郁土香與草木生機。";
+pub const AMBIENT_PROSE: &str =
+    "雨勢初歇、雲隙透出天光，林間水氣蒸騰，濕軟紅土散發濃郁土香與草木生機。";
 
 pub const TAGS: ZhulinTagTriad = ZhulinTagTriad {
     category_tags: &["weather", "post_precipitation", "humid_clearing"],

@@ -31,7 +31,8 @@ pub fn pick_micro_interaction(room_id: &str, chance: i32, game_hour: i32) -> Str
     if lines.is_empty() {
         return String::new();
     }
-    let line = if lines.first().copied() == Some("近旁兩名行人低聲交談了幾句，很快又各自看向別處。") {
+    let line = if lines.first().copied() == Some("近旁兩名行人低聲交談了幾句，很快又各自看向別處。")
+    {
         if let Some(venue_line) = synthesize_venue_micro_interaction(&room_name) {
             venue_line
         } else {

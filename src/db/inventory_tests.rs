@@ -77,35 +77,101 @@ fn test_pick_entity_trade_offer_excludes_equipped_and_prioritizes_craft() {
 
 #[test]
 fn fallback_item_name_covers_peninsula_deeds_and_keys() {
-    assert_eq!(fallback_item_name("deed_white_tower_property"), Some("公議堂紅印屋契"));
-    assert_eq!(fallback_item_name("key_brass_home_lock"), Some("黃銅彈子門鎖鑰匙"));
-    assert_eq!(fallback_item_name("item_personal_astrolabe_scroll"), Some("周天命格星盤拓卷"));
-    assert_eq!(fallback_item_name("item_oiled_bamboo_umbrella"), Some("雙層桐油防雨竹傘"));
-    assert_eq!(fallback_item_name("item_spruce_votive_plaque"), Some("北嶺雲杉祈福木牌"));
-    assert_eq!(fallback_item_name("item_white_tower_gazetteer_scroll"), Some("白塔風物孤本鈔卷"));
-    assert_eq!(fallback_item_name("item_ebony_mortise_tea_tray"), Some("沉水烏木榫卯茶盤"));
-    assert_eq!(fallback_item_name("item_quenched_steel_whetstone"), Some("雙面精鋼油石"));
-    assert_eq!(fallback_item_name("item_indigo_rain_cloak"), Some("山藍防雨斗篷"));
-    assert_eq!(fallback_item_name("item_coastal_sea_chart"), Some("黑潮順時針海圖摺頁"));
-    assert_eq!(fallback_item_name("item_wenyao_cadastral_rubbing"), Some("文曜四坊地籍圖鈔頁"));
-    assert_eq!(fallback_item_name("item_braised_beef_broth_jar"), Some("慢燉原牛肉湯陶盅"));
-    assert_eq!(fallback_item_name("item_roasted_frost_tea_tin"), Some("炭焙霜林烘青茶罐"));
-    assert_eq!(fallback_item_name("item_seven_star_moxa_pack"), Some("九蒸七星艾絨藥包"));
-    assert_eq!(fallback_item_name("item_collated_stele_rubbing"), Some("精校金石碑帖拓本"));
-    assert_eq!(fallback_item_name("item_polished_quartz_lens"), Some("精磨紅土水晶鏡片"));
-    assert_eq!(fallback_item_name("item_smoked_mullet_roe_pack"), Some("風櫃尾冷燻烏魚子禮包"));
+    assert_eq!(
+        fallback_item_name("deed_white_tower_property"),
+        Some("公議堂紅印屋契")
+    );
+    assert_eq!(
+        fallback_item_name("key_brass_home_lock"),
+        Some("黃銅彈子門鎖鑰匙")
+    );
+    assert_eq!(
+        fallback_item_name("item_personal_astrolabe_scroll"),
+        Some("周天命格星盤拓卷")
+    );
+    assert_eq!(
+        fallback_item_name("item_oiled_bamboo_umbrella"),
+        Some("雙層桐油防雨竹傘")
+    );
+    assert_eq!(
+        fallback_item_name("item_spruce_votive_plaque"),
+        Some("北嶺雲杉祈福木牌")
+    );
+    assert_eq!(
+        fallback_item_name("item_white_tower_gazetteer_scroll"),
+        Some("白塔風物孤本鈔卷")
+    );
+    assert_eq!(
+        fallback_item_name("item_ebony_mortise_tea_tray"),
+        Some("沉水烏木榫卯茶盤")
+    );
+    assert_eq!(
+        fallback_item_name("item_quenched_steel_whetstone"),
+        Some("雙面精鋼油石")
+    );
+    assert_eq!(
+        fallback_item_name("item_indigo_rain_cloak"),
+        Some("山藍防雨斗篷")
+    );
+    assert_eq!(
+        fallback_item_name("item_coastal_sea_chart"),
+        Some("黑潮順時針海圖摺頁")
+    );
+    assert_eq!(
+        fallback_item_name("item_wenyao_cadastral_rubbing"),
+        Some("文曜四坊地籍圖鈔頁")
+    );
+    assert_eq!(
+        fallback_item_name("item_braised_beef_broth_jar"),
+        Some("慢燉原牛肉湯陶盅")
+    );
+    assert_eq!(
+        fallback_item_name("item_roasted_frost_tea_tin"),
+        Some("炭焙霜林烘青茶罐")
+    );
+    assert_eq!(
+        fallback_item_name("item_seven_star_moxa_pack"),
+        Some("九蒸七星艾絨藥包")
+    );
+    assert_eq!(
+        fallback_item_name("item_collated_stele_rubbing"),
+        Some("精校金石碑帖拓本")
+    );
+    assert_eq!(
+        fallback_item_name("item_polished_quartz_lens"),
+        Some("精磨紅土水晶鏡片")
+    );
+    assert_eq!(
+        fallback_item_name("item_smoked_mullet_roe_pack"),
+        Some("風櫃尾冷燻烏魚子禮包")
+    );
     assert_eq!(fallback_item_name("starter_body_m"), Some("棉麻日常上衣"));
     assert_eq!(fallback_item_name("starter_legs_m"), Some("耐磨休閒長褲"));
     assert_eq!(fallback_item_name("starter_feet_m"), Some("輕便布鞋"));
     assert_eq!(fallback_item_name("粗布短褂"), Some("棉麻日常上衣"));
     assert_eq!(fallback_item_name("粗布長褲"), Some("耐磨休閒長褲"));
     assert_eq!(fallback_item_name("草鞋"), Some("輕便布鞋"));
-    assert_eq!(fallback_item_name("mat_herb_poultice"), Some("百草外敷藥膏"));
+    assert_eq!(
+        fallback_item_name("mat_herb_poultice"),
+        Some("百草外敷藥膏")
+    );
     assert_eq!(fallback_item_name("mat_beast_hide"), Some("粗製獸皮"));
-    assert_eq!(fallback_item_name("craft_roasted_shrimp_skewer"), Some("炭炙水尾鮮蝦串"));
-    assert_eq!(fallback_item_name("craft_smoked_fish_fillet"), Some("相思木燻鮮魚乾"));
-    assert_eq!(fallback_item_name("craft_spiced_beast_jerky"), Some("馬告炭炙獸肉脯"));
-    assert_eq!(fallback_item_name("craft_ration_grain_cake"), Some("行旅耐儲米糧餅"));
+    assert_eq!(
+        fallback_item_name("craft_roasted_shrimp_skewer"),
+        Some("炭炙水尾鮮蝦串")
+    );
+    assert_eq!(
+        fallback_item_name("craft_smoked_fish_fillet"),
+        Some("相思木燻鮮魚乾")
+    );
+    assert_eq!(
+        fallback_item_name("craft_spiced_beast_jerky"),
+        Some("馬告炭炙獸肉脯")
+    );
+    assert_eq!(
+        fallback_item_name("craft_ration_grain_cake"),
+        Some("行旅耐儲米糧餅")
+    );
 }
 
 #[test]
@@ -133,16 +199,31 @@ fn catalog_item_def_and_weight_resolution() {
 #[test]
 fn test_npc_inventory_stack_cap_prevents_reed_bloat() {
     let mut entries = vec![
-        InventoryEntry { item_id: "mat_reed_bundle".into(), qty: 133_530 },
-        InventoryEntry { item_id: "manual_854b8035e7134512".into(), qty: 1 },
+        InventoryEntry {
+            item_id: "mat_reed_bundle".into(),
+            qty: 133_530,
+        },
+        InventoryEntry {
+            item_id: "manual_854b8035e7134512".into(),
+            qty: 1,
+        },
     ];
     assert!(normalize_npc_inventory_entries(&mut entries));
-    assert_eq!((entries.len(), entries[0].item_id.as_str(), entries[0].qty), (1, "mat_reed_bundle", MAX_NPC_ITEM_STACK_QTY));
+    assert_eq!(
+        (entries.len(), entries[0].item_id.as_str(), entries[0].qty),
+        (1, "mat_reed_bundle", MAX_NPC_ITEM_STACK_QTY)
+    );
     for i in 1..=10 {
-        entries.push(InventoryEntry { item_id: format!("mat_item_{i}"), qty: 50 });
+        entries.push(InventoryEntry {
+            item_id: format!("mat_item_{i}"),
+            qty: 50,
+        });
     }
     assert!(normalize_npc_inventory_entries(&mut entries));
-    assert!(entries.len() <= MAX_NPC_DISTINCT_ITEMS && entries.iter().all(|it| it.qty <= MAX_NPC_ITEM_STACK_QTY));
+    assert!(
+        entries.len() <= MAX_NPC_DISTINCT_ITEMS
+            && entries.iter().all(|it| it.qty <= MAX_NPC_ITEM_STACK_QTY)
+    );
 }
 
 #[test]

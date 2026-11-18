@@ -75,10 +75,22 @@ pub fn synthesize_venue_role_behavior_line(title: &str, npc_name: &str, mode: &s
         "當值作業區"
     };
     match mode {
-        "shift_arrive" => format!("{}整妥工作服步入{}{}，{}。", name, venue.venue_kind, zone_tag, venue.on_duty_fixture_activity),
-        "shift_leave" => format!("{}收妥{}{}案頭器物，交接班次後邁步離去。", name, venue.venue_kind, zone_tag),
-        "enter_reaction" => format!("{}自{}{}抬眼望來，{}。", name, venue.venue_kind, zone_tag, venue.on_duty_demeanor),
-        "idle" => format!("{}立於{}{}，{}。", name, venue.venue_kind, zone_tag, venue.on_duty_fixture_activity),
+        "shift_arrive" => format!(
+            "{}整妥工作服步入{}{}，{}。",
+            name, venue.venue_kind, zone_tag, venue.on_duty_fixture_activity
+        ),
+        "shift_leave" => format!(
+            "{}收妥{}{}案頭器物，交接班次後邁步離去。",
+            name, venue.venue_kind, zone_tag
+        ),
+        "enter_reaction" => format!(
+            "{}自{}{}抬眼望來，{}。",
+            name, venue.venue_kind, zone_tag, venue.on_duty_demeanor
+        ),
+        "idle" => format!(
+            "{}立於{}{}，{}。",
+            name, venue.venue_kind, zone_tag, venue.on_duty_fixture_activity
+        ),
         _ => String::new(),
     }
 }
@@ -103,7 +115,11 @@ pub fn get_shift_flavor(title: &str, npc_name: &str, arriving: bool) -> String {
     synthesize_venue_role_behavior_line(
         title,
         npc_name,
-        if arriving { "shift_arrive" } else { "shift_leave" },
+        if arriving {
+            "shift_arrive"
+        } else {
+            "shift_leave"
+        },
     )
 }
 
@@ -245,7 +261,8 @@ mod tests {
     #[test]
     fn test_synthesize_venue_role_behavior_line_and_fallbacks() {
         // 1. synthesize_venue_role_behavior_line 直接測試
-        let arrive_mill = synthesize_venue_role_behavior_line("當值石磨匠師", "石老爹", "shift_arrive");
+        let arrive_mill =
+            synthesize_venue_role_behavior_line("當值石磨匠師", "石老爹", "shift_arrive");
         assert!(arrive_mill.contains("石老爹"));
         assert!(arrive_mill.contains("水輪石磨工坊"));
         assert!(arrive_mill.contains("當值櫃檯內側"));
@@ -255,7 +272,8 @@ mod tests {
         assert!(leave_chef.contains("大食堂"));
         assert!(leave_chef.contains("當值櫃檯內側"));
 
-        let enter_mill = synthesize_venue_role_behavior_line("當值石磨匠師", "石老爹", "enter_reaction");
+        let enter_mill =
+            synthesize_venue_role_behavior_line("當值石磨匠師", "石老爹", "enter_reaction");
         assert!(enter_mill.contains("石老爹"));
         assert!(enter_mill.contains("水輪石磨工坊"));
         assert!(enter_mill.contains("抬眼望來"));

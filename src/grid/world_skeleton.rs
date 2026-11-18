@@ -343,7 +343,10 @@ mod tests {
         assert_eq!(report.inserted, skeleton.cells.len() - 1);
         assert_eq!(report.updated, 1);
         let north_bank_name = &north_bank.name;
-        assert_eq!(north_bank_name, "半嶺水岸渡口", "unexpected ferry name: {north_bank_name}");
+        assert_eq!(
+            north_bank_name, "半嶺水岸渡口",
+            "unexpected ferry name: {north_bank_name}"
+        );
         assert!(
             north_bank.description.contains("半嶺"),
             "unexpected ferry desc: {}",

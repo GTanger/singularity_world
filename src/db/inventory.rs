@@ -41,7 +41,11 @@ fn is_raw_material_item_id(item_id: &str) -> bool {
     if crate::grid::zhulin::lookup_zhulin_item_def(item_id).is_some() {
         return true;
     }
-    if item_id.starts_with("mat_") || item_id.starts_with("harvest_") || item_id.starts_with("ore_") || item_id.starts_with("wood_") {
+    if item_id.starts_with("mat_")
+        || item_id.starts_with("harvest_")
+        || item_id.starts_with("ore_")
+        || item_id.starts_with("wood_")
+    {
         return true;
     }
     if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
@@ -100,7 +104,10 @@ pub fn normalize_npc_inventory_entries(entries: &mut Vec<InventoryEntry>) -> boo
     // 4. 若超過上限，截斷/移除超出的原料條目或最早條目
     while entries.len() > MAX_NPC_DISTINCT_ITEMS {
         changed = true;
-        if let Some(pos) = entries.iter().position(|e| is_raw_material_item_id(&e.item_id)) {
+        if let Some(pos) = entries
+            .iter()
+            .position(|e| is_raw_material_item_id(&e.item_id))
+        {
             entries.remove(pos);
         } else {
             entries.pop();
@@ -234,7 +241,6 @@ pub fn fallback_item_name(item_id: &str) -> Option<&'static str> {
     }
 }
 
-
 /// 將物品堆疊寫入實體的 `inventory` JSON；`qty` 為 0 或 `item_id` 空則 no-op。成功時觸發 `persist_entities`。
 pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Result<()> {
     if qty == 0 || item_id.is_empty() {
@@ -243,7 +249,8 @@ pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Res
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
     s.update_entity(entity_id, |e| {
-        let is_npc = e.kind == "npc" || entity_id.starts_with("npc_") || entity_id.starts_with("wt_");
+        let is_npc =
+            e.kind == "npc" || entity_id.starts_with("npc_") || entity_id.starts_with("wt_");
         let mut raw = e.inventory.clone();
         if raw.is_empty() {
             raw = "[]".to_string();
@@ -268,7 +275,10 @@ pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Res
                 qty
             };
             if is_npc && entries.len() >= MAX_NPC_DISTINCT_ITEMS {
-                if let Some(pos) = entries.iter().position(|ent| is_raw_material_item_id(&ent.item_id)) {
+                if let Some(pos) = entries
+                    .iter()
+                    .position(|ent| is_raw_material_item_id(&ent.item_id))
+                {
                     entries[pos] = InventoryEntry {
                         item_id: item_id.to_string(),
                         qty: effective_qty,
@@ -489,9 +499,21 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
         if e.qty <= 0 || e.item_id.is_empty() || e.item_id.starts_with("crystal_") {
             continue;
         }
-        let (name, item_type, description, slot, weight, origin) = if let Some(z) = crate::grid::zhulin::lookup_zhulin_item_def(&e.item_id) {
-            (z.name.to_string(), z.item_type.to_string(), z.description.to_string(), String::new(), z.weight, z.origin.to_string())
-        } else if let Some(it) = store_arc.as_ref().and_then(|arc| arc.read().get_item(&e.item_id).cloned()) {
+        let (name, item_type, description, slot, weight, origin) = if let Some(z) =
+            crate::grid::zhulin::lookup_zhulin_item_def(&e.item_id)
+        {
+            (
+                z.name.to_string(),
+                z.item_type.to_string(),
+                z.description.to_string(),
+                String::new(),
+                z.weight,
+                z.origin.to_string(),
+            )
+        } else if let Some(it) = store_arc
+            .as_ref()
+            .and_then(|arc| arc.read().get_item(&e.item_id).cloned())
+        {
             let origin = if !it.origin.is_empty() {
                 it.origin.clone()
             } else {
@@ -584,8 +606,8 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
                 _ => ("material", "", "採集或探索獲得的物產。", 0.5),
             };
             let origin_str = match e.item_id.as_str() {
-                "starter_body_m" | "starter_legs_m" | "starter_feet_m"
-                | "starter_body_f" | "starter_legs_f" | "starter_feet_f" => "隨身衣物",
+                "starter_body_m" | "starter_legs_m" | "starter_feet_m" | "starter_body_f"
+                | "starter_legs_f" | "starter_feet_f" => "隨身衣物",
                 _ => "野外拾遺",
             };
             (
@@ -636,7 +658,17 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
 #[must_use]
 pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
     if let Some(z) = crate::grid::zhulin::lookup_zhulin_item_def(item_id) {
-        return Some(ItemDefBrief { name: z.name.to_string(), item_type: z.item_type.to_string(), slot: String::new(), description: z.description.to_string(), weight: z.weight, vit_bonus: 0, dex_bonus: 0, atk_bonus: 0, origin: z.origin.to_string() });
+        return Some(ItemDefBrief {
+            name: z.name.to_string(),
+            item_type: z.item_type.to_string(),
+            slot: String::new(),
+            description: z.description.to_string(),
+            weight: z.weight,
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: z.origin.to_string(),
+        });
     }
     if let Some(arc) = store::get_store()
         && let Some(s) = arc.try_read()
@@ -690,7 +722,10 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
             name: cat.name.to_string(),
             item_type,
             slot,
-            description: format!("{}（{}・{}）", cat.look_text, cat.workshop, cat.daily_function),
+            description: format!(
+                "{}（{}・{}）",
+                cat.look_text, cat.workshop, cat.daily_function
+            ),
             weight: crate::game::peninsula_catalog::catalog_entry_weight_kg(cat),
             vit_bonus,
             dex_bonus,
@@ -703,12 +738,24 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
     }
     if let Some(name) = fallback_item_name(item_id) {
         let (item_type, slot, desc) = match item_id {
-            "starter_body_m" | "starter_body_f" | "粗布短褂" => ("equipment", "body", "質樸舒適的棉麻日常上衣。"),
-            "starter_legs_m" | "starter_legs_f" | "粗布長褲" => ("equipment", "legs", "耐磨且便於活動的日常休閒長褲。"),
-            "starter_feet_m" | "starter_feet_f" | "草鞋" => ("equipment", "feet", "輕便透氣的平底布鞋。"),
-            "starter_undershirt_m" | "starter_undershirt_f" => ("equipment", "undershirt", "吸汗透氣的純棉內衫。"),
-            "starter_inner_armor_m" | "starter_inner_armor_f" => ("equipment", "inner_armor", "輕薄貼身的軟韌護甲。"),
-            "starter_leg_armor_m" | "starter_leg_armor_f" => ("equipment", "leg_armor", "保護小腿與膝關節的束帶。"),
+            "starter_body_m" | "starter_body_f" | "粗布短褂" => {
+                ("equipment", "body", "質樸舒適的棉麻日常上衣。")
+            }
+            "starter_legs_m" | "starter_legs_f" | "粗布長褲" => {
+                ("equipment", "legs", "耐磨且便於活動的日常休閒長褲。")
+            }
+            "starter_feet_m" | "starter_feet_f" | "草鞋" => {
+                ("equipment", "feet", "輕便透氣的平底布鞋。")
+            }
+            "starter_undershirt_m" | "starter_undershirt_f" => {
+                ("equipment", "undershirt", "吸汗透氣的純棉內衫。")
+            }
+            "starter_inner_armor_m" | "starter_inner_armor_f" => {
+                ("equipment", "inner_armor", "輕薄貼身的軟韌護甲。")
+            }
+            "starter_leg_armor_m" | "starter_leg_armor_f" => {
+                ("equipment", "leg_armor", "保護小腿與膝關節的束帶。")
+            }
             "item_braised_beef_broth_jar" => (
                 "consumable",
                 "",
@@ -749,8 +796,8 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
             _ => 0.5,
         };
         let origin = match item_id {
-            "starter_body_m" | "starter_legs_m" | "starter_feet_m"
-            | "starter_body_f" | "starter_legs_f" | "starter_feet_f" => "隨身衣物",
+            "starter_body_m" | "starter_legs_m" | "starter_feet_m" | "starter_body_f"
+            | "starter_legs_f" | "starter_feet_f" => "隨身衣物",
             _ => "野外拾遺",
         };
         return Some(ItemDefBrief {
@@ -780,7 +827,10 @@ fn derive_catalog_item_equip_profile(
         if is_raw_bolt {
             return (cat.category_tag.to_string(), String::new(), 0, 0, 0);
         }
-        if ["鞋", "靴", "履", "屐"].iter().any(|k| cat.name.contains(k)) {
+        if ["鞋", "靴", "履", "屐"]
+            .iter()
+            .any(|k| cat.name.contains(k))
+        {
             return ("equipment".to_string(), "feet".to_string(), 2, 3, 0);
         }
         if ["帽", "冠", "笠", "頭巾", "風帽", "髮簪", "木簪"]
@@ -789,10 +839,16 @@ fn derive_catalog_item_equip_profile(
         {
             return ("equipment".to_string(), "head".to_string(), 2, 1, 0);
         }
-        if ["褲", "裙", "綁腿", "護腿"].iter().any(|k| cat.name.contains(k)) {
+        if ["褲", "裙", "綁腿", "護腿"]
+            .iter()
+            .any(|k| cat.name.contains(k))
+        {
             return ("equipment".to_string(), "legs".to_string(), 3, 2, 0);
         }
-        if ["護腕", "袖套", "手套"].iter().any(|k| cat.name.contains(k)) {
+        if ["護腕", "袖套", "手套"]
+            .iter()
+            .any(|k| cat.name.contains(k))
+        {
             return ("equipment".to_string(), "wrist".to_string(), 1, 3, 0);
         }
         if ["腰帶", "束帶", "圍裙", "皮帶", "腰封"]
@@ -826,16 +882,14 @@ fn derive_catalog_item_equip_profile(
         }
         return ("weapon".to_string(), "hold_r".to_string(), 1, 3, 6);
     }
-    if cat_num == "17"
-        || cat.category_tag == "craft_machinery_tools"
-        || cat.socket == "Equip"
-    {
+    if cat_num == "17" || cat.category_tag == "craft_machinery_tools" || cat.socket == "Equip" {
         let is_heavy_fixture = [
             "箱", "櫃", "架", "車", "台", "檯", "爐", "砧", "磨", "機", "桶", "缸",
         ]
         .iter()
         .any(|k| cat.name.contains(k));
-        if crate::game::peninsula_catalog::catalog_entry_weight_kg(cat) <= 15.0 && !is_heavy_fixture {
+        if crate::game::peninsula_catalog::catalog_entry_weight_kg(cat) <= 15.0 && !is_heavy_fixture
+        {
             return ("tool".to_string(), "hold_r".to_string(), 1, 3, 2);
         }
     }
@@ -888,7 +942,10 @@ pub fn inventory_weight(inventory_json: &str) -> f64 {
                 crate::game::peninsula_catalog::find_catalog_entry(&e.item_id)
                     .map(crate::game::peninsula_catalog::catalog_entry_weight_kg)
             })
-            .or_else(|| crate::game::object_ecology::lookup_ecology_item_def(&e.item_id).map(|eco| eco.weight))
+            .or_else(|| {
+                crate::game::object_ecology::lookup_ecology_item_def(&e.item_id)
+                    .map(|eco| eco.weight)
+            })
             .or_else(|| match e.item_id.as_str() {
                 "item_braised_beef_broth_jar" => Some(0.6),
                 "item_roasted_frost_tea_tin" | "item_seven_star_moxa_pack" => Some(0.3),
@@ -991,17 +1048,15 @@ pub fn pick_entity_trade_offer(inventory_json: &str, equipment_slots_json: &str)
         std::collections::HashSet::new()
     };
 
-    const PRIORITIZED_FINISHED_GOODS: &[&str] = &[
-        "wt_cat_0388",
-        "wt_cat_0279",
-        "wt_cat_0278",
-        "wt_cat_0293",
-    ];
+    const PRIORITIZED_FINISHED_GOODS: &[&str] =
+        &["wt_cat_0388", "wt_cat_0279", "wt_cat_0278", "wt_cat_0293"];
 
     // 1. 首選白塔半島旗艦成品
     for &target_item in PRIORITIZED_FINISHED_GOODS {
         if !equipped_ids.contains(target_item)
-            && entries.iter().any(|e| e.item_id == target_item && e.qty > 0)
+            && entries
+                .iter()
+                .any(|e| e.item_id == target_item && e.qty > 0)
         {
             return Some(target_item.to_string());
         }

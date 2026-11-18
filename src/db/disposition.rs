@@ -146,18 +146,50 @@ fn is_misclassified_thought_flavor(f: &str) -> bool {
     }
     (f.contains("連軸忙完") || f.contains("行囊裡添了新採獲的山海物產"))
         && [
-            "乾糧", "果腹", "冷開水", "解渴", "粗茶", "水筒", "麥餅", "自炊", "熱粥", "滷肉",
-            "點心", "大菜", "米酒", "小菜", "退火", "清湯粗麵", "陽春粗麵", "藥膳", "吃熱食",
-            "上茶寮", "共飲", "品茶", "閉目", "歇宿", "睡一覺", "熟睡", "調息", "擦汗", "泡湯",
-            "沐浴", "止血", "膏藥", "包紮", "煎湯", "熱敷", "施針", "靜養", "傷藥",
+            "乾糧",
+            "果腹",
+            "冷開水",
+            "解渴",
+            "粗茶",
+            "水筒",
+            "麥餅",
+            "自炊",
+            "熱粥",
+            "滷肉",
+            "點心",
+            "大菜",
+            "米酒",
+            "小菜",
+            "退火",
+            "清湯粗麵",
+            "陽春粗麵",
+            "藥膳",
+            "吃熱食",
+            "上茶寮",
+            "共飲",
+            "品茶",
+            "閉目",
+            "歇宿",
+            "睡一覺",
+            "熟睡",
+            "調息",
+            "擦汗",
+            "泡湯",
+            "沐浴",
+            "止血",
+            "膏藥",
+            "包紮",
+            "煎湯",
+            "熱敷",
+            "施針",
+            "靜養",
+            "傷藥",
         ]
         .iter()
         .any(|kw| f.contains(kw))
 }
 pub fn normalize_legacy_region_text(s: &str) -> String {
-    const LEGACY_TOKENS: &[&str] = &[
-        "西南原", "東境", "南嶺", "中州", "北境", "西荒", "大荒",
-    ];
+    const LEGACY_TOKENS: &[&str] = &["西南原", "東境", "南嶺", "中州", "北境", "西荒", "大荒"];
     if !LEGACY_TOKENS.iter().any(|&token| s.contains(token)) {
         return s.to_string();
     }
@@ -175,16 +207,29 @@ pub fn normalize_legacy_region_text(s: &str) -> String {
 
 pub fn normalize_thought_flavor(f: &str) -> String {
     const REGION_TOKENS: &[&str] = &[
-        "西南原", "黑沼關隘", "鹽田澳", "黑沼林澤", "黑沼林", "白塔山麓", "北聖山", "西北礦帶",
+        "西南原",
+        "黑沼關隘",
+        "鹽田澳",
+        "黑沼林澤",
+        "黑沼林",
+        "白塔山麓",
+        "北聖山",
+        "西北礦帶",
     ];
-    const OTHER_TOKENS: &[&str] = &[
-        "防爆防風", "陽春粗麵", "陽春麵", "冷開水", "白開水",
-    ];
+    const OTHER_TOKENS: &[&str] = &["防爆防風", "陽春粗麵", "陽春麵", "冷開水", "白開水"];
     let has_region = REGION_TOKENS.iter().any(|&t| f.contains(t));
     let has_other = OTHER_TOKENS.iter().any(|&t| f.contains(t));
-    let has_eco = ["巨藻淺灣", "驚濤岩岸", "黑石灣", "落日岬", "淺澤泥口", "白茫洲", "貼山深潭"]
-        .iter()
-        .any(|z| f.contains(z));
+    let has_eco = [
+        "巨藻淺灣",
+        "驚濤岩岸",
+        "黑石灣",
+        "落日岬",
+        "淺澤泥口",
+        "白茫洲",
+        "貼山深潭",
+    ]
+    .iter()
+    .any(|z| f.contains(z));
 
     if !has_region && !has_other && !has_eco {
         return f.to_string();
@@ -211,8 +256,14 @@ pub fn normalize_thought_flavor(f: &str) -> String {
     }
     if has_eco {
         s = s
-            .replace("的林木因連日採擷正逢封山休養", "的漁場因連日採擷正逢休漁養息")
-            .replace("林木亟待休養，正親手培土護苗、修整山場", "漁場亟待休養，正親手修整礁岸、養護藻床")
+            .replace(
+                "的林木因連日採擷正逢封山休養",
+                "的漁場因連日採擷正逢休漁養息",
+            )
+            .replace(
+                "林木亟待休養，正親手培土護苗、修整山場",
+                "漁場亟待休養，正親手修整礁岸、養護藻床",
+            )
             .replace("林木封山", "休漁養息");
     }
     s
@@ -225,7 +276,11 @@ fn cleanup_thoughts(thoughts: &mut Vec<Thought>, now: i64) {
         }
     }
     thoughts.retain(|t| {
-        !is_expired(t, now) && !t.flavor.as_deref().is_some_and(is_misclassified_thought_flavor)
+        !is_expired(t, now)
+            && !t
+                .flavor
+                .as_deref()
+                .is_some_and(is_misclassified_thought_flavor)
     });
     // 去除具有相同非空 flavor 的重複念頭，保留 created_at 最大者
     thoughts.sort_by(|a, b| b.created_at.cmp(&a.created_at));
@@ -258,13 +313,7 @@ pub fn add_thought(entity_id: &str, source: ThoughtSource) -> anyhow::Result<()>
     } else {
         default_flavor.to_string()
     };
-    add_thought_with_flavor(
-        entity_id,
-        source.key(),
-        delta,
-        decay_minutes,
-        flavor,
-    )
+    add_thought_with_flavor(entity_id, source.key(), delta, decay_minutes, flavor)
 }
 
 /// 加入一條 thought（自訂 source、delta、decay、flavor）。
@@ -331,14 +380,7 @@ pub(crate) fn add_thought_to_entity(entity: &mut store::Entity, source: ThoughtS
     } else {
         default_flavor.to_string()
     };
-    push_thought(
-        entity,
-        source.key(),
-        delta,
-        decay_minutes,
-        flavor,
-        now,
-    );
+    push_thought(entity, source.key(), delta, decay_minutes, flavor, now);
 }
 
 pub fn add_thought_to_entity_with_flavor(

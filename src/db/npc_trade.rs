@@ -50,9 +50,7 @@ pub fn npc_street_sell_one(entity_id: &str, room_id: &str, at: i64) -> bool {
         })
         .filter(|n| !n.is_empty() && n != "陌生人")
         .unwrap_or_else(|| "街坊買客".to_string());
-    let payload = format!(
-        "在{place_name}把{item_name}賣給{buyer_name}，實收{mag}鎂"
-    );
+    let payload = format!("在{place_name}把{item_name}賣給{buyer_name}，實收{mag}鎂");
     log_npc_event(at, entity_id, EVT_TRADE, &payload);
     let _ = add_thought(entity_id, ThoughtSource::Trade);
     let _ = add_thought(&settlement.buyer.entity_id, ThoughtSource::Trade);

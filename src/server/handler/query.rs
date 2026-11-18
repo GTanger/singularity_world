@@ -75,7 +75,8 @@ pub fn handle_set_openrouter_key(conn: &WsConnection, msg: &ClientMsg) {
                 crate::ai::DEFAULT_OPENROUTER_TALK_MODEL
             )
         } else {
-            "已清除個人 OpenRouter 金鑰。此後你與人物交談將使用本機 Gemma-4-26B-A4B 模型。".to_string()
+            "已清除個人 OpenRouter 金鑰。此後你與人物交談將使用本機 Gemma-4-26B-A4B 模型。"
+                .to_string()
         };
         conn.send_json(&ActionResultMsg {
             msg_type: "action_result".into(),

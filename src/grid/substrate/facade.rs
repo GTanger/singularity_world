@@ -71,17 +71,44 @@ impl CellFacade {
         let synth = synthesize_cell(gx, gy, l0, slope, edge_cue.clone(), &slots, field);
         let max_z = effective_max_z(l0, &slots);
         let step_ms = step_delay_ms(&slots);
-        CellSnapshot { gx, gy, l0, slope, edge_cue, slots, overlay, synth, max_z, step_ms }
+        CellSnapshot {
+            gx,
+            gy,
+            l0,
+            slope,
+            edge_cue,
+            slots,
+            overlay,
+            synth,
+            max_z,
+            step_ms,
+        }
     }
 
     /// 以全域底板與（可選）資料庫覆寫即時取得快照；底板未載入或越界時回退為海洋無資料格。
-    pub fn snapshot_live(pool: Option<&DbPool>, gx: i32, gy: i32, field: FieldState) -> CellSnapshot {
+    pub fn snapshot_live(
+        pool: Option<&DbPool>,
+        gx: i32,
+        gy: i32,
+        field: FieldState,
+    ) -> CellSnapshot {
         let rt = runtime::global();
-        let l0 = rt.and_then(|r| r.l0(gx, gy)).unwrap_or_else(L0Cell::sea_nodata);
+        let l0 = rt
+            .and_then(|r| r.l0(gx, gy))
+            .unwrap_or_else(L0Cell::sea_nodata);
         let slope = rt.and_then(|r| r.slope(gx, gy));
         let edge_cue = rt.and_then(|r| r.edge_cue(gx, gy));
         let overlay = pool.and_then(|p| load_overlay_record(p, gx, gy));
-        Self::snapshot_from_parts(gx, gy, l0, slope, edge_cue, overlay, field, runtime::WORLD_SEED)
+        Self::snapshot_from_parts(
+            gx,
+            gy,
+            l0,
+            slope,
+            edge_cue,
+            overlay,
+            field,
+            runtime::WORLD_SEED,
+        )
     }
 }
 
@@ -143,7 +170,9 @@ fn verify_with(
 }
 
 /// 四錨點雙讀核驗：`(0,0)`、`(0,1)`、`(1,0)`、`(1,-1)` 新舊兩側皆可走且主構一致。
-pub fn verify_four_anchors(square_grid: &crate::grid::SquareGrid) -> Result<Vec<AnchorDualRead>, String> {
+pub fn verify_four_anchors(
+    square_grid: &crate::grid::SquareGrid,
+) -> Result<Vec<AnchorDualRead>, String> {
     if runtime::global().is_none() {
         return Err("全域底板尚未載入".to_string());
     }
@@ -171,7 +200,11 @@ mod tests {
     fn plain_grid() -> SquareGrid {
         let mut grid = SquareGrid::new();
         for (x, y) in ANCHORS {
-            grid.insert(GridCell::new(SquareCoord::new(x, y), Terrain::Plain, "測試格"));
+            grid.insert(GridCell::new(
+                SquareCoord::new(x, y),
+                Terrain::Plain,
+                "測試格",
+            ));
         }
         grid
     }
@@ -182,28 +215,52 @@ mod tests {
         assert_eq!(step_delay_ms(&s), 280);
         s.v1 = V1Plugin::ThornyBambooClump;
         assert_eq!(step_delay_ms(&s), 420);
-        s.v1 = V1Plugin::ArcadeShophouse { arcade_mask: 1, shop_open: true, max_z: 9 };
+        s.v1 = V1Plugin::ArcadeShophouse {
+            arcade_mask: 1,
+            shop_open: true,
+            max_z: 9,
+        };
         assert_eq!(step_delay_ms(&s), 220);
         let lat = land(SubstrateMaterial::LateriteGravel, SurfaceWaterKind::None);
         assert_eq!(effective_max_z(lat, &s), 3);
         let loam = land(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None);
         assert_eq!(effective_max_z(loam, &s), 2);
         assert_eq!(effective_max_z(loam, &SlotStack::default()), 0);
-        let road = SlotStack { s0_pave: S0Pavement::StoneStreet, ..SlotStack::default() };
+        let road = SlotStack {
+            s0_pave: S0Pavement::StoneStreet,
+            ..SlotStack::default()
+        };
         assert_eq!(step_delay_ms(&road), 220);
     }
 
     #[test]
     fn overlay_takes_precedence_over_pristine() {
         let l0 = land(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None);
-        let stack = SlotStack { v1: V1Plugin::AncientCamphorCanopy, ..SlotStack::default() };
+        let stack = SlotStack {
+            v1: V1Plugin::AncientCamphorCanopy,
+            ..SlotStack::default()
+        };
         let rec = CellOverlayRecord::from_stack(1, 0, stack.clone());
         let snap = CellFacade::snapshot_from_parts(
-            1, 0, l0, None, None, Some(rec), FieldState::default(), runtime::WORLD_SEED,
+            1,
+            0,
+            l0,
+            None,
+            None,
+            Some(rec),
+            FieldState::default(),
+            runtime::WORLD_SEED,
         );
         assert_eq!(snap.slots, stack);
         let pristine = CellFacade::snapshot_from_parts(
-            1, 0, l0, None, None, None, FieldState::default(), runtime::WORLD_SEED,
+            1,
+            0,
+            l0,
+            None,
+            None,
+            None,
+            FieldState::default(),
+            runtime::WORLD_SEED,
         );
         assert_eq!(pristine.slots.v1, V1Plugin::ThornyBambooClump);
         assert_eq!(pristine.step_ms, 420);
@@ -219,11 +276,24 @@ mod tests {
                 SurfaceWaterKind::None
             };
             let l0 = land(SubstrateMaterial::AlluvialSandyLoam, water);
-            CellFacade::snapshot_from_parts(gx, gy, l0, None, None, None, FieldState::default(), runtime::WORLD_SEED)
+            CellFacade::snapshot_from_parts(
+                gx,
+                gy,
+                l0,
+                None,
+                None,
+                None,
+                FieldState::default(),
+                runtime::WORLD_SEED,
+            )
         });
         let reads = reads.unwrap_or_default();
         assert_eq!(reads.len(), 4);
-        assert!(reads.iter().all(|r| r.legacy_walkable && r.substrate_walkable));
+        assert!(
+            reads
+                .iter()
+                .all(|r| r.legacy_walkable && r.substrate_walkable)
+        );
     }
 
     #[test]
@@ -231,7 +301,16 @@ mod tests {
         let grid = SquareGrid::new();
         let result = verify_with(&grid, |gx, gy| {
             let l0 = land(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None);
-            CellFacade::snapshot_from_parts(gx, gy, l0, None, None, None, FieldState::default(), runtime::WORLD_SEED)
+            CellFacade::snapshot_from_parts(
+                gx,
+                gy,
+                l0,
+                None,
+                None,
+                None,
+                FieldState::default(),
+                runtime::WORLD_SEED,
+            )
         });
         assert!(result.is_err());
     }

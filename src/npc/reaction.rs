@@ -15,9 +15,10 @@ pub fn resolve_reaction_stranger_label(
     if !has_uniform && !in_counter_zone {
         return "陌生人".to_string();
     }
-    let host_title = crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
-        .map(|v| v.default_host_title)
-        .unwrap_or("當值主事");
+    let host_title =
+        crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
+            .map(|v| v.default_host_title)
+            .unwrap_or("當值主事");
     if in_counter_zone && has_uniform {
         format!("櫃檯內場身著工作服的{host_title}")
     } else if in_counter_zone {
@@ -124,7 +125,12 @@ fn viewer_visible_name(entity_id: &str, player_id: &str) -> String {
                     &e.equipment_slots,
                 );
             if is_staff {
-                return resolve_reaction_stranger_label(&room_name, &e.display_title, has_uniform, in_counter_zone);
+                return resolve_reaction_stranger_label(
+                    &room_name,
+                    &e.display_title,
+                    has_uniform,
+                    in_counter_zone,
+                );
             }
             return "陌生人".to_string();
         }

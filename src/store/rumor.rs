@@ -19,12 +19,25 @@ fn rumor_zone_matches(rumor_zone: &str, rumor_text: &str, query_zone: &str) -> b
     let region_aliases: &[(&str, &[&str])] = &[
         ("wt-c-wenyao", &["文曜", "三水外坊", "三水口", "老堰頭"]),
         ("wt-c-sacred-tower", &["雲腰雪林", "白塔", "半嶺鎮", "半嶺"]),
-        ("wt-n-sacred-mountain", &["神山", "白塔雪巔", "雲腰雪林", "北坡雲杉林", "霜林口", "北嶺腳"]),
+        (
+            "wt-n-sacred-mountain",
+            &[
+                "神山",
+                "白塔雪巔",
+                "雲腰雪林",
+                "北坡雲杉林",
+                "霜林口",
+                "北嶺腳",
+            ],
+        ),
         ("wt-n-north-crown-sea", &["北冕海"]),
         ("wt-w-windship-island", &["風舶嶼"]),
         ("wt-w-natural-harbor-channel", &["天然港灣道"]),
         ("wt-w-windship-cape", &["風舶角", "三號坑口", "紅土崁"]),
-        ("wt-e-green-ridge", &["青脊山", "青竹坪", "風櫃尾", "烏石鼻"]),
+        (
+            "wt-e-green-ridge",
+            &["青脊山", "青竹坪", "風櫃尾", "烏石鼻"],
+        ),
         ("wt-e-east-sea", &["東海"]),
         ("wt-c-southwest-plain", &["大圳頭", "牛埔"]),
         ("wt-s-south-sentinel", &["南哨", "白茫洲", "落日岬"]),
@@ -42,7 +55,11 @@ fn rumor_zone_matches(rumor_zone: &str, rumor_text: &str, query_zone: &str) -> b
             return true;
         }
     }
-    if !r_zone.starts_with("wt-") && !q_zone.starts_with("wt-") && !q_zone.starts_with("grid:") && rumor_text.contains(q_zone) {
+    if !r_zone.starts_with("wt-")
+        && !q_zone.starts_with("wt-")
+        && !q_zone.starts_with("grid:")
+        && rumor_text.contains(q_zone)
+    {
         return true;
     }
     false
@@ -212,8 +229,15 @@ impl Store {
             .npc_rumors
             .values()
             .filter(|r| !r.text.trim().is_empty())
-            .filter(|r| !r.text.contains("npc_") && !r.text.chars().any(|c| c.is_ascii_alphabetic()) && !r.text.contains("城外惡地"))
-            .filter(|r| !(r.source == "dialogue_anchor" && (r.text.contains('・') || r.text.chars().count() < 12)))
+            .filter(|r| {
+                !r.text.contains("npc_")
+                    && !r.text.chars().any(|c| c.is_ascii_alphabetic())
+                    && !r.text.contains("城外惡地")
+            })
+            .filter(|r| {
+                !(r.source == "dialogue_anchor"
+                    && (r.text.contains('・') || r.text.chars().count() < 12))
+            })
             .filter(|r| r.last_used_at == 0 || now_unix - r.last_used_at >= 300)
             .filter(|r| {
                 if r.source == "climate" || r.id.starts_with("weather|") {

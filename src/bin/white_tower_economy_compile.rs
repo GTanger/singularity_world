@@ -473,4 +473,3 @@ fn squared_distance(left: &NormalizedPoint, right: &NormalizedPoint) -> f64 {
 fn sha256(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
-

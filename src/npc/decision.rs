@@ -22,7 +22,14 @@ pub const SOCIAL_OR_GATE_TAGS: &[&str] = &[
 ];
 /// 野外戶外語意標籤常數（涵蓋既有英文與半島中文房間標籤）。
 pub const WILDERNESS_OUTDOOR_TAGS: &[&str] = &[
-    "wilderness", "outdoor", "林場", "礦場", "漁場", "獵場", "農田", "水井",
+    "wilderness",
+    "outdoor",
+    "林場",
+    "礦場",
+    "漁場",
+    "獵場",
+    "農田",
+    "水井",
 ];
 /// 茶屋客棧或休憩語意標籤常數（涵蓋既有英文與半島中文房間標籤）。
 pub const TAVERN_OR_REST_TAGS: &[&str] = &["tavern", "inn", "茶屋", "旅社", "浴場", "食堂"];
@@ -30,7 +37,6 @@ pub const TAVERN_OR_REST_TAGS: &[&str] = &["tavern", "inn", "茶屋", "旅社", 
 pub const WANDER_TARGET_TAGS: &[&str] = &[
     "social", "gate", "outdoor", "廣場", "石橋", "市集", "茶屋", "水井",
 ];
-
 
 /// 意圖類型（對齊既有 `IntentType`）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -520,8 +526,7 @@ pub fn resolve_brain_path(
             }
         }
         IntentType::Wander => {
-            let candidates =
-                g.find_rooms_within_dist(current_room_id, WANDER_TARGET_TAGS, md);
+            let candidates = g.find_rooms_within_dist(current_room_id, WANDER_TARGET_TAGS, md);
             let filtered: Vec<String> = candidates
                 .into_iter()
                 .filter(|c| c != current_room_id)

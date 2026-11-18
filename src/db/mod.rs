@@ -87,8 +87,8 @@ pub use dialogue::{
     pick_from_public_talk, pick_line_weighted, try_match_keyword,
 };
 pub use disposition::{
-    ThoughtSource, add_thought, add_thought_to_all_npcs_with_flavor, add_thought_to_entity_with_flavor,
-    add_thought_to_entity_with_delta, add_thought_with_flavor,
+    ThoughtSource, add_thought, add_thought_to_all_npcs_with_flavor,
+    add_thought_to_entity_with_delta, add_thought_to_entity_with_flavor, add_thought_with_flavor,
     adjust_disposition, clean_and_recalc_entity_disposition, get_active_thoughts, get_disposition,
 };
 pub use equip::{get_item_descs, get_item_names, is_naked, seed_items, starter_equipment};
@@ -96,11 +96,14 @@ pub use favorability::{
     FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE, FAV_TALK, adjust_favorability,
     format_npc_memory_for_backstory, get_favorability,
 };
-pub use identity::{build_identity, build_third_person_actor_card, is_routine_physiological_thought};
+pub use identity::{
+    build_identity, build_third_person_actor_card, is_routine_physiological_thought,
+};
 pub use inventory::{
-    active_trade_inventory_total_qty, add_item, add_to_inventory, clear_equipment_slot, default_trade_ask_mg,
-    get_inventory, get_item_def, get_item_name, inventory_has_item, inventory_has_qty, inventory_total_qty,
-    inventory_weight, item_is_tradable, mirror_market_trade_settlement, pick_entity_trade_offer, pick_npc_trade_offer,
+    active_trade_inventory_total_qty, add_item, add_to_inventory, clear_equipment_slot,
+    default_trade_ask_mg, get_inventory, get_item_def, get_item_name, inventory_has_item,
+    inventory_has_qty, inventory_total_qty, inventory_weight, item_is_tradable,
+    mirror_market_trade_settlement, pick_entity_trade_offer, pick_npc_trade_offer,
     remove_from_inventory, settle_inventory_trade, settle_npc_inventory_sale, trade_floor_from_ask,
     update_equipment_slot,
 };
@@ -167,8 +170,8 @@ mod room;
 pub use room::{
     SPAWN_ROOM_NAME, get_entity_place_id, get_exits_for_room, get_npc_ids_with_grid,
     get_npc_ids_with_room, get_objects_in_room, get_player_ids_with_room, get_room, get_room_name,
-    get_spawn_room_id, object_has_socket, set_entity_activity, set_entity_grid, set_entity_grid_z, set_entity_room,
-    terrain_from_room,
+    get_spawn_room_id, object_has_socket, set_entity_activity, set_entity_grid, set_entity_grid_z,
+    set_entity_room, terrain_from_room,
 };
 
 // ══════════════════════════════════════

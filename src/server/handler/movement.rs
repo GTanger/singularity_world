@@ -1,9 +1,9 @@
 //! 移動／探索／離場觀測清除。六角與正方格雙路徑。
 
-use std::collections::{HashMap, HashSet};
-use std::sync::LazyLock;
 use parking_lot::RwLock;
 use rand::Rng;
+use std::collections::{HashMap, HashSet};
+use std::sync::LazyLock;
 
 use crate::db;
 use crate::event::{self, types::BLOCKED};
@@ -12,9 +12,12 @@ use crate::game::TimePeriod;
 use crate::gametext;
 use crate::grid::{Freshness, SquareCoord, Terrain};
 
-use super::super::protocol::{ActionResultMsg, BlockedMsg, ClientMsg, ExploreLogMsg, LootItem, MovedMsg, NpcAddressMsg, NpcDialogueMsg, StatDelta};
-use super::{WsConnection, current_game_hour};
 use super::super::protocol::GridCellView;
+use super::super::protocol::{
+    ActionResultMsg, BlockedMsg, ClientMsg, ExploreLogMsg, LootItem, MovedMsg, NpcAddressMsg,
+    NpcDialogueMsg, StatDelta,
+};
+use super::{WsConnection, current_game_hour};
 
 include!("movement/step_move.rs");
 include!("movement/room_move.rs");

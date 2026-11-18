@@ -170,12 +170,7 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
     Ok(list)
 }
 
-fn npc_title_read_locked(
-    s: &store::Store,
-    se: &Entity,
-    room_id: &str,
-    game_hour: i32,
-) -> String {
+fn npc_title_read_locked(s: &store::Store, se: &Entity, room_id: &str, game_hour: i32) -> String {
     let person = if !se.display_title.is_empty() {
         se.display_title.clone()
     } else {

@@ -10,9 +10,19 @@ use super::talk::{strip_reply_guillemet_outer, strip_think_blocks};
 
 pub const DEFAULT_OPENROUTER_BASE_URL: &str = "https://openrouter.ai/api/v1";
 pub const DEFAULT_OPENROUTER_TALK_MODEL: &str = "qwen/qwen3.5-flash-02-23";
+pub const DEFAULT_OPENROUTER_IMAGE_MODEL: &str = "google/gemini-3.1-flash-image";
 
 static PLAYER_OPENROUTER_KEYS: LazyLock<RwLock<HashMap<String, Option<String>>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
+
+fn open_keys_pool() -> Option<crate::store::sql::DbPool> {
+    if let Some(store_arc) = crate::store::get_store()
+        && let Some(pool) = store_arc.read().db_pool.clone()
+    {
+        return Some(pool);
+    }
+    crate::pg::pool().map(|p| (*p).clone())
+}
 
 /// 讀取玩家在設定頁綁定的個人 OpenRouter API Key（若未設定或已清除則回傳 `None`，代表走本機模型）。
 pub fn get_player_openrouter_key(player_id: &str) -> Option<String> {
@@ -28,21 +38,18 @@ pub fn get_player_openrouter_key(player_id: &str) -> Option<String> {
         return cached.clone();
     }
     let mut loaded: Option<String> = None;
-    if let Some(store_arc) = crate::store::get_store() {
-        let pool_opt = store_arc.read().db_pool.clone();
-        if let Some(pool) = pool_opt
-            && let Ok(mut conn) = pool.get()
-            && let Ok(row_opt) = conn.query_opt(
-                "SELECT openrouter_key FROM player_llm_keys WHERE player_id = $1",
-                &[&pid],
-            )
-            && let Some(row) = row_opt
-        {
-            let k: String = row.get(0);
-            let trimmed = k.trim();
-            if !trimmed.is_empty() {
-                loaded = Some(trimmed.to_string());
-            }
+    if let Some(pool) = open_keys_pool()
+        && let Ok(mut conn) = pool.get()
+        && let Ok(row_opt) = conn.query_opt(
+            "SELECT openrouter_key FROM player_llm_keys WHERE player_id = $1",
+            &[&pid],
+        )
+        && let Some(row) = row_opt
+    {
+        let k: String = row.get(0);
+        let trimmed = k.trim();
+        if !trimmed.is_empty() {
+            loaded = Some(trimmed.to_string());
         }
     }
     PLAYER_OPENROUTER_KEYS
@@ -72,19 +79,22 @@ pub fn set_player_openrouter_key(player_id: &str, raw_key: &str) -> bool {
         .unwrap_or_else(|e| e.into_inner())
         .insert(pid.to_string(), normalized.clone());
 
-    if let Some(store_arc) = crate::store::get_store() {
-        let pool_opt = store_arc.read().db_pool.clone();
-        if let Some(pool) = pool_opt
-            && let Ok(mut conn) = pool.get()
-        {
-            let db_val = normalized.as_deref().unwrap_or("");
-            let _ = conn.execute(
-                "INSERT INTO player_llm_keys (player_id, openrouter_key)
-                 VALUES ($1, $2)
-                 ON CONFLICT (player_id) DO UPDATE SET openrouter_key = EXCLUDED.openrouter_key",
-                &[&pid, &db_val],
-            );
-        }
+    if let Some(pool) = open_keys_pool()
+        && let Ok(mut conn) = pool.get()
+    {
+        let _ = conn.batch_execute(
+            "CREATE TABLE IF NOT EXISTS player_llm_keys (
+                player_id TEXT PRIMARY KEY,
+                openrouter_key TEXT NOT NULL DEFAULT ''
+            )",
+        );
+        let db_val = normalized.as_deref().unwrap_or("");
+        let _ = conn.execute(
+            "INSERT INTO player_llm_keys (player_id, openrouter_key)
+             VALUES ($1, $2)
+             ON CONFLICT (player_id) DO UPDATE SET openrouter_key = EXCLUDED.openrouter_key",
+            &[&pid, &db_val],
+        );
     }
     normalized.is_some()
 }
@@ -145,8 +155,7 @@ pub fn call_openai_compatible_chat_with_history(
         raw.to_string()
     } else {
         format!("{raw}/chat/completions")
-    }
-    ;
+    };
     let is_local = raw.contains("127.0.0.1") || raw.contains("localhost");
     let mut messages = Vec::with_capacity(2 + history.len() * 2);
     messages.push(json!({"role": "system", "content": system_prompt}));

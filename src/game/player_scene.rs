@@ -17,15 +17,46 @@ include!("player_scene/observation_2.rs");
 include!("player_scene/vendors.rs");
 
 pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject> {
-    let clean_buf = room_name.replace("文曜・文曜", "文曜・").replace("文曜文曜", "文曜");
+    let clean_buf = room_name
+        .replace("文曜・文曜", "文曜・")
+        .replace("文曜文曜", "文曜");
     let room_name = clean_buf.as_str();
     const WILDERNESS_CELL_MARKERS: &[&str] = &[
-        "・草原", "・草甸", "・密林", "・山脊", "・幽沼", "・泥澤", "・冰峰", "・雪巔", "・雪林",
-        "・海灣", "・深水", "・沙礫", "・巨岩", "・楓林", "・清流", "・草場", "・山隘", "・海岬",
-        "・古徑", "・岩岸", "・淺灣", "・礫灣", "・溪谷", "・雲杉", "・林道", "・泥口", "・深潭",
-        "・礦谷", "・礦坡", "・峭壁",
+        "・草原",
+        "・草甸",
+        "・密林",
+        "・山脊",
+        "・幽沼",
+        "・泥澤",
+        "・冰峰",
+        "・雪巔",
+        "・雪林",
+        "・海灣",
+        "・深水",
+        "・沙礫",
+        "・巨岩",
+        "・楓林",
+        "・清流",
+        "・草場",
+        "・山隘",
+        "・海岬",
+        "・古徑",
+        "・岩岸",
+        "・淺灣",
+        "・礫灣",
+        "・溪谷",
+        "・雲杉",
+        "・林道",
+        "・泥口",
+        "・深潭",
+        "・礦谷",
+        "・礦坡",
+        "・峭壁",
     ];
-    if WILDERNESS_CELL_MARKERS.iter().any(|m| room_name.ends_with(m)) {
+    if WILDERNESS_CELL_MARKERS
+        .iter()
+        .any(|m| room_name.ends_with(m))
+    {
         return Vec::new();
     }
 
@@ -35,9 +66,18 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             "防風航標燈",
             &["Look", "Rest", "Operate"],
             &[
-                ("Look", "跨海石橋橫臥於碧波海灣之上，厚實防風石欄抵禦著長風與浪沫，石欄轉折處設有旋蓋夜光貝母航標燈，指引往來舟楫與行旅。"),
-                ("Rest", "你立於跨海長橋迎風的石欄旁稍作停歇，浩蕩海風迎面拂來，海天相接處波濤湧動，氣象萬千。"),
-                ("Operate", "你伸手輕撫航標燈沉厚的銅座與夜光貝罩，防風樞紐運轉自如，散發著穿透夜霧的柔和光暈。"),
+                (
+                    "Look",
+                    "跨海石橋橫臥於碧波海灣之上，厚實防風石欄抵禦著長風與浪沫，石欄轉折處設有旋蓋夜光貝母航標燈，指引往來舟楫與行旅。",
+                ),
+                (
+                    "Rest",
+                    "你立於跨海長橋迎風的石欄旁稍作停歇，浩蕩海風迎面拂來，海天相接處波濤湧動，氣象萬千。",
+                ),
+                (
+                    "Operate",
+                    "你伸手輕撫航標燈沉厚的銅座與夜光貝罩，防風樞紐運轉自如，散發著穿透夜霧的柔和光暈。",
+                ),
             ],
         )];
     }
@@ -71,9 +111,18 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             "指路石碑",
             &["Look", "Read", "Rest"],
             &[
-                ("Look", "大道旁矗立著風化古樸的四方指路石碑，基座是一方供往來旅客卸擔歇腳的厚重石礎，風塵僕僕中透著安穩。"),
-                ("Read", "你俯身撥開碑面上附著的青苔辨讀刻字，半島城鎮間的里數與主幹道走向清晰可辨。"),
-                ("Rest", "你在石碑旁的歇腳石礎上落座調勻氣息，就著清涼微風飲下一口水，片刻之後精神重新振奮。"),
+                (
+                    "Look",
+                    "大道旁矗立著風化古樸的四方指路石碑，基座是一方供往來旅客卸擔歇腳的厚重石礎，風塵僕僕中透著安穩。",
+                ),
+                (
+                    "Read",
+                    "你俯身撥開碑面上附著的青苔辨讀刻字，半島城鎮間的里數與主幹道走向清晰可辨。",
+                ),
+                (
+                    "Rest",
+                    "你在石碑旁的歇腳石礎上落座調勻氣息，就著清涼微風飲下一口水，片刻之後精神重新振奮。",
+                ),
             ],
         )];
     }
@@ -89,7 +138,10 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
     if !base_objs.is_empty() {
         if base_objs.len() < 3 {
             for cat_obj in super::peninsula_catalog::catalog_objects_for_room(room_name) {
-                if !base_objs.iter().any(|o| o.name == cat_obj.name || o.id == cat_obj.id) {
+                if !base_objs
+                    .iter()
+                    .any(|o| o.name == cat_obj.name || o.id == cat_obj.id)
+                {
                     base_objs.push(cat_obj);
                     if base_objs.len() >= 3 {
                         break;
@@ -99,7 +151,10 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         }
         if base_objs.len() < 3 {
             if let Some(regional_obj) = regional_specialty_object_for_room(room_name) {
-                if !base_objs.iter().any(|o| o.name == regional_obj.name || o.id == regional_obj.id) {
+                if !base_objs
+                    .iter()
+                    .any(|o| o.name == regional_obj.name || o.id == regional_obj.id)
+                {
                     base_objs.push(regional_obj);
                 }
             }

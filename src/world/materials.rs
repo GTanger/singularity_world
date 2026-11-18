@@ -210,7 +210,8 @@ pub fn material_item_defs() -> Vec<Item> {
         .materials
         .iter()
         .map(|m| {
-            let description = if !m.description.contains("【產地：") && !m.origin_label.is_empty() {
+            let description = if !m.description.contains("【產地：") && !m.origin_label.is_empty()
+            {
                 format!("{}【產地：{}】", m.description, m.origin_label)
             } else {
                 m.description.clone()
@@ -250,11 +251,47 @@ pub fn infer_origin_settlement(origin_text: &str) -> &'static str {
         origin_text
     };
     for s in [
-        "霜林口", "紅土崁", "三號坑口", "下營", "黑沼關隘", "半嶺鎮", "半嶺", "分家巷", "水尾寮",
-        "大圳頭", "牛埔", "烏石鼻", "鹽田澳", "風舶角", "風舶嶼", "北嶺腳", "樟木驛", "竹林寨",
-        "老堰頭", "風櫃尾", "白茫洲", "南哨", "文曜", "黑石灣", "赤石坡", "長風草甸", "翠冠巨木林", "青竹坪",
-        "古河巨木林", "落日岬", "驚濤岩岸", "巨藻淺灣", "清泉溪谷", "北坡雲杉林", "西麓林道",
-        "淺澤泥口", "貼山深潭", "西嶺礦谷", "東海峭壁", "雲腰雪林", "白塔雪巔",
+        "霜林口",
+        "紅土崁",
+        "三號坑口",
+        "下營",
+        "黑沼關隘",
+        "半嶺鎮",
+        "半嶺",
+        "分家巷",
+        "水尾寮",
+        "大圳頭",
+        "牛埔",
+        "烏石鼻",
+        "鹽田澳",
+        "風舶角",
+        "風舶嶼",
+        "北嶺腳",
+        "樟木驛",
+        "竹林寨",
+        "老堰頭",
+        "風櫃尾",
+        "白茫洲",
+        "南哨",
+        "文曜",
+        "黑石灣",
+        "赤石坡",
+        "長風草甸",
+        "翠冠巨木林",
+        "青竹坪",
+        "古河巨木林",
+        "落日岬",
+        "驚濤岩岸",
+        "巨藻淺灣",
+        "清泉溪谷",
+        "北坡雲杉林",
+        "西麓林道",
+        "淺澤泥口",
+        "貼山深潭",
+        "西嶺礦谷",
+        "東海峭壁",
+        "雲腰雪林",
+        "白塔雪巔",
     ] {
         if text.contains(s) {
             return s;
@@ -583,7 +620,8 @@ mod tests {
         let normalized = normalize_legacy_inventory_json(raw).expect("legacy remap");
         assert_eq!(normalized, r#"[{"item_id":"mat_reed_bundle","qty":3}]"#);
         let raw_mut = r#"[{"item_id":"mut_blank_manual_atk_1","qty":1}]"#;
-        let norm_mut = normalize_legacy_inventory_json(raw_mut).expect("mut_blank_manual normalize");
+        let norm_mut =
+            normalize_legacy_inventory_json(raw_mut).expect("mut_blank_manual normalize");
         assert_eq!(norm_mut, r#"[{"item_id":"blank_manual","qty":1}]"#);
     }
 }

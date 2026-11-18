@@ -128,7 +128,12 @@ pub fn venue_or_event_pack_idle_line(
     if let Some((ev, _sp)) =
         crate::game::peninsula_scripts::active_event_and_script_pack_for_room(r, None, now_unix)
     {
-        let first_key = ev.key_objects.split('、').next().unwrap_or(ev.key_objects).trim();
+        let first_key = ev
+            .key_objects
+            .split('、')
+            .next()
+            .unwrap_or(ev.key_objects)
+            .trim();
         if let Some(venue) = crate::grid::resolve_any_room_venue_object(r, hint) {
             return Some(format!(
                 "{}在{}圍繞【{}】忙碌，{}。",
@@ -224,24 +229,16 @@ mod tests {
         assert!(ml.contains("水輪石磨工坊"));
 
         // 2. 三水大食堂
-        let canteen_line = venue_or_event_pack_idle_line(
-            "三水大食堂",
-            "張大廚",
-            "食堂主廚",
-            now_unix,
-        );
+        let canteen_line =
+            venue_or_event_pack_idle_line("三水大食堂", "張大廚", "食堂主廚", now_unix);
         assert!(canteen_line.is_some());
         let cl = canteen_line.unwrap();
         assert!(cl.contains("張大廚"));
         assert!(cl.contains("大食堂"));
 
         // 3. 荒蕪礫石空地（非場域物件、無劇本包配置）
-        let wasteland_line = venue_or_event_pack_idle_line(
-            "荒蕪礫石空地",
-            "小旅人",
-            "訪客",
-            now_unix,
-        );
+        let wasteland_line =
+            venue_or_event_pack_idle_line("荒蕪礫石空地", "小旅人", "訪客", now_unix);
         assert!(wasteland_line.is_none());
 
         // 4. 空名稱保護

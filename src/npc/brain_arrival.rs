@@ -2,8 +2,8 @@
 
 use crate::config::sim;
 use crate::db::{
-    EVT_BEG, EVT_GATHER, EVT_HIRED, EVT_WORK, ThoughtSource, add_thought,
-    add_to_inventory, get_assignment_count_by_venue, get_assignments_for_entity, get_room_name,
+    EVT_BEG, EVT_GATHER, EVT_HIRED, EVT_WORK, ThoughtSource, add_thought, add_to_inventory,
+    get_assignment_count_by_venue, get_assignments_for_entity, get_room_name,
     get_runtime_occupation_for_venue, get_venue_ids_for_room, get_venue_max_staff,
     insert_assignment, log_npc_event, npc_street_sell_one,
 };
@@ -181,8 +181,7 @@ fn try_complete_market_delivery(at: i64, entity_id: &str, place_id: &str) -> Opt
         .ok()
         .filter(|name| !name.is_empty())
         .unwrap_or_else(|| "當地市集".to_string());
-    let dest_market_prefix =
-        crate::pg::living_world::peninsula_market_settlement_name(&dest_name);
+    let dest_market_prefix = crate::pg::living_world::peninsula_market_settlement_name(&dest_name);
     let display_name =
         crate::pg::living_world::peninsula_good_display_name(&delivered.display_name);
     let _ = advance_room_event_pack_on_npc_arrival_action(&dest_name, &display_name);
@@ -267,7 +266,8 @@ fn try_perform_runtime_work(at: i64, entity_id: &str) {
                     .unwrap_or_else(|| "鄰近市集".to_string());
                 let dest_settlement =
                     crate::pg::living_world::peninsula_market_settlement_name(&raw_dest_name);
-                let dest_name = if raw_dest_name.ends_with("市集") || dest_settlement == "鄰近" {
+                let dest_name = if raw_dest_name.ends_with("市集") || dest_settlement == "鄰近"
+                {
                     format!("{dest_settlement}市集")
                 } else if dest_settlement != raw_dest_name {
                     dest_settlement.to_string()
@@ -293,21 +293,20 @@ fn try_perform_runtime_work(at: i64, entity_id: &str) {
             } else {
                 format!(
                     "在{}完成{}，領得{}鎂，並將{}份{}交入當地市集",
-                    place_name,
-                    occ_label,
-                    result.wage_mg,
-                    supply.quantity,
-                    good_display
+                    place_name, occ_label, result.wage_mg, supply.quantity, good_display
                 )
             }
         } else {
-            if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
-                &raw_place_name,
-                None,
-                at.unsigned_abs() as _,
-            ) {
+            if let Some((ev, _sp)) =
+                crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                    &raw_place_name,
+                    None,
+                    at.unsigned_abs() as _,
+                )
+            {
                 if let Some(first_key) = ev.key_objects.first() {
-                    let _ = advance_room_event_pack_on_npc_arrival_action(&raw_place_name, first_key);
+                    let _ =
+                        advance_room_event_pack_on_npc_arrival_action(&raw_place_name, first_key);
                 }
             }
             format!(
@@ -360,12 +359,7 @@ mod tests {
 
     #[test]
     fn test_format_venue_market_delivery_activity_uses_counter_zone() {
-        let activity = format_venue_market_delivery_activity(
-            "三水大食堂",
-            "文曜",
-            3,
-            "現磨溫米漿",
-        );
+        let activity = format_venue_market_delivery_activity("三水大食堂", "文曜", 3, "現磨溫米漿");
         assert_eq!(
             activity,
             "已將3份現磨溫米漿送達文曜（聚落大食堂當值櫃檯點收）"
@@ -374,10 +368,8 @@ mod tests {
 
     #[test]
     fn test_advance_room_event_pack_on_npc_arrival_action() {
-        let note_opt = advance_room_event_pack_on_npc_arrival_action(
-            "老堰頭・水輪石磨工坊",
-            "現磨溫米漿",
-        );
+        let note_opt =
+            advance_room_event_pack_on_npc_arrival_action("老堰頭・水輪石磨工坊", "現磨溫米漿");
         assert!(
             note_opt.is_some(),
             "delivering or producing 現磨溫米漿 must advance room event pack"

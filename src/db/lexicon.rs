@@ -4,7 +4,8 @@ use crate::store;
 
 /// 新增或更新詞典詞條。pair_key 格式為 `{a_id}|{b_id}`。
 pub fn upsert_lexicon_term(term: &str, room_id: &str, _pair_key: &str) {
-    let cleaned = crate::npcnpc::helpers::clean_npc_line(&crate::ai::sanitize_npc_dialogue_line(term));
+    let cleaned =
+        crate::npcnpc::helpers::clean_npc_line(&crate::ai::sanitize_npc_dialogue_line(term));
     let term = cleaned.trim();
     if term.is_empty()
         || term.chars().count() < 2

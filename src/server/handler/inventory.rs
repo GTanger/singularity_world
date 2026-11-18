@@ -1,7 +1,7 @@
-use std::collections::{HashMap, HashSet};
-use std::sync::LazyLock;
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet};
+use std::sync::LazyLock;
 
 use crate::combat::wordplate::{
     CarrierAffinity, CraftDims4D, OrbitFluency, StarInlay, StarSentence, TacticalLoadout,

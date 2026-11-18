@@ -1,8 +1,8 @@
 // 自動由《白塔半島千物總典》編譯生成之 1,120 件世界物件常數庫。
 // 每一件物件皆具備明確的產地原料、百工工坊、日常用途、場所分佈與輕操作互動插座。
 
-use std::collections::HashMap;
 use crate::model::RoomObject;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy)]
 pub struct PeninsulaCatalogEntry {
@@ -23,7 +23,6 @@ pub struct PeninsulaCatalogEntry {
 }
 
 pub type WorldObjectEntry = PeninsulaCatalogEntry;
-
 
 include!("peninsula_catalog/part_01.rs");
 include!("peninsula_catalog/part_02.rs");
@@ -51,10 +50,8 @@ const TOTAL_COUNT: usize = 1109;
 const fn concat_catalog() -> [PeninsulaCatalogEntry; TOTAL_COUNT] {
     let mut result = [PART_01[0]; TOTAL_COUNT];
     let parts: [&[PeninsulaCatalogEntry]; 20] = [
-        PART_01, PART_02, PART_03, PART_04, PART_05,
-        PART_06, PART_07, PART_08, PART_09, PART_10,
-        PART_11, PART_12, PART_13, PART_14, PART_15,
-        PART_16, PART_17, PART_18, PART_19, PART_20,
+        PART_01, PART_02, PART_03, PART_04, PART_05, PART_06, PART_07, PART_08, PART_09, PART_10,
+        PART_11, PART_12, PART_13, PART_14, PART_15, PART_16, PART_17, PART_18, PART_19, PART_20,
     ];
     let mut out_idx = 0;
     let mut part_idx = 0;

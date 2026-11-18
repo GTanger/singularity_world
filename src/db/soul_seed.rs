@@ -131,8 +131,8 @@ pub fn generate_origin_sentence(amp: f64, freq: f64, phase: f64) -> String {
     } else if phase > 0.3 {
         "秩序"
     } else {
-         "順流"
-     };
+        "順流"
+    };
     let phase_desc = if phase_word == "順流" {
         "順流而行的澄明氣韻"
     } else {

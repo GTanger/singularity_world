@@ -22,7 +22,12 @@ pub const BAMBOO_TERRAIN_TAG: &str = "bamboo_slot_terrain";
 pub const TERRAIN_TAGS: crate::grid::zhulin::objects::ZhulinTagTriad =
     crate::grid::zhulin::objects::ZhulinTagTriad {
         category_tags: &["terrain", "forest", "bamboo_grove"],
-        attribute_tags: &["thorny_canopy", "dappled_shade", "wind_filtering", "three_slot_ecology"],
+        attribute_tags: &[
+            "thorny_canopy",
+            "dappled_shade",
+            "wind_filtering",
+            "three_slot_ecology",
+        ],
         exclusive_tag: "zl_terrain_thorny_bamboo_grove",
     };
 pub const BASE_DESC_DRY: &str = "原生刺竹林枝刺交錯，竹蔭間光影斑駁。";
@@ -99,7 +104,13 @@ pub fn roll_bamboo_three_slots(
     } else {
         coord.x.unsigned_abs().max(coord.y.unsigned_abs())
     };
-    let (culm_thr, leaf_thr) = if depth <= 1 { (35, 75) } else if depth <= 3 { (68, 88) } else { (55, 85) };
+    let (culm_thr, leaf_thr) = if depth <= 1 {
+        (35, 75)
+    } else if depth <= 3 {
+        (68, 88)
+    } else {
+        (55, 85)
+    };
     let roll0 = h0 % 100;
     let slot1 = if roll0 < culm_thr {
         BambooSlotKind::BambooCulm(6 + ((h0 >> 8) % 5) as u32)
@@ -110,8 +121,20 @@ pub fn roll_bamboo_three_slots(
     };
 
     let roll1 = h1 % 100;
-    let empty_thr = if depth <= 1 { 20 } else if depth <= 3 { 25 } else { 35 };
-    let rhizome_start = if depth <= 1 { 82 } else if depth <= 3 { 62 } else { 75 };
+    let empty_thr = if depth <= 1 {
+        20
+    } else if depth <= 3 {
+        25
+    } else {
+        35
+    };
+    let rhizome_start = if depth <= 1 {
+        82
+    } else if depth <= 3 {
+        62
+    } else {
+        75
+    };
     let candidate2 = if roll1 < empty_thr {
         BambooSlotKind::Empty
     } else if roll1 < 52 {
@@ -124,7 +147,9 @@ pub fn roll_bamboo_three_slots(
     let slot2 = match (&slot1, &candidate2) {
         (BambooSlotKind::BambooCulm(_), BambooSlotKind::BambooCulm(_))
         | (BambooSlotKind::DryLeaves(_), BambooSlotKind::DryLeaves(_))
-        | (BambooSlotKind::BambooSheath(_), BambooSlotKind::BambooSheath(_)) => BambooSlotKind::Empty,
+        | (BambooSlotKind::BambooSheath(_), BambooSlotKind::BambooSheath(_)) => {
+            BambooSlotKind::Empty
+        }
         _ => candidate2,
     };
 
@@ -132,7 +157,13 @@ pub fn roll_bamboo_three_slots(
     let sub_roll = (h2 >> 8) % 100;
     let slot3 = if is_waterside || depth >= 4 {
         if roll2 < 38 {
-            let shoot_qty = if sub_roll < 40 { 1 } else if sub_roll < 80 { 2 } else { 3 };
+            let shoot_qty = if sub_roll < 40 {
+                1
+            } else if sub_roll < 80 {
+                2
+            } else {
+                3
+            };
             BambooSlotKind::BambooShoot(shoot_qty)
         } else if roll2 < 66 {
             BambooSlotKind::BambooFungus(if sub_roll < 55 { 1 } else { 2 })
@@ -140,7 +171,13 @@ pub fn roll_bamboo_three_slots(
             BambooSlotKind::Empty
         }
     } else if roll2 < 24 {
-        let shoot_qty = if sub_roll < 55 { 1 } else if sub_roll < 88 { 2 } else { 3 };
+        let shoot_qty = if sub_roll < 55 {
+            1
+        } else if sub_roll < 88 {
+            2
+        } else {
+            3
+        };
         BambooSlotKind::BambooShoot(shoot_qty)
     } else if roll2 < 34 {
         BambooSlotKind::BambooFungus(1)
@@ -337,8 +374,12 @@ pub fn refresh_bamboo_cell_after_gather(cell: &mut GridCell) {
     let is_waterside = cell.has_room_tag("waterside");
     let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
     let rain_extinguished = w_def.tags.has_tag("wetting") && !has_standing_culm;
-    let has_campfire_obj = cell.objects.iter().any(|o| o.id == objects::campfire::ID && o.quantity > 0);
-    let keep_campfire = (cell.has_room_tag("zl_campfire:active") || has_campfire_obj) && !rain_extinguished;
+    let has_campfire_obj = cell
+        .objects
+        .iter()
+        .any(|o| o.id == objects::campfire::ID && o.quantity > 0);
+    let keep_campfire =
+        (cell.has_room_tag("zl_campfire:active") || has_campfire_obj) && !rain_extinguished;
     if rain_extinguished {
         cell.objects.retain(|o| o.id != objects::campfire::ID);
     } else if keep_campfire && !has_campfire_obj {
@@ -433,14 +474,14 @@ pub fn lazy_refresh_bamboo_cell(
         return false;
     }
 
-    let last_roll_day = cell
-        .tags
-        .iter()
-        .find_map(|t| t.strip_prefix("zl_roll_day:").and_then(|v| v.parse::<i32>().ok()));
-    let last_weather_epoch = cell
-        .tags
-        .iter()
-        .find_map(|t| t.strip_prefix("zl_weather_epoch:").and_then(|v| v.parse::<i64>().ok()));
+    let last_roll_day = cell.tags.iter().find_map(|t| {
+        t.strip_prefix("zl_roll_day:")
+            .and_then(|v| v.parse::<i32>().ok())
+    });
+    let last_weather_epoch = cell.tags.iter().find_map(|t| {
+        t.strip_prefix("zl_weather_epoch:")
+            .and_then(|v| v.parse::<i64>().ok())
+    });
 
     if last_roll_day.is_none() {
         set_bamboo_cell_meta_tag(&mut cell.tags, "zl_roll_day:", current_game_day);
@@ -453,8 +494,7 @@ pub fn lazy_refresh_bamboo_cell(
     let is_reactive_weather = weather_tags.contains(&"rhizome_awakening")
         || weather_tags.contains(&"fungus_blooming")
         || weather_tags.contains(&"canopy_shedding");
-    let weather_triggered =
-        is_reactive_weather && weather_epoch > last_weather_epoch.unwrap_or(0);
+    let weather_triggered = is_reactive_weather && weather_epoch > last_weather_epoch.unwrap_or(0);
 
     if !day_advanced && !weather_triggered {
         return false;
@@ -567,7 +607,10 @@ pub fn lazy_refresh_bamboo_cell(
 }
 
 /// 持利刃在刺竹叢竹幹刻下防迷路記號（`CarveMark`）
-pub fn carve_bamboo_trail_mark(cell: &mut GridCell, player_inv_json: &str) -> Result<String, String> {
+pub fn carve_bamboo_trail_mark(
+    cell: &mut GridCell,
+    player_inv_json: &str,
+) -> Result<String, String> {
     if !objects::inventory_has_capability_tag(player_inv_json, "sharp_edge") {
         return Err(
             "刺竹外皮堅韌滑手，徒手無法留痕；需先備妥「烤刃竹片刀」或「銳邊石片」方能刻下路標。"
@@ -619,7 +662,8 @@ pub fn explore_bamboo_understory(
     } else if has_shoot_here {
         (
             Some((objects::ITEM_BAMBOO_WEEVIL.id, 1)),
-            "你俯身撥看破土春筍周圍的筍籜，順手逮住一隻正抱著嫩筍吸食汁液的肥美「筍龜」收入行囊！".to_string(),
+            "你俯身撥看破土春筍周圍的筍籜，順手逮住一隻正抱著嫩筍吸食汁液的肥美「筍龜」收入行囊！"
+                .to_string(),
         )
     } else if is_fungus_weather {
         (
@@ -677,12 +721,8 @@ mod tests {
 
     #[test]
     fn bamboo_cell_stratifies_ecological_stock_and_uses_diegetic_descriptions() {
-        let cell_west = build_bamboo_terrain_cell(
-            SquareCoord::new(-1, 0),
-            "紅土西麓",
-            true,
-            2026_11_09,
-        );
+        let cell_west =
+            build_bamboo_terrain_cell(SquareCoord::new(-1, 0), "紅土西麓", true, 2026_11_09);
         let culm = cell_west
             .objects
             .iter()
@@ -715,12 +755,8 @@ mod tests {
         assert!(rhizome_look.responses["Look"].contains("老竹鞭盤結"));
         assert!(!rhizome_look.responses["Look"].contains("物產存量"));
 
-        let mut cell_east = build_bamboo_terrain_cell(
-            SquareCoord::new(1, 0),
-            "紅土西麓",
-            false,
-            2026_11_09,
-        );
+        let mut cell_east =
+            build_bamboo_terrain_cell(SquareCoord::new(1, 0), "紅土西麓", false, 2026_11_09);
         let sheath = cell_east
             .objects
             .iter()
@@ -755,11 +791,11 @@ mod tests {
 
     #[test]
     fn bamboo_objects_and_yield_items_have_unique_ids_and_three_tier_tags() {
-        use std::collections::HashSet;
         use crate::grid::zhulin::{
             ALL_ZHULIN_ITEMS, TERRAIN_TAGS, lookup_zhulin_item_def, lookup_zhulin_object_tags,
             yield_item_id_for_object,
         };
+        use std::collections::HashSet;
 
         assert!(!TERRAIN_TAGS.category_tags.is_empty());
         assert!(!TERRAIN_TAGS.attribute_tags.is_empty());
@@ -945,27 +981,35 @@ mod tests {
         let knife_bag = r#"[{"item_id":"zl_item_fire_hardened_bamboo_knife","qty":1}]"#;
         assert!(matches!(
             evaluate_zhulin_gather(bamboo_shoot::ID, 1, knife_bag),
-            GatherCheckResult::Allowed { stock_cost: 1, yield_qty: 1, .. }
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                ..
+            }
         ));
         assert!(matches!(
             evaluate_zhulin_gather(bamboo_rhizome::ID, 2, knife_bag),
-            GatherCheckResult::Allowed { stock_cost: 1, yield_qty: 1, .. }
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                ..
+            }
         ));
         let club_bag = r#"[{"item_id":"zl_item_rhizome_club","qty":1}]"#;
         assert!(matches!(
             evaluate_zhulin_gather(bamboo_culm::ID, 6, club_bag),
-            GatherCheckResult::Allowed { stock_cost: 1, yield_qty: 1, .. }
+            GatherCheckResult::Allowed {
+                stock_cost: 1,
+                yield_qty: 1,
+                ..
+            }
         ));
     }
 
     #[test]
     fn standing_culm_shelter_and_clear_cut_degradation_work() {
-        let mut cell = build_bamboo_terrain_cell(
-            SquareCoord::new(-1, 0),
-            "紅土西麓",
-            false,
-            2026_11_10,
-        );
+        let mut cell =
+            build_bamboo_terrain_cell(SquareCoord::new(-1, 0), "紅土西麓", false, 2026_11_10);
         // 初始狀態具備立竹 (quantity > 0)
         assert_eq!(cell.terrain, Terrain::ForestHeavy);
         assert!(cell.has_room_tag("windbreak"));
@@ -998,12 +1042,8 @@ mod tests {
 
     #[test]
     fn lazy_refresh_rhizome_awakening_spawns_bamboo_shoots() {
-        let mut cell = build_bamboo_terrain_cell(
-            SquareCoord::new(-1, -1),
-            "紅土西麓",
-            false,
-            2026_11_10,
-        );
+        let mut cell =
+            build_bamboo_terrain_cell(SquareCoord::new(-1, -1), "紅土西麓", false, 2026_11_10);
         // (-1, -1) 初始只有 culm，無竹筍
         assert!(!cell.objects.iter().any(|o| o.id == bamboo_shoot::ID));
 
@@ -1026,12 +1066,8 @@ mod tests {
 
     #[test]
     fn foraging_pressure_increments_and_suppresses_regeneration() {
-        let mut cell = build_bamboo_terrain_cell(
-            SquareCoord::new(1, 0),
-            "紅土西麓",
-            false,
-            2026_11_10,
-        );
+        let mut cell =
+            build_bamboo_terrain_cell(SquareCoord::new(1, 0), "紅土西麓", false, 2026_11_10);
         assert_eq!(get_bamboo_cell_pressure(&cell), 0);
 
         // 採集 3 次增加壓力
@@ -1059,30 +1095,20 @@ mod tests {
 
     #[test]
     fn explore_understory_bootstrap_and_trail_mark_carving_work() {
-        let mut cell = build_bamboo_terrain_cell(
-            SquareCoord::new(-2, 1),
-            "紅土西麓",
-            true,
-            2026_11_10,
-        );
-        let mut east_neighbor = build_bamboo_terrain_cell(
-            SquareCoord::new(-1, 1),
-            "紅土西麓",
-            true,
-            2026_11_10,
-        );
-        east_neighbor.objects.push(bamboo_shoot::build_grid_object(2));
+        let mut cell =
+            build_bamboo_terrain_cell(SquareCoord::new(-2, 1), "紅土西麓", true, 2026_11_10);
+        let mut east_neighbor =
+            build_bamboo_terrain_cell(SquareCoord::new(-1, 1), "紅土西麓", true, 2026_11_10);
+        east_neighbor
+            .objects
+            .push(bamboo_shoot::build_grid_object(2));
 
         let clear_weather = &crate::grid::zhulin::weather::clear_sun::WEATHER_DEF;
         let post_rain = &crate::grid::zhulin::weather::post_rain_mist::WEATHER_DEF;
 
         // 1. 無刃具且無竹片時，探索 100% 拾得【風折老竹片】破除啟動死鎖，並回報東側新筍清香
-        let (loot1, narr1) = explore_bamboo_understory(
-            &cell,
-            &[("東", &east_neighbor)],
-            "[]",
-            clear_weather,
-        );
+        let (loot1, narr1) =
+            explore_bamboo_understory(&cell, &[("東", &east_neighbor)], "[]", clear_weather);
         assert_eq!(loot1, Some(("zl_item_aged_bamboo_slat", 1)));
         assert!(narr1.contains("風折老竹片"));
         assert!(narr1.contains("東側竹林飄來新筍破土的清香"));
@@ -1112,7 +1138,8 @@ mod tests {
 
         // 5. 刻記號與營火落地狀態
         assert!(carve_bamboo_trail_mark(&mut cell, "[]").is_err());
-        let mark_msg = carve_bamboo_trail_mark(&mut cell, knife_bag).expect("knife should carve mark");
+        let mark_msg =
+            carve_bamboo_trail_mark(&mut cell, knife_bag).expect("knife should carve mark");
         assert!(mark_msg.contains("竹幹路標"));
         cell.tags.push("zl_campfire:active".to_string());
         refresh_bamboo_cell_after_gather(&mut cell);

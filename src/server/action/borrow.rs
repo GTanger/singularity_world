@@ -5,8 +5,8 @@ use rand::Rng;
 use crate::ai::decision_scorer::{NpcDecisionInput, NpcStanceChoice, score_npc_interaction_stance};
 use crate::db::{
     self, FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, add_to_inventory, adjust_favorability,
-    get_disposition, get_entity_room, get_item_def, inventory_has_qty,
-    pick_npc_trade_offer, remove_from_inventory,
+    get_disposition, get_entity_room, get_item_def, inventory_has_qty, pick_npc_trade_offer,
+    remove_from_inventory,
 };
 use crate::entity::{Character, EntityKind};
 use crate::event;
@@ -27,7 +27,8 @@ pub(super) fn do_entity_borrow(
     let player_room = get_entity_room(pid).unwrap_or_default();
     let room_title = db::get_room_name(&player_room).unwrap_or_else(|_| player_room.clone());
 
-    let target_true_name = crate::store::resolve_npc_person_name(&target.id, &target.display_title, None);
+    let target_true_name =
+        crate::store::resolve_npc_person_name(&target.id, &target.display_title, None);
     let match_name = if !target.display_title.is_empty() {
         if !target_true_name.is_empty()
             && target_true_name != "陌生人"
@@ -52,7 +53,9 @@ pub(super) fn do_entity_borrow(
             let _ = remove_from_inventory(pid, c_id, 1);
             let _ = add_to_inventory(target_id, c_id, 1);
             let vstate = crate::pg::living_world::get_vessel_state(pid, c_id);
-            let (fav_delta, mut narrative) = if vstate.condition == crate::pg::living_world::VesselCondition::RolledEdge {
+            let (fav_delta, mut narrative) = if vstate.condition
+                == crate::pg::living_world::VesselCondition::RolledEdge
+            {
                 crate::store::open_active_npc_obligation(target_id, "repair_tool", c_name);
                 (
                     1,
@@ -60,7 +63,9 @@ pub(super) fn do_entity_borrow(
                         "你將借用的「{c_name}」遞還給【{borrow_name}】。\n【{borrow_name}】接過一瞧，眉頭緊蹙：「你雖將『{c_name}』還了回來，可這刃口都捲缺成這樣……我還得送去鐵坊回火重修，下回借用可得惜物些！」"
                     ),
                 )
-            } else if vstate.condition == crate::pg::living_world::VesselCondition::Sharp && vstate.use_count >= 2 {
+            } else if vstate.condition == crate::pg::living_world::VesselCondition::Sharp
+                && vstate.use_count >= 2
+            {
                 let _ = crate::pg::living_world::record_mentor_imprint_progress(
                     pid,
                     &borrow_name,
@@ -94,13 +99,22 @@ pub(super) fn do_entity_borrow(
                 pid,
                 &player_name,
                 &player_room,
-                if fav_delta >= 5 { "return_sharp" } else { "return_damaged" },
+                if fav_delta >= 5 {
+                    "return_sharp"
+                } else {
+                    "return_damaged"
+                },
                 c_name,
                 0,
                 now,
             );
             if let Some(pool) = &pool_opt {
-                let _ = crate::pg::living_world::resolve_obligations_by_kind(pool, pid, "repay_debt", now);
+                let _ = crate::pg::living_world::resolve_obligations_by_kind(
+                    pool,
+                    pid,
+                    "repay_debt",
+                    now,
+                );
                 let _ = crate::pg::living_world::record_relationship_delta(
                     pool,
                     target_id,
@@ -146,7 +160,11 @@ pub(super) fn do_entity_borrow(
     }
 
     let personality = crate::db::get_personality_for_entity(target_id)
-        .or_else(|| target.soul_seed.map(crate::db::expand_soul_seed_to_personality))
+        .or_else(|| {
+            target
+                .soul_seed
+                .map(crate::db::expand_soul_seed_to_personality)
+        })
         .unwrap_or(crate::db::Personality {
             boldness: 0.5,
             sensitivity: 0.5,
@@ -302,7 +320,9 @@ pub(super) fn do_entity_borrow(
         }
     }
     if rel.balance_score < -1 || (disp < 40 && decision.choice == NpcStanceChoice::Refuse) {
-        let narrative = format!("【{borrow_name}】早有防備，冷冷按住腰間行囊退開半步：「手腳放乾淨點，別打我身上東西的主意！」");
+        let narrative = format!(
+            "【{borrow_name}】早有防備，冷冷按住腰間行囊退開半步：「手腳放乾淨點，別打我身上東西的主意！」"
+        );
         if let Some(pool) = &pool_opt {
             let _ = crate::pg::living_world::record_player_world_action(
                 pool,
@@ -340,8 +360,7 @@ pub(super) fn do_entity_borrow(
         let name = get_item_def(&i_id)
             .map(|d| d.name)
             .or_else(|| {
-                crate::world::materials::material_by_item_id(&i_id)
-                    .map(|m| m.name.to_string())
+                crate::world::materials::material_by_item_id(&i_id).map(|m| m.name.to_string())
             })
             .or_else(|| {
                 crate::game::peninsula_catalog::find_catalog_entry(&i_id)
@@ -414,11 +433,23 @@ pub(super) fn do_entity_borrow(
                 now,
             );
         }
-        let mut n = format!("你趁【{borrow_name}】不備，悄聲探手摸走了一件「{item_disp}」，收進隨身包袋。");
+        let mut n =
+            format!("你趁【{borrow_name}】不備，悄聲探手摸走了一件「{item_disp}」，收進隨身包袋。");
         if crate::pg::living_world::is_weapon_or_tool_item(&item_id, &item_disp) {
             n.push_str("\n初握他人器物尚顯幾分生澀，須在實作中慢慢磨合重心。");
         }
-        if let Some((_pack_id, _step, ep_line)) = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(&room_title, &item_disp).or_else(|| crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(&player_room, &item_disp)) {
+        if let Some((_pack_id, _step, ep_line)) =
+            crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+                &room_title,
+                &item_disp,
+            )
+            .or_else(|| {
+                crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+                    &player_room,
+                    &item_disp,
+                )
+            })
+        {
             n.push_str(&format!("\n{ep_line}"));
         }
         if target.kind == EntityKind::Npc {
@@ -543,13 +574,81 @@ pub(super) fn canonical_or_venue_borrow_item(
     // 3. 戶外／街巷行進中之職司人物：依其真實職銜對接 VocationalVesselSpec 之千物總典 catalog_id
     let clean_role = crate::npc::causal_core::strip_trailing_person_name_from_role(target_name);
     let has_explicit_vocation = [
-        "學徒", "家眷", "內當家", "持家", "執事", "主事", "帳房", "商行", "公所", "調撥",
-        "食堂", "廚", "茶", "膳", "掌事", "麵", "攤", "書", "學院", "講", "印", "學者",
-        "學子", "觀星", "藥", "醫", "草", "丹", "診", "水輪", "石磨", "磨坊", "碾",
-        "鐵", "鍛", "爐", "鑄", "礦", "石", "坑", "鑿", "木", "竹", "鋸", "船", "刨",
-        "織", "布", "服", "染", "縫", "靴", "鞋", "傘", "皮", "革", "理髮", "剪剃", "剃",
-        "漁", "港", "渡", "海", "舵", "巡", "衛", "哨", "武", "教頭", "獵", "採", "樵",
-        "行旅", "押貨", "挑夫",
+        "學徒",
+        "家眷",
+        "內當家",
+        "持家",
+        "執事",
+        "主事",
+        "帳房",
+        "商行",
+        "公所",
+        "調撥",
+        "食堂",
+        "廚",
+        "茶",
+        "膳",
+        "掌事",
+        "麵",
+        "攤",
+        "書",
+        "學院",
+        "講",
+        "印",
+        "學者",
+        "學子",
+        "觀星",
+        "藥",
+        "醫",
+        "草",
+        "丹",
+        "診",
+        "水輪",
+        "石磨",
+        "磨坊",
+        "碾",
+        "鐵",
+        "鍛",
+        "爐",
+        "鑄",
+        "礦",
+        "石",
+        "坑",
+        "鑿",
+        "木",
+        "竹",
+        "鋸",
+        "船",
+        "刨",
+        "織",
+        "布",
+        "服",
+        "染",
+        "縫",
+        "靴",
+        "鞋",
+        "傘",
+        "皮",
+        "革",
+        "理髮",
+        "剪剃",
+        "剃",
+        "漁",
+        "港",
+        "渡",
+        "海",
+        "舵",
+        "巡",
+        "衛",
+        "哨",
+        "武",
+        "教頭",
+        "獵",
+        "採",
+        "樵",
+        "行旅",
+        "押貨",
+        "挑夫",
     ]
     .iter()
     .any(|kw| clean_role.contains(kw));
@@ -607,9 +706,18 @@ mod tests {
         ];
         for (target, room, expected_id) in test_cases {
             let result = canonical_or_venue_borrow_item(target, room);
-            assert!(result.is_some(), "Borrow target {} in {} should yield item", target, room);
+            assert!(
+                result.is_some(),
+                "Borrow target {} in {} should yield item",
+                target,
+                room
+            );
             let (item_id, item_name, _) = result.unwrap();
-            assert_eq!(item_id, expected_id, "Target {} should borrow {}", target, expected_id);
+            assert_eq!(
+                item_id, expected_id,
+                "Target {} should borrow {}",
+                target, expected_id
+            );
 
             let cat_entry = find_catalog_entry(item_id)
                 .unwrap_or_else(|| panic!("Catalog entry {} must exist", item_id));

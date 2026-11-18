@@ -116,7 +116,9 @@ impl GridObject {
                 }
             }
             GridObjectKind::Other => match self.archetype_tag() {
-                "bench" | "bollard" | "stele" | "railing" | "notice_board" | "way_stele" => "public_fixture",
+                "bench" | "bollard" | "stele" | "railing" | "notice_board" | "way_stele" => {
+                    "public_fixture"
+                }
                 _ => "maritime_transport_outdoor",
             },
         }
@@ -133,10 +135,16 @@ impl GridObject {
             spec.attribute_tags
         } else {
             match self.kind {
-                GridObjectKind::Mineral => &["raw_material", "mineral", "ore_and_stone", "gatherable"],
-                GridObjectKind::WaterSource => &["facility", "water_source", "water_supply", "fresh_drink"],
+                GridObjectKind::Mineral => {
+                    &["raw_material", "mineral", "ore_and_stone", "gatherable"]
+                }
+                GridObjectKind::WaterSource => {
+                    &["facility", "water_source", "water_supply", "fresh_drink"]
+                }
                 GridObjectKind::Flora => &["raw_material", "flora", "gatherable"],
-                GridObjectKind::Other => &["facility", "outdoor_and_maritime", "wilderness_feature"],
+                GridObjectKind::Other => {
+                    &["facility", "outdoor_and_maritime", "wilderness_feature"]
+                }
             }
         }
     }
@@ -198,7 +206,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "rock_niche",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "rock_niche",
-        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "stone",
+            "rest_spot",
+            "wind_shelter",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "cairn_niche",
@@ -206,7 +221,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "rock_niche",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "rock_niche",
-        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "stone",
+            "rest_spot",
+            "wind_shelter",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "cape_cairn",
@@ -214,7 +236,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "rock_niche",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "rock_niche",
-        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "sailing", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "stone",
+            "rest_spot",
+            "sailing",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "snow_cairn",
@@ -222,7 +251,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "rock_niche",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "rock_niche",
-        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "stone",
+            "rest_spot",
+            "wind_shelter",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "forest_sign",
@@ -230,7 +266,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "rock_niche",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "rock_niche",
-        attribute_tags: &["fixed", "facility", "stone", "rest_spot", "wind_shelter", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "stone",
+            "rest_spot",
+            "wind_shelter",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "spring",
@@ -238,7 +281,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "mountain_spring",
         category_tag: "plumbing_bath_hygiene",
         archetype_tag: "mountain_spring",
-        attribute_tags: &["fixed", "facility", "water_source", "water_supply", "cooling", "healing"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "water_source",
+            "water_supply",
+            "cooling",
+            "healing",
+        ],
     },
     GridObjectTagSpec {
         pattern: "stepping_logs",
@@ -246,7 +296,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "stepping_logs",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "stepping_logs",
-        attribute_tags: &["fixed", "facility", "timber", "footing", "marsh", "outdoor_fixture"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "timber",
+            "footing",
+            "marsh",
+            "outdoor_fixture",
+        ],
     },
     GridObjectTagSpec {
         pattern: "marsh_post",
@@ -254,7 +311,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "stepping_logs",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "stepping_logs",
-        attribute_tags: &["fixed", "facility", "timber", "footing", "marsh", "outdoor_fixture"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "timber",
+            "footing",
+            "marsh",
+            "outdoor_fixture",
+        ],
     },
     GridObjectTagSpec {
         pattern: "tide_step",
@@ -262,7 +326,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "stepping_logs",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "stepping_logs",
-        attribute_tags: &["fixed", "facility", "timber", "footing", "marine", "outdoor_fixture"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "timber",
+            "footing",
+            "marine",
+            "outdoor_fixture",
+        ],
     },
     GridObjectTagSpec {
         pattern: "waymark",
@@ -318,7 +389,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "wilderness_campfire",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "campfire",
-        attribute_tags: &["fixed", "facility", "heating", "illuminating", "camping", "outdoor_gear"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "heating",
+            "illuminating",
+            "camping",
+            "outdoor_gear",
+        ],
     },
     GridObjectTagSpec {
         pattern: "hunter_post",
@@ -326,7 +404,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "hunter_post",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "hunter_post",
-        attribute_tags: &["fixed", "facility", "timber", "wayfinding", "patrol", "outdoor_gear"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "timber",
+            "wayfinding",
+            "patrol",
+            "outdoor_gear",
+        ],
     },
     GridObjectTagSpec {
         pattern: "stone",
@@ -350,7 +435,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "hunter_post",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "hunter_post",
-        attribute_tags: &["fixed", "facility", "timber", "wayfinding", "patrol", "outdoor_gear"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "timber",
+            "wayfinding",
+            "patrol",
+            "outdoor_gear",
+        ],
     },
     GridObjectTagSpec {
         pattern: "peak_post",
@@ -358,7 +450,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "hunter_post",
         category_tag: "maritime_transport_outdoor",
         archetype_tag: "hunter_post",
-        attribute_tags: &["fixed", "facility", "timber", "wayfinding", "patrol", "outdoor_gear"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "timber",
+            "wayfinding",
+            "patrol",
+            "outdoor_gear",
+        ],
     },
     GridObjectTagSpec {
         pattern: "horse_trough",
@@ -366,7 +465,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "horse_drinking_stone_trough",
         category_tag: "plumbing_bath_hygiene",
         archetype_tag: "scene_fixture",
-        attribute_tags: &["fixed", "utensil", "stone", "water_supply", "trough", "fauna", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "utensil",
+            "stone",
+            "water_supply",
+            "trough",
+            "fauna",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "bridge_trough",
@@ -374,7 +481,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "horse_mooring_ring",
         category_tag: "public_fixture",
         archetype_tag: "bollard",
-        attribute_tags: &["fixed", "outdoor_fixture", "iron", "stone", "horse_ring", "bridge_fixture"],
+        attribute_tags: &[
+            "fixed",
+            "outdoor_fixture",
+            "iron",
+            "stone",
+            "horse_ring",
+            "bridge_fixture",
+        ],
     },
     GridObjectTagSpec {
         pattern: "bridge_plank",
@@ -382,7 +496,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "spare_bridge_plank",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "repair_plank",
-        attribute_tags: &["portable", "timber", "wood", "repair", "heavy", "bridge_material"],
+        attribute_tags: &[
+            "portable",
+            "timber",
+            "wood",
+            "repair",
+            "heavy",
+            "bridge_material",
+        ],
     },
     GridObjectTagSpec {
         pattern: "rest_stone",
@@ -390,7 +511,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "roadside_rest_stone",
         category_tag: "public_fixture",
         archetype_tag: "bench",
-        attribute_tags: &["fixed", "outdoor_fixture", "stone", "seating", "rest_spot", "heavy"],
+        attribute_tags: &[
+            "fixed",
+            "outdoor_fixture",
+            "stone",
+            "seating",
+            "rest_spot",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "fruit",
@@ -398,7 +526,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "wild_forest_fruit",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "fruit", "flora", "gatherable", "food_ingredient", "sweet"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "fruit",
+            "flora",
+            "gatherable",
+            "food_ingredient",
+            "sweet",
+        ],
     },
     GridObjectTagSpec {
         pattern: "herb",
@@ -406,7 +542,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "medicinal_herb",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "herb", "flora", "gatherable", "medical", "healing"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "herb",
+            "flora",
+            "gatherable",
+            "medical",
+            "healing",
+        ],
     },
     GridObjectTagSpec {
         pattern: "creek_herb",
@@ -414,7 +558,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "creek_water_celery",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "herb", "flora", "gatherable", "food_ingredient", "waterfront"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "herb",
+            "flora",
+            "gatherable",
+            "food_ingredient",
+            "waterfront",
+        ],
     },
     GridObjectTagSpec {
         pattern: "pine_wood",
@@ -422,7 +574,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "dried_pine_firewood",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "firewood_pile",
-        attribute_tags: &["portable", "raw_material", "flora", "timber", "heating", "gatherable", "fuel"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "flora",
+            "timber",
+            "heating",
+            "gatherable",
+            "fuel",
+        ],
     },
     GridObjectTagSpec {
         pattern: "fallen_wood",
@@ -430,7 +590,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "fallen_dry_wood",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "firewood_pile",
-        attribute_tags: &["portable", "raw_material", "flora", "timber", "heating", "gatherable", "wood"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "flora",
+            "timber",
+            "heating",
+            "gatherable",
+            "wood",
+        ],
     },
     GridObjectTagSpec {
         pattern: "timber",
@@ -438,7 +606,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "wild_timber_log",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "firewood_pile",
-        attribute_tags: &["portable", "raw_material", "flora", "timber", "woodworking", "gatherable", "heavy"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "flora",
+            "timber",
+            "woodworking",
+            "gatherable",
+            "heavy",
+        ],
     },
     GridObjectTagSpec {
         pattern: "resin",
@@ -446,7 +622,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "natural_pine_resin_block",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "flora", "resin", "gatherable", "fuel", "adhesive"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "flora",
+            "resin",
+            "gatherable",
+            "fuel",
+            "adhesive",
+        ],
     },
     GridObjectTagSpec {
         pattern: "jade_ore",
@@ -454,7 +638,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "creek_blue_pebble",
         category_tag: "mineral_jade",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "mineral", "jade", "gatherable", "stone", "quartz"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "mineral",
+            "jade",
+            "gatherable",
+            "stone",
+            "quartz",
+        ],
     },
     GridObjectTagSpec {
         pattern: "road_ore",
@@ -462,7 +654,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "roadside_red_gravel",
         category_tag: "mineral_jade",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "mineral", "gravel", "gatherable", "stone", "masonry"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "mineral",
+            "gravel",
+            "gatherable",
+            "stone",
+            "masonry",
+        ],
     },
     GridObjectTagSpec {
         pattern: "copper_sand",
@@ -470,7 +670,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "associated_copper_sand",
         category_tag: "mineral_jade",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "mineral", "copper", "gatherable", "metal", "sand"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "mineral",
+            "copper",
+            "gatherable",
+            "metal",
+            "sand",
+        ],
     },
     GridObjectTagSpec {
         pattern: "bamboo",
@@ -478,7 +686,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "windbreak_bamboo_branch",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "flora", "bamboo", "gatherable", "green", "crafting"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "flora",
+            "bamboo",
+            "gatherable",
+            "green",
+            "crafting",
+        ],
     },
     GridObjectTagSpec {
         pattern: "bay_post",
@@ -518,7 +734,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "long_wind_pasture_grass",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "pasture_grass", "flora", "gatherable", "fauna", "feed"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "pasture_grass",
+            "flora",
+            "gatherable",
+            "fauna",
+            "feed",
+        ],
     },
     GridObjectTagSpec {
         pattern: "grain_wood",
@@ -526,7 +750,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "sun_grain_wood_branch",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "flora", "timber", "gatherable", "wood", "fuel"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "flora",
+            "timber",
+            "gatherable",
+            "wood",
+            "fuel",
+        ],
     },
     GridObjectTagSpec {
         pattern: "ore",
@@ -534,7 +766,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "wild_mineral_ore",
         category_tag: "mineral_jade",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "mineral", "gatherable", "iron", "stone", "metal"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "mineral",
+            "gatherable",
+            "iron",
+            "stone",
+            "metal",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_bamboo_culm",
@@ -542,7 +782,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "thorny_bamboo_culm",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["fixed", "raw_material", "bamboo", "flora", "timber", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "raw_material",
+            "bamboo",
+            "flora",
+            "timber",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_dry_leaves",
@@ -550,7 +797,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "dry_bamboo_leaves",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "bamboo", "organic", "humus", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "bamboo",
+            "organic",
+            "humus",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_bamboo_shoot",
@@ -558,7 +813,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "emergent_bamboo_shoot",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "bamboo", "bamboo_shoot", "food_raw", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "bamboo",
+            "bamboo_shoot",
+            "food_raw",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_bamboo_rhizome",
@@ -566,7 +829,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "interlaced_bamboo_rhizome",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["fixed", "raw_material", "bamboo", "bamboo_rhizome", "timber", "flora", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "raw_material",
+            "bamboo",
+            "bamboo_rhizome",
+            "timber",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_bamboo_sheath",
@@ -574,7 +845,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "shed_bamboo_sheath",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "bamboo", "bamboo_sheath", "fiber", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "bamboo",
+            "bamboo_sheath",
+            "fiber",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_bamboo_fungus",
@@ -582,7 +861,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "bamboo_stump_wood_ear",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "bamboo", "fungus", "food_raw", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "bamboo",
+            "fungus",
+            "food_raw",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_bamboo",
@@ -590,7 +877,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "thorny_bamboo_grove",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["fixed", "raw_material", "bamboo", "flora", "timber", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "raw_material",
+            "bamboo",
+            "flora",
+            "timber",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_shoot",
@@ -598,7 +892,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "wild_bamboo_shoot",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "bamboo", "bamboo_shoot", "food_raw", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "bamboo",
+            "bamboo_shoot",
+            "food_raw",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_rhizome",
@@ -606,7 +908,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "laterite_bamboo_rhizome",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "bamboo", "bamboo_rhizome", "timber", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "bamboo",
+            "bamboo_rhizome",
+            "timber",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_spring",
@@ -614,7 +924,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "subterranean_cold_spring",
         category_tag: "plumbing_bath_hygiene",
         archetype_tag: "water_source",
-        attribute_tags: &["fixed", "facility", "fresh_water", "fresh_drink", "liquid", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "fresh_water",
+            "fresh_drink",
+            "liquid",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_creek",
@@ -622,7 +939,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "mountain_stream_water",
         category_tag: "plumbing_bath_hygiene",
         archetype_tag: "water_source",
-        attribute_tags: &["fixed", "facility", "fresh_water", "fresh_drink", "liquid", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "facility",
+            "fresh_water",
+            "fresh_drink",
+            "liquid",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_quartz",
@@ -630,7 +954,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "quartz_pebble_bed",
         category_tag: "mineral_jade",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "mineral", "stone", "quartz_pebble", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "mineral",
+            "stone",
+            "quartz_pebble",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_clay",
@@ -638,7 +969,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "laterite_red_gravel",
         category_tag: "mineral_jade",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "mineral", "stone", "red_clay", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "mineral",
+            "stone",
+            "red_clay",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_humus",
@@ -646,7 +984,14 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "bamboo_leaf_humus",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "organic", "humus", "flora", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "organic",
+            "humus",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_camphor",
@@ -654,7 +999,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "ancient_camphor_tree",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["fixed", "raw_material", "camphor", "timber", "wood", "flora", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "raw_material",
+            "camphor",
+            "timber",
+            "wood",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_melia",
@@ -662,7 +1015,15 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "native_melia_woods",
         category_tag: "timber_bamboo_fungi",
         archetype_tag: "resource_node",
-        attribute_tags: &["fixed", "raw_material", "melia", "timber", "wood", "flora", "gatherable"],
+        attribute_tags: &[
+            "fixed",
+            "raw_material",
+            "melia",
+            "timber",
+            "wood",
+            "flora",
+            "gatherable",
+        ],
     },
     GridObjectTagSpec {
         pattern: "zl_flora",
@@ -670,10 +1031,16 @@ pub const GRID_OBJECT_TAG_SPECS: &[GridObjectTagSpec] = &[
         object_tag: "native_wild_flora",
         category_tag: "herbs_flora_spices",
         archetype_tag: "resource_node",
-        attribute_tags: &["portable", "raw_material", "organic", "flora", "herb", "gatherable"],
+        attribute_tags: &[
+            "portable",
+            "raw_material",
+            "organic",
+            "flora",
+            "herb",
+            "gatherable",
+        ],
     },
 ];
-
 
 pub fn find_grid_object_spec(id: &str, name: &str) -> Option<&'static GridObjectTagSpec> {
     let clean_id = id.strip_prefix("grid:").unwrap_or(id).trim();
@@ -708,7 +1075,6 @@ pub fn find_grid_object_spec(id: &str, name: &str) -> Option<&'static GridObject
 
     None
 }
-
 
 /// 映射 GridObject 的 ID 與名稱至專屬英文標籤與語意原型標籤。
 pub fn grid_object_tag_and_archetype(id: &str, name: &str) -> (&'static str, &'static str) {

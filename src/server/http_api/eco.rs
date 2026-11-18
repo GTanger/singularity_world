@@ -152,11 +152,13 @@ fn extract_primary_slot_id(equipment_slots: &str) -> Option<String> {
     else {
         return None;
     };
-    ["hold_r", "weapon", "hand", "tool", "hold_l", "主手", "工具", "武器", "副手"]
-        .iter()
-        .find_map(|k| slot_map.get(*k).and_then(|v| v.as_str()))
-        .filter(|s| !s.is_empty() && *s != "starter_blade")
-        .map(|s| s.to_string())
+    [
+        "hold_r", "weapon", "hand", "tool", "hold_l", "主手", "工具", "武器", "副手",
+    ]
+    .iter()
+    .find_map(|k| slot_map.get(*k).and_then(|v| v.as_str()))
+    .filter(|s| !s.is_empty() && *s != "starter_blade")
+    .map(|s| s.to_string())
 }
 
 fn infer_vocational_vessel(role_hint: &str) -> Option<(&'static str, &'static str)> {
@@ -304,7 +306,8 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
             .unwrap_or(&role_raw)
             .trim()
             .to_string();
-        let role_clean = crate::npc::causal_core::strip_trailing_person_name_from_role(&role_clean).to_string();
+        let role_clean =
+            crate::npc::causal_core::strip_trailing_person_name_from_role(&role_clean).to_string();
         let final_title = if role_clean != person {
             role_clean
         } else {
@@ -328,12 +331,8 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
         };
         let res_seed = crate::npc::causal_core::deterministic_resident_seed(&e.id, e.soul_seed);
         let eff_mg = e.magnesium;
-        let mut cstate = crate::npc::causal_core::get_or_init_causal_state(
-            &e.id,
-            &role,
-            &settlement,
-            res_seed,
-        );
+        let mut cstate =
+            crate::npc::causal_core::get_or_init_causal_state(&e.id, &role, &settlement, res_seed);
         crate::npc::causal_core::sync_causal_state_with_magnesium(&mut cstate, eff_mg, res_seed);
         let cleaned_raw = raw_act.trim();
         let is_moving = cleaned_raw.starts_with("正動身前往")
@@ -361,7 +360,16 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
                     return true;
                 }
                 let prefixes = [
-                    "回屋舍", "回居所", "在攤前", "在旅社", "在茶屋", "在貨站", "在案頭", "去", "到", "在",
+                    "回屋舍",
+                    "回居所",
+                    "在攤前",
+                    "在旅社",
+                    "在茶屋",
+                    "在貨站",
+                    "在案頭",
+                    "去",
+                    "到",
+                    "在",
                 ];
                 let mut trimmed_title = opt_title_norm;
                 let mut changed = true;
@@ -409,7 +417,16 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
                     }
                 } else {
                     let prefixes = [
-                        "回屋舍", "回居所", "在攤前", "在旅社", "在茶屋", "在貨站", "在案頭", "去", "到", "在",
+                        "回屋舍",
+                        "回居所",
+                        "在攤前",
+                        "在旅社",
+                        "在茶屋",
+                        "在貨站",
+                        "在案頭",
+                        "去",
+                        "到",
+                        "在",
                     ];
                     let mut trimmed = title;
                     let mut changed = true;
@@ -439,14 +456,8 @@ pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
         } else {
             sanitize_eco_activity(cleaned_raw)
         };
-        let thought = derive_eco_inner_thought(
-            &e,
-            &settlement,
-            &final_title,
-            &activity,
-            "",
-            eff_mg,
-        );
+        let thought =
+            derive_eco_inner_thought(&e, &settlement, &final_title, &activity, "", eff_mg);
         let now_unix = crate::game::now_unix();
         let mark = crate::npc::causal_core::format_time_scale_mark(&cstate, now_unix);
         let latest_ripple = crate::npc::causal_core::top_active_ripple_for_npc(&e.id, now_unix);
@@ -551,9 +562,7 @@ pub async fn eco_map() -> impl IntoResponse {
                 let t: String = r.get(2);
                 let z: String = r.get(3);
                 let n: String = r.get(4);
-                let s = if (n.contains('竹') || n.contains('篁'))
-                    && t.starts_with("forest")
-                {
+                let s = if (n.contains('竹') || n.contains('篁')) && t.starts_with("forest") {
                     "𓐂".to_string()
                 } else {
                     crate::grid::Terrain::from_kind_str(&t)
@@ -599,7 +608,11 @@ pub async fn eco_entities() -> impl IntoResponse {
                 if e.vit <= 0 {
                     return None;
                 }
-                if !is_peninsula && (e.kind == "npc" || e.id.contains("驗收") || e.display_title.contains("驗收")) {
+                if !is_peninsula
+                    && (e.kind == "npc"
+                        || e.id.contains("驗收")
+                        || e.display_title.contains("驗收"))
+                {
                     return None;
                 }
                 let (x, y) = st.effective_entity_grid(e)?;
@@ -698,7 +711,9 @@ pub async fn eco_entities() -> impl IntoResponse {
                 .unwrap_or(&role_raw)
                 .trim()
                 .to_string();
-            let role_clean = crate::npc::causal_core::strip_trailing_person_name_from_role(&role_clean).to_string();
+            let role_clean =
+                crate::npc::causal_core::strip_trailing_person_name_from_role(&role_clean)
+                    .to_string();
             let final_title = if role_clean != person {
                 role_clean
             } else {
@@ -730,7 +745,9 @@ pub async fn eco_entities() -> impl IntoResponse {
             e.current_activity.clone()
         };
         let mut activity = sanitize_eco_activity(&raw_act);
-        if !is_peninsula && (activity.contains("客舍") || activity.contains("街坊") || activity.is_empty()) {
+        if !is_peninsula
+            && (activity.contains("客舍") || activity.contains("街坊") || activity.is_empty())
+        {
             activity = "漫步穿行於山林原野之間".to_string();
         }
         let breath_habit = crate::pg::living_world::get_or_derive_breath_habit(
@@ -760,7 +777,11 @@ pub async fn eco_entities() -> impl IntoResponse {
             "佇立於紅土台地西麓，靜聽刺竹林間風聲與伏流潺潺。".to_string()
         } else {
             let settlement = store::resident_macro_settlement(&e.id, &e.display_title)
-                .unwrap_or_else(|| store::normalize_household_home_settlement(store::wenyao_household_slot_for(&e.id).home_name));
+                .unwrap_or_else(|| {
+                    store::normalize_household_home_settlement(
+                        store::wenyao_household_slot_for(&e.id).home_name,
+                    )
+                });
             derive_eco_inner_thought(&e, settlement, &title, &activity, &hunting_party, eff_mg)
         };
         let magnesium = Some(eff_mg);
@@ -790,7 +811,8 @@ pub async fn eco_entities() -> impl IntoResponse {
         for (z_idx, &(zone_name, _, _)) in crate::game::CANONICAL_HUNTING_ZONES.iter().enumerate() {
             let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
             for sl in slots {
-                if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(sl.x, sl.y, sl.tier_tag) {
+                if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(sl.x, sl.y, sl.tier_tag)
+                {
                     let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
                         crate::game::ambient_creature_loot(&amb.display_title)
                     {
@@ -880,8 +902,7 @@ pub async fn eco_pulse() -> impl IntoResponse {
                 crate::game::object_ecology::scarcest_item_for_settlement(name)
                     .map(|(_id, nm, _cur, _max, pr)| (nm, pr))
                     .unwrap_or_else(|| ("回收熟鐵料塊".to_string(), 12));
-            let summary =
-                crate::game::object_ecology::format_settlement_supply_demand_report(name);
+            let summary = crate::game::object_ecology::format_settlement_supply_demand_report(name);
             EcoSettlementPulse {
                 name: name.to_string(),
                 scarcest_item,
@@ -915,8 +936,8 @@ pub async fn eco_pulse() -> impl IntoResponse {
     let hunting_zones: Vec<EcoHuntingZonePulse> = HUNTING_NAMES
         .iter()
         .map(|&name| {
-            let apex_omen = crate::game::dynamic_hunting_zone_ecology_omen(name)
-                .unwrap_or_default();
+            let apex_omen =
+                crate::game::dynamic_hunting_zone_ecology_omen(name).unwrap_or_default();
             let word_source = crate::game::zone_ambient_word_source(name)
                 .map(|(_ws, desc)| desc.to_string())
                 .unwrap_or_default();
@@ -936,9 +957,7 @@ pub async fn eco_pulse() -> impl IntoResponse {
     if let Ok(guard) = crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES.read() {
         for state in guard.values() {
             for rip in &state.active_ripples {
-                if rip.origin_tick + 5400 >= now_unix
-                    && seen_fact_ids.insert(rip.fact_id.clone())
-                {
+                if rip.origin_tick + 5400 >= now_unix && seen_fact_ids.insert(rip.fact_id.clone()) {
                     active_ripples.push(rip.clone());
                 }
             }

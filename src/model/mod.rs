@@ -112,6 +112,5 @@ pub struct SceneObjectTagSpec {
     pub attribute_tags: &'static [&'static str],
 }
 
-
 include!("scene_object_specs.rs");
 include!("model_tests.rs");

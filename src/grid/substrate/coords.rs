@@ -193,10 +193,22 @@ impl SubstrateRegion {
     /// 由上下左右四鄰格高程差即時推算坡度與坡向（單格跨距 `20m`）。
     pub fn derive_slope(&self, gx: i32, gy: i32) -> Option<DerivedSlope> {
         let center = self.get(gx, gy)?.elevation_m()?;
-        let west = self.get(gx - 1, gy).and_then(L0Cell::elevation_m).unwrap_or(center);
-        let east = self.get(gx + 1, gy).and_then(L0Cell::elevation_m).unwrap_or(center);
-        let south = self.get(gx, gy - 1).and_then(L0Cell::elevation_m).unwrap_or(center);
-        let north = self.get(gx, gy + 1).and_then(L0Cell::elevation_m).unwrap_or(center);
+        let west = self
+            .get(gx - 1, gy)
+            .and_then(L0Cell::elevation_m)
+            .unwrap_or(center);
+        let east = self
+            .get(gx + 1, gy)
+            .and_then(L0Cell::elevation_m)
+            .unwrap_or(center);
+        let south = self
+            .get(gx, gy - 1)
+            .and_then(L0Cell::elevation_m)
+            .unwrap_or(center);
+        let north = self
+            .get(gx, gy + 1)
+            .and_then(L0Cell::elevation_m)
+            .unwrap_or(center);
 
         let span_x = if self.get(gx - 1, gy).and_then(L0Cell::elevation_m).is_some()
             && self.get(gx + 1, gy).and_then(L0Cell::elevation_m).is_some()
@@ -400,7 +412,10 @@ mod tests {
         assert_eq!(twd97_to_grid(ORIGIN_TWD97_E, ORIGIN_TWD97_N), (0, 0));
         let (e, n) = wgs84_to_twd97(24.234, 120.563);
         let (gx, gy) = twd97_to_grid(e, n);
-        assert!(gx.abs() <= 5 && gy.abs() <= 5, "沙鹿竹林西麓應精準對齊原點附近: ({gx},{gy})");
+        assert!(
+            gx.abs() <= 5 && gy.abs() <= 5,
+            "沙鹿竹林西麓應精準對齊原點附近: ({gx},{gy})"
+        );
     }
 
     #[test]
@@ -428,7 +443,10 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let p = dir.path().join("test.swl0");
         let written = reg.save_sparse_chunks(&p).unwrap();
-        assert_eq!(written, 2, "4 個 256x256 區塊中僅 (0,0) 與 (-1,-1) 所在 2 塊落盤，純外海 2 塊跳過");
+        assert_eq!(
+            written, 2,
+            "4 個 256x256 區塊中僅 (0,0) 與 (-1,-1) 所在 2 塊落盤，純外海 2 塊跳過"
+        );
 
         let loaded = SubstrateRegion::load_sparse_chunks(&p).unwrap();
         assert_eq!(loaded.get(0, 0), Some(land));

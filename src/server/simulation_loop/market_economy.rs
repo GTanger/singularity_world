@@ -34,10 +34,12 @@ pub(crate) fn format_market_consumption_event_payload_and_advance_pack(
             market_prefix, venue.venue_kind, zone_tag, price_mg, good_display
         )
     } else {
-        format!("在{}市集花{}鎂買下一份{}", market_prefix, price_mg, good_display)
+        format!(
+            "在{}市集花{}鎂買下一份{}",
+            market_prefix, price_mg, good_display
+        )
     }
 }
-
 
 pub(super) fn run_market_economy_section(
     sessions: &SessionStore,

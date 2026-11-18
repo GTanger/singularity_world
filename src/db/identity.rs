@@ -52,10 +52,7 @@ fn format_npc_event_for_identity_prompt(event_type: &str, raw_payload: &str) -> 
     match event_type {
         "trade" | "work" | "contact" => Some(p.to_string()),
         "talk" => Some(format!("與{p}寒暄交談")),
-        "npc_workshop_craft"
-        | "refine_fiber"
-        | "refine_hide_fish"
-        | "refine_herb"
+        "npc_workshop_craft" | "refine_fiber" | "refine_hide_fish" | "refine_herb"
         | "refine_mineral" => Some(format!("親手製成「{p}」")),
         "npc_workshop_mutation" | "craft_mutation" => Some(format!("造物凝出「{p}」")),
         _ => None,
@@ -104,11 +101,13 @@ pub fn build_identity(entity_id: &str) -> String {
         soul_seed_val = ent.soul_seed;
         let is_female = crate::store::npc_effective_is_female(entity_id, Some(&ent.gender));
         let gender = if is_female { "女性" } else { "男性" };
-        person = crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
+        person =
+            crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
         let is_peninsula = crate::server::grid_manager::get_runtime_square_grid()
             .is_some_and(|g| g.has_peninsula_wilderness());
         let slot = crate::store::wenyao_household_slot_for(entity_id);
-        let sched_home_work = crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
+        let sched_home_work =
+            crate::server::grid_manager::resident_schedule_home_and_work(entity_id);
         let role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
         let role = if !role_label.is_empty() {
             role_label
@@ -149,21 +148,30 @@ pub fn build_identity(entity_id: &str) -> String {
             };
             result.push_str(&format!(
                 "你的穿著外觀：{}。平日住所為【{}】，任職單位為【{}】（職司：{}）。",
-                slot.attire_line,
-                home_name,
-                work_name,
-                slot.work_purpose,
+                slot.attire_line, home_name, work_name, slot.work_purpose,
             ));
         }
         if !live_act.is_empty() {
             result.push_str(&format!("你當前的具體活動：{}。", live_act));
-            let (start_hour, end_hour) = if game_h >= slot.morning_hour && game_h < slot.evening_hour {
-                (slot.morning_hour.clamp(0, 23) as u8, slot.evening_hour.clamp(0, 24) as u8)
-            } else {
-                (slot.evening_hour.clamp(0, 23) as u8, slot.morning_hour.clamp(0, 24) as u8)
-            };
-            result.push_str(&format!("{}。", crate::store::format_schedule_window_sense(start_hour, end_hour, game_h, game_m)));
-            if let Some(spatial_sense) = crate::store::describe_npc_spatial_temporal_state(entity_id) {
+            let (start_hour, end_hour) =
+                if game_h >= slot.morning_hour && game_h < slot.evening_hour {
+                    (
+                        slot.morning_hour.clamp(0, 23) as u8,
+                        slot.evening_hour.clamp(0, 24) as u8,
+                    )
+                } else {
+                    (
+                        slot.evening_hour.clamp(0, 23) as u8,
+                        slot.morning_hour.clamp(0, 24) as u8,
+                    )
+                };
+            result.push_str(&format!(
+                "{}。",
+                crate::store::format_schedule_window_sense(start_hour, end_hour, game_h, game_m)
+            ));
+            if let Some(spatial_sense) =
+                crate::store::describe_npc_spatial_temporal_state(entity_id)
+            {
                 result.push_str(&spatial_sense);
             }
         }
@@ -184,7 +192,10 @@ pub fn build_identity(entity_id: &str) -> String {
             })
             .collect();
         if inv_desc.is_empty() {
-            result.push_str(&format!("隨身持有 {} 鎂幣，行囊目前未置他物。", ent.magnesium));
+            result.push_str(&format!(
+                "隨身持有 {} 鎂幣，行囊目前未置他物。",
+                ent.magnesium
+            ));
         } else {
             result.push_str(&format!(
                 "隨身持有 {} 鎂幣，行囊中攜有：{}。",
@@ -205,7 +216,10 @@ pub fn build_identity(entity_id: &str) -> String {
         } else {
             "心緒躁悶防備"
         };
-        result.push_str(&format!("當前情緒心境：{}（心境指標：{}）。", mood_desc, disp));
+        result.push_str(&format!(
+            "當前情緒心境：{}（心境指標：{}）。",
+            mood_desc, disp
+        ));
 
         personality_opt = get_personality_for_entity(entity_id).or_else(|| {
             if let Some(seed) = ent.soul_seed
@@ -267,9 +281,13 @@ pub fn build_identity(entity_id: &str) -> String {
             };
             if let Some((h_room, w_room)) = sched_hw {
                 let settlement_prefix = h_room.split('・').next().unwrap_or("文曜");
-                result = format!("{settlement_prefix}的{effective_occ}，平素於【{w_room}】當值，居於【{h_room}】。");
+                result = format!(
+                    "{settlement_prefix}的{effective_occ}，平素於【{w_room}】當值，居於【{h_room}】。"
+                );
             } else if !effective_work.is_empty() {
-                result = format!("你是{person}，職稱是{effective_occ}，在{effective_work}工作。住所為【{effective_home}】。");
+                result = format!(
+                    "你是{person}，職稱是{effective_occ}，在{effective_work}工作。住所為【{effective_home}】。"
+                );
             } else {
                 result = format!("你是{person}，住所為【{effective_home}】。");
             }
@@ -277,10 +295,7 @@ pub fn build_identity(entity_id: &str) -> String {
             result = format!("你是{person}，身處【{v_name}】。");
         }
     }
-    let seed = crate::npc::causal_core::deterministic_resident_seed(
-        entity_id,
-        soul_seed_val,
-    );
+    let seed = crate::npc::causal_core::deterministic_resident_seed(entity_id, soul_seed_val);
     if personality_opt.is_none() {
         personality_opt = get_personality_for_entity(entity_id);
     }
@@ -327,7 +342,8 @@ pub fn build_identity(entity_id: &str) -> String {
         result.push_str("你最近的經歷動向：");
         let header_len = result.len();
         for e in evts {
-            let Some(formatted) = format_npc_event_for_identity_prompt(&e.event_type, &e.payload) else {
+            let Some(formatted) = format_npc_event_for_identity_prompt(&e.event_type, &e.payload)
+            else {
                 continue;
             };
             let tag = crate::store::format_short_relative_time(e.at, now_unix);
@@ -360,7 +376,8 @@ pub fn build_identity(entity_id: &str) -> String {
         } else {
             let (vid, vname) = crate::store::held_vessel(slot);
             if vname.is_empty() || vid.is_empty() {
-                let spec = crate::npc::causal_core::resolve_vocational_vessel(&effective_occupation);
+                let spec =
+                    crate::npc::causal_core::resolve_vocational_vessel(&effective_occupation);
                 (spec.catalog_id, spec.display_name)
             } else {
                 (vid, vname)
@@ -382,7 +399,9 @@ pub fn build_identity(entity_id: &str) -> String {
     result
 }
 
-fn personality_descriptors(p: &super::Personality) -> (&'static str, &'static str, &'static str, &'static str) {
+fn personality_descriptors(
+    p: &super::Personality,
+) -> (&'static str, &'static str, &'static str, &'static str) {
     let bold_desc = if p.boldness < 0.28 {
         "行事極度沉斂慎重、戒備心重"
     } else if p.boldness < 0.42 {
@@ -444,21 +463,23 @@ fn personality_descriptors(p: &super::Personality) -> (&'static str, &'static st
 
 fn personality_to_sentence(p: &super::Personality) -> String {
     let (bold_desc, ord_desc, sens_desc, tension) = personality_descriptors(p);
-    format!("你的性格秉性為：{}，{}，{}。心性維度守衡，{}。", bold_desc, ord_desc, sens_desc, tension)
+    format!(
+        "你的性格秉性為：{}，{}，{}。心性維度守衡，{}。",
+        bold_desc, ord_desc, sens_desc, tension
+    )
 }
 
 fn personality_to_third_person_sentence(p: &super::Personality) -> String {
     let (bold_desc, ord_desc, sens_desc, tension) = personality_descriptors(p);
-    format!("性格秉性：{}，{}，{}。心性維度守衡，{}。", bold_desc, ord_desc, sens_desc, tension)
+    format!(
+        "性格秉性：{}，{}，{}。心性維度守衡，{}。",
+        bold_desc, ord_desc, sens_desc, tension
+    )
 }
 
 /// 為 NPC↔NPC 雙人對話組裝嚴格第三人稱角色卡（徹底隔離玩家專屬來客印象與第二人稱角色糾纏）。
 #[must_use]
-pub fn build_third_person_actor_card(
-    entity_id: &str,
-    role_tag: &str,
-    peer_name: &str,
-) -> String {
+pub fn build_third_person_actor_card(entity_id: &str, role_tag: &str, peer_name: &str) -> String {
     let mut name = get_npc_person_display_name(entity_id).unwrap_or_default();
     if name.is_empty() {
         name = entity_id.to_string();
@@ -485,7 +506,8 @@ pub fn build_third_person_actor_card(
         soul_seed_val = ent.soul_seed;
         let is_female = crate::store::npc_effective_is_female(entity_id, Some(&ent.gender));
         gender = if is_female { "女性" } else { "男性" };
-        name = crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
+        name =
+            crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
         role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
     }
 
@@ -533,15 +555,9 @@ pub fn build_third_person_actor_card(
         card.push_str(&personality_to_third_person_sentence(&p));
     }
 
-    let seed = crate::npc::causal_core::deterministic_resident_seed(
-        entity_id,
-        soul_seed_val,
-    );
-    let myriad_phase = crate::npc::causal_core::describe_npc_myriad_personality_phase(
-        entity_id,
-        &job_label,
-        seed,
-    );
+    let seed = crate::npc::causal_core::deterministic_resident_seed(entity_id, soul_seed_val);
+    let myriad_phase =
+        crate::npc::causal_core::describe_npc_myriad_personality_phase(entity_id, &job_label, seed);
     if !myriad_phase.is_empty() {
         card.push('\n');
         card.push_str(&format!("心性相貌：{}。", myriad_phase));
@@ -605,11 +621,12 @@ pub fn build_third_person_actor_card(
 
     if is_peninsula {
         let work_name = sched_hw.map(|(_, w)| w).unwrap_or(slot.work_name);
-        let effective_live_act = if live_act.is_empty() || is_routine_physiological_thought(&live_act) {
-            slot.work_stay_activity
-        } else {
-            live_act.as_str()
-        };
+        let effective_live_act =
+            if live_act.is_empty() || is_routine_physiological_thought(&live_act) {
+                slot.work_stay_activity
+            } else {
+                live_act.as_str()
+            };
         if !effective_live_act.is_empty() {
             card.push('\n');
             card.push_str(&format!(

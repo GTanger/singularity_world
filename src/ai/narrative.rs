@@ -11,7 +11,7 @@ use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
 
 use crate::combat::wordplate::{
-    derive_elementary_motions_from_chars, CarrierAffinity, TacticalSlot, TargetPart,
+    CarrierAffinity, TacticalSlot, TargetPart, derive_elementary_motions_from_chars,
 };
 
 /// 招式資料封包（後台結構化字牌與動作資料）
@@ -19,11 +19,11 @@ use crate::combat::wordplate::{
 pub struct SkillDataPacket {
     pub entity_id: String,
     pub role_title: String,
-    pub domain: String,         // "martial" | "production"
-    pub slot_label: String,     // e.g. "起手", "連攜", "破綻", "守勢", "採獵", "百工", "庖廚", "行旅"
-    pub hub_or_tier: String,    // e.g. "太陰肺樞" or "熟稔"
+    pub domain: String,      // "martial" | "production"
+    pub slot_label: String,  // e.g. "起手", "連攜", "破綻", "守勢", "採獵", "百工", "庖廚", "行旅"
+    pub hub_or_tier: String, // e.g. "太陰肺樞" or "熟稔"
     pub word_chars: Vec<String>,
-    pub vessel_name: String,    // e.g. "分骨彎刀 [銳]" or "徒手"
+    pub vessel_name: String, // e.g. "分骨彎刀 [銳]" or "徒手"
     pub carrier: CarrierAffinity,
     pub motion_sequence: Vec<String>,
     pub fallback_name: String,
@@ -77,23 +77,87 @@ pub struct CraftActionFactPacket {
     pub environment_hint: String,
 }
 
-
 const FORBIDDEN_WORDS_SKILL_NAME: &[&str] = &[
-    concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "系統", "生成", "玩家", "序位", "回合",
-    "資料庫", "database", "grid", "debug", "scene_stub", concat!("聖", "塔"), concat!("110", "V"), concat!("念", "場"),
-    concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "HP", "點數",
+    concat!("\u{525b}", "\u{624d}"),
+    concat!("\u{525b}", "\u{525b}"),
+    concat!("\u{65b9}", "\u{624d}"),
+    "頃刻",
+    "還有",
+    "系統",
+    "生成",
+    "玩家",
+    "序位",
+    "回合",
+    "資料庫",
+    "database",
+    "grid",
+    "debug",
+    "scene_stub",
+    concat!("聖", "塔"),
+    concat!("110", "V"),
+    concat!("念", "場"),
+    concat!("富", "態"),
+    concat!("小", "市"),
+    concat!("短", "市"),
+    concat!("青籠", "關"),
+    "HP",
+    "點數",
 ];
 
 const FORBIDDEN_WORDS_ORIGIN_BASIS: &[&str] = &[
-    concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "資料庫", "系統", "生成", "玩家", "序位",
-    "回合", "第", "database", "grid", "debug", "scene_stub", concat!("聖", "塔"), concat!("110", "V"), concat!("念", "場"),
-    concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "HP", "點數",
+    concat!("\u{525b}", "\u{624d}"),
+    concat!("\u{525b}", "\u{525b}"),
+    concat!("\u{65b9}", "\u{624d}"),
+    "頃刻",
+    "還有",
+    "資料庫",
+    "系統",
+    "生成",
+    "玩家",
+    "序位",
+    "回合",
+    "第",
+    "database",
+    "grid",
+    "debug",
+    "scene_stub",
+    concat!("聖", "塔"),
+    concat!("110", "V"),
+    concat!("念", "場"),
+    concat!("富", "態"),
+    concat!("小", "市"),
+    concat!("短", "市"),
+    concat!("青籠", "關"),
+    "HP",
+    "點數",
 ];
 
 const FORBIDDEN_WORDS_COMBAT_PROSE: &[&str] = &[
-    "第", "回合", "序位", concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "系統", "生成", "HP",
-    "資料庫", "database", "grid", "debug", "scene_stub", concat!("聖", "塔"), concat!("110", "V"), concat!("念", "場"),
-    concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "玩家", "點數",
+    "第",
+    "回合",
+    "序位",
+    concat!("\u{525b}", "\u{624d}"),
+    concat!("\u{525b}", "\u{525b}"),
+    concat!("\u{65b9}", "\u{624d}"),
+    "頃刻",
+    "還有",
+    "系統",
+    "生成",
+    "HP",
+    "資料庫",
+    "database",
+    "grid",
+    "debug",
+    "scene_stub",
+    concat!("聖", "塔"),
+    concat!("110", "V"),
+    concat!("念", "場"),
+    concat!("富", "態"),
+    concat!("小", "市"),
+    concat!("短", "市"),
+    concat!("青籠", "關"),
+    "玩家",
+    "點數",
 ];
 
 const FORBIDDEN_FABRICATED_RESIDUE: &[&str] = &["燥氣", "霜氣", "暗震", "旋流"];
@@ -160,7 +224,10 @@ pub fn verify_skill_output(name: &str, origin_basis: &str, packet: &SkillDataPac
     {
         return false;
     }
-    if FORBIDDEN_WORDS_ORIGIN_BASIS.iter().any(|w| origin_basis.contains(w)) {
+    if FORBIDDEN_WORDS_ORIGIN_BASIS
+        .iter()
+        .any(|w| origin_basis.contains(w))
+    {
         return false;
     }
 
@@ -171,25 +238,37 @@ pub fn verify_skill_output(name: &str, origin_basis: &str, packet: &SkillDataPac
         const UNARMED_FORBIDDEN: &[&str] = &[
             "劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒",
         ];
-        if UNARMED_FORBIDDEN.iter().any(|w| name.contains(w) || origin_basis.contains(w)) {
+        if UNARMED_FORBIDDEN
+            .iter()
+            .any(|w| name.contains(w) || origin_basis.contains(w))
+        {
             return false;
         }
     }
     if packet.carrier == CarrierAffinity::Blunt {
         const BLUNT_FORBIDDEN: &[&str] = &["劍", "槍", "矛"];
-        if BLUNT_FORBIDDEN.iter().any(|w| name.contains(w) || origin_basis.contains(w)) {
+        if BLUNT_FORBIDDEN
+            .iter()
+            .any(|w| name.contains(w) || origin_basis.contains(w))
+        {
             return false;
         }
     }
     if packet.carrier == CarrierAffinity::Blade {
         const BLADE_FORBIDDEN: &[&str] = &["錘", "盾", "槍", "矛"];
-        if BLADE_FORBIDDEN.iter().any(|w| name.contains(w) || origin_basis.contains(w)) {
+        if BLADE_FORBIDDEN
+            .iter()
+            .any(|w| name.contains(w) || origin_basis.contains(w))
+        {
             return false;
         }
     }
     if packet.carrier == CarrierAffinity::Pole {
         const POLE_FORBIDDEN: &[&str] = &["劍", "錘", "盾"];
-        if POLE_FORBIDDEN.iter().any(|w| name.contains(w) || origin_basis.contains(w)) {
+        if POLE_FORBIDDEN
+            .iter()
+            .any(|w| name.contains(w) || origin_basis.contains(w))
+        {
             return false;
         }
     }
@@ -277,12 +356,36 @@ pub fn render_deterministic_skill_from_data(packet: &SkillDataPacket) -> Synthes
         derive_elementary_motions_from_chars(&packet.word_chars, packet.carrier, TargetPart::Torso)
     } else {
         match packet.carrier {
-            CarrierAffinity::Blade => vec!["引刃出鞘".to_string(), "旋腕斜撩".to_string(), "振鋒落定".to_string()],
-            CarrierAffinity::Pole => vec!["抖槍探刺".to_string(), "轉桿橫掃".to_string(), "回馬撤步".to_string()],
-            CarrierAffinity::Blunt => vec!["引錘蓄力".to_string(), "裂地重砸".to_string(), "收勢回防".to_string()],
-            CarrierAffinity::Shield => vec!["沉肘立盾".to_string(), "迎擊化勁".to_string(), "頓地固守".to_string()],
-            CarrierAffinity::Footwork => vec!["踩星踏斗".to_string(), "斜身錯位".to_string(), "飄忽回身".to_string()],
-            CarrierAffinity::Unarmed => vec!["提步運勁".to_string(), "崩拳破空".to_string(), "收勢凝神".to_string()],
+            CarrierAffinity::Blade => vec![
+                "引刃出鞘".to_string(),
+                "旋腕斜撩".to_string(),
+                "振鋒落定".to_string(),
+            ],
+            CarrierAffinity::Pole => vec![
+                "抖槍探刺".to_string(),
+                "轉桿橫掃".to_string(),
+                "回馬撤步".to_string(),
+            ],
+            CarrierAffinity::Blunt => vec![
+                "引錘蓄力".to_string(),
+                "裂地重砸".to_string(),
+                "收勢回防".to_string(),
+            ],
+            CarrierAffinity::Shield => vec![
+                "沉肘立盾".to_string(),
+                "迎擊化勁".to_string(),
+                "頓地固守".to_string(),
+            ],
+            CarrierAffinity::Footwork => vec![
+                "踩星踏斗".to_string(),
+                "斜身錯位".to_string(),
+                "飄忽回身".to_string(),
+            ],
+            CarrierAffinity::Unarmed => vec![
+                "提步運勁".to_string(),
+                "崩拳破空".to_string(),
+                "收勢凝神".to_string(),
+            ],
         }
     };
 
@@ -299,9 +402,11 @@ pub fn render_deterministic_skill_from_data(packet: &SkillDataPacket) -> Synthes
         let name = if fallback_len >= 3 {
             // 已有 3~7 字自然名稱，檢查是否犯兵刃衝突
             if is_unarmed {
-                let has_weapon_noun = ["劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒"]
-                    .iter()
-                    .any(|w| clean_fallback.contains(w));
+                let has_weapon_noun = [
+                    "劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒",
+                ]
+                .iter()
+                .any(|w| clean_fallback.contains(w));
                 if has_weapon_noun {
                     "行雲拳勢".to_string()
                 } else {
@@ -314,9 +419,11 @@ pub fn render_deterministic_skill_from_data(packet: &SkillDataPacket) -> Synthes
             // <= 2 字：根據載體與手持器物補齊風味後綴
             let base = if fallback_len > 0 {
                 if is_unarmed
-                    && ["劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒"]
-                        .iter()
-                        .any(|w| clean_fallback.contains(w))
+                    && [
+                        "劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒",
+                    ]
+                    .iter()
+                    .any(|w| clean_fallback.contains(w))
                 {
                     "行雲".to_string()
                 } else {
@@ -330,9 +437,11 @@ pub fn render_deterministic_skill_from_data(packet: &SkillDataPacket) -> Synthes
                     .take(2)
                     .collect();
                 if is_unarmed
-                    && ["劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒"]
-                        .iter()
-                        .any(|w| filtered.contains(w))
+                    && [
+                        "劍", "刀", "刃", "槍", "矛", "戟", "斧", "錘", "鎬", "盾", "棍", "棒",
+                    ]
+                    .iter()
+                    .any(|w| filtered.contains(w))
                 {
                     "凝勢".to_string()
                 } else if filtered.is_empty() {
@@ -385,9 +494,15 @@ pub fn render_deterministic_skill_from_data(packet: &SkillDataPacket) -> Synthes
         let m3 = motions.get(2).map(|s| s.as_str()).unwrap_or("收合");
 
         let origin_basis = if !clean_vessel.is_empty() && !is_unarmed {
-            format!("手執{}，由「{}」起勢，順接「{}」，再以「{}」一氣呵成。", clean_vessel, m1, m2, m3)
+            format!(
+                "手執{}，由「{}」起勢，順接「{}」，再以「{}」一氣呵成。",
+                clean_vessel, m1, m2, m3
+            )
         } else {
-            format!("徒手運勁，由「{}」起勢，順接「{}」，再以「{}」連貫成招。", m1, m2, m3)
+            format!(
+                "徒手運勁，由「{}」起勢，順接「{}」，再以「{}」連貫成招。",
+                m1, m2, m3
+            )
         };
 
         SynthesizedSkillProse { name, origin_basis }
@@ -407,9 +522,15 @@ pub fn render_deterministic_skill_from_data(packet: &SkillDataPacket) -> Synthes
 
         let motion_str = motions.join("、");
         let origin_basis = if !clean_vessel.is_empty() && clean_vessel != "徒手" {
-            format!("手持{}，經由{}之序，工法細緻，熟能生巧化為技藝。", clean_vessel, motion_str)
+            format!(
+                "手持{}，經由{}之序，工法細緻，熟能生巧化為技藝。",
+                clean_vessel, motion_str
+            )
         } else {
-            format!("專注身手，經由{}之序，工法細緻，熟能生巧化為技藝。", motion_str)
+            format!(
+                "專注身手，經由{}之序，工法細緻，熟能生巧化為技藝。",
+                motion_str
+            )
         };
 
         SynthesizedSkillProse { name, origin_basis }
@@ -491,7 +612,6 @@ fn clear_skill_in_flight(key: u64) {
     let mut set = IN_FLIGHT_SKILL_KEYS.write();
     set.remove(&key);
 }
-
 
 fn call_local_chat_llm(
     base_url: &str,
@@ -691,7 +811,6 @@ pub fn synthesize_skill_from_data(packet: &SkillDataPacket) -> SynthesizedSkillP
 // ---------------------------------------------------------------------------
 // 交鋒文字敘事驗證與生成
 // ---------------------------------------------------------------------------
-
 
 include!("narrative/combat.rs");
 include!("narrative/craft_tests.rs");

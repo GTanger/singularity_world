@@ -48,7 +48,8 @@ pub(super) fn choose_place_intent(
         } else {
             base_dname.to_string()
         };
-        let display_name = crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
+        let display_name =
+            crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
         return PlaceIntent {
             ty: IntentType::Work,
             target: Some(delivery.destination_place_id),
@@ -64,7 +65,14 @@ pub(super) fn choose_place_intent(
         && let Some(ob) = obligations.into_iter().find(|o| {
             matches!(
                 o.obligation_kind.as_str(),
-                "repair_tool" | "stranded_cargo" | "repay_debt" | "treat_injury" | "restock_goods" | "supply_shortage" | "craft_material" | "fuel_shortage"
+                "repair_tool"
+                    | "stranded_cargo"
+                    | "repay_debt"
+                    | "treat_injury"
+                    | "restock_goods"
+                    | "supply_shortage"
+                    | "craft_material"
+                    | "fuel_shortage"
             )
         })
     {
@@ -87,10 +95,13 @@ pub(super) fn choose_place_intent(
                 .filter(|r| r != place_id && graph.place(r).is_some())
                 .or_else(|| nearest_trade_place(graph, place_id))
                 .or_else(|| nearest_work_place(graph, place_id)),
-            _ => nearest_trade_place(graph, place_id)
-                .or_else(|| nearest_work_place(graph, place_id)),
+            _ => {
+                nearest_trade_place(graph, place_id).or_else(|| nearest_work_place(graph, place_id))
+            }
         };
-        if let Some(target) = found_target.or_else(|| graph.place(place_id).map(|_| place_id.to_string())) {
+        if let Some(target) =
+            found_target.or_else(|| graph.place(place_id).map(|_| place_id.to_string()))
+        {
             let ty = match ob.obligation_kind.as_str() {
                 "treat_injury" => IntentType::Idle,
                 "repair_tool" | "craft_material" => IntentType::Work,
@@ -302,13 +313,18 @@ fn event_pack_work_intent(
                 continue;
             }
             if let Some((ep, sp)) =
-                crate::game::peninsula_scripts::active_event_and_script_pack_for_room(title, None, now_unix)
+                crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                    title, None, now_unix,
+                )
             {
                 if ep.status != "completed" {
                     return Some(PlaceIntent {
                         ty: IntentType::Work,
                         target: Some(cand_id),
-                        reason: format!("響應場內急務【{}】與現場差事【{}】協作需求", ep.pack_id, sp.title),
+                        reason: format!(
+                            "響應場內急務【{}】與現場差事【{}】協作需求",
+                            ep.pack_id, sp.title
+                        ),
                     });
                 }
             }
@@ -526,10 +542,7 @@ fn is_material_source(place: &WorldPlace) -> bool {
 }
 
 fn is_forge_or_workshop_place(place: &WorldPlace) -> bool {
-    has_any_tag(
-        place,
-        &["鐵匠鋪", "工坊", "磨石", "礦場", "林場", "織坊"],
-    ) || {
+    has_any_tag(place, &["鐵匠鋪", "工坊", "磨石", "礦場", "林場", "織坊"]) || {
         let title = place.player_title();
         title.contains('鍛')
             || title.contains('鐵')
@@ -541,10 +554,7 @@ fn is_forge_or_workshop_place(place: &WorldPlace) -> bool {
 }
 
 fn is_clinic_or_rest_place(place: &WorldPlace) -> bool {
-    has_any_tag(
-        place,
-        &["藥圃", "藥材", "浴場", "旅社", "歇宿", "民居"],
-    ) || {
+    has_any_tag(place, &["藥圃", "藥材", "浴場", "旅社", "歇宿", "民居"]) || {
         let title = place.player_title();
         title.contains("診所")
             || title.contains("脈絡")
@@ -559,9 +569,18 @@ fn is_social_place(place: &WorldPlace) -> bool {
     has_any_tag(
         place,
         &[
-            "social", "market", "public_square", "rest_spot",
-            "食堂", "熱食", "現煮飲品", "歇腳",
-            "茶屋", "廣場", "浴場", "石橋",
+            "social",
+            "market",
+            "public_square",
+            "rest_spot",
+            "食堂",
+            "熱食",
+            "現煮飲品",
+            "歇腳",
+            "茶屋",
+            "廣場",
+            "浴場",
+            "石橋",
         ],
     ) || matches!(place.kind.as_str(), "tavern" | "inn" | "market" | "urban")
 }
@@ -570,9 +589,19 @@ fn is_trade_place(place: &WorldPlace) -> bool {
     has_any_tag(
         place,
         &[
-            "trade", "market", "public_square", "social",
-            "商鋪", "市集", concat!("零", "售"), "雜貨", "收購", "櫃檯",
-            "聯運", "碼頭", "茶屋",
+            "trade",
+            "market",
+            "public_square",
+            "social",
+            "商鋪",
+            "市集",
+            concat!("零", "售"),
+            "雜貨",
+            "收購",
+            "櫃檯",
+            "聯運",
+            "碼頭",
+            "茶屋",
         ],
     ) || matches!(place.kind.as_str(), "market" | "urban" | "dock")
 }
@@ -581,9 +610,17 @@ fn is_rest_place(place: &WorldPlace) -> bool {
     has_any_tag(
         place,
         &[
-            "rest", "rest_spot", "home", "lodging",
-            "民居", "歇宿", "歇腳",
-            "旅社", "浴場", "茶屋", "水井",
+            "rest",
+            "rest_spot",
+            "home",
+            "lodging",
+            "民居",
+            "歇宿",
+            "歇腳",
+            "旅社",
+            "浴場",
+            "茶屋",
+            "水井",
         ],
     ) || matches!(place.kind.as_str(), "inn" | "tavern" | "farmhouse")
 }
@@ -592,9 +629,24 @@ fn is_work_place(place: &WorldPlace) -> bool {
     has_any_tag(
         place,
         &[
-            "work", "trade", "warehouse", "dock", "farm",
-            "工坊", "鐵匠鋪", "糧倉", "礦場", "林場", "藥圃", "漁港", "織坊",
-            "磨石", "藥材", "聯運", "碼頭", "水井",
+            "work",
+            "trade",
+            "warehouse",
+            "dock",
+            "farm",
+            "工坊",
+            "鐵匠鋪",
+            "糧倉",
+            "礦場",
+            "林場",
+            "藥圃",
+            "漁港",
+            "織坊",
+            "磨石",
+            "藥材",
+            "聯運",
+            "碼頭",
+            "水井",
         ],
     ) || matches!(
         place.kind.as_str(),

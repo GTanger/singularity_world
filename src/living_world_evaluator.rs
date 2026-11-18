@@ -22,7 +22,6 @@ use crate::store::households::{WENYAO_HOUSEHOLD_SLOTS, WenyaoHouseholdSlot};
 use crate::store::outer_households::OUTER_HOUSEHOLD_SLOTS;
 pub const WENYAO_HOUSEHOLDS: &[WenyaoHouseholdSlot] = WENYAO_HOUSEHOLD_SLOTS;
 
-
 /// 萬人萬相居民與地標防撞衫重疊檢測報告（Evaluator 1）
 #[derive(Debug, Clone, PartialEq)]
 pub struct AntiTemplateOverlapReport {
@@ -76,7 +75,17 @@ fn cjk_char_bigrams(text: &str) -> HashSet<(char, char)> {
             !c.is_whitespace()
                 && !matches!(
                     c,
-                    '，' | '。' | '！' | '？' | '、' | '；' | '：' | '「' | '」' | '・' | '（' | '）'
+                    '，' | '。'
+                        | '！'
+                        | '？'
+                        | '、'
+                        | '；'
+                        | '：'
+                        | '「'
+                        | '」'
+                        | '・'
+                        | '（'
+                        | '）'
                 )
         })
         .collect();
@@ -185,8 +194,10 @@ pub fn audit_living_world_anti_template_overlap() -> AntiTemplateOverlapReport {
     }
 
     // 檢查外圍聚落同聚落居民槽位是否出現模板複製 (Jaccard >= 0.85)
-    let mut outer_by_settlement: HashMap<&str, Vec<(usize, &WenyaoHouseholdSlot, HashSet<(char, char)>)>> =
-        HashMap::new();
+    let mut outer_by_settlement: HashMap<
+        &str,
+        Vec<(usize, &WenyaoHouseholdSlot, HashSet<(char, char)>)>,
+    > = HashMap::new();
     for (idx, slot) in OUTER_HOUSEHOLD_SLOTS.iter().enumerate() {
         let settlement = slot.home_name.split('・').next().unwrap_or(slot.home_name);
         outer_by_settlement.entry(settlement).or_default().push((
@@ -220,7 +231,8 @@ pub fn audit_living_world_anti_template_overlap() -> AntiTemplateOverlapReport {
             if let Some(cell) = grid.get(SquareCoord::new(dx, dy))
                 && cell.terrain.category() == "landmark"
             {
-                if cell.description.contains("擺著教案上的") || cell.description.contains("細密密") {
+                if cell.description.contains("擺著教案上的") || cell.description.contains("細密密")
+                {
                     landmark_overlap_violations.push(format!(
                         "文曜地標「{}」描述含有贅字瑕疵：{}",
                         cell.name, cell.description
@@ -258,22 +270,55 @@ pub fn audit_living_world_anti_template_overlap() -> AntiTemplateOverlapReport {
 
     // 檢查場域物件（RoomVenueObject）當值對話語錄唯一率
     let sample_venue_probes = [
-        ("半島百草診所", ""), ("巧木居所傢俱坊", ""), ("分家巷・精工火磚匠廬", ""),
-        ("岑氏第一鍛造工坊", ""), ("三水大食堂", ""), ("泉香溫水浴場", ""),
-        ("東橋旅社與山風茶屋", ""), ("學院主校區", ""), ("藏書閣與印行館", ""),
-        ("百工商算學舍", ""), ("文曜蒙學堂講舍", ""), ("三水總商行總部", ""),
-        ("傳訊鐘樓與信使總站", ""), ("分家巷口雜貨柑仔店", ""), ("三水口乾貨海味行", ""),
-        ("分家巷習武堂試招院", ""), ("公議堂", ""), ("公議堂房地契書局", ""),
-        ("雲錦織造與服飾坊", ""), ("西門車馬聯運總站", ""), ("西門修傘補靴攤", ""),
-        ("老堰頭水輪石磨", ""), ("早市鮮魚拍賣場", "魚販"), ("陳記醬園", ""),
-        ("沈家老酒坊", ""), ("西門麵食鋪", ""), ("水手茶飯館", ""),
-        ("通濟河運總倉", ""), ("竹綿造紙精廬", ""), ("端溪石硯坊", ""),
-        ("活字排版印書局", ""), ("格物輿圖外院", ""), ("文曜棋院", ""),
-        ("杏林百草醫館", ""), ("溫氏百草烘藥房", ""), ("重鐵水錘大鍛坊", ""),
-        ("五金農具總商行", ""), ("護商武備鋪", ""), ("精銅鐘錶儀器坊", ""),
-        ("連軸鋸木坊", ""), ("高山木炭窯", ""), ("染纈織染居", ""),
-        ("內河造船塢", ""), ("萬里駝隊大驛站", ""), ("西門皮毛大市", ""),
-        ("重載雙輪大車坊", ""), ("車馬獸醫館", ""), ("川流貨船大埠", ""), ("西門街", ""),
+        ("半島百草診所", ""),
+        ("巧木居所傢俱坊", ""),
+        ("分家巷・精工火磚匠廬", ""),
+        ("岑氏第一鍛造工坊", ""),
+        ("三水大食堂", ""),
+        ("泉香溫水浴場", ""),
+        ("東橋旅社與山風茶屋", ""),
+        ("學院主校區", ""),
+        ("藏書閣與印行館", ""),
+        ("百工商算學舍", ""),
+        ("文曜蒙學堂講舍", ""),
+        ("三水總商行總部", ""),
+        ("傳訊鐘樓與信使總站", ""),
+        ("分家巷口雜貨柑仔店", ""),
+        ("三水口乾貨海味行", ""),
+        ("分家巷習武堂試招院", ""),
+        ("公議堂", ""),
+        ("公議堂房地契書局", ""),
+        ("雲錦織造與服飾坊", ""),
+        ("西門車馬聯運總站", ""),
+        ("西門修傘補靴攤", ""),
+        ("老堰頭水輪石磨", ""),
+        ("早市鮮魚拍賣場", "魚販"),
+        ("陳記醬園", ""),
+        ("沈家老酒坊", ""),
+        ("西門麵食鋪", ""),
+        ("水手茶飯館", ""),
+        ("通濟河運總倉", ""),
+        ("竹綿造紙精廬", ""),
+        ("端溪石硯坊", ""),
+        ("活字排版印書局", ""),
+        ("格物輿圖外院", ""),
+        ("文曜棋院", ""),
+        ("杏林百草醫館", ""),
+        ("溫氏百草烘藥房", ""),
+        ("重鐵水錘大鍛坊", ""),
+        ("五金農具總商行", ""),
+        ("護商武備鋪", ""),
+        ("精銅鐘錶儀器坊", ""),
+        ("連軸鋸木坊", ""),
+        ("高山木炭窯", ""),
+        ("染纈織染居", ""),
+        ("內河造船塢", ""),
+        ("萬里駝隊大驛站", ""),
+        ("西門皮毛大市", ""),
+        ("重載雙輪大車坊", ""),
+        ("車馬獸醫館", ""),
+        ("川流貨船大埠", ""),
+        ("西門街", ""),
     ];
 
     let mut seen_venue_kinds = HashSet::new();
@@ -327,17 +372,47 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
 
     // 1. 正例需求路由驗算：從文曜中心與各聚落搜尋核心生活／百工需求標籤，必須命中非住宅地標並具備對應標籤
     let positive_demand_queries: &[(&str, (i32, i32), i32, &[&str], bool)] = &[
-        ("熱食膳食需求", (0, 0), 15, &["canteen", "hot_food", "fresh_drink"], true),
+        (
+            "熱食膳食需求",
+            (0, 0),
+            15,
+            &["canteen", "hot_food", "fresh_drink"],
+            true,
+        ),
         ("醫館藥材需求", (0, 0), 15, &["herb", "medicine"], true),
-        ("鍛造鐵器需求", (0, 0), 15, &["blacksmith", "workshop"], true),
+        (
+            "鍛造鐵器需求",
+            (0, 0),
+            15,
+            &["blacksmith", "workshop"],
+            true,
+        ),
         ("布匹織染需求", (0, 0), 15, &["textile", "fabric"], true),
         ("商鋪市集需求", (0, 0), 15, &["shop", "market"], true),
         ("溫水沐浴需求", (0, 0), 15, &["bathhouse"], false),
         ("茶屋旅社歇宿需求", (0, 0), 15, &["teahouse", "inn"], false),
         ("車馬聯運碼頭需求", (0, 0), 15, &["courier", "dock"], false),
-        ("大圳頭糧倉儲糧需求", (-180, -140), 15, &["granary", "grain"], true),
-        ("霜林口林場木材需求", (190, 290), 15, &["lumber", "timber"], false),
-        ("風舶角漁港海鹽需求", (-260, 160), 15, &["fishing_port", "sea_salt"], true),
+        (
+            "大圳頭糧倉儲糧需求",
+            (-180, -140),
+            15,
+            &["granary", "grain"],
+            true,
+        ),
+        (
+            "霜林口林場木材需求",
+            (190, 290),
+            15,
+            &["lumber", "timber"],
+            false,
+        ),
+        (
+            "風舶角漁港海鹽需求",
+            (-260, 160),
+            15,
+            &["fishing_port", "sea_salt"],
+            true,
+        ),
     ];
 
     for &(label, origin, radius, tags, require_counter_zone) in positive_demand_queries {
@@ -412,7 +487,16 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
     let mut negative_false_positives = Vec::new();
 
     let forbidden_private_tags = [
-        "counter", "restricted_staff_only", "shop", "market", "blacksmith", "clinic", "herb", "textile", "granary", "canteen",
+        "counter",
+        "restricted_staff_only",
+        "shop",
+        "market",
+        "blacksmith",
+        "clinic",
+        "herb",
+        "textile",
+        "granary",
+        "canteen",
     ];
 
     for dx in -17..=17 {
@@ -447,11 +531,20 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
 
     //    (b) 顯式私人臥房／內室與易混淆匠師居所名稱（傳入 Terrain::Road 時亦不可誤判為商業櫃檯）
     let explicit_private_rooms = [
-        "三水口・陸家宅邸・內室", "講堂街・溫家藥圃居・內室", "講堂街・溫家藥圃居",
-        "分家巷・岑氏鍛藝居", "分家巷・蘇氏繡坊居", "分家巷・柯氏木作居",
-        "西門・遠行行商棧舍", "西門・行道車馬行舍", "西門・草料客商居",
-        "西門・皮靴油布匠居", "三水口・白氏湯屋居", "三水口・陳氏庖廚居",
-        "大圳頭・修耙補犁鋪居", "風舶角・海風麵點鋪居",
+        "三水口・陸家宅邸・內室",
+        "講堂街・溫家藥圃居・內室",
+        "講堂街・溫家藥圃居",
+        "分家巷・岑氏鍛藝居",
+        "分家巷・蘇氏繡坊居",
+        "分家巷・柯氏木作居",
+        "西門・遠行行商棧舍",
+        "西門・行道車馬行舍",
+        "西門・草料客商居",
+        "西門・皮靴油布匠居",
+        "三水口・白氏湯屋居",
+        "三水口・陳氏庖廚居",
+        "大圳頭・修耙補犁鋪居",
+        "風舶角・海風麵點鋪居",
     ];
 
     for room_name in explicit_private_rooms {
@@ -472,8 +565,14 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
 
     //    (c) 公共街道名稱絕不可誤掛「櫃檯」、「非本店人員禁止進入區」或「商鋪」
     let public_street_rooms = [
-        "文曜・三水口商號街", "文曜・西門貨棧街", "文曜・西門聯運大道",
-        "文曜・講堂街南口", "文曜・分家巷百工石道", "分家巷", "講堂街", "西門街",
+        "文曜・三水口商號街",
+        "文曜・西門貨棧街",
+        "文曜・西門聯運大道",
+        "文曜・講堂街南口",
+        "文曜・分家巷百工石道",
+        "分家巷",
+        "講堂街",
+        "西門街",
     ];
     for street_name in public_street_rooms {
         negative_total += 1;
@@ -513,9 +612,29 @@ pub fn simulate_room_tag_and_assignment_routing() -> DemandRoutingSimulationRepo
 /// 審計全島 1,713 戶家戶、49 類場域、千物總典、事件／劇本包與跨模組接線恆定契約（Evaluator 4）
 pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditReport {
     let forbidden_tokens = [
-        "剛才", "剛剛", "方才", "適才", "正典人物", "正典NPC", "正典名宿", "正典核心", "正典住民", "正典自主", "實戰名宿", "一般居民", "普通居民",
-        "處方", "本坊", "wt_cat_", "系統提示",
-        "事件包", "劇本包", "劇本演繹", "場上劇本", "對口協力", "事件包與劇本包聯動",
+        "剛才",
+        "剛剛",
+        "方才",
+        "適才",
+        "正典人物",
+        "正典NPC",
+        "正典名宿",
+        "正典核心",
+        "正典住民",
+        "正典自主",
+        "實戰名宿",
+        "一般居民",
+        "普通居民",
+        "處方",
+        "本坊",
+        "wt_cat_",
+        "系統提示",
+        "事件包",
+        "劇本包",
+        "劇本演繹",
+        "場上劇本",
+        "對口協力",
+        "事件包與劇本包聯動",
     ];
     let mut audited_text_surfaces = 0usize;
     let mut violations = Vec::new();
@@ -527,7 +646,10 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
             }
         }
     };
-    for s in WENYAO_HOUSEHOLD_SLOTS.iter().chain(OUTER_HOUSEHOLD_SLOTS.iter()) {
+    for s in WENYAO_HOUSEHOLD_SLOTS
+        .iter()
+        .chain(OUTER_HOUSEHOLD_SLOTS.iter())
+    {
         check_surface(s.home_name, s.home_stay_activity);
         check_surface(s.home_name, s.work_stay_activity);
         check_surface(s.home_name, s.errand_stay_activity);
@@ -579,7 +701,10 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
                 || sp.player_actions.contains(exemplar)
                 || sp.outcome_and_world_change.contains(exemplar)
             {
-                violations.push(format!("劇本 {} 動態拆解後殘留寫死人名「{exemplar}」", script.id));
+                violations.push(format!(
+                    "劇本 {} 動態拆解後殘留寫死人名「{exemplar}」",
+                    script.id
+                ));
             }
         }
     }
@@ -587,22 +712,36 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
         (
             "src/pg/living_world.rs",
             include_str!("pg/living_world.rs"),
-            &["is_recognizable_room_staff_or_counter_holder", "resolve_nearest_room_by_tag", "ALL_RESIDENTS_SEEDED.call_once"],
+            &[
+                "is_recognizable_room_staff_or_counter_holder",
+                "resolve_nearest_room_by_tag",
+                "ALL_RESIDENTS_SEEDED.call_once",
+            ],
         ),
         (
             "src/npc/causal_core.rs",
             include_str!("npc/causal_core.rs"),
-            &["is_recognizable_room_staff_or_counter_holder_entity", "resolve_nearest_room_by_tag"],
+            &[
+                "is_recognizable_room_staff_or_counter_holder_entity",
+                "resolve_nearest_room_by_tag",
+            ],
         ),
         (
             "src/server/simulation_loop/idle.rs",
             include_str!("server/simulation_loop/idle.rs"),
-            &["run_npc_autonomous_production_step", "resolve_any_room_venue_object"],
+            &[
+                "run_npc_autonomous_production_step",
+                "resolve_any_room_venue_object",
+            ],
         ),
         (
             "src/grid/grid.rs",
             include_str!("grid/grid.rs"),
-            &["find_nearest_room_by_tags", "is_private_residence_room_name", "is_street_or_gate_room_name"],
+            &[
+                "find_nearest_room_by_tags",
+                "is_private_residence_room_name",
+                "is_street_or_gate_room_name",
+            ],
         ),
         (
             "src/pg/world_work.rs",
@@ -618,7 +757,9 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
     for (mod_name, src, required_anchors) in module_contracts {
         for anchor in required_anchors {
             if !src.contains(anchor) {
-                violations.push(format!("跨模組防退化契約缺口：{mod_name} 缺少關鍵接線 `{anchor}`"));
+                violations.push(format!(
+                    "跨模組防退化契約缺口：{mod_name} 缺少關鍵接線 `{anchor}`"
+                ));
             }
         }
     }
@@ -648,43 +789,81 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
 
     // 1. Audit all items in PENINSULA_WORLD_OBJECTS (1,109 items)
     const FORBIDDEN_NON_FOOD_ATTRS: &[&str] = &[
-        "shellfish", "hot_food", "fresh_drink", "grain", "edible", "drinkable", "food_ingredient",
+        "shellfish",
+        "hot_food",
+        "fresh_drink",
+        "grain",
+        "edible",
+        "drinkable",
+        "food_ingredient",
     ];
     for entry in crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS {
         if !is_ascii_snake_case(entry.object_tag) {
-            violations.push(format!("總典物件 {} ({}) object_tag `{}` 非合法 ASCII snake_case", entry.id, entry.name, entry.object_tag));
+            violations.push(format!(
+                "總典物件 {} ({}) object_tag `{}` 非合法 ASCII snake_case",
+                entry.id, entry.name, entry.object_tag
+            ));
         }
         if !is_ascii_snake_case(entry.category_tag) {
-            violations.push(format!("總典物件 {} ({}) category_tag `{}` 非合法 ASCII snake_case", entry.id, entry.name, entry.category_tag));
+            violations.push(format!(
+                "總典物件 {} ({}) category_tag `{}` 非合法 ASCII snake_case",
+                entry.id, entry.name, entry.category_tag
+            ));
         }
         if entry.attribute_tags.len() < 3 {
-            violations.push(format!("總典物件 {} ({}) attribute_tags 數量不足 3 個（現有 {} 個）", entry.id, entry.name, entry.attribute_tags.len()));
+            violations.push(format!(
+                "總典物件 {} ({}) attribute_tags 數量不足 3 個（現有 {} 個）",
+                entry.id,
+                entry.name,
+                entry.attribute_tags.len()
+            ));
         }
         for &attr in entry.attribute_tags {
             if !is_ascii_snake_case(attr) {
-                violations.push(format!("總典物件 {} ({}) attribute_tag `{}` 非合法 ASCII snake_case", entry.id, entry.name, attr));
+                violations.push(format!(
+                    "總典物件 {} ({}) attribute_tag `{}` 非合法 ASCII snake_case",
+                    entry.id, entry.name, attr
+                ));
             }
             if attr == entry.object_tag {
-                violations.push(format!("總典物件 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性", entry.id, entry.name, attr));
+                violations.push(format!(
+                    "總典物件 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性",
+                    entry.id, entry.name, attr
+                ));
             }
             if attr == entry.category_tag {
-                violations.push(format!("總典物件 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性", entry.id, entry.name, attr));
+                violations.push(format!(
+                    "總典物件 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性",
+                    entry.id, entry.name, attr
+                ));
             }
         }
         let has_fixed = entry.attribute_tags.contains(&"fixed");
         let has_portable = entry.attribute_tags.contains(&"portable");
         if has_fixed && has_portable {
-            violations.push(format!("總典物件 {} ({}) 同時包含 fixed 與 portable 屬性衝突", entry.id, entry.name));
+            violations.push(format!(
+                "總典物件 {} ({}) 同時包含 fixed 與 portable 屬性衝突",
+                entry.id, entry.name
+            ));
         }
         let has_interior = entry.attribute_tags.contains(&"interior_fixture");
         let has_outdoor = entry.attribute_tags.contains(&"outdoor_fixture");
         if has_interior && has_outdoor {
-            violations.push(format!("總典物件 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突", entry.id, entry.name));
+            violations.push(format!(
+                "總典物件 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突",
+                entry.id, entry.name
+            ));
         }
-        if !matches!(entry.category_num, "04" | "05" | "06" | "07" | "08" | "09" | "10") {
+        if !matches!(
+            entry.category_num,
+            "04" | "05" | "06" | "07" | "08" | "09" | "10"
+        ) {
             for &forbidden in FORBIDDEN_NON_FOOD_ATTRS {
                 if entry.attribute_tags.contains(&forbidden) {
-                    violations.push(format!("總典非飲食類物件 {} (類別 {}) 包含食物屬性 `{}`", entry.id, entry.category_num, forbidden));
+                    violations.push(format!(
+                        "總典非飲食類物件 {} (類別 {}) 包含食物屬性 `{}`",
+                        entry.id, entry.category_num, forbidden
+                    ));
                 }
             }
         }
@@ -692,34 +871,59 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
 
     // 2. Audit all specs in SCENE_OBJECT_TAG_SPECS (118 items)
     const OUTDOOR_INFRA_ARCHETYPES: &[&str] = &[
-        "railing", "stele", "bollard", "bench", "notice_board", "way_stele",
+        "railing",
+        "stele",
+        "bollard",
+        "bench",
+        "notice_board",
+        "way_stele",
     ];
     for spec in crate::model::SCENE_OBJECT_TAG_SPECS {
         for &attr in spec.attribute_tags {
             if attr == spec.object_tag {
-                violations.push(format!("場景物件規格 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性", spec.id, spec.name_alias, attr));
+                violations.push(format!(
+                    "場景物件規格 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性",
+                    spec.id, spec.name_alias, attr
+                ));
             }
             if attr == spec.category_tag {
-                violations.push(format!("場景物件規格 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性", spec.id, spec.name_alias, attr));
+                violations.push(format!(
+                    "場景物件規格 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性",
+                    spec.id, spec.name_alias, attr
+                ));
             }
             if attr == spec.archetype_tag {
-                violations.push(format!("場景物件規格 {} ({}) attribute_tags 包含原型 archetype_tag `{}` 破壞正交性", spec.id, spec.name_alias, attr));
+                violations.push(format!(
+                    "場景物件規格 {} ({}) attribute_tags 包含原型 archetype_tag `{}` 破壞正交性",
+                    spec.id, spec.name_alias, attr
+                ));
             }
         }
         let has_fixed = spec.attribute_tags.contains(&"fixed");
         let has_portable = spec.attribute_tags.contains(&"portable");
         if has_fixed && has_portable {
-            violations.push(format!("場景物件規格 {} ({}) 同時包含 fixed 與 portable 屬性衝突", spec.id, spec.name_alias));
+            violations.push(format!(
+                "場景物件規格 {} ({}) 同時包含 fixed 與 portable 屬性衝突",
+                spec.id, spec.name_alias
+            ));
         }
         let has_interior = spec.attribute_tags.contains(&"interior_fixture");
         let has_outdoor = spec.attribute_tags.contains(&"outdoor_fixture");
         if has_interior && has_outdoor {
-            violations.push(format!("場景物件規格 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突", spec.id, spec.name_alias));
+            violations.push(format!(
+                "場景物件規格 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突",
+                spec.id, spec.name_alias
+            ));
         }
         if spec.category_tag != "seafood_kelp" && spec.attribute_tags.contains(&"shellfish") {
-            violations.push(format!("場景物件規格 {} (分類 {}) 誤掛 shellfish 標籤", spec.id, spec.category_tag));
+            violations.push(format!(
+                "場景物件規格 {} (分類 {}) 誤掛 shellfish 標籤",
+                spec.id, spec.category_tag
+            ));
         }
-        if OUTDOOR_INFRA_ARCHETYPES.contains(&spec.archetype_tag) && spec.category_tag != "public_fixture" {
+        if OUTDOOR_INFRA_ARCHETYPES.contains(&spec.archetype_tag)
+            && spec.category_tag != "public_fixture"
+        {
             violations.push(format!("場景物件規格 {} ({}) 原型 `{}` 屬於戶外公共設施，category_tag 應為 public_fixture，現為 `{}`", spec.id, spec.name_alias, spec.archetype_tag, spec.category_tag));
         }
     }
@@ -728,22 +932,41 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
     for spec in crate::grid::cell::GRID_OBJECT_TAG_SPECS {
         for &attr in spec.attribute_tags {
             if attr == spec.object_tag {
-                violations.push(format!("地景物件規格 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性", spec.pattern, spec.name_alias, attr));
+                violations.push(format!(
+                    "地景物件規格 {} ({}) attribute_tags 包含專屬 object_tag `{}` 破壞正交性",
+                    spec.pattern, spec.name_alias, attr
+                ));
             }
             if attr == spec.category_tag {
-                violations.push(format!("地景物件規格 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性", spec.pattern, spec.name_alias, attr));
+                violations.push(format!(
+                    "地景物件規格 {} ({}) attribute_tags 包含分類 category_tag `{}` 破壞正交性",
+                    spec.pattern, spec.name_alias, attr
+                ));
             }
             if attr == spec.archetype_tag {
-                violations.push(format!("地景物件規格 {} ({}) attribute_tags 包含原型 archetype_tag `{}` 破壞正交性", spec.pattern, spec.name_alias, attr));
+                violations.push(format!(
+                    "地景物件規格 {} ({}) attribute_tags 包含原型 archetype_tag `{}` 破壞正交性",
+                    spec.pattern, spec.name_alias, attr
+                ));
             }
         }
         if spec.attribute_tags.contains(&"fixed") && spec.attribute_tags.contains(&"portable") {
-            violations.push(format!("地景物件規格 {} ({}) 同時包含 fixed 與 portable 屬性衝突", spec.pattern, spec.name_alias));
+            violations.push(format!(
+                "地景物件規格 {} ({}) 同時包含 fixed 與 portable 屬性衝突",
+                spec.pattern, spec.name_alias
+            ));
         }
-        if spec.attribute_tags.contains(&"interior_fixture") && spec.attribute_tags.contains(&"outdoor_fixture") {
-            violations.push(format!("地景物件規格 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突", spec.pattern, spec.name_alias));
+        if spec.attribute_tags.contains(&"interior_fixture")
+            && spec.attribute_tags.contains(&"outdoor_fixture")
+        {
+            violations.push(format!(
+                "地景物件規格 {} ({}) 同時包含 interior_fixture 與 outdoor_fixture 屬性衝突",
+                spec.pattern, spec.name_alias
+            ));
         }
-        if OUTDOOR_INFRA_ARCHETYPES.contains(&spec.archetype_tag) && spec.category_tag != "public_fixture" {
+        if OUTDOOR_INFRA_ARCHETYPES.contains(&spec.archetype_tag)
+            && spec.category_tag != "public_fixture"
+        {
             violations.push(format!("地景物件規格 {} ({}) 原型 `{}` 屬於戶外公共設施，category_tag 應為 public_fixture，現為 `{}`", spec.pattern, spec.name_alias, spec.archetype_tag, spec.category_tag));
         }
     }
@@ -792,7 +1015,11 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
         .map(|entry| entry.id)
         .collect();
 
-    for (idx, slot) in WENYAO_HOUSEHOLD_SLOTS.iter().chain(OUTER_HOUSEHOLD_SLOTS.iter()).enumerate() {
+    for (idx, slot) in WENYAO_HOUSEHOLD_SLOTS
+        .iter()
+        .chain(OUTER_HOUSEHOLD_SLOTS.iter())
+        .enumerate()
+    {
         let (vessel_id, _vessel_name) = crate::store::held_vessel(slot);
         if !valid_item_ids.contains(vessel_id) {
             violations.push(format!(
@@ -826,7 +1053,8 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
                     if matches!(
                         cell.terrain,
                         Terrain::Wall | Terrain::Mountain | Terrain::Water
-                    ) || !cell.terrain.walkable() {
+                    ) || !cell.terrain.walkable()
+                    {
                         violations.push(format!(
                             "家庭槽位 #{idx} ({}) 之{kind}「{name}」（{x}, {y}）位於不可通行地形 {:?}",
                             slot.home_name, cell.terrain
@@ -837,7 +1065,8 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
                         let name_matches = stripped_cell == stripped_name
                             || (stripped_name == "三水總商行" && stripped_cell == "三水總商行總部")
                             || (stripped_name == "文曜學院主校區" && stripped_cell == "學院主校區")
-                            || (stripped_name == "分家巷習武堂" && stripped_cell == "分家巷習武堂試招院");
+                            || (stripped_name == "分家巷習武堂"
+                                && stripped_cell == "分家巷習武堂試招院");
                         if !name_matches {
                             violations.push(format!(
                                 "文曜家庭槽位 #{idx} ({}) 之{kind}「{name}」（{x}, {y}）與網格實際地標「{}」不符",
@@ -912,8 +1141,8 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
     }
 
     for role_hint in [
-        "學徒", "家眷", "帳房", "食堂", "書院", "藥鋪", "水輪", "鐵匠", "礦工",
-        "木匠", "織布", "皮靴", "理髮", "漁夫", "巡衛", "獵戶", "挑夫", "街坊",
+        "學徒", "家眷", "帳房", "食堂", "書院", "藥鋪", "水輪", "鐵匠", "礦工", "木匠", "織布",
+        "皮靴", "理髮", "漁夫", "巡衛", "獵戶", "挑夫", "街坊",
     ] {
         let spec = crate::npc::causal_core::resolve_vocational_vessel(role_hint);
         if spec.catalog_id.is_empty() || !valid_item_ids.contains(spec.catalog_id) {
@@ -926,31 +1155,51 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
 
     let mut vessel_counts: HashMap<&str, usize> = HashMap::new();
     let total_slots = WENYAO_HOUSEHOLD_SLOTS.len() + OUTER_HOUSEHOLD_SLOTS.len();
-    for (idx, slot) in WENYAO_HOUSEHOLD_SLOTS.iter().chain(OUTER_HOUSEHOLD_SLOTS.iter()).enumerate() {
+    for (idx, slot) in WENYAO_HOUSEHOLD_SLOTS
+        .iter()
+        .chain(OUTER_HOUSEHOLD_SLOTS.iter())
+        .enumerate()
+    {
         let (cat_id, vname) = crate::store::entity::held_vessel(slot);
         *vessel_counts.entry(vname).or_insert(0) += 1;
         if vname.contains("晴雨傘") || vname.contains("雨傘") {
-            violations.push(format!("家戶本職器物誤映射為雨傘: {vname} (slot: {})", slot.name()));
+            violations.push(format!(
+                "家戶本職器物誤映射為雨傘: {vname} (slot: {})",
+                slot.name()
+            ));
         }
         if !crate::game::object_ecology::ItemPhysicalClass::classify(cat_id, vname).is_bladed()
-            && crate::pg::living_world::VesselCondition::Sharp.label_for_item(cat_id, vname) == "鋒利"
+            && crate::pg::living_world::VesselCondition::Sharp.label_for_item(cat_id, vname)
+                == "鋒利"
         {
-            violations.push(format!("非刃具器物誤標為鋒利: {cat_id}/{vname} (slot: {})", slot.name()));
+            violations.push(format!(
+                "非刃具器物誤標為鋒利: {cat_id}/{vname} (slot: {})",
+                slot.name()
+            ));
         }
         let probe_id = format!("npc_eval_sensory_probe_{idx}");
-        crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS.write().insert(probe_id.clone(), idx);
+        crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS
+            .write()
+            .insert(probe_id.clone(), idx);
         let sensory = crate::store::npc_sensory_appearance_line(&probe_id, "");
-        crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS.write().remove(&probe_id);
+        crate::store::entity::HOUSEHOLD_MEMBER_ASSIGNMENTS
+            .write()
+            .remove(&probe_id);
         if sensory.contains('（') || sensory.contains('）') {
-            violations.push(format!("npc_sensory_appearance_line 外洩家戶括號標籤: {sensory} (slot #{idx})"));
+            violations.push(format!(
+                "npc_sensory_appearance_line 外洩家戶括號標籤: {sensory} (slot #{idx})"
+            ));
         }
     }
     for (&vname, &count) in &vessel_counts {
         if total_slots > 0 && count * 100 / total_slots > 30 {
-            violations.push(format!("單一兜底器物佔比過高: {vname} ({count}/{total_slots})"));
+            violations.push(format!(
+                "單一兜底器物佔比過高: {vname} ({count}/{total_slots})"
+            ));
         }
     }
-    if include_str!("game/object_ecology/crafting_and_mutation.rs").contains(".replace(\"【異變・") {
+    if include_str!("game/object_ecology/crafting_and_mutation.rs").contains(".replace(\"【異變・")
+    {
         violations.push("crafting_and_mutation.rs 仍使用 .replace 硬剝異變詞綴".to_string());
     }
     let mut transit_probe: crate::entity::Character =
@@ -966,12 +1215,11 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
         "",
     );
     if talk_line.contains("停下手中敲打構件的錘子") {
-        violations.push(format!(
-            "在途趕路 NPC 誤套用打鐵錘擊動作前綴: {talk_line}"
-        ));
+        violations.push(format!("在途趕路 NPC 誤套用打鐵錘擊動作前綴: {talk_line}"));
     }
     let mut bridge_blacksmith_probe: crate::entity::Character =
-        serde_json::from_str(r#"{"id":"npc_bridge_blacksmith_probe","kind":"npc"}"#).expect("probe char");
+        serde_json::from_str(r#"{"id":"npc_bridge_blacksmith_probe","kind":"npc"}"#)
+            .expect("probe char");
     bridge_blacksmith_probe.display_title = "岑大牛".to_string();
     bridge_blacksmith_probe.x = 0;
     bridge_blacksmith_probe.y = 0;
@@ -990,7 +1238,9 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
             "大石橋戶外鐵匠誤套用室內打鐵錘擊動作前綴: {bridge_talk_line}"
         ));
     }
-    let supply = crate::game::object_ecology::ItemPhysicalClass::canonical_vocation_supply_item("岑氏第一鍛造工坊");
+    let supply = crate::game::object_ecology::ItemPhysicalClass::canonical_vocation_supply_item(
+        "岑氏第一鍛造工坊",
+    );
     if supply != ("mat_coal_lump", "硬木白炭") {
         violations.push(format!(
             "鍛造工坊本職資材應為硬木白炭(mat_coal_lump)，實際為: {supply:?}"
@@ -1031,17 +1281,39 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
 /// 執行奇點世界四大驗算器並強制檢核所有品質與防退化門檻
 pub fn evaluate_singularity_world_quality_suite() -> Result<SingularityWorldEvaluationSuite> {
     let overlap_report = audit_living_world_anti_template_overlap();
-    ensure!(overlap_report.resident_overlap_violations.is_empty(), "發現居民萬人萬相模板重疊違規：{:?}", overlap_report.resident_overlap_violations);
-    ensure!(overlap_report.landmark_overlap_violations.is_empty(), "發現文曜地標描述重疊或贅字違規：{:?}", overlap_report.landmark_overlap_violations);
-    ensure!(overlap_report.duplicate_talk_lines.is_empty(), "發現場域當值台詞重複：{:?}", overlap_report.duplicate_talk_lines);
+    ensure!(
+        overlap_report.resident_overlap_violations.is_empty(),
+        "發現居民萬人萬相模板重疊違規：{:?}",
+        overlap_report.resident_overlap_violations
+    );
+    ensure!(
+        overlap_report.landmark_overlap_violations.is_empty(),
+        "發現文曜地標描述重疊或贅字違規：{:?}",
+        overlap_report.landmark_overlap_violations
+    );
+    ensure!(
+        overlap_report.duplicate_talk_lines.is_empty(),
+        "發現場域當值台詞重複：{:?}",
+        overlap_report.duplicate_talk_lines
+    );
 
     let routing_report = simulate_room_tag_and_assignment_routing();
-    ensure!(routing_report.positive_failures.is_empty(), "發現需求決策正例路由失敗：{:?}", routing_report.positive_failures);
-    ensure!(routing_report.negative_false_positives.is_empty(), "發現需求決策負例誤判（私宅或街道誤掛櫃檯／商業標籤）：{:?}", routing_report.negative_false_positives);
+    ensure!(
+        routing_report.positive_failures.is_empty(),
+        "發現需求決策正例路由失敗：{:?}",
+        routing_report.positive_failures
+    );
+    ensure!(
+        routing_report.negative_false_positives.is_empty(),
+        "發現需求決策負例誤判（私宅或街道誤掛櫃檯／商業標籤）：{:?}",
+        routing_report.negative_false_positives
+    );
 
     let narrative_report = evaluate_combat_narrative_counterfactual_lift();
     ensure!(
-        narrative_report.all_baseline_passed && narrative_report.all_defective_rejected && narrative_report.mean_lift >= 45.0,
+        narrative_report.all_baseline_passed
+            && narrative_report.all_defective_rejected
+            && narrative_report.mean_lift >= 45.0,
         "Data-to-Text 交鋒敘事四維品質或反事實增益未達標：{narrative_report:?}"
     );
     let anti_looping_report = audit_codebase_anti_looping_invariants();
@@ -1050,7 +1322,12 @@ pub fn evaluate_singularity_world_quality_suite() -> Result<SingularityWorldEval
         "發現全倉防鬼打牆或跨模組接線退化違規：{:?}",
         anti_looping_report.violations
     );
-    Ok(SingularityWorldEvaluationSuite { overlap_report, routing_report, narrative_report, anti_looping_report })
+    Ok(SingularityWorldEvaluationSuite {
+        overlap_report,
+        routing_report,
+        narrative_report,
+        anti_looping_report,
+    })
 }
 
 #[cfg(test)]
@@ -1059,8 +1336,8 @@ mod tests {
 
     #[test]
     fn singularity_world_three_evaluators_pass_all_gates() {
-        let suite = evaluate_singularity_world_quality_suite()
-            .expect("奇點世界三大驗算器必須全數通過");
+        let suite =
+            evaluate_singularity_world_quality_suite().expect("奇點世界三大驗算器必須全數通過");
         assert_eq!(suite.overlap_report.wenyao_slot_count, 324);
         assert_eq!(suite.overlap_report.outer_slot_count, 1389);
         assert_eq!(suite.overlap_report.wenyao_commercial_landmark_count, 95);

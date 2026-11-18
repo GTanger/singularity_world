@@ -24,12 +24,20 @@ pub use behavior::{
     movement_speed_for_title, pick_enter_reaction, pick_idle_emote, try_load_npc_behaviors,
 };
 pub use brain_arrival::apply_brain_arrival_effects;
+pub use causal_core::{
+    LIVE_NPC_CAUSAL_STATES, LIVE_STRANDED_CARGO_ORDERS, NpcCausalState, RelationalHook,
+    RippleFactKind, StrandedCargoOrder, WorldRippleFact, active_stranded_cargo_for_carrier_or_room,
+    claim_or_deliver_stranded_cargo_for_npc, create_stranded_cargo_order, credit_magnesium_bounty,
+    deliver_stranded_cargo_for_player, find_relational_hook_for_target,
+    inject_ripple_fact_into_npc, list_active_stranded_cargo_orders, mutate_npc_from_player_action,
+    propagate_ripple_between_npcs, top_active_ripple_for_npc, upsert_relational_hook,
+};
 pub use decision::IntentType;
 pub use grid_ai::{GridMoveEvent, GridNpcManager};
 pub use job_matching::{
-    DEFAULT_OCCUPATION_FOR_HIRE, JOB_MATCH_STABLE_PROBABILITY, JobMatchParams,
-    RoomCandidate, SEEK_JOB_MG_THRESHOLD_DEFAULT, find_best_work_room,
-    occupation_keywords, room_matches_occupation, run_job_matching_tick,
+    DEFAULT_OCCUPATION_FOR_HIRE, JOB_MATCH_STABLE_PROBABILITY, JobMatchParams, RoomCandidate,
+    SEEK_JOB_MG_THRESHOLD_DEFAULT, find_best_work_room, occupation_keywords,
+    room_matches_occupation, run_job_matching_tick,
 };
 pub use reaction::npc_behavior_reaction_line;
 pub use social::pick_micro_interaction;
@@ -42,12 +50,3 @@ pub use topics::{
 };
 pub use traveler::{MovementDef, MovementType, NpcStep, TravelerManager, seed_traveler_manager};
 pub use unobserved::{UNOBSERVED_MAX_NPCS_PER_TICK, run_unobserved_world_tick};
-pub use causal_core::{
-    active_stranded_cargo_for_carrier_or_room, claim_or_deliver_stranded_cargo_for_npc,
-    create_stranded_cargo_order, credit_magnesium_bounty, deliver_stranded_cargo_for_player,
-    find_relational_hook_for_target, inject_ripple_fact_into_npc,
-    list_active_stranded_cargo_orders, mutate_npc_from_player_action,
-    propagate_ripple_between_npcs, top_active_ripple_for_npc, upsert_relational_hook,
-    NpcCausalState, RelationalHook, RippleFactKind, StrandedCargoOrder, WorldRippleFact,
-    LIVE_NPC_CAUSAL_STATES, LIVE_STRANDED_CARGO_ORDERS,
-};

@@ -17,6 +17,7 @@ pub mod economy;
 pub mod entity;
 pub mod event;
 pub mod living_world;
+pub mod rim_persist;
 pub mod rumor;
 pub mod white_tower_runtime;
 pub mod world_economy;
@@ -44,6 +45,7 @@ pub fn set_pool(pool: DbPool) {
     writer::init(pool);
     if let Some(p) = self::pool() {
         let _ = cell_overlay::ensure_schema(&p);
+        let _ = rim_persist::ensure_schema(&p);
     }
 }
 

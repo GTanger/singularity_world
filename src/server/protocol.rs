@@ -172,7 +172,11 @@ pub struct RoomViewMsg {
     pub game_days_since_epoch: i32,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub terrain: String,
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "venue_kind")]
+    #[serde(
+        default,
+        skip_serializing_if = "String::is_empty",
+        rename = "venue_kind"
+    )]
     pub venue_kind: String,
     #[serde(default, rename = "is_indoor")]
     pub is_indoor: bool,
@@ -355,11 +359,19 @@ pub struct InventoryItemView {
     pub tags: Vec<String>,
     #[serde(default, rename = "is_edible")]
     pub is_edible: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "item_stage")]
+    #[serde(
+        default,
+        skip_serializing_if = "String::is_empty",
+        rename = "item_stage"
+    )]
     pub item_stage: String,
     #[serde(default, rename = "can_craft")]
     pub can_craft: bool,
-    #[serde(default, skip_serializing_if = "String::is_empty", rename = "craft_label")]
+    #[serde(
+        default,
+        skip_serializing_if = "String::is_empty",
+        rename = "craft_label"
+    )]
     pub craft_label: String,
 }
 
@@ -844,8 +856,12 @@ mod tests {
         assert!(can_ore);
         assert_eq!(label_ore, "加工煉製");
 
-        let (stage_fish, can_fish, label_fish) =
-            classify_inventory_item_capabilities("mat_fresh_shrimp", "水尾寮鮮沼蝦", "material", "");
+        let (stage_fish, can_fish, label_fish) = classify_inventory_item_capabilities(
+            "mat_fresh_shrimp",
+            "水尾寮鮮沼蝦",
+            "material",
+            "",
+        );
         assert_eq!(stage_fish, "raw");
         assert!(can_fish);
         assert_eq!(label_fish, "烹調炙烤");

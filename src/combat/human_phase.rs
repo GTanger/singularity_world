@@ -7,10 +7,10 @@
 // 4. 事件分派三相動力學判準（一力降十會、專克拆招、庖丁解牛）
 // 5. 過完備語意字典 2-Step Residual OMP 殘差正交匹配定名
 
-use std::sync::LazyLock;
 use crate::combat::wordplate::{
     CarrierAffinity, PostureState, TacticalSlot, WordElement, WordRegistry,
 };
+use std::sync::LazyLock;
 
 include!("human_phase/types.rs");
 include!("human_phase/kinematics.rs");

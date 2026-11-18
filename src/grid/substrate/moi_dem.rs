@@ -92,7 +92,8 @@ impl Moi20mDemWindow {
             f.read_exact(&mut row_bytes)?;
             let dst_base = out_r * win_w;
             for i in 0..win_w {
-                samples[dst_base + i] = i16::from_le_bytes([row_bytes[i * 2], row_bytes[i * 2 + 1]]);
+                samples[dst_base + i] =
+                    i16::from_le_bytes([row_bytes[i * 2], row_bytes[i * 2 + 1]]);
             }
         }
 
@@ -216,8 +217,10 @@ fn parse_uncompressed_i16_tiff_strips(f: &mut File) -> io::Result<(usize, usize,
             format!("expected uncompressed TIFF (1), got {compression}"),
         ));
     }
-    let w = width.ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "missing ImageWidth"))?;
-    let h = height.ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "missing ImageLength"))?;
+    let w =
+        width.ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "missing ImageWidth"))?;
+    let h =
+        height.ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "missing ImageLength"))?;
     let (so_typ, so_cnt, so_off) = strip_offsets_meta
         .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "missing StripOffsets"))?;
 
@@ -251,8 +254,14 @@ fn parse_uncompressed_i16_tiff_strips(f: &mut File) -> io::Result<(usize, usize,
 }
 
 /// 將連續折線段 `(x0, y0) -> (x1, y1)` 以**四連通無斜縫（4-Connected Supercover）＋ 半徑加厚**柵格化。
-pub fn rasterize_4conn_thick_segment<F>(x0: i32, y0: i32, x1: i32, y1: i32, radius: i32, mut plot: F)
-where
+pub fn rasterize_4conn_thick_segment<F>(
+    x0: i32,
+    y0: i32,
+    x1: i32,
+    y1: i32,
+    radius: i32,
+    mut plot: F,
+) where
     F: FnMut(i32, i32),
 {
     let mut stamp = |cx: i32, cy: i32| {

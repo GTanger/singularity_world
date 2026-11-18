@@ -31,7 +31,6 @@ use super::helpers::{
 use super::state::{get_pair_last_talk, inc_stat, set_last_choice, set_pair_last_talk};
 use super::types::LastSocialChoice;
 
-
 include!("trigger/helpers.rs");
 include!("trigger/pair_picker.rs");
 include!("trigger/dialogue.rs");
@@ -114,11 +113,5 @@ pub fn try_trigger_npc_npc_in_room(
     ) else {
         return false;
     };
-    commit_and_broadcast_dialogue(
-        session_store,
-        room_id,
-        now_unix,
-        pair,
-        dialogue,
-    )
+    commit_and_broadcast_dialogue(session_store, room_id, now_unix, pair, dialogue)
 }

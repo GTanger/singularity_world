@@ -469,8 +469,8 @@ fn add_inventory_quantity(
         entry["qty"] = serde_json::json!(after);
         return Ok((serde_json::to_string(&value)?, after as i32));
     }
-    let clamped_quantity = (quantity as i64)
-        .min(crate::db::inventory::MAX_NPC_ITEM_STACK_QTY as i64) as i32;
+    let clamped_quantity =
+        (quantity as i64).min(crate::db::inventory::MAX_NPC_ITEM_STACK_QTY as i64) as i32;
     let actual_added = if array.len() < crate::db::inventory::MAX_NPC_DISTINCT_ITEMS {
         array.push(serde_json::json!({"item_id": item_id, "qty": clamped_quantity}));
         clamped_quantity

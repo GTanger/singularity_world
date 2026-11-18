@@ -356,10 +356,7 @@ pub fn conservation_status(
     )? {
         balances.entry(row.get(0)).or_default().consumed = row.get(1);
     }
-    for row in client.query(
-        "SELECT inventory FROM entities WHERE id LIKE 'npc_%'",
-        &[],
-    )? {
+    for row in client.query("SELECT inventory FROM entities WHERE id LIKE 'npc_%'", &[])? {
         let raw: String = row.get(0);
         let entries: Vec<ActorInventoryEntry> = if raw.trim().is_empty() {
             Vec::new()
@@ -472,7 +469,8 @@ pub fn offer_for_operator(
         place_id: row.get(1),
         source_good_id: row.get(2),
         item_id: row.get(3),
-        display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(4)).to_string(),
+        display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(4))
+            .to_string(),
         source_unit: row.get(5),
         quantity: row.get(6),
         target_quantity: row.get(7),

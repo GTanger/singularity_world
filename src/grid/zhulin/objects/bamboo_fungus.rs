@@ -33,7 +33,12 @@ pub const YIELD_ITEM_DEF: super::ZhulinItemDef = super::ZhulinItemDef {
     description: "貼生於陰濕老竹樁根部的野生木耳，耳片褐亮肥厚、富膠質，可鮮食燉煮或日曬乾存。",
     tags: super::ZhulinTagTriad {
         category_tags: &["food", "edible_fungi", "bamboo_fungus"],
-        attribute_tags: &["gelatinous_crisp", "sun_dryable", "soup_ingredient", "mild_sweet"],
+        attribute_tags: &[
+            "gelatinous_crisp",
+            "sun_dryable",
+            "soup_ingredient",
+            "mild_sweet",
+        ],
         exclusive_tag: YIELD_ITEM_ID,
     },
 };

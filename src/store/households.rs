@@ -48,11 +48,8 @@ include!("households/part_03.rs");
 include!("households/part_04.rs");
 include!("households/part_05.rs");
 
-const TOTAL_WENYAO: usize = PART_01.len()
-    + PART_02.len()
-    + PART_03.len()
-    + PART_04.len()
-    + PART_05.len();
+const TOTAL_WENYAO: usize =
+    PART_01.len() + PART_02.len() + PART_03.len() + PART_04.len() + PART_05.len();
 
 const fn concat_wenyao_slots() -> [WenyaoHouseholdSlot; TOTAL_WENYAO] {
     let mut out = [PART_01[0]; TOTAL_WENYAO];

@@ -218,7 +218,9 @@ pub fn settle_npc_sale(
     for row in buyer_rows {
         let buyer = actor_from_row(row);
         if let Ok(mut test_inv) = parse_inventory(&buyer.inventory) {
-            if add_quantity_for_actor(&mut test_inv, item_id, quantity, buyer.kind == "npc", false).is_ok() {
+            if add_quantity_for_actor(&mut test_inv, item_id, quantity, buyer.kind == "npc", false)
+                .is_ok()
+            {
                 chosen_buyer = Some(buyer);
                 break;
             }
@@ -308,7 +310,8 @@ pub fn settle_market_sale(
     let target_quantity: i32 = market.get(5);
     let reference_price_mg: i32 = market.get(6);
     let current_ask_mg: i32 = market.get(7);
-    let display_name = super::living_world::peninsula_good_display_name(market.get::<_, &str>(8)).to_string();
+    let display_name =
+        super::living_world::peninsula_good_display_name(market.get::<_, &str>(8)).to_string();
     let minimum_total = current_ask_mg
         .checked_mul(quantity)
         .map(|total| (total * 7 / 10).max(1))
@@ -476,7 +479,13 @@ pub fn settle_market_sale(
         final_inventory = serde_json::to_string(&buyer_inventory)?;
         final_activity = if matches!(
             display_name.as_str(),
-            "日曬海鹽" | "茶籽皂塊" | "蜂蠟燭台" | "深海鯨脂" | "精碾白米" | "鮮海魚獲" | "山林野味"
+            "日曬海鹽"
+                | "茶籽皂塊"
+                | "蜂蠟燭台"
+                | "深海鯨脂"
+                | "精碾白米"
+                | "鮮海魚獲"
+                | "山林野味"
         ) {
             format!("在市集添購了日常所需的{display_name}")
         } else {
@@ -609,7 +618,6 @@ pub fn settle_one_npc_consumption(
         }
     }
 }
-
 
 #[allow(clippy::too_many_arguments)]
 fn settle_locked(
@@ -939,7 +947,10 @@ fn resolve_venue_trade_activities(
             } else {
                 venue.default_host_title
             };
-            format!("在{}當值櫃檯內側交付{}（{}）", venue_kind, display_name, host_title)
+            format!(
+                "在{}當值櫃檯內側交付{}（{}）",
+                venue_kind, display_name, host_title
+            )
         }
         Some(venue) => {
             let venue_kind = if venue.venue_kind == "大食堂" {
@@ -1083,13 +1094,8 @@ mod tests {
 
     #[test]
     fn venue_trade_activities_reflect_counter_zone_and_advance_event_pack() {
-        let (buyer_act, op_act) = resolve_venue_trade_activities(
-            "三水大食堂",
-            "wt_cat_0444",
-            "三水大釜牛雜湯",
-            true,
-            "",
-        );
+        let (buyer_act, op_act) =
+            resolve_venue_trade_activities("三水大食堂", "wt_cat_0444", "三水大釜牛雜湯", true, "");
         assert_eq!(
             op_act,
             "在聚落大食堂當值櫃檯內側交付三水大釜牛雜湯（當值大廚）"

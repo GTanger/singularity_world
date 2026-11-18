@@ -88,9 +88,15 @@ pub fn advance_movement(maps_path: &Path, now: i64) -> anyhow::Result<Vec<MovedR
                     || other.id.starts_with("ambient_")
                     || other.id.starts_with("shanhai_");
                 if !is_e_npc || !is_other_npc {
-                    let mut other_name = crate::db::person_name_from_npc_list_label(&other.display_title);
+                    let mut other_name =
+                        crate::db::person_name_from_npc_list_label(&other.display_title);
                     if other_name.is_empty() {
-                        let clean = other.display_title.rsplit(['|', '｜']).next().unwrap_or("").trim();
+                        let clean = other
+                            .display_title
+                            .rsplit(['|', '｜'])
+                            .next()
+                            .unwrap_or("")
+                            .trim();
                         if !clean.is_empty() {
                             other_name = clean.to_string();
                         } else if !other.id.starts_with("npc_")
@@ -103,7 +109,12 @@ pub fn advance_movement(maps_path: &Path, now: i64) -> anyhow::Result<Vec<MovedR
                             other_name = "旅人".to_string();
                         }
                     }
-                    let _ = event::append(now, &e.id, evt::CONTACT, &format!("與{}擦肩而過", other_name));
+                    let _ = event::append(
+                        now,
+                        &e.id,
+                        evt::CONTACT,
+                        &format!("與{}擦肩而過", other_name),
+                    );
                 }
             }
         }

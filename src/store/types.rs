@@ -474,7 +474,11 @@ mod tests {
 
         assert_eq!(item.category_tag(), "mineral_jade");
         assert!(!item.attribute_tags().is_empty());
-        assert!(item.attribute_tags().contains(&"mineral".to_string()) || item.attribute_tags().contains(&"raw_material".to_string()) || item.attribute_tags().contains(&"iron".to_string()));
+        assert!(
+            item.attribute_tags().contains(&"mineral".to_string())
+                || item.attribute_tags().contains(&"raw_material".to_string())
+                || item.attribute_tags().contains(&"iron".to_string())
+        );
         assert!(item.has_tag("mineral_jade"));
         assert!(item.has_tag("raw_material"));
         assert!(item.has_tag("mineral"));

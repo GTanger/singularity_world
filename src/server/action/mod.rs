@@ -622,7 +622,10 @@ fn entity_socket_ok(
     if (trade::target_has_shop_offer(target, &room_name)
         || has_live_stock
         || target.kind == EntityKind::Npc)
-        && matches!(action, "Look" | "Talk" | "Trade" | "Borrow" | "Subdue" | "Slay")
+        && matches!(
+            action,
+            "Look" | "Talk" | "Trade" | "Borrow" | "Subdue" | "Slay"
+        )
     {
         return true;
     }
@@ -652,7 +655,6 @@ fn entity_socket_ok(
     true
 }
 
-
 pub(super) fn target_grid_room_name(target: &Character) -> String {
     if let (Some(x), Some(y)) = (target.grid_x, target.grid_y) {
         if let Some(name) = grid_room_name_at(x, y) {
@@ -678,13 +680,15 @@ pub(super) fn resolve_action_room_name(player_id: &str, target: &Character) -> S
 }
 
 fn grid_room_name_at(x: i32, y: i32) -> Option<String> {
-    crate::server::grid_manager::get_runtime_grid_cell(crate::grid::SquareCoord::new(x, y)).map(|c| {
-        if c.name.trim().is_empty() {
-            crate::grid::terrain_name_zh(c.terrain).to_string()
-        } else {
-            c.name.clone()
-        }
-    })
+    crate::server::grid_manager::get_runtime_grid_cell(crate::grid::SquareCoord::new(x, y)).map(
+        |c| {
+            if c.name.trim().is_empty() {
+                crate::grid::terrain_name_zh(c.terrain).to_string()
+            } else {
+                c.name.clone()
+            }
+        },
+    )
 }
 
 pub fn format_unacquainted_target_label(
@@ -702,9 +706,10 @@ pub fn format_unacquainted_target_label(
     {
         return "陌生人".to_string();
     }
-    let host_title = crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
-        .map(|v| v.default_host_title)
-        .unwrap_or("當值主事");
+    let host_title =
+        crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
+            .map(|v| v.default_host_title)
+            .unwrap_or("當值主事");
     if host_title == "街坊居民" {
         return "陌生人".to_string();
     }
@@ -764,16 +769,12 @@ pub fn format_player_work_shift_narrative_and_advance_pack(
     } else if let Some((qty, disp)) = supply_opt {
         format!(
             "你接過班牌投入「{}」，順著工序一氣呵成完成整輪勞作；盤點封裝好的 {} 份「{}」隨即由專人起運。管事核對名冊後當面點清發放了 {} 鎂工錢，沉甸甸落入你的囊中。",
-            occupation_id,
-            qty,
-            disp,
-            wage_mg
+            occupation_id, qty, disp, wage_mg
         )
     } else {
         format!(
             "你挽起衣袖投入「{}」，專注而連貫地完成了整整一班的勞作。隨著當值鐘聲敲響，管事核對工冊無誤，當面點清並如數發放了 {} 鎂工錢，整輪差事順利結清。",
-            occupation_id,
-            wage_mg
+            occupation_id, wage_mg
         )
     }
 }
@@ -799,7 +800,13 @@ pub(super) fn player_visible_target_name(player_id: &str, target: &Character) ->
             &target.current_activity,
             &target.equipment_slots,
         );
-    format_unacquainted_target_label(&room_name, &target.display_title, is_staff, has_uniform, in_counter_zone)
+    format_unacquainted_target_label(
+        &room_name,
+        &target.display_title,
+        is_staff,
+        has_uniform,
+        in_counter_zone,
+    )
 }
 
 fn verb_from_action(action: &str) -> Option<Verb> {
@@ -826,7 +833,11 @@ pub(super) fn display_target_name(target: &Character) -> String {
             Some(crate::entity::Gender::M) => Some("M"),
             None => None,
         };
-        return crate::store::resolve_npc_person_name(&target.id, &target.display_title, gender_str);
+        return crate::store::resolve_npc_person_name(
+            &target.id,
+            &target.display_title,
+            gender_str,
+        );
     }
     if !target.display_title.is_empty() {
         target.display_title.clone()
@@ -952,11 +963,23 @@ mod tests {
             "身著工作服的當值主事"
         );
         assert_eq!(
-            format_unacquainted_target_label("三水口・浴場西巷", "西門車馬聯運總站長|韓鐵山", true, true, false),
+            format_unacquainted_target_label(
+                "三水口・浴場西巷",
+                "西門車馬聯運總站長|韓鐵山",
+                true,
+                true,
+                false
+            ),
             "陌生人"
         );
         assert_eq!(
-            format_unacquainted_target_label("三水口・陳氏庖廚居", "三水食堂當家大廚|陳萬福", true, true, false),
+            format_unacquainted_target_label(
+                "三水口・陳氏庖廚居",
+                "三水食堂當家大廚|陳萬福",
+                true,
+                true,
+                false
+            ),
             "陌生人"
         );
     }

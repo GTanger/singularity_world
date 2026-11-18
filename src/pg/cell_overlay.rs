@@ -110,8 +110,10 @@ WHERE gx=$1 AND gy=$2 AND ver=$20";
 /// 建立 `cell_overlay` 與 `entities` 擴充欄位（冪等）。
 pub fn ensure_schema(pool: &DbPool) -> Result<(), String> {
     let mut conn = pool.get().map_err(|e| e.to_string())?;
-    conn.batch_execute(CREATE_OVERLAY).map_err(|e| e.to_string())?;
-    conn.batch_execute(ALTER_OVERLAY).map_err(|e| e.to_string())?;
+    conn.batch_execute(CREATE_OVERLAY)
+        .map_err(|e| e.to_string())?;
+    conn.batch_execute(ALTER_OVERLAY)
+        .map_err(|e| e.to_string())?;
     // entities 表若尚未建立，不阻擋 overlay 表就緒。
     let _ = conn.batch_execute(ADD_GRID_Z);
     let _ = conn.batch_execute(ADD_INVENTORY_SEQ);
@@ -125,7 +127,9 @@ fn row_to_record(row: &r2d2_postgres::postgres::Row) -> CellOverlayRecord {
         u2: U2Plugin::from_code_i16(row.get(0)),
         u1: U1Plugin::from_code_i16(row.get(1)),
         s0_pave: S0Pavement::from_codes(c8(5), c8(6)),
-        s0_companions: (7..=9).filter_map(|i| S0Companion::from_code_u8(c8(i))).collect(),
+        s0_companions: (7..=9)
+            .filter_map(|i| S0Companion::from_code_u8(c8(i)))
+            .collect(),
         v1: V1Plugin::from_codes(c8(2), c8(3), row.get(4), (flags & 0x3) as u8),
     };
     CellOverlayRecord {
@@ -159,7 +163,9 @@ pub fn load_window_records(
     min_y: i32,
     max_y: i32,
 ) -> Vec<CellOverlayRecord> {
-    let Ok(mut conn) = pool.get() else { return Vec::new() };
+    let Ok(mut conn) = pool.get() else {
+        return Vec::new();
+    };
     let sql = format!(
         "SELECT {COLS} FROM cell_overlay WHERE gx BETWEEN $1 AND $2 AND gy BETWEEN $3 AND $4"
     );
@@ -192,7 +198,11 @@ pub fn load_window_overlays(
 pub fn upsert_overlay_record(pool: &DbPool, record: &CellOverlayRecord) -> Result<(), String> {
     let stack = &record.stack;
     let (mask, open, max_z) = match stack.v1 {
-        V1Plugin::ArcadeShophouse { arcade_mask, shop_open, max_z } => (arcade_mask, shop_open, max_z),
+        V1Plugin::ArcadeShophouse {
+            arcade_mask,
+            shop_open,
+            max_z,
+        } => (arcade_mask, shop_open, max_z),
         _ => (0, false, 0),
     };
     let heat = match stack.s0_pave {
@@ -243,7 +253,11 @@ pub fn cas_write_overlay_record(
     }
     let stack = &record.stack;
     let (mask, open, max_z) = match stack.v1 {
-        V1Plugin::ArcadeShophouse { arcade_mask, shop_open, max_z } => (arcade_mask, shop_open, max_z),
+        V1Plugin::ArcadeShophouse {
+            arcade_mask,
+            shop_open,
+            max_z,
+        } => (arcade_mask, shop_open, max_z),
         _ => (0, false, 0),
     };
     let heat = match stack.s0_pave {
@@ -266,9 +280,25 @@ pub fn cas_write_overlay_record(
         conn.execute(
             CAS_INSERT_SQL,
             &[
-                &record.gx, &record.gy, &u2, &u1, &v1, &mask_i16, &open, &pave, &heat_i16,
-                &s0, &s1, &s2, &record.building_id, &record.roll_day, &record.weather_epoch,
-                &record.explored_day, &flags, &record.charge, &record.stamp,
+                &record.gx,
+                &record.gy,
+                &u2,
+                &u1,
+                &v1,
+                &mask_i16,
+                &open,
+                &pave,
+                &heat_i16,
+                &s0,
+                &s1,
+                &s2,
+                &record.building_id,
+                &record.roll_day,
+                &record.weather_epoch,
+                &record.explored_day,
+                &flags,
+                &record.charge,
+                &record.stamp,
             ],
         )
         .map_err(|e| e.to_string())?
@@ -276,9 +306,26 @@ pub fn cas_write_overlay_record(
         conn.execute(
             CAS_UPDATE_SQL,
             &[
-                &record.gx, &record.gy, &u2, &u1, &v1, &mask_i16, &open, &pave, &heat_i16,
-                &s0, &s1, &s2, &record.building_id, &record.roll_day, &record.weather_epoch,
-                &record.explored_day, &flags, &record.charge, &record.stamp, &expected_ver,
+                &record.gx,
+                &record.gy,
+                &u2,
+                &u1,
+                &v1,
+                &mask_i16,
+                &open,
+                &pave,
+                &heat_i16,
+                &s0,
+                &s1,
+                &s2,
+                &record.building_id,
+                &record.roll_day,
+                &record.weather_epoch,
+                &record.explored_day,
+                &flags,
+                &record.charge,
+                &record.stamp,
+                &expected_ver,
             ],
         )
         .map_err(|e| e.to_string())?
@@ -289,9 +336,12 @@ pub fn cas_write_overlay_record(
 /// 回收已回歸原生推導狀態之髒格列。
 pub fn delete_overlay_record(pool: &DbPool, gx: i32, gy: i32) -> Result<bool, String> {
     let mut conn = pool.get().map_err(|e| e.to_string())?;
-    conn.execute("DELETE FROM cell_overlay WHERE gx=$1 AND gy=$2", &[&gx, &gy])
-        .map(|n| n == 1)
-        .map_err(|e| e.to_string())
+    conn.execute(
+        "DELETE FROM cell_overlay WHERE gx=$1 AND gy=$2",
+        &[&gx, &gy],
+    )
+    .map(|n| n == 1)
+    .map_err(|e| e.to_string())
 }
 
 /// 寫入或更新單格髒格覆寫（相容包裝）。
@@ -340,7 +390,11 @@ mod tests {
             u1: U1Plugin::ThornyBambooRhizome,
             s0_pave: S0Pavement::BambooTrampledPath { pave_heat: 77 },
             s0_companions: vec![S0Companion::BambooSheath, S0Companion::DryBambooLeaf],
-            v1: V1Plugin::ArcadeShophouse { arcade_mask: 0b0101, shop_open: true, max_z: 2 },
+            v1: V1Plugin::ArcadeShophouse {
+                arcade_mask: 0b0101,
+                shop_open: true,
+                max_z: 2,
+            },
         };
         let mut rec = CellOverlayRecord::from_stack(gx, gy, stack.clone());
         rec.building_id = Some("bld_test_3_0".to_string());

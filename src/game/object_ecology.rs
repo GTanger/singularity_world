@@ -14,7 +14,6 @@ use serde::{Deserialize, Serialize};
 use crate::db;
 use crate::store::{self, Item};
 
-
 include!("object_ecology/economy_ledger.rs");
 include!("object_ecology/market_pricing.rs");
 include!("object_ecology/supply_and_catalog.rs");

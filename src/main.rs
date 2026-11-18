@@ -21,7 +21,9 @@ async fn main() -> anyhow::Result<()> {
         runtime.to_str().expect("utf-8"),
         data.to_str().expect("utf-8"),
     )?;
-    tracing::info!("singularity_world: 啟動滅世後的新生世界【沙鹿・竹林里】（不載入舊世白塔半島 NPC 與聚落種子）");
+    tracing::info!(
+        "singularity_world: 啟動滅世後的新生世界【沙鹿・竹林里】（不載入舊世白塔半島 NPC 與聚落種子）"
+    );
     let topics = root.join("data/npc_to_npc_topics.json");
     singularity_world::npc::try_load_npc_npc_topics(&topics)
         .or_else(|_| {

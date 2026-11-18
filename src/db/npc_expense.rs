@@ -32,7 +32,11 @@ pub fn deduct_daily_expense(game_day: i32, now_unix: i64) -> anyhow::Result<i32>
             };
             entity.magnesium = result.magnesium;
             if entity.magnesium == 0 {
-                let last_is_broke = entity.thoughts.last().map(|t| t.source == "Broke").unwrap_or(false);
+                let last_is_broke = entity
+                    .thoughts
+                    .last()
+                    .map(|t| t.source == "Broke")
+                    .unwrap_or(false);
                 if !last_is_broke {
                     add_thought_to_entity(entity, ThoughtSource::Broke, now_unix);
                 }
@@ -43,7 +47,9 @@ pub fn deduct_daily_expense(game_day: i32, now_unix: i64) -> anyhow::Result<i32>
                     now_unix,
                     "手頭鎂幣漸緊，得盤算多接幾趟差事",
                 );
-            } else if entity.magnesium >= 80 && (entity.thoughts.is_empty() || entity.disposition < 0) {
+            } else if entity.magnesium >= 80
+                && (entity.thoughts.is_empty() || entity.disposition < 0)
+            {
                 add_thought_to_entity_with_flavor(
                     entity,
                     ThoughtSource::WorkDone,

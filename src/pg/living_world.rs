@@ -11,7 +11,6 @@ use crate::living_world::{ActorKind, SourceRecord, builtin_contract, shared_poli
 use crate::store::sql::DbPool;
 use crate::world::place::WHITE_TOWER_WORLD_ID;
 
-
 include!("living_world/schema_and_continuity.rs");
 include!("living_world/obligations_and_actions.rs");
 include!("living_world/afflictions_and_aux.rs");
@@ -33,30 +32,38 @@ pub fn seed_flagship_specimen_qin_shuisheng_once(now_unix: i64) {
         let mut guard = ANATOMY_FAMILIARITY_CACHE.write().unwrap();
         let map = guard.entry(npc_id.to_string()).or_default();
         map.entry("石磨鑿紋與水輪木齒".to_string()).or_insert(28);
-        map.entry("在來米與北山藥材水磨澄漿".to_string()).or_insert(36);
+        map.entry("在來米與北山藥材水磨澄漿".to_string())
+            .or_insert(36);
     }
     {
         let mut guard = BREATH_HABIT_CACHE.write().unwrap();
-        guard.entry(npc_id.to_string()).or_insert_with(|| BreathHabitRecord {
-            entity_id: npc_id.to_string(),
-            dominant: BreathHabitKind::TideContinuous,
-            forge_score: 14,
-            forest_score: 6,
-            tide_score: 48,
-            chamber_score: 8,
-            battle_score: 2,
-            updated_at: now_unix,
-        });
+        guard
+            .entry(npc_id.to_string())
+            .or_insert_with(|| BreathHabitRecord {
+                entity_id: npc_id.to_string(),
+                dominant: BreathHabitKind::TideContinuous,
+                forge_score: 14,
+                forest_score: 6,
+                tide_score: 48,
+                chamber_score: 8,
+                battle_score: 2,
+                updated_at: now_unix,
+            });
     }
     {
         let mut guard = LINEAGE_IMPRINT_CACHE.write().unwrap();
         let list = guard.entry(npc_id.to_string()).or_default();
-        if !list.iter().any(|imp| imp.imprint_title == "老堰頭水輪分動與雙疊石磨聽音辨距法") {
+        if !list
+            .iter()
+            .any(|imp| imp.imprint_title == "老堰頭水輪分動與雙疊石磨聽音辨距法")
+        {
             list.push(LineageImprintRecord {
                 entity_id: npc_id.to_string(),
                 mentor_name: "秦老堰主".to_string(),
                 imprint_title: "老堰頭水輪分動與雙疊石磨聽音辨距法".to_string(),
-                imprint_prose: "順水輪潮汐綿長吐納，聽上下磨盤咬合之音以拿捏三毫齒距，分篩純漿而不傷米性".to_string(),
+                imprint_prose:
+                    "順水輪潮汐綿長吐納，聽上下磨盤咬合之音以拿捏三毫齒距，分篩純漿而不傷米性"
+                        .to_string(),
                 interaction_count: 12,
                 manual_gifted: true,
                 updated_at: now_unix,
@@ -91,7 +98,6 @@ pub fn seed_flagship_specimen_qin_shuisheng_once(now_unix: i64) {
                 updated_at: now_unix,
             });
     }
-
 
     ALL_RESIDENTS_SEEDED.call_once(|| {
         seed_all_residents_somatic_records(now_unix);
@@ -142,7 +148,9 @@ pub fn is_recognizable_room_staff_or_counter_holder(
         && !npc_id.is_empty()
         && !display_title.contains("便服")
     {
-        if let Some((_, sched_work)) = crate::server::grid_manager::resident_schedule_home_and_work(npc_id) {
+        if let Some((_, sched_work)) =
+            crate::server::grid_manager::resident_schedule_home_and_work(npc_id)
+        {
             if !sched_work.is_empty()
                 && (room_name.trim().is_empty()
                     || room_name.contains(sched_work)
@@ -190,7 +198,11 @@ pub fn is_recognizable_room_staff_or_counter_holder(
     if !has_counter_zone_marker {
         let mut eff_title = display_title.to_string();
         let mut eff_act = current_activity.to_string();
-        if eff_title.is_empty() && eff_act.is_empty() && equipment_slots.is_empty() && !npc_id.is_empty() {
+        if eff_title.is_empty()
+            && eff_act.is_empty()
+            && equipment_slots.is_empty()
+            && !npc_id.is_empty()
+        {
             if let Some(arc) = crate::store::get_store() {
                 let s = arc.read();
                 if let Some(e) = s.entities.get(npc_id) {
@@ -264,7 +276,9 @@ pub fn resolve_nearest_room_by_tag(
         if dist > 45 {
             continue;
         }
-        let tag_match = wanted_tags.iter().any(|&tag| !tag.is_empty() && cell.has_room_tag(tag));
+        let tag_match = wanted_tags
+            .iter()
+            .any(|&tag| !tag.is_empty() && cell.has_room_tag(tag));
         if !tag_match {
             continue;
         }
@@ -309,4 +323,3 @@ pub fn resolve_nearest_room_by_tag(
         (fallback_coord, fallback_bldg.to_string())
     }
 }
-

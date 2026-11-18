@@ -54,7 +54,6 @@ pub(super) fn do_entity_look(
     });
 }
 
-
 /// 過濾 NPC 當前行動中的 Azgaar 方位與地貌括號片段（如 `（北側 · 水澤林）` 或 `（西側・凍原）`）
 fn sanitize_activity_for_display(act: &str) -> String {
     let mut result = String::with_capacity(act.len());
@@ -65,7 +64,11 @@ fn sanitize_activity_for_display(act: &str) -> String {
             let rest = &act[idx..];
             if let Some(close_offset) = rest.find(closer) {
                 let inside = &rest[..close_offset + closer.len_utf8()];
-                if inside.contains("側 · ") || inside.contains("側・") || inside.contains("WS-") || inside.contains("日常劇本") {
+                if inside.contains("側 · ")
+                    || inside.contains("側・")
+                    || inside.contains("WS-")
+                    || inside.contains("日常劇本")
+                {
                     // 跳過整個括號區間
                     let skip_bytes = inside.len();
                     let target_pos = idx + skip_bytes;
@@ -134,7 +137,10 @@ fn build_look_narrative(
                 "你屏息凝神，仔細觀察眼前的山海生靈【{}】。{}\n{}",
                 target.display_title, shanhai_note, stat_prose
             );
-            let act_clean = target.current_activity.trim().trim_end_matches(['。', '！', '？', '，', ' ']);
+            let act_clean = target
+                .current_activity
+                .trim()
+                .trim_end_matches(['。', '！', '？', '，', ' ']);
             if !act_clean.is_empty() {
                 desc.push_str(&format!(" 牠{}。", act_clean));
             }
@@ -173,11 +179,11 @@ fn build_look_narrative(
     };
     let combined_name_check = format!("{}|{}", name, target.display_title);
     let is_female_name = [
-        "娜", "梅", "芳", "娟", "霞", "婷", "玲", "敏", "靜", "淑", "秀", "麗", "燕", "蘭",
-        "珍", "珠", "琴", "萍", "娥", "雅", "佳", "怡", "詩", "涵", "萱", "彤", "晴", "蓁",
-        "婉", "芬", "筱", "妤", "彩", "潔", "郁", "馨", "微", "美", "慧", "雪", "月", "雲",
-        "蓮", "薇", "珊", "貞", "嬌", "媚", "柔", "蓉", "菲", "芸", "琪", "瑤", "娘", "姑",
-        "婆", "嫂", "姐", "妹", "罔市", "秋月",
+        "娜", "梅", "芳", "娟", "霞", "婷", "玲", "敏", "靜", "淑", "秀", "麗", "燕", "蘭", "珍",
+        "珠", "琴", "萍", "娥", "雅", "佳", "怡", "詩", "涵", "萱", "彤", "晴", "蓁", "婉", "芬",
+        "筱", "妤", "彩", "潔", "郁", "馨", "微", "美", "慧", "雪", "月", "雲", "蓮", "薇", "珊",
+        "貞", "嬌", "媚", "柔", "蓉", "菲", "芸", "琪", "瑤", "娘", "姑", "婆", "嫂", "姐", "妹",
+        "罔市", "秋月",
     ]
     .iter()
     .any(|kw| !combined_name_check.starts_with("陌生人") && combined_name_check.contains(kw));
@@ -190,11 +196,12 @@ fn build_look_narrative(
         || sensory_line.contains("溫婉")
         || sensory_line.contains("靈秀")
         || sensory_line.contains("紅絲帶");
-    let pronoun = if is_female_sensory || is_female_name || target.gender == Some(crate::entity::Gender::F) {
-        "她"
-    } else {
-        "他"
-    };
+    let pronoun =
+        if is_female_sensory || is_female_name || target.gender == Some(crate::entity::Gender::F) {
+            "她"
+        } else {
+            "他"
+        };
     let mut desc = if let Some(rdesc) = has_resident_desc.as_ref() {
         is_known_resident_desc = true;
         let final_resident_desc = if name == "陌生人" && !target.display_title.is_empty() {
@@ -227,15 +234,22 @@ fn build_look_narrative(
     };
 
     if sensory_line.trim().is_empty() {
-        let personality = crate::db::get_personality_for_entity(&target.id)
-            .or_else(|| target.soul_seed.map(crate::db::expand_soul_seed_to_personality));
+        let personality = crate::db::get_personality_for_entity(&target.id).or_else(|| {
+            target
+                .soul_seed
+                .map(crate::db::expand_soul_seed_to_personality)
+        });
         if let Some(p) = personality {
             let bold_str = if p.boldness < 0.5 {
                 "神態內斂"
             } else {
                 "氣勢沉猛"
             };
-            let sens_str = if p.sensitivity >= 0.5 { "目光敏銳" } else { "神色淡然" };
+            let sens_str = if p.sensitivity >= 0.5 {
+                "目光敏銳"
+            } else {
+                "神色淡然"
+            };
             let order_str = if p.orderliness >= 0.5 {
                 "衣物整飭"
             } else {
@@ -244,11 +258,14 @@ fn build_look_narrative(
             desc.push_str(&format!("其{bold_str}、{sens_str}，{order_str}。"));
         }
     }
-    let has_outfit = is_known_resident_desc || has_resident_desc.is_some() || !sensory_line.trim().is_empty();
+    let has_outfit =
+        is_known_resident_desc || has_resident_desc.is_some() || !sensory_line.trim().is_empty();
     let mut held_items: Vec<String> = Vec::new();
 
     if !target.equipment_slots.is_empty() {
-        if let Ok(serde_json::Value::Object(map)) = serde_json::from_str::<serde_json::Value>(&target.equipment_slots) {
+        if let Ok(serde_json::Value::Object(map)) =
+            serde_json::from_str::<serde_json::Value>(&target.equipment_slots)
+        {
             let slots_map: std::collections::HashMap<String, String> = map
                 .into_iter()
                 .filter_map(|(k, v)| v.as_str().map(|s| (k, s.to_string())))
@@ -259,7 +276,12 @@ fn build_look_narrative(
                 id.starts_with("starter_")
                     || matches!(
                         id,
-                        "粗布短褂" | "粗布長褲" | "草鞋" | "棉麻日常上衣" | "耐磨休閒長褲" | "輕便布鞋"
+                        "粗布短褂"
+                            | "粗布長褲"
+                            | "草鞋"
+                            | "棉麻日常上衣"
+                            | "耐磨休閒長褲"
+                            | "輕便布鞋"
                     )
             };
 
@@ -269,7 +291,9 @@ fn build_look_narrative(
                     .iter()
                     .filter_map(|&slot| {
                         let id = slots_map.get(slot)?;
-                        if id.is_empty() { return None; }
+                        if id.is_empty() {
+                            return None;
+                        }
                         let name = names.get(slot)?;
                         Some(match name.as_str() {
                             "粗布短褂" | "棉麻日常上衣" => "日常上衣".to_string(),
@@ -291,7 +315,9 @@ fn build_look_narrative(
             for &slot in &held_slots {
                 if let Some(item_id) = slots_map.get(slot) {
                     if !item_id.is_empty() && !is_starter_gear(item_id) {
-                        let ecol_name = crate::game::object_ecology::lookup_ecology_item_def(item_id).map(|d| d.name);
+                        let ecol_name =
+                            crate::game::object_ecology::lookup_ecology_item_def(item_id)
+                                .map(|d| d.name);
                         let base_name = names
                             .get(slot)
                             .map(|s| s.as_str())
@@ -310,20 +336,22 @@ fn build_look_narrative(
                             }
                             let s = s.trim_matches(|c| c == '【' || c == '】').trim();
                             for prefix in ["精鍛", "百煉", "特製", "加固", "防身"] {
-                                if s.starts_with(prefix) && s.chars().count() > prefix.chars().count() + 1 {
+                                if s.starts_with(prefix)
+                                    && s.chars().count() > prefix.chars().count() + 1
+                                {
                                     return s[prefix.len()..].to_string();
                                 }
                             }
                             s.to_string()
                         };
                         let cleaned = clean_public_item(base_name);
-                        let item_label = crate::server::handler::format_entity_item_with_inscription(
-                            &target.id,
-                            item_id,
-                            &cleaned,
-                        );
+                        let item_label =
+                            crate::server::handler::format_entity_item_with_inscription(
+                                &target.id, item_id, &cleaned,
+                            );
                         if crate::pg::living_world::is_weapon_or_tool_item(item_id, base_name) {
-                            let mut vstate = crate::pg::living_world::get_vessel_state(&target.id, item_id);
+                            let mut vstate =
+                                crate::pg::living_world::get_vessel_state(&target.id, item_id);
                             if vstate.use_count == 0 {
                                 let init_use = if target.kind == crate::entity::EntityKind::Npc {
                                     4 + ((target.soul_seed.unwrap_or(0).unsigned_abs() % 12) as i32)
@@ -342,7 +370,8 @@ fn build_look_narrative(
                                 match vstate.condition {
                                     crate::pg::living_world::VesselCondition::SlightlyDull
                                     | crate::pg::living_world::VesselCondition::RolledEdge => {
-                                        let cond_lbl = vstate.condition.label_for_item(item_id, &cleaned);
+                                        let cond_lbl =
+                                            vstate.condition.label_for_item(item_id, &cleaned);
                                         held_items.push(format!("【{item_label}】（{cond_lbl}）"));
                                     }
                                     crate::pg::living_world::VesselCondition::Sharp => {
@@ -396,22 +425,25 @@ fn build_look_narrative(
                         && !item_id.contains("storage_box")
                         && !item_id.contains("pine_soot_ink")
                     {
-                        let ecol_name = crate::game::object_ecology::lookup_ecology_item_def(item_id).map(|d| d.name);
+                        let ecol_name =
+                            crate::game::object_ecology::lookup_ecology_item_def(item_id)
+                                .map(|d| d.name);
                         let base_name = names
                             .get(slot)
                             .map(|s| s.as_str())
                             .or(ecol_name.as_deref())
                             .unwrap_or(item_id);
                         let is_cloak_slot = slot == "cloak";
-                        let is_outer_cloak = crate::game::object_ecology::ItemPhysicalClass::classify(item_id, base_name)
-                            == crate::game::object_ecology::ItemPhysicalClass::OuterCloakOrRobe;
+                        let is_outer_cloak =
+                            crate::game::object_ecology::ItemPhysicalClass::classify(
+                                item_id, base_name,
+                            ) == crate::game::object_ecology::ItemPhysicalClass::OuterCloakOrRobe;
                         if is_cloak_slot || is_outer_cloak {
                             let cleaned = clean_public_item_helper(base_name);
-                            let item_label = crate::server::handler::format_entity_item_with_inscription(
-                                &target.id,
-                                item_id,
-                                &cleaned,
-                            );
+                            let item_label =
+                                crate::server::handler::format_entity_item_with_inscription(
+                                    &target.id, item_id, &cleaned,
+                                );
                             cloak_items.push(format!("【{item_label}】"));
                         }
                     }
@@ -431,7 +463,9 @@ fn build_look_narrative(
                         && !item_id.contains("storage_box")
                         && !item_id.contains("pine_soot_ink")
                     {
-                        let ecol_name = crate::game::object_ecology::lookup_ecology_item_def(item_id).map(|d| d.name);
+                        let ecol_name =
+                            crate::game::object_ecology::lookup_ecology_item_def(item_id)
+                                .map(|d| d.name);
                         let base_name = names
                             .get(slot)
                             .map(|s| s.as_str())
@@ -445,11 +479,10 @@ fn build_look_narrative(
                             continue;
                         }
                         let cleaned = clean_public_item_helper(base_name);
-                        let item_label = crate::server::handler::format_entity_item_with_inscription(
-                            &target.id,
-                            item_id,
-                            &cleaned,
-                        );
+                        let item_label =
+                            crate::server::handler::format_entity_item_with_inscription(
+                                &target.id, item_id, &cleaned,
+                            );
                         worn_items.push(format!("【{item_label}】"));
                     }
                 }
@@ -472,16 +505,28 @@ fn build_look_narrative(
         live_act.as_deref()
     };
 
-    if !is_known_resident_desc && target.kind == crate::entity::EntityKind::Npc && !sensory_line.trim().is_empty() {
+    if !is_known_resident_desc
+        && target.kind == crate::entity::EntityKind::Npc
+        && !sensory_line.trim().is_empty()
+    {
         let mut clean_sensory = sensory_line.clone();
         if !held_items.is_empty() {
-            for hold_prefix in ["，手持", "、手持", "，手握", "、手握", "，手執", "、手執"] {
+            for hold_prefix in ["，手持", "、手持", "，手握", "、手握", "，手執", "、手執"]
+            {
                 if let Some(start_idx) = clean_sensory.find(hold_prefix) {
                     let clause_after = &clean_sensory[start_idx + hold_prefix.len()..];
                     if let Some(comma_rel) = clause_after.find('，') {
-                        clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
+                        clean_sensory = format!(
+                            "{}{}",
+                            &clean_sensory[..start_idx],
+                            &clause_after[comma_rel..]
+                        );
                     } else if let Some(comma_rel) = clause_after.find('、') {
-                        clean_sensory = format!("{}{}", &clean_sensory[..start_idx], &clause_after[comma_rel..]);
+                        clean_sensory = format!(
+                            "{}{}",
+                            &clean_sensory[..start_idx],
+                            &clause_after[comma_rel..]
+                        );
                     } else {
                         clean_sensory = clean_sensory[..start_idx].to_string();
                     }
@@ -505,12 +550,19 @@ fn build_look_narrative(
     if let Some(act_str) = raw_act {
         let mut sanitized_act = sanitize_activity_for_display(act_str);
         // 修復「正在茶肆小憩」場所錯置
-        if sanitized_act.contains("茶屋或食堂小憩") || sanitized_act.contains("茶肆小憩") {
+        if sanitized_act.contains("茶屋或食堂小憩") || sanitized_act.contains("茶肆小憩")
+        {
             if room_name.contains("大食堂") || room_name.contains("食堂") {
                 sanitized_act = "正在食堂用餐小憩並品嚐熱湯糕點".to_string();
             } else if room_name.contains("茶屋") || room_name.contains("茶寮") {
                 sanitized_act = "正在茶屋小憩並品嚐熱茶糕點".to_string();
-            } else if room_name.contains("公議堂") || room_name.contains("總商行") || room_name.contains("鍛造") || room_name.contains("工坊") || room_name.contains("鐘樓") || room_name.contains("學院") {
+            } else if room_name.contains("公議堂")
+                || room_name.contains("總商行")
+                || room_name.contains("鍛造")
+                || room_name.contains("工坊")
+                || room_name.contains("鐘樓")
+                || room_name.contains("學院")
+            {
                 // 在非飲食場所若為預設茶肆小憩，優先採用該場所專屬觀察敘事
                 if let Some(line) = scene_observation_line(room_name, pronoun) {
                     sanitized_act = String::new();
@@ -534,7 +586,8 @@ fn build_look_narrative(
                 || sanitized_act.contains("穿行")
                 || sanitized_act.contains("步行")
                 || sanitized_act.contains("推進目標");
-            let is_phantom_bridge_stall = (room_name.contains("三水匯流大石橋") || room_name.contains("中心樞紐石橋"))
+            let is_phantom_bridge_stall = (room_name.contains("三水匯流大石橋")
+                || room_name.contains("中心樞紐石橋"))
                 && (sanitized_act.contains("攤")
                     || sanitized_act.contains("選購")
                     || sanitized_act.contains("採買")
@@ -543,8 +596,12 @@ fn build_look_narrative(
                     || sanitized_act.contains("金屬行")
                     || sanitized_act.contains("線行"));
             if is_transit_act {
-                if is_stranger && (sanitized_act.contains('【') || sanitized_act.contains("準備")) {
-                    desc.push_str(&format_activity_sentence(pronoun, "正沿街快步穿行，似有差事在身"));
+                if is_stranger && (sanitized_act.contains('【') || sanitized_act.contains("準備"))
+                {
+                    desc.push_str(&format_activity_sentence(
+                        pronoun,
+                        "正沿街快步穿行，似有差事在身",
+                    ));
                 } else if !sanitized_act.contains('(')
                     && !sanitized_act.contains('（')
                     && !sanitized_act.contains("推進目標")
@@ -559,7 +616,10 @@ fn build_look_narrative(
                     };
                     desc.push_str(&format_activity_sentence(pronoun, vis_walk));
                 }
-            } else if is_phantom_bridge_stall || (is_night && (room_name.contains("三水匯流大石橋") || room_name.contains("中心樞紐石橋"))) {
+            } else if is_phantom_bridge_stall
+                || (is_night
+                    && (room_name.contains("三水匯流大石橋") || room_name.contains("中心樞紐石橋")))
+            {
                 let vis_bridge = if is_night {
                     if room_name.contains("三水匯流大石橋") {
                         "正駐足青石橋欄旁，迎著河面晚風凝望三水川夜色"
@@ -603,7 +663,10 @@ fn build_look_narrative(
             if let Some(party) = parties.values().find(|p| p.member_ids.contains(&target.id)) {
                 desc.push_str(&format!(
                     "正隨【{}】率領之{}合社獵團（共 {} 人）追獵【{}】。",
-                    party.leader_name, party.zone_name, party.member_ids.len(), party.prey_name
+                    party.leader_name,
+                    party.zone_name,
+                    party.member_ids.len(),
+                    party.prey_name
                 ));
             }
         }
@@ -635,7 +698,8 @@ fn build_look_narrative(
             && !pid.is_empty()
         {
             let fav = db::get_favorability(&target.id, pid);
-            let rel_opt = crate::pg::living_world::get_relationship_summary(&pool, &target.id, pid).ok();
+            let rel_opt =
+                crate::pg::living_world::get_relationship_summary(&pool, &target.id, pid).ok();
             let (eff_balance, eff_fam) = if let Some(rel) = rel_opt {
                 (
                     rel.balance_score + fav / 10,
@@ -696,112 +760,115 @@ fn append_universal_living_entity_details(
     desc: &mut String,
 ) {
     if !is_stranger {
-    let breath = crate::pg::living_world::get_or_derive_breath_habit(
-        &target.id,
-        &target.display_title,
-        target.soul_seed.unwrap_or(42) as i64,
-    );
-    let habit_label = if breath.dominant == crate::pg::living_world::BreathHabitKind::TideContinuous {
-        "潮汐綿長息"
-    } else {
-        breath.dominant.label()
-    };
-    if !desc.contains("潮汐綿長息") && !desc.contains(habit_label) {
-        desc.push_str(&format!("吐納起落悠長（{}）。", habit_label));
-    }
-
-    // 2. 師承造詣
-    let imprints = crate::pg::living_world::get_entity_lineage_imprints(&target.id);
-    for imp in imprints {
-        if !imp.imprint_title.is_empty() && !desc.contains(&imp.imprint_title) {
-            desc.push_str(&format!("身負「{}」師承造詣。", imp.imprint_title));
-            break;
-        }
-    }
-
-    // 3. 隨身持握器物磨損與歷練狀態
-    let slots_map: std::collections::HashMap<String, String> =
-        serde_json::from_str(&target.equipment_slots).unwrap_or_default();
-    let held_tool_id = slots_map
-        .get("hold_r")
-        .or_else(|| slots_map.get("hold_l"))
-        .filter(|id| !id.is_empty() && !is_starter_gear_id(id));
-    if let Some(tool_id) = held_tool_id {
-        let vstate = crate::pg::living_world::get_vessel_state(&target.id, tool_id);
-        if vstate.use_count > 0 && !desc.contains("手頭器物已歷") {
-            let t_name = crate::db::get_item_name(tool_id);
-            let cond_lbl = vstate.condition.label_for_item(tool_id, &t_name);
-            desc.push_str(&format!(
-                "手頭器物已歷 {} 次運使（{}）。",
-                vstate.use_count,
-                cond_lbl
-            ));
-        }
-    } else if target.kind == crate::entity::EntityKind::Npc {
-        let vessel = crate::npc::causal_core::resolve_vocational_vessel(&format!(
-            "{}|{}",
-            target.display_title, target.id
-        ));
-        let inscribed = crate::server::handler::format_entity_item_with_inscription(
+        let breath = crate::pg::living_world::get_or_derive_breath_habit(
             &target.id,
-            vessel.item_id,
-            vessel.display_name,
+            &target.display_title,
+            target.soul_seed.unwrap_or(42) as i64,
         );
-        let vstate = crate::pg::living_world::get_vessel_state(&target.id, vessel.item_id);
-        if !desc.contains(vessel.display_name) {
-            if vstate.use_count > 0 {
-                let cond_lbl = vstate.condition.label_for_item(vessel.item_id, vessel.display_name);
-                desc.push_str(&format!(
-                    "手邊常備本職器物【{}】（已歷 {} 次運使・{}）。",
-                    inscribed,
-                    vstate.use_count,
-                    cond_lbl
-                ));
+        let habit_label =
+            if breath.dominant == crate::pg::living_world::BreathHabitKind::TideContinuous {
+                "潮汐綿長息"
             } else {
-                desc.push_str(&format!("手邊常備本職器物【{}】。", inscribed));
+                breath.dominant.label()
+            };
+        if !desc.contains("潮汐綿長息") && !desc.contains(habit_label) {
+            desc.push_str(&format!("吐納起落悠長（{}）。", habit_label));
+        }
+
+        // 2. 師承造詣
+        let imprints = crate::pg::living_world::get_entity_lineage_imprints(&target.id);
+        for imp in imprints {
+            if !imp.imprint_title.is_empty() && !desc.contains(&imp.imprint_title) {
+                desc.push_str(&format!("身負「{}」師承造詣。", imp.imprint_title));
+                break;
             }
         }
-    }
 
-    // 4. 隨身攜有之可交易成品或原料（自然量詞：桶、袋、×N）
-    if !desc.contains("隨身攜有") {
-        let equipped_ids: std::collections::HashSet<String> = slots_map
-            .into_values()
-            .filter(|v| !v.trim().is_empty())
-            .collect();
-        let inv = crate::db::get_inventory(&target.inventory, target.vit);
-        let stock_parts: Vec<String> = inv
-            .items
-            .iter()
-            .filter(|i| {
-                i.qty > 0
-                    && !equipped_ids.contains(&i.item_id)
-                    && !i.item_id.starts_with("crystal_")
-                    && (crate::world::author_economy::is_runtime_good_item(&i.item_id)
-                        || crate::db::item_is_tradable(&i.item_id)
-                        || i.item_id.starts_with("craft_")
-                        || i.item_id.starts_with("wt_cat_")
-                        || i.item_id.starts_with("wt-good-")
-                        || i.item_id.starts_with("mat_")
-                        || i.item_id.starts_with("harvest_")
-                        || i.item_id.starts_with("ore_")
-                        || i.item_id.starts_with("wood_"))
-            })
-            .take(3)
-            .map(|i| {
-                let display_name = if i.item_id == "wt-good-009" || i.name == "精碾白米" {
-                    "待磨精碾白米"
+        // 3. 隨身持握器物磨損與歷練狀態
+        let slots_map: std::collections::HashMap<String, String> =
+            serde_json::from_str(&target.equipment_slots).unwrap_or_default();
+        let held_tool_id = slots_map
+            .get("hold_r")
+            .or_else(|| slots_map.get("hold_l"))
+            .filter(|id| !id.is_empty() && !is_starter_gear_id(id));
+        if let Some(tool_id) = held_tool_id {
+            let vstate = crate::pg::living_world::get_vessel_state(&target.id, tool_id);
+            if vstate.use_count > 0 && !desc.contains("手頭器物已歷") {
+                let t_name = crate::db::get_item_name(tool_id);
+                let cond_lbl = vstate.condition.label_for_item(tool_id, &t_name);
+                desc.push_str(&format!(
+                    "手頭器物已歷 {} 次運使（{}）。",
+                    vstate.use_count, cond_lbl
+                ));
+            }
+        } else if target.kind == crate::entity::EntityKind::Npc {
+            let vessel = crate::npc::causal_core::resolve_vocational_vessel(&format!(
+                "{}|{}",
+                target.display_title, target.id
+            ));
+            let inscribed = crate::server::handler::format_entity_item_with_inscription(
+                &target.id,
+                vessel.item_id,
+                vessel.display_name,
+            );
+            let vstate = crate::pg::living_world::get_vessel_state(&target.id, vessel.item_id);
+            if !desc.contains(vessel.display_name) {
+                if vstate.use_count > 0 {
+                    let cond_lbl = vstate
+                        .condition
+                        .label_for_item(vessel.item_id, vessel.display_name);
+                    desc.push_str(&format!(
+                        "手邊常備本職器物【{}】（已歷 {} 次運使・{}）。",
+                        inscribed, vstate.use_count, cond_lbl
+                    ));
                 } else {
-                    &i.name
-                };
-                crate::game::object_ecology::ItemPhysicalClass::classify(&i.item_id, display_name)
-                    .format_qty(display_name, i.qty)
-            })
-            .collect();
-        if !stock_parts.is_empty() {
-            desc.push_str(&format!("隨身攜有{}。", stock_parts.join("、")));
+                    desc.push_str(&format!("手邊常備本職器物【{}】。", inscribed));
+                }
+            }
         }
-    }
+
+        // 4. 隨身攜有之可交易成品或原料（自然量詞：桶、袋、×N）
+        if !desc.contains("隨身攜有") {
+            let equipped_ids: std::collections::HashSet<String> = slots_map
+                .into_values()
+                .filter(|v| !v.trim().is_empty())
+                .collect();
+            let inv = crate::db::get_inventory(&target.inventory, target.vit);
+            let stock_parts: Vec<String> = inv
+                .items
+                .iter()
+                .filter(|i| {
+                    i.qty > 0
+                        && !equipped_ids.contains(&i.item_id)
+                        && !i.item_id.starts_with("crystal_")
+                        && (crate::world::author_economy::is_runtime_good_item(&i.item_id)
+                            || crate::db::item_is_tradable(&i.item_id)
+                            || i.item_id.starts_with("craft_")
+                            || i.item_id.starts_with("wt_cat_")
+                            || i.item_id.starts_with("wt-good-")
+                            || i.item_id.starts_with("mat_")
+                            || i.item_id.starts_with("harvest_")
+                            || i.item_id.starts_with("ore_")
+                            || i.item_id.starts_with("wood_"))
+                })
+                .take(3)
+                .map(|i| {
+                    let display_name = if i.item_id == "wt-good-009" || i.name == "精碾白米" {
+                        "待磨精碾白米"
+                    } else {
+                        &i.name
+                    };
+                    crate::game::object_ecology::ItemPhysicalClass::classify(
+                        &i.item_id,
+                        display_name,
+                    )
+                    .format_qty(display_name, i.qty)
+                })
+                .collect();
+            if !stock_parts.is_empty() {
+                desc.push_str(&format!("隨身攜有{}。", stock_parts.join("、")));
+            }
+        }
     }
 
     if target.kind == crate::entity::EntityKind::Npc {
@@ -831,7 +898,9 @@ fn append_universal_living_entity_details(
                 && in_staff_only_counter_zone
                 && !desc.contains("櫃檯與內場禁區")
             {
-                desc.push_str("雖著尋常便服，卻能自由出入非外客可入之櫃檯與內場禁區，顯係此處主事之人。");
+                desc.push_str(
+                    "雖著尋常便服，卻能自由出入非外客可入之櫃檯與內場禁區，顯係此處主事之人。",
+                );
             } else if has_visible_uniform
                 && in_staff_only_counter_zone
                 && !desc.contains("櫃檯與內場禁區")
@@ -844,7 +913,10 @@ fn append_universal_living_entity_details(
                 desc.push_str("身著明顯的當值工作制服，正於場內料理店務與百工差事。");
             }
 
-            if !is_stranger && (has_visible_uniform || in_staff_only_counter_zone) && !room_name.trim().is_empty() {
+            if !is_stranger
+                && (has_visible_uniform || in_staff_only_counter_zone)
+                && !room_name.trim().is_empty()
+            {
                 if let Some((ev, _sp)) =
                     crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
                         room_name,

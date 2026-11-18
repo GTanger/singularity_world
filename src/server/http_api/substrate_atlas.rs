@@ -161,7 +161,9 @@ pub struct CellQuery {
 }
 
 pub async fn substrate_meta() -> Response {
-    let Some(rt) = runtime::global() else { return unavailable() };
+    let Some(rt) = runtime::global() else {
+        return unavailable();
+    };
     let r = rt.region();
     let dirty = pg::pool().map_or(0, |p| pg::cell_overlay::count_dirty_cells(&p));
     let landmarks: Vec<Value> = LANDMARKS
@@ -196,13 +198,19 @@ pub async fn substrate_meta() -> Response {
 }
 
 pub async fn substrate_basemap(Query(q): Query<BasemapQuery>) -> Response {
-    let Some(rt) = runtime::global() else { return unavailable() };
+    let Some(rt) = runtime::global() else {
+        return unavailable();
+    };
     let mode = q
         .mode
         .as_deref()
         .map_or(Some(AtlasLayerMode::Terrain), AtlasLayerMode::parse);
     let Some(mode) = mode else {
-        return (StatusCode::BAD_REQUEST, Json(json!({ "error": "未知圖層模式" }))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(json!({ "error": "未知圖層模式" })),
+        )
+            .into_response();
     };
     let png = tokio::task::spawn_blocking(move || rt.basemap_png(mode)).await;
     match png {
@@ -229,7 +237,9 @@ fn cue_text(rt: &SubstrateRuntime, gx: i32, gy: i32) -> Option<String> {
 }
 
 pub async fn substrate_window(Query(q): Query<WindowQuery>) -> Response {
-    let Some(rt) = runtime::global() else { return unavailable() };
+    let Some(rt) = runtime::global() else {
+        return unavailable();
+    };
     let (min_x, max_x) = clamp_span(q.min_x, q.max_x);
     let (min_y, max_y) = clamp_span(q.min_y, q.max_y);
     let overlays: std::collections::HashMap<(i32, i32), SlotStack> = pg::pool()
@@ -265,7 +275,9 @@ pub async fn substrate_window(Query(q): Query<WindowQuery>) -> Response {
 }
 
 pub async fn substrate_cell(Query(q): Query<CellQuery>) -> Response {
-    let Some(rt) = runtime::global() else { return unavailable() };
+    let Some(rt) = runtime::global() else {
+        return unavailable();
+    };
     let (x, y) = (q.x, q.y);
     if rt.l0(x, y).is_none() {
         return Json(json!({
@@ -388,7 +400,9 @@ mod tests {
 
     #[test]
     fn labels_avoid_real_world_names() {
-        let banned = ["台灣", "臺灣", "台中", "沙鹿", "烏溪", "大甲", "筏子", "彰化", "八卦", "晶片"];
+        let banned = [
+            "台灣", "臺灣", "台中", "沙鹿", "烏溪", "大甲", "筏子", "彰化", "八卦", "晶片",
+        ];
         for id in 0..=6_u8 {
             let s = landmass_label(id);
             assert!(!banned.iter().any(|b| s.contains(b)));

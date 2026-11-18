@@ -853,7 +853,10 @@ fn migrate_journeys(
         let old_path_raw: String = row.get(3);
         let old_consequence: String = row.get(4);
         let Some(current) = entity_targets.get(&entity_id) else {
-            changed += tx.execute("DELETE FROM entity_journeys WHERE entity_id=$1", &[&entity_id])?;
+            changed += tx.execute(
+                "DELETE FROM entity_journeys WHERE entity_id=$1",
+                &[&entity_id],
+            )?;
             continue;
         };
         let old_path: Vec<String> = serde_json::from_str(&old_path_raw).unwrap_or_default();

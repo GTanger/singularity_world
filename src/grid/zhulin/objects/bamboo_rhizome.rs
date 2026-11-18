@@ -33,7 +33,12 @@ pub const YIELD_ITEM_DEF: super::ZhulinItemDef = super::ZhulinItemDef {
     description: "自竹林土表掘出的老竹地下根鞭，節短壁厚近乎實心，質地極韌耐劈，堪作器柄或敲擊硬材。",
     tags: super::ZhulinTagTriad {
         category_tags: &["haft_material", "carving_stock", "bamboo_rhizome"],
-        attribute_tags: &["solid_core", "dense_joint", "shock_resistant", "curved_grain"],
+        attribute_tags: &[
+            "solid_core",
+            "dense_joint",
+            "shock_resistant",
+            "curved_grain",
+        ],
         exclusive_tag: YIELD_ITEM_ID,
     },
 };

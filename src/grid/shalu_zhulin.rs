@@ -640,8 +640,7 @@ pub fn generate_shalu_zhulin_grid() -> SquareGrid {
 
             let is_stream = is_stream.or_else(|| {
                 if x >= coast_x && x <= 32 {
-                    let south_y_f = -13.0
-                        - (fx + 42.0) * 0.06
+                    let south_y_f = -13.0 - (fx + 42.0) * 0.06
                         + 2.4 * (fx * 0.11 + 0.8).cos()
                         + 1.0 * (fx * 0.05).sin();
                     if (fy - south_y_f).abs() <= 0.85 {
@@ -665,201 +664,193 @@ pub fn generate_shalu_zhulin_grid() -> SquareGrid {
                 }
             });
 
-            let (terrain, zone, name, desc, obj_spec): (
-                Terrain,
-                &str,
-                &str,
-                &str,
-                CellObjectSpec,
-            ) = if let Some(s) = is_stream {
-                s
-            } else {
-                let band_x = fx
-                    - 0.55 * w_f
-                    - 1.7 * (fy * 0.19).sin()
-                    - 0.9 * (fy * 0.33 + 1.1).cos();
-                let theta = fy.atan2(fx);
-                let r_bamboo = ((fx * 0.82).powi(2) + (fy * 0.65).powi(2)).sqrt()
-                    + 1.8 * (theta * 3.0).sin()
-                    + 1.1 * (theta * 5.0 + 0.7).cos();
-                if r_bamboo <= 8.4 || (band_x >= -8.0 && band_x <= 6.5 && h < 45) {
-                    let is_waterside = (x.abs() <= 1 && (y - 1).abs() <= 1) || h < 30;
-                    let cell = crate::grid::zhulin::build_bamboo_terrain_cell(
-                        coord,
-                        "紅土西麓",
-                        is_waterside,
-                        SHALU_ZHULIN_WORLD_SEED,
-                    );
-                    grid.insert(cell);
-                    continue;
-                } else if band_x < -42.0 {
-                    (
-                        Terrain::WaterDeep,
-                        "西側外海",
-                        "西側深水外海",
-                        "波濤起伏的外海深水浪湧，灰藍海面隨海風翻湧白浪，深處水勢湍急無法徒步涉入。",
-                        OBJ_DEEP_SEA,
-                    )
-                } else if band_x < -30.0 {
-                    if h < 40 {
-                        (
-                            Terrain::Swamp,
-                            "潮間泥灘",
-                            "濱海蘆葦泥澤",
-                            "海水與山澗伏流交會的潮間泥澤，鬆軟泥灘上長滿隨風搖擺的濱海蘆葦叢。",
-                            OBJ_TIDAL_REED,
-                        )
-                    } else {
-                        (
-                            Terrain::Beach,
-                            "潮間泥灘",
-                            "潮間沙礫海灘",
-                            "綿延於外海邊緣的開闊沙礫灘，海浪反覆拍打著散落岸邊的潮間漂流木。",
-                            OBJ_TIDAL_DRIFTWOOD,
-                        )
-                    }
-                } else if band_x < -8.0 {
-                    if h < 50 {
-                        (
-                            Terrain::Grassland,
-                            "西側海岸平原",
-                            "平原菅芒草海",
-                            "西側海岸平原的開闊草地，成片高過人頭的平原菅芒草隨海風翻湧如浪。",
-                            OBJ_PLAINS_MISCANTHUS,
-                        )
-                    } else if h < 80 {
-                        (
-                            Terrain::Plain,
-                            "西側海岸平原",
-                            "海濱砂質平地",
-                            "地勢低平的海岸砂質原野，地面散落著粗糙的風化砂礫石，視野極為遼闊。",
-                            OBJ_COAST_SAND_GRAVEL,
-                        )
-                    } else {
-                        (
-                            Terrain::ForestLight,
-                            "西側海岸平原",
-                            "海濱防風雜木林",
-                            "生長於海岸平原上的耐風樹林，枝幹向內陸傾斜的防風林木擋去大半海風。",
-                            OBJ_WINDBREAK_TREES,
-                        )
-                    }
-                } else if band_x <= 6.5 {
-                    if h < 80 {
-                        (
-                            Terrain::Hills,
-                            "紅土西麓",
-                            "西麓紅土緩坡",
-                            "由海岸平原抬升至台地西麓的斜坡，地表裸露著厚實溫潤的赭紅黏土層。",
-                            OBJ_FOOTHILL_CLAY,
-                        )
-                    } else {
-                        (
-                            Terrain::Plain,
-                            "紅土西麓",
-                            "坡腳紅土旱坪",
-                            "台地西麓坡腳處開闊的乾硬台面，地面散布著堅硬渾圓的台地圓礫石。",
-                            OBJ_FOOTHILL_COBBLE,
-                        )
-                    }
-                } else if band_x <= 26.5 {
-                    if h < 15 {
-                        (
-                            Terrain::Mountain,
-                            "紅土山腰",
-                            "山腰崩塌陡崖",
-                            "因長年風雨侵蝕而垂直崩落的崩塌礫石陡壁，崖壁險峻陡峭，無法直接徒步攀越。",
-                            OBJ_MIDSLOPE_CLIFF,
-                        )
-                    } else if h < 50 {
-                        (
-                            Terrain::Forest,
-                            "紅土山腰",
-                            "山腰樟竹混林",
-                            "台地山腰處的茂密混生山林，粗壯的山腰老樟木與翠竹交織成蔭。",
-                            OBJ_MIDSLOPE_CAMPHOR,
-                        )
-                    } else if h < 80 {
-                        (
-                            Terrain::Hills,
-                            "紅土山腰",
-                            "山腰紅土礫坡",
-                            "往台地高處爬升的赭紅礫石斜坡，坡旁盛開著耐旱的山坡野牡丹。",
-                            OBJ_MIDSLOPE_MELASTOMA,
-                        )
-                    } else {
-                        (
-                            Terrain::ForestLight,
-                            "紅土山腰",
-                            "山腰向陽苦楝林",
-                            "山腰向陽處的疏朗樹林，耐旱的山坡苦楝樹枝幹蒼勁舒展。",
-                            OBJ_MIDSLOPE_MELIA,
-                        )
-                    }
-                } else if band_x <= 44.5 {
-                    if h < 20 {
-                        (
-                            Terrain::Mountain,
-                            "台地稜線",
-                            "險峻紅土斷崖",
-                            "近乎垂直崩落的千仞紅土斷崖，地勢險峻且雲霧繚繞，無法直接攀越。",
-                            OBJ_RIDGE_PRECIPICE,
-                        )
-                    } else if h < 60 {
-                        (
-                            Terrain::ForestHeavy,
-                            "台地稜線",
-                            "稜線雲霧巨木林",
-                            "台地最高處的濃密原始巨木林，終年雲霧在蒼勁的盤根古樟木間流轉。",
-                            OBJ_RIDGE_ANCIENT_TREE,
-                        )
-                    } else if h < 85 {
-                        (
-                            Terrain::Hills,
-                            "台地稜線",
-                            "稜線風化礫石嶺",
-                            "台地脊線上的開闊山嶺，強勁山風掠過堅硬穩固的稜線膠結岩塊。",
-                            OBJ_RIDGE_ROCK,
-                        )
-                    } else {
-                        (
-                            Terrain::Grassland,
-                            "台地稜線",
-                            "稜頂迎風草坡",
-                            "台地稜頂受強風吹拂的高地草坡，地面覆滿低矮堅韌的稜頂耐風草叢。",
-                            OBJ_RIDGE_DEW_GRASS,
-                        )
-                    }
+            let (terrain, zone, name, desc, obj_spec): (Terrain, &str, &str, &str, CellObjectSpec) =
+                if let Some(s) = is_stream {
+                    s
                 } else {
-                    let east_river_x =
-                        55.0 + 2.2 * (fy * 0.14).sin() + 1.0 * (fy * 0.07).cos();
-                    if (fx - east_river_x).abs() <= 0.85 {
+                    let band_x =
+                        fx - 0.55 * w_f - 1.7 * (fy * 0.19).sin() - 0.9 * (fy * 0.33 + 1.1).cos();
+                    let theta = fy.atan2(fx);
+                    let r_bamboo = ((fx * 0.82).powi(2) + (fy * 0.65).powi(2)).sqrt()
+                        + 1.8 * (theta * 3.0).sin()
+                        + 1.1 * (theta * 5.0 + 0.7).cos();
+                    if r_bamboo <= 8.4 || (band_x >= -8.0 && band_x <= 6.5 && h < 45) {
+                        let is_waterside = (x.abs() <= 1 && (y - 1).abs() <= 1) || h < 30;
+                        let cell = crate::grid::zhulin::build_bamboo_terrain_cell(
+                            coord,
+                            "紅土西麓",
+                            is_waterside,
+                            SHALU_ZHULIN_WORLD_SEED,
+                        );
+                        grid.insert(cell);
+                        continue;
+                    } else if band_x < -42.0 {
                         (
-                            Terrain::Water,
-                            "台地東坡",
-                            "東麓盆地溪流",
-                            "台地東側山腳下匯聚的清緩溪流水，順著鵝卵石河床蜿蜒流淌。",
-                            OBJ_EAST_STREAM,
+                            Terrain::WaterDeep,
+                            "西側外海",
+                            "西側深水外海",
+                            "波濤起伏的外海深水浪湧，灰藍海面隨海風翻湧白浪，深處水勢湍急無法徒步涉入。",
+                            OBJ_DEEP_SEA,
                         )
-                    } else if h < 50 {
-                        (
-                            Terrain::Forest,
-                            "台地東坡",
-                            "東坡闊葉雜木林",
-                            "台地東側背海風的溫暖坡林，茂密樹蔭下長滿翠綠的林下山蘇叢。",
-                            OBJ_EAST_FERN,
-                        )
+                    } else if band_x < -30.0 {
+                        if h < 40 {
+                            (
+                                Terrain::Swamp,
+                                "潮間泥灘",
+                                "濱海蘆葦泥澤",
+                                "海水與山澗伏流交會的潮間泥澤，鬆軟泥灘上長滿隨風搖擺的濱海蘆葦叢。",
+                                OBJ_TIDAL_REED,
+                            )
+                        } else {
+                            (
+                                Terrain::Beach,
+                                "潮間泥灘",
+                                "潮間沙礫海灘",
+                                "綿延於外海邊緣的開闊沙礫灘，海浪反覆拍打著散落岸邊的潮間漂流木。",
+                                OBJ_TIDAL_DRIFTWOOD,
+                            )
+                        }
+                    } else if band_x < -8.0 {
+                        if h < 50 {
+                            (
+                                Terrain::Grassland,
+                                "西側海岸平原",
+                                "平原菅芒草海",
+                                "西側海岸平原的開闊草地，成片高過人頭的平原菅芒草隨海風翻湧如浪。",
+                                OBJ_PLAINS_MISCANTHUS,
+                            )
+                        } else if h < 80 {
+                            (
+                                Terrain::Plain,
+                                "西側海岸平原",
+                                "海濱砂質平地",
+                                "地勢低平的海岸砂質原野，地面散落著粗糙的風化砂礫石，視野極為遼闊。",
+                                OBJ_COAST_SAND_GRAVEL,
+                            )
+                        } else {
+                            (
+                                Terrain::ForestLight,
+                                "西側海岸平原",
+                                "海濱防風雜木林",
+                                "生長於海岸平原上的耐風樹林，枝幹向內陸傾斜的防風林木擋去大半海風。",
+                                OBJ_WINDBREAK_TREES,
+                            )
+                        }
+                    } else if band_x <= 6.5 {
+                        if h < 80 {
+                            (
+                                Terrain::Hills,
+                                "紅土西麓",
+                                "西麓紅土緩坡",
+                                "由海岸平原抬升至台地西麓的斜坡，地表裸露著厚實溫潤的赭紅黏土層。",
+                                OBJ_FOOTHILL_CLAY,
+                            )
+                        } else {
+                            (
+                                Terrain::Plain,
+                                "紅土西麓",
+                                "坡腳紅土旱坪",
+                                "台地西麓坡腳處開闊的乾硬台面，地面散布著堅硬渾圓的台地圓礫石。",
+                                OBJ_FOOTHILL_COBBLE,
+                            )
+                        }
+                    } else if band_x <= 26.5 {
+                        if h < 15 {
+                            (
+                                Terrain::Mountain,
+                                "紅土山腰",
+                                "山腰崩塌陡崖",
+                                "因長年風雨侵蝕而垂直崩落的崩塌礫石陡壁，崖壁險峻陡峭，無法直接徒步攀越。",
+                                OBJ_MIDSLOPE_CLIFF,
+                            )
+                        } else if h < 50 {
+                            (
+                                Terrain::Forest,
+                                "紅土山腰",
+                                "山腰樟竹混林",
+                                "台地山腰處的茂密混生山林，粗壯的山腰老樟木與翠竹交織成蔭。",
+                                OBJ_MIDSLOPE_CAMPHOR,
+                            )
+                        } else if h < 80 {
+                            (
+                                Terrain::Hills,
+                                "紅土山腰",
+                                "山腰紅土礫坡",
+                                "往台地高處爬升的赭紅礫石斜坡，坡旁盛開著耐旱的山坡野牡丹。",
+                                OBJ_MIDSLOPE_MELASTOMA,
+                            )
+                        } else {
+                            (
+                                Terrain::ForestLight,
+                                "紅土山腰",
+                                "山腰向陽苦楝林",
+                                "山腰向陽處的疏朗樹林，耐旱的山坡苦楝樹枝幹蒼勁舒展。",
+                                OBJ_MIDSLOPE_MELIA,
+                            )
+                        }
+                    } else if band_x <= 44.5 {
+                        if h < 20 {
+                            (
+                                Terrain::Mountain,
+                                "台地稜線",
+                                "險峻紅土斷崖",
+                                "近乎垂直崩落的千仞紅土斷崖，地勢險峻且雲霧繚繞，無法直接攀越。",
+                                OBJ_RIDGE_PRECIPICE,
+                            )
+                        } else if h < 60 {
+                            (
+                                Terrain::ForestHeavy,
+                                "台地稜線",
+                                "稜線雲霧巨木林",
+                                "台地最高處的濃密原始巨木林，終年雲霧在蒼勁的盤根古樟木間流轉。",
+                                OBJ_RIDGE_ANCIENT_TREE,
+                            )
+                        } else if h < 85 {
+                            (
+                                Terrain::Hills,
+                                "台地稜線",
+                                "稜線風化礫石嶺",
+                                "台地脊線上的開闊山嶺，強勁山風掠過堅硬穩固的稜線膠結岩塊。",
+                                OBJ_RIDGE_ROCK,
+                            )
+                        } else {
+                            (
+                                Terrain::Grassland,
+                                "台地稜線",
+                                "稜頂迎風草坡",
+                                "台地稜頂受強風吹拂的高地草坡，地面覆滿低矮堅韌的稜頂耐風草叢。",
+                                OBJ_RIDGE_DEW_GRASS,
+                            )
+                        }
                     } else {
-                        (
-                            Terrain::Hills,
-                            "台地東坡",
-                            "東坡紅土階地",
-                            "台地向東側盆地層層下降的紅土階地，坡面分布著茂密的階地野灌叢。",
-                            OBJ_EAST_SHRUB,
-                        )
+                        let east_river_x = 55.0 + 2.2 * (fy * 0.14).sin() + 1.0 * (fy * 0.07).cos();
+                        if (fx - east_river_x).abs() <= 0.85 {
+                            (
+                                Terrain::Water,
+                                "台地東坡",
+                                "東麓盆地溪流",
+                                "台地東側山腳下匯聚的清緩溪流水，順著鵝卵石河床蜿蜒流淌。",
+                                OBJ_EAST_STREAM,
+                            )
+                        } else if h < 50 {
+                            (
+                                Terrain::Forest,
+                                "台地東坡",
+                                "東坡闊葉雜木林",
+                                "台地東側背海風的溫暖坡林，茂密樹蔭下長滿翠綠的林下山蘇叢。",
+                                OBJ_EAST_FERN,
+                            )
+                        } else {
+                            (
+                                Terrain::Hills,
+                                "台地東坡",
+                                "東坡紅土階地",
+                                "台地向東側盆地層層下降的紅土階地，坡面分布著茂密的階地野灌叢。",
+                                OBJ_EAST_SHRUB,
+                            )
+                        }
                     }
-                }
-            };
+                };
 
             let cell = build_single_object_cell(coord, terrain, zone, name, desc, obj_spec);
             grid.insert(cell);
@@ -1007,7 +998,10 @@ mod tests {
             .find_nearest_room_by_tags((0, 0), 5, &["spring"], 0)
             .expect("Must locate spring cell by tag");
         assert_eq!((sx, sy), (0, 1));
-        assert_eq!(grid.get(SquareCoord::new(sx, sy)).unwrap().objects[0].name, "伏流冷泉");
+        assert_eq!(
+            grid.get(SquareCoord::new(sx, sy)).unwrap().objects[0].name,
+            "伏流冷泉"
+        );
 
         let ((bx, by), _) = grid
             .find_nearest_room_by_tags((0, 0), 5, &["bamboo_shoot"], 0)
@@ -1020,7 +1014,10 @@ mod tests {
             .find_nearest_room_by_tags((0, 0), 5, &["camphor"], 0)
             .expect("Must locate camphor cell by tag");
         assert_eq!((cx, cy), (1, -1));
-        assert_eq!(grid.get(SquareCoord::new(cx, cy)).unwrap().objects[0].name, "百年老樟樹");
+        assert_eq!(
+            grid.get(SquareCoord::new(cx, cy)).unwrap().objects[0].name,
+            "百年老樟樹"
+        );
 
         // 驗證西側外海與海岸線防線：x <= -30 絕不生成海外竹林島，x <= -46 全數為深水外海
         for cell in grid.cells() {

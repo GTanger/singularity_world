@@ -372,10 +372,11 @@ pub fn resolve_venue_shift_activity_and_advance_event_pack(
         crate::game::now_unix() as i64,
     ) {
         if let Some(first_key) = ev.key_objects.split('、').next() {
-            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
-                venue_display_name,
-                first_key,
-            );
+            let _ =
+                crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+                    venue_display_name,
+                    first_key,
+                );
         }
     }
 
@@ -386,7 +387,10 @@ pub fn resolve_venue_shift_activity_and_advance_event_pack(
                 venue_display_name, v.venue_kind, v.on_duty_fixture_activity
             );
         }
-        return format!("正在{}（{}）", venue_display_name, v.on_duty_fixture_activity);
+        return format!(
+            "正在{}（{}）",
+            venue_display_name, v.on_duty_fixture_activity
+        );
     }
     if venue_type == "guard_post" || venue_id.contains("guard") {
         format!("正在{}執勤巡守", venue_display_name)

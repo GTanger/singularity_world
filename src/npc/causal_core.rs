@@ -10,14 +10,17 @@ use std::collections::HashMap;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{LazyLock, Mutex, RwLock};
 
-
 #[inline]
 pub fn is_recognizable_room_staff_or_counter_holder_entity(
     ent: &crate::store::Entity,
     room_coord: (i32, i32),
     needed_item_id: &str,
 ) -> (bool, bool) {
-    crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(ent, room_coord, needed_item_id)
+    crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(
+        ent,
+        room_coord,
+        needed_item_id,
+    )
 }
 
 #[inline]
@@ -28,7 +31,13 @@ pub fn resolve_nearest_room_by_tag(
     fallback_coord: (i32, i32),
     fallback_bldg: &str,
 ) -> ((i32, i32), String) {
-    crate::pg::living_world::resolve_nearest_room_by_tag(origin, wanted_tags, grid_opt, fallback_coord, fallback_bldg)
+    crate::pg::living_world::resolve_nearest_room_by_tag(
+        origin,
+        wanted_tags,
+        grid_opt,
+        fallback_coord,
+        fallback_bldg,
+    )
 }
 
 include!("causal_core/vessel_and_arrival.rs");
@@ -65,9 +74,18 @@ mod tests {
             .nth(1)
             .and_then(|s| s.split(['\'', '"']).next())
             .expect("sw.js should contain sw-shell-v<ver>");
-        assert!(index_html.contains(&format!("?v={sw_ver}")), "index.html should use v={sw_ver}");
-        assert!(index_html.contains(&format!("sw_reloaded_v{sw_ver}")), "index.html should use sw_reloaded_v{sw_ver}");
-        assert!(sw_js.contains(&format!("sw-shell-v{sw_ver}")), "sw.js should use sw-shell-v{sw_ver}");
+        assert!(
+            index_html.contains(&format!("?v={sw_ver}")),
+            "index.html should use v={sw_ver}"
+        );
+        assert!(
+            index_html.contains(&format!("sw_reloaded_v{sw_ver}")),
+            "index.html should use sw_reloaded_v{sw_ver}"
+        );
+        assert!(
+            sw_js.contains(&format!("sw-shell-v{sw_ver}")),
+            "sw.js should use sw-shell-v{sw_ver}"
+        );
         // Verify all 10 new custom sockets have Chinese labels in sw-object-list.js
         let expected_sockets = [
             ("MillGrain", "水磨碾米"),
@@ -102,10 +120,22 @@ mod tests {
     #[test]
     fn test_round41_households_and_templates_guards() {
         let files = [
-            ("src/store/households.rs", include_str!("../store/households.rs")),
-            ("src/store/outer_households.rs", include_str!("../store/outer_households.rs")),
-            ("src/game/peninsula_catalog.rs", include_str!("../game/peninsula_catalog.rs")),
-            ("src/game/peninsula_scripts.rs", include_str!("../game/peninsula_scripts.rs")),
+            (
+                "src/store/households.rs",
+                include_str!("../store/households.rs"),
+            ),
+            (
+                "src/store/outer_households.rs",
+                include_str!("../store/outer_households.rs"),
+            ),
+            (
+                "src/game/peninsula_catalog.rs",
+                include_str!("../game/peninsula_catalog.rs"),
+            ),
+            (
+                "src/game/peninsula_scripts.rs",
+                include_str!("../game/peninsula_scripts.rs"),
+            ),
             (
                 "src/game/player_scene.rs",
                 include_str!("../game/player_scene.rs"),
@@ -181,7 +211,10 @@ mod tests {
                 "src/server/handler/movement.rs",
                 include_str!("../server/handler/movement.rs"),
             ),
-            ("web/world_atlas.html", include_str!("../../web/world_atlas.html")),
+            (
+                "web/world_atlas.html",
+                include_str!("../../web/world_atlas.html"),
+            ),
             (
                 "web/behavior_mindmap.html",
                 include_str!("../../web/behavior_mindmap.html"),
@@ -258,10 +291,7 @@ mod tests {
                 "data/templates/archetypes.json",
                 include_str!("../../data/templates/archetypes.json"),
             ),
-            (
-                "data/items.json",
-                include_str!("../../data/items.json"),
-            ),
+            ("data/items.json", include_str!("../../data/items.json")),
             (
                 "data/npc_behaviors.json",
                 include_str!("../../data/npc_behaviors.json"),
@@ -293,7 +323,6 @@ mod tests {
             }
         }
     }
-
 
     include!("causal_core/guard_tests_gang.rs");
     include!("causal_core/guard_forbidden_words.rs");

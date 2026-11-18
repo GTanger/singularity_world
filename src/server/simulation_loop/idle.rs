@@ -6,7 +6,6 @@ use std::sync::{Arc, LazyLock, Mutex, RwLock};
 static ROOM_IDLE_CHAT_LAST_TS: LazyLock<RwLock<HashMap<String, i64>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 
-use rand::Rng;
 use crate::config::{Server, sim};
 use crate::db::{
     canonical_location_key, get_all_schedules, get_disposition, get_entity_room,
@@ -18,16 +17,15 @@ use crate::npc::{
     pick_random_npc_npc_topic_by_mask,
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
+use rand::Rng;
 
 use super::super::SessionStore;
 use super::super::broadcast::{refresh_room_views_for_room, send_narrate_to_room};
 use super::MainLoopTickState;
 use super::helpers::{roll_next_idle_interval, sprintf_s};
 
-
 #[allow(dead_code)]
-static IDLE_CHAT_SEQ: std::sync::atomic::AtomicUsize =
-    std::sync::atomic::AtomicUsize::new(0);
+static IDLE_CHAT_SEQ: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 
 include!("idle/banter.rs");
 include!("idle/vendor_banter.rs");
@@ -111,7 +109,10 @@ pub(super) fn run_idle_wander_section(
                 let ids = st.entity_ids_in_room(room_id);
                 let alive: Vec<String> = ids
                     .iter()
-                    .filter(|id| st.get_entity(id).is_some_and(|e| e.kind == "npc" && e.vit > 0))
+                    .filter(|id| {
+                        st.get_entity(id)
+                            .is_some_and(|e| e.kind == "npc" && e.vit > 0)
+                    })
                     .cloned()
                     .collect();
                 (ids, alive)
@@ -145,8 +146,18 @@ pub(super) fn run_idle_wander_section(
                 now_ts.saturating_sub(last) >= 35
             };
             if can_run_eco && (now_ts as usize / 10) % 3 == 0 {
-                if let Some(eco_narrate) = crate::game::object_ecology::run_npc_autonomous_production_step(room_id, &room_name, &active_npcs, now_ts) {
-                    ROOM_IDLE_CHAT_LAST_TS.write().unwrap().insert(room_id.to_string(), now_ts);
+                if let Some(eco_narrate) =
+                    crate::game::object_ecology::run_npc_autonomous_production_step(
+                        room_id,
+                        &room_name,
+                        &active_npcs,
+                        now_ts,
+                    )
+                {
+                    ROOM_IDLE_CHAT_LAST_TS
+                        .write()
+                        .unwrap()
+                        .insert(room_id.to_string(), now_ts);
                     for s in sessions.all_sessions() {
                         if crate::server::session::player_location_key(&s.player_id) == want {
                             crate::server::send_narrate_to_player(&s, &eco_narrate);
@@ -188,7 +199,10 @@ pub(super) fn run_idle_wander_section(
                 if rng.random_range(0..100) < 30 {
                     for s in sessions.all_sessions() {
                         if crate::server::session::player_location_key(&s.player_id) == want {
-                            if let Some(known_id) = awake_present.iter().find(|id| crate::store::player_knows_npc(&s.player_id, id)) {
+                            if let Some(known_id) = awake_present
+                                .iter()
+                                .find(|id| crate::store::player_knows_npc(&s.player_id, id))
+                            {
                                 if let Some((ea, _)) = npc_snapshots.get(known_id.as_str()) {
                                     let caller = resolve_caller_name(&s.player_id, known_id, ea);
                                     let soul = ea
@@ -202,31 +216,57 @@ pub(super) fn run_idle_wander_section(
                                     let act_now = ea.current_activity.clone();
                                     let disp = ea.disposition;
                                     let fav = crate::db::get_favorability(known_id, &s.player_id);
-                                    let (fam_score, bal_score) = if let Some(pool) = crate::pg::pool() {
-                                        let rel = crate::pg::living_world::get_relationship_summary(&pool, known_id, &s.player_id).unwrap_or_default();
-                                        let fam = rel.familiarity_score.max(if crate::store::player_knows_npc(&s.player_id, known_id) { 2 } else { 1 });
-                                        let bal = rel.balance_score + (fav / 10) + (disp / 25);
-                                        (fam, bal)
-                                    } else {
-                                        let fam = if crate::store::player_knows_npc(&s.player_id, known_id) { 2 } else { 1 };
-                                        let bal = (fav / 10) + (disp / 25);
-                                        (fam, bal)
-                                    };
-                                    let stance = crate::ai::decision_scorer::score_npc_interaction_stance(
-                                        &crate::ai::decision_scorer::NpcDecisionInput {
-                                            npc_name: &caller,
-                                            boldness: soul.boldness,
-                                            sensitivity: soul.sensitivity,
-                                            orderliness: soul.orderliness,
-                                            familiarity_score: fam_score,
-                                            balance_score: bal_score,
-                                            open_obligations: &[],
-                                            current_activity: &act_now,
-                                            action_kind: "presence_reflex",
-                                            player_utterance: "行旅者駐足於身側",
-                                        },
-                                    );
-                                    if stance.choice != crate::ai::decision_scorer::NpcStanceChoice::Refuse {
+                                    let (fam_score, bal_score) =
+                                        if let Some(pool) = crate::pg::pool() {
+                                            let rel =
+                                                crate::pg::living_world::get_relationship_summary(
+                                                    &pool,
+                                                    known_id,
+                                                    &s.player_id,
+                                                )
+                                                .unwrap_or_default();
+                                            let fam = rel.familiarity_score.max(
+                                                if crate::store::player_knows_npc(
+                                                    &s.player_id,
+                                                    known_id,
+                                                ) {
+                                                    2
+                                                } else {
+                                                    1
+                                                },
+                                            );
+                                            let bal = rel.balance_score + (fav / 10) + (disp / 25);
+                                            (fam, bal)
+                                        } else {
+                                            let fam = if crate::store::player_knows_npc(
+                                                &s.player_id,
+                                                known_id,
+                                            ) {
+                                                2
+                                            } else {
+                                                1
+                                            };
+                                            let bal = (fav / 10) + (disp / 25);
+                                            (fam, bal)
+                                        };
+                                    let stance =
+                                        crate::ai::decision_scorer::score_npc_interaction_stance(
+                                            &crate::ai::decision_scorer::NpcDecisionInput {
+                                                npc_name: &caller,
+                                                boldness: soul.boldness,
+                                                sensitivity: soul.sensitivity,
+                                                orderliness: soul.orderliness,
+                                                familiarity_score: fam_score,
+                                                balance_score: bal_score,
+                                                open_obligations: &[],
+                                                current_activity: &act_now,
+                                                action_kind: "presence_reflex",
+                                                player_utterance: "行旅者駐足於身側",
+                                            },
+                                        );
+                                    if stance.choice
+                                        != crate::ai::decision_scorer::NpcStanceChoice::Refuse
+                                    {
                                         let reflex = match stance.choice {
                                             crate::ai::decision_scorer::NpcStanceChoice::Accept => {
                                                 format!("{caller}注意到你的步履，溫和地點頭致意：「旅途可還順遂？若有事需要打點隨時開口。」")
@@ -291,15 +331,25 @@ pub(super) fn run_idle_wander_section(
                 if !can_chat {
                     break;
                 }
-                ROOM_IDLE_CHAT_LAST_TS.write().unwrap().insert(room_id.to_string(), now_ts);
+                ROOM_IDLE_CHAT_LAST_TS
+                    .write()
+                    .unwrap()
+                    .insert(room_id.to_string(), now_ts);
 
                 if awake_npcs.len() >= 2 {
                     let id_a = &awake_npcs[0];
                     let id_b = &awake_npcs[1];
-                    let pair_entities = npc_snapshots.get(id_a.as_str()).zip(npc_snapshots.get(id_b.as_str()));
+                    let pair_entities = npc_snapshots
+                        .get(id_a.as_str())
+                        .zip(npc_snapshots.get(id_b.as_str()));
                     if let Some(((ea, _), (eb, _))) = pair_entities {
                         let _ecology_tick = ((now_ts as usize) / 45) + id_a.len();
-                        let _ = crate::game::object_ecology::run_npc_autonomous_production_step(room_id, &room_name, &awake_npcs, now_ts);
+                        let _ = crate::game::object_ecology::run_npc_autonomous_production_step(
+                            room_id,
+                            &room_name,
+                            &awake_npcs,
+                            now_ts,
+                        );
                         let exchange_action: Option<String> = None;
 
                         for s in sessions.all_sessions() {
@@ -307,50 +357,79 @@ pub(super) fn run_idle_wander_section(
                                 let caller_a = resolve_caller_name(&s.player_id, id_a, ea);
                                 let caller_b = resolve_caller_name(&s.player_id, id_b, eb);
 
-                                let seq_idx = IDLE_CHAT_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-                                let project_npc_utterance = |npc_id: &str, ent: &crate::store::Entity, is_reply: bool, seq: usize, avoid_th: Option<&str>, avoid_ob: Option<&str>| -> (String, Option<String>, Option<String>) {
-                                    let raw_ob_opt = crate::store::get_active_npc_obligation(npc_id)
-                                        .and_then(|(kind, subj)| match kind.as_str() {
-                                            "restock_goods" => Some("鋪子補貨".to_string()),
-                                            "repair_tool" => Some("修整家什".to_string()),
-                                            "stranded_cargo" => Some("貨物調度".to_string()),
-                                            "repay_debt" => Some("手頭帳務結算".to_string()),
-                                            "treat_injury" => Some("調養傷勢".to_string()),
-                                            _ if !subj.trim().is_empty() && !subj.is_ascii() => {
-                                                let clean = subj.trim().trim_end_matches('。');
-                                                if clean.chars().count() > 14 {
-                                                    if clean.contains("採辦") || clean.contains("採買") {
-                                                        Some("坊間採辦".to_string())
-                                                    } else if clean.contains("修整") || clean.contains("打磨") {
-                                                        Some("修整隨身器物".to_string())
-                                                    } else if clean.contains("家務") || clean.contains("收拾") {
-                                                        Some("家中瑣務".to_string())
-                                                    } else {
-                                                        Some("手頭要務".to_string())
-                                                    }
+                                let seq_idx = IDLE_CHAT_SEQ
+                                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                                let project_npc_utterance = |npc_id: &str,
+                                                             ent: &crate::store::Entity,
+                                                             is_reply: bool,
+                                                             seq: usize,
+                                                             avoid_th: Option<&str>,
+                                                             avoid_ob: Option<&str>|
+                                 -> (
+                                    String,
+                                    Option<String>,
+                                    Option<String>,
+                                ) {
+                                    let raw_ob_opt = crate::store::get_active_npc_obligation(
+                                        npc_id,
+                                    )
+                                    .and_then(|(kind, subj)| match kind.as_str() {
+                                        "restock_goods" => Some("鋪子補貨".to_string()),
+                                        "repair_tool" => Some("修整家什".to_string()),
+                                        "stranded_cargo" => Some("貨物調度".to_string()),
+                                        "repay_debt" => Some("手頭帳務結算".to_string()),
+                                        "treat_injury" => Some("調養傷勢".to_string()),
+                                        _ if !subj.trim().is_empty() && !subj.is_ascii() => {
+                                            let clean = subj.trim().trim_end_matches('。');
+                                            if clean.chars().count() > 14 {
+                                                if clean.contains("採辦") || clean.contains("採買")
+                                                {
+                                                    Some("坊間採辦".to_string())
+                                                } else if clean.contains("修整")
+                                                    || clean.contains("打磨")
+                                                {
+                                                    Some("修整隨身器物".to_string())
+                                                } else if clean.contains("家務")
+                                                    || clean.contains("收拾")
+                                                {
+                                                    Some("家中瑣務".to_string())
                                                 } else {
-                                                    Some(clean.to_string())
+                                                    Some("手頭要務".to_string())
                                                 }
+                                            } else {
+                                                Some(clean.to_string())
                                             }
-                                            _ => None,
-                                        });
-                                    let ob_opt = raw_ob_opt.filter(|ob| {
-                                        avoid_ob.map_or(true, |av| av != ob.as_str())
+                                        }
+                                        _ => None,
                                     });
+                                    let ob_opt = raw_ob_opt
+                                        .filter(|ob| avoid_ob.map_or(true, |av| av != ob.as_str()));
                                     let thought_opt = ent
                                         .thoughts
                                         .iter()
                                         .rev()
                                         .filter_map(|t| t.flavor.as_deref())
-                                        .map(|f| sanitize_thought_string(f, &ent.display_title, seq as u64))
                                         .map(|f| {
-                                            let mut s = f.trim().trim_end_matches('。').replace("文曜・", "");
+                                            sanitize_thought_string(
+                                                f,
+                                                &ent.display_title,
+                                                seq as u64,
+                                            )
+                                        })
+                                        .map(|f| {
+                                            let mut s = f
+                                                .trim()
+                                                .trim_end_matches('。')
+                                                .replace("文曜・", "");
                                             if s.starts_with('在') {
                                                 let marks = ["飲過", "用過", "歇過"];
                                                 for mark in marks {
                                                     if let Some(idx) = s.find(mark) {
                                                         let before = &s[..idx];
-                                                        if ["居", "宅", "舍", "宿", "值房"].iter().any(|k| before.contains(k)) {
+                                                        if ["居", "宅", "舍", "宿", "值房"]
+                                                            .iter()
+                                                            .any(|k| before.contains(k))
+                                                        {
                                                             s = format!("在家裡{}", &s[idx..]);
                                                             break;
                                                         }
@@ -362,7 +441,13 @@ pub(super) fn run_idle_wander_section(
                                         .find(|ft| {
                                             let clean = ft.trim();
                                             let same_as_avoid = avoid_th.map_or(false, |av| {
-                                                clean == av || (clean.chars().count() >= 6 && av.chars().count() >= 6 && clean.chars().take(6).eq(av.chars().take(6)))
+                                                clean == av
+                                                    || (clean.chars().count() >= 6
+                                                        && av.chars().count() >= 6
+                                                        && clean
+                                                            .chars()
+                                                            .take(6)
+                                                            .eq(av.chars().take(6)))
                                             });
                                             !clean.is_empty()
                                                 && !same_as_avoid
@@ -386,8 +471,16 @@ pub(super) fn run_idle_wander_section(
                                     let act_clean = if raw_act.is_empty() {
                                         String::new()
                                     } else {
-                                        let is_outdoor = ["橋", "街", "道", "口", "坪", "廣場", "碼頭"].iter().any(|k| room_name.contains(k));
-                                        let has_indoor_rest = ["安歇", "入眠", "酣眠", "木榻", "床鋪", "內室", "單間", "浴池", "堂屋"].iter().any(|k| raw_act.contains(k));
+                                        let is_outdoor =
+                                            ["橋", "街", "道", "口", "坪", "廣場", "碼頭"]
+                                                .iter()
+                                                .any(|k| room_name.contains(k));
+                                        let has_indoor_rest = [
+                                            "安歇", "入眠", "酣眠", "木榻", "床鋪", "內室", "單間",
+                                            "浴池", "堂屋",
+                                        ]
+                                        .iter()
+                                        .any(|k| raw_act.contains(k));
                                         let has_transit = raw_act.contains("動身前往")
                                             || raw_act.contains("前往【")
                                             || raw_act.contains("返回【")
@@ -398,19 +491,37 @@ pub(super) fn run_idle_wander_section(
                                         } else if has_transit {
                                             "沿街趕路辦差"
                                         } else if raw_act.chars().count() > 14 {
-                                            if raw_act.contains("話家常") || raw_act.contains("堂屋") || raw_act.contains("院落") {
+                                            if raw_act.contains("話家常")
+                                                || raw_act.contains("堂屋")
+                                                || raw_act.contains("院落")
+                                            {
                                                 "在院落料理家務"
-                                            } else if raw_act.contains("打磨") || raw_act.contains("工位") || raw_act.contains("工坊") {
+                                            } else if raw_act.contains("打磨")
+                                                || raw_act.contains("工位")
+                                                || raw_act.contains("工坊")
+                                            {
                                                 "在工坊打理活計"
-                                            } else if raw_act.contains("診所") || raw_act.contains("藥") {
+                                            } else if raw_act.contains("診所")
+                                                || raw_act.contains("藥")
+                                            {
                                                 "在診所抓藥調理"
-                                            } else if raw_act.contains("食堂") || raw_act.contains("麵") || raw_act.contains("茶") {
+                                            } else if raw_act.contains("食堂")
+                                                || raw_act.contains("麵")
+                                                || raw_act.contains("茶")
+                                            {
                                                 "在茶樓用膳歇腳"
-                                            } else if raw_act.contains("市集") || raw_act.contains("採買") || raw_act.contains("採辦") {
+                                            } else if raw_act.contains("市集")
+                                                || raw_act.contains("採買")
+                                                || raw_act.contains("採辦")
+                                            {
                                                 "在市集採辦日用"
-                                            } else if raw_act.contains("碼頭") || raw_act.contains("船") {
+                                            } else if raw_act.contains("碼頭")
+                                                || raw_act.contains("船")
+                                            {
                                                 "在碼頭檢整舟楫"
-                                            } else if raw_act.contains("巡") || raw_act.contains("守") {
+                                            } else if raw_act.contains("巡")
+                                                || raw_act.contains("守")
+                                            {
                                                 "在各處哨位巡查"
                                             } else {
                                                 "按部就班打理差事"
@@ -445,34 +556,68 @@ pub(super) fn run_idle_wander_section(
 
                                     let act_bare = act_clean.trim_start_matches('在');
 
-                                    let line = match (ob_opt.as_deref(), thought_opt.as_deref(), act_clean.is_empty()) {
+                                    let line = match (
+                                        ob_opt.as_deref(),
+                                        thought_opt.as_deref(),
+                                        act_clean.is_empty(),
+                                    ) {
                                         (Some(ob), Some(th), false) => {
                                             if !is_reply {
                                                 match seq % 3 {
-                                                    0 => format!("「{}，手頭還記掛著{}的事，現在{}。」", th, ob, act_clean),
-                                                    1 => format!("「現在{}，心裡倒還想著{}那樁差事。」", act_clean, ob),
-                                                    _ => format!("「先把{}的事處置妥當要緊，{}。」", ob, th),
+                                                    0 => format!(
+                                                        "「{}，手頭還記掛著{}的事，現在{}。」",
+                                                        th, ob, act_clean
+                                                    ),
+                                                    1 => format!(
+                                                        "「現在{}，心裡倒還想著{}那樁差事。」",
+                                                        act_clean, ob
+                                                    ),
+                                                    _ => format!(
+                                                        "「先把{}的事處置妥當要緊，{}。」",
+                                                        ob, th
+                                                    ),
                                                 }
                                             } else {
                                                 match seq % 3 {
-                                                    0 => format!("「可不是嗎，{}，我也正{}，好把{}的事辦妥。」", th, act_bare, ob),
-                                                    1 => format!("「誰說不是呢，我手裡也壓著{}的差事，趁現在{}最穩妥。」", ob, act_bare),
-                                                    _ => format!("「彼此彼此，{}，等忙完{}再歇口氣。」", th, ob),
+                                                    0 => format!(
+                                                        "「可不是嗎，{}，我也正{}，好把{}的事辦妥。」",
+                                                        th, act_bare, ob
+                                                    ),
+                                                    1 => format!(
+                                                        "「誰說不是呢，我手裡也壓著{}的差事，趁現在{}最穩妥。」",
+                                                        ob, act_bare
+                                                    ),
+                                                    _ => format!(
+                                                        "「彼此彼此，{}，等忙完{}再歇口氣。」",
+                                                        th, ob
+                                                    ),
                                                 }
                                             }
                                         }
                                         (Some(ob), _, false) => {
                                             if !is_reply {
-                                                format!("「手頭還惦記著{}的事，趁著現在{}。」", ob, act_bare)
+                                                format!(
+                                                    "「手頭還惦記著{}的事，趁著現在{}。」",
+                                                    ob, act_bare
+                                                )
                                             } else {
-                                                format!("「我這頭也記掛著{}的活計，現在正{}呢。」", ob, act_bare)
+                                                format!(
+                                                    "「我這頭也記掛著{}的活計，現在正{}呢。」",
+                                                    ob, act_bare
+                                                )
                                             }
                                         }
                                         (None, Some(th), false) => {
                                             if !is_reply {
-                                                format!("「{}，趁著精神還好，{}最是舒坦。」", th, act_bare)
+                                                format!(
+                                                    "「{}，趁著精神還好，{}最是舒坦。」",
+                                                    th, act_bare
+                                                )
                                             } else {
-                                                format!("「說的是，{}，我也正{}呢。」", th, act_bare)
+                                                format!(
+                                                    "「說的是，{}，我也正{}呢。」",
+                                                    th, act_bare
+                                                )
                                             }
                                         }
                                         (_, Some(th), true) => {
@@ -483,20 +628,39 @@ pub(super) fn run_idle_wander_section(
                                             }
                                         }
                                         _ => {
-                                            let act_str = if act_clean.is_empty() { "把現在手頭的差事理順" } else { act_clean.as_str() };
-                                            let act_fallback_bare = if act_clean.is_empty() { "按部就班理順差事" } else { act_bare };
+                                            let act_str = if act_clean.is_empty() {
+                                                "把現在手頭的差事理順"
+                                            } else {
+                                                act_clean.as_str()
+                                            };
+                                            let act_fallback_bare = if act_clean.is_empty() {
+                                                "按部就班理順差事"
+                                            } else {
+                                                act_bare
+                                            };
                                             if !is_reply {
                                                 format!("「忙完手頭的活計，{}最是舒心。」", act_str)
                                             } else {
-                                                format!("「可不是嘛，我也正{}，忙妥了心裡踏實。」", act_fallback_bare)
+                                                format!(
+                                                    "「可不是嘛，我也正{}，忙妥了心裡踏實。」",
+                                                    act_fallback_bare
+                                                )
                                             }
                                         }
                                     };
                                     (line, thought_opt, ob_opt)
                                 };
                                 let dialogue_narrate = {
-                                    let (dlg_a, used_th_a, used_ob_a) = project_npc_utterance(id_a, ea, false, seq_idx, None, None);
-                                    let (dlg_b, _, _) = project_npc_utterance(id_b, eb, true, seq_idx.wrapping_add(1), used_th_a.as_deref(), used_ob_a.as_deref());
+                                    let (dlg_a, used_th_a, used_ob_a) =
+                                        project_npc_utterance(id_a, ea, false, seq_idx, None, None);
+                                    let (dlg_b, _, _) = project_npc_utterance(
+                                        id_b,
+                                        eb,
+                                        true,
+                                        seq_idx.wrapping_add(1),
+                                        used_th_a.as_deref(),
+                                        used_ob_a.as_deref(),
+                                    );
 
                                     let action_prefix = if let Some(act) = &exchange_action {
                                         if act.contains("完") || act.contains("了一") {
@@ -508,16 +672,38 @@ pub(super) fn run_idle_wander_section(
                                         caller_a.clone()
                                     };
                                     match seq_idx % 6 {
-                                        0 => format!("{action_prefix}側身向{caller_b}言道：{dlg_a}\n{caller_b}微微點頭，隨口應道：{dlg_b}"),
-                                        1 => format!("{action_prefix}將手頭物事稍作整理，對{caller_b}開口：{dlg_a}\n{caller_b}抬眼笑應：{dlg_b}"),
-                                        2 => format!("{action_prefix}望向四下市面，同{caller_b}搭話：{dlg_a}\n{caller_b}順著話頭接道：{dlg_b}"),
-                                        3 => format!("{action_prefix}朝{caller_b}低聲說道：{dlg_a}\n{caller_b}神情專注，答道：{dlg_b}"),
-                                        4 => format!("{action_prefix}手頭活計未停，對{caller_b}言道：{dlg_a}\n{caller_b}語調平穩地回道：{dlg_b}"),
-                                        _ => format!("{action_prefix}向{caller_b}問道：{dlg_a}\n{caller_b}略一思索，溫聲回道：{dlg_b}"),
+                                        0 => format!(
+                                            "{action_prefix}側身向{caller_b}言道：{dlg_a}\n{caller_b}微微點頭，隨口應道：{dlg_b}"
+                                        ),
+                                        1 => format!(
+                                            "{action_prefix}將手頭物事稍作整理，對{caller_b}開口：{dlg_a}\n{caller_b}抬眼笑應：{dlg_b}"
+                                        ),
+                                        2 => format!(
+                                            "{action_prefix}望向四下市面，同{caller_b}搭話：{dlg_a}\n{caller_b}順著話頭接道：{dlg_b}"
+                                        ),
+                                        3 => format!(
+                                            "{action_prefix}朝{caller_b}低聲說道：{dlg_a}\n{caller_b}神情專注，答道：{dlg_b}"
+                                        ),
+                                        4 => format!(
+                                            "{action_prefix}手頭活計未停，對{caller_b}言道：{dlg_a}\n{caller_b}語調平穩地回道：{dlg_b}"
+                                        ),
+                                        _ => format!(
+                                            "{action_prefix}向{caller_b}問道：{dlg_a}\n{caller_b}略一思索，溫聲回道：{dlg_b}"
+                                        ),
                                     }
                                 };
-                                crate::store::record_active_npc_dialogue(room_id, id_a, id_b, &dialogue_narrate);
-                                crate::server::send_npc_dialogue_to_player(&s, id_a, id_b, &dialogue_narrate);
+                                crate::store::record_active_npc_dialogue(
+                                    room_id,
+                                    id_a,
+                                    id_b,
+                                    &dialogue_narrate,
+                                );
+                                crate::server::send_npc_dialogue_to_player(
+                                    &s,
+                                    id_a,
+                                    id_b,
+                                    &dialogue_narrate,
+                                );
                             }
                         }
                         break;
@@ -526,12 +712,18 @@ pub(super) fn run_idle_wander_section(
                     // 全在安歇
                     let id_a = &active_npcs[0];
                     let id_b = &active_npcs[1];
-                    if let (Some((ea, _)), Some((eb, _))) = (npc_snapshots.get(id_a.as_str()), npc_snapshots.get(id_b.as_str())) {
+                    if let (Some((ea, _)), Some((eb, _))) = (
+                        npc_snapshots.get(id_a.as_str()),
+                        npc_snapshots.get(id_b.as_str()),
+                    ) {
                         for s in sessions.all_sessions() {
                             if crate::server::session::player_location_key(&s.player_id) == want {
                                 let caller_a = resolve_caller_name(&s.player_id, id_a, ea);
                                 let caller_b = resolve_caller_name(&s.player_id, id_b, eb);
-                                let two_npc_narrate = format!("屋內燈火微茫，{}與{}皆已歇息，四下唯聞平穩均勻的呼吸聲與遠處夜蟲微鳴。", caller_a, caller_b);
+                                let two_npc_narrate = format!(
+                                    "屋內燈火微茫，{}與{}皆已歇息，四下唯聞平穩均勻的呼吸聲與遠處夜蟲微鳴。",
+                                    caller_a, caller_b
+                                );
                                 crate::server::send_narrate_to_player(&s, &two_npc_narrate);
                             }
                         }
@@ -543,7 +735,8 @@ pub(super) fn run_idle_wander_section(
                     }
                     if let Some((ent, raw_act)) = npc_snapshots.get(npc_id.as_str()) {
                         let activity = raw_act.trim();
-                        let seq_idx = IDLE_CHAT_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                        let seq_idx =
+                            IDLE_CHAT_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                         for s in sessions.all_sessions() {
                             if crate::server::session::player_location_key(&s.player_id) == want {
                                 let caller = resolve_caller_name(&s.player_id, npc_id, ent);
@@ -554,7 +747,10 @@ pub(super) fn run_idle_wander_section(
                                         || activity.contains("熟睡")
                                         || activity.contains("就寢"))
                                 {
-                                    format!("屋內燈火已熄，{}已在床鋪上熄燈就寢，四周寧靜無聲。", caller)
+                                    format!(
+                                        "屋內燈火已熄，{}已在床鋪上熄燈就寢，四周寧靜無聲。",
+                                        caller
+                                    )
                                 } else if !activity.is_empty() {
                                     let act_trimmed = activity.trim_end_matches(['。', '，', ' ']);
                                     let clean_raw = act_trimmed
@@ -562,13 +758,24 @@ pub(super) fn run_idle_wander_section(
                                         .trim_start_matches('正')
                                         .trim();
                                     let clean = if clean_raw.chars().count() > 16 {
-                                        if clean_raw.contains("話家常") || clean_raw.contains("堂屋") || clean_raw.contains("院落") {
+                                        if clean_raw.contains("話家常")
+                                            || clean_raw.contains("堂屋")
+                                            || clean_raw.contains("院落")
+                                        {
                                             "在家中料理家常手作雜務"
-                                        } else if clean_raw.contains("打磨") || clean_raw.contains("工位") || clean_raw.contains("工坊") {
+                                        } else if clean_raw.contains("打磨")
+                                            || clean_raw.contains("工位")
+                                            || clean_raw.contains("工坊")
+                                        {
                                             "在工位打理手頭活計"
-                                        } else if clean_raw.contains("市集") || clean_raw.contains("採買") || clean_raw.contains("採辦") {
+                                        } else if clean_raw.contains("市集")
+                                            || clean_raw.contains("採買")
+                                            || clean_raw.contains("採辦")
+                                        {
                                             "在市集採辦日常用度"
-                                        } else if clean_raw.contains("診所") || clean_raw.contains("藥") {
+                                        } else if clean_raw.contains("診所")
+                                            || clean_raw.contains("藥")
+                                        {
                                             "在診所抓藥調理"
                                         } else {
                                             "按部就班打理差事"

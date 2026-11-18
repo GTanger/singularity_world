@@ -47,7 +47,10 @@ impl Store {
                 cell.tags.clone()
             } else {
                 let mut t = Vec::new();
-                let outdoor_keys = ["街", "橋", "道", "口", "林", "坡", "谷", "嶺", "灘", "岸", "碼頭", "廣場", "坪"];
+                let outdoor_keys = [
+                    "街", "橋", "道", "口", "林", "坡", "谷", "嶺", "灘", "岸", "碼頭", "廣場",
+                    "坪",
+                ];
                 if outdoor_keys.iter().any(|k| cell.name.contains(k)) {
                     t.push("outdoor".to_string());
                 }

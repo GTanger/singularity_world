@@ -940,7 +940,10 @@ mod tests {
         assert!(res.is_some());
         let (val, meta) = res.expect("解析成功");
         assert_eq!(val.name, "破空斬");
-        assert!(val.origin_basis.contains("第一行動作\n第二行身法\r\n第三行銘文"));
+        assert!(
+            val.origin_basis
+                .contains("第一行動作\n第二行身法\r\n第三行銘文")
+        );
         assert!(meta.fixes.contains(&JsonishFix::UnescapedNewlineEscaped));
     }
 

@@ -95,7 +95,10 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
             &[],
         )?;
         let polluted_players: i64 = row.get(0);
-        ensure!(polluted_players == 0, "發現玩家實體殘留舊世白塔半島物品或裝備 ID");
+        ensure!(
+            polluted_players == 0,
+            "發現玩家實體殘留舊世白塔半島物品或裝備 ID"
+        );
         println!(
             "live_probe: mode=post_cataclysm_clean_slate characters={} npc=0 legacy_market_rows=0 polluted_players=0",
             audit.character_count
@@ -180,13 +183,17 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
         "人物交易沒有為雙方留下同一世界規則收據"
     );
     ensure!(audit.unbalanced_work_count == 0, "存在不守恆的工作報酬");
-    let work_receipt_matched = if audit.work_receipt_count == audit.work_count + logistics.delivered {
+    let work_receipt_matched = if audit.work_receipt_count == audit.work_count + logistics.delivered
+    {
         true
     } else {
         let audit_retry = singularity_world::pg::living_world::audit(&pool)?;
         let logistics_retry = singularity_world::pg::world_logistics::status(&mut *pool.get()?)?;
         audit_retry.work_receipt_count == audit_retry.work_count + logistics_retry.delivered
-            || (audit_retry.work_receipt_count - (audit_retry.work_count + logistics_retry.delivered)).abs() <= 2
+            || (audit_retry.work_receipt_count
+                - (audit_retry.work_count + logistics_retry.delivered))
+                .abs()
+                <= 2
     };
     ensure!(
         work_receipt_matched,
@@ -256,7 +263,9 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
         for slot in singularity_world::store::WENYAO_HOUSEHOLD_SLOTS {
             let (cat_id, vname) = singularity_world::store::entity::held_vessel(slot);
             ensure!(
-                !cat_id.contains("umbrella") && !vname.contains("晴雨傘") && !vname.contains("雨傘"),
+                !cat_id.contains("umbrella")
+                    && !vname.contains("晴雨傘")
+                    && !vname.contains("雨傘"),
                 "家戶職司器物仍誤映射為晴雨傘：{} -> ({}, {})",
                 slot.work_name,
                 cat_id,
@@ -264,7 +273,9 @@ fn check_live(contract: &singularity_world::living_world::LivingWorldContract) -
             );
             let cond = singularity_world::pg::living_world::VesselCondition::Sharp;
             let cond_label = cond.label_for_item(cat_id, vname);
-            if !singularity_world::game::object_ecology::ItemPhysicalClass::classify(cat_id, vname).is_bladed() {
+            if !singularity_world::game::object_ecology::ItemPhysicalClass::classify(cat_id, vname)
+                .is_bladed()
+            {
                 ensure!(
                     cond_label != "鋒利",
                     "非刃具器物仍顯示『鋒利』狀態標籤：{} ({})",

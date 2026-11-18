@@ -80,7 +80,11 @@ fn symbol_and_name(
     }
     match slots.v1 {
         V1Plugin::ArcadeShophouse { arcade_mask, .. } => {
-            return if arcade_mask != 0 { ("═", "騎樓連簷") } else { ("▣", "街屋前堂") };
+            return if arcade_mask != 0 {
+                ("═", "騎樓連簷")
+            } else {
+                ("▣", "街屋前堂")
+            };
         }
         V1Plugin::ThornyBambooClump => return ("𓐂", "刺竹林"),
         V1Plugin::AncientCamphorCanopy => return ("♣", "古樟林坡"),
@@ -202,7 +206,10 @@ fn terrain_line(
 fn canvas_cards(slots: &SlotStack, field: FieldState) -> Vec<SynthCanvasCard> {
     let mut cards = Vec::new();
     let mut push = |t: &str, h: &str| {
-        cards.push(SynthCanvasCard { title: t.to_string(), hint: h.to_string() });
+        cards.push(SynthCanvasCard {
+            title: t.to_string(),
+            hint: h.to_string(),
+        });
     };
     if slots.exposes_bamboo_rhizome_socket() {
         push("露土老竹鞭", "竹叢已除，盤錯的老鞭裸露土面，可掘取");
@@ -258,7 +265,11 @@ mod tests {
 
     #[test]
     fn origin_cells_named_from_world() {
-        let c = lm1(SubstrateMaterial::RiverbedQuartzCobble, SurfaceWaterKind::None, 40.0);
+        let c = lm1(
+            SubstrateMaterial::RiverbedQuartzCobble,
+            SurfaceWaterKind::None,
+            40.0,
+        );
         let s = derive_pristine_slots(0, 0, c, 1);
         let v = synthesize_cell(0, 0, c, None, None, &s, FieldState::default());
         assert_eq!((v.symbol, v.micro_name), ("◦", "伏流卵石灘"));
@@ -269,12 +280,19 @@ mod tests {
 
     #[test]
     fn campfire_shows_and_rain_extinguishes_without_cover() {
-        let c = lm1(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None, 40.0);
+        let c = lm1(
+            SubstrateMaterial::AlluvialSandyLoam,
+            SurfaceWaterKind::None,
+            40.0,
+        );
         let mut s = SlotStack::default();
         s.add_companion(S0Companion::BambooCampfire);
         let dry = synthesize_cell(5, 5, c, None, None, &s, FieldState::default());
         assert_eq!(dry.symbol, "🔥");
-        let wet = FieldState { weather_wetting: true, ..FieldState::default() };
+        let wet = FieldState {
+            weather_wetting: true,
+            ..FieldState::default()
+        };
         assert_ne!(synthesize_cell(5, 5, c, None, None, &s, wet).symbol, "🔥");
         s.v1 = V1Plugin::ThornyBambooClump;
         assert_eq!(synthesize_cell(5, 5, c, None, None, &s, wet).symbol, "🔥");
@@ -282,9 +300,16 @@ mod tests {
 
     #[test]
     fn rhizome_card_after_clearing_bamboo() {
-        let c = lm1(SubstrateMaterial::LateriteGravel, SurfaceWaterKind::None, 60.0);
+        let c = lm1(
+            SubstrateMaterial::LateriteGravel,
+            SurfaceWaterKind::None,
+            60.0,
+        );
         let mut s = derive_pristine_slots(1, 0, c, 1);
-        assert_eq!(synthesize_cell(1, 0, c, None, None, &s, FieldState::default()).micro_name, "刺竹林");
+        assert_eq!(
+            synthesize_cell(1, 0, c, None, None, &s, FieldState::default()).micro_name,
+            "刺竹林"
+        );
         s.clear_v1_bamboo();
         let v = synthesize_cell(1, 0, c, None, None, &s, FieldState::default());
         assert_eq!(v.canvas_cards[0].title, "露土老竹鞭");
@@ -294,13 +319,40 @@ mod tests {
     #[test]
     fn walkability_and_no_digits() {
         let sea = L0Cell::sea_nodata();
-        let steep = DerivedSlope { dz_dx: 1.0, dz_dy: 0.0, grade_ratio: 1.0 };
-        let land = lm1(SubstrateMaterial::LateriteGravel, SurfaceWaterKind::None, 90.0);
+        let steep = DerivedSlope {
+            dz_dx: 1.0,
+            dz_dy: 0.0,
+            grade_ratio: 1.0,
+        };
+        let land = lm1(
+            SubstrateMaterial::LateriteGravel,
+            SurfaceWaterKind::None,
+            90.0,
+        );
         assert!(!walkable_on_landmass_01(sea, None));
         assert!(!walkable_on_landmass_01(land, Some(steep)));
-        assert!(!walkable_on_landmass_01(lm1(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::DeepRapidRiver, 5.0), None));
-        let v = synthesize_cell(410, 9, land, Some(steep), None, &SlotStack::default(), FieldState::default());
-        assert!(!v.terrain_line.chars().any(|ch| ch.is_ascii_digit() || ch == '%'));
+        assert!(!walkable_on_landmass_01(
+            lm1(
+                SubstrateMaterial::AlluvialSandyLoam,
+                SurfaceWaterKind::DeepRapidRiver,
+                5.0
+            ),
+            None
+        ));
+        let v = synthesize_cell(
+            410,
+            9,
+            land,
+            Some(steep),
+            None,
+            &SlotStack::default(),
+            FieldState::default(),
+        );
+        assert!(
+            !v.terrain_line
+                .chars()
+                .any(|ch| ch.is_ascii_digit() || ch == '%')
+        );
         assert_eq!(v.zone_name, "紅土礫石台地");
     }
 }

@@ -1,7 +1,5 @@
 //! `do_action` — Trade 分支：NPC 報價、玩家議價、鎂轉帳 + inventory 轉移。
 
-use std::collections::HashMap;
-use std::sync::Mutex;
 use crate::db::{
     self, TradePending, default_trade_ask_mg, get_entity_room, get_item_def, inventory_has_qty,
     mirror_market_trade_settlement, pick_entity_trade_offer, settle_inventory_trade,
@@ -10,10 +8,11 @@ use crate::db::{
 use crate::entity::Character;
 use crate::event::{self, types};
 use crate::gametext;
+use std::collections::HashMap;
+use std::sync::Mutex;
 
 use super::super::handler::{WsConnection, push_refresh};
 use super::super::protocol::{ActionResultMsg, ClientMsg};
-
 
 /// 回傳 true 表示已 sendError，呼叫端應停止。
 pub(super) fn do_entity_trade(

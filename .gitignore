@@ -111,3 +111,7 @@ __pycache__/
 data/runtime/*.db*
 data/runtime/llm_skill_cache.json
 data/runtime/*.swl0
+
+# 2D 平面大地圖執行期存檔
+/data/runtime/rim_sandbox_state.json
+data/runtime/portraits/

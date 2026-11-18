@@ -19,9 +19,20 @@ pub use l0_cell::{
     SubstrateMaterial, SurfaceWaterKind, encode_groundwater_depth_bucket,
     groundwater_bucket_lower_bound_m, landmass, pack_water_regime,
 };
-pub use moi_dem::{MOI_DEM_MIN_VALID_M, Moi20mDemWindow, TfwGeoTransform, rasterize_4conn_thick_segment};
+pub use moi_dem::{
+    MOI_DEM_MIN_VALID_M, Moi20mDemWindow, TfwGeoTransform, rasterize_4conn_thick_segment,
+};
 
 pub mod facade;
+pub mod rim_ai;
+pub mod rim_cmd;
+pub mod rim_life;
+pub mod rim_phase;
+pub mod rim_physics;
+pub mod rim_portrait_gen;
+pub mod rim_seed;
+pub mod rim_sim;
+pub mod rim_world;
 pub use facade::{
     AnchorDualRead, CellFacade, CellSnapshot, effective_max_z, step_delay_ms, verify_four_anchors,
     verify_four_anchors_shalu_zhulin,

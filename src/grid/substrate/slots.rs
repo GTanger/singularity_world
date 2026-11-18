@@ -25,7 +25,13 @@ impl U2Plugin {
         }
     }
     pub fn from_code_i16(code: i16) -> Self {
-        if code <= 0 { Self::None } else { Self::DeepPile { depth_dm: code.min(255) as u8 } }
+        if code <= 0 {
+            Self::None
+        } else {
+            Self::DeepPile {
+                depth_dm: code.min(255) as u8,
+            }
+        }
     }
 }
 
@@ -87,7 +93,9 @@ impl U1Plugin {
 pub enum S0Pavement {
     #[default]
     BareSoil,
-    BambooTrampledPath { pave_heat: u8 },
+    BambooTrampledPath {
+        pave_heat: u8,
+    },
     StoneStreet,
     NarrowRailBed,
 }
@@ -187,7 +195,11 @@ pub enum V1Plugin {
     None,
     ThornyBambooClump,
     AncientCamphorCanopy,
-    ArcadeShophouse { arcade_mask: u8, shop_open: bool, max_z: u8 },
+    ArcadeShophouse {
+        arcade_mask: u8,
+        shop_open: bool,
+        max_z: u8,
+    },
 }
 
 impl V1Plugin {
@@ -207,7 +219,11 @@ impl V1Plugin {
         match code {
             1 => Self::ThornyBambooClump,
             2 => Self::AncientCamphorCanopy,
-            3 => Self::ArcadeShophouse { arcade_mask, shop_open, max_z },
+            3 => Self::ArcadeShophouse {
+                arcade_mask,
+                shop_open,
+                max_z,
+            },
             _ => Self::None,
         }
     }
@@ -269,7 +285,8 @@ impl SlotStack {
             return false;
         }
         self.u1 = U1Plugin::None;
-        self.s0_companions.retain(|c| !c.is_living_bamboo_symbiont());
+        self.s0_companions
+            .retain(|c| !c.is_living_bamboo_symbiont());
         true
     }
 
@@ -290,7 +307,10 @@ impl SlotStack {
     pub fn max_supported_z(l0: L0Cell) -> u8 {
         if l0.surface_water().is_deep_water()
             || l0.surface_water() == SurfaceWaterKind::NoData
-            || matches!(l0.material(), SubstrateMaterial::IntertidalMudflat | SubstrateMaterial::Unknown)
+            || matches!(
+                l0.material(),
+                SubstrateMaterial::IntertidalMudflat | SubstrateMaterial::Unknown
+            )
         {
             return 0;
         }
@@ -359,11 +379,16 @@ pub fn derive_pristine_slots(gx: i32, gy: i32, l0: L0Cell, world_seed: u64) -> S
     }
     if l0.landmass_id != landmass::DAJIA_WU_TABLELAND
         || water != SurfaceWaterKind::None
-        || !matches!(l0.material(), SubstrateMaterial::AlluvialSandyLoam | SubstrateMaterial::LateriteGravel)
+        || !matches!(
+            l0.material(),
+            SubstrateMaterial::AlluvialSandyLoam | SubstrateMaterial::LateriteGravel
+        )
     {
         return s;
     }
-    let Some(elev) = l0.elevation_m() else { return s };
+    let Some(elev) = l0.elevation_m() else {
+        return s;
+    };
     let h = mix(gx, gy, world_seed);
     let roll = (h % 100) as u32;
     if (18.0..95.0).contains(&elev) && roll < if elev >= 75.0 { 40 } else { 55 } {
@@ -404,30 +429,60 @@ mod tests {
 
     #[test]
     fn uproot_pops_living_items_keeps_campfire() {
-        let mut s = SlotStack { u1: U1Plugin::ThornyBambooRhizome, ..SlotStack::default() };
-        for c in [S0Companion::EmergingBambooShoot, S0Companion::BambooCampfire, S0Companion::DryBambooLeaf] {
+        let mut s = SlotStack {
+            u1: U1Plugin::ThornyBambooRhizome,
+            ..SlotStack::default()
+        };
+        for c in [
+            S0Companion::EmergingBambooShoot,
+            S0Companion::BambooCampfire,
+            S0Companion::DryBambooLeaf,
+        ] {
             assert!(s.add_companion(c));
         }
         assert!(s.uproot_u1_rhizome());
         assert_eq!(s.u1, U1Plugin::None);
-        assert_eq!(s.s0_companions, vec![S0Companion::BambooCampfire, S0Companion::DryBambooLeaf]);
+        assert_eq!(
+            s.s0_companions,
+            vec![S0Companion::BambooCampfire, S0Companion::DryBambooLeaf]
+        );
     }
 
     #[test]
     fn rain_cover_protects_campfire() {
         assert!(is_campfire_extinguished_by_rain(true, V1Plugin::None));
-        assert!(!is_campfire_extinguished_by_rain(true, V1Plugin::ThornyBambooClump));
-        let arcade = V1Plugin::ArcadeShophouse { arcade_mask: 3, shop_open: false, max_z: 2 };
+        assert!(!is_campfire_extinguished_by_rain(
+            true,
+            V1Plugin::ThornyBambooClump
+        ));
+        let arcade = V1Plugin::ArcadeShophouse {
+            arcade_mask: 3,
+            shop_open: false,
+            max_z: 2,
+        };
         assert!(!is_campfire_extinguished_by_rain(true, arcade));
         assert!(!is_campfire_extinguished_by_rain(false, V1Plugin::None));
-        assert!(is_campfire_extinguished_by_rain(true, V1Plugin::AncientCamphorCanopy));
+        assert!(is_campfire_extinguished_by_rain(
+            true,
+            V1Plugin::AncientCamphorCanopy
+        ));
     }
 
     #[test]
     fn deep_pile_destabilized_in_shallow_water() {
         let pile = U2Plugin::DeepPile { depth_dm: 50 };
-        let wet = cell(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None, 2.0, 10.0);
-        let dry = cell(SubstrateMaterial::LateriteGravel, SurfaceWaterKind::None, 90.0, 100.0);
+        let wet = cell(
+            SubstrateMaterial::AlluvialSandyLoam,
+            SurfaceWaterKind::None,
+            2.0,
+            10.0,
+        );
+        let dry = cell(
+            SubstrateMaterial::LateriteGravel,
+            SurfaceWaterKind::None,
+            90.0,
+            100.0,
+        );
         assert!(pile.is_destabilized_by_shallow_water(wet));
         assert!(!pile.is_destabilized_by_shallow_water(dry));
         assert!(!U2Plugin::None.is_destabilized_by_shallow_water(wet));
@@ -435,11 +490,36 @@ mod tests {
 
     #[test]
     fn support_floor_limits() {
-        let l = cell(SubstrateMaterial::LateriteGravel, SurfaceWaterKind::None, 30.0, 100.0);
-        let a = cell(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None, 5.0, 10.0);
-        let q = cell(SubstrateMaterial::RiverbedQuartzCobble, SurfaceWaterKind::None, 5.0, 10.0);
-        let m = cell(SubstrateMaterial::IntertidalMudflat, SurfaceWaterKind::None, 1.0, 0.0);
-        let d = cell(SubstrateMaterial::LateriteGravel, SurfaceWaterKind::DeepRapidRiver, 1.0, 5.0);
+        let l = cell(
+            SubstrateMaterial::LateriteGravel,
+            SurfaceWaterKind::None,
+            30.0,
+            100.0,
+        );
+        let a = cell(
+            SubstrateMaterial::AlluvialSandyLoam,
+            SurfaceWaterKind::None,
+            5.0,
+            10.0,
+        );
+        let q = cell(
+            SubstrateMaterial::RiverbedQuartzCobble,
+            SurfaceWaterKind::None,
+            5.0,
+            10.0,
+        );
+        let m = cell(
+            SubstrateMaterial::IntertidalMudflat,
+            SurfaceWaterKind::None,
+            1.0,
+            0.0,
+        );
+        let d = cell(
+            SubstrateMaterial::LateriteGravel,
+            SurfaceWaterKind::DeepRapidRiver,
+            1.0,
+            5.0,
+        );
         assert_eq!(SlotStack::max_supported_z(l), 3);
         assert_eq!(SlotStack::max_supported_z(a), 2);
         assert_eq!(SlotStack::max_supported_z(q), 1);
@@ -450,7 +530,12 @@ mod tests {
 
     #[test]
     fn pristine_landmarks_and_determinism() {
-        let a = cell(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None, 5.0, 40.0);
+        let a = cell(
+            SubstrateMaterial::AlluvialSandyLoam,
+            SurfaceWaterKind::None,
+            5.0,
+            40.0,
+        );
         assert_eq!(derive_pristine_slots(0, 0, a, 1), SlotStack::default());
         let b = derive_pristine_slots(1, 0, a, 1);
         assert_eq!(b.v1, V1Plugin::ThornyBambooClump);
@@ -458,13 +543,34 @@ mod tests {
         assert!(b.s0_companions.len() <= 3);
         let c = derive_pristine_slots(1, -1, a, 1);
         assert_eq!(c.v1, V1Plugin::AncientCamphorCanopy);
-        let p = derive_pristine_slots(894, 0, cell(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::PerennialStream, 0.5, 5.0), 1);
+        let p = derive_pristine_slots(
+            894,
+            0,
+            cell(
+                SubstrateMaterial::AlluvialSandyLoam,
+                SurfaceWaterKind::PerennialStream,
+                0.5,
+                5.0,
+            ),
+            1,
+        );
         assert_eq!(p.u1, U1Plugin::RuinedBridgePier);
         let sea = derive_pristine_slots(-700, 0, L0Cell::sea_nodata(), 1);
         assert_eq!(sea, SlotStack::default());
-        let low = cell(SubstrateMaterial::AlluvialSandyLoam, SurfaceWaterKind::None, 5.0, 10.0);
-        assert!(matches!(derive_pristine_slots(-320, 0, low, 9).u1, U1Plugin::MiscanthusRoot));
-        assert_eq!(derive_pristine_slots(50, 50, a, 3), derive_pristine_slots(50, 50, a, 3));
+        let low = cell(
+            SubstrateMaterial::AlluvialSandyLoam,
+            SurfaceWaterKind::None,
+            5.0,
+            10.0,
+        );
+        assert!(matches!(
+            derive_pristine_slots(-320, 0, low, 9).u1,
+            U1Plugin::MiscanthusRoot
+        ));
+        assert_eq!(
+            derive_pristine_slots(50, 50, a, 3),
+            derive_pristine_slots(50, 50, a, 3)
+        );
     }
 
     #[test]
@@ -473,7 +579,10 @@ mod tests {
             assert_eq!(U1Plugin::from_code_i16(c).code_i16(), c);
         }
         for c in 1..=9 {
-            assert_eq!(S0Companion::from_code_u8(c).map(S0Companion::code_u8), Some(c));
+            assert_eq!(
+                S0Companion::from_code_u8(c).map(S0Companion::code_u8),
+                Some(c)
+            );
         }
     }
 }

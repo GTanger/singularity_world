@@ -84,7 +84,8 @@ pub fn occupation_keywords(occupation: &str) -> Vec<&'static str> {
     if occ.contains("浴") || occ.contains("湯") || occ.contains("泉") {
         kws.extend_from_slice(&["浴場", "溫水", "湯池", "泉香"]);
     }
-    if occ.contains("車") || occ.contains("聯運") || occ.contains("腳夫") || occ.contains("貨運") {
+    if occ.contains("車") || occ.contains("聯運") || occ.contains("腳夫") || occ.contains("貨運")
+    {
         kws.extend_from_slice(&["聯運", "車馬", "貨運", "倉", "碼頭"]);
     }
     if occ.contains("船") || occ.contains("渡") || occ.contains("港") || occ.contains("海") {
@@ -96,7 +97,8 @@ pub fn occupation_keywords(occupation: &str) -> Vec<&'static str> {
     if occ.contains("窯") || occ.contains("陶") || occ.contains("磚") {
         kws.extend_from_slice(&["窯", "紅土崁", "陶"]);
     }
-    if occ.contains("算") || occ.contains("契") || occ.contains("公議") || occ.contains("執事") {
+    if occ.contains("算") || occ.contains("契") || occ.contains("公議") || occ.contains("執事")
+    {
         kws.extend_from_slice(&["公議", "契", "商行", "算"]);
     }
     if occ.contains("武") || occ.contains("巡") || occ.contains("哨") || occ.contains("衛") {
@@ -160,7 +162,8 @@ pub fn occupation_room_tags(occupation: &str) -> Vec<&'static str> {
     if occ.contains("浴") || occ.contains("湯") || occ.contains("泉") {
         tags.extend_from_slice(&["bathhouse"]);
     }
-    if occ.contains("車") || occ.contains("聯運") || occ.contains("腳夫") || occ.contains("貨運") {
+    if occ.contains("車") || occ.contains("聯運") || occ.contains("腳夫") || occ.contains("貨運")
+    {
         tags.extend_from_slice(&["courier", "dock"]);
     }
     if occ.contains("船") || occ.contains("渡") || occ.contains("港") || occ.contains("海") {
@@ -172,7 +175,8 @@ pub fn occupation_room_tags(occupation: &str) -> Vec<&'static str> {
     if occ.contains("窯") || occ.contains("陶") || occ.contains("磚") {
         tags.extend_from_slice(&["kiln", "workshop"]);
     }
-    if occ.contains("算") || occ.contains("契") || occ.contains("公議") || occ.contains("執事") {
+    if occ.contains("算") || occ.contains("契") || occ.contains("公議") || occ.contains("執事")
+    {
         tags.extend_from_slice(&["council_hall", "bank", "shop"]);
     }
     if occ.contains("武") || occ.contains("巡") || occ.contains("哨") || occ.contains("衛") {
@@ -215,7 +219,10 @@ pub fn room_matches_occupation(occupation: &str, room_name: &str, tags: &[String
     let expected_tags = occupation_room_tags(occ);
 
     for et in &expected_tags {
-        if tags.iter().any(|t| t == et || crate::grid::canonical_room_tag(t) == *et) {
+        if tags
+            .iter()
+            .any(|t| t == et || crate::grid::canonical_room_tag(t) == *et)
+        {
             return true;
         }
     }
@@ -253,7 +260,9 @@ pub fn room_matches_occupation(occupation: &str, room_name: &str, tags: &[String
                 || kw.contains(venue.venue_kind)
                 || venue.default_host_title.contains(kw)
                 || kw.contains(venue.default_host_title)
-                || venue_tags.iter().any(|vt| vt == kw || vt.contains(kw) || kw.contains(vt))
+                || venue_tags
+                    .iter()
+                    .any(|vt| vt == kw || vt.contains(kw) || kw.contains(vt))
             {
                 return true;
             }
@@ -299,9 +308,7 @@ pub fn find_best_work_room(
                 }
             }
             if crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
-                &r.name,
-                None,
-                now_unix,
+                &r.name, None, now_unix,
             )
             .is_some()
             {
@@ -519,11 +526,7 @@ mod tests {
             "老堰頭・水輪石磨工坊",
             &[]
         ));
-        assert!(room_matches_occupation(
-            "湯池掌事",
-            "泉香溫水浴場",
-            &[]
-        ));
+        assert!(room_matches_occupation("湯池掌事", "泉香溫水浴場", &[]));
     }
 
     #[test]

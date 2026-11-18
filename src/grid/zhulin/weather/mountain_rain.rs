@@ -1,11 +1,12 @@
-use crate::grid::zhulin::objects::ZhulinTagTriad;
 use super::ZhulinWeatherDef;
+use crate::grid::zhulin::objects::ZhulinTagTriad;
 
 pub const ID: &str = "zl_weather_mountain_rain";
 pub const LEGACY_KEY: &str = "rain";
 pub const NAME: &str = "山雨霏微";
 pub const SHORT_LABEL: &str = "微雨";
-pub const AMBIENT_PROSE: &str = "山雲低垂、細雨霏微，密密雨絲打在竹葉與紅土上沙沙作響，空氣濕涼沁人。";
+pub const AMBIENT_PROSE: &str =
+    "山雲低垂、細雨霏微，密密雨絲打在竹葉與紅土上沙沙作響，空氣濕涼沁人。";
 
 pub const TAGS: ZhulinTagTriad = ZhulinTagTriad {
     category_tags: &["weather", "precipitation", "rain_shower"],

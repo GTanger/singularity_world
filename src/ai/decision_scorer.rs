@@ -1,9 +1,9 @@
 //! 系統一單 Token Logit 評分器（對接 RX 9060 XT Vulkan0 llama-decision.service：Qwen3-4B-Instruct-2507-Q8_0）。
 //! 依據 NPC 的 SoulSeed 性格軸線、未完義務、雙方恩怨度與動態情境拍板四大立場。
 
-use std::time::{Duration, Instant};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use std::time::{Duration, Instant};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NpcStanceChoice {
@@ -41,7 +41,10 @@ pub fn build_decision_prompt(input: &NpcDecisionInput<'_>) -> String {
     let obligations = if input.open_obligations.is_empty() {
         "無".to_string()
     } else {
-        format!("{}（急需他人協助完成此未完義務）", input.open_obligations.join("、"))
+        format!(
+            "{}（急需他人協助完成此未完義務）",
+            input.open_obligations.join("、")
+        )
     };
     let balance_desc = if input.balance_score < 0 {
         format!("{}（雙方交惡有仇）", input.balance_score)
@@ -117,11 +120,25 @@ fn extract_token_probs(resp_val: &serde_json::Value) -> (f64, f64, f64, f64) {
                 if let Some(token) = item.get("token").and_then(|t| t.as_str())
                     && let Some(logprob) = item.get("logprob").and_then(|lp| lp.as_f64())
                 {
-                    add_token_prob(&mut prob_a, &mut prob_b, &mut prob_c, &mut prob_d, token, logprob);
+                    add_token_prob(
+                        &mut prob_a,
+                        &mut prob_b,
+                        &mut prob_c,
+                        &mut prob_d,
+                        token,
+                        logprob,
+                    );
                 } else if let Some(map) = item.as_object() {
                     for (k, v) in map {
                         if let Some(lp) = v.as_f64() {
-                            add_token_prob(&mut prob_a, &mut prob_b, &mut prob_c, &mut prob_d, k, lp);
+                            add_token_prob(
+                                &mut prob_a,
+                                &mut prob_b,
+                                &mut prob_c,
+                                &mut prob_d,
+                                k,
+                                lp,
+                            );
                         }
                     }
                 }
@@ -145,11 +162,25 @@ fn extract_token_probs(resp_val: &serde_json::Value) -> (f64, f64, f64, f64) {
                     if let Some(token) = item.get("token").and_then(|t| t.as_str())
                         && let Some(logprob) = item.get("logprob").and_then(|lp| lp.as_f64())
                     {
-                        add_token_prob(&mut prob_a, &mut prob_b, &mut prob_c, &mut prob_d, token, logprob);
+                        add_token_prob(
+                            &mut prob_a,
+                            &mut prob_b,
+                            &mut prob_c,
+                            &mut prob_d,
+                            token,
+                            logprob,
+                        );
                     } else if let Some(map) = item.as_object() {
                         for (k, v) in map {
                             if let Some(lp) = v.as_f64() {
-                                add_token_prob(&mut prob_a, &mut prob_b, &mut prob_c, &mut prob_d, k, lp);
+                                add_token_prob(
+                                    &mut prob_a,
+                                    &mut prob_b,
+                                    &mut prob_c,
+                                    &mut prob_d,
+                                    k,
+                                    lp,
+                                );
                             }
                         }
                     }

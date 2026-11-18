@@ -55,7 +55,6 @@ pub fn send_npc_dialogue_to_player(session: &Session, npc_a: &str, npc_b: &str, 
     let _ = session.try_send_bytes(msg);
 }
 
-
 fn player_verb_strings() -> Vec<String> {
     crate::entity::Character::sockets()
         .into_iter()
@@ -87,7 +86,9 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
         let kind = game::entity_kind_str(&e.kind);
         let mut display_name = e.id.clone();
         if e.kind == EntityKind::Npc {
-            if (e.id.starts_with("ambient_") || e.id.starts_with("shanhai_")) && !e.display_title.trim().is_empty() {
+            if (e.id.starts_with("ambient_") || e.id.starts_with("shanhai_"))
+                && !e.display_title.trim().is_empty()
+            {
                 display_name = e.display_title.trim().to_string();
             } else {
                 display_name = "陌生人".to_string();

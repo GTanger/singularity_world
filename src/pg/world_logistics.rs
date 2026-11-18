@@ -260,7 +260,8 @@ pub fn dispatch_one(pool: &DbPool, now_unix: i64) -> anyhow::Result<Option<Shipm
     let destination_before: i32 = row.get(12);
     let destination_target: i32 = row.get(13);
     let item_id: String = row.get(14);
-    let display_name = super::living_world::peninsula_good_display_name(row.get::<_, &str>(15)).to_string();
+    let display_name =
+        super::living_world::peninsula_good_display_name(row.get::<_, &str>(15)).to_string();
     let origin_place_id: String = row.get(16);
     let destination_place_id: String = row.get(17);
 
@@ -398,7 +399,8 @@ pub fn active_delivery_target(
         .map(|row| DeliveryAssignment {
             shipment_id: row.get(0),
             destination_place_id: row.get(1),
-            display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(2)).to_string(),
+            display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(2))
+                .to_string(),
             quantity: row.get(3),
         }))
 }
@@ -430,7 +432,8 @@ pub fn complete_if_arrived(
     let item_id: String = row.get(4);
     let destination_place_id: String = row.get(5);
     let quantity: i32 = row.get(6);
-    let display_name = super::living_world::peninsula_good_display_name(row.get::<_, &str>(7)).to_string();
+    let display_name =
+        super::living_world::peninsula_good_display_name(row.get::<_, &str>(7)).to_string();
     if place_id != destination_place_id {
         tx.execute(
             "UPDATE world_market_shipments SET current_place_id=$1,updated_at=$2
@@ -656,7 +659,8 @@ pub fn producer_shipment_probe(
         destination_place_id: row.get(3),
         current_place_id: row.get(4),
         status: row.get(5),
-        display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(6)).to_string(),
+        display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(6))
+            .to_string(),
         quantity: row.get(7),
         carrier_place_id: row.get(8),
         carrier_activity: row.get(9),
@@ -720,12 +724,13 @@ mod tests {
             "已有在途市場貨物【現磨溫米漿】必須送達三水大食堂"
         );
 
-        let reason_fallback_empty_dest = format_venue_logistics_dispatch_reason_and_advance_event_pack(
-            "荒蕪礫石空地",
-            "",
-            "wt_cat_0388",
-            "現磨溫米漿",
-        );
+        let reason_fallback_empty_dest =
+            format_venue_logistics_dispatch_reason_and_advance_event_pack(
+                "荒蕪礫石空地",
+                "",
+                "wt_cat_0388",
+                "現磨溫米漿",
+            );
         assert_eq!(
             reason_fallback_empty_dest,
             "已有在途市場貨物【現磨溫米漿】必須送達鄰近市集"

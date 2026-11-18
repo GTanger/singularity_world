@@ -236,7 +236,6 @@ pub fn try_credit_purchase(
     }
 }
 
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CreditOutcome {
     Paid {
@@ -717,7 +716,9 @@ mod tests {
 
             match resolve_trade_credit(&mut buyer, &mut seller, &intent(6), &mut ledger, &policy, i)
             {
-                CreditOutcome::DebtCreated { .. } | CreditOutcome::PurchasedOnCredit { .. } => created += 1,
+                CreditOutcome::DebtCreated { .. } | CreditOutcome::PurchasedOnCredit { .. } => {
+                    created += 1
+                }
                 CreditOutcome::Rejected { .. } => rejected += 1,
                 CreditOutcome::Paid { .. } => {}
             }
@@ -763,7 +764,10 @@ mod tests {
         );
         assert_eq!(
             mill_debt,
-            Some("【水輪石磨工坊・當值櫃檯帳冊】已由當值石磨匠師當面登載賒欠35鎂往來帳目。".to_string())
+            Some(
+                "【水輪石磨工坊・當值櫃檯帳冊】已由當值石磨匠師當面登載賒欠35鎂往來帳目。"
+                    .to_string()
+            )
         );
 
         let canteen_settle = format_venue_credit_or_debt_ledger_note_and_advance_pack(

@@ -55,7 +55,10 @@ fn locate_file() -> Option<PathBuf> {
         roots.extend(exe.ancestors().skip(1).take(5).map(PathBuf::from));
     }
     roots.push(PathBuf::from(env!("CARGO_MANIFEST_DIR")));
-    roots.into_iter().map(|r| r.join(SUBSTRATE_REL_PATH)).find(|p| p.is_file())
+    roots
+        .into_iter()
+        .map(|r| r.join(SUBSTRATE_REL_PATH))
+        .find(|p| p.is_file())
 }
 
 /// 預熱載入底板（冪等；檔案缺席時記錄為不可用）。
@@ -96,7 +99,12 @@ impl SubstrateRuntime {
                 }
             }
         }
-        Self { region, landmass_01_cells, spring_count, atlas: RwLock::new(HashMap::new()) }
+        Self {
+            region,
+            landmass_01_cells,
+            spring_count,
+            atlas: RwLock::new(HashMap::new()),
+        }
     }
 
     pub fn region(&self) -> &SubstrateRegion {
@@ -145,7 +153,9 @@ impl SubstrateRuntime {
     }
 
     fn pixel(&self, gx: i32, gy: i32, mode: AtlasLayerMode) -> [u8; 3] {
-        let Some(c) = self.region.get(gx, gy) else { return SEA_DEEP };
+        let Some(c) = self.region.get(gx, gy) else {
+            return SEA_DEEP;
+        };
         let base = match mode {
             AtlasLayerMode::Terrain => self.terrain_px(gx, gy, c),
             AtlasLayerMode::Material => material_px(c),
@@ -357,7 +367,14 @@ mod tests {
             20.0,
             90,
         );
-        let spring = L0Cell::new(Some(40.0), 1, SubstrateMaterial::RiverbedQuartzCobble, SurfaceWaterKind::FaultSpring, 0.5, 95);
+        let spring = L0Cell::new(
+            Some(40.0),
+            1,
+            SubstrateMaterial::RiverbedQuartzCobble,
+            SurfaceWaterKind::FaultSpring,
+            0.5,
+            95,
+        );
         r.set(1, 1, land);
         r.set(2, 1, spring);
         SubstrateRuntime::from_region(r)
@@ -383,13 +400,25 @@ mod tests {
             assert_eq!(&png[png.len() - 8..png.len() - 4], b"IEND");
         }
         assert!(AtlasLayerMode::parse("x").is_none());
-        assert!(Arc::ptr_eq(&rt.basemap_png(AtlasLayerMode::Terrain), &rt.basemap_png(AtlasLayerMode::Terrain)));
+        assert!(Arc::ptr_eq(
+            &rt.basemap_png(AtlasLayerMode::Terrain),
+            &rt.basemap_png(AtlasLayerMode::Terrain)
+        ));
     }
 
     #[test]
     fn closed_neighbors_are_fogged_in_terrain() {
         let mut r = SubstrateRegion::new_filled(0, 0, 2, 1, L0Cell::sea_nodata());
-        let mk = |id| L0Cell::new(Some(80.0), id, SubstrateMaterial::LateriteGravel, SurfaceWaterKind::None, 20.0, 90);
+        let mk = |id| {
+            L0Cell::new(
+                Some(80.0),
+                id,
+                SubstrateMaterial::LateriteGravel,
+                SurfaceWaterKind::None,
+                20.0,
+                90,
+            )
+        };
         r.set(0, 0, mk(1));
         r.set(1, 0, mk(3));
         let rt = SubstrateRuntime::from_region(r);

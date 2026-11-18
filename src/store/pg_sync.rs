@@ -370,11 +370,20 @@ impl Store {
         for id in npc_ids {
             if let Some(e) = self.entities.get_mut(&id) {
                 let is_female = super::entity::npc_effective_is_female(&id, Some(&e.gender));
-                let g = if is_female { "F".to_string() } else { "M".to_string() };
-                let mut resolved = super::entity::resolve_npc_person_name(&id, &e.display_title, Some(&g));
+                let g = if is_female {
+                    "F".to_string()
+                } else {
+                    "M".to_string()
+                };
+                let mut resolved =
+                    super::entity::resolve_npc_person_name(&id, &e.display_title, Some(&g));
                 if !used_names.insert(resolved.clone()) {
                     for salt in 1..2080 {
-                        let cand = super::entity::deterministic_wenyao_full_name_salted(&id, Some(&g), salt);
+                        let cand = super::entity::deterministic_wenyao_full_name_salted(
+                            &id,
+                            Some(&g),
+                            salt,
+                        );
                         if used_names.insert(cand.clone()) {
                             resolved = cand;
                             break;
@@ -386,7 +395,8 @@ impl Store {
                 let eq_inv_changed = super::entity::sanitize_npc_equipment_and_inventory(e);
 
                 let slot = crate::store::wenyao_household_slot_for(&e.id);
-                let home_settlement = super::entity::normalize_household_home_settlement(slot.home_name);
+                let home_settlement =
+                    super::entity::normalize_household_home_settlement(slot.home_name);
                 let mut act_changed = false;
                 let dist_from_home = (e.x - slot.home_x).abs() + (e.y - slot.home_y).abs();
                 if (e.x == 0 && e.y == 0 && (slot.home_x.abs() + slot.home_y.abs()) > 20)
@@ -403,7 +413,8 @@ impl Store {
                 } else {
                     slot.work_name
                 };
-                let expected_venue_settlement = super::entity::normalize_household_home_settlement(venue_name);
+                let expected_venue_settlement =
+                    super::entity::normalize_household_home_settlement(venue_name);
                 let cross_settlement_act = dist_from_home > 45
                     || (!e.current_activity.contains(home_settlement)
                         && !e.current_activity.contains(expected_venue_settlement)
@@ -662,10 +673,7 @@ impl Store {
             &[],
         );
 
-        if let Ok(rows) = conn.query(
-            "SELECT dyad_key FROM npc_npc_summaries",
-            &[],
-        ) {
+        if let Ok(rows) = conn.query("SELECT dyad_key FROM npc_npc_summaries", &[]) {
             let mut backfilled = 0usize;
             let now_ts = crate::game::now_unix();
             for row in &rows {
@@ -678,10 +686,17 @@ impl Store {
                 };
                 let raw_a = part_a.to_string();
                 let raw_b = part_b.to_string();
-                let (a_id, b_id) = if raw_a <= raw_b { (raw_a, raw_b) } else { (raw_b, raw_a) };
+                let (a_id, b_id) = if raw_a <= raw_b {
+                    (raw_a, raw_b)
+                } else {
+                    (raw_b, raw_a)
+                };
                 let thread_opt = self.npc_threads.get(&key);
                 let turns = thread_opt.map(|t| t.turn_count).unwrap_or(1).max(1);
-                let updated_at = thread_opt.map(|t| t.updated_at).filter(|&u| u > 0).unwrap_or(now_ts);
+                let updated_at = thread_opt
+                    .map(|t| t.updated_at)
+                    .filter(|&u| u > 0)
+                    .unwrap_or(now_ts);
                 let fam = (turns * 2).clamp(2, 100);
                 let mut tags = Vec::new();
                 if crate::npcnpc::npc_pair_same_venue(&a_id, &b_id) {
@@ -708,7 +723,10 @@ impl Store {
             }
             if backfilled > 0 {
                 let _ = self.persist_npc_dyads();
-                tracing::info!("[store] Backfilled {} historical npc_dyads from npc_npc_summaries", backfilled);
+                tracing::info!(
+                    "[store] Backfilled {} historical npc_dyads from npc_npc_summaries",
+                    backfilled
+                );
             }
         }
 

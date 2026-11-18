@@ -103,9 +103,8 @@ pub(super) fn run_job_matching_section(
     let fmt = gametext::npc_social().job_match_rumor_fmt;
     let mut text = sprintf_d(&fmt, added.len() as i32);
     let sample_room_name = added.iter().find_map(|eid| {
-        get_schedule_for_entity(eid).map(|sched| {
-            crate::db::get_room_name(&sched.work_room).unwrap_or(sched.work_room)
-        })
+        get_schedule_for_entity(eid)
+            .map(|sched| crate::db::get_room_name(&sched.work_room).unwrap_or(sched.work_room))
     });
     if let Some(room) = sample_room_name {
         text = format_job_match_venue_rumor(&text, &room);

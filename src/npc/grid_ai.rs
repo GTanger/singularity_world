@@ -235,9 +235,18 @@ impl GridNpcManager {
                     now_unix,
                 );
             }
-            let dest_name = state.destination_place_id.as_deref().map(|id| place_name(graph, id)).unwrap_or_default();
+            let dest_name = state
+                .destination_place_id
+                .as_deref()
+                .map(|id| place_name(graph, id))
+                .unwrap_or_default();
             let intent = state.last_intent.unwrap_or(IntentType::Wander);
-            let activity = synthesize_moving_activity(intent, &dest_name, state.blocked_by.as_deref(), Some("stranded_cargo"));
+            let activity = synthesize_moving_activity(
+                intent,
+                &dest_name,
+                state.blocked_by.as_deref(),
+                Some("stranded_cargo"),
+            );
             set_activity_if_changed(entity_id, &snapshot.current_activity, &activity);
             persist_journey(entity_id, state, "因風雨路滑受阻，暫停前進", now_unix);
             persist_continuity(entity_id, state, now_unix);
@@ -259,9 +268,15 @@ impl GridNpcManager {
         let intent = state.last_intent.unwrap_or(IntentType::Wander);
         let arrived = state.path.is_empty();
         let consequence = if arrived {
-            finish_intent(entity_id, &next, graph, now_unix, game_day, state, occupants)
+            finish_intent(
+                entity_id, &next, graph, now_unix, game_day, state, occupants,
+            )
         } else {
-            let dest_name = state.destination_place_id.as_deref().map(|id| place_name(graph, id)).unwrap_or_default();
+            let dest_name = state
+                .destination_place_id
+                .as_deref()
+                .map(|id| place_name(graph, id))
+                .unwrap_or_default();
             let activity = synthesize_moving_activity(intent, &dest_name, None, None);
             set_activity_if_changed(entity_id, &snapshot.current_activity, &activity);
             format!("沿{}路線繼續前往目的地", route.direction)
@@ -271,9 +286,13 @@ impl GridNpcManager {
             persist_continuity(entity_id, state, now_unix);
         }
 
-        let target_zone = graph.place(&next).map(|p| p.zone.as_str()).unwrap_or("wt-c-wenyao");
+        let target_zone = graph
+            .place(&next)
+            .map(|p| p.zone.as_str())
+            .unwrap_or("wt-c-wenyao");
         let stepped_coords = get_store().and_then(|s| {
-            s.read().step_npc_grid_coord(entity_id, &route.direction, target_zone, now_unix as u64)
+            s.read()
+                .step_npc_grid_coord(entity_id, &route.direction, target_zone, now_unix as u64)
         });
         let (from_room_id, to_room_id) = if let Some(((ox, oy), (nx, ny))) = stepped_coords {
             (
@@ -447,17 +466,16 @@ fn begin_intent(
                     .map(|p| p.player_title())
                     .filter(|n| !n.is_empty())
                     .unwrap_or("鄰近市集");
-                let base_dname = crate::pg::living_world::peninsula_market_settlement_name(raw_dname);
+                let base_dname =
+                    crate::pg::living_world::peninsula_market_settlement_name(raw_dname);
                 let dname = if base_dname != "鄰近市集" && !base_dname.ends_with("市集") {
                     format!("{base_dname}市集")
                 } else {
                     base_dname.to_string()
                 };
-                let display_name = crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
-                format!(
-                    "正運送{}份{}前往{}",
-                    delivery.quantity, display_name, dname
-                )
+                let display_name =
+                    crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
+                format!("正運送{}份{}前往{}", delivery.quantity, display_name, dname)
             })
             .unwrap_or_else(|| {
                 synthesize_moving_activity(
@@ -526,7 +544,9 @@ fn finish_intent(
                 || state.intent_reason.contains("義務")
                 || current_obligation_kind.is_none())
         {
-            if let Ok(open_obs) = crate::pg::living_world::list_open_obligations_for_entity(&pool, entity_id) {
+            if let Ok(open_obs) =
+                crate::pg::living_world::list_open_obligations_for_entity(&pool, entity_id)
+            {
                 let ent_mg = crate::db::get_entity(entity_id)
                     .ok()
                     .flatten()
@@ -538,11 +558,20 @@ fn finish_intent(
                     }
                     if matches!(
                         ob.obligation_kind.as_str(),
-                        "repair_tool" | "stranded_cargo" | "repay_debt" | "restock_goods" | "supply_shortage" | "craft_material" | "fuel_shortage" | "treat_injury"
+                        "repair_tool"
+                            | "stranded_cargo"
+                            | "repay_debt"
+                            | "restock_goods"
+                            | "supply_shortage"
+                            | "craft_material"
+                            | "fuel_shortage"
+                            | "treat_injury"
                     ) {
                         match ob.obligation_kind.as_str() {
                             "restock_goods" => {
-                                crate::server::action::trade::restock_shop_items_for_seller(entity_id);
+                                crate::server::action::trade::restock_shop_items_for_seller(
+                                    entity_id,
+                                );
                                 if ent_mg >= 2 {
                                     let _ = crate::db::add_magnesium(entity_id, -2);
                                 }
@@ -551,7 +580,10 @@ fn finish_intent(
                                 if ent_mg >= 2 {
                                     let _ = crate::db::add_magnesium(entity_id, -2);
                                 }
-                                if let Some(peer_id) = occupants.get(place_id).and_then(|ids| ids.iter().find(|p| p.as_str() != entity_id)) {
+                                if let Some(peer_id) = occupants
+                                    .get(place_id)
+                                    .and_then(|ids| ids.iter().find(|p| p.as_str() != entity_id))
+                                {
                                     let _ = crate::db::add_magnesium(peer_id, 2);
                                     let _ = crate::pg::living_world::record_relationship_delta(
                                         &pool,
@@ -589,14 +621,22 @@ fn finish_intent(
                             _ => {}
                         }
                         let ob_room_name = place_name(graph, place_id);
-                        let _ = settle_obligation_venue_event_pack_note(&ob_room_name, &ob.obligation_kind, &ob.subject_ref);
+                        let _ = settle_obligation_venue_event_pack_note(
+                            &ob_room_name,
+                            &ob.obligation_kind,
+                            &ob.subject_ref,
+                        );
                         crate::store::clear_active_npc_obligation(entity_id, &ob.obligation_kind);
                     }
                 }
             }
         }
         if intent == IntentType::Idle {
-            let _ = settle_obligation_venue_event_pack_note(&place_name(graph, place_id), "treat_injury", "");
+            let _ = settle_obligation_venue_event_pack_note(
+                &place_name(graph, place_id),
+                "treat_injury",
+                "",
+            );
             crate::store::clear_active_npc_obligation(entity_id, "treat_injury");
         }
     }
@@ -628,7 +668,12 @@ fn finish_intent(
     };
 
     let place_display_name = crate::store::get_store()
-        .and_then(|s| s.read().get_place(place_id).map(|p| crate::pg::living_world::peninsula_market_settlement_name(p.player_title()).to_string()))
+        .and_then(|s| {
+            s.read().get_place(place_id).map(|p| {
+                crate::pg::living_world::peninsula_market_settlement_name(p.player_title())
+                    .to_string()
+            })
+        })
         .unwrap_or_else(|| place_id.to_string());
 
     let synthesized_staying = synthesize_staying_activity(
@@ -650,11 +695,9 @@ fn finish_intent(
         } else {
             base_dname.to_string()
         };
-        let display_name = crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
-        format!(
-            "正運送{}份{}前往{}",
-            delivery.quantity, display_name, dname
-        )
+        let display_name =
+            crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
+        format!("正運送{}份{}前往{}", delivery.quantity, display_name, dname)
     });
     set_activity_if_changed(
         entity_id,
@@ -675,7 +718,8 @@ fn finish_intent(
         } else {
             base_dname.to_string()
         };
-        let display_name = crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
+        let display_name =
+            crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
         state.destination_place_id = Some(delivery.destination_place_id.clone());
         state.intent_reason = format!(
             "已在供應地裝好{}份{}，正送往{}",
@@ -708,7 +752,11 @@ fn stable_jitter(entity_id: &str, span: i64) -> i64 {
     (hash % span as u64) as i64
 }
 
-fn arrival_result(intent: IntentType, peer: Option<&String>, room_name: &str) -> (&'static str, String) {
+fn arrival_result(
+    intent: IntentType,
+    peer: Option<&String>,
+    room_name: &str,
+) -> (&'static str, String) {
     if intent == IntentType::Socialize && peer.is_none() {
         return ("在公共場所停留", "抵達，但現場沒有可交往的人".to_string());
     }
@@ -745,10 +793,15 @@ pub fn settle_obligation_venue_event_pack_note(
             }
         }
     };
-    let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(clean_room, hint);
+    let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+        clean_room, hint,
+    );
     if let Some(venue) = crate::grid::resolve_any_room_venue_object(clean_room, "") {
         if let Some((_, tool_name, _)) = venue.lendable_tool {
-            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(clean_room, tool_name);
+            let _ =
+                crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+                    clean_room, tool_name,
+                );
         }
         let zone_tag = if venue.has_counter_restricted_zone {
             "當值櫃檯內側"
@@ -784,7 +837,10 @@ pub fn format_venue_arrival_peer_consequence(room_name: &str, peer_id: &str) -> 
                 "身著工作服的"
             };
             if !peer_name.is_empty() && !peer_name.starts_with("npc_") && peer_name != "陌生人" {
-                return format!("抵達並遇見{}{}（{}）", zone_tag, venue.default_host_title, peer_name);
+                return format!(
+                    "抵達並遇見{}{}（{}）",
+                    zone_tag, venue.default_host_title, peer_name
+                );
             } else {
                 return format!("抵達並遇見{}{}", zone_tag, venue.default_host_title);
             }
@@ -813,8 +869,21 @@ fn set_activity_if_changed(entity_id: &str, current: &str, next: &str) {
             let slot = crate::store::wenyao_household_slot_for(entity_id);
             let home_settlement = slot.home_name.split('・').next().unwrap_or("文曜");
             const ALL_SETTLEMENTS: &[&str] = &[
-                "文曜", "風舶角", "大圳頭", "半嶺鎮", "南哨", "老堰頭", "北嶺腳", "霜林口",
-                "風櫃尾", "烏石鼻", "牛埔", "紅土崁", "三號坑口", "水尾寮", "下營",
+                "文曜",
+                "風舶角",
+                "大圳頭",
+                "半嶺鎮",
+                "南哨",
+                "老堰頭",
+                "北嶺腳",
+                "霜林口",
+                "風櫃尾",
+                "烏石鼻",
+                "牛埔",
+                "紅土崁",
+                "三號坑口",
+                "水尾寮",
+                "下營",
             ];
             let mismatches = ALL_SETTLEMENTS.iter().any(|&settlement| {
                 !home_settlement.starts_with(settlement) && next.contains(settlement)
@@ -842,11 +911,8 @@ mod wave14_tests {
 
     #[test]
     fn test_settle_obligation_venue_event_pack_note_known_venue() {
-        let note = settle_obligation_venue_event_pack_note(
-            "老堰頭・水輪石磨工坊",
-            "repair_tool",
-            "",
-        );
+        let note =
+            settle_obligation_venue_event_pack_note("老堰頭・水輪石磨工坊", "repair_tool", "");
         assert!(note.is_some());
         let text = note.unwrap();
         assert!(text.contains("水輪石磨工坊"));
@@ -858,7 +924,9 @@ mod wave14_tests {
     fn test_settle_obligation_venue_event_pack_note_empty_or_no_venue() {
         assert!(settle_obligation_venue_event_pack_note("", "repair_tool", "").is_none());
         assert!(settle_obligation_venue_event_pack_note("   ", "repair_tool", "").is_none());
-        assert!(settle_obligation_venue_event_pack_note("荒蕪礫石空地", "repair_tool", "").is_none());
+        assert!(
+            settle_obligation_venue_event_pack_note("荒蕪礫石空地", "repair_tool", "").is_none()
+        );
     }
 
     #[test]
@@ -866,7 +934,8 @@ mod wave14_tests {
         let arrival_venue = format_venue_arrival_peer_consequence("老堰頭・水輪石磨工坊", "秦水生");
         assert!(arrival_venue.contains("櫃檯內場的當值石磨匠師"));
 
-        let arrival_wild = format_venue_arrival_peer_consequence("荒蕪礫石空地", "npc_random_nobody_999");
+        let arrival_wild =
+            format_venue_arrival_peer_consequence("荒蕪礫石空地", "npc_random_nobody_999");
         assert!(arrival_wild.starts_with("抵達並遇見") && !arrival_wild.contains("櫃檯內場"));
     }
 }

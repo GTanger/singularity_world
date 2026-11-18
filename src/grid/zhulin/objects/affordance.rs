@@ -244,8 +244,7 @@ pub fn inventory_has_capability_tag(inventory_json: &str, required_tag: &str) ->
     let entries = parse_bag_entries(inventory_json);
     entries.iter().any(|e| {
         e.qty > 0
-            && lookup_zhulin_item_def(&e.item_id)
-                .is_some_and(|def| def.tags.has_tag(required_tag))
+            && lookup_zhulin_item_def(&e.item_id).is_some_and(|def| def.tags.has_tag(required_tag))
     })
 }
 
@@ -433,13 +432,18 @@ fn ignite_cell_campfire(gx: i32, gy: i32) {
             if !cell.has_room_tag("zl_campfire:active") {
                 cell.tags.push("zl_campfire:active".to_string());
             }
-            if let Some(cf) = cell.objects.iter_mut().find(|o| o.id == super::campfire::ID) {
+            if let Some(cf) = cell
+                .objects
+                .iter_mut()
+                .find(|o| o.id == super::campfire::ID)
+            {
                 cf.quantity = cf.quantity.max(3);
             } else {
                 cell.objects.push(super::campfire::build_grid_object(3));
             }
             crate::grid::zhulin::refresh_bamboo_cell_after_gather(cell);
-            let _ = crate::db::update_cell_state(gx, gy, cell.explored, cell.freshness, &cell.objects);
+            let _ =
+                crate::db::update_cell_state(gx, gy, cell.explored, cell.freshness, &cell.objects);
         }
     });
 }
@@ -461,11 +465,10 @@ pub fn try_craft_zhulin_item(
     let (w_def, _) = crate::grid::zhulin::weather::current_world_zhulin_weather();
     let weather_tags = w_def.tags.attribute_tags;
     let (gx, gy) = ent.grid_x.zip(ent.grid_y).unwrap_or((ent.x, ent.y));
-    let cell_tags: Vec<String> = crate::server::grid_manager::get_runtime_grid_cell(
-        crate::grid::SquareCoord::new(gx, gy),
-    )
-    .map(|c| c.tags)
-    .unwrap_or_default();
+    let cell_tags: Vec<String> =
+        crate::server::grid_manager::get_runtime_grid_cell(crate::grid::SquareCoord::new(gx, gy))
+            .map(|c| c.tags)
+            .unwrap_or_default();
     let has_cell_campfire = cell_tags.iter().any(|t| t == "zl_campfire:active");
 
     // 0a. `heat_hardenable`（風折老竹片）× `tinder`（乾竹葉或格內營火）-> 烘烤竹青硬化為【烤刃竹片刀】
@@ -473,7 +476,8 @@ pub fn try_craft_zhulin_item(
         let tinder_id_opt = find_item_with_tag(&entries, "tinder", 1);
         if !has_cell_campfire && tinder_id_opt.is_none() {
             return Some(Err(
-                "烘烤硬化老竹片需生起文火，行囊中尚缺「乾竹葉」（火絨耗材）且格內尚無營火。".to_string(),
+                "烘烤硬化老竹片需生起文火，行囊中尚缺「乾竹葉」（火絨耗材）且格內尚無營火。"
+                    .to_string(),
             ));
         }
         let total_tinder_qty = if has_cell_campfire {
@@ -481,19 +485,17 @@ pub fn try_craft_zhulin_item(
         } else {
             entries
                 .iter()
-                .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
+                .filter(|e| {
+                    lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder"))
+                })
                 .map(|e| e.qty)
                 .sum::<i32>()
         };
-        let shelter_prefix = match evaluate_fire_weather_shelter(
-            weather_tags,
-            &cell_tags,
-            true,
-            total_tinder_qty,
-        ) {
-            Ok(prefix) => prefix.unwrap_or(""),
-            Err(msg) => return Some(Err(msg)),
-        };
+        let shelter_prefix =
+            match evaluate_fire_weather_shelter(weather_tags, &cell_tags, true, total_tinder_qty) {
+                Ok(prefix) => prefix.unwrap_or(""),
+                Err(msg) => return Some(Err(msg)),
+            };
         if db::remove_from_inventory(pid, item_id, 1).is_err() {
             return Some(Err("行囊中的「風折老竹片」數量不足。".to_string()));
         }
@@ -657,18 +659,15 @@ pub fn try_craft_zhulin_item(
             let tinder_opt = find_item_with_tag(&entries, "tinder", 1);
             if !has_cell_campfire && tinder_opt.is_none() {
                 return Some(Err(
-                    "執行「投火竹爆」需格內已有營火，或行囊備有至少 1 把「乾竹葉」引燃。".to_string(),
+                    "執行「投火竹爆」需格內已有營火，或行囊備有至少 1 把「乾竹葉」引燃。"
+                        .to_string(),
                 ));
             }
-            let shelter_prefix = match evaluate_fire_weather_shelter(
-                weather_tags,
-                &cell_tags,
-                true,
-                3,
-            ) {
-                Ok(prefix) => prefix.unwrap_or(""),
-                Err(msg) => return Some(Err(msg)),
-            };
+            let shelter_prefix =
+                match evaluate_fire_weather_shelter(weather_tags, &cell_tags, true, 3) {
+                    Ok(prefix) => prefix.unwrap_or(""),
+                    Err(msg) => return Some(Err(msg)),
+                };
             if db::remove_from_inventory(pid, item_id, 1).is_err() {
                 return Some(Err("行囊中的「刺竹稈」數量不足。".to_string()));
             }
@@ -788,7 +787,9 @@ pub fn try_craft_zhulin_item(
     if def.tags.has_tag("tinder") {
         let total_tinder_qty = entries
             .iter()
-            .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
+            .filter(|e| {
+                lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder"))
+            })
             .map(|e| e.qty)
             .sum::<i32>();
         let pop_culm_id = if recipe_opt == Some("camp_fire") {
@@ -850,11 +851,7 @@ pub fn try_craft_zhulin_item(
             let _ = db::update_vit(pid, new_vit);
             narr.push_str("（氣力略微恢復）");
         }
-        return Some(Ok((
-            item_id.to_string(),
-            "竹林營火".to_string(),
-            narr,
-        )));
+        return Some(Ok((item_id.to_string(), "竹林營火".to_string(), narr)));
     }
 
     // 5. `roastable` / `soup_ingredient`（鮮刺竹筍／野生竹耳／雞肉絲菇／筍龜）-> 支援 `:roast`（炙烤／煨筍，不耗水筒）與 `:soup`（竹筒煲湯）
@@ -871,11 +868,14 @@ pub fn try_craft_zhulin_item(
         } else {
             entries
                 .iter()
-                .filter(|e| lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder")))
+                .filter(|e| {
+                    lookup_zhulin_item_def(&e.item_id).is_some_and(|d| d.tags.has_tag("tinder"))
+                })
                 .map(|e| e.qty)
                 .sum::<i32>()
         };
-        let has_culm = has_cell_campfire || find_item_with_tag(&entries, "flammable_pop", 1).is_some();
+        let has_culm =
+            has_cell_campfire || find_item_with_tag(&entries, "flammable_pop", 1).is_some();
 
         let shelter_prefix = match evaluate_fire_weather_shelter(
             weather_tags,
@@ -990,12 +990,14 @@ mod tests {
         let empty_bag = "[]";
         // 一般天氣徒手採孤筍：擋回
         let normal_weather: &[&str] = &["clear_visibility"];
-        let res_normal = evaluate_zhulin_gather_with_weather(bamboo_shoot::ID, 1, empty_bag, normal_weather);
+        let res_normal =
+            evaluate_zhulin_gather_with_weather(bamboo_shoot::ID, 1, empty_bag, normal_weather);
         assert!(matches!(res_normal, GatherCheckResult::Blocked { .. }));
 
         // 雨後初霽（moist_soil）：徒手採孤筍無損完整拔出
         let rain_mist_weather: &[&str] = &["moist_soil", "fungus_blooming"];
-        let res_rain = evaluate_zhulin_gather_with_weather(bamboo_shoot::ID, 1, empty_bag, rain_mist_weather);
+        let res_rain =
+            evaluate_zhulin_gather_with_weather(bamboo_shoot::ID, 1, empty_bag, rain_mist_weather);
         match res_rain {
             GatherCheckResult::Allowed {
                 stock_cost,
@@ -1018,21 +1020,30 @@ mod tests {
         let clear_weather: &[&str] = &["solar_warming", "air_drying"];
 
         let open_cell_tags: Vec<String> = vec!["open_ground".to_string()];
-        let shelter_cell_tags: Vec<String> = vec!["canopy_shelter".to_string(), "windbreak".to_string()];
+        let shelter_cell_tags: Vec<String> =
+            vec!["canopy_shelter".to_string(), "windbreak".to_string()];
 
         // 雨天露天生火阻斷
         assert!(evaluate_fire_weather_shelter(rain_weather, &open_cell_tags, false, 2).is_err());
         // 雨天林冠庇護生火成功
-        let rain_sheltered = evaluate_fire_weather_shelter(rain_weather, &shelter_cell_tags, false, 2);
+        let rain_sheltered =
+            evaluate_fire_weather_shelter(rain_weather, &shelter_cell_tags, false, 2);
         assert!(rain_sheltered.is_ok());
-        assert_eq!(rain_sheltered.unwrap(), Some("濃密刺竹林冠替你擋去了漫天細雨，"));
+        assert_eq!(
+            rain_sheltered.unwrap(),
+            Some("濃密刺竹林冠替你擋去了漫天細雨，")
+        );
 
         // 強風空曠生火阻斷
         assert!(evaluate_fire_weather_shelter(gale_weather, &open_cell_tags, false, 2).is_err());
         // 強風防風障壁庇護生火成功
-        let gale_sheltered = evaluate_fire_weather_shelter(gale_weather, &shelter_cell_tags, false, 2);
+        let gale_sheltered =
+            evaluate_fire_weather_shelter(gale_weather, &shelter_cell_tags, false, 2);
         assert!(gale_sheltered.is_ok());
-        assert_eq!(gale_sheltered.unwrap(), Some("合抱刺竹叢替你擋下了呼嘯九降風，"));
+        assert_eq!(
+            gale_sheltered.unwrap(),
+            Some("合抱刺竹叢替你擋下了呼嘯九降風，")
+        );
 
         // 晨霧凝露乾葉不足3把且無竹稈
         assert!(evaluate_fire_weather_shelter(fog_weather, &open_cell_tags, false, 2).is_err());

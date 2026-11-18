@@ -20,9 +20,9 @@ use std::collections::HashMap;
 use super::super::broadcast::{refresh_room_views_for_room, send_room_view_to_session};
 use super::super::handler::{WsConnection, push_refresh};
 use super::super::protocol::{ActionResultMsg, MovedMsg};
-use super::{action_label_zh, client_err_fmt, current_game_hour};
 #[cfg(test)]
 use super::normalize_action_key;
+use super::{action_label_zh, client_err_fmt, current_game_hour};
 
 const M3_020_MINT_QUEUE_STATE: &str = "m3_020_mint_queue|queued_after_waiting_line";
 const M3_020_SHORT_WORK_STATE: &str = "m3_020_short_work|accepted_loading_shift";
@@ -58,7 +58,6 @@ const M3_027_AWNING_DRY_STATE: &str = "m3_027_player_body|dried_under_river_awni
 const M3_027_BRAZIER_WARM_STATE: &str = "m3_027_player_body|warmed_hands_at_brazier";
 const M3_027_QUEUE_TALK_STATE: &str = "m3_027_player_social|talked_in_waiting_line";
 const M3_027_QUEUE_FERRY_STATE: &str = "m3_027_ferry_access|queued_for_ferry";
-
 
 include!("object/resolve_1.rs");
 include!("object/resolve_2.rs");

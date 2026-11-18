@@ -65,9 +65,7 @@ fn classify_waterway(tags: &[(String, String)]) -> Option<RiverRole> {
     }
 }
 
-fn extract_osm_rivers(
-    pbf_path: &PathBuf,
-) -> anyhow::Result<Vec<(RiverRole, Vec<(i32, i32)>)>> {
+fn extract_osm_rivers(pbf_path: &PathBuf) -> anyhow::Result<Vec<(RiverRole, Vec<(i32, i32)>)>> {
     // Pass 0: 收集大甲溪／烏溪／筏子溪 Relation 底下的所有成員 Way ID（OSM 主河川常將名稱掛於 Relation 而子段 Way 無 name）
     let rel_reader = ElementReader::from_path(pbf_path)?;
     let rel_way_roles: Vec<(i64, RiverRole)> = rel_reader.par_map_reduce(
@@ -252,10 +250,8 @@ fn main() -> anyhow::Result<()> {
     }
 
     let (min_e, min_n) = grid_to_twd97_center(MIN_GX, MIN_GY);
-    let (max_e, max_n) = grid_to_twd97_center(
-        MIN_GX + REGION_W as i32 - 1,
-        MIN_GY + REGION_H as i32 - 1,
-    );
+    let (max_e, max_n) =
+        grid_to_twd97_center(MIN_GX + REGION_W as i32 - 1, MIN_GY + REGION_H as i32 - 1);
 
     println!(
         "[1/5] 載入內政部 20m DEM 視窗 TWD97 E=[{min_e:.0}..{max_e:.0}], N=[{min_n:.0}..{max_n:.0}] ..."
@@ -383,7 +379,11 @@ fn main() -> anyhow::Result<()> {
                 _ => {}
             }
         }
-        let clipped: Vec<(i32, i32)> = pts.iter().copied().filter(|&(x, y)| idx(x, y).is_some()).collect();
+        let clipped: Vec<(i32, i32)> = pts
+            .iter()
+            .copied()
+            .filter(|&(x, y)| idx(x, y).is_some())
+            .collect();
         if clipped.len() >= 2 {
             match role {
                 RiverRole::DajiaNorth => dajia_segs.push(clipped),
@@ -497,14 +497,21 @@ fn main() -> anyhow::Result<()> {
         });
     }
     if let Some((ex, ey)) = wu_east {
-        rasterize_4conn_thick_segment(ex, ey, MIN_GX + REGION_W as i32 - 1, ey - 40, 3, |px, py| {
-            if let Some(id) = idx(px, py) {
-                boundary_barrier[id] = true;
-                if !is_sea[id] {
-                    water_kind[id] = SurfaceWaterKind::DeepRapidRiver;
+        rasterize_4conn_thick_segment(
+            ex,
+            ey,
+            MIN_GX + REGION_W as i32 - 1,
+            ey - 40,
+            3,
+            |px, py| {
+                if let Some(id) = idx(px, py) {
+                    boundary_barrier[id] = true;
+                    if !is_sea[id] {
+                        water_kind[id] = SurfaceWaterKind::DeepRapidRiver;
+                    }
                 }
-            }
-        });
+            },
+        );
     }
     if let Some((fnx, fny)) = fazi_north
         && let Some(&(dx, dy)) = dajia_segs
@@ -537,7 +544,9 @@ fn main() -> anyhow::Result<()> {
         });
     }
 
-    println!("[3/5] 依四連通自然界河（大甲溪／烏溪／筏子溪）執行多源 Flood-Fill 切分不等大陸塊 ...");
+    println!(
+        "[3/5] 依四連通自然界河（大甲溪／烏溪／筏子溪）執行多源 Flood-Fill 切分不等大陸塊 ..."
+    );
     let mut lm_grid = vec![0_u8; total_cells];
     let origin_id = idx(0, 0).expect("origin in bounds");
     assert!(
@@ -649,13 +658,8 @@ fn main() -> anyhow::Result<()> {
     }
 
     println!("[4/5] 推導 6 類天然母岩土層、斷層湧泉眼、16 階水深桶與原始能量基底 ...");
-    let mut region = SubstrateRegion::new_filled(
-        MIN_GX,
-        MIN_GY,
-        REGION_W,
-        REGION_H,
-        L0Cell::sea_nodata(),
-    );
+    let mut region =
+        SubstrateRegion::new_filled(MIN_GX, MIN_GY, REGION_W, REGION_H, L0Cell::sea_nodata());
 
     let mut spring_count = 0_usize;
     for gy in MIN_GY..(MIN_GY + REGION_H as i32) {
@@ -768,7 +772,14 @@ fn main() -> anyhow::Result<()> {
             region.set(
                 gx,
                 gy,
-                L0Cell::new(Some(h), lm_grid[id], material, surf, gw_depth_m, base_energy),
+                L0Cell::new(
+                    Some(h),
+                    lm_grid[id],
+                    material,
+                    surf,
+                    gw_depth_m,
+                    base_energy,
+                ),
             );
         }
     }

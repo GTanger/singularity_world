@@ -44,11 +44,7 @@ fn move_direction_zh(dx: i32, dy: i32) -> &'static str {
         (-1, 0) => "西面",
         _ => {
             if dy.abs() > dx.abs() {
-                if dy > 0 {
-                    "北面"
-                } else {
-                    "南面"
-                }
+                if dy > 0 { "北面" } else { "南面" }
             } else if dx > 0 {
                 "東面"
             } else if dx < 0 {
@@ -93,13 +89,25 @@ fn resolve_npc_name_for_viewer(viewer_pid: &str, npc_id: &str, display_title: &s
             slot.brief_tag,
             slot.work_name
         );
-        let role = if role_src.contains("鐵") || role_src.contains("鍛造") || role_src.contains("木作") || role_src.contains("工坊") {
+        let role = if role_src.contains("鐵")
+            || role_src.contains("鍛造")
+            || role_src.contains("木作")
+            || role_src.contains("工坊")
+        {
             "匠人"
-        } else if role_src.contains("商") || role_src.contains("鋪") || role_src.contains("市集") || role_src.contains("行") {
+        } else if role_src.contains("商")
+            || role_src.contains("鋪")
+            || role_src.contains("市集")
+            || role_src.contains("行")
+        {
             "行商"
         } else if role_src.contains("醫") || role_src.contains("藥") || role_src.contains("診") {
             "醫工"
-        } else if role_src.contains("學") || role_src.contains("書") || role_src.contains("講堂") || role_src.contains("觀星") {
+        } else if role_src.contains("學")
+            || role_src.contains("書")
+            || role_src.contains("講堂")
+            || role_src.contains("觀星")
+        {
             "學者"
         } else {
             "街坊"
@@ -191,7 +199,9 @@ pub(crate) fn resolve_unnamed_arrival_action_detail(
         }
     } else if let Some(ambient) = crate::grid::resolve_room_ambient_visitor_activity(
         room_name,
-        npc_id.bytes().fold(0usize, |acc, b| acc.wrapping_add(b as usize)),
+        npc_id
+            .bytes()
+            .fold(0usize, |acc, b| acc.wrapping_add(b as usize)),
     ) {
         return format!("步入此處，{}", ambient);
     }
@@ -223,19 +233,25 @@ fn apply_travel_steps(
         for s in sessions.all_sessions() {
             let loc = crate::server::session::player_location_key(&s.player_id);
             if loc == want_old {
-                let viewer_name = resolve_npc_name_for_viewer(&s.player_id, &step.entity_id, &step.npc_name);
-                let leave_text = sprintf_s(&rf.travel_leave_fmt, &[viewer_name.as_str(), new_name.as_str()]);
+                let viewer_name =
+                    resolve_npc_name_for_viewer(&s.player_id, &step.entity_id, &step.npc_name);
+                let leave_text = sprintf_s(
+                    &rf.travel_leave_fmt,
+                    &[viewer_name.as_str(), new_name.as_str()],
+                );
                 crate::server::broadcast::send_narrate_to_player(&s, &leave_text);
                 if !step.decision_narrative.is_empty() {
                     let d_text = if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
                         step.decision_narrative.clone()
                     } else {
-                        step.decision_narrative.replace(&step.npc_name, &viewer_name)
+                        step.decision_narrative
+                            .replace(&step.npc_name, &viewer_name)
                     };
                     crate::server::broadcast::send_narrate_to_player(&s, &d_text);
                 }
             } else if loc == want_new {
-                let viewer_name = resolve_npc_name_for_viewer(&s.player_id, &step.entity_id, &step.npc_name);
+                let viewer_name =
+                    resolve_npc_name_for_viewer(&s.player_id, &step.entity_id, &step.npc_name);
                 let text = if let Some(target) = get_schedule_target(&step.entity_id, hour)
                     && target.room == step.new_room
                 {
@@ -244,7 +260,8 @@ fn apply_travel_steps(
                         if occ.is_empty() {
                             occ = gametext::occupation_clerk();
                         }
-                        let person = get_npc_person_display_name(&step.entity_id).unwrap_or_default();
+                        let person =
+                            get_npc_person_display_name(&step.entity_id).unwrap_or_default();
                         let fl = get_shift_flavor(&occ, &person, true);
                         if !fl.is_empty() {
                             if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
@@ -253,21 +270,28 @@ fn apply_travel_steps(
                                 fl.replace(&person, &viewer_name)
                             }
                         } else {
-                            sprintf_s(&rf.travel_arrive_fmt, &[viewer_name.as_str(), old_name.as_str()])
+                            sprintf_s(
+                                &rf.travel_arrive_fmt,
+                                &[viewer_name.as_str(), old_name.as_str()],
+                            )
                         }
                     } else {
                         sprintf_s(&rf.wander_arrive_home, &[viewer_name.as_str()])
                     }
                 } else {
-                    sprintf_s(&rf.travel_arrive_fmt, &[viewer_name.as_str(), old_name.as_str()])
+                    sprintf_s(
+                        &rf.travel_arrive_fmt,
+                        &[viewer_name.as_str(), old_name.as_str()],
+                    )
                 };
                 crate::server::broadcast::send_narrate_to_player(&s, &text);
                 if let Some(ai) = step.arrival_intent {
-                    let arrival_line = if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
-                        gametext::brain_arrival(ai.as_key(), &step.npc_name)
-                    } else {
-                        gametext::brain_arrival(ai.as_key(), &viewer_name)
-                    };
+                    let arrival_line =
+                        if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
+                            gametext::brain_arrival(ai.as_key(), &step.npc_name)
+                        } else {
+                            gametext::brain_arrival(ai.as_key(), &viewer_name)
+                        };
                     if !arrival_line.is_empty() {
                         crate::server::broadcast::send_narrate_to_player(&s, &arrival_line);
                     }
@@ -440,9 +464,18 @@ pub(super) fn run_grid_npc_tick(
         let to_name_clean = clean_room_name(&to_name_raw);
 
         let ent_opt = crate::db::get_entity(&npc_id).ok().flatten();
-        let display_title = ent_opt.as_ref().map(|e| e.display_title.as_str()).unwrap_or("");
-        let activity = ent_opt.as_ref().map(|e| e.current_activity.as_str()).unwrap_or("");
-        let equipment_slots = ent_opt.as_ref().map(|e| e.equipment_slots.as_str()).unwrap_or("");
+        let display_title = ent_opt
+            .as_ref()
+            .map(|e| e.display_title.as_str())
+            .unwrap_or("");
+        let activity = ent_opt
+            .as_ref()
+            .map(|e| e.current_activity.as_str())
+            .unwrap_or("");
+        let equipment_slots = ent_opt
+            .as_ref()
+            .map(|e| e.equipment_slots.as_str())
+            .unwrap_or("");
         // 離開現場敘事（每間房每 25 秒最多推播 1 條路過訊息，避免洗掉現場交談與叫賣）
         if from_in_player {
             let count = narrate_counts.entry(from_room_id.clone()).or_insert(0);
@@ -517,7 +550,11 @@ pub(super) fn run_grid_npc_tick(
                 let want = crate::db::canonical_location_key(&to_room_id);
                 for s in sessions.all_sessions() {
                     if crate::server::session::player_location_key(&s.player_id) == want {
-                        let named = crate::db::get_acquaintance(&s.player_id, &npc_id).ok().flatten().map(|a| a.named).unwrap_or(false);
+                        let named = crate::db::get_acquaintance(&s.player_id, &npc_id)
+                            .ok()
+                            .flatten()
+                            .map(|a| a.named)
+                            .unwrap_or(false);
                         let caller_name = resolve_npc_name_for_viewer_in_room(
                             &s.player_id,
                             &npc_id,
@@ -542,11 +579,15 @@ pub(super) fn run_grid_npc_tick(
                         } else {
                             unnamed_detail.as_str()
                         };
-                        let act_clause = effective_action_detail.trim().trim_end_matches(['。', '！', '？', '，', ' ']);
+                        let act_clause = effective_action_detail
+                            .trim()
+                            .trim_end_matches(['。', '！', '？', '，', ' ']);
                         let arrive_text = if dir_backward.is_empty() {
                             format!("{caller_name}自【{from_name_clean}】走來，{act_clause}。")
                         } else {
-                            format!("{caller_name}自{dir_backward}【{from_name_clean}】一側走來，{act_clause}。")
+                            format!(
+                                "{caller_name}自{dir_backward}【{from_name_clean}】一側走來，{act_clause}。"
+                            )
                         };
                         crate::server::send_narrate_to_player(&s, &arrive_text);
                     }
@@ -563,16 +604,19 @@ pub(super) fn run_grid_npc_tick(
         )
         .0
         {
-            if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
-                &to_name_raw,
-                None,
-                now_ts as _,
-            ) {
+            if let Some((ev, _sp)) =
+                crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                    &to_name_raw,
+                    None,
+                    now_ts as _,
+                )
+            {
                 if let Some(first_key) = ev.key_objects.split('、').next() {
-                    let _ = crate::npc::brain_arrival::advance_room_event_pack_on_npc_arrival_action(
-                        &to_name_raw,
-                        first_key,
-                    );
+                    let _ =
+                        crate::npc::brain_arrival::advance_room_event_pack_on_npc_arrival_action(
+                            &to_name_raw,
+                            first_key,
+                        );
                 }
             }
         }
@@ -632,14 +676,8 @@ mod tests {
         );
         assert_eq!(name_both, "身著制服站於櫃檯內側的當值醫師");
 
-        let name_counter = resolve_npc_name_for_viewer_in_room(
-            "",
-            "test_npc_mgr",
-            "掌事",
-            "半島百草診所",
-            "",
-            "",
-        );
+        let name_counter =
+            resolve_npc_name_for_viewer_in_room("", "test_npc_mgr", "掌事", "半島百草診所", "", "");
         assert_eq!(name_counter, "站在櫃檯內側的當值醫師");
 
         let name_uniform = resolve_npc_name_for_viewer_in_room(
@@ -652,26 +690,15 @@ mod tests {
         );
         assert_eq!(name_uniform, "身著工作制服的當值醫師");
 
-        let name_passerby = resolve_npc_name_for_viewer_in_room(
-            "",
-            "test_npc_guest",
-            "路人顧客",
-            "",
-            "",
-            "",
-        );
+        let name_passerby =
+            resolve_npc_name_for_viewer_in_room("", "test_npc_guest", "路人顧客", "", "", "");
         assert!(name_passerby.contains("街坊"));
     }
 
     #[test]
     fn test_resolve_unnamed_arrival_action_detail() {
-        let staff_arrival = resolve_unnamed_arrival_action_detail(
-            "半島百草診所",
-            "test_npc_clerk",
-            "店員",
-            "",
-            "",
-        );
+        let staff_arrival =
+            resolve_unnamed_arrival_action_detail("半島百草診所", "test_npc_clerk", "店員", "", "");
         assert_eq!(
             staff_arrival,
             "邁步進入醫館藥局當值櫃檯內側，正於青石藥案前調配青鹽薄荷潔牙粉與水苔敷藥"

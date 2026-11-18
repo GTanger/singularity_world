@@ -50,9 +50,19 @@ pub fn generate_white_tower_grid() -> SquareGrid {
         if !grid.has_explicit_cell(coord) {
             let (zone, _, wild_terrain) = classify_wilderness_cell(coord.x, coord.y);
             let is_bay_bridge = coord.y == 160 && (-322..=-271).contains(&coord.x);
-            let is_water_crossing = wild_terrain == Terrain::Water || wild_terrain == Terrain::WaterDeep || terrain == Terrain::Bridge;
-            let actual_terrain = if is_bay_bridge || is_water_crossing { Terrain::Bridge } else { Terrain::Road };
-            let actual_zone = if is_bay_bridge { "天然港灣道" } else { zone };
+            let is_water_crossing = wild_terrain == Terrain::Water
+                || wild_terrain == Terrain::WaterDeep
+                || terrain == Terrain::Bridge;
+            let actual_terrain = if is_bay_bridge || is_water_crossing {
+                Terrain::Bridge
+            } else {
+                Terrain::Road
+            };
+            let actual_zone = if is_bay_bridge {
+                "天然港灣道"
+            } else {
+                zone
+            };
             let sub_geo = match actual_terrain {
                 Terrain::Bridge => {
                     if is_bay_bridge {
@@ -72,7 +82,8 @@ pub fn generate_white_tower_grid() -> SquareGrid {
             );
             cell.explored = true;
             cell.freshness = Freshness::Fresh;
-            cell.objects = generate_road_cell_objects(coord, actual_zone, actual_terrain == Terrain::Bridge);
+            cell.objects =
+                generate_road_cell_objects(coord, actual_zone, actual_terrain == Terrain::Bridge);
             grid.insert(cell);
         }
     }
@@ -171,30 +182,30 @@ pub fn generate_white_tower_grid() -> SquareGrid {
         (-85, -180),  // 赤石坡（紅土崁南側赤石階地礦坡）
         (-340, -140), // 落日岬（大圳頭最西端入海海岬）
         // 二、風舶雙港與近海（3 獵場區：驚濤岩岸、巨藻淺灣、黑石灣）
-        (-360, 180),  // 驚濤岩岸（風舶嶼與風櫃尾西岸）
-        (-300, 260),  // 巨藻淺灣（風舶雙港北側礁石淺灣）
-        (-260, -20),  // 黑石灣（烏石鼻南側玄武岩海灣）
+        (-360, 180), // 驚濤岩岸（風舶嶼與風櫃尾西岸）
+        (-300, 260), // 巨藻淺灣（風舶雙港北側礁石淺灣）
+        (-260, -20), // 黑石灣（烏石鼻南側玄武岩海灣）
         // 三、文曜—北坡森林—白塔（4 獵場區：翠冠巨木林、清泉溪谷、北坡雲杉林、西麓林道）
-        (-130, 80),   // 西麓林道（文曜往西北通往風舶角的西麓山腰林道）
-        (60, 160),    // 清泉溪谷（文曜東北至老堰頭、半嶺鎮之間融雪溪谷）
-        (0, 240),     // 翠冠巨木林（老堰頭往北溫暖巨木林）
-        (80, 300),    // 北坡雲杉林（北坡高海拔百年雲杉林）
+        (-130, 80), // 西麓林道（文曜往西北通往風舶角的西麓山腰林道）
+        (60, 160),  // 清泉溪谷（文曜東北至老堰頭、半嶺鎮之間融雪溪谷）
+        (0, 240),   // 翠冠巨木林（老堰頭往北溫暖巨木林）
+        (80, 300),  // 北坡雲杉林（北坡高海拔百年雲杉林）
         // 四、南哨—水尾澤—青籠關（4 獵場區：淺澤泥口、白茫洲、貼山深潭、青籠關）
         (0, -340),    // 淺澤泥口（南哨南門外淺水泥澤）
         (-120, -320), // 白茫洲（水尾寮南側水尾澤迷霧泥澤）
         (120, -320),  // 貼山深潭（水尾澤東側緊貼青脊山腳深潭）
         (0, -450),    // 青籠關（極南陸路險隘）
         // 五、青脊山主脊—白塔（4 秘境獵場區：西嶺礦谷、東海峭壁、雲腰雪林、白塔雪巔）
-        (180, 40),    // 西嶺礦谷（青脊山西側縱深礦谷）
-        (320, 200),   // 東海峭壁（半島東側臨海絕壁）
-        (180, 320),   // 雲腰雪林（白塔山腰耐寒鐵杉雪林）
-        (0, 420),     // 白塔雪巔（半島極北雪白主峰）
+        (180, 40),  // 西嶺礦谷（青脊山西側縱深礦谷）
+        (320, 200), // 東海峭壁（半島東側臨海絕壁）
+        (180, 320), // 雲腰雪林（白塔山腰耐寒鐵杉雪林）
+        (0, 420),   // 白塔雪巔（半島極北雪白主峰）
         // 六、外海錨點（北冕海、東海）
-        (0, 485),     // 北冕海
-        (360, 0),     // 東海
+        (0, 485), // 北冕海
+        (360, 0), // 東海
         // 七、半島南端與青籠關南隘口延伸
-        (0, -490),    // 青籠關南古隘道
-        (-20, -485),  // 青籠關南側幽深籠林
+        (0, -490),   // 青籠關南古隘道
+        (-20, -485), // 青籠關南側幽深籠林
     ];
     for &(cx, cy) in &hunting_ground_centers {
         for dy in -2..=2 {
@@ -210,8 +221,6 @@ pub fn generate_white_tower_grid() -> SquareGrid {
     grid.clear_dirty();
     grid
 }
-
-
 
 include!("gen/wilderness.rs");
 include!("gen/road_objects.rs");

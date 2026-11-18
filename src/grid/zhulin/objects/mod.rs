@@ -15,6 +15,8 @@ pub mod bamboo_shoot;
 pub mod campfire;
 pub mod dry_leaves;
 
+use crate::grid::cell::GridObject;
+use crate::model::RoomObject;
 pub use affordance::{
     GatherCheckResult, ITEM_AGED_BAMBOO_SLAT, ITEM_BAMBOO_BASKET, ITEM_BAMBOO_CANTEEN,
     ITEM_BAMBOO_CANTEEN_FULL, ITEM_BAMBOO_SPADE, ITEM_BAMBOO_STONE_AXE, ITEM_BAMBOO_TUBE_SOUP,
@@ -24,9 +26,6 @@ pub use affordance::{
     evaluate_zhulin_gather, evaluate_zhulin_gather_with_weather, inventory_has_capability_tag,
     try_craft_zhulin_item,
 };
-use crate::grid::cell::GridObject;
-use crate::model::RoomObject;
-
 
 /// 萬物物件化之三層標籤結構（類別標籤、屬性標籤、專屬標籤）
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -337,11 +336,7 @@ pub fn scene_sentence_for_object(obj: &GridObject) -> Option<&'static str> {
         campfire::ID => campfire::scene_sentence(obj.quantity),
         _ => return None,
     };
-    if s.is_empty() {
-        None
-    } else {
-        Some(s)
-    }
+    if s.is_empty() { None } else { Some(s) }
 }
 
 /// 取得竹林採集物件對應的地塊搜尋標籤
@@ -453,9 +448,15 @@ pub fn gather_narrative_for_object(
     remaining_qty: u32,
 ) -> Option<String> {
     match obj_id {
-        bamboo_culm::ID => Some(bamboo_culm::gather_narrative(harvested_count, remaining_qty)),
+        bamboo_culm::ID => Some(bamboo_culm::gather_narrative(
+            harvested_count,
+            remaining_qty,
+        )),
         dry_leaves::ID => Some(dry_leaves::gather_narrative(harvested_count, remaining_qty)),
-        bamboo_shoot::ID => Some(bamboo_shoot::gather_narrative(harvested_count, remaining_qty)),
+        bamboo_shoot::ID => Some(bamboo_shoot::gather_narrative(
+            harvested_count,
+            remaining_qty,
+        )),
         bamboo_rhizome::ID => Some(bamboo_rhizome::gather_narrative(
             harvested_count,
             remaining_qty,

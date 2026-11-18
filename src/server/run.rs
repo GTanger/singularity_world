@@ -41,6 +41,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     let state = AppState { hub, sessions, cfg };
     grid_manager::init();
     crate::grid::substrate::runtime::init_global();
+    http_api::spawn_rim_tick_loop();
     if grid_manager::get_runtime_square_grid().is_some_and(|g| g.has_peninsula_wilderness()) {
         crate::game::object_ecology::ensure_ecology_items_in_store();
     }
@@ -105,6 +106,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/map_viewer", get(serve_map_viewer))
         .route("/eco_viewer", get(serve_eco_viewer))
         .route("/world_atlas", get(serve_world_atlas))
+        .route("/rim", get(serve_rim_world))
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
         .route("/admin", get(serve_admin))
@@ -113,13 +115,36 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         // 生態 API
         .route("/api/eco/map", get(http_api::eco_map))
         .route("/api/eco/entities", get(http_api::eco_entities))
-        .route("/api/eco/npc-thoughts", get(http_api::handle_eco_npc_thoughts))
+        .route(
+            "/api/eco/npc-thoughts",
+            get(http_api::handle_eco_npc_thoughts),
+        )
         .route("/api/eco/pulse", get(http_api::eco_pulse))
         // 微步 2：全地圖底板唯讀端點
         .route("/api/substrate/meta", get(http_api::substrate_meta))
-        .route("/api/substrate/basemap.png", get(http_api::substrate_basemap))
+        .route(
+            "/api/substrate/basemap.png",
+            get(http_api::substrate_basemap),
+        )
         .route("/api/substrate/window", get(http_api::substrate_window))
         .route("/api/substrate/cell", get(http_api::substrate_cell))
+        // 輕量版 RimWorld 無縫雙尺度 2D 平面大地圖與 HTTP 認證端點
+        .route("/api/rim/auth", post(http_api::rim_auth_post))
+        .route("/api/rim/me", get(http_api::rim_auth_me))
+        .route("/api/rim/logout", post(http_api::rim_auth_logout))
+        .route("/api/rim/state", get(http_api::rim_state))
+        .route("/api/rim/cmd", post(http_api::rim_cmd))
+        .route("/api/rim/talk", post(http_api::rim_talk_post))
+        .route("/api/rim/trade", post(http_api::rim_trade_post))
+        .route("/api/rim/portrait/image", get(http_api::rim_portrait_image))
+        .route(
+            "/api/rim/portrait/regen",
+            post(http_api::rim_portrait_regen),
+        )
+        .route(
+            "/api/rim/byok",
+            get(http_api::rim_byok_get).post(http_api::rim_byok_post),
+        )
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())
@@ -170,6 +195,9 @@ async fn serve_eco_viewer() -> impl IntoResponse {
 }
 async fn serve_world_atlas() -> impl IntoResponse {
     serve_html_page("world_atlas.html").await
+}
+async fn serve_rim_world() -> impl IntoResponse {
+    axum::response::Redirect::permanent("/")
 }
 async fn serve_star_chart() -> impl IntoResponse {
     serve_html_page("star_chart.html").await
@@ -244,7 +272,8 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
         match msg {
             Message::Text(t) => {
                 let c = conn.clone();
-                let is_async_task = t.contains("\"talk\"") || t.contains("\"Talk\"") || t.contains("\"do_action\"");
+                let is_async_task =
+                    t.contains("\"talk\"") || t.contains("\"Talk\"") || t.contains("\"do_action\"");
                 let bytes = t.as_bytes().to_vec();
                 let jh = tokio::task::spawn_blocking(move || {
                     let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {

@@ -268,7 +268,9 @@ impl Store {
             e.equipment_slots = super::entity::normalize_archaic_clothing(&e.equipment_slots);
             let is_npc = e.kind == "npc" || e.id.starts_with("npc_") || e.id.starts_with("wt_");
             let mut inv_json = super::entity::normalize_archaic_clothing(&e.inventory);
-            if let Ok(mut entries) = serde_json::from_str::<Vec<crate::db::inventory::InventoryEntry>>(&inv_json) {
+            if let Ok(mut entries) =
+                serde_json::from_str::<Vec<crate::db::inventory::InventoryEntry>>(&inv_json)
+            {
                 let mut inv_changed = false;
                 // 自任何玩家或 NPC 背包移除 manual_854b8035e7134512
                 let before_retain = entries.len();
@@ -301,11 +303,20 @@ impl Store {
         for id in npc_ids {
             if let Some(e) = self.entities.get_mut(&id) {
                 let is_female = super::entity::npc_effective_is_female(&id, Some(&e.gender));
-                let g = if is_female { "F".to_string() } else { "M".to_string() };
-                let mut resolved = super::entity::resolve_npc_person_name(&id, &e.display_title, Some(&g));
+                let g = if is_female {
+                    "F".to_string()
+                } else {
+                    "M".to_string()
+                };
+                let mut resolved =
+                    super::entity::resolve_npc_person_name(&id, &e.display_title, Some(&g));
                 if !used_names.insert(resolved.clone()) {
                     for salt in 1..2080 {
-                        let cand = super::entity::deterministic_wenyao_full_name_salted(&id, Some(&g), salt);
+                        let cand = super::entity::deterministic_wenyao_full_name_salted(
+                            &id,
+                            Some(&g),
+                            salt,
+                        );
                         if used_names.insert(cand.clone()) {
                             resolved = cand;
                             break;

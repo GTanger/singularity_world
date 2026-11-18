@@ -1,0 +1,573 @@
+:root {
+  --paper: #f0e6d3;
+  --paper-light: #f7f0e3;
+  --paper-dark: #e0d4c0;
+  --ink: #2c1e0f;
+  --ink-light: #6b5a47;
+  --ink-faint: #a89880;
+  --red-ink: #8b2020;
+  --blue-ink: #2a4a6b;
+  --green-ink: #2a5a3a;
+  --gold: #8b6914;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'LXGW WenKai Mono TC', 'Noto Serif TC', serif;
+  user-select: none;
+}
+
+.rim-app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+}
+
+.rim-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  background: var(--paper-light);
+  border-bottom: 1px solid var(--ink-faint);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.rim-clock-text {
+  font-size: 13px;
+  color: var(--ink-light);
+  letter-spacing: 0.02em;
+}
+
+.rim-top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rim-scale-badge {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--paper-dark);
+  color: var(--ink-light);
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+.rim-zone-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.rim-stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  background: #d9cfb6;
+}
+
+#rim-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.rim-events {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+  max-width: 220px;
+}
+
+.rim-ev-item {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(247, 240, 227, 0.84);
+  border-left: 2px solid var(--ink-light);
+  color: var(--ink);
+}
+
+.rim-toast {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: var(--paper-light);
+  border: 1px solid var(--red-ink);
+  color: var(--red-ink);
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(44, 30, 15, 0.12);
+}
+
+.rim-inspector {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: min(310px, calc(100vw - 24px));
+  background: rgba(247, 240, 227, 0.96);
+  border: 1px solid var(--ink-faint);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 14px rgba(44, 30, 15, 0.12);
+  z-index: 8;
+}
+
+.rim-insp-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rim-insp-title {
+  margin: 0;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.rim-insp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.rim-tag {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--paper-dark);
+  color: var(--ink-light);
+}
+
+.rim-insp-close {
+  border: none;
+  background: transparent;
+  color: var(--ink-light);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.rim-insp-sockets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.rim-socket-btn {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 13px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--blue-ink);
+  background: var(--paper-light);
+  color: var(--blue-ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rim-socket-btn:hover {
+  background: var(--blue-ink);
+  color: var(--paper-light);
+}
+
+/* 浮動自身／裝備行囊宣紙面板 */
+.rim-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(44, 30, 15, 0.24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 15;
+}
+
+.rim-modal {
+  width: min(360px, 100%);
+  max-height: 82%;
+  overflow-y: auto;
+  background: var(--paper-light);
+  border: 1px solid var(--ink-faint);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 24px rgba(44, 30, 15, 0.18);
+}
+
+.rim-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--paper-dark);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.rim-modal-title {
+  margin: 0;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+.rim-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 13px;
+}
+
+.rim-sec-label {
+  font-size: 12px;
+  color: var(--ink-light);
+  margin-bottom: 4px;
+}
+
+.rim-row-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rim-inv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--paper);
+  border: 1px solid var(--paper-dark);
+}
+
+/* 底部中性個人隨身列 */
+.rim-dock {
+  background: var(--paper-light);
+  border-top: 1px solid var(--ink-faint);
+  padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px));
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.rim-personal-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.rim-personal-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.rim-personal-btn:hover {
+  background: var(--paper-dark);
+}
+
+.rim-p-main {
+  font-family: 'LXGW WenKai Mono TC', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.rim-p-sub {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 11px;
+  color: var(--ink-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.rim-view-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rim-chip-btn {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 13px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.rim-chip-active {
+  background: var(--blue-ink);
+  color: var(--paper-light);
+  border-color: var(--blue-ink);
+}
+
+.rim-chip-warn {
+  background: var(--red-ink);
+  color: var(--paper-light);
+  border-color: var(--red-ink);
+}
+
+/* 開譜曆 48 候登入頁天幕漸層＋夜間燭光宣紙卡（高對比絕不反白） */
+.auth-screen {
+  background-color: var(--sky-mid, #f3ede0);
+  background-image: linear-gradient(
+    180deg,
+    var(--sky-top, #ebe3d2) 0%,
+    var(--sky-mid, #f3ede0) 52%,
+    var(--sky-bot, #f7f2e7) 100%
+  );
+  transition: background 0.8s ease;
+}
+.auth-box {
+  background: rgba(247, 240, 227, 0.96) !important;
+  color: #2c1e0f !important;
+  border: 1px solid rgba(139, 105, 20, 0.36) !important;
+  box-shadow: 0 12px 32px rgba(10, 12, 18, 0.24) !important;
+}
+.auth-title { color: #2c1e0f !important; }
+.auth-hint, .auth-form label, .auth-label { color: #5c4b37 !important; }
+.auth-field input {
+  background: #fffdf8 !important;
+  color: #2c1e0f !important;
+  border-color: rgba(73, 51, 28, 0.30) !important;
+}
+.auth-clock {
+  margin: 0 0 0.55rem 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #6b5a47;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(224, 212, 192, 0.55);
+}
+
+/* 接觸物件插座卡左側人物半身像與資訊排 */
+.rim-insp-portrait-wrap {
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(44, 30, 15, 0.10);
+}
+.rim-insp-portrait-wrap canvas {
+  display: block;
+}
+.rim-insp-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 自身／行囊浮動面板立繪頭區 */
+.rim-modal-hero {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px;
+  background: var(--paper);
+  border: 1px solid var(--paper-dark);
+  border-radius: 8px;
+}
+.rim-modal-portrait-box {
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(44, 30, 15, 0.12);
+}
+.rim-modal-portrait-box canvas {
+  display: block;
+}
+.rim-modal-hero-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rim-modal-hero-info .rim-inv-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+.rim-modal-hero-info .rim-socket-btn {
+  width: 100%;
+  text-align: center;
+}
+.rim-byok-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--paper);
+  border: 1px solid var(--paper-dark);
+}
+.rim-byok-input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--ink-faint);
+  background: #fffdf8;
+  color: var(--ink);
+  font-family: monospace;
+  font-size: 12px;
+  user-select: text;
+}
+.rim-talk-bubble {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f9f4ea;
+  border: 1px solid var(--ink-faint);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.rim-talk-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.rim-talk-input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--ink-faint);
+  background: #fffdf8;
+  color: var(--ink);
+  font-size: 13px;
+  user-select: text;
+}
+.rim-meet-note {
+  font-size: 12px;
+  color: var(--red-ink);
+  font-weight: 600;
+}
+.rim-wear-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  padding: 4px 0;
+}
+.rim-insp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+.rim-tag-skill {
+  background: rgba(168, 42, 42, 0.08);
+  border-color: rgba(168, 42, 42, 0.34);
+  color: var(--red-ink);
+  cursor: pointer;
+}
+.rim-tag-skill.is-active {
+  background: var(--red-ink);
+  color: #fffdf8;
+  border-color: var(--red-ink);
+}
+.rim-skill-detail {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px dashed rgba(31, 35, 38, 0.22);
+  background: rgba(255, 253, 248, 0.72);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.rim-dir-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+.rim-dir-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px solid rgba(31, 35, 38, 0.18);
+  background: #fffdf8;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  font-size: 12.5px;
+}
+.rim-dir-btn small {
+  font-size: 11px;
+  color: var(--muted, #5c636a);
+}
+.rim-dir-btn.is-active {
+  border-color: var(--red-ink);
+  background: rgba(168, 42, 42, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(168, 42, 42, 0.28);
+}
+.rim-diary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 6px;
+}
+.rim-diary-item {
+  padding: 6px 9px;
+  border-left: 2px solid rgba(168, 42, 42, 0.45);
+  background: rgba(255, 253, 248, 0.65);
+  border-radius: 0 6px 6px 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink);
+}

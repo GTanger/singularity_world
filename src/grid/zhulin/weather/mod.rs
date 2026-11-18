@@ -93,7 +93,8 @@ pub fn current_world_zhulin_weather() -> (&'static ZhulinWeatherDef, i64) {
         .flatten()
         .or_else(|| crate::db::get_region_climate("紅土西麓").ok().flatten());
     let game_hour = crate::store::current_game_hour() as u32;
-    let def = active_zhulin_weather_for_hour(climate.as_ref().map(|c| c.event_type.as_str()), game_hour);
+    let def =
+        active_zhulin_weather_for_hour(climate.as_ref().map(|c| c.event_type.as_str()), game_hour);
     let epoch = climate.as_ref().map(|c| c.started_at_unix).unwrap_or(0);
     (def, epoch)
 }
@@ -128,7 +129,10 @@ mod tests {
         assert_eq!(lookup_zhulin_weather("rain").id, mountain_rain::ID);
         assert_eq!(lookup_zhulin_weather("plum_rain").id, post_rain_mist::ID);
         assert_eq!(lookup_zhulin_weather("fog").id, morning_dew_fog::ID);
-        assert_eq!(lookup_zhulin_weather("zl_weather_sea_gale").id, sea_gale::ID);
+        assert_eq!(
+            lookup_zhulin_weather("zl_weather_sea_gale").id,
+            sea_gale::ID
+        );
         assert_eq!(lookup_zhulin_weather("九降疾風").id, sea_gale::ID);
         assert_eq!(lookup_zhulin_weather("微雨").id, mountain_rain::ID);
         assert_eq!(lookup_zhulin_weather("unknown_fallback").id, clear_sun::ID);
@@ -136,15 +140,33 @@ mod tests {
 
     #[test]
     fn test_active_and_next_weather_cycle() {
-        assert_eq!(active_zhulin_weather_for_hour(Some("wind"), 12).id, sea_gale::ID);
-        assert_eq!(active_zhulin_weather_for_hour(None, 6).id, morning_dew_fog::ID);
+        assert_eq!(
+            active_zhulin_weather_for_hour(Some("wind"), 12).id,
+            sea_gale::ID
+        );
+        assert_eq!(
+            active_zhulin_weather_for_hour(None, 6).id,
+            morning_dew_fog::ID
+        );
         assert_eq!(active_zhulin_weather_for_hour(None, 14).id, clear_sun::ID);
 
-        assert_eq!(next_zhulin_weather_in_cycle("clear", 6).id, morning_dew_fog::ID);
+        assert_eq!(
+            next_zhulin_weather_in_cycle("clear", 6).id,
+            morning_dew_fog::ID
+        );
         assert_eq!(next_zhulin_weather_in_cycle("clear", 12).id, sea_gale::ID);
-        assert_eq!(next_zhulin_weather_in_cycle("wind", 12).id, mountain_rain::ID);
-        assert_eq!(next_zhulin_weather_in_cycle("rain", 12).id, post_rain_mist::ID);
-        assert_eq!(next_zhulin_weather_in_cycle("plum_rain", 12).id, clear_sun::ID);
+        assert_eq!(
+            next_zhulin_weather_in_cycle("wind", 12).id,
+            mountain_rain::ID
+        );
+        assert_eq!(
+            next_zhulin_weather_in_cycle("rain", 12).id,
+            post_rain_mist::ID
+        );
+        assert_eq!(
+            next_zhulin_weather_in_cycle("plum_rain", 12).id,
+            clear_sun::ID
+        );
         assert_eq!(next_zhulin_weather_in_cycle("fog", 6).id, clear_sun::ID);
     }
 }

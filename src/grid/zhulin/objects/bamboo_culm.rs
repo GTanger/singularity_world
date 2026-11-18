@@ -34,7 +34,12 @@ pub const YIELD_ITEM_DEF: super::ZhulinItemDef = super::ZhulinItemDef {
     description: "自合抱刺竹叢伐下的成熟刺竹稈，中空有節、竹壁堅厚，可鋸作竹筒或劈削竹篾。",
     tags: super::ZhulinTagTriad {
         category_tags: &["timber", "bamboo_material", "structural_pole"],
-        attribute_tags: &["hollow_jointed", "splittable", "tough_wall", "flammable_pop"],
+        attribute_tags: &[
+            "hollow_jointed",
+            "splittable",
+            "tough_wall",
+            "flammable_pop",
+        ],
         exclusive_tag: YIELD_ITEM_ID,
     },
 };

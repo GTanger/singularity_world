@@ -5,12 +5,23 @@
 mod admin;
 mod eco;
 mod player;
+mod rim_api;
+mod rim_auth;
+mod rim_portrait_api;
+mod rim_talk_api;
 mod rooms;
 mod substrate_atlas;
 
 pub use admin::{AdminQuery, design_constants, wipe_entities};
-pub use eco::{eco_entities, eco_map, eco_npc_thoughts, eco_pulse, handle_eco_entities, handle_eco_npc_thoughts};
+pub use eco::{
+    eco_entities, eco_map, eco_npc_thoughts, eco_pulse, handle_eco_entities,
+    handle_eco_npc_thoughts,
+};
 pub use player::{climate, game_time, player_room, topology};
+pub use rim_api::{rim_cmd, rim_state, spawn_rim_tick_loop};
+pub use rim_auth::{rim_auth_logout, rim_auth_me, rim_auth_post};
+pub use rim_portrait_api::{rim_byok_get, rim_byok_post, rim_portrait_image, rim_portrait_regen};
+pub use rim_talk_api::{rim_talk_post, rim_trade_post};
 pub use rooms::{
     add_exit, create_room, delete_room, get_room_admin, list_rooms, remove_exit, rename_room,
     rooms_data, update_room,

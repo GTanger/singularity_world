@@ -1,9 +1,9 @@
 // wordplate 模組 — 500 詞 ＋ 360 星盤 × 隨身【詞匣】 × 田忌賽馬四戰術序位核心系統。
 // 嚴守台灣正體中文，徹底拔除 Codex 偽科幻詞彙；後台資料嚴謹，前台體感去數值化。
 
+use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::LazyLock;
-use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 include!("wordplate/types.rs");

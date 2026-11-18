@@ -19,7 +19,12 @@ pub const CELL_TAGS: &[&str] = &["bamboo", "sheath", "fiber", "flora"];
 /// 場景採集物件三層標籤（類別標籤、屬性標籤、專屬標籤）
 pub const OBJECT_TAGS: super::ZhulinTagTriad = super::ZhulinTagTriad {
     category_tags: &["flora", "shed_sheath", "gather_node"],
-    attribute_tags: &["broad_husk", "water_repellent", "tough_fiber", "ground_shed"],
+    attribute_tags: &[
+        "broad_husk",
+        "water_repellent",
+        "tough_fiber",
+        "ground_shed",
+    ],
     exclusive_tag: "zl_obj_bamboo_sheath",
 };
 
@@ -33,7 +38,12 @@ pub const YIELD_ITEM_DEF: super::ZhulinItemDef = super::ZhulinItemDef {
     description: "成竹脫落的寬厚老筍殼，外覆斑駁褐紋、內裡光滑防潮，可包裹米食、襯墊斗笠或搓製籜繩。",
     tags: super::ZhulinTagTriad {
         category_tags: &["wrapping_sheet", "weaving_fiber", "bamboo_sheath"],
-        attribute_tags: &["waterproof", "broad_sheet", "pliable_when_wet", "tear_resistant"],
+        attribute_tags: &[
+            "waterproof",
+            "broad_sheet",
+            "pliable_when_wet",
+            "tear_resistant",
+        ],
         exclusive_tag: YIELD_ITEM_ID,
     },
 };

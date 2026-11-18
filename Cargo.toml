@@ -17,8 +17,8 @@ serde_json = "1"
 # WebSocket（axum 內建，tokio-tungstenite 備用）
 # 密碼雜湊
 bcrypt = "0.17"
-# HTTP client（呼叫 Ollama）
-reqwest = { version = "0.12", features = ["json", "blocking"] }
+# HTTP client（呼叫 Ollama / OpenRouter / sd-server）
+reqwest = { version = "0.12", features = ["json", "blocking", "multipart"] }
 # 錯誤處理
 anyhow = "1"
 sha2 = "0.10"
