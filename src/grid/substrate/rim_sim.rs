@@ -449,6 +449,9 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_ecology::upgrade_ecology_plots(rt, &mut overlays) {
                 migrated = true;
             }
+            if super::rim_ecology::reconcile_larder_and_loose_clutter(rt, &mut overlays) {
+                migrated = true;
+            }
             let mut events = VecDeque::new();
             events.push_back(ShortEvent {
                 tick: 0,
@@ -484,6 +487,7 @@ fn load_or_seed_world() -> RimWorldState {
         apply_outpost_architecture(rt, &mut overlays);
         let _ = super::rim_shelter::upgrade_existing_shelters(&mut overlays);
         let _ = super::rim_ecology::upgrade_ecology_plots(rt, &mut overlays);
+        let _ = super::rim_ecology::reconcile_larder_and_loose_clutter(rt, &mut overlays);
         let mut actors = saved.actors;
         ensure_outpost_residents(&mut actors);
         let mut events: VecDeque<ShortEvent> = saved
@@ -753,7 +757,7 @@ impl RimWorldState {
         super::rim_life::step_settler_metabolism(self);
         super::rim_ecology::step_land_ecology(self, rt);
 
-        if self.tick.is_multiple_of(120)
+        if self.tick.is_multiple_of(360)
             && self
                 .actors
                 .iter()
@@ -789,8 +793,8 @@ impl RimWorldState {
                 is_player: false,
                 autopilot: true,
                 running: false,
-                px: if next_id.is_multiple_of(2) { 8.0 } else { -12.0 },
-                py: if next_id.is_multiple_of(2) { 14.0 } else { -8.0 },
+                px: if next_id.is_multiple_of(2) { 18.0 } else { -22.0 },
+                py: if next_id.is_multiple_of(2) { 20.0 } else { 14.0 },
                 facing_rad: 0.0,
                 hp: if next_id.is_multiple_of(2) { 80 } else { 55 },
                 max_hp: if next_id.is_multiple_of(2) { 80 } else { 55 },

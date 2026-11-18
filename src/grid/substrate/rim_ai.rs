@@ -49,28 +49,9 @@ impl RimWorldState {
             return;
         }
 
-        let dir_now = self.actors[idx].directive.as_str();
-        let beast_guard_radius: f32 = if dir_now == "guard" {
-            22.0
-        } else if dir_now == "rest" {
-            5.0
-        } else {
-            10.0
-        };
         let home_pt = if start.0 >= 22 { (32, -7) } else { (0, 0) };
-        if let Some(beast) = self.actors.iter().find(|b| {
-            b.faction == ActorFaction::WildBeast
-                && b.hp > 0
-                && (b.px - home_pt.0 as f32).hypot(b.py - home_pt.1 as f32) <= beast_guard_radius
-        }) {
-            let b_id = beast.id;
-            let b_pos = beast.micro_pos();
-            if let Some(p) = find_micro_path(rt, &self.overlays, start, b_pos, true, false) {
-                self.actors[idx].path = p.into();
-                self.actors[idx].task = PendingTask::ChaseTarget { target_id: b_id };
-                self.actors[idx].activity_tag = "迎擊護營".into();
-                return;
-            }
+        if super::rim_ecology::try_guard_or_hunt_beast(self, rt, idx, start, home_pt) {
+            return;
         }
 
         // 若同伴被託付為『follow（跟隨同行）』，貼近最近在線玩家行動
@@ -921,7 +902,8 @@ impl RimWorldState {
                     return None;
                 }
                 let g = ov.ground_item?;
-                (g.count > 0).then_some((pos.0, pos.1, g.item))
+                (g.count > 0 && self.find_available_stockpile_slot(from, g.item).is_some())
+                    .then_some((pos.0, pos.1, g.item))
             })
             .min_by_key(|(x, y, _)| (x - from.0).abs() + (y - from.1).abs())
     }

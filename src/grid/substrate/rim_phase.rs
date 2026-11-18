@@ -651,8 +651,21 @@ pub fn resolve_world_combat_round(world: &mut RimWorldState) {
             if let Some(out) = outcome
                 && out.loot_meat > 0
             {
-                let (bx, by) = world.actors[beast_idx].micro_pos();
-                world.add_ground_item(bx, by, RimItemKind::BeastMeat, out.loot_meat);
+                let bag_meat: u16 = world.actors[settler_idx]
+                    .inventory
+                    .iter()
+                    .filter(|s| s.item == RimItemKind::BeastMeat)
+                    .map(|s| s.count)
+                    .sum();
+                let to_bag = out.loot_meat.min(4_u16.saturating_sub(bag_meat));
+                if to_bag > 0 {
+                    world.actors[settler_idx].add_inv(RimItemKind::BeastMeat, to_bag);
+                }
+                let rem = out.loot_meat - to_bag;
+                if rem > 0 {
+                    let (bx, by) = world.actors[beast_idx].micro_pos();
+                    world.add_ground_item(bx, by, RimItemKind::BeastMeat, rem);
+                }
                 if let Some(ev) = out.kill_event {
                     world.push_event(ev);
                 }
