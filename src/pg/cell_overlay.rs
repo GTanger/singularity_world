@@ -107,6 +107,60 @@ UPDATE cell_overlay SET
  explored_day=$16, flags=$17, charge=$18, stamp=$19, ver=$20 + 1, updated_at=now()
 WHERE gx=$1 AND gy=$2 AND ver=$20";
 
+const CAS_UPDATE_POSITIVE_CHARGE_SQL: &str = "
+UPDATE cell_overlay SET
+ u2=$3, u1=$4, v1=$5, arcade_mask=$6, shop_open=$7, s0_pave=$8, pave_heat=$9,
+ s0_0=$10, s0_1=$11, s0_2=$12, building_id=$13, roll_day=$14, weather_epoch=$15,
+ explored_day=$16, flags=$17, charge=$18, stamp=$19, ver=$20 + 1, updated_at=now()
+WHERE gx=$1 AND gy=$2 AND ver=$20 AND (charge = -1 OR charge > 0)";
+
+/// `cell_overlay` × `entities.inventory` 同交易原子提交結果。
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum OverlayInvTxResult {
+    Committed {
+        new_ver: i32,
+        new_inventory: String,
+        new_inventory_seq: i64,
+    },
+    /// 版本不符或儲量已耗竭（`charge == 0`），整筆交易已回滾，呼叫端可重試。
+    Conflict,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+struct TxInvEntry {
+    item_id: String,
+    qty: i32,
+}
+
+fn apply_inventory_deltas(raw_json: &str, deltas: &[(&str, i32)]) -> Result<String, String> {
+    let mut entries: Vec<TxInvEntry> = if raw_json.trim().is_empty() {
+        Vec::new()
+    } else {
+        serde_json::from_str(raw_json).unwrap_or_default()
+    };
+    for &(item_id, delta) in deltas {
+        if delta == 0 {
+            continue;
+        }
+        if let Some(slot) = entries.iter_mut().find(|e| e.item_id == item_id) {
+            let next_qty = slot.qty + delta;
+            if next_qty < 0 {
+                return Err(format!("行囊「{item_id}」數量不足"));
+            }
+            slot.qty = next_qty;
+        } else if delta > 0 {
+            entries.push(TxInvEntry {
+                item_id: item_id.to_string(),
+                qty: delta,
+            });
+        } else {
+            return Err(format!("行囊查無「{item_id}」可扣除"));
+        }
+    }
+    entries.retain(|e| e.qty > 0);
+    serde_json::to_string(&entries).map_err(|e| e.to_string())
+}
+
 /// 建立 `cell_overlay` 與 `entities` 擴充欄位（冪等）。
 pub fn ensure_schema(pool: &DbPool) -> Result<(), String> {
     let mut conn = pool.get().map_err(|e| e.to_string())?;
@@ -333,6 +387,159 @@ pub fn cas_write_overlay_record(
     Ok(rows == 1)
 }
 
+/// 在單一 PostgreSQL Transaction 內同步提交 `cell_overlay` CAS 寫入（或回歸原生刪除）與
+/// `entities.inventory`（`SELECT ... FOR UPDATE` ＋ `inventory_seq` 遞增），嚴格保證資源守恆。
+pub fn commit_overlay_and_inventory_tx(
+    pool: &DbPool,
+    record: &CellOverlayRecord,
+    expected_ver: i32,
+    require_positive_charge: bool,
+    delete_if_pristine: bool,
+    actor_id: &str,
+    inv_deltas: &[(&str, i32)],
+) -> Result<OverlayInvTxResult, String> {
+    if expected_ver < 0 {
+        return Err(format!("非法樂觀鎖版本 expected_ver={expected_ver}"));
+    }
+    let stack = &record.stack;
+    let (mask, open, max_z) = match stack.v1 {
+        V1Plugin::ArcadeShophouse {
+            arcade_mask,
+            shop_open,
+            max_z,
+        } => (arcade_mask, shop_open, max_z),
+        _ => (0, false, 0),
+    };
+    let heat = match stack.s0_pave {
+        S0Pavement::BambooTrampledPath { pave_heat } => pave_heat,
+        _ => 0,
+    };
+    let slot = |i: usize| i16::from(stack.s0_companions.get(i).map_or(0, |c| c.code_u8()));
+    let flags = (record.flags & !0x3) | i32::from(max_z.min(3));
+    let u2 = stack.u2.code_i16();
+    let u1 = stack.u1.code_i16();
+    let v1 = i16::from(stack.v1.code_u8());
+    let mask_i16 = i16::from(mask);
+    let pave = i16::from(stack.s0_pave.code_u8());
+    let heat_i16 = i16::from(heat);
+    let s0 = slot(0);
+    let s1 = slot(1);
+    let s2 = slot(2);
+
+    let mut conn = pool.get().map_err(|e| e.to_string())?;
+    let mut tx = conn.transaction().map_err(|e| e.to_string())?;
+
+    let (overlay_ok, new_ver) = if delete_if_pristine {
+        if expected_ver == 0 {
+            (true, 0)
+        } else {
+            let n = tx
+                .execute(
+                    "DELETE FROM cell_overlay WHERE gx=$1 AND gy=$2 AND ver=$3",
+                    &[&record.gx, &record.gy, &expected_ver],
+                )
+                .map_err(|e| e.to_string())?;
+            (n == 1, 0)
+        }
+    } else if expected_ver == 0 {
+        let n = tx
+            .execute(
+                CAS_INSERT_SQL,
+                &[
+                    &record.gx,
+                    &record.gy,
+                    &u2,
+                    &u1,
+                    &v1,
+                    &mask_i16,
+                    &open,
+                    &pave,
+                    &heat_i16,
+                    &s0,
+                    &s1,
+                    &s2,
+                    &record.building_id,
+                    &record.roll_day,
+                    &record.weather_epoch,
+                    &record.explored_day,
+                    &flags,
+                    &record.charge,
+                    &record.stamp,
+                ],
+            )
+            .map_err(|e| e.to_string())?;
+        (n == 1, 1)
+    } else {
+        let sql = if require_positive_charge {
+            CAS_UPDATE_POSITIVE_CHARGE_SQL
+        } else {
+            CAS_UPDATE_SQL
+        };
+        let n = tx
+            .execute(
+                sql,
+                &[
+                    &record.gx,
+                    &record.gy,
+                    &u2,
+                    &u1,
+                    &v1,
+                    &mask_i16,
+                    &open,
+                    &pave,
+                    &heat_i16,
+                    &s0,
+                    &s1,
+                    &s2,
+                    &record.building_id,
+                    &record.roll_day,
+                    &record.weather_epoch,
+                    &record.explored_day,
+                    &flags,
+                    &record.charge,
+                    &record.stamp,
+                    &expected_ver,
+                ],
+            )
+            .map_err(|e| e.to_string())?;
+        (n == 1, expected_ver + 1)
+    };
+
+    if !overlay_ok {
+        return Ok(OverlayInvTxResult::Conflict);
+    }
+
+    let row = tx
+        .query_opt(
+            "SELECT inventory, inventory_seq FROM entities WHERE id=$1 FOR UPDATE",
+            &[&actor_id],
+        )
+        .map_err(|e| e.to_string())?
+        .ok_or_else(|| format!("實體不存在：{actor_id}"))?;
+    let cur_inv: String = row.get(0);
+    let cur_seq: i64 = row.get(1);
+
+    let (new_inventory, new_inventory_seq) = if inv_deltas.is_empty() {
+        (cur_inv, cur_seq)
+    } else {
+        let next_inv = apply_inventory_deltas(&cur_inv, inv_deltas)?;
+        let next_seq = cur_seq.saturating_add(1);
+        tx.execute(
+            "UPDATE entities SET inventory=$1, inventory_seq=$2 WHERE id=$3",
+            &[&next_inv, &next_seq, &actor_id],
+        )
+        .map_err(|e| e.to_string())?;
+        (next_inv, next_seq)
+    };
+
+    tx.commit().map_err(|e| e.to_string())?;
+    Ok(OverlayInvTxResult::Committed {
+        new_ver,
+        new_inventory,
+        new_inventory_seq,
+    })
+}
+
 /// 回收已回歸原生推導狀態之髒格列。
 pub fn delete_overlay_record(pool: &DbPool, gx: i32, gy: i32) -> Result<bool, String> {
     let mut conn = pool.get().map_err(|e| e.to_string())?;
@@ -434,5 +641,88 @@ mod tests {
 
         assert_eq!(delete_overlay_record(&pool, gx, gy), Ok(true));
         assert!(load_overlay_record(&pool, gx, gy).is_none());
+    }
+
+    #[test]
+    fn overlay_and_inventory_tx_is_atomic_and_enforces_cas_on_pg() {
+        let url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+            "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+        });
+        let Ok(pool) = init_pool(&url) else {
+            return;
+        };
+        if pool.get().is_err() {
+            return;
+        }
+        assert!(ensure_schema(&pool).is_ok());
+        let (gx, gy) = (-2_000_088, -2_000_088);
+        let test_actor = "__tx_test_actor_3b__";
+        let _ = delete_overlay_record(&pool, gx, gy);
+        if let Ok(mut conn) = pool.get() {
+            let _ = conn.execute("DELETE FROM entities WHERE id=$1", &[&test_actor]);
+            let ins = conn.execute(
+                "INSERT INTO entities (id, kind, display_char, x, y, move_state, walk_or_run, vit, qi, dex, magnesium, created_at, gender, display_title, activated_nodes, equipment_slots, inventory, disposition, current_activity, grid_z, inventory_seq)
+                 VALUES ($1, 'npc', '測', 0, 0, 'idle', 'walk', 100, 100, 100, 0, 0, 'M', '測', '[]', '{}', '[]', 0, '', 0, 0)",
+                &[&test_actor],
+            );
+            if ins.is_err() {
+                return;
+            }
+        }
+
+        let mut rec = CellOverlayRecord::from_stack(gx, gy, SlotStack::default());
+        rec.charge = 2;
+        rec.roll_day = 5;
+
+        // 1. 首次提交：cell_overlay ver 0->1 且背包加 2 根刺竹稈、inventory_seq 0->1
+        let r1 = commit_overlay_and_inventory_tx(
+            &pool,
+            &rec,
+            0,
+            false,
+            false,
+            test_actor,
+            &[("zl_item_bamboo_culm", 2)],
+        );
+        assert!(matches!(
+            r1,
+            Ok(OverlayInvTxResult::Committed {
+                new_ver: 1,
+                new_inventory_seq: 1,
+                ..
+            })
+        ));
+
+        // 2. CAS 版本過舊衝突 -> Conflict，背包不得重複進貨
+        let r_conflict = commit_overlay_and_inventory_tx(
+            &pool,
+            &rec,
+            0,
+            false,
+            false,
+            test_actor,
+            &[("zl_item_bamboo_culm", 2)],
+        );
+        assert_eq!(r_conflict, Ok(OverlayInvTxResult::Conflict));
+
+        // 3. 扣減背包不足 -> Err，且整筆交易回滾，cell_overlay ver 維持 1
+        rec.charge = 1;
+        let r_underflow = commit_overlay_and_inventory_tx(
+            &pool,
+            &rec,
+            1,
+            true,
+            false,
+            test_actor,
+            &[("zl_item_dry_leaves", -1)],
+        );
+        assert!(r_underflow.is_err());
+        assert_eq!(load_overlay_record(&pool, gx, gy).map(|o| o.ver), Some(1));
+
+        // 清理測試資料
+        let _ = delete_overlay_record(&pool, gx, gy);
+        if let Ok(mut conn) = pool.get() {
+            let _ = conn.execute("DELETE FROM entities WHERE id=$1", &[&test_actor]);
+        }
     }
 }

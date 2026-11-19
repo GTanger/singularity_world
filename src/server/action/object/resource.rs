@@ -127,16 +127,83 @@ fn try_grid_cell_object_action(
             | "CampfirePopCulm"
     );
     let is_bamboo_look = action == "Look" && obj.id == "zl_bamboo_campfire";
+    let is_substrate_intent_action = matches!(
+        action,
+        "ClearBambooTrail" | "UprootRhizome" | "IgniteCampfire" | "ExtinguishCampfire"
+    );
     if action != "Gather"
         && action != "Harvest"
         && action != "Take"
         && action != "CarveMark"
-        && action != "ClearBambooTrail"
-        && action != "IgniteCampfire"
+        && !is_substrate_intent_action
         && !is_campfire_socket
         && !is_bamboo_look
     {
         return false;
+    }
+
+    // 微步 3b′：竹林與營火施作走統一四步仲裁（Observe -> Intent -> Resolve -> Update）＋
+    // `cell_overlay` × `entities.inventory` 同交易原子 CAS（靜態零 `with_square_grid_mut`）。
+    if crate::grid::substrate::runtime::global().is_some()
+        && let Some(pool) = crate::pg::pool()
+    {
+        use crate::grid::substrate::arbitrator::{WorldIntent, execute_world_intent};
+        use crate::grid::substrate::slots::S0Companion;
+        let maybe_intent = match action {
+            "ClearBambooTrail" => Some(WorldIntent::ClearBamboo),
+            "UprootRhizome" => Some(WorldIntent::UprootRhizome),
+            "IgniteCampfire" => Some(WorldIntent::IgniteCampfire),
+            "ExtinguishCampfire" => Some(WorldIntent::ExtinguishCampfire),
+            "Gather" | "Harvest" | "Take" => match obj.id.as_str() {
+                "zl_bamboo_culm" => Some(WorldIntent::GatherBambooCulm),
+                "zl_bamboo_rhizome" => Some(WorldIntent::UprootRhizome),
+                "zl_dry_leaves" => Some(WorldIntent::GatherCompanion(S0Companion::DryBambooLeaf)),
+                "zl_bamboo_sheath" => Some(WorldIntent::GatherCompanion(S0Companion::BambooSheath)),
+                "zl_bamboo_shoot" => {
+                    Some(WorldIntent::GatherCompanion(S0Companion::EmergingBambooShoot))
+                }
+                "zl_bamboo_root_ear" => {
+                    Some(WorldIntent::GatherCompanion(S0Companion::BambooRootEar))
+                }
+                _ => None,
+            },
+            _ => None,
+        };
+        if let Some(intent) = maybe_intent {
+            let mut jit_prefix = String::new();
+            if matches!(intent, WorldIntent::ClearBamboo | WorldIntent::GatherBambooCulm)
+                && let Ok(Some(ent)) = db::get_entity(pid)
+                && !crate::grid::zhulin::inventory_has_capability_tag(&ent.inventory, "heavy_chop")
+                && ent.inventory.contains("zl_item_bamboo_rhizome")
+                && let Some(Ok((_id, crafted_name, _msg))) =
+                    crate::grid::zhulin::try_craft_zhulin_item(pid, "zl_item_bamboo_rhizome")
+            {
+                jit_prefix = format!("你就地取行囊材料紮妥一把「{crafted_name}」，隨即");
+            }
+            let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
+            let outcome = execute_world_intent(&pool, pid, coord.x, coord.y, clock, intent);
+            let narrative = if outcome.success && !jit_prefix.is_empty() {
+                format!("{jit_prefix}{}", outcome.narrative)
+            } else {
+                outcome.narrative
+            };
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.into(),
+                target_id: obj.id.clone(),
+                target_name: obj.name.clone(),
+                narrative,
+                success: outcome.success,
+                actions: vec!["Look".into()],
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            push_refresh(conn, pid);
+            refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
+            return true;
+        }
     }
 
     let has_target_obj = crate::server::grid_manager::get_runtime_grid_cell(coord)

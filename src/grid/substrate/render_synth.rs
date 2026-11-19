@@ -303,11 +303,13 @@ pub fn synthesize_cell(
     field: FieldState,
 ) -> SynthesizedCellView {
     let (symbol, micro_name) = symbol_and_name(gx, gy, l0, slope, slots, field);
+    let walkable = walkable_on_landmass_01(l0, slope)
+        && !super::hydrology::is_blocked_by_high_water(l0, slots, field);
     SynthesizedCellView {
         symbol,
         micro_name,
         zone_name: zone_name_of(gx, l0),
-        walkable_on_landmass_01: walkable_on_landmass_01(l0, slope),
+        walkable_on_landmass_01: walkable,
         terrain_line: terrain_line(l0, slope, cue.as_ref(), slots, field),
         canvas_cards: canvas_cards(slots, field),
     }

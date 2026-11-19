@@ -14,9 +14,10 @@ fn build_grid_view_cells(
     let mut seen_coords: HashSet<(i32, i32)> = HashSet::new();
 
     if crate::grid::substrate::runtime::global().is_some() {
+        let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
         let here_snap =
-            crate::grid::substrate::facade::CellFacade::snapshot_cached(pool, x, y, field);
-        // 1. 周圍 radius = 9 格：100% 由 CellFacade + render_synth + arcade_street 動態合成
+            crate::grid::substrate::facade::CellFacade::snapshot_live_clock(pool, x, y, clock);
+        // 1. 周圍 radius = 9 格：100% 由 CellFacade（含高水期 Field + 惰性 settle）動態合成
         for dx in -9..=9 {
             for dy in -9..=9 {
                 let cx = x + dx;
@@ -25,15 +26,18 @@ fn build_grid_view_cells(
                 let snap = if dx == 0 && dy == 0 {
                     here_snap.clone()
                 } else {
-                    crate::grid::substrate::facade::CellFacade::snapshot_cached(
-                        pool, cx, cy, field,
+                    crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
+                        pool, cx, cy, clock,
                     )
                 };
+                let cell_field = crate::grid::substrate::hydrology::derive_cell_field(
+                    cx, cy, snap.l0, clock,
+                );
                 let (kind, category) = crate::grid::substrate::render_synth::kind_and_category(
                     snap.l0,
                     snap.slope,
                     &snap.slots,
-                    field,
+                    cell_field,
                 );
                 let is_neighbor = dx.abs() + dy.abs() == 1;
                 let is_diagonal_corner = dx.abs() == 1 && dy.abs() == 1;
@@ -172,8 +176,9 @@ fn build_grid_view_exits(
     base_room_name: &str,
 ) -> GridViewExitsResult {
     let has_substrate = crate::grid::substrate::runtime::global().is_some();
+    let live_clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
     let here_snap = has_substrate.then(|| {
-        crate::grid::substrate::facade::CellFacade::snapshot_cached(pool, x, y, field)
+        crate::grid::substrate::facade::CellFacade::snapshot_live_clock(pool, x, y, live_clock)
     });
 
     let current_terrain_name = here_snap
@@ -218,8 +223,8 @@ fn build_grid_view_exits(
             for &(dir_key, dir_zh, dx, dy) in dirs {
                 let nx = x + dx;
                 let ny = y + dy;
-                let neighbor = crate::grid::substrate::facade::CellFacade::snapshot_cached(
-                    pool, nx, ny, field,
+                let neighbor = crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
+                    pool, nx, ny, live_clock,
                 );
                 let can_step =
                     crate::grid::substrate::arcade_street::can_step_horizontal(here, &neighbor);
@@ -472,11 +477,13 @@ fn build_grid_view_objects(
             .collect();
     }
     let final_objects = {
-        let is_urban_substrate = crate::grid::substrate::runtime::global().is_some()
-            && base_objects
-                .iter()
-                .any(|o| o.id == "subspace_arcade_eave" || o.id == "subspace_street_lamp");
-        if is_urban_substrate {
+        let is_substrate_authored = crate::grid::substrate::runtime::global().is_some()
+            && base_objects.iter().any(|o| {
+                o.id == "subspace_arcade_eave"
+                    || o.id == "subspace_street_lamp"
+                    || o.id.starts_with("zl_")
+            });
+        if is_substrate_authored {
             return base_objects.to_vec();
         }
         let is_bamboo_slot = current_cell

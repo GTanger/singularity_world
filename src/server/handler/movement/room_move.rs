@@ -285,17 +285,18 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         let target_cell = grid_snap.as_ref().and_then(|g| g.get(target_coord).cloned());
 
         let (can_move, cell_name, is_substrate_rugged, is_substrate_water) = if has_substrate {
-            let from_snap = crate::grid::substrate::facade::CellFacade::snapshot_cached(
+            let live_clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
+            let from_snap = crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
                 pool.as_deref(),
                 gx,
                 gy,
-                field,
+                live_clock,
             );
-            let to_snap = crate::grid::substrate::facade::CellFacade::snapshot_cached(
+            let to_snap = crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
                 pool.as_deref(),
                 nx,
                 ny,
-                field,
+                live_clock,
             );
             let ok = crate::grid::substrate::arcade_street::can_step_horizontal(
                 &from_snap, &to_snap,

@@ -2,14 +2,17 @@
 //!
 //! 微步 1 核心隔離邊界：本模組提供純物理底板與稀疏分塊 `SWL0` 讀寫，不改寫線上既有 `GridCell` 實作。
 
+pub mod arbitrator;
 pub mod arcade_street;
 pub mod cache;
 pub mod coords;
 pub mod fog;
+pub mod hydrology;
 pub mod l0_cell;
 pub mod moi_dem;
 pub mod render_synth;
 pub mod runtime;
+pub mod settle;
 pub mod slots;
 
 pub use coords::{

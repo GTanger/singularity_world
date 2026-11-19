@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-19
-- **當前狀態**：`active`（已完成「真活世界」第一步 `微步 3a′＋3c` 單一空間讀寫權威收斂（`v=20261119a11`）：`CellFacade` 補齊 `32×32` 分片正負雙快取與單列樂觀鎖 CAS 統一寫入、活人實踏 `pave_heat` 2s/256 列合併寫入、個人探索迷霧 `zlib` 壓縮點陣圖（`player_exploration_fog`，凍結 `cell_overlay.explored_day`）、西麓石板街與兩排（含背對背）亭仔腳騎樓街屋確定性推導與 `arcade_mask` 雙向互指防穿牆、三段冒號房號 `grid:x:y[:z]` 與 `entities.grid_z (0..=3)` 嚴格樓層隔離、廢除 `IN_PRIVATE_ROOM` 與舊 `wt_*` 屋契、前端 `floor:{z,max_z,label,exits}` 與 `[進/出/上/下]` 固定佔位守住 `CLS=0px`；通過 `tra-sw-gate` 6/6 全綠、HTTP/WS/PG 9/9 全鏈路與實體 `Pixel 9 Pro XL` 真機視覺驗收 `PASS`；2D 畫布實驗留存於 `/rim` 不抹除歷史，下一步自**第二步 `微步 3b′`** 接軌續推）
+- **當前狀態**：`active`（已完成「真活世界」第一步 `微步 3a′＋3c` 與第二步 `微步 3b′` 落地（`v=20261119a11`）：`CellFacade` 統一空間讀寫權威（`32×32` 分片正負快取、CAS 稀疏寫入、`pave_heat` 合併落盤、個人迷霧 `player_exploration_fog`）、西麓亭仔腳騎樓街屋與 `entities.grid_z (0..=3)` 三段房號隔離、前端 `floor` 固定佔位 `CLS=0px`；並已上線第一條環境因果「高水期與通行地帶遷移」（`hydrology.rs`，單一時鐘 `scale=24` 多流域錯相高水＋半日潮）、觀測現場惰性 `settle()`＋每 tick `<=512` 格到期 GC（`settle.rs`）、以及玩家／NPC 共用 Rust 四步仲裁＋`cell_overlay` × `entities.inventory` 同交易原子 CAS（`arbitrator.rs`＋`pg/cell_overlay.rs`）；通過 `tra-sw-gate` 6/6 全綠、HTTP/WS/PG 全鏈路與實體 `Pixel 9 Pro XL` 驗收 `PASS`，下一步自**第三步「無職稱真活居民（`src/grid/zhulin/social/`）」**接軌續推）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -83,6 +83,6 @@
 - **已定案紀錄｜「真活世界」最小五件共用骨架與前四步落地順序（2026-11-19，審辯室 Room `e8f2c2d2-d9da-4279-b91f-174e40d9f6d6`，忠實對齊 `DESIGN_KEYWORDS.md` 與兩份正典）**：
   - **凍結與隔離邊界**：凍結 `rim_*`（留存於 `/rim` 不再擴張、嚴禁照搬其固定店鋪／職稱狀態機回主線）並將舊世 `wt_*` 具名角色隔離於 legacy（守 `DESIGN_KEYWORDS.md:143` 暫存不刪，退出新世界 tick）；「單格即物件」於 307 萬格 20m 底板採「虛擬房間／觀測時經 `CellFacade` 合成」，玩家與 NPC 100% 共用管線、LLM 永不裁決世界狀態。
   1. **第一步｜收斂單一空間讀寫權威（`微步 3a′`＋`3c`，已完工，2026-11-19）**：落地 `src/grid/substrate/{arcade_street,cache,fog}.rs` 與 `facade.rs` 統一 CAS 寫入＋`32×32` 分片正負雙快取＋`pave_heat` 合併落盤＋個人迷霧 `player_exploration_fog`；主線大地圖、八向移動（含 `進/出/上/下` 與 `arcade_mask` 背牆防穿牆）、`entities.grid_z (0..=3)` 三段房號與三維人數／廣播隔離全面切入 20m 底板，徹底廢除 `IN_PRIVATE_ROOM` 與舊 `wt_*` 屋契，前端 `floor` 四鈕固定佔位 `CLS=0px`。
-  2. **第二步（下一步）｜上線第一條環境因果 ＋ 共用守恆仲裁（`微步 3b′`）**：以單一時鐘（`game_time_scale = 24`）驅動 `Field`＋`overlay` 之「高水期與通行地帶遷移」；建立玩家／NPC 共用 Rust 四步仲裁（`Observe -> Declare Intent -> Resolve -> Update`）與 `entities.inventory` 同交易 CAS。
-  3. **第三步｜無職稱真活居民（`src/grid/zhulin/social/`）**：以 `SHALU_ZHULIN_WORLD_SEED` 零寫死人名生成 300～400 人，實裝 `1 底板 × 4 內在槽`（`10×12` 骨底脾氣、`ActiveDeficit`、`ProvenanceVessel`、`SubjectiveBelief`）× `6 關係插座`（共同履歷轉權利，不設好感條），以 Dave Mark 乘積補償＋Hysteresis 遲滯防抖純 Rust 驅動。
+  2. **第二步｜上線第一條環境因果 ＋ 共用守恆仲裁（`微步 3b′`，已完工，2026-11-19）**：落地 `src/grid/substrate/{hydrology,settle,arbitrator}.rs` 與 `pg/cell_overlay.rs::commit_overlay_and_inventory_tx`；以單一時鐘（`game_time_scale=24`）驅動多流域錯相高水脈衝與半日潮涉水阻隔、觀測現場惰性 `settle()`（營火雨滅／淹滅／燃盡、拉式竹潮再生）＋ 30s 週期 `<=512` 格 GC 回收；竹林就地施作全面切入玩家／NPC 共用四步仲裁與 `cell_overlay` × `entities.inventory` 同交易原子 CAS（靜態零 `with_square_grid_mut`）。
+  3. **第三步（下一步）｜無職稱真活居民（`src/grid/zhulin/social/`）**：以 `SHALU_ZHULIN_WORLD_SEED` 零寫死人名生成 300～400 人，實裝 `1 底板 × 4 內在槽`（`10×12` 骨底脾氣、`ActiveDeficit`、`ProvenanceVessel`、`SubjectiveBelief`）× `6 關係插座`（共同履歷轉權利，不設好感條），以 Dave Mark 乘積補償＋Hysteresis 遲滯防抖純 Rust 驅動。
   4. **第四步｜60 天純 Rust Burn-in ＋ 真活硬驗收（`微步 3d`）**：開局前預跑 60 遊戲日寫入 PG，硬驗①無玩家續行與重啟等價、②全守恆零無中生有、③樞紐／債務／口風／改道自歷史湧現、④「作品被活人接手」與有界加權 A\* 遇事停步閉環。

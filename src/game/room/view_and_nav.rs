@@ -337,13 +337,14 @@ pub fn get_grid_room_view(
         .map(|e| e.grid_z)
         .unwrap_or(0);
     let has_substrate = crate::grid::substrate::runtime::global().is_some();
+    let live_clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
     let substrate_snap = has_substrate.then(|| {
         let pool = crate::pg::pool();
-        crate::grid::substrate::facade::CellFacade::snapshot_cached(
+        crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
             pool.as_deref(),
             x,
             y,
-            crate::grid::substrate::slots::FieldState::default(),
+            live_clock,
         )
     });
     let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
@@ -358,7 +359,14 @@ pub fn get_grid_room_view(
                 | crate::grid::substrate::slots::S0Pavement::NarrowRailBed
         )
     });
-    let cell = if !is_urban_substrate
+    let is_bamboo_substrate = substrate_snap.as_ref().is_some_and(|s| {
+        s.slots.v1 == crate::grid::substrate::slots::V1Plugin::ThornyBambooClump
+            || s.slots.u1 == crate::grid::substrate::slots::U1Plugin::ThornyBambooRhizome
+            || s.slots.has_campfire()
+            || !s.slots.s0_companions.is_empty()
+    });
+    let substrate_owns_objects = is_urban_substrate || is_bamboo_substrate;
+    let cell = if !substrate_owns_objects
         && let Some(grid) = &grid_opt
         && let Some(c) = grid.get(coord)
     {
@@ -384,7 +392,7 @@ pub fn get_grid_room_view(
     let is_peninsula = grid_opt
         .as_ref()
         .map_or(false, |g| g.has_peninsula_wilderness());
-    let cell_objects = if is_urban_substrate {
+    let cell_objects = if substrate_owns_objects {
         Vec::new()
     } else if is_peninsula && cell.objects.is_empty() && !is_inside_settlement_urban_core(x, y) {
         crate::grid::r#gen::generate_cell_objects(coord, cell.terrain)
@@ -423,8 +431,16 @@ pub fn get_grid_room_view(
                 move_to_room_id: String::new(),
             });
         }
+    } else if is_bamboo_substrate
+        && let Some(ref snap) = substrate_snap
+    {
+        let field = crate::grid::substrate::hydrology::derive_cell_field(x, y, snap.l0, live_clock);
+        room_objs.extend(crate::grid::substrate::arbitrator::substrate_slot_objects(
+            &snap.slots,
+            field,
+        ));
     }
-    if is_peninsula && !is_urban_substrate {
+    if is_peninsula && !substrate_owns_objects {
         room_objs.extend(super::player_scene::player_layer_scene_objects_for_cell(
             &cell,
         ));

@@ -464,12 +464,13 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                 let _ = crate::db::update_cell_state(x, y, explored, freshness, &objs);
             }
         }
+        let live_clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
         let here_snap = has_substrate.then(|| {
-            crate::grid::substrate::facade::CellFacade::snapshot_cached(
+            crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
                 pool.as_deref(),
                 x,
                 y,
-                field,
+                live_clock,
             )
         });
         let current_cell =

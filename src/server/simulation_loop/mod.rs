@@ -75,6 +75,27 @@ fn run_simulation_tick(
     run_view_simulation(Vec::<Pos>::new, None);
     if let Some(pool) = crate::pg::pool() {
         let _ = crate::grid::substrate::facade::CellFacade::flush_pave_heat(&pool, false);
+        static LAST_OVERLAY_GC: std::sync::atomic::AtomicI64 =
+            std::sync::atomic::AtomicI64::new(0);
+        let now_gc = crate::game::now_unix();
+        let prev_gc = LAST_OVERLAY_GC.load(std::sync::atomic::Ordering::Relaxed);
+        if now_gc - prev_gc >= 30
+            && LAST_OVERLAY_GC
+                .compare_exchange(
+                    prev_gc,
+                    now_gc,
+                    std::sync::atomic::Ordering::SeqCst,
+                    std::sync::atomic::Ordering::Relaxed,
+                )
+                .is_ok()
+        {
+            let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
+            let _ = crate::grid::substrate::settle::gc_expired_overlays(
+                &pool,
+                clock,
+                crate::grid::substrate::settle::MAX_GC_PER_TICK,
+            );
+        }
     }
 
     let now_unix = SystemTime::now()

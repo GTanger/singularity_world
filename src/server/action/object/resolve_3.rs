@@ -135,6 +135,33 @@ fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::mo
     {
         return Some(obj);
     }
+    if crate::grid::substrate::runtime::global().is_some()
+        && let Some((coord, 0)) = crate::grid::parse_grid_room_id_z(room_id)
+    {
+        let pool = crate::pg::pool();
+        let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
+        let snap = crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
+            pool.as_deref(),
+            coord.x,
+            coord.y,
+            clock,
+        );
+        let field =
+            crate::grid::substrate::hydrology::derive_cell_field(coord.x, coord.y, snap.l0, clock);
+        if let Some(obj) = crate::grid::substrate::arbitrator::substrate_slot_objects(
+            &snap.slots,
+            field,
+        )
+        .into_iter()
+        .find(|o| {
+            o.id == target
+                || o.name == target
+                || o.name.contains(target)
+                || target.contains(&o.name)
+        }) {
+            return Some(obj);
+        }
+    }
     let cell = if let Some(coord) = parse_grid_room_id(room_id) {
         crate::server::grid_manager::get_runtime_grid_cell(coord)?
     } else {
