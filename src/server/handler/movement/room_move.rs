@@ -198,11 +198,13 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
                 return;
             }
             let plan_opt = if has_substrate {
-                crate::grid::substrate::facade::CellFacade::plan_path(
+                let live_clock =
+                    crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
+                crate::grid::substrate::facade::CellFacade::plan_path_live_clock(
                     pool.as_deref(),
                     (gx, gy),
                     (tx, ty),
-                    field,
+                    live_clock,
                     64,
                 )
                 .and_then(|path| {
@@ -220,11 +222,11 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
                         };
                         steps.push(d.to_string());
                     }
-                    let dest_snap = crate::grid::substrate::facade::CellFacade::snapshot_cached(
+                    let dest_snap = crate::grid::substrate::facade::CellFacade::snapshot_live_clock(
                         pool.as_deref(),
                         tx,
                         ty,
-                        field,
+                        live_clock,
                     );
                     Some((
                         path[1].0 - gx,

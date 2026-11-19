@@ -6,6 +6,8 @@
 //! - `sim`：320 名真活居民純 Rust 演化與嚴格零和守恆。
 //! - 本模組提供 PostgreSQL `zhulin_social_state` 壓縮持久化、執行期單例、同格同層查詢、端詳／交談與診斷報表。
 
+pub mod burn_in;
+pub mod handover;
 pub mod person;
 pub mod relations;
 pub mod sim;
@@ -25,6 +27,7 @@ use crate::grid::SHALU_ZHULIN_WORLD_SEED;
 use crate::grid::substrate::hydrology::WorldClockSnapshot;
 use crate::store::sql::DbPool;
 
+use handover::{PlayerWorkKind, WorkAdoptionOutcome};
 use person::{BeliefKind, ConductEdge, CoreObsession, SocialResident};
 use sim::{DEFAULT_RESIDENT_COUNT, SocialWorldState, StreetEcho};
 
@@ -96,6 +99,10 @@ pub struct SocialSummaryReport {
     pub bamboo_unit_mg: i32,
     pub shoot_unit_mg: i32,
     pub relation_edges: usize,
+    pub high_water_reroutes: u64,
+    pub class_mobility_count: u64,
+    pub player_works_total: usize,
+    pub player_works_adopted: usize,
     pub socket_counts: HashMap<String, usize>,
     pub top_hubs: Vec<HubResidentSummary>,
     pub recent_echoes: Vec<StreetEcho>,
@@ -414,6 +421,38 @@ pub fn talk_to_resident(
     Some(result)
 }
 
+/// 玩家完成現場施作後登記作品，並立刻嘗試由鄰近活態居民接手（若接手則記名落盤並回傳現場接手敘事）。
+pub fn record_player_work_and_adopt(
+    pool: Option<&DbPool>,
+    player_id: &str,
+    gx: i32,
+    gy: i32,
+    kind: PlayerWorkKind,
+    clock: WorldClockSnapshot,
+) -> Option<WorkAdoptionOutcome> {
+    ensure_initialized(pool);
+    let (outcome, snapshot) = {
+        let mut guard = SOCIAL_WORLD.write();
+        let state = guard.as_mut()?;
+        let out = state.register_player_work(player_id, gx, gy, kind, clock.game_day);
+        if let Some(ref adopted) = out {
+            // 接手者自報姓名後，玩家即知曉這位活人真名
+            state
+                .known_by_player
+                .entry(player_id.to_string())
+                .or_default()
+                .insert(adopted.resident_id.clone());
+        }
+        (out, Some(state.clone()))
+    };
+    if let (Some(p), Some(st)) = (pool, snapshot)
+        && let Err(e) = save_state_to_pg(p, &st)
+    {
+        tracing::warn!("zhulin::social save after player work failed: {e}");
+    }
+    outcome
+}
+
 /// 產出完整活態社會診斷報表（含守恆差、前 10 樞紐、六大插座計數、近期街頭回聲）。
 pub fn summary_report() -> Option<SocialSummaryReport> {
     let guard = SOCIAL_WORLD.read();
@@ -484,6 +523,14 @@ pub fn build_summary_report(state: &SocialWorldState) -> SocialSummaryReport {
         bamboo_unit_mg: state.valves.bamboo_unit_mg,
         shoot_unit_mg: state.valves.shoot_unit_mg,
         relation_edges: state.ledger.edges.len(),
+        high_water_reroutes: state.high_water_reroutes,
+        class_mobility_count: state.class_mobility_count,
+        player_works_total: state.player_works.len(),
+        player_works_adopted: state
+            .player_works
+            .iter()
+            .filter(|w| w.adopted_by_id.is_some())
+            .count(),
         socket_counts,
         top_hubs,
         recent_echoes,

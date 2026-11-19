@@ -417,6 +417,52 @@ impl RelationLedger {
         (owed_out, owed_in)
     }
 
+    /// 一次線性掃描計算全鎮每位居民之 `(欠外債, 應收債權)`（$O(E)$，供每拍批次決策使用）。
+    pub fn all_debt_summaries(&self) -> HashMap<String, (i32, i32)> {
+        let mut map: HashMap<String, (i32, i32)> = HashMap::new();
+        for edge in self.edges.values() {
+            for s in &edge.sockets {
+                if let RelationSocket::Debt {
+                    creditor_id,
+                    debtor_id,
+                    amount_mg,
+                    ..
+                } = s
+                {
+                    map.entry(debtor_id.clone()).or_default().0 += *amount_mg;
+                    map.entry(creditor_id.clone()).or_default().1 += *amount_mg;
+                }
+            }
+        }
+        map
+    }
+
+    /// 取得目前所有活躍債務插座 `(creditor_id, debtor_id, amount_mg, due_day)`（確定性排序）。
+    pub fn active_debts_sorted(&self) -> Vec<(String, String, i32, i32)> {
+        let mut out = Vec::new();
+        for edge in self.edges.values() {
+            for s in &edge.sockets {
+                if let RelationSocket::Debt {
+                    creditor_id,
+                    debtor_id,
+                    amount_mg,
+                    due_day,
+                    ..
+                } = s
+                {
+                    out.push((
+                        creditor_id.clone(),
+                        debtor_id.clone(),
+                        *amount_mg,
+                        *due_day,
+                    ));
+                }
+            }
+        }
+        out.sort();
+        out
+    }
+
     /// 統計每位居民的活躍關係插座度數（用於自然湧現全鎮前 8～12 名風雲樞紐）。
     pub fn hub_degrees(&self) -> HashMap<String, usize> {
         let mut deg: HashMap<String, usize> = HashMap::new();

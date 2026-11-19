@@ -182,11 +182,37 @@ fn try_grid_cell_object_action(
             }
             let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
             let outcome = execute_world_intent(&pool, pid, coord.x, coord.y, clock, intent);
-            let narrative = if outcome.success && !jit_prefix.is_empty() {
+            let mut narrative = if outcome.success && !jit_prefix.is_empty() {
                 format!("{jit_prefix}{}", outcome.narrative)
             } else {
                 outcome.narrative
             };
+            // 第四步閉環：「玩家作品被活人接手」——施作成功後登記作品並由鄰近活態居民自然接手
+            if outcome.success {
+                use crate::grid::zhulin::social::handover::PlayerWorkKind;
+                let work_kind = match intent {
+                    WorldIntent::IgniteCampfire => Some(PlayerWorkKind::CampfireLit),
+                    WorldIntent::ClearBamboo => Some(PlayerWorkKind::TrailCleared),
+                    WorldIntent::GatherBambooCulm => Some(PlayerWorkKind::BambooHarvested),
+                    WorldIntent::GatherCompanion(S0Companion::EmergingBambooShoot) => {
+                        Some(PlayerWorkKind::ShootHarvested)
+                    }
+                    _ => None,
+                };
+                if let Some(wk) = work_kind
+                    && let Some(adopted) = crate::grid::zhulin::social::record_player_work_and_adopt(
+                        Some(&pool),
+                        pid,
+                        coord.x,
+                        coord.y,
+                        wk,
+                        clock,
+                    )
+                {
+                    narrative.push_str("\n\n");
+                    narrative.push_str(&adopted.narrative);
+                }
+            }
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
                 action: action.into(),

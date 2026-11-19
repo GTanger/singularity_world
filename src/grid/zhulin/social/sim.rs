@@ -12,6 +12,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::grid::substrate::hydrology::WorldClockSnapshot;
 
+use super::handover::{
+    PlayerWorkKind, PlayerWorkRecord, WorkAdoptionOutcome, try_adopt_player_work,
+};
 use super::person::{
     BeliefKind, ConductEdge, CoreObsession, ProvenanceVessel, ResidentActivityKind, SocialResident,
     SubjectiveBelief, generate_residents, splitmix64,
@@ -20,7 +23,7 @@ use super::relations::{
     GrantedRight, RelationLedger, RelationSocket, SharedHistoryEntry, SharedHistoryKind,
     propagate_witness_resonance,
 };
-use super::utility::{EconomyValves, choose_next_activity};
+use super::utility::{EconomyValves, choose_next_activity_with_debt};
 
 /// 預設沙鹿竹林首發聚落活態居民規模（規格書建議 300～400 人）。
 pub const DEFAULT_RESIDENT_COUNT: usize = 320;
@@ -71,6 +74,15 @@ pub struct SocialWorldState {
     pub known_by_player: HashMap<String, HashSet<String>>,
     /// 近期公開層街頭回聲
     pub recent_echoes: Vec<StreetEcho>,
+    /// 玩家留於世界之作品與活人接手紀錄（上限 64 條，向下相容舊快照）
+    #[serde(default)]
+    pub player_works: Vec<PlayerWorkRecord>,
+    /// 累計因高水期脈衝而改道至高地／石板街之人次（供 60 日 Burn-in 硬驗收）
+    #[serde(default)]
+    pub high_water_reroutes: u64,
+    /// 累計自然階級流動人次（先鋒入城開業、空倉掌櫃轉入竹海）
+    #[serde(default)]
+    pub class_mobility_count: u64,
 }
 
 impl SocialWorldState {
@@ -88,7 +100,47 @@ impl SocialWorldState {
             valves: EconomyValves::default(),
             known_by_player: HashMap::new(),
             recent_echoes: Vec::new(),
+            player_works: Vec::new(),
+            high_water_reroutes: 0,
+            class_mobility_count: 0,
         }
+    }
+
+    /// 登記一筆玩家現場作品並立即嘗試由鄰近活態居民接手（若暫無鄰近者則留待後續拍次自然發現）。
+    pub fn register_player_work(
+        &mut self,
+        player_id: &str,
+        gx: i32,
+        gy: i32,
+        kind: PlayerWorkKind,
+        game_day: i32,
+    ) -> Option<WorkAdoptionOutcome> {
+        let work_id = format!(
+            "pw_{}_{}_{}_{}",
+            self.tick_count,
+            gx,
+            gy,
+            self.player_works.len() + 1
+        );
+        let mut record = PlayerWorkRecord {
+            work_id,
+            player_id: player_id.to_string(),
+            gx,
+            gy,
+            kind,
+            game_day,
+            adopted_by_id: None,
+            adopted_by_name: None,
+            adoption_note: None,
+        };
+        let outcome =
+            try_adopt_player_work(&mut self.residents, &mut self.recent_echoes, &mut record, 5);
+        self.player_works.push(record);
+        if self.player_works.len() > 64 {
+            let drop_n = self.player_works.len() - 64;
+            self.player_works.drain(0..drop_n);
+        }
+        outcome
     }
 
     /// 嚴格鎂晶守恆差：恆為 `0` 代表全鎮從未對空氣無中生有刷錢。
@@ -123,9 +175,13 @@ impl SocialWorldState {
             return;
         }
 
-        // 1. 內生缺口演進 + Dave Mark + Hysteresis 選活動 + 空間位移
+        // 1. O(E) 一次預建全鎮債務摘要，再逐人推進內生缺口 + Dave Mark + Hysteresis + 空間位移
+        let debt_map = self.ledger.all_debt_summaries();
         for idx in 0..n {
-            let (owed_out, _) = self.ledger.debt_summary_of(&self.residents[idx].id);
+            let (owed_out, owed_in) = debt_map
+                .get(&self.residents[idx].id)
+                .copied()
+                .unwrap_or((0, 0));
             let r = &mut self.residents[idx];
             r.deficit.hunger += if r.current_activity == ResidentActivityKind::TendHomeRest {
                 0.03
@@ -150,8 +206,14 @@ impl SocialWorldState {
             r.deficit.clamp_all();
 
             let high_water_here = clock.is_high_water_pulse_at(r.gx, r.gy);
-            let next_act =
-                choose_next_activity(r, &self.ledger, &self.valves, hour, high_water_here);
+            let next_act = choose_next_activity_with_debt(
+                r,
+                owed_out,
+                owed_in,
+                &self.valves,
+                hour,
+                high_water_here,
+            );
             if next_act == r.current_activity {
                 r.activity_ticks = r.activity_ticks.saturating_add(1);
             } else {
@@ -163,10 +225,14 @@ impl SocialWorldState {
                 r.soul_seed
                     .wrapping_add(self.tick_count.wrapping_mul(0x9E37_79B9)),
             );
-            let (tx, ty, tz) = target_coord_for_activity(r, next_act, is_night, high_water_here, h);
+            let (tx, ty, tz, rerouted) =
+                target_coord_for_activity(r, next_act, is_night, high_water_here, h);
             r.gx = tx;
             r.gy = ty;
             r.gz = tz;
+            if rerouted {
+                self.high_water_reroutes = self.high_water_reroutes.saturating_add(1);
+            }
         }
 
         // 2. 索引同格名單與樞紐度數（供優先連接與同格互動使用）
@@ -245,12 +311,20 @@ impl SocialWorldState {
             }
         }
 
-        // 4. 閥門 3：每 12 拍執行一次有界西環台車外運（疏通竹材庫存、嚴格記帳守恆）
+        // 4. 巡檢尚未被接手之玩家作品：讓經過附近之活態居民自然接手
+        for work in &mut self.player_works {
+            if work.adopted_by_id.is_none() {
+                let _ =
+                    try_adopt_player_work(&mut self.residents, &mut self.recent_echoes, work, 4);
+            }
+        }
+
+        // 5. 閥門 3：每 12 拍執行一次有界西環台車外運（疏通竹材庫存、嚴格記帳守恆）
         if self.tick_count.is_multiple_of(12) {
             self.run_west_railcar_valve();
         }
 
-        // 5. 閥門 2：依實物總存量重新校準全鎮牌價
+        // 6. 閥門 2：依實物總存量重新校準全鎮牌價
         self.valves.recalibrate_prices(&self.residents);
         debug_assert_eq!(
             self.conservation_diff(),
@@ -590,6 +664,7 @@ impl SocialWorldState {
         {
             self.residents[idx].current_activity = ResidentActivityKind::ForageBambooWild;
             self.residents[idx].activity_ticks = 0;
+            self.class_mobility_count = self.class_mobility_count.saturating_add(1);
             return;
         }
 
@@ -750,6 +825,7 @@ impl SocialWorldState {
         if self.residents[idx].pioneer_origin && self.residents[idx].magnesium >= 72 {
             self.residents[idx].pioneer_origin = false;
             self.residents[idx].current_activity = ResidentActivityKind::RunArcadeCounter;
+            self.class_mobility_count = self.class_mobility_count.saturating_add(1);
         }
     }
 
@@ -759,35 +835,13 @@ impl SocialWorldState {
         let gy = self.residents[idx].gy;
         let gz = self.residents[idx].gz;
 
-        // 找出與此人有關的一筆債務（優先清償自己欠的，其次催討別人欠的）
-        let mut debt_target: Option<(String, String, i32, i32)> = None;
-        for edge in self.ledger.edges.values() {
-            if edge.a != actor_id && edge.b != actor_id {
-                continue;
-            }
-            for s in &edge.sockets {
-                if let RelationSocket::Debt {
-                    creditor_id,
-                    debtor_id,
-                    amount_mg,
-                    due_day,
-                    ..
-                } = s
-                {
-                    debt_target =
-                        Some((creditor_id.clone(), debtor_id.clone(), *amount_mg, *due_day));
-                    if debtor_id == &actor_id {
-                        break;
-                    }
-                }
-            }
-            if debt_target
-                .as_ref()
-                .is_some_and(|(_, d, _, _)| d == &actor_id)
-            {
-                break;
-            }
-        }
+        // 找出與此人有關的一筆活躍債務（排序確定性，優先清償自己欠的，其次催討別人欠的）
+        let active_debts = self.ledger.active_debts_sorted();
+        let debt_target = active_debts
+            .iter()
+            .find(|(_, d, _, _)| d == &actor_id)
+            .or_else(|| active_debts.iter().find(|(c, _, _, _)| c == &actor_id))
+            .cloned();
 
         let Some((cred_id, debt_id, amount_mg, due_day)) = debt_target else {
             return;
@@ -1005,14 +1059,14 @@ fn upsert_expedition_socket(sockets: &mut Vec<RelationSocket>, saved: bool) {
     }
 }
 
-/// 依當前意圖、晝夜與高水改道計算目標三維座標（嚴格落於 `Landmass #01` 可步行座標）。
+/// 依當前意圖、晝夜與高水改道計算目標三維座標（回傳 `(gx, gy, gz, rerouted_by_high_water)`）。
 fn target_coord_for_activity(
     r: &SocialResident,
     act: ResidentActivityKind,
     is_night: bool,
     high_water_here: bool,
     h: u64,
-) -> (i32, i32, i16) {
+) -> (i32, i32, i16, bool) {
     let pick = |arr: &[(i32, i32)]| -> (i32, i32) { arr[(h as usize) % arr.len()] };
     match act {
         ResidentActivityKind::TendHomeRest => {
@@ -1023,16 +1077,16 @@ fn target_coord_for_activity(
             } else {
                 r.home_gz
             };
-            (r.home_gx, r.home_gy, tz)
+            (r.home_gx, r.home_gy, tz, false)
         }
         ResidentActivityKind::RunArcadeCounter
         | ResidentActivityKind::TendHearthStove
         | ResidentActivityKind::ForgeAndSharpen => {
             if matches!(r.home_gy, 1 | -1 | -2) && (-6..=-2).contains(&r.home_gx) {
-                (r.home_gx, r.home_gy, 0)
+                (r.home_gx, r.home_gy, 0, false)
             } else {
                 let (ax, ay) = pick(&ARCADE_FRONT_COORDS);
-                (ax, ay, 0)
+                (ax, ay, 0, false)
             }
         }
         ResidentActivityKind::EatWarmMeal
@@ -1043,27 +1097,27 @@ fn target_coord_for_activity(
             } else {
                 pick(&STREET_HUB_COORDS)
             };
-            (sx, sy, 0)
+            (sx, sy, 0, false)
         }
         ResidentActivityKind::SeekClinicCare => {
             if h.is_multiple_of(2) {
-                (-4, 1, 0)
+                (-4, 1, 0, false)
             } else {
-                (-3, -1, 0)
+                (-3, -1, 0, false)
             }
         }
         ResidentActivityKind::HaulCartGoods => {
             let (sx, sy) = pick(&STREET_HUB_COORDS);
-            (sx, sy, 0)
+            (sx, sy, 0, false)
         }
         ResidentActivityKind::TendFarmPlot => {
             if high_water_here {
                 // 高水期農畦泥濘積水，改走石板街整補
                 let (sx, sy) = pick(&STREET_HUB_COORDS);
-                (sx, sy, 0)
+                (sx, sy, 0, true)
             } else {
                 let (fx, fy) = pick(&FARM_PLOT_COORDS);
-                (fx, fy, 0)
+                (fx, fy, 0, false)
             }
         }
         ResidentActivityKind::ForageBambooWild => {
@@ -1071,10 +1125,10 @@ fn target_coord_for_activity(
                 // 高水期避開低窪水脈，轉走較高坡地 `(1, -1)` / `(2, 0)` / `(3, -1)`
                 let high_groves = [(1, -1), (2, 0), (3, -1)];
                 let (wx, wy) = pick(&high_groves);
-                (wx, wy, 0)
+                (wx, wy, 0, true)
             } else {
                 let (wx, wy) = pick(&BAMBOO_GROVE_COORDS);
-                (wx, wy, 0)
+                (wx, wy, 0, false)
             }
         }
     }

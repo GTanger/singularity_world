@@ -10,6 +10,7 @@ use super::cache::{
     invalidate_chunk, put_cached_overlay, remove_cached_overlay,
 };
 use super::coords::{DerivedSlope, SensoryEdgeCue};
+use super::hydrology::WorldClockSnapshot;
 use super::l0_cell::L0Cell;
 use super::render_synth::{SynthesizedCellView, synthesize_cell};
 use super::runtime;
@@ -304,7 +305,30 @@ impl CellFacade {
         field: FieldState,
         max_radius: i32,
     ) -> Option<Vec<(i32, i32)>> {
+        Self::plan_path_inner(pool, start, goal, Some(field), None, max_radius)
+    }
+
+    /// 帶即時世界時鐘之有界加權 A* 尋路（動態納入夏漲高水期步長懲罰與半日潮阻隔）。
+    pub fn plan_path_live_clock(
+        pool: Option<&DbPool>,
+        start: (i32, i32),
+        goal: (i32, i32),
+        clock: WorldClockSnapshot,
+        max_radius: i32,
+    ) -> Option<Vec<(i32, i32)>> {
+        Self::plan_path_inner(pool, start, goal, None, Some(clock), max_radius)
+    }
+
+    fn plan_path_inner(
+        pool: Option<&DbPool>,
+        start: (i32, i32),
+        goal: (i32, i32),
+        fixed_field: Option<FieldState>,
+        live_clock: Option<WorldClockSnapshot>,
+        max_radius: i32,
+    ) -> Option<Vec<(i32, i32)>> {
         const MAX_EXPANDED: usize = 4_096;
+        const MIN_STEP_MS: u32 = 220;
         if start == goal {
             return Some(vec![start]);
         }
@@ -312,8 +336,18 @@ impl CellFacade {
         if dist_cheb > max_radius {
             return None;
         }
-        let start_snap = Self::snapshot_cached(pool, start.0, start.1, field);
-        let goal_snap = Self::snapshot_cached(pool, goal.0, goal.1, field);
+        let load_snap = |x: i32, y: i32| -> CellSnapshot {
+            if let Some(clk) = live_clock {
+                Self::snapshot_live_clock(pool, x, y, clk)
+            } else {
+                Self::snapshot_cached(pool, x, y, fixed_field.unwrap_or_default())
+            }
+        };
+        let heuristic = |x: i32, y: i32| -> u32 {
+            ((goal.0 - x).unsigned_abs() + (goal.1 - y).unsigned_abs()).saturating_mul(MIN_STEP_MS)
+        };
+        let start_snap = load_snap(start.0, start.1);
+        let goal_snap = load_snap(goal.0, goal.1);
         if start_snap.l0.landmass_id != goal_snap.l0.landmass_id
             || !goal_snap.synth.walkable_on_landmass_01
         {
@@ -324,14 +358,15 @@ impl CellFacade {
         snaps.insert(start, start_snap);
         snaps.insert(goal, goal_snap);
 
-        let mut dist: HashMap<(i32, i32), u32> = HashMap::new();
+        let mut g_cost: HashMap<(i32, i32), u32> = HashMap::new();
         let mut prev: HashMap<(i32, i32), (i32, i32)> = HashMap::new();
-        let mut heap: BinaryHeap<Reverse<(u32, i32, i32)>> = BinaryHeap::new();
-        dist.insert(start, 0);
-        heap.push(Reverse((0, start.0, start.1)));
+        // 最小堆元素：(f_score = g + h, g_score, x, y)
+        let mut heap: BinaryHeap<Reverse<(u32, u32, i32, i32)>> = BinaryHeap::new();
+        g_cost.insert(start, 0);
+        heap.push(Reverse((heuristic(start.0, start.1), 0, start.0, start.1)));
 
         let mut expanded = 0usize;
-        while let Some(Reverse((cost, cx, cy))) = heap.pop() {
+        while let Some(Reverse((_f, cost, cx, cy))) = heap.pop() {
             if (cx, cy) == goal {
                 let mut path = vec![goal];
                 let mut cur = goal;
@@ -342,7 +377,7 @@ impl CellFacade {
                 path.reverse();
                 return Some(path);
             }
-            if cost > *dist.get(&(cx, cy)).unwrap_or(&u32::MAX) {
+            if cost > *g_cost.get(&(cx, cy)).unwrap_or(&u32::MAX) {
                 continue;
             }
             expanded += 1;
@@ -351,7 +386,7 @@ impl CellFacade {
             }
             let cur_snap = snaps
                 .entry((cx, cy))
-                .or_insert_with(|| Self::snapshot_cached(pool, cx, cy, field))
+                .or_insert_with(|| load_snap(cx, cy))
                 .clone();
 
             for (dx, dy) in [(0, 1), (1, 0), (0, -1), (-1, 0)] {
@@ -360,17 +395,16 @@ impl CellFacade {
                 if (nx - start.0).abs().max((ny - start.1).abs()) > max_radius {
                     continue;
                 }
-                let next_snap = snaps
-                    .entry((nx, ny))
-                    .or_insert_with(|| Self::snapshot_cached(pool, nx, ny, field));
+                let next_snap = snaps.entry((nx, ny)).or_insert_with(|| load_snap(nx, ny));
                 if !can_step_horizontal(&cur_snap, next_snap) {
                     continue;
                 }
                 let next_cost = cost.saturating_add(u32::from(next_snap.step_ms));
-                if next_cost < *dist.get(&(nx, ny)).unwrap_or(&u32::MAX) {
-                    dist.insert((nx, ny), next_cost);
+                if next_cost < *g_cost.get(&(nx, ny)).unwrap_or(&u32::MAX) {
+                    g_cost.insert((nx, ny), next_cost);
                     prev.insert((nx, ny), (cx, cy));
-                    heap.push(Reverse((next_cost, nx, ny)));
+                    let f_score = next_cost.saturating_add(heuristic(nx, ny));
+                    heap.push(Reverse((f_score, next_cost, nx, ny)));
                 }
             }
         }

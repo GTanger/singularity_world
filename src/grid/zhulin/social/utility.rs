@@ -111,8 +111,20 @@ pub fn choose_next_activity(
     hour_of_day: u32,
     high_water_nearby: bool,
 ) -> ResidentActivityKind {
-    let is_night = hour_of_day >= 22 || hour_of_day < 5;
     let (owed_out, owed_in) = ledger.debt_summary_of(&r.id);
+    choose_next_activity_with_debt(r, owed_out, owed_in, valves, hour_of_day, high_water_nearby)
+}
+
+/// 批次高速版效用決策（直接接收預計算之 `(owed_out, owed_in)`，避免 $O(N \cdot E)$ 重複掃邊）。
+pub fn choose_next_activity_with_debt(
+    r: &SocialResident,
+    owed_out: i32,
+    owed_in: i32,
+    valves: &EconomyValves,
+    hour_of_day: u32,
+    high_water_nearby: bool,
+) -> ResidentActivityKind {
+    let is_night = hour_of_day >= 22 || hour_of_day < 5;
 
     // 急迫安全中斷：重傷或極飢不鎖定舊活動
     let urgent = r.deficit.injury >= 0.65 || r.deficit.hunger >= 0.85 || r.deficit.fatigue >= 0.88;

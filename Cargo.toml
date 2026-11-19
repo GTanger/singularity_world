@@ -147,6 +147,10 @@ path = "src/bin/white_tower_living_world_check.rs"
 name = "white-tower-economy-compile"
 path = "src/bin/white_tower_economy_compile.rs"
 
+[[bin]]
+name = "zhulin-social-burnin"
+path = "src/bin/zhulin_social_burnin.rs"
+
 [dev-dependencies]
 tempfile = "3"
 

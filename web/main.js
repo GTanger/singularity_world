@@ -379,13 +379,34 @@
 									autoWalkState.timer = null;
 								}
 								if (autoWalkState.queue.length > 0) {
-									autoWalkState.timer = setTimeout(function () {
-										autoWalkState.timer = null;
-										if (!autoWalkState.active || !autoWalkState.queue.length) return;
-										var nextDir = autoWalkState.queue.shift();
-										autoWalkState.stepIndex += 1;
-										send({ type: 'move', direction: nextDir });
-									}, 280);
+									// 微步 3d 遇事停步（Stop-on-Event）：行經途中遇高水漫流警示或遇見已結識熟人時主動收步
+									var stopReason = '';
+									var descStr = String(msg.description || '');
+									if (descStr.indexOf('高水') !== -1 || descStr.indexOf('漫流') !== -1 || descStr.indexOf('淹沒') !== -1) {
+										stopReason = '前方地勢低窪、高水漫流，你先收住腳步觀望水勢。';
+									} else if (Array.isArray(msg.entities)) {
+										for (var ei = 0; ei < msg.entities.length; ei++) {
+											var ent = msg.entities[ei];
+											if (ent && ent.kind === 'npc' && ent.interaction_priority && ent.display_name && ent.display_name !== '陌生人' && String(ent.id || '').indexOf('zl_res_') === 0) {
+												stopReason = '途經【' + String(msg.room_name || '街口') + '】時迎面碰上「' + ent.display_name + '」，你順勢收住腳步。';
+												break;
+											}
+										}
+									}
+									if (stopReason) {
+										cancelAutoWalk();
+										if (appendNarrative && window.SwNarrative) {
+											appendNarrative(window.SwNarrative.format(stopReason), 'Move');
+										}
+									} else {
+										autoWalkState.timer = setTimeout(function () {
+											autoWalkState.timer = null;
+											if (!autoWalkState.active || !autoWalkState.queue.length) return;
+											var nextDir = autoWalkState.queue.shift();
+											autoWalkState.stepIndex += 1;
+											send({ type: 'move', direction: nextDir });
+										}, 280);
+									}
 								} else {
 									var arrivedName = autoWalkState.destName || msg.room_name || '目的地';
 									autoWalkState.active = false;
