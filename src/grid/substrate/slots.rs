@@ -377,6 +377,9 @@ pub fn derive_pristine_slots(gx: i32, gy: i32, l0: L0Cell, world_seed: u64) -> S
         }
         _ => {}
     }
+    if let Some(street_stack) = super::arcade_street::derive_arcade_street_slots(gx, gy, l0) {
+        return street_stack;
+    }
     if l0.landmass_id != landmass::DAJIA_WU_TABLELAND
         || water != SurfaceWaterKind::None
         || !matches!(

@@ -580,6 +580,7 @@ mod tests {
             current_activity: "正在炭烤牛肉番薯攤前翻動原牛肉串，高聲叫賣".to_string(),
             grid_x: None,
             grid_y: None,
+            grid_z: 0,
         };
 
         // 1. 營業中的攤販應動態生成攤位物件

@@ -1,11 +1,15 @@
 impl Store {
+    /// 地圖公開層（`z == 0`）人數統計：嚴格排除室內／樓上（`grid_z > 0`），杜絕穿樓透視。
     pub fn npc_counts_by_grid(&self) -> std::collections::HashMap<(i32, i32), u16> {
         let mut counts = std::collections::HashMap::new();
         for e in self.entities.values() {
-            if e.kind == "npc" && e.vit > 0 && !is_deprecated_npc_id(&e.id) {
-                if let Some(coord) = self.effective_entity_grid(e) {
-                    *counts.entry(coord).or_insert(0) += 1;
-                }
+            if e.kind == "npc"
+                && e.vit > 0
+                && e.grid_z == 0
+                && !is_deprecated_npc_id(&e.id)
+                && let Some(coord) = self.effective_entity_grid(e)
+            {
+                *counts.entry(coord).or_insert(0) += 1;
             }
         }
         let time_tick = (crate::game::now_unix() / 180) as i64;

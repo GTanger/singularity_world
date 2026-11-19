@@ -292,6 +292,7 @@ mod tests {
             current_activity: String::new(),
             grid_x: None,
             grid_y: None,
+            grid_z: 0,
         }
     }
 

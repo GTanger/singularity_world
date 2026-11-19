@@ -157,8 +157,8 @@ pub use soul_seed::{
 
 mod entity;
 pub use entity::{
-    add_magnesium, clear_last_observed, get_entities_at_grid, get_entities_in_box,
-    get_entities_in_room, get_entity, get_entity_room, get_moving_entities,
+    add_magnesium, clear_last_observed, get_entities_at_grid, get_entities_at_grid_z,
+    get_entities_in_box, get_entities_in_room, get_entity, get_entity_room, get_moving_entities,
     get_personality_for_entity, set_move_target, transfer_magnesium, update_last_observed,
     update_position, update_vit,
 };
@@ -262,6 +262,7 @@ pub fn store_entity_to_character(e: &Entity, npc_display_title: &str) -> Charact
         current_activity: e.current_activity.clone(),
         grid_x: e.grid_x,
         grid_y: e.grid_y,
+        grid_z: e.grid_z,
         thoughts: e.thoughts.clone(),
     };
     if e.kind == "npc" {

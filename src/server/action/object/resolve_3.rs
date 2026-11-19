@@ -1,7 +1,139 @@
+fn resolve_subspace_fixture(target: &str) -> Option<crate::model::RoomObject> {
+    let fixtures = [
+        crate::model::RoomObject {
+            id: "subspace_bed".to_string(),
+            name: "床榻".to_string(),
+            owner: String::new(),
+            sockets: vec![
+                "Look".to_string(),
+                "Rest".to_string(),
+                "Sleep".to_string(),
+                "Use".to_string(),
+            ],
+            responses: std::collections::HashMap::from([
+                (
+                    "Look".to_string(),
+                    "靠牆安放著寬敞厚實的實木床榻，鋪著乾爽棉麻床單與蓬鬆暖被，足供家戶安歇。".to_string(),
+                ),
+                (
+                    "Rest".to_string(),
+                    "你在床榻邊坐下歇息，卸下肩頭行囊，緊繃的筋骨漸漸舒緩下來。".to_string(),
+                ),
+                (
+                    "Sleep".to_string(),
+                    "你和衣臥上床榻深沉安歇，遠離街面喧囂，周身疲憊一掃而空。".to_string(),
+                ),
+                (
+                    "Use".to_string(),
+                    "你靠著軟枕靜坐調息，氣息逐漸勻長沉穩。".to_string(),
+                ),
+            ]),
+            move_to_room_id: String::new(),
+        },
+        crate::model::RoomObject {
+            id: "subspace_cabinet".to_string(),
+            name: "儲物木櫃".to_string(),
+            owner: String::new(),
+            sockets: vec![
+                "Look".to_string(),
+                "Open".to_string(),
+                "StoreStash".to_string(),
+                "RetrieveStash".to_string(),
+                "Use".to_string(),
+            ],
+            responses: std::collections::HashMap::from([
+                (
+                    "Look".to_string(),
+                    "屋角立著榫接紮實的樟木儲物櫃，門扇嚴實防潮，可妥善收存隨身物資。".to_string(),
+                ),
+                (
+                    "Open".to_string(),
+                    "你拉開儲物木櫃的木閂，櫃格整潔乾爽，清點裡頭收存的物件。".to_string(),
+                ),
+                (
+                    "StoreStash".to_string(),
+                    "你將隨身物資妥善收入儲物木櫃裡，關好櫃門。".to_string(),
+                ),
+                (
+                    "RetrieveStash".to_string(),
+                    "你打開儲物木櫃，將先前存放的物件取回隨身行囊。".to_string(),
+                ),
+                (
+                    "Use".to_string(),
+                    "你將行囊中的雜物分門別類收進儲物木櫃，雙手頓時輕省許多。".to_string(),
+                ),
+            ]),
+            move_to_room_id: String::new(),
+        },
+        crate::model::RoomObject {
+            id: "subspace_window_desk".to_string(),
+            name: "臨街窗台書案".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string(), "Operate".to_string(), "Use".to_string()],
+            responses: std::collections::HashMap::from([
+                (
+                    "Look".to_string(),
+                    "臨街木窗旁置著一張素面書案與調光油燈，推窗便能聽見樓下騎樓街面的動靜。".to_string(),
+                ),
+                (
+                    "Operate".to_string(),
+                    "你推開半扇臨街木窗透氣，順手撥亮案頭燈火，樓下石板街與遠方竹帶盡收眼底。".to_string(),
+                ),
+                (
+                    "Use".to_string(),
+                    "你在窗畔書案前靜心整理見聞與思緒，微風拂面，神思清明。".to_string(),
+                ),
+            ]),
+            move_to_room_id: String::new(),
+        },
+        crate::model::RoomObject {
+            id: "subspace_arcade_eave".to_string(),
+            name: "騎樓遮雨簷廊".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string()],
+            responses: std::collections::HashMap::from([(
+                "Look".to_string(),
+                "二樓樓板向外挑出寬敞的亭仔腳簷廊，青石柱列齊整，雨天也能沿著連簷避雨往來。".to_string(),
+            )]),
+            move_to_room_id: String::new(),
+        },
+        crate::model::RoomObject {
+            id: "subspace_street_lamp".to_string(),
+            name: "導能恆光街燈".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string()],
+            responses: std::collections::HashMap::from([(
+                "Look".to_string(),
+                "立於石板街緣的石座導能恆光燈，入夜自動亮起柔和暖光，照清整條西麓街面。".to_string(),
+            )]),
+            move_to_room_id: String::new(),
+        },
+    ];
+    fixtures.into_iter().find(|obj| {
+        obj.id == target
+            || obj.name == target
+            || obj.name.contains(target)
+            || target.contains(&obj.name)
+    })
+}
+
 fn resolve_grid_scene_object(room_id: &str, target_id: &str) -> Option<crate::model::RoomObject> {
     let target = target_id.trim();
     if target.is_empty() {
         return None;
+    }
+    if matches!(
+        target,
+        "subspace_arcade_eave" | "騎樓遮雨簷廊" | "subspace_street_lamp" | "導能恆光街燈"
+    ) && let Some(obj) = resolve_subspace_fixture(target)
+    {
+        return Some(obj);
+    }
+    if let Some((_, z)) = crate::grid::parse_grid_room_id_z(room_id)
+        && z > 0
+        && let Some(obj) = resolve_subspace_fixture(target)
+    {
+        return Some(obj);
     }
     let cell = if let Some(coord) = parse_grid_room_id(room_id) {
         crate::server::grid_manager::get_runtime_grid_cell(coord)?

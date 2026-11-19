@@ -326,18 +326,54 @@ fn reveal_missing_grid_route(entity_id: &str, direction: Direction) -> anyhow::R
 
 /// 組裝正方格 RoomView（當前格的實體、出口、物件）。
 pub fn get_grid_room_view(
-    _player_id: &str,
+    player_id: &str,
     x: i32,
     y: i32,
     game_hour: i32,
 ) -> anyhow::Result<Option<RoomView>> {
+    let viewer_z = db::get_entity(player_id)
+        .ok()
+        .flatten()
+        .map(|e| e.grid_z)
+        .unwrap_or(0);
+    let has_substrate = crate::grid::substrate::runtime::global().is_some();
+    let substrate_snap = has_substrate.then(|| {
+        let pool = crate::pg::pool();
+        crate::grid::substrate::facade::CellFacade::snapshot_cached(
+            pool.as_deref(),
+            x,
+            y,
+            crate::grid::substrate::slots::FieldState::default(),
+        )
+    });
     let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
     let coord = SquareCoord::new(x, y);
-    let cell = if let Some(grid) = &grid_opt {
-        let Some(c) = grid.get(coord) else {
-            return Ok(None);
-        };
+    let is_urban_substrate = substrate_snap.as_ref().is_some_and(|s| {
+        matches!(
+            s.slots.v1,
+            crate::grid::substrate::slots::V1Plugin::ArcadeShophouse { .. }
+        ) || matches!(
+            s.slots.s0_pave,
+            crate::grid::substrate::slots::S0Pavement::StoneStreet
+                | crate::grid::substrate::slots::S0Pavement::NarrowRailBed
+        )
+    });
+    let cell = if !is_urban_substrate
+        && let Some(grid) = &grid_opt
+        && let Some(c) = grid.get(coord)
+    {
         c.clone()
+    } else if let Some(ref snap) = substrate_snap {
+        let mut c = crate::grid::GridCell::new(
+            coord,
+            crate::grid::Terrain::Plain,
+            snap.synth.micro_name.to_string(),
+        );
+        c.zone = snap.synth.zone_name.to_string();
+        c.description = snap.synth.terrain_line.clone();
+        c
+    } else if grid_opt.is_some() {
+        return Ok(None);
     } else {
         let (zone, sub_geo, terrain) = crate::grid::r#gen::classify_wilderness_cell(x, y);
         let mut c = crate::grid::GridCell::new(coord, terrain, format!("{zone}・{sub_geo}"));
@@ -348,19 +384,53 @@ pub fn get_grid_room_view(
     let is_peninsula = grid_opt
         .as_ref()
         .map_or(false, |g| g.has_peninsula_wilderness());
-    let cell_objects = if is_peninsula && cell.objects.is_empty() && !is_inside_settlement_urban_core(x, y) {
+    let cell_objects = if is_urban_substrate {
+        Vec::new()
+    } else if is_peninsula && cell.objects.is_empty() && !is_inside_settlement_urban_core(x, y) {
         crate::grid::r#gen::generate_cell_objects(coord, cell.terrain)
     } else {
         cell.objects.clone()
     };
     let mut room_objs = grid_objects_to_room_objects(&cell_objects);
-    if is_peninsula {
+    if is_urban_substrate
+        && let Some(ref snap) = substrate_snap
+    {
+        if matches!(
+            snap.slots.v1,
+            crate::grid::substrate::slots::V1Plugin::ArcadeShophouse { .. }
+        ) {
+            room_objs.push(RoomObject {
+                id: "subspace_arcade_eave".to_string(),
+                name: "騎樓遮雨簷廊".to_string(),
+                owner: String::new(),
+                sockets: vec!["Look".to_string()],
+                responses: std::collections::HashMap::from([(
+                    "Look".to_string(),
+                    "二樓樓板向外挑出寬敞的亭仔腳簷廊，青石柱列齊整，雨天也能沿著連簷避雨往來。".to_string(),
+                )]),
+                move_to_room_id: String::new(),
+            });
+        } else {
+            room_objs.push(RoomObject {
+                id: "subspace_street_lamp".to_string(),
+                name: "導能恆光街燈".to_string(),
+                owner: String::new(),
+                sockets: vec!["Look".to_string()],
+                responses: std::collections::HashMap::from([(
+                    "Look".to_string(),
+                    "立於石板街緣的石座導能恆光燈，入夜自動亮起柔和暖光，照清整條西麓街面。".to_string(),
+                )]),
+                move_to_room_id: String::new(),
+            });
+        }
+    }
+    if is_peninsula && !is_urban_substrate {
         room_objs.extend(super::player_scene::player_layer_scene_objects_for_cell(
             &cell,
         ));
     }
     let mut room = Room {
-        id: grid_room_id_from_coord(x, y),
+        id: crate::grid::grid_room_id_from_coord_z(x, y, viewer_z),
         name: if cell.name.is_empty() {
             crate::grid::terrain_name_zh(cell.terrain).to_string()
         } else {
@@ -372,7 +442,35 @@ pub fn get_grid_room_view(
         objects: room_objs.clone(),
     };
     let mut exits: Vec<Exit> = Vec::new();
-    if let Some(grid) = &grid_opt {
+    if has_substrate && viewer_z == 0 {
+        let pool = crate::pg::pool();
+        let field = crate::grid::substrate::slots::FieldState::default();
+        let here = crate::grid::substrate::facade::CellFacade::snapshot_cached(
+            pool.as_deref(),
+            x,
+            y,
+            field,
+        );
+        for (dir_zh, dx, dy) in [("北", 0, 1), ("南", 0, -1), ("東", 1, 0), ("西", -1, 0)] {
+            let (nx, ny) = (x + dx, y + dy);
+            let there = crate::grid::substrate::facade::CellFacade::snapshot_cached(
+                pool.as_deref(),
+                nx,
+                ny,
+                field,
+            );
+            if crate::grid::substrate::arcade_street::can_step_horizontal(&here, &there) {
+                exits.push(Exit {
+                    direction: dir_zh.to_string(),
+                    to_room_id: grid_room_id_from_coord(nx, ny),
+                    to_room_name: there.synth.micro_name.to_string(),
+                    route_id: String::new(),
+                    mode: String::new(),
+                    travel_cost: 0,
+                });
+            }
+        }
+    } else if let Some(grid) = &grid_opt {
         if !cell.explicit_exits.is_empty() {
             for ex in &cell.explicit_exits {
                 let target_name = grid
@@ -421,7 +519,7 @@ pub fn get_grid_room_view(
             }
         }
     }
-    let mut entities = db::get_entities_at_grid(x, y, game_hour)
+    let mut entities = db::get_entities_at_grid_z(x, y, viewer_z, game_hour)
         .map(filter_room_entities)
         .unwrap_or_default();
 

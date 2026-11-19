@@ -211,12 +211,22 @@ fn npc_title_read_locked(s: &store::Store, se: &Entity, room_id: &str, game_hour
     format!("{occ}|{person}")
 }
 
-/// 與指定正方格座標重合的活體實體。
+/// 與指定正方格地面公開層（`z == 0`）重合的活體實體。
 pub fn get_entities_at_grid(x: i32, y: i32, game_hour: i32) -> anyhow::Result<Vec<Character>> {
-    let grid_room = crate::grid::grid_room_id_from_coord(x, y);
+    get_entities_at_grid_z(x, y, 0, game_hour)
+}
+
+/// 與指定三維座標 `(x, y, z)` 重合的活體實體（嚴格樓層隔離）。
+pub fn get_entities_at_grid_z(
+    x: i32,
+    y: i32,
+    z: i16,
+    game_hour: i32,
+) -> anyhow::Result<Vec<Character>> {
+    let grid_room = crate::grid::grid_room_id_from_coord_z(x, y, z);
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read();
-    let ids = s.entity_ids_at_grid(x, y);
+    let ids = s.entity_ids_at_grid_z(x, y, z);
     if ids.is_empty() {
         return Ok(Vec::new());
     }
@@ -253,7 +263,7 @@ pub fn get_entities_at_grid(x: i32, y: i32, game_hour: i32) -> anyhow::Result<Ve
 
     drop(s);
     let mut s = arc.write();
-    let ids = s.entity_ids_at_grid(x, y);
+    let ids = s.entity_ids_at_grid_z(x, y, z);
     if ids.is_empty() {
         return Ok(Vec::new());
     }

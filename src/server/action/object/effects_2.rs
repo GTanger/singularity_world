@@ -7,8 +7,10 @@ fn apply_catalog_effects_part2(
     now: i64,
     narrative: &mut String,
 ) -> bool {
-    // 寒水玉保鮮石櫃 (wt_home_jade_cabinet)
+    // 寒水玉保鮮石櫃 / 立體樓層儲物木櫃 (wt_home_jade_cabinet / subspace_cabinet)
     if (obj.id == "wt_home_jade_cabinet"
+        || obj.id == "subspace_cabinet"
+        || obj.name.contains("儲物木櫃")
         || obj.name.contains("冰鑑櫃")
         || obj.name.contains("寒水玉保鮮石櫃")
         || obj.name.contains("寒水玉雙層保鮮石櫃"))

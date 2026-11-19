@@ -242,6 +242,7 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
         },
         grid_x: Some(x),
         grid_y: Some(y),
+        grid_z: 0,
     })
 }
 

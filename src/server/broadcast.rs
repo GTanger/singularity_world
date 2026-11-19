@@ -224,12 +224,11 @@ pub fn refresh_room_views_for_room_except(
                 continue;
             }
         }
-        let player_coord = db::get_entity(&s.player_id)
-            .ok()
-            .flatten()
-            .and_then(|e| e.grid_x.zip(e.grid_y));
-        if let Some((gx, gy)) = player_coord {
-            if crate::grid::grid_room_id_from_coord(gx, gy) == target_key
+        let player_ent = db::get_entity(&s.player_id).ok().flatten();
+        if let Some(ent) = player_ent
+            && let Some((gx, gy)) = ent.grid_x.zip(ent.grid_y)
+        {
+            if crate::grid::grid_room_id_from_coord_z(gx, gy, ent.grid_z) == target_key
                 || player_location_key(&s.player_id) == target_key
             {
                 super::handler::push_grid_view_to_session(&s, cfg, gx, gy, gh);

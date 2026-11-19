@@ -5,7 +5,7 @@ impl Store {
         if let Some(e) = self.entities.get(entity_id)
             && let Some((x, y)) = self.effective_entity_grid(e)
         {
-            return crate::grid::grid_room_id_from_coord(x, y);
+            return crate::grid::grid_room_id_from_coord_z(x, y, e.grid_z);
         }
         if let Some(place_id) = self.get_entity_place_id(entity_id)
             && let Some(place) = self.get_place(&place_id)
@@ -19,16 +19,17 @@ impl Store {
     }
 
     pub fn set_entity_room(&mut self, entity_id: &str, room_id: &str) -> anyhow::Result<()> {
-        if let Some(coord) = crate::grid::parse_grid_room_id(room_id) {
+        if let Some((coord, z)) = crate::grid::parse_grid_room_id_z(room_id) {
             let place_id = crate::world::place::legacy_place_id(coord);
-            if self
-                .get_place(&place_id)
-                .is_some_and(|p| p.traversable && p.status != "retired")
+            if z == 0
+                && self
+                    .get_place(&place_id)
+                    .is_some_and(|p| p.traversable && p.status != "retired")
             {
                 return self.set_entity_place(entity_id, &place_id);
             }
             if self.entities.contains_key(entity_id) {
-                return self.set_entity_grid_compat(entity_id, coord.x, coord.y);
+                return self.set_entity_grid_z(entity_id, coord.x, coord.y, z);
             }
         }
         self.entity_rooms
@@ -91,47 +92,47 @@ impl Store {
     }
 
     pub fn entity_ids_in_room(&self, room_id: &str) -> Vec<String> {
-        if let Some(coord) = crate::grid::parse_grid_room_id(room_id) {
+        if let Some((coord, z)) = crate::grid::parse_grid_room_id_z(room_id) {
             self.ensure_live_npcs_seeded();
+            let canonical_room = crate::grid::grid_room_id_from_coord_z(coord.x, coord.y, z);
             let mut ids = Vec::new();
             let mut seen = std::collections::HashSet::new();
 
             let live_states = LIVE_NPC_GRID_STATES.read();
-            // 1. LIVE_NPC_GRID_STATES whose state.current == (coord.x, coord.y)
-            for (id, state) in live_states.iter() {
-                if state.current == (coord.x, coord.y) {
-                    if seen.insert(id.clone()) {
+            // 1. LIVE_NPC_GRID_STATES 皆位於地面公開層（z == 0）
+            if z == 0 {
+                for (id, state) in live_states.iter() {
+                    if state.current == (coord.x, coord.y)
+                        && self.entities.get(id).is_none_or(|e| e.grid_z == 0)
+                        && seen.insert(id.clone())
+                    {
                         ids.push(id.clone());
                     }
                 }
             }
 
-            // 2. Canonical NPCs directly from self.entities at (coord.x, coord.y) not tracked in LIVE_NPC_GRID_STATES
+            // 2. self.entities 中精準位於 (coord.x, coord.y, z) 的存活角色（玩家與 NPC 同規則）
             for (id, e) in &self.entities {
-                if e.kind == "npc"
-                    && e.vit > 0
+                if e.vit > 0
                     && e.grid_x == Some(coord.x)
                     && e.grid_y == Some(coord.y)
+                    && e.grid_z == z
+                    && seen.insert(id.clone())
                 {
-                    if seen.insert(id.clone()) {
-                        ids.push(id.clone());
-                    }
+                    ids.push(id.clone());
                 }
             }
 
-            // 3. Players or non-grid entities in self.entity_rooms at room_id
+            // 3. 僅存於 entity_rooms 且尚未寫入座標的玩家／相容實體
             for (eid, rid) in &self.entity_rooms {
-                if rid == room_id {
+                if rid == &canonical_room {
                     let is_tracked_live_npc = live_states.contains_key(eid);
-                    let is_tracked_canon_npc = self
+                    let has_grid_coords = self
                         .entities
                         .get(eid)
-                        .map(|e| e.kind == "npc" && e.grid_x.is_some() && e.grid_y.is_some())
-                        .unwrap_or(false);
-                    if !is_tracked_live_npc && !is_tracked_canon_npc {
-                        if seen.insert(eid.clone()) {
-                            ids.push(eid.clone());
-                        }
+                        .is_some_and(|e| e.grid_x.is_some() && e.grid_y.is_some());
+                    if !is_tracked_live_npc && !has_grid_coords && seen.insert(eid.clone()) {
+                        ids.push(eid.clone());
                     }
                 }
             }

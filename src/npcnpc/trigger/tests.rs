@@ -82,6 +82,7 @@ mod tests {
             current_activity: "正在櫃檯內側照料石磨".to_string(),
             grid_x: None,
             grid_y: None,
+            grid_z: 0,
         };
         let label = resolve_viewer_npc_label("player_unknown_1", &c, "老堰頭・水輪石磨工坊");
         assert!(

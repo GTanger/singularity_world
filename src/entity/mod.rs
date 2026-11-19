@@ -133,6 +133,9 @@ pub struct Character {
     /// 正方格座標 y（北增）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grid_y: Option<i32>,
+    /// 立體樓層 z（0=地面／亭仔腳前堂、1=1F 內室、2=2F 住家、3=3F 高閣）。
+    #[serde(default)]
+    pub grid_z: i16,
 }
 
 impl Character {

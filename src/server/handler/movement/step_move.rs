@@ -1,12 +1,8 @@
 static EXPLORE_COOLDOWN: LazyLock<RwLock<HashMap<(String, i32, i32), i64>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 
-/// 玩家足跡與目及座標記錄：player_id -> HashSet<(x, y)>
-static PLAYER_WALKED_COORDS: LazyLock<RwLock<HashMap<String, HashSet<(i32, i32)>>>> =
-    LazyLock::new(|| RwLock::new(HashMap::new()));
-
-/// 記錄玩家上一次發送步入敘事的座標：player_id -> (x, y)
-static PLAYER_LAST_ANNOUNCED_COORD: LazyLock<RwLock<HashMap<String, (i32, i32)>>> =
+/// 記錄玩家上一次發送步入敘事的座標：player_id -> (x, y, z)
+static PLAYER_LAST_ANNOUNCED_COORD: LazyLock<RwLock<HashMap<String, (i32, i32, i16)>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 /// 到場 NPC 叫賣／交談反應冷卻：(player_id, room_id) -> 過期 unix timestamp
 static PRESENCE_REFLEX_COOLDOWN: LazyLock<RwLock<HashMap<(String, String), i64>>> =

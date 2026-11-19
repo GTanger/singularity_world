@@ -139,22 +139,47 @@ impl std::fmt::Display for SquareCoord {
 // Room ID 工具函式
 // ─────────────────────────────────────────────────────────────────
 
-/// 從座標產生正方格虛擬房間 id，格式：`grid:{x}:{y}`。
+/// 從座標產生正方格虛擬房間 id，格式：`grid:{x}:{y}`（`z == 0`）。
 #[must_use]
 pub fn grid_room_id_from_coord(x: i32, y: i32) -> String {
-    format!("grid:{x}:{y}")
+    grid_room_id_from_coord_z(x, y, 0)
 }
 
-/// 解析 [`grid_room_id_from_coord`] 產生的 id，非此格式則回傳 `None`。
-pub fn parse_grid_room_id(id: &str) -> Option<SquareCoord> {
-    let rest = id.strip_prefix("grid:")?;
-    let (x_str, y_str) = rest.split_once(':')?;
-    if y_str.contains(':') {
-        return None;
+/// 從含樓層座標產生三段冒號房號：`z == 0 -> grid:{x}:{y}`、`z > 0 -> grid:{x}:{y}:{z}`。
+#[must_use]
+pub fn grid_room_id_from_coord_z(x: i32, y: i32, z: i16) -> String {
+    if z == 0 {
+        format!("grid:{x}:{y}")
+    } else {
+        format!("grid:{x}:{y}:{z}")
     }
-    let x: i32 = x_str.parse().ok()?;
-    let y: i32 = y_str.parse().ok()?;
-    Some(SquareCoord { x, y })
+}
+
+/// 解析二段或三段冒號房號（`grid:{x}:{y}` 與 `grid:{x}:{y}:{z}`，其中 `z` 須在 `0..=3`）。
+pub fn parse_grid_room_id_z(id: &str) -> Option<(SquareCoord, i16)> {
+    let rest = id.strip_prefix("grid:")?;
+    let mut parts = rest.split(':');
+    let x: i32 = parts.next()?.parse().ok()?;
+    let y: i32 = parts.next()?.parse().ok()?;
+    let z: i16 = match parts.next() {
+        None => 0,
+        Some(z_str) => {
+            if parts.next().is_some() {
+                return None;
+            }
+            let zv: i16 = z_str.parse().ok()?;
+            if !(0..=3).contains(&zv) {
+                return None;
+            }
+            zv
+        }
+    };
+    Some((SquareCoord { x, y }, z))
+}
+
+/// 解析 [`grid_room_id_from_coord`] 或 [`grid_room_id_from_coord_z`] 產生的 id，非此格式則回傳 `None`。
+pub fn parse_grid_room_id(id: &str) -> Option<SquareCoord> {
+    parse_grid_room_id_z(id).map(|(coord, _)| coord)
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -311,6 +336,21 @@ mod tests {
         assert_eq!(parse_grid_room_id("grid:"), None);
         assert_eq!(parse_grid_room_id("grid:1"), None);
         assert_eq!(parse_grid_room_id("grid:a:b"), None);
-        assert_eq!(parse_grid_room_id("grid:1:2:3"), None);
+        assert_eq!(parse_grid_room_id("grid:1:2:4"), None);
+        assert_eq!(parse_grid_room_id("grid:1:2:-1"), None);
+        assert_eq!(parse_grid_room_id("grid:1:2:3:0"), None);
+    }
+
+    #[test]
+    fn room_id_three_segment_z_roundtrip() {
+        assert_eq!(grid_room_id_from_coord_z(-4, 1, 0), "grid:-4:1");
+        assert_eq!(grid_room_id_from_coord_z(-4, 1, 1), "grid:-4:1:1");
+        assert_eq!(grid_room_id_from_coord_z(-4, 1, 2), "grid:-4:1:2");
+        assert_eq!(grid_room_id_from_coord_z(-4, 1, 3), "grid:-4:1:3");
+        for z in 0..=3 {
+            let rid = grid_room_id_from_coord_z(-4, 1, z);
+            assert_eq!(parse_grid_room_id_z(&rid), Some((SquareCoord::new(-4, 1), z)));
+            assert_eq!(parse_grid_room_id(&rid), Some(SquareCoord::new(-4, 1)));
+        }
     }
 }

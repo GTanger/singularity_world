@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=20261119a10">
-	<link rel="stylesheet" href="game.css?v=20261119a10">
+	<link rel="stylesheet" href="style.css?v=20261119a11">
+	<link rel="stylesheet" href="game.css?v=20261119a11">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=20261119a10" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=20261119a11" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -144,6 +144,13 @@
 					<div id="sw-world-map-grid" class="sw-world-map-grid" role="grid" aria-label="已探索足跡大地圖"></div>
 				</div>
 				<div id="sw-world-map-footer" class="sw-world-map-footer">
+					<div id="sw-floor-controls" class="sw-floor-controls" aria-label="樓層進出與上下">
+						<span id="sw-floor-badge" class="sw-floor-badge" style="visibility:hidden;" aria-hidden="true">地面前堂</span>
+						<button type="button" id="btn-floor-in" class="sw-wm-ctrl-btn sw-floor-btn" data-floor-dir="進" style="visibility:hidden;pointer-events:none;" aria-hidden="true" title="進入一樓內室">進</button>
+						<button type="button" id="btn-floor-out" class="sw-wm-ctrl-btn sw-floor-btn" data-floor-dir="出" style="visibility:hidden;pointer-events:none;" aria-hidden="true" title="步出回到前堂">出</button>
+						<button type="button" id="btn-floor-up" class="sw-wm-ctrl-btn sw-floor-btn" data-floor-dir="上" style="visibility:hidden;pointer-events:none;" aria-hidden="true" title="沿階梯上樓">上</button>
+						<button type="button" id="btn-floor-down" class="sw-wm-ctrl-btn sw-floor-btn" data-floor-dir="下" style="visibility:hidden;pointer-events:none;" aria-hidden="true" title="沿階梯下樓">下</button>
+					</div>
 					<div id="sw-world-map-info" class="sw-world-map-info"></div>
 					<div class="sw-world-map-controls">
 						<button type="button" id="btn-wm-center" class="sw-wm-ctrl-btn" title="定位自身所在">定位 ◎</button>
@@ -310,18 +317,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261119a10"></script>
-	<script src="grid-map.js?v=20261119a10"></script>
-	<script src="sw-room-desc.js?v=20261119a10"></script>
-	<script src="sw-object-list.js?v=20261119a10"></script>
-	<script src="sw-log.js?v=20261119a10"></script>
-	<script src="sw-panes.js?v=20261119a10"></script>
-	<script src="sw-modals.js?v=20261119a10"></script>
-	<script src="sw-interactions.js?v=20261119a10"></script>
-	<script src="sw-clock.js?v=20261119a10"></script>
-	<script src="sw-narrative.js?v=20261119a10"></script>
-	<script src="sw-auth.js?v=20261119a10"></script>
-	<script src="main.js?v=20261119a10"></script>
+	<script src="narrative-markdown.js?v=20261119a11"></script>
+	<script src="grid-map.js?v=20261119a11"></script>
+	<script src="sw-room-desc.js?v=20261119a11"></script>
+	<script src="sw-object-list.js?v=20261119a11"></script>
+	<script src="sw-log.js?v=20261119a11"></script>
+	<script src="sw-panes.js?v=20261119a11"></script>
+	<script src="sw-modals.js?v=20261119a11"></script>
+	<script src="sw-interactions.js?v=20261119a11"></script>
+	<script src="sw-clock.js?v=20261119a11"></script>
+	<script src="sw-narrative.js?v=20261119a11"></script>
+	<script src="sw-auth.js?v=20261119a11"></script>
+	<script src="main.js?v=20261119a11"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -339,13 +346,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261119a10')) return;
-				sessionStorage.setItem('sw_reloaded_v20261119a10', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261119a11')) return;
+				sessionStorage.setItem('sw_reloaded_v20261119a11', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261119a10', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261119a11', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

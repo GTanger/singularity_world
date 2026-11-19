@@ -36,8 +36,62 @@
         currentRoomName: '',
         exitsRoomName: '',
         // v5 新：四方鄰格資訊（room_enter 格式）
-        exits_v5: null  // { north, south, east, west } 每格含 explored/walkable/name
+        exits_v5: null,  // { north, south, east, west } 每格含 explored/walkable/name
+        floor: { z: 0, max_z: 0, label: '地面前堂', exits: [] }
     };
+
+    var _floorBound = false;
+    function bindFloorControlEvents() {
+        if (_floorBound) return;
+        _floorBound = true;
+        var ids = ['btn-floor-in', 'btn-floor-out', 'btn-floor-up', 'btn-floor-down'];
+        for (var i = 0; i < ids.length; i++) {
+            var btn = document.getElementById(ids[i]);
+            if (!btn) continue;
+            (function (el) {
+                el.addEventListener('click', function () {
+                    var dir = el.getAttribute('data-floor-dir');
+                    if (dir && window.gameSend) {
+                        window.gameSend({ type: 'move', direction: dir });
+                    }
+                });
+            })(btn);
+        }
+    }
+
+    function syncFloorControls(floor) {
+        bindFloorControlEvents();
+        var f = floor && typeof floor === 'object' ? floor : { z: 0, max_z: 0, label: '地面前堂', exits: [] };
+        var exits = Array.isArray(f.exits) ? f.exits : [];
+        var z = typeof f.z === 'number' ? f.z : 0;
+        var badge = document.getElementById('sw-floor-badge');
+        if (badge) {
+            if (z > 0) {
+                badge.textContent = f.label || (z === 1 ? '一樓內室' : (z === 2 ? '二樓住家' : '三樓高閣'));
+                badge.style.visibility = 'visible';
+                badge.setAttribute('aria-hidden', 'false');
+            } else {
+                badge.textContent = '地面前堂';
+                badge.style.visibility = 'hidden';
+                badge.setAttribute('aria-hidden', 'true');
+            }
+        }
+        var mapBtn = [
+            ['btn-floor-in', '進'],
+            ['btn-floor-out', '出'],
+            ['btn-floor-up', '上'],
+            ['btn-floor-down', '下']
+        ];
+        for (var i = 0; i < mapBtn.length; i++) {
+            var el = document.getElementById(mapBtn[i][0]);
+            if (!el) continue;
+            var active = exits.indexOf(mapBtn[i][1]) !== -1;
+            el.style.visibility = active ? 'visible' : 'hidden';
+            el.style.pointerEvents = active ? 'auto' : 'none';
+            el.setAttribute('aria-hidden', active ? 'false' : 'true');
+            el.tabIndex = active ? 0 : -1;
+        }
+    }
 
     // ── HTML 逸脫 ────────────────────────────────────────────────────
     function esc(s) {
@@ -2350,10 +2404,13 @@
                 }
             }
         }
-        var isPrivate = !!mapData.in_private_room;
-        var hasInPortal = !isPrivate && !!((mapData.exits || []).find(function (ex) {
+        var floorState = mapData.floor || { z: 0, max_z: 0, label: '地面前堂', exits: [] };
+        var floorZ = typeof floorState.z === 'number' ? floorState.z : 0;
+        var floorExits = Array.isArray(floorState.exits) ? floorState.exits : [];
+        var isPrivate = !!mapData.in_private_room || floorZ > 0;
+        var hasInPortal = (floorZ === 0) && (floorExits.indexOf('進') !== -1 || !!((mapData.exits || []).find(function (ex) {
             return ex && (ex.direction === '進' || ex.dir === '進' || ex.direction === 'enter');
-        }) || (mapData.exits_v5 && mapData.exits_v5.in && mapData.exits_v5.in.walkable));
+        }) || (mapData.exits_v5 && mapData.exits_v5.in && mapData.exits_v5.in.walkable)));
 
         var minX = px, maxX = px, minY = py, maxY = py;
         var visitedCount = 0;
@@ -2438,7 +2495,9 @@
                 if (isPl) {
                     cls += ' wm-cell-player wm-cell-lit';
                     sym = '◎';
-                    lbl = isPrivate ? '出・室外' : (hasInPortal ? (curShort + '·進') : curShort);
+                    lbl = floorZ > 0
+                        ? (floorState.label || (floorZ === 1 ? '出・室外' : '樓上'))
+                        : (hasInPortal ? (curShort + '·進') : curShort);
                 } else if (isRealEntry && cellEntry.visited) {
                     cls += ' wm-cell-visited ' + (isLitVision ? 'wm-cell-lit' : 'wm-cell-dimmed');
                     sym = (cellEntry.symbol && cellEntry.symbol !== '·') ? cellEntry.symbol : '⋯';
@@ -2501,8 +2560,10 @@
 
                         if (isSelf) {
                             if (window.gameSend) {
-                                if (mapData.in_private_room) {
+                                if (floorExits.indexOf('出') !== -1) {
                                     window.gameSend({ type: 'move', direction: '出' });
+                                } else if (floorZ > 0 && floorExits.indexOf('下') !== -1) {
+                                    window.gameSend({ type: 'move', direction: '下' });
                                 } else if (hasInPortal) {
                                     window.gameSend({ type: 'move', direction: '進' });
                                 } else {
@@ -2511,6 +2572,12 @@
                             }
                             if (infoEl) {
                                 infoEl.textContent = '';
+                            }
+                            return;
+                        }
+                        if (floorZ > 0) {
+                            if (infoEl) {
+                                infoEl.textContent = floorZ === 1 ? '身處內室，請先點「出」' : '身處樓上，請先點「下」';
                             }
                             return;
                         }
@@ -2976,6 +3043,12 @@
         mapData.currentRoomName = msg.room_name || mapData.currentRoomName || '';
         mapData.exitsRoomName = msg.room_name || '';
         mapData.in_private_room = msg.in_private_room === true;
+        if (msg.floor && typeof msg.floor === 'object') {
+            mapData.floor = msg.floor;
+        } else {
+            mapData.floor = { z: mapData.in_private_room ? 1 : 0, max_z: 0, label: mapData.in_private_room ? '一樓內室' : '地面前堂', exits: mapData.in_private_room ? ['出'] : [] };
+        }
+        syncFloorControls(mapData.floor);
         // 同步揭露快取
         for (var i = 0; i < mapData.cells.length; i++) {
             var c = mapData.cells[i];
@@ -3022,9 +3095,12 @@
 
     function canonicalRoomCoordKey(roomId, px, py, isPrivate) {
         var s = String(roomId || '').trim();
-        var prefix = (isPrivate === true) ? 'private:' : 'public:';
-        var mGrid = s.match(/^grid:(-?\d+):(-?\d+)$/);
-        if (mGrid) return prefix + mGrid[1] + ',' + mGrid[2];
+        var mGrid = s.match(/^grid:(-?\d+):(-?\d+)(?::(\d+))?$/);
+        if (mGrid) {
+            var zPart = mGrid[3] ? mGrid[3] : (isPrivate === true ? '1' : '0');
+            return 'z' + zPart + ':' + mGrid[1] + ',' + mGrid[2];
+        }
+        var prefix = (isPrivate === true) ? 'z1:' : 'z0:';
         var mParen = s.match(/^\((-?\d+),\s*(-?\d+)\)$/);
         if (mParen) return prefix + mParen[1] + ',' + mParen[2];
         if (typeof px === 'number' && typeof py === 'number' && !isNaN(px) && !isNaN(py)) {
@@ -3039,6 +3115,10 @@
         var nextPrivate = (typeof msg.in_private_room === 'boolean') ? msg.in_private_room :
                           (msg.place && typeof msg.place.is_private === 'boolean') ? msg.place.is_private : prevPrivate;
         mapData.in_private_room = nextPrivate;
+        if (msg.floor && typeof msg.floor === 'object') {
+            mapData.floor = msg.floor;
+        }
+        syncFloorControls(mapData.floor);
         var nextRoomId = msg.room_id || '';
         var nextRoomName = (msg.place && msg.place.name) || (msg.terrain && msg.terrain.name) || '';
         var prevKey = canonicalRoomCoordKey(mapData.currentRoomId, mapData.playerX, mapData.playerY, prevPrivate);
@@ -3120,6 +3200,10 @@
         var nextPrivate = (typeof msg.in_private_room === 'boolean') ? msg.in_private_room :
                           (msg.is_private === true || (msg.place && msg.place.is_private === true)) ? true : prevPrivate;
         mapData.in_private_room = nextPrivate;
+        if (msg.floor && typeof msg.floor === 'object') {
+            mapData.floor = msg.floor;
+        }
+        syncFloorControls(mapData.floor);
         var prevKey = canonicalRoomCoordKey(mapData.currentRoomId, mapData.playerX, mapData.playerY, prevPrivate);
         var nextKey = canonicalRoomCoordKey(msg.room_id, msg.player_x, msg.player_y, nextPrivate);
         var entering = (prevPrivate !== nextPrivate) || (!!nextKey && !!prevKey && prevKey !== nextKey);

@@ -652,9 +652,14 @@ impl Store {
         Some(step_result)
     }
 
-    /// 與指定正方格座標重合的實體 id（依 `entity_ids_in_room`）。
+    /// 與指定正方格地面公開層（`z == 0`）重合的實體 id。
     pub fn entity_ids_at_grid(&self, x: i32, y: i32) -> Vec<String> {
-        self.entity_ids_in_room(&crate::grid::grid_room_id_from_coord(x, y))
+        self.entity_ids_at_grid_z(x, y, 0)
+    }
+
+    /// 與指定三維正方格座標 `(x, y, z)` 重合的實體 id（依 `entity_ids_in_room` 三段冒號房號）。
+    pub fn entity_ids_at_grid_z(&self, x: i32, y: i32, z: i16) -> Vec<String> {
+        self.entity_ids_in_room(&crate::grid::grid_room_id_from_coord_z(x, y, z))
     }
 
     /// 有正方格座標的存活 NPC id 列表。
@@ -791,5 +796,65 @@ mod tests {
         assert_ne!(resolve_npc_person_name("npc_102", "盧強勇", Some("M")), "盧強勇");
         assert_ne!(resolve_npc_person_name("npc_103", "萬玲淑", Some("F")), "萬玲淑");
         assert_eq!(resolve_npc_person_name("溫晴", "溫晴", Some("F")), "溫晴");
+    }
+
+    #[test]
+    fn grid_z_isolates_room_entities_and_ground_pop_count() {
+        let mut store = Store::new_in_memory();
+        let make_ent = |id: &str, kind: &str, z: i16| Entity {
+            id: id.to_string(),
+            kind: kind.to_string(),
+            display_char: "人".to_string(),
+            x: 0,
+            y: 0,
+            move_state: "idle".to_string(),
+            target_x: None,
+            target_y: None,
+            walk_or_run: "walk".to_string(),
+            move_started_at: None,
+            vit: 100,
+            qi: 100,
+            dex: 100,
+            magnesium: 10,
+            last_observed_at: None,
+            created_at: 0,
+            gender: "M".to_string(),
+            soul_seed: Some(1),
+            display_title: id.to_string(),
+            activated_nodes: "[]".to_string(),
+            equipment_slots: "{}".to_string(),
+            inventory: "[]".to_string(),
+            inventory_seq: 0,
+            disposition: 0,
+            current_activity: String::new(),
+            place_id: None,
+            grid_x: Some(-4),
+            grid_y: Some(1),
+            grid_z: z,
+            thoughts: Vec::new(),
+        };
+        store.entities.insert("npc_ground".into(), make_ent("npc_ground", "npc", 0));
+        store.entities.insert("npc_inner".into(), make_ent("npc_inner", "npc", 1));
+        store.entities.insert("npc_second".into(), make_ent("npc_second", "npc", 2));
+        store.entities.insert("player_second".into(), make_ent("player_second", "player", 2));
+
+        assert_eq!(store.get_entity_room("npc_ground"), "grid:-4:1");
+        assert_eq!(store.get_entity_room("npc_inner"), "grid:-4:1:1");
+        assert_eq!(store.get_entity_room("npc_second"), "grid:-4:1:2");
+
+        let z0 = store.entity_ids_at_grid_z(-4, 1, 0);
+        let z1 = store.entity_ids_at_grid_z(-4, 1, 1);
+        let z2 = store.entity_ids_at_grid_z(-4, 1, 2);
+        assert!(z0.contains(&"npc_ground".to_string()));
+        assert!(!z0.contains(&"npc_inner".to_string()));
+        assert!(!z0.contains(&"npc_second".to_string()));
+        assert_eq!(z1, vec!["npc_inner".to_string()]);
+        assert_eq!(z2.len(), 2);
+        assert!(z2.contains(&"npc_second".to_string()));
+        assert!(z2.contains(&"player_second".to_string()));
+
+        // 公開層人數僅計 z == 0，不透視 1F 內室與 2F 住家
+        let pop = store.npc_counts_by_grid();
+        assert_eq!(pop.get(&(-4, 1)).copied(), Some(1));
     }
 }

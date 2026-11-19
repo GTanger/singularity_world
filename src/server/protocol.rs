@@ -509,11 +509,22 @@ pub struct EntityStatusMsg {
     pub openrouter_model: String,
 }
 
+/// 立體樓層與垂直出入口狀態（`entities.grid_z (0..=3)` 契約，供前端固定佔位按鈕零跳動顯示）。
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FloorView {
+    pub z: i16,
+    pub max_z: u8,
+    pub label: String,
+    pub exits: Vec<String>,
+}
+
 /// 正方格地圖視野（傳送玩家附近的多格資訊）。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GridViewMsg {
     #[serde(rename = "type")]
     pub msg_type: String,
+    #[serde(default)]
+    pub room_id: String,
     #[serde(rename = "player_x")]
     pub player_x: i32,
     #[serde(rename = "player_y")]
@@ -534,6 +545,8 @@ pub struct GridViewMsg {
     pub game_days_since_epoch: i32,
     #[serde(default)]
     pub in_private_room: bool,
+    #[serde(default)]
+    pub floor: FloorView,
     #[serde(default)]
     pub season_date_label: String,
 }

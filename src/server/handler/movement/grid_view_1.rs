@@ -1,8 +1,10 @@
 fn build_grid_view_cells(
     x: i32,
     y: i32,
+    current_z: i16,
     player_id: &str,
-    in_private_room: bool,
+    pool: Option<&crate::store::sql::DbPool>,
+    field: crate::grid::substrate::slots::FieldState,
     current_coord: SquareCoord,
     current_cell: Option<&crate::grid::GridCell>,
     grid_snap: Option<&crate::grid::SquareGrid>,
@@ -11,38 +13,112 @@ fn build_grid_view_cells(
     let mut cells: Vec<GridCellView> = Vec::new();
     let mut seen_coords: HashSet<(i32, i32)> = HashSet::new();
 
-    // 1. 周圍 radius = 9 格子
+    if crate::grid::substrate::runtime::global().is_some() {
+        let here_snap =
+            crate::grid::substrate::facade::CellFacade::snapshot_cached(pool, x, y, field);
+        // 1. 周圍 radius = 9 格：100% 由 CellFacade + render_synth + arcade_street 動態合成
+        for dx in -9..=9 {
+            for dy in -9..=9 {
+                let cx = x + dx;
+                let cy = y + dy;
+                seen_coords.insert((cx, cy));
+                let snap = if dx == 0 && dy == 0 {
+                    here_snap.clone()
+                } else {
+                    crate::grid::substrate::facade::CellFacade::snapshot_cached(
+                        pool, cx, cy, field,
+                    )
+                };
+                let (kind, category) = crate::grid::substrate::render_synth::kind_and_category(
+                    snap.l0,
+                    snap.slope,
+                    &snap.slots,
+                    field,
+                );
+                let is_neighbor = dx.abs() + dy.abs() == 1;
+                let is_diagonal_corner = dx.abs() == 1 && dy.abs() == 1;
+                let effective_walkable = if is_neighbor {
+                    current_z == 0
+                        && crate::grid::substrate::arcade_street::can_step_horizontal(
+                            &here_snap, &snap,
+                        )
+                } else if is_diagonal_corner {
+                    false
+                } else {
+                    snap.synth.walkable_on_landmass_01
+                };
+                let explored = (dx.abs().max(dy.abs()) <= 2)
+                    || crate::grid::substrate::fog::is_player_seen(pool, player_id, cx, cy);
+                // 公開層（z == 0）人數：即使觀察者在內室／樓上亦不歸零
+                let cell_npc_count = npc_counts.get(&(cx, cy)).copied().unwrap_or(0);
+                cells.push(GridCellView {
+                    x: cx,
+                    y: cy,
+                    kind: kind.to_string(),
+                    terrain: snap.synth.micro_name.to_string(),
+                    category: category.to_string(),
+                    name: snap.synth.micro_name.to_string(),
+                    explored,
+                    walkable: effective_walkable,
+                    symbol: snap.synth.symbol.to_string(),
+                    npc_count: cell_npc_count,
+                    edge_cue: snap.edge_cue.as_ref().map(|c| c.compact_badge()),
+                });
+            }
+        }
+
+        // 2. 超出 radius = 9 之個人迷霧已踏足／目及座標（壓縮點陣圖，不寫入全服 cell_overlay）
+        for (wx, wy, _is_visited) in
+            crate::grid::substrate::fog::player_known_coords(pool, player_id, 512)
+        {
+            if !seen_coords.insert((wx, wy)) {
+                continue;
+            }
+            let snap =
+                crate::grid::substrate::facade::CellFacade::snapshot_cached(pool, wx, wy, field);
+            let (kind, category) = crate::grid::substrate::render_synth::kind_and_category(
+                snap.l0,
+                snap.slope,
+                &snap.slots,
+                field,
+            );
+            let cell_npc_count = npc_counts.get(&(wx, wy)).copied().unwrap_or(0);
+            cells.push(GridCellView {
+                x: wx,
+                y: wy,
+                kind: kind.to_string(),
+                terrain: snap.synth.micro_name.to_string(),
+                category: category.to_string(),
+                name: snap.synth.micro_name.to_string(),
+                explored: true,
+                walkable: snap.synth.walkable_on_landmass_01,
+                symbol: snap.synth.symbol.to_string(),
+                npc_count: cell_npc_count,
+                edge_cue: snap.edge_cue.as_ref().map(|c| c.compact_badge()),
+            });
+        }
+        return cells;
+    }
+
+    // 底板未載入時（例如純單元測試環境）優雅回退舊 SquareGrid
     let cells_raw = game::get_grid_cells_around(x, y, 9);
-    for (cx, cy, kind, terrain, category, mut name, explored, raw_walkable) in cells_raw {
+    for (cx, cy, kind, terrain, category, name, explored, raw_walkable) in cells_raw {
         seen_coords.insert((cx, cy));
-        let mut symbol = grid_snap
+        let symbol = grid_snap
             .as_ref()
             .and_then(|g| g.get(SquareCoord::new(cx, cy)))
             .map(|cell| cell.display_symbol().to_string())
             .unwrap_or_else(|| "⋯".to_string());
-        if let Some(cell) = grid_snap.as_ref().and_then(|g| g.get(SquareCoord::new(cx, cy))) {
-            if name == "刺竹林" {
-                if cell.has_room_tag("zl_campfire:active")
-                    || cell.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
-                {
-                    name = "竹林營火".to_string();
-                    symbol = "🔥".to_string();
-                } else if crate::grid::zhulin::has_bamboo_trail_mark(cell) {
-                    name = "標記竹徑".to_string();
-                } else if crate::grid::zhulin::is_bamboo_trail_cleared(cell) {
-                    name = "疏竹小徑".to_string();
-                }
-            }
-        }
-        // 對於與當前格 (x, y) 緊鄰的四正鄰格，計算 walkable 為從當前格是否可實際走過去；對角角格絕不可走
         let is_neighbor = (cx - x).abs() + (cy - y).abs() == 1;
         let is_diagonal_corner = (cx - x).abs() == 1 && (cy - y).abs() == 1;
         let effective_walkable = if is_neighbor {
-            if in_private_room {
+            if current_z > 0 {
                 false
             } else if let Some(cell) = &current_cell {
                 if !cell.explicit_exits.is_empty() {
-                    cell.explicit_exits.iter().any(|e| e.target.x == cx && e.target.y == cy)
+                    cell.explicit_exits
+                        .iter()
+                        .any(|e| e.target.x == cx && e.target.y == cy)
                 } else if let Some(g) = &grid_snap {
                     can_step_in_nine_grid(g, current_coord, SquareCoord::new(cx, cy))
                 } else {
@@ -56,12 +132,7 @@ fn build_grid_view_cells(
         } else {
             raw_walkable
         };
-
-        let cell_npc_count = if in_private_room {
-            0
-        } else {
-            npc_counts.get(&(cx, cy)).copied().unwrap_or(0)
-        };
+        let cell_npc_count = npc_counts.get(&(cx, cy)).copied().unwrap_or(0);
         cells.push(GridCellView {
             x: cx,
             y: cy,
@@ -77,59 +148,6 @@ fn build_grid_view_cells(
         });
     }
 
-    // 2. 超出 radius = 6 的已走過／已目及座標
-    if let Some(g) = &grid_snap {
-        let extra_coords: Vec<(i32, i32)> = {
-            let walked_lock = PLAYER_WALKED_COORDS.read();
-            if let Some(player_set) = walked_lock.get(player_id) {
-                player_set
-                    .iter()
-                    .copied()
-                    .filter(|coord| !seen_coords.contains(coord))
-                    .collect()
-            } else {
-                Vec::new()
-            }
-        };
-
-        for (wx, wy) in extra_coords {
-            if let Some(cell) = g.get(SquareCoord::new(wx, wy)) {
-                let cell_npc_count = if in_private_room {
-                    0
-                } else {
-                    npc_counts.get(&(wx, wy)).copied().unwrap_or(0)
-                };
-                let mut extra_name = cell.name.clone();
-                let mut extra_sym = cell.display_symbol().to_string();
-                if extra_name == "刺竹林" {
-                    if cell.has_room_tag("zl_campfire:active")
-                        || cell.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
-                    {
-                        extra_name = "竹林營火".to_string();
-                        extra_sym = "🔥".to_string();
-                    } else if crate::grid::zhulin::has_bamboo_trail_mark(cell) {
-                        extra_name = "標記竹徑".to_string();
-                    } else if crate::grid::zhulin::is_bamboo_trail_cleared(cell) {
-                        extra_name = "疏竹小徑".to_string();
-                    }
-                }
-                cells.push(GridCellView {
-                    x: wx,
-                    y: wy,
-                    kind: cell.terrain.kind_str().to_string(),
-                    terrain: crate::grid::terrain_name_zh(cell.terrain).to_string(),
-                    category: cell.terrain.category().to_string(),
-                    name: extra_name,
-                    explored: cell.explored,
-                    walkable: cell.terrain.walkable(),
-                    symbol: extra_sym,
-                    npc_count: cell_npc_count,
-                    edge_cue: crate::grid::substrate::runtime::derive_edge_cue(wx, wy),
-                });
-            }
-        }
-    }
-
     cells
 }
 
@@ -138,52 +156,100 @@ struct GridViewExitsResult {
     grid_exits: Vec<super::super::protocol::ExitView>,
     current_place_json: serde_json::Value,
     final_room_name: String,
-    is_lodging: bool,
+    floor_view: super::super::protocol::FloorView,
 }
 
 fn build_grid_view_exits(
     x: i32,
     y: i32,
+    current_z: i16,
     player_id: &str,
-    in_private_room: bool,
+    pool: Option<&crate::store::sql::DbPool>,
+    field: crate::grid::substrate::slots::FieldState,
     current_coord: SquareCoord,
     current_cell: Option<&crate::grid::GridCell>,
     grid_snap: Option<&crate::grid::SquareGrid>,
     base_room_name: &str,
 ) -> GridViewExitsResult {
-    // 先把 exits_v5 與 grid_exits 所需的周邊鄰接資訊組裝好
-    let _current_terrain_key = current_cell
+    let has_substrate = crate::grid::substrate::runtime::global().is_some();
+    let here_snap = has_substrate.then(|| {
+        crate::grid::substrate::facade::CellFacade::snapshot_cached(pool, x, y, field)
+    });
+
+    let current_terrain_name = here_snap
         .as_ref()
-        .map(|c| c.terrain.kind_str().to_string())
-        .unwrap_or_default();
-    let current_terrain_name = current_cell
-        .as_ref()
-        .map(|c| {
-            if c.name.trim().is_empty() {
-                crate::grid::terrain_name_zh(c.terrain).to_string()
-            } else {
-                c.name.clone()
-            }
+        .map(|s| s.synth.micro_name.to_string())
+        .or_else(|| {
+            current_cell.as_ref().map(|c| {
+                if c.name.trim().is_empty() {
+                    crate::grid::terrain_name_zh(c.terrain).to_string()
+                } else {
+                    c.name.clone()
+                }
+            })
         })
-        .unwrap_or_default();
-    let current_terrain_category = current_cell
+        .unwrap_or_else(|| base_room_name.to_string());
+    let current_terrain_category = here_snap
         .as_ref()
-        .map(|c| c.terrain.category().to_string())
-        .unwrap_or_default();
-    let _is_building = current_cell
-        .as_ref()
-        .map(|c| {
-            let sym = c.terrain.display_char();
-            matches!(sym, "⌂" | "𖠿" | "∆" | "⚑" | "$" | "⚒︎" | "+")
-                || c.terrain.category() == "landmark"
+        .map(|s| {
+            crate::grid::substrate::render_synth::kind_and_category(
+                s.l0,
+                s.slope,
+                &s.slots,
+                field,
+            )
+            .1
+            .to_string()
         })
-        .unwrap_or(false);
+        .or_else(|| current_cell.as_ref().map(|c| c.terrain.category().to_string()))
+        .unwrap_or_else(|| "terrain".to_string());
 
     let mut exits_v5 = serde_json::Map::new();
     let mut grid_exits: Vec<super::super::protocol::ExitView> = Vec::new();
 
-    if let Some(ref g) = grid_snap {
-        if let Some(ref cell) = current_cell {
+    if current_z == 0 {
+        if let Some(ref here) = here_snap {
+            let dirs: &[(&str, &str, i32, i32)] = &[
+                ("north", "北", 0, 1),
+                ("south", "南", 0, -1),
+                ("east", "東", 1, 0),
+                ("west", "西", -1, 0),
+            ];
+            for &(dir_key, dir_zh, dx, dy) in dirs {
+                let nx = x + dx;
+                let ny = y + dy;
+                let neighbor = crate::grid::substrate::facade::CellFacade::snapshot_cached(
+                    pool, nx, ny, field,
+                );
+                let can_step =
+                    crate::grid::substrate::arcade_street::can_step_horizontal(here, &neighbor);
+                let explored =
+                    crate::grid::substrate::fog::is_player_seen(pool, player_id, nx, ny);
+                let name = neighbor.synth.micro_name.to_string();
+                exits_v5.insert(
+                    dir_key.to_string(),
+                    serde_json::json!({
+                        "explored": explored,
+                        "walkable": can_step,
+                        "name": name,
+                        "direction": dir_zh,
+                        "target_coord": [nx, ny]
+                    }),
+                );
+                if can_step {
+                    grid_exits.push(super::super::protocol::ExitView {
+                        direction: dir_zh.to_string(),
+                        to_room_id: crate::grid::grid_room_id_from_coord_z(nx, ny, 0),
+                        to_room_name: name,
+                        route_id: String::new(),
+                        mode: "walk".to_string(),
+                        travel_cost: 0,
+                    });
+                }
+            }
+        } else if let Some(ref g) = grid_snap
+            && let Some(ref cell) = current_cell
+        {
             if !cell.explicit_exits.is_empty() {
                 let all_dirs = [
                     ("north", crate::grid::Direction::North),
@@ -196,53 +262,36 @@ fn build_grid_view_exits(
                         .explicit_exits
                         .iter()
                         .find(|e| e.dir == game_dir && e.target != current_coord)
+                        && let Some(tc) = g.get(ex.target)
                     {
-                        if let Some(tc) = g.get(ex.target) {
-                            let mut name = if tc.name.is_empty() {
-                                crate::grid::terrain_name_zh(tc.terrain).to_string()
-                            } else {
-                                tc.name.clone()
-                            };
-                            if name == "刺竹林" {
-                                if tc.has_room_tag("zl_campfire:active")
-                                    || tc.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
-                                {
-                                    name = "竹林營火".to_string();
-                                } else if crate::grid::zhulin::has_bamboo_trail_mark(tc) {
-                                    name = "標記竹徑".to_string();
-                                } else if crate::grid::zhulin::is_bamboo_trail_cleared(tc) {
-                                    name = "疏竹小徑".to_string();
-                                }
-                            }
-                            exits_v5.insert(
-                                dir_key.to_string(),
-                                serde_json::json!({
-                                    "explored": tc.explored,
-                                    "walkable": tc.terrain.walkable(),
-                                    "name": name,
-                                    "direction": game_dir.label_zh(),
-                                    "target_coord": [ex.target.x, ex.target.y]
-                                }),
-                            );
-                            if tc.terrain.walkable() {
-                                grid_exits.push(super::super::protocol::ExitView {
-                                    direction: game_dir.label_zh().to_string(),
-                                    to_room_id: crate::grid::grid_room_id_from_coord(ex.target.x, ex.target.y),
-                                    to_room_name: name,
-                                    route_id: String::new(),
-                                    mode: "walk".to_string(),
-                                    travel_cost: 0,
-                                });
-                            }
+                        let name = if tc.name.is_empty() {
+                            crate::grid::terrain_name_zh(tc.terrain).to_string()
                         } else {
-                            exits_v5.insert(
-                                dir_key.to_string(),
-                                serde_json::json!({
-                                    "explored": false,
-                                    "walkable": false,
-                                    "name": null
-                                }),
-                            );
+                            tc.name.clone()
+                        };
+                        exits_v5.insert(
+                            dir_key.to_string(),
+                            serde_json::json!({
+                                "explored": tc.explored,
+                                "walkable": tc.terrain.walkable(),
+                                "name": name,
+                                "direction": game_dir.label_zh(),
+                                "target_coord": [ex.target.x, ex.target.y]
+                            }),
+                        );
+                        if tc.terrain.walkable() {
+                            grid_exits.push(super::super::protocol::ExitView {
+                                direction: game_dir.label_zh().to_string(),
+                                to_room_id: crate::grid::grid_room_id_from_coord_z(
+                                    ex.target.x,
+                                    ex.target.y,
+                                    0,
+                                ),
+                                to_room_name: name,
+                                route_id: String::new(),
+                                mode: "walk".to_string(),
+                                travel_cost: 0,
+                            });
                         }
                     } else {
                         exits_v5.insert(
@@ -265,309 +314,171 @@ fn build_grid_view_exits(
                 for (dir_key, dir_zh, dx, dy) in dirs {
                     let nx = x + dx;
                     let ny = y + dy;
-                    let neighbor = g.get(crate::grid::SquareCoord::new(nx, ny));
-                    match neighbor {
-                        Some(nc) => {
-                            let mut name = if nc.name.trim().is_empty() {
-                                crate::grid::terrain_name_zh(nc.terrain).to_string()
-                            } else {
-                                nc.name.clone()
-                            };
-                            if name == "刺竹林" {
-                                if nc.has_room_tag("zl_campfire:active")
-                                    || nc.objects.iter().any(|o| o.id == "zl_bamboo_campfire" && o.quantity > 0)
-                                {
-                                    name = "竹林營火".to_string();
-                                } else if crate::grid::zhulin::has_bamboo_trail_mark(nc) {
-                                    name = "標記竹徑".to_string();
-                                } else if crate::grid::zhulin::is_bamboo_trail_cleared(nc) {
-                                    name = "疏竹小徑".to_string();
-                                }
-                            }
-                            let can_step = !in_private_room
-                                && g.can_walk(current_coord, crate::grid::SquareCoord::new(nx, ny));
-                            exits_v5.insert(
-                                dir_key.to_string(),
-                                serde_json::json!({
-                                    "explored": nc.explored,
-                                    "walkable": can_step,
-                                    "name": name,
-                                    "direction": dir_zh,
-                                    "target_coord": [nx, ny]
-                                }),
-                            );
-                            if can_step {
-                                grid_exits.push(super::super::protocol::ExitView {
-                                    direction: dir_zh.to_string(),
-                                    to_room_id: crate::grid::grid_room_id_from_coord(nx, ny),
-                                    to_room_name: name,
-                                    route_id: String::new(),
-                                    mode: "walk".to_string(),
-                                    travel_cost: 0,
-                                });
-                            }
+                    if let Some(nc) = g.get(crate::grid::SquareCoord::new(nx, ny)) {
+                        let name = if nc.name.trim().is_empty() {
+                            crate::grid::terrain_name_zh(nc.terrain).to_string()
+                        } else {
+                            nc.name.clone()
+                        };
+                        let can_step = g.can_walk(current_coord, SquareCoord::new(nx, ny));
+                        exits_v5.insert(
+                            dir_key.to_string(),
+                            serde_json::json!({
+                                "explored": nc.explored,
+                                "walkable": can_step,
+                                "name": name,
+                                "direction": dir_zh,
+                                "target_coord": [nx, ny]
+                            }),
+                        );
+                        if can_step {
+                            grid_exits.push(super::super::protocol::ExitView {
+                                direction: dir_zh.to_string(),
+                                to_room_id: crate::grid::grid_room_id_from_coord_z(nx, ny, 0),
+                                to_room_name: name,
+                                route_id: String::new(),
+                                mode: "walk".to_string(),
+                                travel_cost: 0,
+                            });
                         }
-                        None => {
-                            exits_v5.insert(
-                                dir_key.to_string(),
-                                serde_json::json!({
-                                    "explored": false,
-                                    "walkable": false,
-                                    "name": null
-                                }),
-                            );
-                        }
+                    } else {
+                        exits_v5.insert(
+                            dir_key.to_string(),
+                            serde_json::json!({
+                                "explored": false,
+                                "walkable": false,
+                                "name": null
+                            }),
+                        );
                     }
                 }
             }
         }
     }
 
-    let is_lodging = current_terrain_name.contains("旅社")
-        || (current_terrain_name.contains("行館") && !current_terrain_name.contains("印行館"))
-        || current_terrain_name.contains("歇舍")
-        || current_terrain_name.contains("驛館");
-    let final_room_name = if in_private_room {
-        if is_lodging {
-            format!("{}・客房", current_terrain_name)
-        } else {
-            format!("{}・內室", current_terrain_name)
-        }
-    } else {
-        base_room_name.to_string()
-    };
+    // 立體樓層垂直出口（進 / 出 / 上 / 下）與 FloorView
+    let floor_exits_str: Vec<&'static str> = here_snap
+        .as_ref()
+        .map(|s| crate::grid::substrate::arcade_street::available_floor_exits(s, current_z))
+        .unwrap_or_else(|| if current_z > 0 { vec!["出"] } else { Vec::new() });
+    let max_z = here_snap.as_ref().map_or(0, |s| s.max_z);
+    let floor_label = crate::grid::substrate::arcade_street::floor_label_zh(current_z).to_string();
 
-    // 私人客房特殊出入口（進／出）
-    if in_private_room {
-        let out_name = if is_lodging {
-            format!("走出客房回到{}", current_terrain_name)
-        } else {
-            format!("走出內室回到{}", current_terrain_name)
+    for &fdir in &floor_exits_str {
+        let (v5_key, target_z, label) = match (current_z, fdir) {
+            (0, "進") => ("in", 1, format!("步入{current_terrain_name}內室")),
+            (1, "出") => ("out", 0, format!("步出回到{current_terrain_name}")),
+            (0, "上") => ("up", 2, format!("上樓至{current_terrain_name}二樓住家")),
+            (2, "上") => ("up", 3, format!("上樓至{current_terrain_name}三樓高閣")),
+            (2, "下") => ("down", 0, format!("下樓回到{current_terrain_name}")),
+            (3, "下") => ("down", 2, format!("下樓至{current_terrain_name}二樓住家")),
+            _ => ("out", 0, format!("回到{current_terrain_name}")),
         };
-        exits_v5.clear();
-        grid_exits.clear();
         exits_v5.insert(
-            "out".to_string(),
+            v5_key.to_string(),
             serde_json::json!({
                 "explored": true,
                 "walkable": true,
-                "name": out_name,
-                "direction": "出"
+                "name": label,
+                "direction": fdir
             }),
         );
         grid_exits.push(super::super::protocol::ExitView {
-            direction: "出".to_string(),
-            to_room_id: crate::grid::grid_room_id_from_coord(x, y),
-            to_room_name: current_terrain_name.clone(),
+            direction: fdir.to_string(),
+            to_room_id: crate::grid::grid_room_id_from_coord_z(x, y, target_z),
+            to_room_name: label,
             route_id: String::new(),
             mode: "walk".to_string(),
             travel_cost: 0,
         });
-    } else {
-        let is_residential = is_residential_building(&current_terrain_name);
-        let in_exit_name = if is_lodging {
-            Some(format!("投宿{}客房", current_terrain_name))
-        } else if is_residential && player_holds_property_deed_or_key(player_id) {
-            Some(format!("持契推門入{}內室", current_terrain_name))
-        } else {
-            None
-        };
-
-        if let Some(target_in_name) = in_exit_name {
-            exits_v5.insert(
-                "in".to_string(),
-                serde_json::json!({
-                    "explored": true,
-                    "walkable": true,
-                    "name": target_in_name,
-                    "direction": "進"
-                }),
-            );
-            grid_exits.push(super::super::protocol::ExitView {
-                direction: "進".to_string(),
-                to_room_id: crate::grid::grid_room_id_from_coord(x, y),
-                to_room_name: target_in_name,
-                route_id: String::new(),
-                mode: "walk".to_string(),
-                travel_cost: 0,
-            });
-        }
     }
-    // 以 SquareGrid 當前格構造真實 current_place_json
-    let is_peninsula = grid_snap
-        .as_ref()
-        .map_or(false, |g| g.has_peninsula_wilderness());
-    let locator_str = if is_peninsula {
-        format!(
-            "白塔半島 · {}",
-            current_cell.as_ref().map(|c| c.zone.as_str()).unwrap_or("荒野")
-        )
+
+    let final_room_name = if current_z > 0 {
+        format!("{current_terrain_name}・{floor_label}")
     } else {
-        current_cell
-            .as_ref()
-            .map(|c| c.zone.as_str())
-            .filter(|z| !z.trim().is_empty())
-            .unwrap_or("紅土西麓")
-            .to_string()
+        current_terrain_name.clone()
     };
+
+    let locator_str = here_snap
+        .as_ref()
+        .map(|s| s.synth.zone_name.to_string())
+        .or_else(|| {
+            current_cell
+                .as_ref()
+                .map(|c| c.zone.as_str())
+                .filter(|z| !z.trim().is_empty())
+                .map(str::to_string)
+        })
+        .unwrap_or_else(|| "西麓湧泉竹帶".to_string());
+
     let current_place_json = serde_json::json!({
-        "id": crate::grid::grid_room_id_from_coord(x, y),
-        "name": if in_private_room { &final_room_name } else { &current_terrain_name },
+        "id": crate::grid::grid_room_id_from_coord_z(x, y, current_z),
+        "name": &final_room_name,
         "locator": locator_str,
-        "full_name": if in_private_room { &final_room_name } else { &current_terrain_name },
+        "full_name": &final_room_name,
         "kind": current_terrain_category,
-        "scale": "grid_cell"
+        "scale": "grid_cell",
+        "z": current_z
     });
 
+    let floor_view = super::super::protocol::FloorView {
+        z: current_z,
+        max_z,
+        label: floor_label,
+        exits: floor_exits_str.into_iter().map(str::to_string).collect(),
+    };
 
     GridViewExitsResult {
         exits_v5,
         grid_exits,
         current_place_json,
         final_room_name,
-        is_lodging,
+        floor_view,
     }
 }
 
 fn build_grid_view_objects(
-    in_private_room: bool,
-    is_lodging: bool,
+    current_z: i16,
     base_objects: &[super::super::protocol::ViewObject],
     base_room_name: &str,
     server_unix: i64,
     current_cell: Option<&crate::grid::GridCell>,
 ) -> Vec<super::super::protocol::ViewObject> {
-    let mut indoor_objects = vec![
-        {
-            let id = "wt_reg_wenyao_home".to_string();
-            let name = "床榻".to_string();
-            let actions = vec!["Look".to_string(), "Rest".to_string(), "Sleep".to_string(), "Use".to_string()];
-            let tag = crate::model::canonical_object_tag(&id, &name);
-            let category_tag = crate::model::object_category_tag(&id, &name).to_string();
-            let attribute_tags = crate::model::object_attribute_tags(&id, &name).into_iter().map(str::to_string).collect();
-            let tags = crate::model::object_semantic_tags(&id, &name, &actions);
-            super::super::protocol::ViewObject {
-                id,
-                name,
-                object_type: "bed".to_string(),
-                actions,
-                tag,
-                category_tag,
-                attribute_tags,
-                tags,
-            }
-        },
-        {
-            let id = "wt_inn_bath_Preview".to_string();
-            let name = "沐浴桶".to_string();
-            let actions = vec!["Look".to_string(), "Wash".to_string(), "Use".to_string()];
-            let tag = crate::model::canonical_object_tag(&id, &name);
-            let category_tag = crate::model::object_category_tag(&id, &name).to_string();
-            let attribute_tags = crate::model::object_attribute_tags(&id, &name).into_iter().map(str::to_string).collect();
-            let tags = crate::model::object_semantic_tags(&id, &name, &actions);
-            super::super::protocol::ViewObject {
-                id,
-                name,
-                object_type: "bath".to_string(),
-                actions,
-                tag,
-                category_tag,
-                attribute_tags,
-                tags,
-            }
-        },
-        {
-            let id = "wt_home_shell_lamp".to_string();
-            let name = "檯燈".to_string();
-            let actions = vec!["Look".to_string(), "Operate".to_string(), "Use".to_string()];
-            let tag = crate::model::canonical_object_tag(&id, &name);
-            let category_tag = crate::model::object_category_tag(&id, &name).to_string();
-            let attribute_tags = crate::model::object_attribute_tags(&id, &name).into_iter().map(str::to_string).collect();
-            let tags = crate::model::object_semantic_tags(&id, &name, &actions);
-            super::super::protocol::ViewObject {
-                id,
-                name,
-                object_type: "lamp".to_string(),
-                actions,
-                tag,
-                category_tag,
-                attribute_tags,
-                tags,
-            }
-        },
-        {
-            let id = "wt_home_jade_cabinet".to_string();
-            let name = "冰鑑櫃".to_string();
-            let actions = vec![
-                "Look".to_string(),
-                "Open".to_string(),
-                "StoreStash".to_string(),
-                "RetrieveStash".to_string(),
-                "Use".to_string(),
-            ];
-            let tag = crate::model::canonical_object_tag(&id, &name);
-            let category_tag = crate::model::object_category_tag(&id, &name).to_string();
-            let attribute_tags = crate::model::object_attribute_tags(&id, &name).into_iter().map(str::to_string).collect();
-            let tags = crate::model::object_semantic_tags(&id, &name, &actions);
-            super::super::protocol::ViewObject {
-                id,
-                name,
-                object_type: "cabinet".to_string(),
-                actions,
-                tag,
-                category_tag,
-                attribute_tags,
-                tags,
-            }
-        },
-    ];
-    if !is_lodging {
-        let id = "wt_home_bamboo_mailbox".to_string();
-        let name = "信箱".to_string();
-        let actions = vec![
-            "Look".to_string(),
-            "Read".to_string(),
-            "Open".to_string(),
-            "DispatchCourier".to_string(),
-        ];
-        let tag = crate::model::canonical_object_tag(&id, &name);
-        let category_tag = crate::model::object_category_tag(&id, &name).to_string();
-        let attribute_tags = crate::model::object_attribute_tags(&id, &name).into_iter().map(str::to_string).collect();
-        let tags = crate::model::object_semantic_tags(&id, &name, &actions);
-        indoor_objects.push(super::super::protocol::ViewObject {
-            id,
-            name,
-            object_type: "mailbox".to_string(),
-            actions,
-            tag,
-            category_tag,
-            attribute_tags,
-            tags,
-        });
+    if current_z > 0 {
+        return crate::grid::substrate::arcade_street::SUBSPACE_FLOOR_FIXTURES
+            .iter()
+            .map(|spec| {
+                let id = spec.id.to_string();
+                let name = spec.name.to_string();
+                let actions: Vec<String> = spec.actions.iter().map(|s| (*s).to_string()).collect();
+                let tag = crate::model::canonical_object_tag(&id, &name);
+                let category_tag = crate::model::object_category_tag(&id, &name).to_string();
+                let attribute_tags = crate::model::object_attribute_tags(&id, &name)
+                    .into_iter()
+                    .map(str::to_string)
+                    .collect();
+                let tags = crate::model::object_semantic_tags(&id, &name, &actions);
+                super::super::protocol::ViewObject {
+                    id,
+                    name,
+                    object_type: spec.object_type.to_string(),
+                    actions,
+                    tag,
+                    category_tag,
+                    attribute_tags,
+                    tags,
+                }
+            })
+            .collect();
     }
-    {
-        let id = "wt_home_charcoal_wardrobe".to_string();
-        let name = "衣櫥".to_string();
-        let actions = vec!["Look".to_string(), "WarmHands".to_string(), "Use".to_string()];
-        let tag = crate::model::canonical_object_tag(&id, &name);
-        let category_tag = crate::model::object_category_tag(&id, &name).to_string();
-        let attribute_tags = crate::model::object_attribute_tags(&id, &name).into_iter().map(str::to_string).collect();
-        let tags = crate::model::object_semantic_tags(&id, &name, &actions);
-        indoor_objects.push(super::super::protocol::ViewObject {
-            id,
-            name,
-            object_type: "wardrobe".to_string(),
-            actions,
-            tag,
-            category_tag,
-            attribute_tags,
-            tags,
-        });
-    }
-
-    let final_objects = if in_private_room {
-        indoor_objects
-    } else {
+    let final_objects = {
+        let is_urban_substrate = crate::grid::substrate::runtime::global().is_some()
+            && base_objects
+                .iter()
+                .any(|o| o.id == "subspace_arcade_eave" || o.id == "subspace_street_lamp");
+        if is_urban_substrate {
+            return base_objects.to_vec();
+        }
         let is_bamboo_slot = current_cell
             .map(crate::grid::zhulin::is_bamboo_slot_cell)
             .unwrap_or(false);

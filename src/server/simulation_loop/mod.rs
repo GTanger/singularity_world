@@ -73,6 +73,9 @@ fn run_simulation_tick(
     grid_npc_mgr: &Arc<Mutex<GridNpcManager>>,
 ) {
     run_view_simulation(Vec::<Pos>::new, None);
+    if let Some(pool) = crate::pg::pool() {
+        let _ = crate::grid::substrate::facade::CellFacade::flush_pave_heat(&pool, false);
+    }
 
     let now_unix = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -111,7 +114,7 @@ fn run_simulation_tick(
                 if let Ok(Some(ent)) = crate::db::get_entity(&pid)
                     && let (Some(gx), Some(gy)) = (ent.grid_x, ent.grid_y)
                 {
-                    active_rooms.insert(crate::grid::grid_room_id_from_coord(gx, gy));
+                    active_rooms.insert(crate::grid::grid_room_id_from_coord_z(gx, gy, ent.grid_z));
                 }
             }
             for rid in active_rooms {

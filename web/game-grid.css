@@ -5375,12 +5375,53 @@ body.game-grid-body.sw-tide-ready {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 4px 10px;
-  min-height: 30px;
+  gap: 6px;
+  padding: 4px 8px;
+  min-height: 32px;
   background: var(--sw-bar-bg, rgba(128, 110, 88, 0.08)) !important;
   border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.18));
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sw-world-map-stage .sw-floor-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.sw-world-map-stage .sw-floor-badge {
+  display: inline-block;
+  min-width: 48px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sw-accent-ink, #9e2a2b);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.sw-world-map-stage .sw-floor-btn {
+  min-width: 24px;
+  padding: 2px 6px;
+  text-align: center;
+  font-weight: 600;
+}
+
+@media (max-width: 520px) {
+  .sw-world-map-stage .sw-floor-badge {
+    min-width: 36px;
+    font-size: 10px;
+  }
+  .sw-world-map-stage .sw-floor-btn {
+    min-width: 22px;
+    padding: 2px 4px;
+    font-size: 11px;
+  }
+  .sw-world-map-stage .sw-wm-ctrl-btn {
+    padding: 2px 6px;
+    font-size: 11px;
+  }
 }
 
 .sw-world-map-stage .sw-world-map-info {

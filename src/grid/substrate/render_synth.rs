@@ -135,7 +135,13 @@ pub fn walkable_on_landmass_01(l0: L0Cell, slope: Option<DerivedSlope>) -> bool 
         && grade(slope) < STEEP_GRADE
 }
 
-fn ground_phrase(l0: L0Cell) -> &'static str {
+fn ground_phrase(l0: L0Cell, slots: &SlotStack) -> &'static str {
+    match slots.s0_pave {
+        S0Pavement::StoneStreet => return "腳下是平整密實的石板街面",
+        S0Pavement::NarrowRailBed => return "腳下是嵌入石基的窄軌台車道",
+        S0Pavement::BambooTrampledPath { .. } => return "腳下是踏實成徑的疏竹土路",
+        S0Pavement::BareSoil => {}
+    }
     match l0.material() {
         SubstrateMaterial::IntertidalMudflat => "腳下是黏滑的潮泥",
         SubstrateMaterial::CoastalWindSand => "腳下是鬆軟的風砂",
@@ -192,7 +198,7 @@ fn terrain_line(
 ) -> String {
     let mut line = format!(
         "{}，{}，{}，{}。",
-        ground_phrase(l0),
+        ground_phrase(l0, slots),
         water_phrase(l0, field),
         slope_phrase(slope),
         canopy_phrase(slots, field)
@@ -231,6 +237,59 @@ fn canvas_cards(slots: &SlotStack, field: FieldState) -> Vec<SynthCanvasCard> {
     }
     cards.truncate(3);
     cards
+}
+
+/// 由 `L0 + 四層槽` 動態合成前端著色鍵（`kind`）與分類鍵（`category`），不依賴舊 `Terrain` 枚舉。
+pub fn kind_and_category(
+    l0: L0Cell,
+    slope: Option<DerivedSlope>,
+    slots: &SlotStack,
+    field: FieldState,
+) -> (&'static str, &'static str) {
+    match slots.v1 {
+        V1Plugin::ArcadeShophouse { .. } => return ("house", "landmark"),
+        V1Plugin::ThornyBambooClump => return ("bamboo", "terrain"),
+        V1Plugin::AncientCamphorCanopy => return ("forest", "terrain"),
+        V1Plugin::None => {}
+    }
+    if matches!(
+        slots.s0_pave,
+        S0Pavement::StoneStreet | S0Pavement::NarrowRailBed
+    ) {
+        return ("street", "infra");
+    }
+    if matches!(slots.s0_pave, S0Pavement::BambooTrampledPath { .. }) {
+        return ("road", "infra");
+    }
+    if slots.u1 == U1Plugin::RuinedBridgePier {
+        return ("ruins", "landmark");
+    }
+    match l0.surface_water() {
+        SurfaceWaterKind::OpenSea | SurfaceWaterKind::DeepRapidRiver => {
+            return ("water_deep", "terrain");
+        }
+        SurfaceWaterKind::FaultSpring
+        | SurfaceWaterKind::PerennialStream
+        | SurfaceWaterKind::IntertidalShallow => return ("water", "terrain"),
+        SurfaceWaterKind::SeasonalGully if field.flood_active => return ("water", "terrain"),
+        _ => {}
+    }
+    if slots.u1 == U1Plugin::MiscanthusRoot {
+        return ("grassland", "terrain");
+    }
+    if grade(slope) >= STEEP_GRADE || l0.material() == SubstrateMaterial::FaultBareRock {
+        return ("mountain", "terrain");
+    }
+    match l0.material() {
+        SubstrateMaterial::IntertidalMudflat => ("swamp", "terrain"),
+        SubstrateMaterial::CoastalWindSand | SubstrateMaterial::RiverbedQuartzCobble => {
+            ("beach", "terrain")
+        }
+        SubstrateMaterial::LateriteGravel => ("hills", "terrain"),
+        SubstrateMaterial::AlluvialSandyLoam => ("plain", "terrain"),
+        SubstrateMaterial::Unknown => ("water_deep", "terrain"),
+        SubstrateMaterial::FaultBareRock => ("mountain", "terrain"),
+    }
 }
 
 /// 即時合成單格視圖。
