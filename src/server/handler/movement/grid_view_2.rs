@@ -38,9 +38,14 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         .as_ref()
         .and_then(|g| g.get(current_coord).cloned());
 
-    let npc_counts = crate::store::get_store()
+    crate::grid::zhulin::social::ensure_initialized(pool.as_deref());
+    let mut npc_counts = crate::store::get_store()
         .map(|store| store.read().npc_counts_by_grid())
         .unwrap_or_default();
+    for (coord, cnt) in crate::grid::zhulin::social::ground_pop_counts() {
+        let entry = npc_counts.entry(coord).or_insert(0);
+        *entry = entry.saturating_add(cnt);
+    }
     let cells = build_grid_view_cells(
         x,
         y,
@@ -327,7 +332,37 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                 "current_activity": c.current_activity
             }));
         }
-        let total_present = cards.len();
+        // 沙鹿竹林無職稱真活居民（嚴格依 (x, y, current_z) 隔離，玩家卡片上限 8 位陌生人）
+        let social_here =
+            crate::grid::zhulin::social::residents_at_grid_z(x, y, current_z, player_id);
+        let mut social_stranger_shown = 0usize;
+        let mut social_added_entities: Vec<crate::server::protocol::ViewEntity> = Vec::new();
+        for sr in &social_here {
+            if sr.card_state != "named" {
+                if social_stranger_shown >= 8 {
+                    continue;
+                }
+                social_stranger_shown += 1;
+            }
+            npcs_json.push(serde_json::json!({
+                "kind": "npc",
+                "npc_id": sr.id,
+                "display_name": sr.display_name,
+                "card_state": sr.card_state,
+                "current_activity": sr.current_activity
+            }));
+            social_added_entities.push(crate::server::protocol::ViewEntity {
+                id: sr.id.clone(),
+                kind: "npc".to_string(),
+                display_char: "人".to_string(),
+                display_name: sr.display_name.clone(),
+                actions: vec!["Look".to_string(), "Talk".to_string()],
+                interaction_priority: sr.hub_degree >= 4 || sr.card_state == "named",
+                current_activity: sr.current_activity.clone(),
+                behavior_text: sr.current_activity.clone(),
+            });
+        }
+        let total_present = cards.len() + social_here.len();
         let sanitize_public_entry_act = |raw: &str, idx: usize| -> String {
             let trimmed = raw.trim().trim_end_matches('。');
             let r = base.room_name.as_str();
@@ -382,7 +417,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             .iter()
             .map(|c| (c.id.to_string(), c.display_name.clone()))
             .collect();
-        let entities: Vec<crate::server::protocol::ViewEntity> = entities
+        let mut entities: Vec<crate::server::protocol::ViewEntity> = entities
             .into_iter()
             .map(|mut e| {
                 if e.kind == "npc" || e.kind == "Npc" {
@@ -400,6 +435,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                 e
             })
             .collect();
+        entities.extend(social_added_entities);
 
         // 動態攤位物件：依據在場 NPC 與擺攤狀態產出 ViewObject，並按 id 去重併入 final_objects
         let mut final_objects = final_objects;

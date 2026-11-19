@@ -79,6 +79,23 @@ fn run_simulation_tick(
             std::sync::atomic::AtomicI64::new(0);
         let now_gc = crate::game::now_unix();
         let prev_gc = LAST_OVERLAY_GC.load(std::sync::atomic::Ordering::Relaxed);
+        let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
+        crate::grid::zhulin::social::ensure_initialized(Some(&pool));
+        static LAST_SOCIAL_TICK: std::sync::atomic::AtomicI64 =
+            std::sync::atomic::AtomicI64::new(0);
+        let prev_social = LAST_SOCIAL_TICK.load(std::sync::atomic::Ordering::Relaxed);
+        if now_gc - prev_social >= 15
+            && LAST_SOCIAL_TICK
+                .compare_exchange(
+                    prev_social,
+                    now_gc,
+                    std::sync::atomic::Ordering::SeqCst,
+                    std::sync::atomic::Ordering::Relaxed,
+                )
+                .is_ok()
+        {
+            crate::grid::zhulin::social::tick_live(Some(&pool), clock);
+        }
         if now_gc - prev_gc >= 30
             && LAST_OVERLAY_GC
                 .compare_exchange(
@@ -89,7 +106,6 @@ fn run_simulation_tick(
                 )
                 .is_ok()
         {
-            let clock = crate::grid::substrate::hydrology::WorldClockSnapshot::current_live();
             let _ = crate::grid::substrate::settle::gc_expired_overlays(
                 &pool,
                 clock,

@@ -12,6 +12,7 @@
 //! - 格內 3 槽位拉霸（含 `[空白]`）＋ 生態分層存量 ＋ 自然豐枯端詳與採集敘事
 
 pub mod objects;
+pub mod social;
 pub mod terrain_bamboo;
 pub mod weather;
 

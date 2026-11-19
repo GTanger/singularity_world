@@ -128,6 +128,10 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         )
         .route("/api/substrate/window", get(http_api::substrate_window))
         .route("/api/substrate/cell", get(http_api::substrate_cell))
+        .route(
+            "/api/substrate/social_summary",
+            get(http_api::substrate_social_summary),
+        )
         // 輕量版 RimWorld 無縫雙尺度 2D 平面大地圖與 HTTP 認證端點
         .route("/api/rim/auth", post(http_api::rim_auth_post))
         .route("/api/rim/me", get(http_api::rim_auth_me))

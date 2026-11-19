@@ -288,6 +288,66 @@ fn try_entity_branch(
     target_id: &str,
     action: &str,
 ) -> bool {
+    if target_id.starts_with("zl_res_") {
+        let pool = crate::pg::pool();
+        crate::grid::zhulin::social::ensure_initialized(pool.as_deref());
+        let (px, py) = player.grid_x.zip(player.grid_y).unwrap_or((0, 0));
+        let pz = player.grid_z;
+        let res_opt = match action {
+            "Look" => crate::grid::zhulin::social::inspect_resident(target_id, pid, px, py, pz),
+            "Talk" => crate::grid::zhulin::social::talk_to_resident(
+                target_id,
+                pid,
+                px,
+                py,
+                pz,
+                &msg.player_input,
+                pool.as_deref(),
+            ),
+            _ => {
+                conn.send_json(&ActionResultMsg {
+                    msg_type: "action_result".into(),
+                    action: action.to_string(),
+                    target_id: target_id.to_string(),
+                    target_name: "街坊路人".into(),
+                    narrative: "眼前這位街坊正忙於活計，不妨先上前端詳或開口攀談。".into(),
+                    success: false,
+                    actions: vec!["Look".into(), "Talk".into()],
+                    move_target_id: String::new(),
+                    open_trade: false,
+                    suggested_action: String::new(),
+                    tactical_choices: vec![],
+                });
+                return true;
+            }
+        };
+        if let Some(res) = res_opt {
+            let departed = res.actions.is_empty();
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.to_string(),
+                target_id: target_id.to_string(),
+                target_name: res.target_name,
+                narrative: res.narrative,
+                success: !departed,
+                actions: res.actions,
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: if departed {
+                    "target_departed".into()
+                } else {
+                    String::new()
+                },
+                tactical_choices: vec![],
+            });
+            if res.unlocked_name || departed {
+                push_refresh(conn, pid);
+            }
+            return true;
+        }
+        return false;
+    }
+
     let is_entity_id_prefix = target_id.starts_with("ambient_")
         || target_id.starts_with("shanhai_")
         || target_id.starts_with("wt_npc_")

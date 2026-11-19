@@ -26,4 +26,6 @@ pub use rooms::{
     add_exit, create_room, delete_room, get_room_admin, list_rooms, remove_exit, rename_room,
     rooms_data, update_room,
 };
-pub use substrate_atlas::{substrate_basemap, substrate_cell, substrate_meta, substrate_window};
+pub use substrate_atlas::{
+    substrate_basemap, substrate_cell, substrate_meta, substrate_social_summary, substrate_window,
+};

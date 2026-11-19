@@ -387,6 +387,16 @@ pub async fn substrate_cell(Query(q): Query<CellQuery>) -> Response {
     .into_response()
 }
 
+/// 活態社會診斷摘要唯讀端點（`/api/substrate/social_summary`）。
+pub async fn substrate_social_summary() -> Response {
+    let pool = pg::pool();
+    crate::grid::zhulin::social::ensure_initialized(pool.as_deref());
+    let Some(report) = crate::grid::zhulin::social::summary_report() else {
+        return unavailable();
+    };
+    Json(report).into_response()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
