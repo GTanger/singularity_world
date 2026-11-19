@@ -5197,3 +5197,371 @@ body.game-grid-body.sw-tide-ready {
   line-height: 1 !important;
   -webkit-text-stroke: 0.2px currentColor;
 }
+
+/* ═══ 方案 B：去掉九宮格，第一層符號大地圖為主舞台（直接點格移動）＋ 精簡在場敘事卡 ═══ */
+.sw-middle-area.sw-middle-map-first {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+}
+
+.sw-world-map-stage {
+  position: relative;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 58% !important;
+  min-height: 240px !important;
+  background: var(--sw-paper, #ede6d6);
+  border-bottom: 1px solid rgba(139, 105, 20, 0.26);
+  overflow: hidden;
+}
+
+.sw-world-map-stage .sw-world-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px;
+  min-height: 32px;
+  background: rgba(247, 240, 227, 0.72);
+  border-bottom: 1px solid rgba(139, 105, 20, 0.14);
+  flex-shrink: 0;
+}
+
+.sw-world-map-stage .sw-world-map-stats {
+  font-size: 12px;
+  color: var(--sw-ink-muted, #6b5a47);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sw-world-map-stage .sw-world-map-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.sw-world-map-stage .sw-wm-ctrl-btn,
+.sw-world-map-stage .sw-wm-close-btn {
+  padding: 2px 8px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  border-radius: 4px;
+  border: 1px solid rgba(139, 105, 20, 0.28);
+  background: rgba(255, 252, 245, 0.84);
+  color: var(--sw-ink, #2c1e0f);
+  cursor: pointer;
+}
+
+.sw-world-map-stage .sw-world-map-viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 105, 20, 0.28) transparent;
+  display: grid;
+  place-items: safe center;
+  padding: 12px;
+  touch-action: none;
+  cursor: grab;
+  background: radial-gradient(circle at center, rgba(248, 242, 230, 0.68), rgba(226, 217, 198, 0.42));
+}
+
+.sw-world-map-stage .sw-world-map-viewport:active {
+  cursor: grabbing;
+}
+
+.sw-world-map-stage .sw-world-map-grid {
+  display: grid;
+  gap: 3px;
+  margin: auto;
+}
+
+.sw-world-map-stage .wm-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 5px;
+  gap: 1px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  user-select: none;
+  transition: background-color 0.14s ease, border-color 0.14s ease, transform 0.1s ease;
+}
+
+.sw-world-map-stage .wm-cell-clickable {
+  cursor: pointer;
+}
+
+.sw-world-map-stage .wm-cell-cardinal {
+  background: rgba(255, 252, 245, 0.64);
+  border-color: rgba(139, 105, 20, 0.30);
+}
+
+.sw-world-map-stage .wm-cell-clickable:hover {
+  background: rgba(139, 32, 32, 0.08);
+  border-color: rgba(139, 32, 32, 0.42);
+}
+
+.sw-world-map-stage .wm-cell-player {
+  background: rgba(139, 32, 32, 0.10);
+  border-color: rgba(139, 32, 32, 0.46);
+  cursor: pointer;
+}
+
+.sw-world-map-stage .wm-cell-moving {
+  outline: 1.5px solid #8b2020;
+  background: rgba(139, 32, 32, 0.14);
+}
+
+.sw-world-map-stage .wm-cue {
+  position: absolute;
+  top: 0px;
+  right: 2px;
+  font-size: 8px;
+  line-height: 1.05;
+  color: #2a5a6b;
+  opacity: 0.86;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.sw-world-map-stage .wm-npc-dot {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8b2020;
+  pointer-events: none;
+}
+
+.sw-world-map-stage .sw-world-map-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 10px;
+  min-height: 24px;
+  background: rgba(244, 238, 226, 0.86);
+  border-top: 1px solid rgba(139, 105, 20, 0.14);
+  flex-shrink: 0;
+}
+
+.sw-world-map-stage .sw-world-map-info {
+  font-size: 11.5px;
+  color: var(--sw-ink-muted, #6b5a47);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sw-world-map-stage .sw-map-legend-popup {
+  position: absolute;
+  top: 36px;
+  right: 10px;
+  left: 10px;
+  max-width: 520px;
+  margin-left: auto;
+  max-height: calc(100% - 48px);
+  overflow-y: auto;
+  z-index: 30;
+}
+
+/* 精簡在場敘事卡（固定各分層高度，確保 Zero-CLS = 0px） */
+#sw-center-log.sw-compact-scene-card {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 7px 14px 5px !important;
+  margin: 0 !important;
+  gap: 3px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  background: var(--sw-paper-light, #f5efe2);
+}
+
+#sw-center-log.sw-compact-scene-card .sw-place-heading {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 22px;
+}
+
+#sw-center-log.sw-compact-scene-card .sw-place-name {
+  font-size: 17px !important;
+  line-height: 1.25 !important;
+  margin: 0 !important;
+}
+
+#sw-center-log.sw-compact-scene-card .sw-place-locator {
+  font-size: 12px !important;
+  margin: 0 !important;
+}
+
+#sw-center-log.sw-compact-scene-card #sw-l3-terrain {
+  flex: 0 0 112px !important;
+  height: 112px !important;
+  min-height: 112px !important;
+  max-height: 112px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  padding: 2px 0 !important;
+  margin: 0 !important;
+  overflow-y: auto !important;
+}
+
+#sw-center-log.sw-compact-scene-card #sw-room-canvas {
+  flex: 0 0 64px !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  padding: 2px 0 !important;
+  margin: 0 !important;
+  contain: layout size style !important;
+  border-top: 1px solid rgba(139, 105, 20, 0.12);
+}
+
+#sw-center-log.sw-compact-scene-card #sw-breaths-zone {
+  flex: 0 0 74px !important;
+  height: 74px !important;
+  min-height: 74px !important;
+  max-height: 74px !important;
+  padding: 4px 0 2px !important;
+  margin: 0 !important;
+  font-size: 12.5px !important;
+  line-height: 1.48 !important;
+  overflow-y: auto !important;
+  border-top: 1px solid rgba(139, 105, 20, 0.14);
+}
+
+/* 精簡單行底欄（拔除九宮格後） */
+#sw-bottom-area.sw-bottom-slim {
+  padding: 4px 10px calc(5px + env(safe-area-inset-bottom, 0px)) !important;
+  min-height: 0 !important;
+  border-top: 1px solid rgba(139, 105, 20, 0.22);
+}
+
+#sw-dock-triptych.sw-dock-slim {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 2px 4px !important;
+}
+
+#sw-dock-triptych.sw-dock-slim #sw-wing-left {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0;
+  flex: 0 1 auto !important;
+}
+
+#sw-dock-triptych.sw-dock-slim .grid-player-core {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: baseline !important;
+  gap: 6px !important;
+  min-width: 0;
+}
+
+#sw-dock-triptych.sw-dock-slim .grid-player-name {
+  font-size: 14px !important;
+  white-space: nowrap;
+}
+
+#sw-dock-triptych.sw-dock-slim .sw-self-cue {
+  font-size: 11.5px !important;
+  white-space: nowrap;
+}
+
+#sw-dock-triptych.sw-dock-slim #sw-wing-right,
+#sw-dock-triptych.sw-dock-slim #sw-grid-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+#sw-dock-triptych.sw-dock-slim .sw-wing-btn,
+#sw-dock-triptych.sw-dock-slim .sw-grid-act-btn {
+  padding: 5px 8px !important;
+  font-size: 13px !important;
+  white-space: nowrap;
+}
+
+/* 桌機橫螢幕：滿寬左 62% 常駐符號大地圖 ＋ 右 38% 敘事與互動欄 */
+@media (min-width: 769px) {
+  .sw-middle-area.sw-middle-map-first {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.85fr) !important;
+    grid-template-rows: 1fr !important;
+    width: 100% !important;
+    max-width: 1360px !important;
+    margin: 0 auto !important;
+  }
+  .sw-world-map-stage {
+    height: 100% !important;
+    min-height: 0 !important;
+    border-bottom: none;
+    border-right: 1px solid rgba(139, 105, 20, 0.26);
+  }
+  #sw-center-log.sw-compact-scene-card {
+    height: 100% !important;
+    padding: 14px 20px !important;
+    gap: 10px !important;
+  }
+  #sw-center-log.sw-compact-scene-card #sw-l3-terrain {
+    flex: 0 0 148px !important;
+    height: 148px !important;
+    min-height: 148px !important;
+    max-height: 148px !important;
+    font-size: 15.5px !important;
+  }
+  #sw-center-log.sw-compact-scene-card #sw-room-canvas {
+    flex: 0 0 124px !important;
+    height: 124px !important;
+    min-height: 124px !important;
+    max-height: 124px !important;
+  }
+  #sw-center-log.sw-compact-scene-card #sw-breaths-zone {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 120px !important;
+    max-height: none !important;
+    font-size: 14px !important;
+  }
+}
+
+/* 全螢幕展開大地圖模式（點底欄「全圖」切換，點「×」或「收合」還原） */
+body.sw-world-map-expanded #sw-center-log.sw-compact-scene-card {
+  display: none !important;
+}
+
+body.sw-world-map-expanded .sw-world-map-stage {
+  grid-column: 1 / -1 !important;
+  flex: 1 1 100% !important;
+  height: 100% !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}

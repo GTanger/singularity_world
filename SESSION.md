@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-19
-- **當前狀態**：`active`（已依操作者拍板回歸**「單格即物件 × 插座插件」LPC MUD 純文字主線**（`v=20261119a03`）：主入口 `index.html` 與 `sw.js` 已接回 `7c464445` 四層零跳動文字介面，通過 `tra-sw-gate` 6/6 全綠與 `Pixel 9 Pro XL` 真機驗收 `PASS`、`CLS=0px`；`2026-11-18～19` 之 2D 畫布與 CDDA `Chibi_Ultica` 實驗完整封存於獨立路徑 `/rim`（`web/rim.html`）不抹除歷史，下一步自 `微步 3a′` 接軌續推）
+- **當前狀態**：`active`（已依操作者拍板完成**「單格即物件」LPC MUD 方案 B（去掉九宮格、第一層常駐符號大地圖為主舞台、直接點格移動＋精簡在場敘事卡＋單行底欄）**（`v=20261119a05`）：通過 `tra-sw-gate` 6/6 全綠、桌機 1280×800 單擊直移與左右雙欄驗收、實體 `Pixel 9 Pro XL` 真機 `PASS`、`Zero-CLS = 0px`、`0px` 水平溢位；2D 畫布實驗留存於 `/rim` 不抹除歷史，下一步自 `微步 3a′` 接軌續推）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -64,6 +64,8 @@
     - **根治全鎮排隊打鳥與死鳥折返跑 AI 缺陷（`rim_market.rs` + `rim_ai.rs`）**：區分具威脅野獸與無害`鐵羽竹雞`（僅專職獵戶可主動獵鳥、單隻竹雞限 1 名追獵者、防禦野豬上限 2 人並採避讓擁擠尋路）；目標陣亡時立即 `path.clear()` 終止殘餘路徑，`60/60` 單元測試與 30 秒線上軌跡稽核（`0` 非獵戶追鳥、`0` 店主離崗、`0` 死後殘餘路徑）全數通過。
 19. **2026-11-19 正式回歸「單格即物件」LPC MUD 純文字主線（`v=20261119a03`，Mnemopi `wm_9943ad5e142c4b5c`）**：
     - 實機比較 2D 像素畫布（`Chibi_Ultica` 與純 `UltiCa` 寫實對照）後，操作者拍板回歸 `11/05～11/12` 定案之正統「單格即物件 × 插座插件」LPC MUD 文字主線：主入口 `web/index.html` 與 `web/sw.js` 還原接回 `7c464445` 四層零跳動文字介面（`CLS=0px`，`Pixel 9 Pro XL` 真機驗收 `PASS`），原 2D 畫布入口改移至 `/rim`（`web/rim.html` ＋ `src/server/run.rs`）完整留痕不抹除。
+20. **2026-11-19 方案 B：拔除九宮格，符號大地圖升至第一層主舞台＋直接點格移動（`v=20261119a05`）**：
+    - 依操作者指定調整 [index.html](file:///home/tanger/Projects/singularity_world/web/index.html)、[grid-map.js](file:///home/tanger/Projects/singularity_world/web/grid-map.js)、[game-grid.css](file:///home/tanger/Projects/singularity_world/web/game-grid.css) 與 [sw.js](file:///home/tanger/Projects/singularity_world/web/sw.js)：移除視覺九宮格（保留隱藏鍵盤相容節點供 WASD 與 `SwMoveDirection`），將可拖曳符號大地圖直接置於第一層主舞台（手機上半 ~56%、桌機左欄 63% 滿寬），點擊任一可通行鄰格或已探足跡即直接送步移動並自動置中跟隨、附即時 `泉涼↑` 角標與在場人跡紅點，底欄收為 `32px` 單行（含 `[全圖]` 全螢幕展開切換）；通過 `tra-sw-gate` 6/6 全綠、桌機 1280×800 與 `Pixel 9 Pro XL` 真機驗收（`Zero-CLS = 0px`、`0px` 水平溢位、`0` 錯誤）。
 
 ## 二、 關鍵檔案與正典錨點
 

@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=20261119a03">
-	<link rel="stylesheet" href="game.css?v=20261119a03">
+	<link rel="stylesheet" href="style.css?v=20261119a05">
+	<link rel="stylesheet" href="game.css?v=20261119a05">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=20261119a03" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=20261119a05" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -88,8 +88,8 @@
 			<div id="sw-l2-climate" class="sw-desc-layer sw-l2" style="display:none;" aria-hidden="true"></div>
 		</header>
 
-		<!-- 【中段雙欄】：左側直列互動欄 ＋ 中央動態文字 Log -->
-		<main id="sw-middle-area" class="sw-middle-area">
+		<!-- 【主舞台】：第一層常駐符號大地圖（直接點格移動）＋ 精簡在場敘事卡 -->
+		<main id="sw-middle-area" class="sw-middle-area sw-middle-map-first">
 			<aside id="sw-left-column" class="sw-left-column" aria-label="在場接觸" hidden style="display:none;">
 				<section id="sw-col-people" class="sw-col-section">
 					<div id="sw-people-items" class="sw-col-items"></div>
@@ -106,8 +106,71 @@
 				<div id="sw-l4-objects" class="sw-desc-layer sw-l4" style="display:none;" aria-hidden="true"></div>
 			</aside>
 
-			<!-- 中央動態文字 Log：地貌描述、即時事件、去數值化交鋒 Log 與戰術按鈕 -->
-			<section id="sw-center-log" class="sw-center-log" aria-label="場景與動態記錄">
+			<!-- 第一層符號大地圖主舞台（單格即物件，直接點格直行、拖曳平移） -->
+			<section id="sw-world-map-stage" class="sw-world-map-stage" aria-label="行旅足跡大地圖">
+				<div class="sw-world-map-header">
+					<div class="sw-world-map-title-wrap">
+						<span id="sw-world-map-stats" class="sw-world-map-stats">已踏足 1 處</span>
+					</div>
+					<div class="sw-world-map-controls">
+						<button type="button" id="btn-wm-center" class="sw-wm-ctrl-btn" title="定位自身所在">定位 ◎</button>
+						<button type="button" id="btn-wm-zoom" class="sw-wm-ctrl-btn" title="切換地圖縮放">緊湊</button>
+						<button type="button" id="btn-map-legend" class="sw-wm-ctrl-btn sw-map-legend-btn" aria-expanded="false" title="查看地圖符號圖例">圖例</button>
+						<button type="button" id="btn-wm-close" class="sw-wm-close-btn" aria-label="收合全圖" hidden>×</button>
+					</div>
+				</div>
+				<div id="sw-world-map-viewport" class="sw-world-map-viewport">
+					<div id="sw-world-map-grid" class="sw-world-map-grid" role="grid" aria-label="已探索足跡大地圖"></div>
+				</div>
+				<div id="sw-world-map-footer" class="sw-world-map-footer">
+					<div id="sw-world-map-info" class="sw-world-map-info">點擊鄰格或已探足跡即可直行・拖曳畫面可平移。</div>
+					<button type="button" id="btn-wm-move-here" class="sw-wm-move-btn" hidden>前往此處</button>
+				</div>
+				<!-- 符號圖例古風宣紙彈窗 -->
+				<div id="sw-map-legend-popup" class="sw-map-legend-popup" hidden>
+					<div class="sw-legend-header">
+						<h3 class="sw-legend-title">【 輿地純符號圖例 】</h3>
+						<button type="button" id="btn-map-legend-close" class="sw-legend-close" aria-label="關閉圖例">×</button>
+					</div>
+					<div class="sw-legend-body">
+						<div class="sw-legend-col">
+							<div class="sw-legend-subtitle">〔 城鎮工坊與聚落 〕</div>
+							<ul class="sw-legend-list">
+								<li><span class="sym">::</span> 街衢廊道（街道、巷弄、石坪、門廊）</li>
+								<li><span class="sym">𖠿</span> 宅舍居處（民居、宅院、廬舍、起居）</li>
+								<li><span class="sym">$</span> 市集商貿（商鋪、攤檔、鎂幣、行庫）</li>
+								<li><span class="sym">⚒︎</span> 百工工坊（鍛爐、作坊、船塢、磨坊）</li>
+								<li><span class="sym">+</span> 診所藥房（診所、藥房、溫灸、調理）</li>
+								<li><span class="sym">⌂</span> 旅社浴場（旅社、茶屋、歇腳、浴場）</li>
+								<li><span class="sym">⚑</span> 公處機構（學院、鐘樓、公議堂、觀星台）</li>
+								<li><span class="sym">■</span> 城垣要塞（城牆、關隘、石壁）</li>
+								<li><span class="sym">≠</span> 柵欄圍籬（木柵、矮籬、界格）</li>
+							</ul>
+						</div>
+						<div class="sw-legend-col">
+							<div class="sw-legend-subtitle">〔 自然水脈與地形 〕</div>
+							<ul class="sw-legend-list">
+								<li><span class="sym">≈</span> 碧水長流（溪澗、河道、運河、水脈）</li>
+								<li><span class="sym">≍</span> 跨水橋埠（石橋、木橋、津渡、碼頭）</li>
+								<li><span class="sym">𐡚</span> 原野草息（草地、平疇、曠野、牧場）</li>
+								<li><span class="sym">𓐂</span> 翠竹深篁（刺竹林、竹坡、竹隙、混生竹林）</li>
+								<li><span class="sym">Φ</span> 幽林叢木（山林、樹叢、樟木、闊葉林）</li>
+								<li><span class="sym">⛰︎</span> 峻嶺崇山（峰巒、崖壁、崇山、奇石）</li>
+								<li><span class="sym">△</span> 幽穴採掘（洞窟、礦脈、幽壑、坑道）</li>
+								<li><span class="sym">∆</span> 遺蹟高塔（塔樓、殘跡、雪線石塔）</li>
+								<li><span class="sym">≋</span> 滄溟大澤（汪洋、廣澤、淵藪、深海）</li>
+								<li><span class="sym">⋯</span> 沙磧荒丘（海灘、沙岸、荒原、淺汀）</li>
+								<li><span class="sym">⋍</span> 澤藪沼濘（沼澤、泥濘、濕地、泥淖）</li>
+								<li><span class="sym">▦</span> 膏腴田畦（耕地、農田、稼穡）</li>
+								<li><span class="sym">☷</span> 百草藥圃（藥圃、苗圃、石坪基址）</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- 精簡在場敘事卡：當前格地貌、行內景物插座、在場人與當下墨韻 -->
+			<section id="sw-center-log" class="sw-center-log sw-compact-scene-card" aria-label="場景與動態記錄">
 				<header class="sw-place-heading">
 					<h1 id="sw-place-name" class="sw-place-name"></h1>
 					<p id="sw-place-locator" class="sw-place-locator" hidden></p>
@@ -134,6 +197,7 @@
 						<button type="button" class="sw-tactical-btn" data-choice="守勢游鬥">守勢游鬥</button>
 						<button type="button" class="sw-tactical-btn" data-choice="搏命硬撼">搏命硬撼</button>
 						<button type="button" class="sw-tactical-btn" data-choice="抽身脫離">抽身脫離</button>
+					</div>
 				</div>
 			</section>
 		</main>
@@ -153,24 +217,24 @@
 			</div>
 		</div>
 
-		<!-- 【下方空間導航區】：左自身・中方寸九宮・右輿圖近事 三欄合一 ＋ 私人客房收合 -->
-		<section id="sw-bottom-area" class="sw-bottom-area" aria-label="空間導航與自身輿圖">
-			<div id="sw-dock-triptych" class="sw-dock-triptych">
+		<!-- 【精簡單行底欄】：左自身狀態・右行囊全圖近事探索（已移除九宮格，保留隱藏相容節點供鍵盤步履同步） -->
+		<section id="sw-bottom-area" class="sw-bottom-area sw-bottom-slim" aria-label="個人隨身與快捷動作">
+			<div id="sw-dock-triptych" class="sw-dock-triptych sw-dock-slim">
 				<div id="sw-wing-left" class="sw-dock-wing sw-wing-left">
 					<div class="grid-player-core">
 						<button id="player-name" class="grid-player-name" type="button" title="查看自身狀態">姓名</button>
 						<span id="player-vibe" class="sw-self-cue">氣息勻暢</span>
 						<span id="sw-status-seals" class="sw-status-seals"></span>
 					</div>
-					<button type="button" id="btn-open-inventory" class="sw-wing-btn" title="翻看隨身行囊">行囊</button>
 				</div>
-				<div id="sw-symbol-grid-wrap" class="sw-symbol-grid-wrap">
+				<div id="sw-symbol-grid-wrap" class="sw-symbol-grid-wrap" hidden style="display:none;" aria-hidden="true">
 					<nav id="sw-footstep-strip" class="sw-footstep-strip" aria-label="四向步履列"></nav>
 					<div id="sw-symbol-grid" class="sw-symbol-grid" role="grid" aria-label="方寸九宮步法印"></div>
 				</div>
 				<div id="sw-wing-right" class="sw-dock-wing sw-wing-right">
 					<div id="sw-grid-actions" class="sw-grid-actions">
-						<button type="button" id="btn-toggle-map" class="sw-grid-act-btn sw-map-toggle-btn sw-wing-btn" aria-expanded="false" title="點開查看走過的地圖">輿圖</button>
+						<button type="button" id="btn-open-inventory" class="sw-grid-act-btn sw-wing-btn" title="翻看隨身行囊">行囊</button>
+						<button type="button" id="btn-toggle-map" class="sw-grid-act-btn sw-map-toggle-btn sw-wing-btn" aria-expanded="false" title="展開或收合全螢幕大地圖">全圖</button>
 						<button type="button" id="btn-toggle-recap" class="sw-grid-act-btn sw-recap-toggle-btn sw-wing-btn" title="翻閱近期搭話、探索與交鋒紀錄">近事<span id="sw-recap-unread" class="sw-recap-unread" hidden></span></button>
 						<button type="button" id="btn-explore" class="sw-grid-act-btn sw-wing-btn" hidden>探索</button>
 						<button type="button" id="btn-enter-room" class="sw-grid-act-btn" hidden>投宿／進客房（進）</button>
@@ -205,72 +269,6 @@
 		<div id="log" style="display:none" aria-hidden="true"></div>
 
 	</div><!-- /#app-grid -->
-
-	<!-- 大地圖（行旅足跡輿圖）彈窗 -->
-	<div id="sw-world-map-overlay" class="sw-world-map-overlay" hidden aria-hidden="true">
-		<div id="sw-world-map-modal" class="sw-world-map-modal" role="dialog" aria-modal="true" aria-labelledby="sw-world-map-title">
-			<div class="sw-world-map-header">
-				<div class="sw-world-map-title-wrap">
-					<h2 id="sw-world-map-title" class="sw-world-map-title">【 行旅足跡輿圖 】</h2>
-					<span id="sw-world-map-stats" class="sw-world-map-stats">已踏足 1 處</span>
-				</div>
-				<div class="sw-world-map-controls">
-					<button type="button" id="btn-wm-center" class="sw-wm-ctrl-btn" title="定位自身所在">定位自身 ◎</button>
-					<button type="button" id="btn-wm-zoom" class="sw-wm-ctrl-btn" title="切換地圖縮放">緊湊全覽</button>
-					<button type="button" id="btn-map-legend" class="sw-wm-ctrl-btn sw-map-legend-btn" aria-expanded="false" title="查看地圖符號圖例">符號圖例</button>
-					<button type="button" id="btn-wm-close" class="sw-wm-close-btn" aria-label="關閉大地圖">×</button>
-				</div>
-			</div>
-			<div id="sw-world-map-viewport" class="sw-world-map-viewport">
-				<div id="sw-world-map-grid" class="sw-world-map-grid" role="grid" aria-label="已探索足跡大地圖"></div>
-			</div>
-			<div id="sw-world-map-footer" class="sw-world-map-footer">
-				<div id="sw-world-map-info" class="sw-world-map-info">點擊輿圖上的已探索格可查看地名；拖曳畫面可平移檢視足跡。</div>
-				<button type="button" id="btn-wm-move-here" class="sw-wm-move-btn" hidden>前往此處</button>
-			</div>
-			<!-- 符號圖例古風宣紙彈窗 -->
-			<div id="sw-map-legend-popup" class="sw-map-legend-popup" hidden>
-				<div class="sw-legend-header">
-					<h3 class="sw-legend-title">【 輿地純符號圖例 】</h3>
-					<button type="button" id="btn-map-legend-close" class="sw-legend-close" aria-label="關閉圖例">×</button>
-				</div>
-				<div class="sw-legend-body">
-					<div class="sw-legend-col">
-						<div class="sw-legend-subtitle">〔 城鎮工坊與聚落 〕</div>
-						<ul class="sw-legend-list">
-							<li><span class="sym">::</span> 街衢廊道（街道、巷弄、石坪、門廊）</li>
-							<li><span class="sym">𖠿</span> 宅舍居處（民居、宅院、廬舍、起居）</li>
-							<li><span class="sym">$</span> 市集商貿（商鋪、攤檔、鎂幣、行庫）</li>
-							<li><span class="sym">⚒︎</span> 百工工坊（鍛爐、作坊、船塢、磨坊）</li>
-							<li><span class="sym">+</span> 診所藥房（診所、藥房、溫灸、調理）</li>
-							<li><span class="sym">⌂</span> 旅社浴場（旅社、茶屋、歇腳、浴場）</li>
-							<li><span class="sym">⚑</span> 公處機構（學院、鐘樓、公議堂、觀星台）</li>
-							<li><span class="sym">■</span> 城垣要塞（城牆、關隘、石壁）</li>
-							<li><span class="sym">≠</span> 柵欄圍籬（木柵、矮籬、界格）</li>
-						</ul>
-					</div>
-					<div class="sw-legend-col">
-						<div class="sw-legend-subtitle">〔 自然水脈與地形 〕</div>
-						<ul class="sw-legend-list">
-							<li><span class="sym">≈</span> 碧水長流（溪澗、河道、運河、水脈）</li>
-							<li><span class="sym">≍</span> 跨水橋埠（石橋、木橋、津渡、碼頭）</li>
-							<li><span class="sym">𐡚</span> 原野草息（草地、平疇、曠野、牧場）</li>
-							<li><span class="sym">𓐂</span> 翠竹深篁（刺竹林、竹坡、竹隙、混生竹林）</li>
-							<li><span class="sym">Φ</span> 幽林叢木（山林、樹叢、樟木、闊葉林）</li>
-							<li><span class="sym">⛰︎</span> 峻嶺崇山（峰巒、崖壁、崇山、奇石）</li>
-							<li><span class="sym">△</span> 幽穴採掘（洞窟、礦脈、幽壑、坑道）</li>
-							<li><span class="sym">∆</span> 遺蹟高塔（塔樓、殘跡、雪線石塔）</li>
-							<li><span class="sym">≋</span> 滄溟大澤（汪洋、廣澤、淵藪、深海）</li>
-							<li><span class="sym">⋯</span> 沙磧荒丘（海灘、沙岸、荒原、淺汀）</li>
-							<li><span class="sym">⋍</span> 澤藪沼濘（沼澤、泥濘、濕地、泥淖）</li>
-							<li><span class="sym">▦</span> 膏腴田畦（耕地、農田、稼穡）</li>
-							<li><span class="sym">☷</span> 百草藥圃（藥圃、苗圃、石坪基址）</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<!-- 角色面板：點擊底部姓名開啟，沿用既有 sw-modals.js / sw-panes.js。 -->
 	<div id="player-modal-overlay" class="player-modal-overlay" hidden aria-hidden="true">
@@ -317,24 +315,27 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261119a03"></script>
-	<script src="grid-map.js?v=20261119a03"></script>
-	<script src="sw-room-desc.js?v=20261119a03"></script>
-	<script src="sw-object-list.js?v=20261119a03"></script>
-	<script src="sw-log.js?v=20261119a03"></script>
-	<script src="sw-panes.js?v=20261119a03"></script>
-	<script src="sw-modals.js?v=20261119a03"></script>
-	<script src="sw-interactions.js?v=20261119a03"></script>
-	<script src="sw-clock.js?v=20261119a03"></script>
-	<script src="sw-narrative.js?v=20261119a03"></script>
-	<script src="sw-auth.js?v=20261119a03"></script>
-	<script src="main.js?v=20261119a03"></script>
+	<script src="narrative-markdown.js?v=20261119a05"></script>
+	<script src="grid-map.js?v=20261119a05"></script>
+	<script src="sw-room-desc.js?v=20261119a05"></script>
+	<script src="sw-object-list.js?v=20261119a05"></script>
+	<script src="sw-log.js?v=20261119a05"></script>
+	<script src="sw-panes.js?v=20261119a05"></script>
+	<script src="sw-modals.js?v=20261119a05"></script>
+	<script src="sw-interactions.js?v=20261119a05"></script>
+	<script src="sw-clock.js?v=20261119a05"></script>
+	<script src="sw-narrative.js?v=20261119a05"></script>
+	<script src="sw-auth.js?v=20261119a05"></script>
+	<script src="main.js?v=20261119a05"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
 			var app  = document.getElementById('app');
 			if (auth) auth.style.display = 'none';
 			if (app)  app.hidden = false;
+			if (window.centerWorldMapOnPlayer) {
+				requestAnimationFrame(function () { window.centerWorldMapOnPlayer(); });
+			}
 		};
 		window.closeDrawers = function () {};
 		window.triggerLook  = function () {};
@@ -343,13 +344,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261119a03')) return;
-				sessionStorage.setItem('sw_reloaded_v20261119a03', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261119a05')) return;
+				sessionStorage.setItem('sw_reloaded_v20261119a05', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261119a03', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261119a05', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

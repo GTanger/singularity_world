@@ -2328,6 +2328,7 @@
     var _isCompactZoom = false;
     var _selectedWmCoord = null;
     var _didDragWorldMap = false;
+    var _lastInlineWmPos = { x: null, y: null };
     var WM_ACTIVE_VISION_RADIUS = 2; // 周遭顯亮半徑（方格距離 <= 2，即周遭 5x5 顯亮，範圍外暗化）
     function renderWorldMapContent() {
         var gridEl = document.getElementById('sw-world-map-grid');
@@ -2339,6 +2340,21 @@
         var store = loadWalkedStore();
         var px = (typeof mapData.playerX === 'number') ? mapData.playerX : 0;
         var py = (typeof mapData.playerY === 'number') ? mapData.playerY : 0;
+
+        // 建立當下即時視野格查表（補齊邊界感官角標、在場人數與可通行性）
+        var liveByCoord = {};
+        if (Array.isArray(mapData.cells)) {
+            for (var li = 0; li < mapData.cells.length; li++) {
+                var lc = mapData.cells[li];
+                if (lc && typeof lc.x === 'number' && typeof lc.y === 'number') {
+                    liveByCoord[lc.x + ',' + lc.y] = lc;
+                }
+            }
+        }
+        var isPrivate = !!mapData.in_private_room;
+        var hasInPortal = !isPrivate && !!((mapData.exits || []).find(function (ex) {
+            return ex && (ex.direction === '進' || ex.dir === '進' || ex.direction === 'enter');
+        }) || (mapData.exits_v5 && mapData.exits_v5.in && mapData.exits_v5.in.walkable));
 
         var minX = px, maxX = px, minY = py, maxY = py;
         var visitedCount = 0;
@@ -2357,32 +2373,34 @@
                 if (entry.y > maxY) maxY = entry.y;
             }
         }
-        // 確保至少有 7x7 格範圍
+        // 第一層大地圖主舞台確保充裕視窗格數（桌機至少 11×7，手機至少 7×7）
+        var minSpanX = (window.innerWidth > 768) ? 11 : 7;
+        var minSpanY = 7;
         var spanX = maxX - minX + 1;
         var spanY = maxY - minY + 1;
-        if (spanX < 7) {
-            var padX = Math.ceil((7 - spanX) / 2);
+        if (spanX < minSpanX) {
+            var padX = Math.ceil((minSpanX - spanX) / 2);
             minX -= padX;
-            maxX += (7 - spanX - padX);
+            maxX += (minSpanX - spanX - padX);
         }
-        if (spanY < 7) {
-            var padY = Math.ceil((7 - spanY) / 2);
+        if (spanY < minSpanY) {
+            var padY = Math.ceil((minSpanY - spanY) / 2);
             minY -= padY;
-            maxY += (7 - spanY - padY);
+            maxY += (minSpanY - spanY - padY);
         }
 
         var curShort = shortPlaceLabel(mapData.currentRoomName || '自身所在', '此處');
         if (statsEl) {
-            statsEl.textContent = '已踏足 ' + visitedCount + ' 處 · 已目及 ' + seenCount + ' 處 · 周遭顯亮 · 當前：' + curShort;
+            statsEl.textContent = '已踏足 ' + visitedCount + ' · 目及 ' + seenCount + ' · ' + curShort;
         }
         if (infoEl && (!_selectedWmCoord || (_selectedWmCoord.x === px && _selectedWmCoord.y === py))) {
-            infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處（點擊任一格可查看地名或直接前往鄰格）';
-            if (moveBtn) moveBtn.hidden = true;
+            infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】點擊任一鄰格或已探處即可直行・拖曳可平移';
         }
+        if (moveBtn) moveBtn.hidden = true;
 
         var cols = maxX - minX + 1;
-        var cellW = _isCompactZoom ? 20 : 58;
-        var cellH = _isCompactZoom ? 20 : 42;
+        var cellW = _isCompactZoom ? 24 : 68;
+        var cellH = _isCompactZoom ? 24 : 52;
 
         gridEl.style.gridTemplateColumns = 'repeat(' + cols + ', ' + cellW + 'px)';
         gridEl.style.gridAutoRows = cellH + 'px';
@@ -2397,11 +2415,15 @@
             for (var x = minX; x <= maxX; x++) {
                 var k = x + ',' + y;
                 var cellEntry = store.cells[k];
+                var liveCell = liveByCoord[k] || null;
                 if (cellEntry && cellEntry.name) {
                     cellEntry.shortName = shortPlaceLabel(cellEntry.name);
                 }
                 var isPl = (x === px && y === py);
-                var chebDist = Math.max(Math.abs(x - px), Math.abs(y - py));
+                var dx = x - px;
+                var dy = y - py;
+                var chebDist = Math.max(Math.abs(dx), Math.abs(dy));
+                var manhattan = Math.abs(dx) + Math.abs(dy);
                 var isLitVision = chebDist <= WM_ACTIVE_VISION_RADIUS;
                 var isLiveSight = chebDist <= 1;
                 var div = document.createElement('div');
@@ -2412,10 +2434,15 @@
                 var lbl = '';
                 var cls = 'wm-cell';
                 var isRealEntry = cellEntry && (cellEntry.visited || (cellEntry.seen && (cellEntry.name || (cellEntry.symbol && cellEntry.symbol !== '·'))));
+                var isWalkable = !(
+                    (cellEntry && cellEntry.walkable === false) ||
+                    (liveCell && (liveCell.walkable === false || liveCell.barrier === true))
+                );
+
                 if (isPl) {
                     cls += ' wm-cell-player wm-cell-lit';
                     sym = '◎';
-                    lbl = curShort;
+                    lbl = isPrivate ? '出・室外' : (hasInPortal ? (curShort + '·進') : curShort);
                 } else if (isRealEntry && cellEntry.visited) {
                     cls += ' wm-cell-visited ' + (isLitVision ? 'wm-cell-lit' : 'wm-cell-dimmed');
                     sym = (cellEntry.symbol && cellEntry.symbol !== '·') ? cellEntry.symbol : '⋯';
@@ -2429,11 +2456,30 @@
                     sym = '';
                     lbl = '';
                 }
+                if (!isPl && isRealEntry && isWalkable) {
+                    cls += ' wm-cell-clickable';
+                    if (manhattan === 1) {
+                        cls += ' wm-cell-cardinal';
+                    }
+                }
                 if (_selectedWmCoord && _selectedWmCoord.x === x && _selectedWmCoord.y === y) {
                     cls += ' is-selected';
                 }
 
                 div.className = cls;
+
+                if (!_isCompactZoom && isLitVision && liveCell && liveCell.edge_cue) {
+                    var cueSpan = document.createElement('span');
+                    cueSpan.className = 'wm-cue';
+                    cueSpan.textContent = liveCell.edge_cue;
+                    div.appendChild(cueSpan);
+                }
+                if (!isPl && isLitVision && liveCell && ((liveCell.npc_count && liveCell.npc_count > 0) || liveCell.has_npcs)) {
+                    var dotSpan = document.createElement('span');
+                    dotSpan.className = 'wm-npc-dot';
+                    dotSpan.title = '此處有人跡';
+                    div.appendChild(dotSpan);
+                }
 
                 var symSpan = document.createElement('span');
                 symSpan.className = 'wm-sym' + (sym === '𓐂' ? ' sw-sym-bamboo' : '');
@@ -2447,104 +2493,78 @@
                     div.appendChild(lblSpan);
                 }
 
-
-                (function (cellEl, tx, ty, tEntry, isSelf, tSym, tLbl, tLit, tLive) {
+                (function (cellEl, tx, ty, tEntry, isSelf, tSym, tWalkable) {
                     cellEl.addEventListener('click', function () {
                         if (_didDragWorldMap) return;
                         _selectedWmCoord = { x: tx, y: ty };
                         var allCells = gridEl.querySelectorAll('.wm-cell');
                         for (var cIdx = 0; cIdx < allCells.length; cIdx++) {
-                            allCells[cIdx].classList.remove('is-selected');
+                            allCells[cIdx].classList.remove('is-selected', 'wm-cell-moving');
                         }
                         cellEl.classList.add('is-selected');
 
                         if (isSelf) {
-                            if (infoEl) {
-                                infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處（周遭顯亮範圍內為目力所及，範圍外過往足跡則暗化留存）';
+                            if (window.gameSend) {
+                                if (mapData.in_private_room) {
+                                    window.gameSend({ type: 'move', direction: '出' });
+                                } else if (hasInPortal) {
+                                    window.gameSend({ type: 'move', direction: '進' });
+                                } else {
+                                    window.gameSend({ type: 'look' });
+                                }
                             }
-                            if (moveBtn) moveBtn.hidden = true;
-                        } else if (tEntry && (tEntry.visited || tEntry.seen)) {
-                            var statusStr = tLit
-                                ? (tEntry.visited ? '周遭顯亮（已踏足）' : '周遭顯亮（已目及）')
-                                : (tEntry.visited ? '過往足跡記憶（超出目力範圍，已暗化）' : '過往目及印象（超出目力範圍，已暗化）');
+                            if (infoEl) {
+                                infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處';
+                            }
+                            return;
+                        }
+                        if (tEntry && (tEntry.visited || tEntry.seen)) {
                             var fName = tEntry.name || (tEntry.visited ? '行旅足跡處' : '目及之處');
-                            if (infoEl) {
-                                infoEl.textContent = '【' + fName + '】符號 [' + tSym + '] · ' + statusStr;
+                            if (!tWalkable) {
+                                if (infoEl) {
+                                    infoEl.textContent = '【' + fName + '】地形阻隔，暫無法直行。';
+                                }
+                                return;
                             }
-                            var dx = tx - px;
-                            var dy = ty - py;
-                            var isAdj = Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && (dx !== 0 || dy !== 0);
-                            var dir = isAdj ? getDirectionFromOffset(dx, dy) : null;
-                            if (tEntry.walkable !== false && moveBtn) {
-                                moveBtn.hidden = false;
-                                moveBtn.textContent = dir ? ('前往此處（' + dir + '）') : ('行往【' + fName + '】');
-                                moveBtn.onclick = function () {
-                                    if (window.gameSend) {
-                                        window.gameSend({ type: 'move', x: tx, y: ty, direction: dir || '行旅' });
-                                    }
-                                    closeWorldMapModal();
-                                };
-                            } else if (moveBtn) {
-                                moveBtn.hidden = true;
+                            var mdx = tx - px;
+                            var mdy = ty - py;
+                            var isAdj = Math.abs(mdx) <= 1 && Math.abs(mdy) <= 1 && (mdx !== 0 || mdy !== 0);
+                            var dir = isAdj ? getDirectionFromOffset(mdx, mdy) : null;
+                            cellEl.classList.add('wm-cell-moving');
+                            if (infoEl) {
+                                infoEl.textContent = dir
+                                    ? ('邁步往' + dir + '・【' + fName + '】…')
+                                    : ('沿途行往【' + fName + '】…');
+                            }
+                            if (dir && Math.abs(mdx) + Math.abs(mdy) === 1) {
+                                triggerCanvasOpticalShift(dir);
+                            }
+                            if (window.gameSend) {
+                                window.gameSend({ type: 'move', x: tx, y: ty, direction: dir || '行旅' });
                             }
                         } else {
                             if (infoEl) {
-                                infoEl.textContent = '此處尚在雲霧阻隔中，尚未親臨踏足。';
+                                infoEl.textContent = '此處尚在雲霧之中，請先往鄰近可見處踏勘。';
                             }
-                            if (moveBtn) moveBtn.hidden = true;
                         }
                     });
-                })(div, x, y, cellEntry, isPl, sym, lbl, isLitVision, isLiveSight);
+                })(div, x, y, cellEntry, isPl, sym, isWalkable);
 
                 gridEl.appendChild(div);
             }
         }
+    }
 
-        if (_selectedWmCoord) {
-            var isSelSelf = _selectedWmCoord.x === px && _selectedWmCoord.y === py;
-            var selKey = _selectedWmCoord.x + ',' + _selectedWmCoord.y;
-            var selEntry = (store.cells || {})[selKey];
-            var selChebDist = Math.max(Math.abs(_selectedWmCoord.x - px), Math.abs(_selectedWmCoord.y - py));
-            var isSelLit = selChebDist <= WM_ACTIVE_VISION_RADIUS;
-            var isSelLive = selChebDist <= 1;
-            if (isSelSelf) {
-                if (infoEl) {
-                    infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處（周遭顯亮範圍內為目力所及，範圍外過往足跡則暗化留存）';
-                }
-                if (moveBtn) moveBtn.hidden = true;
-            } else if (selEntry && (selEntry.visited || selEntry.seen)) {
-                var selStatusStr = isSelLit
-                    ? (selEntry.visited ? '周遭顯亮（已踏足）' : '周遭顯亮（已目及）')
-                    : (selEntry.visited ? '過往足跡記憶（超出目力範圍，已暗化）' : '過往目及印象（超出目力範圍，已暗化）');
-                var selFName = selEntry.name || (selEntry.visited ? '行旅足跡處' : '目及之處');
-                var selSym = selEntry.symbol || (selEntry.visited ? '⋯' : '·');
-                if (infoEl) {
-                    infoEl.textContent = '【' + selFName + '】符號 [' + selSym + '] · ' + selStatusStr;
-                }
-                var selDx = _selectedWmCoord.x - px;
-                var selDy = _selectedWmCoord.y - py;
-                var isSelAdj = Math.abs(selDx) <= 1 && Math.abs(selDy) <= 1 && (selDx !== 0 || selDy !== 0);
-                var selDir = isSelAdj ? getDirectionFromOffset(selDx, selDy) : null;
-                if (selEntry.walkable !== false && moveBtn) {
-                    var targetX = _selectedWmCoord.x;
-                    var targetY = _selectedWmCoord.y;
-                    moveBtn.hidden = false;
-                    moveBtn.textContent = selDir ? ('前往此處（' + selDir + '）') : ('行往【' + selFName + '】');
-                    moveBtn.onclick = function () {
-                        if (window.gameSend) {
-                            window.gameSend({ type: 'move', x: targetX, y: targetY, direction: selDir || '行旅' });
-                        }
-                        closeWorldMapModal();
-                    };
-                } else if (moveBtn) {
-                    moveBtn.hidden = true;
-                }
-            } else {
-                if (infoEl) {
-                    infoEl.textContent = '此處尚在雲霧阻隔中，尚未親臨踏足。';
-                }
-                if (moveBtn) moveBtn.hidden = true;
-            }
+    function syncInlineWorldMap(forceCenter) {
+        bindWorldMapEvents();
+        renderWorldMapContent();
+        var px = (typeof mapData.playerX === 'number') ? mapData.playerX : 0;
+        var py = (typeof mapData.playerY === 'number') ? mapData.playerY : 0;
+        var posChanged = (_lastInlineWmPos.x !== px || _lastInlineWmPos.y !== py);
+        if (forceCenter || posChanged) {
+            _lastInlineWmPos.x = px;
+            _lastInlineWmPos.y = py;
+            requestAnimationFrame(centerWorldMapOnPlayer);
         }
     }
 
@@ -2560,60 +2580,58 @@
             var cTop = playerCell.offsetTop;
             var cW = playerCell.offsetWidth;
             var cH = playerCell.offsetHeight;
-            viewportEl.scrollLeft = cLeft - (vpW / 2) + (cW / 2);
-            viewportEl.scrollTop = cTop - (vpH / 2) + (cH / 2);
+            viewportEl.scrollLeft = Math.max(0, cLeft - (vpW / 2) + (cW / 2));
+            viewportEl.scrollTop = Math.max(0, cTop - (vpH / 2) + (cH / 2));
         }
     }
 
     function openWorldMapModal() {
         if (window.SwCloseObjectPopover) window.SwCloseObjectPopover();
-        var overlay = document.getElementById('sw-world-map-overlay');
         var toggleMapBtn = document.getElementById('btn-toggle-map');
-        if (!overlay) return;
-        overlay.removeAttribute('hidden');
-        overlay.setAttribute('aria-hidden', 'false');
-        if (toggleMapBtn) toggleMapBtn.setAttribute('aria-expanded', 'true');
+        var closeBtn = document.getElementById('btn-wm-close');
+        document.body.classList.add('sw-world-map-expanded');
         document.body.classList.add('sw-world-map-open');
+        if (closeBtn) closeBtn.removeAttribute('hidden');
+        if (toggleMapBtn) {
+            toggleMapBtn.setAttribute('aria-expanded', 'true');
+            toggleMapBtn.textContent = '收合';
+        }
         _selectedWmCoord = {
             x: (typeof mapData.playerX === 'number') ? mapData.playerX : 0,
             y: (typeof mapData.playerY === 'number') ? mapData.playerY : 0
         };
-
-        bindWorldMapEvents();
         recordWalkedFootprint(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
-        renderWorldMapContent();
-        setTimeout(centerWorldMapOnPlayer, 20);
+        syncInlineWorldMap(true);
+        setTimeout(centerWorldMapOnPlayer, 30);
     }
 
     function closeWorldMapModal() {
-        var overlay = document.getElementById('sw-world-map-overlay');
         var toggleMapBtn = document.getElementById('btn-toggle-map');
+        var closeBtn = document.getElementById('btn-wm-close');
         var legendPopup = document.getElementById('sw-map-legend-popup');
         var legendBtn = document.getElementById('btn-map-legend');
-        if (overlay) {
-            overlay.setAttribute('hidden', '');
-            overlay.setAttribute('aria-hidden', 'true');
-        }
-        if (legendPopup) {
-            legendPopup.setAttribute('hidden', '');
-        }
-        if (legendBtn) {
-            legendBtn.setAttribute('aria-expanded', 'false');
-        }
-        if (toggleMapBtn) toggleMapBtn.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('sw-world-map-expanded');
         document.body.classList.remove('sw-world-map-open');
+        if (closeBtn) closeBtn.setAttribute('hidden', '');
+        if (legendPopup) legendPopup.setAttribute('hidden', '');
+        if (legendBtn) legendBtn.setAttribute('aria-expanded', 'false');
+        if (toggleMapBtn) {
+            toggleMapBtn.setAttribute('aria-expanded', 'false');
+            toggleMapBtn.textContent = '全圖';
+        }
+        setTimeout(centerWorldMapOnPlayer, 30);
     }
 
     function bindWorldMapEvents() {
-        var overlay = document.getElementById('sw-world-map-overlay');
+        var stage = document.getElementById('sw-world-map-stage');
         var closeBtn = document.getElementById('btn-wm-close');
         var centerBtn = document.getElementById('btn-wm-center');
         var zoomBtn = document.getElementById('btn-wm-zoom');
         var viewportEl = document.getElementById('sw-world-map-viewport');
 
-        if (overlay && !overlay._bound) {
-            overlay._bound = true;
-            overlay.addEventListener('click', function (e) {
+        if (stage && !stage._bound) {
+            stage._bound = true;
+            stage.addEventListener('click', function (e) {
                 var legendPopup = document.getElementById('sw-map-legend-popup');
                 var legendBtn = document.getElementById('btn-map-legend');
                 if (legendPopup && !legendPopup.hasAttribute('hidden')) {
@@ -2621,9 +2639,6 @@
                         legendPopup.setAttribute('hidden', '');
                         if (legendBtn) legendBtn.setAttribute('aria-expanded', 'false');
                     }
-                }
-                if (e.target === overlay) {
-                    closeWorldMapModal();
                 }
             });
         }
@@ -2639,7 +2654,7 @@
             zoomBtn._bound = true;
             zoomBtn.addEventListener('click', function () {
                 _isCompactZoom = !_isCompactZoom;
-                zoomBtn.textContent = _isCompactZoom ? '標準微地名' : '緊湊全覽';
+                zoomBtn.textContent = _isCompactZoom ? '標準' : '緊湊';
                 renderWorldMapContent();
                 setTimeout(centerWorldMapOnPlayer, 20);
             });
@@ -2687,6 +2702,7 @@
         }
 
         if (!window._swWmKeyBound) {
+            window._swWmKeyBound = true;
             window.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     var legendPopup = document.getElementById('sw-map-legend-popup');
@@ -2696,8 +2712,7 @@
                         if (legendBtn) legendBtn.setAttribute('aria-expanded', 'false');
                         return;
                     }
-                    var ov = document.getElementById('sw-world-map-overlay');
-                    if (ov && !ov.hasAttribute('hidden')) {
+                    if (document.body.classList.contains('sw-world-map-expanded')) {
                         closeWorldMapModal();
                     }
                     return;
@@ -2841,7 +2856,11 @@
         if (toggleMapBtn && !toggleMapBtn._bound) {
             toggleMapBtn._bound = true;
             toggleMapBtn.addEventListener('click', function () {
-                openWorldMapModal();
+                if (document.body.classList.contains('sw-world-map-expanded')) {
+                    closeWorldMapModal();
+                } else {
+                    openWorldMapModal();
+                }
             });
         }
 
@@ -2954,12 +2973,10 @@
         }
         revealedCells.add(mapData.playerX + ',' + mapData.playerY);
 
-        // 「進／出」私人空間自動收合控制
-        var gridWrap = document.getElementById('sw-symbol-grid-wrap');
+        // 「進／出」私人空間自動收合控制（九宮格已隱藏，仍維持鍵盤方向表同步）
         var roomPanel = document.getElementById('sw-private-room-panel');
         bindPrivateRoomActions();
 
-        if (gridWrap) gridWrap.style.display = '';
         if (mapData.in_private_room) {
             if (roomPanel) {
                 roomPanel.hidden = false;
@@ -2974,6 +2991,7 @@
             updateGridActions(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
         }
         recordWalkedFootprint(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
+        syncInlineWorldMap(false);
 
         // L1-L4 同步
         if (!mapData.exits_v5) {
@@ -3055,10 +3073,8 @@
             mapData.cells = ingestGridCells(rawCells, mapData.playerX, mapData.playerY);
         }
         // 「進／出」私人空間自動收合控制與客房面板狀態
-        var gridWrap = document.getElementById('sw-symbol-grid-wrap');
         var roomPanel = document.getElementById('sw-private-room-panel');
         bindPrivateRoomActions();
-        if (gridWrap) gridWrap.style.display = '';
         if (mapData.in_private_room) {
             if (roomPanel) {
                 roomPanel.hidden = false;
@@ -3073,6 +3089,7 @@
             updateGridActions(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
         }
         recordWalkedFootprint(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
+        syncInlineWorldMap(false);
 
         // 渲染 L1-L3 + L4
         window.SwRoomDesc.renderV5(msg, { keepL3: sameRoom });
@@ -3124,11 +3141,9 @@
         if (typeof msg.player_y === 'number') mapData.playerY = msg.player_y;
 
         // 「進／出」私人空間自動收合控制與地圖繪製
-        var gridWrap = document.getElementById('sw-symbol-grid-wrap');
         var roomPanel = document.getElementById('sw-private-room-panel');
         bindPrivateRoomActions();
 
-        if (gridWrap) gridWrap.style.display = '';
         if (mapData.in_private_room) {
             if (roomPanel) {
                 roomPanel.hidden = false;
@@ -3143,6 +3158,7 @@
             updateGridActions(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
         }
         recordWalkedFootprint(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
+        syncInlineWorldMap(false);
 
         if (window.SwRoomDesc && window.SwRoomDesc.renderV5) {
             var seconds = Number(msg.game_time_sec_since_midnight || 0);
@@ -3285,13 +3301,10 @@
     // 外部觸發：myPlayerId 更新後重渲描述欄 + 物件欄
     // 外部觸發：登入收到 me 或 myPlayerId 更新後刷新地圖與側欄
     window.refreshGridView = function () {
-        var gridWrap = document.getElementById('sw-symbol-grid-wrap');
-        if (gridWrap) {
-            gridWrap.style.display = '';
-            renderSymbolGrid(mapData.cells, mapData.playerX, mapData.playerY);
-            updateGridActions(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
-        }
+        renderSymbolGrid(mapData.cells, mapData.playerX, mapData.playerY);
+        updateGridActions(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
         recordWalkedFootprint(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
+        syncInlineWorldMap(false);
         if (!mapData.exits_v5) {
             if (window.SwRoomDesc && window.SwRoomDesc.render) {
                 window.SwRoomDesc.render();
@@ -3334,6 +3347,7 @@
             if (_lastSymbolCells !== null && _lastSymbolPx !== null && _lastSymbolPy !== null) {
                 renderSymbolGrid(_lastSymbolCells, _lastSymbolPx, _lastSymbolPy);
             }
+            syncInlineWorldMap(true);
         });
     }
 
