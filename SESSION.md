@@ -80,6 +80,9 @@
 
 ## 三、 下一步接續提示 (Next Cue)
 
-- **沿「單格即物件 × 插座插件」LPC MUD 主線續推微步 `3a′`～`3d`**：
-  1. **微步 `3a′`**：接通已完工的 `CellFacade`（20m 台灣真實底板）與 `32×32` 分片正負雙快取、西麓騎樓街屋單格物件（`A1` 同排連廊）、九宮格與單步切換（含 `泉涼↑` 感官角標）。
-  2. **微步 `3b′`～`3d`**：`entities.inventory` 同交易 CAS ＋ `grid_z (0..=3)` 樓層隔離 ＋ 有界加權 A* 行旅；並視需要將 `rim_*` 已驗證的等彈性經濟、店鋪專職／落款與去數值體感抽入單格物件插件。
+- **已定案紀錄｜「真活世界」最小五件共用骨架與前四步落地順序（2026-11-19，審辯室 Room `e8f2c2d2-d9da-4279-b91f-174e40d9f6d6`，忠實對齊 `DESIGN_KEYWORDS.md` 與兩份正典）**：
+  - **凍結與隔離邊界**：凍結 `rim_*`（留存於 `/rim` 不再擴張、嚴禁照搬其固定店鋪／職稱狀態機回主線）並將舊世 `wt_*` 具名角色隔離於 legacy（守 `DESIGN_KEYWORDS.md:143` 暫存不刪，退出新世界 tick）；「單格即物件」於 307 萬格 20m 底板採「虛擬房間／觀測時經 `CellFacade` 合成」，玩家與 NPC 100% 共用管線、LLM 永不裁決世界狀態。
+  1. **第一步｜收斂單一空間讀寫權威（`微步 3a′`＋`3c`）**：替 `src/grid/substrate/facade.rs` 補齊統一稀疏寫入（CAS `cell_overlay`），將主線大地圖、移動、西麓亭仔腳 `A1` 騎樓街屋與 `entities.grid_z (0..=3)` 接上 20m 台灣底板，廢除記憶體 `IN_PRIVATE_ROOM` 與舊 `wt_*` 屋契。
+  2. **第二步｜上線第一條環境因果 ＋ 共用守恆仲裁（`微步 3b′`）**：以單一時鐘（`game_time_scale = 24`）驅動 `Field`＋`overlay` 之「高水期與通行地帶遷移」；建立玩家／NPC 共用 Rust 四步仲裁（`Observe -> Declare Intent -> Resolve -> Update`）與 `entities.inventory` 同交易 CAS。
+  3. **第三步｜無職稱真活居民（`src/grid/zhulin/social/`）**：以 `SHALU_ZHULIN_WORLD_SEED` 零寫死人名生成 300～400 人，實裝 `1 底板 × 4 內在槽`（`10×12` 骨底脾氣、`ActiveDeficit`、`ProvenanceVessel`、`SubjectiveBelief`）× `6 關係插座`（共同履歷轉權利，不設好感條），以 Dave Mark 乘積補償＋Hysteresis 遲滯防抖純 Rust 驅動。
+  4. **第四步｜60 天純 Rust Burn-in ＋ 真活硬驗收（`微步 3d`）**：開局前預跑 60 遊戲日寫入 PG，硬驗①無玩家續行與重啟等價、②全守恆零無中生有、③樞紐／債務／口風／改道自歷史湧現、④「作品被活人接手」與有界加權 A\* 遇事停步閉環。
