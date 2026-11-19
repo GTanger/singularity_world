@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=20261119a09">
-	<link rel="stylesheet" href="game.css?v=20261119a09">
+	<link rel="stylesheet" href="style.css?v=20261119a10">
+	<link rel="stylesheet" href="game.css?v=20261119a10">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=20261119a09" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=20261119a10" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -140,22 +140,17 @@
 
 			<!-- 下方（緊貼行囊列上方）：第一層符號大地圖主舞台（單格即物件，直接點格直行、拖曳平移、隨天色變色） -->
 			<section id="sw-world-map-stage" class="sw-world-map-stage" aria-label="行旅足跡大地圖">
-				<div class="sw-world-map-header">
-					<div class="sw-world-map-title-wrap">
-						<span id="sw-world-map-stats" class="sw-world-map-stats">已踏足 1 處</span>
-					</div>
+				<div id="sw-world-map-viewport" class="sw-world-map-viewport">
+					<div id="sw-world-map-grid" class="sw-world-map-grid" role="grid" aria-label="已探索足跡大地圖"></div>
+				</div>
+				<div id="sw-world-map-footer" class="sw-world-map-footer">
+					<div id="sw-world-map-info" class="sw-world-map-info"></div>
 					<div class="sw-world-map-controls">
 						<button type="button" id="btn-wm-center" class="sw-wm-ctrl-btn" title="定位自身所在">定位 ◎</button>
 						<button type="button" id="btn-wm-zoom" class="sw-wm-ctrl-btn" title="切換地圖縮放">緊湊</button>
 						<button type="button" id="btn-map-legend" class="sw-wm-ctrl-btn sw-map-legend-btn" aria-expanded="false" title="查看地圖符號圖例">圖例</button>
 						<button type="button" id="btn-wm-close" class="sw-wm-close-btn" aria-label="收合全圖" hidden>×</button>
 					</div>
-				</div>
-				<div id="sw-world-map-viewport" class="sw-world-map-viewport">
-					<div id="sw-world-map-grid" class="sw-world-map-grid" role="grid" aria-label="已探索足跡大地圖"></div>
-				</div>
-				<div id="sw-world-map-footer" class="sw-world-map-footer">
-					<div id="sw-world-map-info" class="sw-world-map-info">點擊鄰格或已探足跡即可直行・拖曳畫面可平移。</div>
 					<button type="button" id="btn-wm-move-here" class="sw-wm-move-btn" hidden>前往此處</button>
 				</div>
 				<!-- 符號圖例古風宣紙彈窗 -->
@@ -315,18 +310,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261119a09"></script>
-	<script src="grid-map.js?v=20261119a09"></script>
-	<script src="sw-room-desc.js?v=20261119a09"></script>
-	<script src="sw-object-list.js?v=20261119a09"></script>
-	<script src="sw-log.js?v=20261119a09"></script>
-	<script src="sw-panes.js?v=20261119a09"></script>
-	<script src="sw-modals.js?v=20261119a09"></script>
-	<script src="sw-interactions.js?v=20261119a09"></script>
-	<script src="sw-clock.js?v=20261119a09"></script>
-	<script src="sw-narrative.js?v=20261119a09"></script>
-	<script src="sw-auth.js?v=20261119a09"></script>
-	<script src="main.js?v=20261119a09"></script>
+	<script src="narrative-markdown.js?v=20261119a10"></script>
+	<script src="grid-map.js?v=20261119a10"></script>
+	<script src="sw-room-desc.js?v=20261119a10"></script>
+	<script src="sw-object-list.js?v=20261119a10"></script>
+	<script src="sw-log.js?v=20261119a10"></script>
+	<script src="sw-panes.js?v=20261119a10"></script>
+	<script src="sw-modals.js?v=20261119a10"></script>
+	<script src="sw-interactions.js?v=20261119a10"></script>
+	<script src="sw-clock.js?v=20261119a10"></script>
+	<script src="sw-narrative.js?v=20261119a10"></script>
+	<script src="sw-auth.js?v=20261119a10"></script>
+	<script src="main.js?v=20261119a10"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -344,13 +339,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261119a09')) return;
-				sessionStorage.setItem('sw_reloaded_v20261119a09', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261119a10')) return;
+				sessionStorage.setItem('sw_reloaded_v20261119a10', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261119a09', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261119a10', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

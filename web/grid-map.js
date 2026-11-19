@@ -2389,11 +2389,8 @@
         }
 
         var curShort = shortPlaceLabel(mapData.currentRoomName || '自身所在', '此處');
-        if (statsEl) {
-            statsEl.textContent = '已踏足 ' + visitedCount + ' · 目及 ' + seenCount + ' · ' + curShort;
-        }
         if (infoEl && (!_selectedWmCoord || (_selectedWmCoord.x === px && _selectedWmCoord.y === py))) {
-            infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】點擊任一鄰格或已探處即可直行・拖曳可平移';
+            infoEl.textContent = '';
         }
         if (moveBtn) moveBtn.hidden = true;
 
@@ -2513,7 +2510,7 @@
                                 }
                             }
                             if (infoEl) {
-                                infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處';
+                                infoEl.textContent = '';
                             }
                             return;
                         }
@@ -2521,7 +2518,7 @@
                             var fName = tEntry.name || (tEntry.visited ? '行旅足跡處' : '目及之處');
                             if (!tWalkable) {
                                 if (infoEl) {
-                                    infoEl.textContent = '【' + fName + '】地形阻隔，暫無法直行。';
+                                    infoEl.textContent = fName + '・地勢阻隔';
                                 }
                                 return;
                             }
@@ -2532,8 +2529,8 @@
                             cellEl.classList.add('wm-cell-moving');
                             if (infoEl) {
                                 infoEl.textContent = dir
-                                    ? ('邁步往' + dir + '・【' + fName + '】…')
-                                    : ('沿途行往【' + fName + '】…');
+                                    ? ('往' + dir + '・' + fName + '…')
+                                    : ('循路往' + fName + '…');
                             }
                             if (dir) {
                                 triggerCanvasOpticalShift(dir);
@@ -2543,7 +2540,7 @@
                             }
                         } else {
                             if (infoEl) {
-                                infoEl.textContent = '此處尚在雲霧之中，請先往鄰近可見處踏勘。';
+                                infoEl.textContent = '前路猶在雲霧之中';
                             }
                         }
                     });

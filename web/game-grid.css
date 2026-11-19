@@ -5224,31 +5224,12 @@ body.game-grid-body.sw-tide-ready {
   color: var(--ink, #261d13);
 }
 
-.sw-world-map-stage .sw-world-map-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 4px 10px;
-  min-height: 30px;
-  background: var(--sw-bar-bg, rgba(128, 110, 88, 0.08)) !important;
-  border-bottom: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.2));
-  flex-shrink: 0;
-}
-
-.sw-world-map-stage .sw-world-map-stats {
-  font-size: 12px;
-  color: var(--ink-light, #5c4c3a);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .sw-world-map-stage .sw-world-map-controls {
   display: flex;
   align-items: center;
   gap: 5px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .sw-world-map-stage .sw-wm-ctrl-btn,
@@ -5394,14 +5375,17 @@ body.game-grid-body.sw-tide-ready {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3px 10px;
-  min-height: 24px;
+  gap: 8px;
+  padding: 4px 10px;
+  min-height: 30px;
   background: var(--sw-bar-bg, rgba(128, 110, 88, 0.08)) !important;
   border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.18));
   flex-shrink: 0;
 }
 
 .sw-world-map-stage .sw-world-map-info {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 11.5px;
   color: var(--ink-light, #5c4c3a);
   white-space: nowrap;
@@ -5411,14 +5395,15 @@ body.game-grid-body.sw-tide-ready {
 
 .sw-world-map-stage .sw-map-legend-popup {
   position: absolute;
-  top: 34px;
+  top: auto;
+  bottom: 36px;
   right: 10px;
   left: 10px;
   transform: none;
   width: auto;
   max-width: 520px;
   margin-left: auto;
-  max-height: calc(100% - 44px);
+  max-height: calc(100% - 46px);
   overflow-y: auto;
   z-index: 30;
   background: var(--paper, #f3ede0);
