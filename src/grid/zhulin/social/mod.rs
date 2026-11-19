@@ -7,6 +7,7 @@
 //! - 本模組提供 PostgreSQL `zhulin_social_state` 壓縮持久化、執行期單例、同格同層查詢、端詳／交談與診斷報表。
 
 pub mod burn_in;
+pub mod dialogue;
 pub mod handover;
 pub mod person;
 pub mod relations;
@@ -27,8 +28,12 @@ use crate::grid::SHALU_ZHULIN_WORLD_SEED;
 use crate::grid::substrate::hydrology::WorldClockSnapshot;
 use crate::store::sql::DbPool;
 
+use dialogue::{
+    ResidentDossierView, ResidentHook, build_resident_dossier, build_resident_hooks,
+    build_tactical_choices, finalize_resident_dialogue_unlocked, prepare_resident_dialogue_turn,
+};
 use handover::{PlayerWorkKind, WorkAdoptionOutcome};
-use person::{BeliefKind, ConductEdge, CoreObsession, SocialResident};
+use person::{ConductEdge, SocialResident};
 use sim::{DEFAULT_RESIDENT_COUNT, SocialWorldState, StreetEcho};
 
 const SOCIAL_STATE_ROW_ID: &str = "shalu_zhulin_v1";
@@ -46,7 +51,7 @@ CREATE TABLE IF NOT EXISTS zhulin_social_state (
 static SOCIAL_WORLD: LazyLock<RwLock<Option<SocialWorldState>>> =
     LazyLock::new(|| RwLock::new(None));
 
-/// 供 `grid_view` / `room_enter` 渲染使用之活態居民視野卡（嚴格去數值化）。
+/// 供 `grid_view` / `room_enter` 渲染使用之活態居民視野卡（嚴格去數值化，附戲劇鉤子與隨身檔案）。
 #[derive(Debug, Clone, Serialize)]
 pub struct SocialResidentView {
     pub id: String,
@@ -54,6 +59,8 @@ pub struct SocialResidentView {
     pub card_state: &'static str,
     pub current_activity: String,
     pub hub_degree: usize,
+    pub hooks: Vec<ResidentHook>,
+    pub dossier: ResidentDossierView,
 }
 
 /// 玩家端詳或交談 `zl_res_*` 居民之回傳結果。
@@ -62,6 +69,8 @@ pub struct SocialInteractResult {
     pub target_name: String,
     pub narrative: String,
     pub actions: Vec<String>,
+    pub tactical_choices: Vec<String>,
+    pub suggested_action: String,
     pub unlocked_name: bool,
 }
 
@@ -258,6 +267,60 @@ pub fn ground_pop_counts() -> HashMap<(i32, i32), u16> {
     counts
 }
 
+/// 查詢精確落在 `(gx, gy, gz)` 的居民人數（供空間節點出入口顯示）。
+pub fn pop_count_at_exact(gx: i32, gy: i32, gz: i16) -> u16 {
+    let guard = SOCIAL_WORLD.read();
+    let Some(state) = guard.as_ref() else {
+        return 0;
+    };
+    state
+        .residents
+        .iter()
+        .filter(|r| r.gx == gx && r.gy == gy && r.gz == gz)
+        .count() as u16
+}
+
+/// 依近期街頭回聲推導各空間節點的活態事件標籤（如 `起口角`、`清帳`、`熟客`）。
+pub fn spatial_node_live_badges() -> HashMap<(i32, i32), String> {
+    let guard = SOCIAL_WORLD.read();
+    let Some(state) = guard.as_ref() else {
+        return HashMap::new();
+    };
+    let mut badges: HashMap<(i32, i32), String> = HashMap::new();
+    for echo in state.recent_echoes.iter().rev().take(18) {
+        let label = if echo.summary.contains("口角") || echo.summary.contains("爭") || echo.summary.contains("競") {
+            "起口角"
+        } else if echo.summary.contains("欠") || echo.summary.contains("債") || echo.summary.contains("擔保") {
+            "算舊帳"
+        } else if echo.summary.contains("熟客") || echo.summary.contains("交貨") {
+            "議行市"
+        } else if echo.summary.contains("搬") || echo.summary.contains("拉") || echo.summary.contains("台車") {
+            "拉貨"
+        } else {
+            continue;
+        };
+        badges
+            .entry((echo.gx, echo.gy))
+            .or_insert_with(|| label.to_string());
+    }
+    badges
+}
+
+/// 取得最近 N 筆真實街頭回聲（供空間拓撲與談資使用）。
+pub fn recent_street_echoes(limit: usize) -> Vec<StreetEcho> {
+    let guard = SOCIAL_WORLD.read();
+    let Some(state) = guard.as_ref() else {
+        return Vec::new();
+    };
+    state
+        .recent_echoes
+        .iter()
+        .rev()
+        .take(limit)
+        .cloned()
+        .collect()
+}
+
 /// 查詢精確落在 `(gx, gy, gz)` 同格同層之活態居民（嚴格樓層隔離）。
 pub fn residents_at_grid_z(
     gx: i32,
@@ -285,6 +348,8 @@ pub fn residents_at_grid_z(
                 card_state: if known { "named" } else { "stranger" },
                 current_activity: r.current_activity.activity_phrase_zh().to_string(),
                 hub_degree: deg,
+                hooks: build_resident_hooks(state, r, viewer_player_id),
+                dossier: build_resident_dossier(state, r, viewer_player_id),
             }
         })
         .collect();
@@ -322,6 +387,8 @@ pub fn inspect_resident(
             target_name,
             narrative: "你舉目張望，對方方才已轉身離開這一帶，往鄰街行去了。".to_string(),
             actions: Vec::new(),
+            tactical_choices: Vec::new(),
+            suggested_action: "target_departed".to_string(),
             unlocked_name: false,
         });
     }
@@ -346,25 +413,33 @@ pub fn inspect_resident(
     let narrative = format!(
         "你仔細打量眼前的{target_name}：此人{act_phrase}，{body_vibe}。{vibe_clause}{vessel_clause}{ledger_hint}"
     );
+    let tactical_choices = build_tactical_choices(state, r, viewer_player_id, player_gz);
     Some(SocialInteractResult {
         target_name,
         narrative,
-        actions: vec!["Look".to_string(), "Talk".to_string()],
+        actions: vec![
+            "Look".to_string(),
+            "Talk".to_string(),
+            "SocialBargain".to_string(),
+            "SocialTreat".to_string(),
+            "SocialDebtInquiry".to_string(),
+        ],
+        tactical_choices,
+        suggested_action: String::new(),
         unlocked_name: false,
     })
 }
 
-/// 玩家與 `zl_res_*` 居民交談：記住真名落盤，依脾氣、當下缺口與近期目擊八卦自然回應。
-pub fn talk_to_resident(
+/// 玩家與 `zl_res_*` 居民交談或執行人情槓桿（無鎖 LLM 角色扮演 ＋ 真實帳本落盤 ＋ 公開目擊共振）。
+pub fn talk_or_interact_resident(
     resident_id: &str,
     viewer_player_id: &str,
-    player_gx: i32,
-    player_gy: i32,
-    player_gz: i16,
+    pos: (i32, i32, i16),
+    action: &str,
     player_input: &str,
     pool: Option<&DbPool>,
 ) -> Option<SocialInteractResult> {
-    let (result, persist_snapshot) = {
+    let (prepared, persist_snapshot, unlocked_name) = {
         let mut guard = SOCIAL_WORLD.write();
         let state = guard.as_mut()?;
         let r_idx = state.residents.iter().position(|x| x.id == resident_id)?;
@@ -378,47 +453,53 @@ pub fn talk_to_resident(
             .get(viewer_player_id)
             .is_some_and(|s| s.contains(resident_id));
 
-        if r_pos != (player_gx, player_gy, player_gz) {
+        if r_pos != pos {
             let target_name = state.residents[r_idx].observed_name(was_known).to_string();
             return Some(SocialInteractResult {
                 target_name,
                 narrative: "你正欲搭話，對方已邁步離開此處，往鄰街走遠了。".to_string(),
                 actions: Vec::new(),
+                tactical_choices: Vec::new(),
+                suggested_action: "target_departed".to_string(),
                 unlocked_name: false,
             });
         }
 
-        let unlocked_name = state
+        let unlocked = state
             .known_by_player
             .entry(viewer_player_id.to_string())
             .or_default()
             .insert(resident_id.to_string());
 
-        let r = &state.residents[r_idx];
-        let name = r.true_name.clone();
-        let intro = if unlocked_name {
-            format!("對方抬眼打量了你一番，順手報了名號：「叫我{name}便成。」")
-        } else {
-            format!("{name}抬頭認出是你，點頭致意。")
-        };
-        let topic_line = compose_resident_speech(state, r, player_input);
-        let narrative = format!("{intro}{topic_line}");
-        let res = SocialInteractResult {
-            target_name: name,
-            narrative,
-            actions: vec!["Look".to_string(), "Talk".to_string()],
-            unlocked_name,
-        };
-        let snap = unlocked_name.then(|| state.clone());
-        (res, snap)
+        let prep = prepare_resident_dialogue_turn(
+            state,
+            r_idx,
+            viewer_player_id,
+            pos,
+            action,
+            player_input,
+            unlocked,
+        );
+        let snap = prep.mutated_world.then(|| state.clone());
+        (prep, snap, unlocked)
     };
 
     if let (Some(p), Some(st)) = (pool, persist_snapshot)
         && let Err(e) = save_state_to_pg(p, &st)
     {
-        tracing::warn!("zhulin::social save after talk failed: {e}");
+        tracing::warn!("zhulin::social save after interact failed: {e}");
     }
-    Some(result)
+
+    let target_name = prepared.resident_name.clone();
+    let outcome = finalize_resident_dialogue_unlocked(prepared);
+    Some(SocialInteractResult {
+        target_name,
+        narrative: outcome.narrative,
+        actions: outcome.actions,
+        tactical_choices: outcome.tactical_choices,
+        suggested_action: outcome.suggested_action,
+        unlocked_name,
+    })
 }
 
 /// 玩家完成現場施作後登記作品，並立刻嘗試由鄰近活態居民接手（若接手則記名落盤並回傳現場接手敘事）。
@@ -552,95 +633,6 @@ fn temperament_vibe_clause(r: &SocialResident) -> &'static str {
         ConductEdge::QuietSlowWarm => "神色沉穩寡言，只安靜盯著手頭活計。",
         ConductEdge::PettyBargainer => "眼角帶著精打細算的笑意，處處想多討些便宜。",
     }
-}
-
-fn compose_resident_speech(
-    state: &SocialWorldState,
-    r: &SocialResident,
-    player_input: &str,
-) -> String {
-    let trimmed = player_input.trim();
-    // 若居民最近目擊過公開層事件，優先吐露活態風聞
-    if let Some(belief) = r.beliefs.last() {
-        let gossip = match &belief.kind {
-            BeliefKind::StreetRumor { summary } => {
-                format!("「說起這條街的動靜，{summary}，大夥兒都在看後頭怎麼收場。」")
-            }
-            BeliefKind::WitnessedDebt {
-                debtor_id,
-                creditor_id,
-            } => {
-                let d_name = resident_name_or(state, debtor_id, "那位街坊");
-                let c_name = resident_name_or(state, creditor_id, "騎樓掌櫃");
-                format!(
-                    "「前陣子才親眼見著{d_name}跟{c_name}在街口算帳，這年頭手頭緊的人真不少。」"
-                )
-            }
-            BeliefKind::WitnessedRescue {
-                rescuer_id,
-                saved_id,
-            } => {
-                let a_name = resident_name_or(state, rescuer_id, "同行山客");
-                let b_name = resident_name_or(state, saved_id, "同伴");
-                format!("「東邊竹林坡濕滑得很，幸好上回{a_name}手快拉住{b_name}一把。」")
-            }
-            BeliefKind::WitnessedTrade { item_label, .. } => {
-                format!("「這幾日騎樓裡頭{item_label}走得勤，行市起落看得出端倪。」")
-            }
-            BeliefKind::SuspectedPoach { .. } => {
-                "「近來林子裡老有人趁黑摸進別家做過記號的筍窩，你進山可別踩進是非裡。」".to_string()
-            }
-            BeliefKind::SecretGroveTip { .. } => {
-                "「雨後東側高坡竹根下常冒嫩筍，熟門熟路的人才找得到。」".to_string()
-            }
-        };
-        if !trimmed.is_empty()
-            || matches!(
-                r.temperament.edge,
-                ConductEdge::LooseTongued | ConductEdge::Suspicious
-            )
-        {
-            return gossip;
-        }
-    }
-
-    let obsession_line = match r.temperament.obsession {
-        CoreObsession::CraftPerfection => {
-            "「手頭傢伙若是鈍了一分，做出來的活計便差了一截，馬虎不得。」"
-        }
-        CoreObsession::HoardAndOwn => "「這西麓石板街一天比一天熱鬧，趁早攢下本錢才是實在。」",
-        CoreObsession::ProtectKin => "「出門在外街坊互相照應，誰有個閃失都難過。」",
-        CoreObsession::OutshinePeers => "「同一條騎樓下做買賣，不拿出真本事哪能壓得住旁人？」",
-        CoreObsession::PlaySafe => "「夏漲一來低處溝水說漫就漫，走石板正街最穩妥。」",
-        CoreObsession::SeekWonders => {
-            "「東邊莿竹林深處聽說還藏著老山客沒走透的窪地，遲早得去探一遭。」"
-        }
-        CoreObsession::FineAppetite => "「忙活半天，能趕上騎樓灶頭剛起鍋的鮮筍熱湯才算不白幹。」",
-        CoreObsession::HonorLedger => {
-            "「欠債還錢、立約交貨，咱在這條街上站得住腳靠的就是這口信字。」"
-        }
-        CoreObsession::SelfMadeShop => {
-            "「多跑幾趟貨、多攢些實底，早晚在騎樓前堂支起自個兒的門面。」"
-        }
-        CoreObsession::BoldVengeance => "「誰敢在背後耍陰招，我這筆帳可是記在心底絕不輕放。」",
-    };
-
-    if r.deficit.hunger >= 0.72 {
-        format!("「忙得連口熱食都還沒沾著……」{obsession_line}")
-    } else if r.deficit.injury >= 0.45 {
-        format!("「方才在坡上蹭了道傷，正想尋些草藥敷上。」{obsession_line}")
-    } else {
-        obsession_line.to_string()
-    }
-}
-
-fn resident_name_or<'a>(state: &'a SocialWorldState, id: &str, fallback: &'a str) -> &'a str {
-    state
-        .residents
-        .iter()
-        .find(|r| r.id == id)
-        .map(|r| r.true_name.as_str())
-        .unwrap_or(fallback)
 }
 
 /// 檢查一個 `RelationSocket` 列表內是否包含指定代號（測試輔助）。

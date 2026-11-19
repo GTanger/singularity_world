@@ -295,12 +295,16 @@ fn try_entity_branch(
         let pz = player.grid_z;
         let res_opt = match action {
             "Look" => crate::grid::zhulin::social::inspect_resident(target_id, pid, px, py, pz),
-            "Talk" => crate::grid::zhulin::social::talk_to_resident(
+            "Talk"
+            | "SocialBargain"
+            | "SocialTreat"
+            | "SocialDebtInquiry"
+            | "SocialSettleDebt"
+            | "SocialPrivateTalk" => crate::grid::zhulin::social::talk_or_interact_resident(
                 target_id,
                 pid,
-                px,
-                py,
-                pz,
+                (px, py, pz),
+                action,
                 &msg.player_input,
                 pool.as_deref(),
             ),
@@ -323,6 +327,12 @@ fn try_entity_branch(
         };
         if let Some(res) = res_opt {
             let departed = res.actions.is_empty();
+            let should_refresh = res.unlocked_name
+                || departed
+                || matches!(
+                    action,
+                    "SocialBargain" | "SocialTreat" | "SocialSettleDebt"
+                );
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
                 action: action.to_string(),
@@ -336,11 +346,11 @@ fn try_entity_branch(
                 suggested_action: if departed {
                     "target_departed".into()
                 } else {
-                    String::new()
+                    res.suggested_action
                 },
-                tactical_choices: vec![],
+                tactical_choices: res.tactical_choices,
             });
-            if res.unlocked_name || departed {
+            if should_refresh {
                 push_refresh(conn, pid);
             }
             return true;

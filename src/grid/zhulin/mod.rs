@@ -13,6 +13,7 @@
 
 pub mod objects;
 pub mod social;
+pub mod spatial_nodes;
 pub mod terrain_bamboo;
 pub mod weather;
 

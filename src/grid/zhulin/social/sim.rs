@@ -151,7 +151,7 @@ impl SocialWorldState {
             - self.initial_total_mg
     }
 
-    fn push_echo(&mut self, game_day: i32, gx: i32, gy: i32, summary: String) {
+    pub(super) fn push_echo(&mut self, game_day: i32, gx: i32, gy: i32, summary: String) {
         self.recent_echoes.push(StreetEcho {
             game_day,
             gx,

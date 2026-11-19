@@ -930,7 +930,12 @@
 							}
 						}
 					}
-					if (Array.isArray(msg.tactical_choices) && msg.tactical_choices.length > 0 && typeof showTacticalChoices === 'function') {
+					if (window.RouteBStage && typeof window.RouteBStage.onActionResult === 'function') {
+						window.RouteBStage.onActionResult(msg);
+					}
+					var isSocialChoice = String(msg.target_id || '').indexOf('zl_res_') === 0
+						|| (Array.isArray(msg.tactical_choices) && msg.tactical_choices.some(function (c) { return String(c).indexOf('|') > 0; }));
+					if (!isSocialChoice && Array.isArray(msg.tactical_choices) && msg.tactical_choices.length > 0 && typeof showTacticalChoices === 'function') {
 						showTacticalChoices(msg.tactical_choices);
 					}
 					break;
@@ -957,6 +962,9 @@
 						if (state.me) {
 							state.me.room_id = state.room_id;
 							state.me.room_name = state.room_name;
+						}
+						if (window.RouteBStage && typeof window.RouteBStage.onRoomEnter === 'function') {
+							window.RouteBStage.onRoomEnter(msg);
 						}
 						if (window.onRoomEnter) window.onRoomEnter(msg);
 						break;

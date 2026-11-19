@@ -28,10 +28,11 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=20261119a13">
-	<link rel="stylesheet" href="game.css?v=20261119a13">
+	<link rel="stylesheet" href="style.css?v=20261119b3">
+	<link rel="stylesheet" href="game.css?v=20261119b3">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=20261119a13" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=20261119b3" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="route-b.css?v=20261119b3">
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -88,7 +89,86 @@
 			<div id="sw-l2-climate" class="sw-desc-layer sw-l2" style="display:none;" aria-hidden="true"></div>
 		</header>
 
-		<!-- 【主舞台】：第一層常駐符號大地圖（直接點格移動）＋ 精簡在場敘事卡 -->
+		<!-- 【Route B 主舞台】：書頁敘事與當面過招為主（左 62%）＋ 空間節點拓撲與街坊風聞（右 38%／手機底部直連出入口列） -->
+		<main id="sw-route-b-main" class="rb-main" aria-label="敘事過招與空間節點舞台">
+			<section class="rb-story-col" aria-label="場景與當面過招">
+				<header class="rb-place-head">
+					<div class="rb-place-title">
+						<h1 id="rb-place-name">西麓・正街中段</h1>
+						<span id="rb-place-sub" class="rb-place-sub"></span>
+					</div>
+					<span id="rb-privacy-pill" class="rb-privacy-pill">公開街面・旁人可聽見</span>
+				</header>
+
+				<p id="rb-scene-prose" class="rb-scene-prose"></p>
+				<div id="rb-objects-bar" class="rb-objects-bar" hidden></div>
+				<div id="rb-cast-bar" class="rb-cast-bar" aria-label="在場街坊人物"></div>
+
+				<section id="rb-dialogue-stage" class="rb-dialogue-stage" aria-label="當面過招對話舞台">
+					<div id="rb-dossier-strip" class="rb-dossier-strip"></div>
+					<div id="rb-transcript" class="rb-transcript" aria-live="polite"></div>
+					<div id="rb-choices-wrap" class="rb-choices-wrap" hidden>
+						<div id="rb-choice-grid" class="rb-choice-grid"></div>
+						<div class="rb-free-row">
+							<input id="rb-free-input" class="rb-free-input" type="text" autocomplete="off" placeholder="直接輸入你想說的話（試探、還價、問帳或放風聲）……">
+							<button type="button" id="rb-send-btn" class="rb-send-btn">開口回應</button>
+						</div>
+					</div>
+				</section>
+			</section>
+
+			<aside class="rb-side-col" aria-label="空間節點拓撲與近處風聞">
+				<div class="rb-side-head">
+					<span class="rb-side-title">空間節點拓撲圖（點節點進出）</span>
+					<div class="rb-legend">
+						<span><i style="background:#366f73"></i>街道</span>
+						<span><i style="background:#a35224"></i>店面</span>
+						<span><i style="background:#7a5a78"></i>住宅</span>
+						<span><i style="background:#2f725b"></i>林區</span>
+					</div>
+				</div>
+				<div class="rb-topo-card">
+					<div id="rb-topo-svg-wrap" class="rb-topo-svg-wrap"></div>
+					<div class="rb-exits-strip">
+						<span class="rb-exits-lbl">直連出入口：</span>
+						<span id="rb-desktop-exits" style="display:contents;"></span>
+					</div>
+				</div>
+
+				<div class="rb-side-head">
+					<span class="rb-side-title">近處街坊風聞（點擊即作談資）</span>
+				</div>
+				<div id="rb-echo-box" class="rb-echo-box"></div>
+			</aside>
+		</main>
+
+		<!-- 手機底部直連出入口選項列（不擠小圖，多跳拓撲收進「拓撲圖」） -->
+		<section id="rb-mobile-exits-bar" class="rb-mobile-exits-bar" aria-label="可前往空間出入口">
+			<div class="rb-mobile-exits-head">
+				<span>可前往空間出入口</span>
+				<button type="button" id="rb-btn-open-topo" class="rb-mini-act">空間拓撲圖</button>
+			</div>
+			<div id="rb-mobile-exits-list" class="rb-mobile-exits-list"></div>
+		</section>
+
+		<!-- 空間拓撲全圖彈窗 -->
+		<div id="rb-topo-modal-backdrop" class="rb-topo-modal-backdrop" hidden>
+			<div class="rb-topo-modal" role="dialog" aria-modal="true" aria-label="空間節點拓撲圖">
+				<header class="rb-topo-modal-head">
+					<h3>空間節點拓撲圖（點節點進出）</h3>
+					<button type="button" id="rb-topo-modal-close" class="rb-mini-act" aria-label="關閉拓撲圖">關閉 ×</button>
+				</header>
+				<div class="rb-topo-modal-body">
+					<div id="rb-topo-modal-svg" class="rb-topo-modal-svg"></div>
+					<div class="rb-exits-strip">
+						<span class="rb-exits-lbl">直連出入口：</span>
+						<span id="rb-modal-exits" style="display:contents;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 【主舞台】：第一層常駐符號大地圖（保留相容 DOM 節點） -->
 		<main id="sw-middle-area" class="sw-middle-area sw-middle-map-first">
 			<aside id="sw-left-column" class="sw-left-column" aria-label="在場接觸" hidden style="display:none;">
 				<section id="sw-col-people" class="sw-col-section">
@@ -317,24 +397,26 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261119a13"></script>
-	<script src="grid-map.js?v=20261119a13"></script>
-	<script src="sw-room-desc.js?v=20261119a13"></script>
-	<script src="sw-object-list.js?v=20261119a13"></script>
-	<script src="sw-log.js?v=20261119a13"></script>
-	<script src="sw-panes.js?v=20261119a13"></script>
-	<script src="sw-modals.js?v=20261119a13"></script>
-	<script src="sw-interactions.js?v=20261119a13"></script>
-	<script src="sw-clock.js?v=20261119a13"></script>
-	<script src="sw-narrative.js?v=20261119a13"></script>
-	<script src="sw-auth.js?v=20261119a13"></script>
-	<script src="main.js?v=20261119a13"></script>
+	<script src="narrative-markdown.js?v=20261119b3"></script>
+	<script src="grid-map.js?v=20261119b3"></script>
+	<script src="sw-room-desc.js?v=20261119b3"></script>
+	<script src="sw-object-list.js?v=20261119b3"></script>
+	<script src="sw-log.js?v=20261119b3"></script>
+	<script src="sw-panes.js?v=20261119b3"></script>
+	<script src="sw-modals.js?v=20261119b3"></script>
+	<script src="sw-interactions.js?v=20261119b3"></script>
+	<script src="sw-clock.js?v=20261119b3"></script>
+	<script src="sw-narrative.js?v=20261119b3"></script>
+	<script src="sw-auth.js?v=20261119b3"></script>
+	<script src="route-b-stage.js?v=20261119b3"></script>
+	<script src="main.js?v=20261119b3"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
 			var app  = document.getElementById('app');
 			if (auth) auth.style.display = 'none';
 			if (app)  app.hidden = false;
+			if (window.RouteBStage) window.RouteBStage.init();
 			if (window.centerWorldMapOnPlayer) {
 				requestAnimationFrame(function () { window.centerWorldMapOnPlayer(); });
 			}
@@ -346,13 +428,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261119a13')) return;
-				sessionStorage.setItem('sw_reloaded_v20261119a13', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261119b3')) return;
+				sessionStorage.setItem('sw_reloaded_v20261119b3', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261119a13', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261119b3', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

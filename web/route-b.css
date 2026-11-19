@@ -1,0 +1,906 @@
+/* ═══ 《奇點世界》Route B 沉浸人情因果＋空間節點拓撲樣式 ═══ */
+
+:root {
+  --rb-bg: #eceae0;
+  --rb-paper: #f2f0e7;
+  --rb-card: #faf8f2;
+  --rb-side: #e9e6db;
+  --rb-dock: #e5e2d7;
+  --rb-ink: #221f1a;
+  --rb-ink-2: #4f4940;
+  --rb-muted: #726a5d;
+  --rb-border: rgba(43, 40, 35, 0.13);
+  --rb-border-strong: rgba(43, 40, 35, 0.22);
+  --rb-accent: #a43a2e;
+  --rb-accent-soft: rgba(164, 58, 46, 0.08);
+  --rb-teal: #2f5e62;
+  --rb-teal-soft: rgba(54, 111, 115, 0.10);
+  --rb-shop: #9b4b1e;
+  --rb-shop-soft: rgba(155, 75, 30, 0.11);
+  --rb-home: #7a5a78;
+  --rb-home-soft: rgba(122, 90, 120, 0.11);
+  --rb-forest: #2f725b;
+  --rb-forest-soft: rgba(47, 114, 91, 0.11);
+  --rb-water: #2c6d7a;
+}
+
+body.sw-route-b-active {
+  background: var(--rb-bg);
+  color: var(--rb-ink);
+}
+
+body.sw-route-b-active #app-grid {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  background: var(--rb-bg);
+}
+
+body.sw-route-b-active #sw-middle-area,
+#sw-middle-area {
+  display: none !important;
+}
+
+/* ── 夜間天色（data-tide="night"）水墨夜讀適配 ── */
+.sw-app[data-tide="night"] {
+  --rb-bg: #151922;
+  --rb-paper: #1a202c;
+  --rb-card: #202736;
+  --rb-side: #171c27;
+  --rb-dock: #12161f;
+  --rb-ink: #e8e2d5;
+  --rb-ink-2: #c5beb0;
+  --rb-muted: #989fb0;
+  --rb-border: rgba(232, 226, 213, 0.13);
+  --rb-border-strong: rgba(232, 226, 213, 0.24);
+  --rb-accent: #e06b5c;
+  --rb-accent-soft: rgba(224, 107, 92, 0.16);
+  --rb-teal: #6cc2c8;
+  --rb-teal-soft: rgba(108, 194, 200, 0.15);
+  --rb-shop: #e59a5f;
+  --rb-shop-soft: rgba(229, 154, 95, 0.16);
+  --rb-home: #c9a0c7;
+  --rb-home-soft: rgba(201, 160, 199, 0.15);
+  --rb-forest: #6dc4a2;
+  --rb-forest-soft: rgba(109, 196, 162, 0.15);
+  --rb-water: #6bbbd0;
+}
+
+.sw-app[data-tide="night"] .rb-scene-prose,
+.sw-app[data-tide="night"] .rb-turn.npc {
+  color: #e6dfd2;
+}
+
+.sw-app[data-tide="night"] .rb-turn.narration,
+.sw-app[data-tide="night"] .rb-turn.player {
+  color: #b7b0a2;
+}
+
+.sw-app[data-tide="night"] .rb-turn.npc .rb-spk {
+  color: #f08879;
+}
+
+.sw-app[data-tide="night"] .rb-person-chip,
+.sw-app[data-tide="night"] .rb-obj-chip,
+.sw-app[data-tide="night"] .rb-choice-btn,
+.sw-app[data-tide="night"] .rb-exit-pill,
+.sw-app[data-tide="night"] .rb-mini-act,
+.sw-app[data-tide="night"] .rb-echo-item {
+  background: rgba(38, 46, 62, 0.85);
+  color: var(--rb-ink);
+  border-color: var(--rb-border-strong);
+}
+
+.sw-app[data-tide="night"] .rb-person-chip.active,
+.sw-app[data-tide="night"] .rb-choice-btn.accent {
+  background: rgba(224, 107, 92, 0.16);
+  border-color: var(--rb-accent);
+}
+
+.sw-app[data-tide="night"] .rb-choices-wrap,
+.sw-app[data-tide="night"] .rb-topo-card,
+.sw-app[data-tide="night"] .rb-echo-box,
+.sw-app[data-tide="night"] .rb-topo-modal {
+  background: #1c2330;
+}
+
+.sw-app[data-tide="night"] .rb-topo-svg-wrap,
+.sw-app[data-tide="night"] .rb-topo-modal-svg {
+  background: #141923;
+}
+
+.sw-app[data-tide="night"] .rb-topo-modal-head {
+  background: #181e29;
+}
+
+.sw-app[data-tide="night"] .rb-free-input {
+  background: #131822;
+  color: var(--rb-ink);
+  border-color: var(--rb-border-strong);
+}
+
+.sw-app[data-tide="night"] .rb-send-btn {
+  background: #c85647;
+  color: #fffaf2;
+}
+
+.sw-app[data-tide="night"] .rb-dossier-strip {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sw-app[data-tide="night"] .rb-dossier-vessel {
+  color: #e5a56d;
+}
+
+.sw-app[data-tide="night"] .rb-privacy-pill {
+  color: #f3a196;
+}
+
+.sw-app[data-tide="night"] .rb-p-hook.warn {
+  color: #f59c90;
+}
+
+.sw-app[data-tide="night"] .rb-p-hook.warm {
+  color: #f0b17a;
+}
+
+.sw-app[data-tide="night"] .rb-side-title,
+.sw-app[data-tide="night"] .rb-exits-lbl,
+.sw-app[data-tide="night"] .rb-echo-loc {
+  color: var(--rb-ink-2);
+}
+
+/* ── 主舞台雙欄（桌機 62% / 38%）── */
+#sw-route-b-main.rb-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.56fr 1fr;
+  overflow: hidden;
+  background: var(--rb-bg);
+}
+
+/* 左主欄：書頁敘事＋出場人物＋當面過招 */
+.rb-story-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--rb-border);
+  padding: 16px 24px 12px;
+  background: var(--rb-paper);
+}
+
+.rb-place-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.rb-place-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rb-place-title h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--rb-ink);
+  line-height: 1.25;
+}
+
+.rb-place-sub {
+  font-size: 12.5px;
+  color: var(--rb-muted);
+}
+
+.rb-privacy-pill {
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--rb-accent-soft);
+  color: #8f3126;
+  border: 1px solid rgba(164, 58, 46, 0.24);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rb-privacy-pill.is-private {
+  background: var(--rb-home-soft);
+  color: #5b3e59;
+  border-color: rgba(122, 90, 120, 0.28);
+}
+
+.rb-privacy-pill.is-semi {
+  background: var(--rb-teal-soft);
+  color: var(--rb-teal);
+  border-color: rgba(54, 111, 115, 0.26);
+}
+
+.rb-scene-prose {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: #3a352e;
+  flex-shrink: 0;
+}
+
+.rb-obj-inline {
+  display: inline;
+  padding: 0 2px;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--rb-shop);
+  border-bottom: 1.5px solid rgba(155, 75, 30, 0.45);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rb-obj-inline:hover {
+  background: var(--rb-shop-soft);
+  border-radius: 3px;
+}
+
+.rb-objects-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 9px;
+  flex-shrink: 0;
+}
+
+.rb-obj-chip {
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(155, 75, 30, 0.28);
+  color: var(--rb-shop);
+  cursor: pointer;
+}
+
+.rb-obj-chip:hover {
+  background: #fffdf8;
+  border-color: var(--rb-shop);
+}
+
+/* 在場人物戲劇鉤子列 */
+.rb-cast-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 8px 0 10px;
+  border-top: 1px solid rgba(43, 40, 35, 0.09);
+  border-bottom: 1px solid var(--rb-border);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.rb-cast-empty {
+  font-size: 12.5px;
+  color: var(--rb-muted);
+  padding: 2px 0;
+}
+
+.rb-person-chip {
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(43, 40, 35, 0.14);
+  font-size: 13px;
+  color: var(--rb-ink);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.rb-person-chip:hover {
+  background: #fffdf8;
+  border-color: rgba(164, 58, 46, 0.45);
+}
+
+.rb-person-chip.active {
+  background: #fffdf8;
+  border: 1.5px solid var(--rb-accent);
+  box-shadow: 0 2px 8px rgba(164, 58, 46, 0.10);
+}
+
+.rb-p-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rb-accent);
+  flex-shrink: 0;
+}
+
+.rb-p-name {
+  font-weight: 700;
+}
+
+.rb-p-hook {
+  font-size: 10.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--rb-teal-soft);
+  color: var(--rb-teal);
+}
+
+.rb-p-hook.warn {
+  background: rgba(164, 58, 46, 0.12);
+  color: #8f2d23;
+}
+
+.rb-p-hook.warm {
+  background: rgba(155, 75, 30, 0.13);
+  color: #8a4116;
+}
+
+.rb-p-act {
+  font-size: 11.5px;
+  color: var(--rb-muted);
+}
+
+/* 當面過招焦點區 */
+.rb-dialogue-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--rb-card);
+  border: 1px solid var(--rb-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rb-dossier-strip {
+  padding: 8px 14px;
+  background: rgba(43, 40, 35, 0.04);
+  border-bottom: 1px solid rgba(43, 40, 35, 0.09);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 12px;
+  color: var(--rb-ink-2);
+  flex-shrink: 0;
+}
+
+.rb-dossier-who {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--rb-ink);
+}
+
+.rb-dossier-tag {
+  background: var(--rb-teal-soft);
+  color: var(--rb-teal);
+  padding: 1px 7px;
+  border-radius: 4px;
+}
+
+.rb-dossier-vessel {
+  color: #7c4a1d;
+}
+
+.rb-dossier-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.rb-mini-act {
+  font: inherit;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--rb-border-strong);
+  background: #fffdf8;
+  color: var(--rb-ink-2);
+  cursor: pointer;
+}
+
+.rb-mini-act:hover {
+  border-color: var(--rb-accent);
+  color: var(--rb-accent);
+}
+
+.rb-transcript {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rb-turn {
+  font-size: 14px;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.rb-turn.narration {
+  color: #625b50;
+  font-size: 13px;
+  border-left: 2px solid rgba(43, 40, 35, 0.22);
+  padding-left: 11px;
+}
+
+.rb-turn.player {
+  color: #4b443a;
+  font-size: 13.2px;
+  border-left: 2px solid rgba(54, 111, 115, 0.45);
+  padding-left: 11px;
+}
+
+.rb-turn.npc {
+  border-left: 3px solid var(--rb-accent);
+  padding-left: 12px;
+  color: var(--rb-ink);
+}
+
+.rb-turn.npc .rb-spk {
+  font-weight: 700;
+  color: #8f2d23;
+  margin-right: 6px;
+}
+
+.rb-turn.witness {
+  font-size: 12.2px;
+  line-height: 1.55;
+  color: var(--rb-teal);
+  background: rgba(54, 111, 115, 0.08);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.rb-turn.pending {
+  font-size: 12.5px;
+  color: var(--rb-muted);
+  font-style: italic;
+}
+
+.rb-choices-wrap {
+  padding: 9px 14px 11px;
+  border-top: 1px solid rgba(43, 40, 35, 0.09);
+  background: #f5f2e9;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.rb-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.rb-choice-btn {
+  font: inherit;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: #fffdf8;
+  border: 1px solid rgba(43, 40, 35, 0.16);
+  font-size: 12.5px;
+  color: #25211c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.14s, background 0.14s;
+}
+
+.rb-choice-btn:hover {
+  border-color: var(--rb-accent);
+  background: rgba(164, 58, 46, 0.05);
+}
+
+.rb-choice-btn.accent {
+  border-color: rgba(164, 58, 46, 0.42);
+  background: rgba(164, 58, 46, 0.045);
+}
+
+.rb-choice-meta {
+  font-size: 10.5px;
+  color: #7d7466;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rb-free-row {
+  display: flex;
+  gap: 7px;
+}
+
+.rb-free-input {
+  flex: 1 1 auto;
+  height: 35px;
+  padding: 0 11px;
+  border-radius: 7px;
+  border: 1px solid rgba(43, 40, 35, 0.22);
+  background: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  color: var(--rb-ink);
+}
+
+.rb-free-input:focus {
+  outline: none;
+  border-color: var(--rb-accent);
+}
+
+.rb-send-btn {
+  font: inherit;
+  height: 35px;
+  padding: 0 15px;
+  border-radius: 7px;
+  border: none;
+  background: #2f2b25;
+  color: #f6f3ea;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rb-send-btn:hover {
+  background: #1f1c18;
+}
+
+/* ── 右輔欄（桌機）：空間節點拓撲圖＋直連出入口＋街坊風聞 ── */
+.rb-side-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 13px 16px 11px;
+  gap: 9px;
+  background: var(--rb-side);
+}
+
+.rb-side-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rb-side-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #3f3a32;
+  letter-spacing: 0.04em;
+}
+
+.rb-legend {
+  display: flex;
+  gap: 7px;
+  font-size: 10.5px;
+  color: var(--rb-muted);
+}
+
+.rb-legend i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.rb-topo-card {
+  background: #f4f1e8;
+  border: 1px solid var(--rb-border);
+  border-radius: 10px;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rb-topo-svg-wrap {
+  width: 100%;
+  height: 310px;
+  background: #f8f6ee;
+  border: 1px solid rgba(43, 40, 35, 0.09);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.rb-topo-svg-wrap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rb-svg-node {
+  cursor: pointer;
+}
+
+.rb-svg-node:hover rect.rb-node-box {
+  filter: brightness(0.97);
+  stroke-width: 2.2;
+}
+
+.rb-exits-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.rb-exits-lbl {
+  font-size: 11px;
+  color: #6c6457;
+  font-weight: 600;
+}
+
+.rb-exit-pill {
+  font: inherit;
+  font-size: 11.5px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: #fffdf8;
+  border: 1px solid rgba(43, 40, 35, 0.19);
+  color: var(--rb-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: border-color 0.14s, background 0.14s;
+}
+
+.rb-exit-pill:hover {
+  border-color: var(--rb-accent);
+  background: #fffaf5;
+}
+
+.rb-exit-kind {
+  font-size: 9.5px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(43, 40, 35, 0.08);
+  color: #5b5448;
+}
+
+.rb-exit-pill.kind-street .rb-exit-kind { background: var(--rb-teal-soft); color: var(--rb-teal); }
+.rb-exit-pill.kind-shop .rb-exit-kind { background: var(--rb-shop-soft); color: var(--rb-shop); }
+.rb-exit-pill.kind-residence .rb-exit-kind { background: var(--rb-home-soft); color: var(--rb-home); }
+.rb-exit-pill.kind-forest .rb-exit-kind { background: var(--rb-forest-soft); color: var(--rb-forest); }
+.rb-exit-pill.kind-water .rb-exit-kind { background: rgba(44, 109, 122, 0.12); color: var(--rb-water); }
+
+.rb-exit-dir {
+  font-size: 10px;
+  color: var(--rb-muted);
+}
+
+.rb-exit-badge {
+  font-size: 9.5px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--rb-accent);
+  color: #fffaf2;
+}
+
+.rb-echo-box {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  background: #f0ede3;
+  border: 1px solid var(--rb-border);
+  border-radius: 10px;
+  padding: 9px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rb-echo-item {
+  font: inherit;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #3f3a32;
+  padding: 6px 9px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.62);
+  border-left: 2.5px solid var(--rb-teal);
+  cursor: pointer;
+}
+
+.rb-echo-item:hover {
+  background: #fffdf8;
+}
+
+.rb-echo-item.hot {
+  border-left-color: var(--rb-accent);
+}
+
+.rb-echo-loc {
+  font-size: 10px;
+  color: #776f62;
+  display: block;
+  margin-bottom: 1px;
+}
+
+/* ── 手機底部直連出入口列（依使用者要求：下方框直接放出入口選項，不擠小圖）── */
+.rb-mobile-exits-bar {
+  display: none;
+  background: var(--rb-side);
+  border-top: 1px solid var(--rb-border);
+  padding: 7px 12px 8px;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rb-mobile-exits-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--rb-ink-2);
+  font-weight: 600;
+}
+
+.rb-mobile-exits-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── 空間拓撲全圖彈窗（手機／桌機共用）── */
+.rb-topo-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(28, 25, 20, 0.56);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.rb-topo-modal-backdrop[hidden] {
+  display: none !important;
+}
+
+.rb-topo-modal {
+  width: min(560px, 100%);
+  max-height: 86dvh;
+  background: #f4f1e8;
+  border: 1px solid var(--rb-border-strong);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+}
+
+.rb-topo-modal-head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rb-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ece8dc;
+}
+
+.rb-topo-modal-head h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--rb-ink);
+}
+
+.rb-topo-modal-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.rb-topo-modal-svg {
+  width: 100%;
+  height: 350px;
+  background: #f8f6ee;
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+}
+
+.rb-topo-modal-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── 手機響應式（<= 900px）── */
+@media (max-width: 900px) {
+  #sw-route-b-main.rb-main {
+    grid-template-columns: 1fr;
+  }
+
+  .rb-side-col {
+    display: none;
+  }
+
+  .rb-story-col {
+    border-right: none;
+    padding: 10px 13px 8px;
+  }
+
+  .rb-place-title h1 {
+    font-size: 17px;
+  }
+
+  .rb-scene-prose {
+    font-size: 13px;
+    line-height: 1.56;
+    margin-bottom: 7px;
+  }
+
+  .rb-cast-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 6px 0 7px;
+    margin-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rb-person-chip {
+    flex-shrink: 0;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .rb-p-act {
+    display: none;
+  }
+
+  .rb-choice-grid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .rb-choice-btn {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .rb-free-input,
+  .rb-send-btn {
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .rb-mobile-exits-bar {
+    display: flex;
+  }
+
+  .rb-exit-pill {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}

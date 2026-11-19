@@ -349,7 +349,9 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                 "npc_id": sr.id,
                 "display_name": sr.display_name,
                 "card_state": sr.card_state,
-                "current_activity": sr.current_activity
+                "current_activity": sr.current_activity,
+                "hooks": sr.hooks,
+                "dossier": sr.dossier
             }));
             social_added_entities.push(crate::server::protocol::ViewEntity {
                 id: sr.id.clone(),
@@ -610,6 +612,14 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         let total_room_npcs = entities.iter().filter(|e| e.kind == "npc" || e.kind == "Npc").count();
         let (active_weather, weather_epoch) =
             crate::grid::zhulin::weather::current_world_zhulin_weather();
+        let spatial_graph = crate::grid::zhulin::spatial_nodes::build_spatial_graph_view(
+            pool.as_deref(),
+            x,
+            y,
+            current_z,
+            live_clock,
+            &final_room_name,
+        );
         let room_enter_msg = serde_json::json!({
             "type": "room_enter",
             "room_id": current_room_id,
@@ -621,6 +631,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             "npcs": npcs_json,
             "total_npc_count": total_room_npcs,
             "desc": current_desc,
+            "spatial_graph": spatial_graph,
             "entry_log": entry_log,
             "reentry_log": reentry_log,
             "reentry_logs": reentry_logs,
