@@ -197,7 +197,7 @@ async fn serve_world_atlas() -> impl IntoResponse {
     serve_html_page("world_atlas.html").await
 }
 async fn serve_rim_world() -> impl IntoResponse {
-    axum::response::Redirect::permanent("/")
+    serve_html_page("rim.html").await
 }
 async fn serve_star_chart() -> impl IntoResponse {
     serve_html_page("star_chart.html").await

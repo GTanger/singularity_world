@@ -1,18 +1,13 @@
 // PWA Service Worker：最小實作，支援「加入主畫面」
 // 改前端後必須 bump 此 CACHE 版號，瀏覽器才會偵測 SW 更新 → install/activate → claim
 // （比 index.html 的 ?v= 更深一層：即使 HTML ?v= 變了，若 SW 本身內容沒變，舊 SW 續命）
-const CACHE = 'sw-shell-v20261119a02';
+const CACHE = 'sw-shell-v20261119a03';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/style.css?v=20261119a02',
-  '/rim-world.css?v=20261119a02',
-  '/rim-sky-time.js?v=20261119a02',
-  '/cdda-tiles.js?v=20261119a02',
-  '/rim-portrait.js?v=20261119a02',
-  '/rim-world.js?v=20261119a02',
-  '/assets/cdda/atlas.png?v=20261119a02',
-  '/assets/cdda/atlas.json?v=20261119a02',
+  '/style.css?v=20261119a03',
+  '/game.css?v=20261119a03',
+  '/game-grid.css?v=20261119a03',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

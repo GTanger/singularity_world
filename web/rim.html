@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	<meta name="theme-color" content="#f0e6d3">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<title>奇點世界</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23eee9df' rx='6' width='32 32'/><circle cx='16' cy='16' r='13' fill='%23f7f0e3' stroke='%232c1e0f' stroke-width='1.5'/><text x='16' y='22' font-size='17' font-weight='700' fill='%232c1e0f' text-anchor='middle' font-family='serif'>奇</text></svg>">
+	<link rel="apple-touch-icon" href="/icon.svg">
+	<link rel="manifest" href="/manifest.webmanifest">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-mono-tc@5/index.min.css">
+	<link rel="stylesheet" href="style.css?v=20261119a02">
+	<link rel="stylesheet" href="rim-world.css?v=20261119a02">
+</head>
+<body>
+	<!-- 登入／創角宣紙閘門 -->
+	<div id="auth-screen" class="auth-screen">
+		<div class="auth-box">
+			<h2 class="auth-title">奇點世界</h2>
+			<p class="auth-clock" id="auth-clock">開譜曆・天光未明</p>
+			<p class="auth-hint" id="auth-hint">請輸入 ID 與密碼登入</p>
+			<p class="auth-error" id="auth-message" role="alert" aria-live="polite"></p>
+			<form id="auth-form" class="auth-form" autocomplete="off">
+				<div class="auth-field">
+					<label for="auth-id">角色 ID <span class="auth-label-note">（ID 即為角色姓名）</span></label>
+					<input type="text" id="auth-id" name="id" required minlength="2" maxlength="32" placeholder="2～32 字元" autocomplete="username">
+				</div>
+				<div class="auth-field">
+					<label for="auth-password">密碼</label>
+					<input type="password" id="auth-password" name="password" required minlength="6" placeholder="至少 6 字元" autocomplete="current-password">
+				</div>
+				<div class="auth-field auth-field-create" id="auth-display-wrap" hidden>
+					<label for="auth-display-char">名號簡稱（選填）</label>
+					<input type="text" id="auth-display-char" name="display_char" maxlength="2" placeholder="名號簡稱（選填，預設取首字）">
+				</div>
+				<div class="auth-field auth-field-create" id="auth-gender-wrap" hidden>
+					<span class="auth-label">性別</span>
+					<div class="auth-gender-options">
+						<label class="auth-radio"><input type="radio" name="gender" value="男" id="auth-gender-m" checked> 男</label>
+						<label class="auth-radio"><input type="radio" name="gender" value="女" id="auth-gender-f"> 女</label>
+					</div>
+				</div>
+				<div class="auth-actions" id="auth-login-actions">
+					<button type="submit" name="action" value="login" id="auth-btn-login">登入</button>
+					<button type="button" id="auth-btn-switch">沒有帳號？創角</button>
+				</div>
+				<div class="auth-actions auth-actions-create" id="auth-create-actions" hidden>
+					<button type="submit" name="action" value="create" id="auth-btn-create">創角</button>
+					<button type="button" id="auth-btn-back">已有帳號？登入</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- ═══ 奇點世界正式主表面：中性身體視角 × 無縫雙尺度 2D 開放世界 ═══ -->
+	<div id="rim-app" class="rim-app" hidden>
+		<header class="rim-topbar" id="sw-worldbar" aria-label="世界時辰與所在地域">
+			<span id="rim-world-clock" class="rim-clock-text">開譜曆・春融・正晝</span>
+			<div class="rim-top-right">
+				<span id="rim-scale-badge" class="rim-scale-badge" hidden>近景 1m</span>
+				<span id="rim-zone-title" class="rim-zone-title">西麓湧泉竹帶</span>
+			</div>
+		</header>
+
+		<main class="rim-stage">
+			<canvas id="rim-canvas"></canvas>
+
+			<div id="rim-events" class="rim-events" aria-live="polite"></div>
+
+			<div id="rim-toast" class="rim-toast" hidden></div>
+
+			<section id="rim-inspector" class="rim-inspector" hidden aria-label="互動面板">
+				<div class="rim-insp-head">
+					<div id="insp-portrait-wrap" class="rim-insp-portrait-wrap" hidden>
+						<canvas id="insp-portrait-canvas"></canvas>
+					</div>
+					<div class="rim-insp-meta">
+						<h3 id="insp-title" class="rim-insp-title">物件</h3>
+						<div id="insp-tags" class="rim-insp-tags"></div>
+					</div>
+					<button type="button" id="insp-close" class="rim-insp-close" aria-label="關閉">×</button>
+				</div>
+				<div id="insp-sockets" class="rim-insp-sockets"></div>
+			</section>
+
+			<!-- 自身／裝備行囊浮動面板（浮於畫布上方，不擠動底層） -->
+			<div id="rim-modal-backdrop" class="rim-modal-backdrop" hidden>
+				<section id="rim-modal" class="rim-modal" role="dialog" aria-modal="true" aria-labelledby="rim-modal-title">
+					<header class="rim-modal-head">
+						<h3 id="rim-modal-title" class="rim-modal-title">自身狀態</h3>
+						<button type="button" id="rim-modal-close" class="rim-insp-close" aria-label="關閉">×</button>
+					</header>
+					<div id="rim-modal-body" class="rim-modal-body"></div>
+				</section>
+			</div>
+		</main>
+
+		<nav class="rim-dock" id="sw-dock-triptych" aria-label="個人隨身與視野列">
+			<div class="rim-personal-bar">
+				<button type="button" id="btn-self-sheet" class="rim-personal-btn">
+					<span class="rim-p-main" id="lbl-self-name">自身</span>
+					<span class="rim-p-sub" id="lbl-self-state">氣息勻暢</span>
+				</button>
+				<button type="button" id="btn-gear-sheet" class="rim-personal-btn">
+					<span class="rim-p-main">裝備／行囊</span>
+					<span class="rim-p-sub" id="lbl-gear-sub">持：導能獵刀</span>
+				</button>
+				<div class="rim-view-group">
+					<button type="button" id="btn-focus-me" class="rim-chip-btn rim-chip-active" title="鏡頭跟隨自己">定焦</button>
+					<button type="button" id="btn-zoom-toggle" class="rim-chip-btn" title="遠近視野切換">鳥瞰</button>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<script src="rim-sky-time.js?v=20261119a02"></script>
+	<script src="cdda-tiles.js?v=20261119a02"></script>
+	<script src="rim-portrait.js?v=20261119a02"></script>
+	<script src="rim-world.js?v=20261119a02"></script>
+</body>
+</html>
