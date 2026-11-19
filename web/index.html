@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=20261119a05">
-	<link rel="stylesheet" href="game.css?v=20261119a05">
+	<link rel="stylesheet" href="style.css?v=20261119a09">
+	<link rel="stylesheet" href="game.css?v=20261119a09">
 <!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=20261119a05" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=20261119a09" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -106,7 +106,39 @@
 				<div id="sw-l4-objects" class="sw-desc-layer sw-l4" style="display:none;" aria-hidden="true"></div>
 			</aside>
 
-			<!-- 第一層符號大地圖主舞台（單格即物件，直接點格直行、拖曳平移） -->
+			<!-- 上方：精簡在場敘事卡（當前格地貌、行內景物插座、在場人與當下墨韻） -->
+			<section id="sw-center-log" class="sw-center-log sw-compact-scene-card" aria-label="場景與動態記錄">
+				<header class="sw-place-heading">
+					<h1 id="sw-place-name" class="sw-place-name"></h1>
+					<p id="sw-place-locator" class="sw-place-locator" hidden></p>
+				</header>
+				<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
+				<div id="sw-room-canvas" class="sw-room-canvas" role="region" aria-label="當前房間物件空間">
+					<div id="sw-room-canvas-empty" class="sw-room-canvas-empty" hidden>四下暫無旁人駐足</div>
+				</div>
+				<!-- 5-breath fading narrative scroll -->
+				<div id="sw-breaths-zone" class="sw-breaths-zone" aria-live="polite" aria-label="當下墨韻">
+					<p id="sw-breath-0" class="sw-breath-line sw-breath-0"></p>
+					<p id="sw-breath-1" class="sw-breath-line sw-breath-1"></p>
+					<p id="sw-breath-2" class="sw-breath-line sw-breath-2"></p>
+					<p id="sw-breath-3" class="sw-breath-line sw-breath-3"></p>
+					<p id="sw-breath-4" class="sw-breath-line sw-breath-4"></p>
+				</div>
+				<div id="sw-log" class="sw-log-stream" aria-live="polite" style="display:none;" hidden></div>
+				<!-- 戰鬥對峙空檔戰術決策按鈕 -->
+				<div id="sw-tactical-choices" class="sw-tactical-choices" hidden>
+					<div class="sw-tactical-hint">戰術對峙・抉擇契機</div>
+					<div class="sw-tactical-actions">
+						<button type="button" class="sw-tactical-btn" data-choice="趁勢搶攻">趁勢搶攻</button>
+						<button type="button" class="sw-tactical-btn" data-choice="專攻部位">專攻部位</button>
+						<button type="button" class="sw-tactical-btn" data-choice="守勢游鬥">守勢游鬥</button>
+						<button type="button" class="sw-tactical-btn" data-choice="搏命硬撼">搏命硬撼</button>
+						<button type="button" class="sw-tactical-btn" data-choice="抽身脫離">抽身脫離</button>
+					</div>
+				</div>
+			</section>
+
+			<!-- 下方（緊貼行囊列上方）：第一層符號大地圖主舞台（單格即物件，直接點格直行、拖曳平移、隨天色變色） -->
 			<section id="sw-world-map-stage" class="sw-world-map-stage" aria-label="行旅足跡大地圖">
 				<div class="sw-world-map-header">
 					<div class="sw-world-map-title-wrap">
@@ -165,38 +197,6 @@
 								<li><span class="sym">☷</span> 百草藥圃（藥圃、苗圃、石坪基址）</li>
 							</ul>
 						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- 精簡在場敘事卡：當前格地貌、行內景物插座、在場人與當下墨韻 -->
-			<section id="sw-center-log" class="sw-center-log sw-compact-scene-card" aria-label="場景與動態記錄">
-				<header class="sw-place-heading">
-					<h1 id="sw-place-name" class="sw-place-name"></h1>
-					<p id="sw-place-locator" class="sw-place-locator" hidden></p>
-				</header>
-				<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
-				<div id="sw-room-canvas" class="sw-room-canvas" role="region" aria-label="當前房間物件空間">
-					<div id="sw-room-canvas-empty" class="sw-room-canvas-empty" hidden>四下暫無旁人駐足</div>
-				</div>
-				<!-- 5-breath fading narrative scroll -->
-				<div id="sw-breaths-zone" class="sw-breaths-zone" aria-live="polite" aria-label="當下墨韻">
-					<p id="sw-breath-0" class="sw-breath-line sw-breath-0"></p>
-					<p id="sw-breath-1" class="sw-breath-line sw-breath-1"></p>
-					<p id="sw-breath-2" class="sw-breath-line sw-breath-2"></p>
-					<p id="sw-breath-3" class="sw-breath-line sw-breath-3"></p>
-					<p id="sw-breath-4" class="sw-breath-line sw-breath-4"></p>
-				</div>
-				<div id="sw-log" class="sw-log-stream" aria-live="polite" style="display:none;" hidden></div>
-				<!-- 戰鬥對峙空檔戰術決策按鈕 -->
-				<div id="sw-tactical-choices" class="sw-tactical-choices" hidden>
-					<div class="sw-tactical-hint">戰術對峙・抉擇契機</div>
-					<div class="sw-tactical-actions">
-						<button type="button" class="sw-tactical-btn" data-choice="趁勢搶攻">趁勢搶攻</button>
-						<button type="button" class="sw-tactical-btn" data-choice="專攻部位">專攻部位</button>
-						<button type="button" class="sw-tactical-btn" data-choice="守勢游鬥">守勢游鬥</button>
-						<button type="button" class="sw-tactical-btn" data-choice="搏命硬撼">搏命硬撼</button>
-						<button type="button" class="sw-tactical-btn" data-choice="抽身脫離">抽身脫離</button>
 					</div>
 				</div>
 			</section>
@@ -315,18 +315,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=20261119a05"></script>
-	<script src="grid-map.js?v=20261119a05"></script>
-	<script src="sw-room-desc.js?v=20261119a05"></script>
-	<script src="sw-object-list.js?v=20261119a05"></script>
-	<script src="sw-log.js?v=20261119a05"></script>
-	<script src="sw-panes.js?v=20261119a05"></script>
-	<script src="sw-modals.js?v=20261119a05"></script>
-	<script src="sw-interactions.js?v=20261119a05"></script>
-	<script src="sw-clock.js?v=20261119a05"></script>
-	<script src="sw-narrative.js?v=20261119a05"></script>
-	<script src="sw-auth.js?v=20261119a05"></script>
-	<script src="main.js?v=20261119a05"></script>
+	<script src="narrative-markdown.js?v=20261119a09"></script>
+	<script src="grid-map.js?v=20261119a09"></script>
+	<script src="sw-room-desc.js?v=20261119a09"></script>
+	<script src="sw-object-list.js?v=20261119a09"></script>
+	<script src="sw-log.js?v=20261119a09"></script>
+	<script src="sw-panes.js?v=20261119a09"></script>
+	<script src="sw-modals.js?v=20261119a09"></script>
+	<script src="sw-interactions.js?v=20261119a09"></script>
+	<script src="sw-clock.js?v=20261119a09"></script>
+	<script src="sw-narrative.js?v=20261119a09"></script>
+	<script src="sw-auth.js?v=20261119a09"></script>
+	<script src="main.js?v=20261119a09"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -344,13 +344,13 @@
 			var refreshingSw = false;
 			navigator.serviceWorker.addEventListener('controllerchange', function () {
 				if (!hadController || refreshingSw) return;
-				if (sessionStorage.getItem('sw_reloaded_v20261119a05')) return;
-				sessionStorage.setItem('sw_reloaded_v20261119a05', '1');
+				if (sessionStorage.getItem('sw_reloaded_v20261119a09')) return;
+				sessionStorage.setItem('sw_reloaded_v20261119a09', '1');
 				refreshingSw = true;
 				window.location.reload();
 			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=20261119a05', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=20261119a09', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}

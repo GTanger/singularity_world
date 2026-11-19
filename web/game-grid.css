@@ -5198,7 +5198,7 @@ body.game-grid-body.sw-tide-ready {
   -webkit-text-stroke: 0.2px currentColor;
 }
 
-/* ═══ 方案 B：去掉九宮格，第一層符號大地圖為主舞台（直接點格移動）＋ 精簡在場敘事卡 ═══ */
+/* ═══ 方案 B（改版）：上文下圖（大地圖置於行囊列正上方）＋ 全域 48 階天色連動 ═══ */
 .sw-middle-area.sw-middle-map-first {
   display: flex !important;
   flex-direction: column !important;
@@ -5208,17 +5208,20 @@ body.game-grid-body.sw-tide-ready {
   padding: 0 !important;
   gap: 0 !important;
   overflow: hidden !important;
+  background: transparent !important;
 }
 
 .sw-world-map-stage {
   position: relative;
+  order: 2 !important;
   display: flex !important;
   flex-direction: column !important;
-  flex: 1 1 58% !important;
-  min-height: 240px !important;
-  background: var(--sw-paper, #ede6d6);
-  border-bottom: 1px solid rgba(139, 105, 20, 0.26);
+  flex: 1 1 auto !important;
+  min-height: 220px !important;
+  background: transparent !important;
+  border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.24));
   overflow: hidden;
+  color: var(--ink, #261d13);
 }
 
 .sw-world-map-stage .sw-world-map-header {
@@ -5227,15 +5230,15 @@ body.game-grid-body.sw-tide-ready {
   justify-content: space-between;
   gap: 8px;
   padding: 4px 10px;
-  min-height: 32px;
-  background: rgba(247, 240, 227, 0.72);
-  border-bottom: 1px solid rgba(139, 105, 20, 0.14);
+  min-height: 30px;
+  background: var(--sw-bar-bg, rgba(128, 110, 88, 0.08)) !important;
+  border-bottom: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.2));
   flex-shrink: 0;
 }
 
 .sw-world-map-stage .sw-world-map-stats {
   font-size: 12px;
-  color: var(--sw-ink-muted, #6b5a47);
+  color: var(--ink-light, #5c4c3a);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -5254,24 +5257,32 @@ body.game-grid-body.sw-tide-ready {
   font-size: 11.5px;
   line-height: 1.4;
   border-radius: 4px;
-  border: 1px solid rgba(139, 105, 20, 0.28);
-  background: rgba(255, 252, 245, 0.84);
-  color: var(--sw-ink, #2c1e0f);
+  border: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.24));
+  background: var(--sw-btn-bg, rgba(255, 252, 246, 0.62));
+  color: var(--ink, #261d13);
   cursor: pointer;
+}
+
+.sw-world-map-stage .sw-wm-ctrl-btn:hover {
+  border-color: var(--sw-accent-ink, #9e2a2b);
+  color: var(--sw-accent-ink, #9e2a2b);
 }
 
 .sw-world-map-stage .sw-world-map-viewport {
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(139, 105, 20, 0.28) transparent;
+  scrollbar-width: none;
   display: grid;
   place-items: safe center;
-  padding: 12px;
+  padding: 10px 12px;
   touch-action: none;
   cursor: grab;
-  background: radial-gradient(circle at center, rgba(248, 242, 230, 0.68), rgba(226, 217, 198, 0.42));
+  background: transparent !important;
+}
+
+.sw-world-map-stage .sw-world-map-viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .sw-world-map-stage .sw-world-map-viewport:active {
@@ -5282,6 +5293,7 @@ body.game-grid-body.sw-tide-ready {
   display: grid;
   gap: 3px;
   margin: auto;
+  background: transparent !important;
 }
 
 .sw-world-map-stage .wm-cell {
@@ -5293,34 +5305,46 @@ body.game-grid-body.sw-tide-ready {
   padding-top: 5px;
   gap: 1px;
   border-radius: 6px;
-  border: 1px solid transparent;
+  border: 1px solid transparent !important;
+  background: transparent !important;
   user-select: none;
-  transition: background-color 0.14s ease, border-color 0.14s ease, transform 0.1s ease;
+  transition: background-color 0.14s ease, border-color 0.14s ease, transform 0.1s ease, color 0.14s ease;
 }
 
-.sw-world-map-stage .wm-cell-clickable {
+.sw-world-map-stage .wm-cell.wm-cell-clickable {
   cursor: pointer;
 }
 
-.sw-world-map-stage .wm-cell-cardinal {
-  background: rgba(255, 252, 245, 0.64);
-  border-color: rgba(139, 105, 20, 0.30);
+.sw-world-map-stage .wm-cell.wm-cell-cardinal {
+  background: var(--sw-btn-bg, rgba(255, 252, 246, 0.56)) !important;
+  border: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.28)) !important;
 }
 
-.sw-world-map-stage .wm-cell-clickable:hover {
-  background: rgba(139, 32, 32, 0.08);
-  border-color: rgba(139, 32, 32, 0.42);
+.sw-world-map-stage .wm-cell.wm-cell-clickable:hover {
+  background: rgba(158, 42, 43, 0.10) !important;
+  border-color: var(--sw-accent-ink, #9e2a2b) !important;
 }
 
-.sw-world-map-stage .wm-cell-player {
-  background: rgba(139, 32, 32, 0.10);
-  border-color: rgba(139, 32, 32, 0.46);
+.sw-world-map-stage .wm-cell.wm-cell-player,
+.sw-world-map-stage .wm-cell.wm-cell-player .wm-lbl {
+  color: var(--sw-accent-ink, #9e2a2b) !important;
+  font-weight: 700;
+}
+
+.sw-world-map-stage .wm-cell.wm-cell-player {
+  background: rgba(158, 42, 43, 0.12) !important;
+  border: 1px solid var(--sw-accent-ink, #9e2a2b) !important;
   cursor: pointer;
 }
 
-.sw-world-map-stage .wm-cell-moving {
-  outline: 1.5px solid #8b2020;
-  background: rgba(139, 32, 32, 0.14);
+.sw-world-map-stage .wm-cell.wm-cell-moving {
+  outline: 1.5px solid var(--sw-accent-ink, #9e2a2b) !important;
+  background: rgba(158, 42, 43, 0.16) !important;
+}
+
+.sw-world-map-stage .wm-cell.is-selected,
+.sw-world-map-stage .wm-cell.is-selected .wm-lbl {
+  color: var(--sw-accent-ink, #9e2a2b) !important;
 }
 
 .sw-world-map-stage .wm-cue {
@@ -5330,7 +5354,7 @@ body.game-grid-body.sw-tide-ready {
   font-size: 8px;
   line-height: 1.05;
   color: #2a5a6b;
-  opacity: 0.86;
+  opacity: 0.88;
   font-weight: 600;
   pointer-events: none;
 }
@@ -5342,8 +5366,28 @@ body.game-grid-body.sw-tide-ready {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #8b2020;
+  background: var(--sw-accent-ink, #9e2a2b);
   pointer-events: none;
+}
+
+/* 夜間天色（data-tide="night"）整片大地圖水墨月光適配 */
+.sw-app[data-tide="night"] .sw-world-map-stage .wm-cell.wm-cell-player {
+  background: rgba(224, 122, 95, 0.18) !important;
+  border-color: rgba(224, 122, 95, 0.68) !important;
+}
+
+.sw-app[data-tide="night"] .sw-world-map-stage .wm-cell.wm-cell-clickable:hover {
+  background: rgba(224, 122, 95, 0.14) !important;
+  border-color: rgba(224, 122, 95, 0.6) !important;
+}
+
+.sw-app[data-tide="night"] .sw-world-map-stage .wm-cell.wm-cell-moving {
+  background: rgba(224, 122, 95, 0.22) !important;
+}
+
+.sw-app[data-tide="night"] .sw-world-map-stage .wm-cue {
+  color: #8ecae6;
+  opacity: 0.92;
 }
 
 .sw-world-map-stage .sw-world-map-footer {
@@ -5352,14 +5396,14 @@ body.game-grid-body.sw-tide-ready {
   justify-content: space-between;
   padding: 3px 10px;
   min-height: 24px;
-  background: rgba(244, 238, 226, 0.86);
-  border-top: 1px solid rgba(139, 105, 20, 0.14);
+  background: var(--sw-bar-bg, rgba(128, 110, 88, 0.08)) !important;
+  border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.18));
   flex-shrink: 0;
 }
 
 .sw-world-map-stage .sw-world-map-info {
   font-size: 11.5px;
-  color: var(--sw-ink-muted, #6b5a47);
+  color: var(--ink-light, #5c4c3a);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -5367,18 +5411,29 @@ body.game-grid-body.sw-tide-ready {
 
 .sw-world-map-stage .sw-map-legend-popup {
   position: absolute;
-  top: 36px;
+  top: 34px;
   right: 10px;
   left: 10px;
+  transform: none;
+  width: auto;
   max-width: 520px;
   margin-left: auto;
-  max-height: calc(100% - 48px);
+  max-height: calc(100% - 44px);
   overflow-y: auto;
   z-index: 30;
+  background: var(--paper, #f3ede0);
+  color: var(--ink, #261d13);
+  border-color: var(--sw-btn-border, rgba(110, 88, 62, 0.34));
 }
 
-/* 精簡在場敘事卡（固定各分層高度，確保 Zero-CLS = 0px） */
+.sw-world-map-stage .sw-map-legend-popup .sw-legend-header,
+.sw-world-map-stage .sw-map-legend-popup .sw-legend-subtitle {
+  border-bottom-color: var(--sw-btn-border, rgba(110, 88, 62, 0.2));
+}
+
+/* 精簡在場敘事卡（固定各分層高度，確保 Zero-CLS = 0px；透明承接全屏天光；壓過舊 order:2 確保置於大地圖上方） */
 #sw-center-log.sw-compact-scene-card {
+  order: 1 !important;
   flex: 0 0 auto !important;
   height: auto !important;
   min-height: 0 !important;
@@ -5390,7 +5445,7 @@ body.game-grid-body.sw-tide-ready {
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
-  background: var(--sw-paper-light, #f5efe2);
+  background: transparent !important;
 }
 
 #sw-center-log.sw-compact-scene-card .sw-place-heading {
@@ -5414,46 +5469,72 @@ body.game-grid-body.sw-tide-ready {
 }
 
 #sw-center-log.sw-compact-scene-card #sw-l3-terrain {
-  flex: 0 0 112px !important;
-  height: 112px !important;
-  min-height: 112px !important;
-  max-height: 112px !important;
+  flex: 0 0 96px !important;
+  height: 96px !important;
+  min-height: 96px !important;
+  max-height: 96px !important;
   font-size: 14px !important;
-  line-height: 1.5 !important;
+  line-height: 1.48 !important;
   padding: 2px 0 !important;
   margin: 0 !important;
   overflow-y: auto !important;
 }
 
 #sw-center-log.sw-compact-scene-card #sw-room-canvas {
-  flex: 0 0 64px !important;
-  height: 64px !important;
-  min-height: 64px !important;
-  max-height: 64px !important;
+  flex: 0 0 92px !important;
+  height: 92px !important;
+  min-height: 92px !important;
+  max-height: 92px !important;
   padding: 2px 0 !important;
   margin: 0 !important;
   contain: layout size style !important;
-  border-top: 1px solid rgba(139, 105, 20, 0.12);
+  overflow: hidden !important;
+  border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.14));
+}
+
+#sw-center-log.sw-compact-scene-card #sw-room-canvas .sw-canvas-token {
+  padding: 2px 6px !important;
+  margin: 1px 2px !important;
+}
+
+#sw-center-log.sw-compact-scene-card #sw-room-canvas .sw-token-micro-state {
+  font-size: 10.5px !important;
+  line-height: 1.2 !important;
 }
 
 #sw-center-log.sw-compact-scene-card #sw-breaths-zone {
-  flex: 0 0 74px !important;
-  height: 74px !important;
-  min-height: 74px !important;
-  max-height: 74px !important;
+  flex: 0 0 70px !important;
+  height: 70px !important;
+  min-height: 70px !important;
+  max-height: 70px !important;
   padding: 4px 0 2px !important;
   margin: 0 !important;
-  font-size: 12.5px !important;
-  line-height: 1.48 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 3px !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
   overflow-y: auto !important;
-  border-top: 1px solid rgba(139, 105, 20, 0.14);
+  scrollbar-width: none;
+  border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.14));
 }
 
-/* 精簡單行底欄（拔除九宮格後） */
+#sw-center-log.sw-compact-scene-card #sw-breaths-zone::-webkit-scrollbar {
+  display: none;
+}
+
+#sw-center-log.sw-compact-scene-card #sw-breaths-zone .sw-breath-line {
+  flex: 0 0 auto !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+/* 精簡單行底欄（拔除九宮格後，緊接在大地圖正下方） */
 #sw-bottom-area.sw-bottom-slim {
   padding: 4px 10px calc(5px + env(safe-area-inset-bottom, 0px)) !important;
   min-height: 0 !important;
-  border-top: 1px solid rgba(139, 105, 20, 0.22);
+  border-top: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.24));
 }
 
 #sw-dock-triptych.sw-dock-slim {
@@ -5510,11 +5591,11 @@ body.game-grid-body.sw-tide-ready {
   white-space: nowrap;
 }
 
-/* 桌機橫螢幕：滿寬左 62% 常駐符號大地圖 ＋ 右 38% 敘事與互動欄 */
+/* 桌機橫螢幕：左 38% 敘事與互動欄 ＋ 右 62% 常駐符號大地圖（均位於底部行囊列上方） */
 @media (min-width: 769px) {
   .sw-middle-area.sw-middle-map-first {
     display: grid !important;
-    grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.85fr) !important;
+    grid-template-columns: minmax(360px, 0.85fr) minmax(0, 1.45fr) !important;
     grid-template-rows: 1fr !important;
     width: 100% !important;
     max-width: 1360px !important;
@@ -5523,8 +5604,8 @@ body.game-grid-body.sw-tide-ready {
   .sw-world-map-stage {
     height: 100% !important;
     min-height: 0 !important;
-    border-bottom: none;
-    border-right: 1px solid rgba(139, 105, 20, 0.26);
+    border-top: none;
+    border-left: 1px solid var(--sw-btn-border, rgba(110, 88, 62, 0.24));
   }
   #sw-center-log.sw-compact-scene-card {
     height: 100% !important;
@@ -5562,6 +5643,8 @@ body.sw-world-map-expanded .sw-world-map-stage {
   grid-column: 1 / -1 !important;
   flex: 1 1 100% !important;
   height: 100% !important;
+  border-top: none !important;
+  border-left: none !important;
   border-right: none !important;
   border-bottom: none !important;
 }

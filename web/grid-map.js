@@ -2317,9 +2317,8 @@
 
         saveWalkedStore(store);
 
-        // 若大地圖彈窗正開啟中，即時刷新
-        var overlay = document.getElementById('sw-world-map-overlay');
-        if (overlay && !overlay.hasAttribute('hidden')) {
+        // 若第一層大地圖已掛載，即時刷新
+        if (document.getElementById('sw-world-map-stage')) {
             renderWorldMapContent();
         }
     }
@@ -2528,15 +2527,15 @@
                             }
                             var mdx = tx - px;
                             var mdy = ty - py;
-                            var isAdj = Math.abs(mdx) <= 1 && Math.abs(mdy) <= 1 && (mdx !== 0 || mdy !== 0);
-                            var dir = isAdj ? getDirectionFromOffset(mdx, mdy) : null;
+                            var isCardinal = (Math.abs(mdx) + Math.abs(mdy) === 1);
+                            var dir = isCardinal ? getDirectionFromOffset(mdx, mdy) : null;
                             cellEl.classList.add('wm-cell-moving');
                             if (infoEl) {
                                 infoEl.textContent = dir
                                     ? ('邁步往' + dir + '・【' + fName + '】…')
                                     : ('沿途行往【' + fName + '】…');
                             }
-                            if (dir && Math.abs(mdx) + Math.abs(mdy) === 1) {
+                            if (dir) {
                                 triggerCanvasOpticalShift(dir);
                             }
                             if (window.gameSend) {
@@ -2662,43 +2661,57 @@
 
         if (viewportEl && !viewportEl._dragBound) {
             viewportEl._dragBound = true;
-            var isDragging = false;
+            var isPointerDown = false;
+            var hasCaptured = false;
+            var activePointerId = null;
             var startX = 0, startY = 0;
             var initScrollLeft = 0, initScrollTop = 0;
 
             viewportEl.addEventListener('pointerdown', function (e) {
                 if (e.target && e.target.tagName === 'BUTTON') return;
-                isDragging = true;
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                isPointerDown = true;
+                hasCaptured = false;
+                activePointerId = e.pointerId;
                 _didDragWorldMap = false;
                 startX = e.clientX;
                 startY = e.clientY;
                 initScrollLeft = viewportEl.scrollLeft;
                 initScrollTop = viewportEl.scrollTop;
-                try { viewportEl.setPointerCapture(e.pointerId); } catch (_) {}
             });
 
-            viewportEl.addEventListener('pointermove', function (e) {
-                if (!isDragging) return;
+            window.addEventListener('pointermove', function (e) {
+                if (!isPointerDown || (activePointerId !== null && e.pointerId !== activePointerId)) return;
                 var dx = e.clientX - startX;
                 var dy = e.clientY - startY;
-                if (Math.hypot(dx, dy) > 5) {
+                if (!hasCaptured && Math.hypot(dx, dy) > 6) {
                     _didDragWorldMap = true;
+                    hasCaptured = true;
+                    try { viewportEl.setPointerCapture(e.pointerId); } catch (_) {}
                 }
-                viewportEl.scrollLeft = initScrollLeft - dx;
-                viewportEl.scrollTop = initScrollTop - dy;
+                if (hasCaptured) {
+                    viewportEl.scrollLeft = initScrollLeft - dx;
+                    viewportEl.scrollTop = initScrollTop - dy;
+                }
             });
 
             var stopDrag = function (e) {
-                if (isDragging) {
-                    isDragging = false;
+                if (!isPointerDown) return;
+                if (activePointerId !== null && e && e.pointerId !== undefined && e.pointerId !== activePointerId) return;
+                isPointerDown = false;
+                activePointerId = null;
+                if (hasCaptured) {
+                    hasCaptured = false;
                     try { viewportEl.releasePointerCapture(e.pointerId); } catch (_) {}
                     setTimeout(function () {
                         _didDragWorldMap = false;
-                    }, 60);
+                    }, 80);
+                } else {
+                    _didDragWorldMap = false;
                 }
             };
-            viewportEl.addEventListener('pointerup', stopDrag);
-            viewportEl.addEventListener('pointercancel', stopDrag);
+            window.addEventListener('pointerup', stopDrag);
+            window.addEventListener('pointercancel', stopDrag);
         }
 
         if (!window._swWmKeyBound) {
