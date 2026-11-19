@@ -869,7 +869,7 @@
 								isPerson = true;
 							}
 							var sTargetId = String(targetId || '');
-							if (!isPerson && (sTargetId.indexOf('npc_') === 0 || sTargetId.indexOf('wt_npc_') === 0 || sTargetId.indexOf('wt_vendor_') === 0 || sTargetId.indexOf('ambient_') === 0 || sTargetId.indexOf('shanhai_') === 0)) {
+							if (!isPerson && (sTargetId.indexOf('npc_') === 0 || sTargetId.indexOf('wt_npc_') === 0 || sTargetId.indexOf('wt_vendor_') === 0 || sTargetId.indexOf('ambient_') === 0 || sTargetId.indexOf('shanhai_') === 0 || sTargetId.indexOf('zl_res_') === 0)) {
 								isPerson = true;
 							}
 							if (!isPerson && targetId) {
@@ -903,7 +903,7 @@
 									}
 								}
 							}
-							if (extractedDialogue && typeof window.SwRecordNpcDialogue === 'function') {
+							if (typeof extractedDialogue !== 'undefined' && extractedDialogue && typeof window.SwRecordNpcDialogue === 'function') {
 								window.SwRecordNpcDialogue(msg.target_id || '', '', extractedDialogue);
 							}
 						} else {

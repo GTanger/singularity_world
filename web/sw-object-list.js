@@ -970,6 +970,20 @@
             if (label && /（當值）/.test(label)) {
                 return '駐場當值';
             }
+            if (tokenKey && /^npc:zl_res_/.test(String(tokenKey)) && rawAct) {
+                var zAct = String(rawAct);
+                if (/熱湯|乾糧|覓食|充飢/.test(zAct)) return '端湯充飢';
+                if (/灶邊|翻炒|烹煮/.test(zAct)) return '守灶烹煮';
+                if (/炭爐|敲打|校磨/.test(zAct)) return '爐畔校刃';
+                if (/田壟|引水|農畦/.test(zAct)) return '照料田壟';
+                if (/前堂|招呼|清點貨色/.test(zAct)) return '坐鎮前堂';
+                if (/竹車|送貨|運貨/.test(zAct)) return '推車運貨';
+                if (/竹簍|尋筍|採材/.test(zAct)) return '背簍採筍';
+                if (/患處|尋醫|傷勢/.test(zAct)) return '尋醫敷藥';
+                if (/欠單|清算舊帳|討帳/.test(zAct)) return '盤算舊帳';
+                if (/柱旁|交換四方風聞/.test(zAct)) return '街口探風';
+                if (/床榻|歇息養神/.test(zAct)) return '歸宅歇息';
+            }
             if (tokenKey && _tokenEnterTime[tokenKey] && (Date.now() - _tokenEnterTime[tokenKey] < 9000)) {
                 return '邁步穿行';
             }
@@ -1569,7 +1583,7 @@
             }
         }
         if (!hint) {
-            hint = isNight ? '夜色靜謐，四下悄無聲息' : '四下清朗，林間悄無聲息';
+            hint = isNight ? '夜色靜謐，四下悄無聲息' : '四下清朗，一時靜無人聲';
         }
         if (hasTrailMark) {
             hint += ' · 刻有十字路標';

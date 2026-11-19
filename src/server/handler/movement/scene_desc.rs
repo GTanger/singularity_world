@@ -339,6 +339,10 @@ fn narrative_person_subject(card: &VisibleNpcCard<'_>, index: usize) -> String {
     if card.card_state == "named" && !card.display_name.starts_with("陌生人") {
         return card.display_name.clone();
     }
+    if card.id.starts_with("zl_res_") {
+        let prefix = if index == 0 { "一名" } else { "另一名" };
+        return format!("{prefix}{}", card.display_name);
+    }
 
     let hint = format!("{} {}", card.display_name, card.current_activity);
     let sensory = crate::store::npc_sensory_appearance_line(card.id, &hint);

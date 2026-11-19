@@ -428,8 +428,8 @@ fn derive_taiwan_name(seed: u64, is_female: bool) -> String {
     }
 }
 
-/// 西麓街鎮＋熟地＋竹海先鋒出生點位（皆落於真實 20m `Landmass #01` 可通行陸地）。
-const TOWN_ANCHOR_COORDS: [(i32, i32, i16); 16] = [
+/// 西麓街鎮騎樓街屋出生與落腳點位（全數為具二樓住家之騎樓街屋，避免在露天石板街面歇息）。
+const TOWN_ANCHOR_COORDS: [(i32, i32, i16); 13] = [
     (-6, 1, 0),
     (-5, 1, 0),
     (-4, 1, 0),
@@ -443,9 +443,6 @@ const TOWN_ANCHOR_COORDS: [(i32, i32, i16); 16] = [
     (-5, -2, 0),
     (-4, -2, 0),
     (-3, -2, 0),
-    (-4, 0, 0),
-    (-2, 0, 0),
-    (-5, -3, 0),
 ];
 
 const WILD_PIONEER_COORDS: [(i32, i32); 8] = [

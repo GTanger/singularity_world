@@ -450,12 +450,7 @@ impl RelationLedger {
                     ..
                 } = s
                 {
-                    out.push((
-                        creditor_id.clone(),
-                        debtor_id.clone(),
-                        *amount_mg,
-                        *due_day,
-                    ));
+                    out.push((creditor_id.clone(), debtor_id.clone(), *amount_mg, *due_day));
                 }
             }
         }

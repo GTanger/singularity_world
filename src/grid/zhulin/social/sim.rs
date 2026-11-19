@@ -206,6 +206,7 @@ impl SocialWorldState {
             r.deficit.clamp_all();
 
             let high_water_here = clock.is_high_water_pulse_at(r.gx, r.gy);
+            let prev_act = r.current_activity;
             let next_act = choose_next_activity_with_debt(
                 r,
                 owed_out,
@@ -214,24 +215,32 @@ impl SocialWorldState {
                 hour,
                 high_water_here,
             );
-            if next_act == r.current_activity {
+            let act_changed = next_act != prev_act;
+            if !act_changed {
                 r.activity_ticks = r.activity_ticks.saturating_add(1);
             } else {
                 r.current_activity = next_act;
                 r.activity_ticks = 1;
             }
 
-            let h = splitmix64(
-                r.soul_seed
-                    .wrapping_add(self.tick_count.wrapping_mul(0x9E37_79B9)),
-            );
-            let (tx, ty, tz, rerouted) =
-                target_coord_for_activity(r, next_act, is_night, high_water_here, h);
-            r.gx = tx;
-            r.gy = ty;
-            r.gz = tz;
-            if rerouted {
-                self.high_water_reroutes = self.high_water_reroutes.saturating_add(1);
+            // 穩定駐足原則：同一活動進行中若未遇高水改道且未跨晝夜歸宅換層，維持當前格位不每拍隨機跳格
+            let needs_reposition = act_changed
+                || high_water_here
+                || (next_act == ResidentActivityKind::TendHomeRest && r.gz == 0)
+                || (next_act != ResidentActivityKind::TendHomeRest && r.gz != 0);
+            if needs_reposition {
+                let h = splitmix64(
+                    r.soul_seed
+                        .wrapping_add(self.tick_count.wrapping_mul(0x9E37_79B9)),
+                );
+                let (tx, ty, tz, rerouted) =
+                    target_coord_for_activity(r, next_act, is_night, high_water_here, h);
+                r.gx = tx;
+                r.gy = ty;
+                r.gz = tz;
+                if rerouted {
+                    self.high_water_reroutes = self.high_water_reroutes.saturating_add(1);
+                }
             }
         }
 

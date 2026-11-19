@@ -175,19 +175,24 @@ pub fn choose_next_activity_with_debt(
         ),
         (
             ResidentActivityKind::EatWarmMeal,
-            dave_mark_compensated_utility(&[
-                r.deficit.hunger,
-                if r.food_stock > 0 || r.magnesium >= valves.food_unit_mg {
-                    0.95
-                } else {
-                    0.35
-                },
-                if r.temperament.obsession == CoreObsession::FineAppetite {
-                    1.0
-                } else {
-                    0.82
-                },
-            ]),
+            // 錯峰用餐：依 soul_seed 分散早午晚用餐閾值，避免拂曉全鎮同時變成街市食客
+            if r.deficit.hunger >= (0.58 + ((r.soul_seed % 5) as f32) * 0.05) {
+                dave_mark_compensated_utility(&[
+                    r.deficit.hunger,
+                    if r.food_stock > 0 || r.magnesium >= valves.food_unit_mg {
+                        0.92
+                    } else {
+                        0.32
+                    },
+                    if r.temperament.obsession == CoreObsession::FineAppetite {
+                        0.96
+                    } else {
+                        0.76
+                    },
+                ])
+            } else {
+                0.0
+            },
         ),
         (
             ResidentActivityKind::TendHomeRest,
