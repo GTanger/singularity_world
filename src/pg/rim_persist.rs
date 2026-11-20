@@ -256,7 +256,9 @@ pub fn load_economy_book(
         let hp: i32 = r.get(2);
         if (0..=1).contains(&vid) {
             book.vault_mg[vid as usize] = mg.clamp(0, i64::from(u32::MAX)) as u32;
-            book.hunting_pressure = book.hunting_pressure.max(hp.clamp(0, i32::from(u16::MAX)) as u16);
+            book.hunting_pressure = book
+                .hunting_pressure
+                .max(hp.clamp(0, i32::from(u16::MAX)) as u16);
         }
     }
     Ok(book)

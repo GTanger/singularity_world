@@ -456,11 +456,9 @@ pub fn complete_rescue_ally(
     idx: usize,
     target_id: usize,
 ) {
-    let Some(t_idx) = world
-        .actors
-        .iter()
-        .position(|a| a.id == target_id && a.faction == ActorFaction::Settler && a.downed_ticks > 0)
-    else {
+    let Some(t_idx) = world.actors.iter().position(|a| {
+        a.id == target_id && a.faction == ActorFaction::Settler && a.downed_ticks > 0
+    }) else {
         world.actors[idx].task = PendingTask::None;
         world.actors[idx].activity_tag = "駐足待命".into();
         return;
@@ -497,9 +495,15 @@ pub fn complete_rescue_ally(
 
     if let Some(bed) = super::rim_town::clinic_bed_near(&world.overlays) {
         let occ = world.occupied_cells(Some(t_idx));
-        if let Some(p) =
-            super::rim_world::find_micro_path_crowded(rt, &world.overlays, t_pos, bed, false, false, &occ)
-        {
+        if let Some(p) = super::rim_world::find_micro_path_crowded(
+            rt,
+            &world.overlays,
+            t_pos,
+            bed,
+            false,
+            false,
+            &occ,
+        ) {
             world.actors[t_idx].path = p.into();
             world.actors[t_idx].task = PendingTask::SleepBed {
                 tx: bed.0,
@@ -510,9 +514,15 @@ pub fn complete_rescue_ally(
     } else if let Some((fx, fy)) = nearest_campfire(world, t_pos) {
         let seat = world.pick_campfire_seat(rt, fx, fy, world.actors[t_idx].id);
         let occ = world.occupied_cells(Some(t_idx));
-        if let Some(p) =
-            super::rim_world::find_micro_path_crowded(rt, &world.overlays, t_pos, seat, false, false, &occ)
-        {
+        if let Some(p) = super::rim_world::find_micro_path_crowded(
+            rt,
+            &world.overlays,
+            t_pos,
+            seat,
+            false,
+            false,
+            &occ,
+        ) {
             world.actors[t_idx].path = p.into();
             world.actors[t_idx].task = PendingTask::RestAt { tx: fx, ty: fy };
         }

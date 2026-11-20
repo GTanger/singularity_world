@@ -7,8 +7,8 @@ use serde_json::{Value, json};
 use super::rim_economy::find_best_stockpile_slot_for;
 use super::rim_sim::{ActorFaction, PendingTask, RimWorldState};
 use super::rim_world::{
-    GroundStack, MicroCellOverlay, MicroGround, RimItemKind, StructureKind,
-    derive_micro_pristine, find_micro_path_crowded,
+    GroundStack, MicroCellOverlay, MicroGround, RimItemKind, StructureKind, derive_micro_pristine,
+    find_micro_path_crowded,
 };
 use super::runtime::SubstrateRuntime;
 
@@ -39,10 +39,7 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         home_zone: Some((-20, -15, 1, 5)),
         clinic_bed: None,
         guest_beds: &[],
-        owner_beds: &[
-            ("res:liu_chunshui", (-19, 4)),
-            ("res:liu_abao", (-16, 4)),
-        ],
+        owner_beds: &[("res:liu_chunshui", (-19, 4)), ("res:liu_abao", (-16, 4))],
     },
     TownBuildingSpec {
         code: "sanshui_shop",
@@ -54,10 +51,7 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         home_zone: Some((-13, -6, 1, 5)),
         clinic_bed: None,
         guest_beds: &[],
-        owner_beds: &[
-            ("res:lin_sanshui", (-7, 4)),
-            ("res:gao_afa", (-7, 2)),
-        ],
+        owner_beds: &[("res:lin_sanshui", (-7, 4)), ("res:gao_afa", (-7, 2))],
     },
     TownBuildingSpec {
         code: "amu_smithy",
@@ -69,10 +63,7 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         home_zone: Some((7, 11, 1, 5)),
         clinic_bed: None,
         guest_beds: &[],
-        owner_beds: &[
-            ("res:lin_amu", (8, 4)),
-            ("res:zhang_xiaoan", (8, 2)),
-        ],
+        owner_beds: &[("res:lin_amu", (8, 4)), ("res:zhang_xiaoan", (8, 2))],
     },
     TownBuildingSpec {
         code: "jian_clinic",
@@ -84,10 +75,7 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         home_zone: Some((14, 19, 1, 5)),
         clinic_bed: Some((18, -1)),
         guest_beds: &[],
-        owner_beds: &[
-            ("res:zhang_jian", (15, 4)),
-            ("res:zhang_suxin", (18, 4)),
-        ],
+        owner_beds: &[("res:zhang_jian", (15, 4)), ("res:zhang_suxin", (18, 4))],
     },
     TownBuildingSpec {
         code: "yingfeng_inn",
@@ -151,10 +139,7 @@ pub const TOWN_BUILDINGS: [TownBuildingSpec; 9] = [
         home_zone: Some((33, 36, -10, -4)),
         clinic_bed: None,
         guest_beds: &[],
-        owner_beds: &[
-            ("res:zhou_acha", (35, -5)),
-            ("res:he_dashu", (35, -9)),
-        ],
+        owner_beds: &[("res:zhou_acha", (35, -5)), ("res:he_dashu", (35, -9))],
     },
 ];
 
@@ -183,7 +168,12 @@ fn vacate_and_set(
             if let Some(dst) = find_best_stockpile_slot_for(overlays, fallback, stack.item, None) {
                 let entry = overlays.entry(dst).or_default();
                 match &mut entry.ground_item {
-                    None => entry.ground_item = Some(GroundStack { item: stack.item, count: 1 }),
+                    None => {
+                        entry.ground_item = Some(GroundStack {
+                            item: stack.item,
+                            count: 1,
+                        })
+                    }
                     Some(g) => g.count = g.count.saturating_add(1),
                 }
                 rem -= 1;
@@ -270,7 +260,12 @@ pub fn apply_town_architecture(
         };
         vacate_and_set(overlays, (x, 1), Some(st), (-12, 4));
     }
-    vacate_and_set(overlays, (-10, 5), Some(StructureKind::BambooDoor), (-12, 4));
+    vacate_and_set(
+        overlays,
+        (-10, 5),
+        Some(StructureKind::BambooDoor),
+        (-12, 4),
+    );
     for bed in [(-7, 4), (-7, 2)] {
         if overlays.get(&bed).and_then(|o| o.structure) != Some(StructureKind::BambooBed) {
             vacate_and_set(overlays, bed, Some(StructureKind::BambooBed), (-11, 4));
@@ -291,7 +286,12 @@ pub fn apply_town_architecture(
     // 4. 春水小吃 (-20..=-15, -3..=5)：前灶食後母子臥房
     build_rect_room(rt, overlays, (-20, -15, -3, 1), &[(-18, -3), (-18, 1)]);
     build_rect_room(rt, overlays, (-20, -15, 1, 5), &[(-18, 1)]);
-    vacate_and_set(overlays, (-16, -1), Some(StructureKind::Campfire), (-19, -1));
+    vacate_and_set(
+        overlays,
+        (-16, -1),
+        Some(StructureKind::Campfire),
+        (-19, -1),
+    );
     lay_if_clear(rt, overlays, (-19, -1), StructureKind::Stockpile);
     for bed in [(-19, 4), (-16, 4)] {
         vacate_and_set(overlays, bed, Some(StructureKind::BambooBed), (-19, -1));
@@ -327,13 +327,23 @@ pub fn apply_town_architecture(
     // 6. 迎風宿屋 (-20..=-15, -12..=-7)：中牆 (-18,-9) 隔開前櫃檯廳與後客寢區，1 掌櫃榻＋2 客榻
     build_rect_room(rt, overlays, (-20, -15, -9, -7), &[(-18, -7), (-18, -9)]);
     build_rect_room(rt, overlays, (-20, -15, -12, -9), &[(-18, -9)]);
-    vacate_and_set(overlays, (-19, -8), Some(StructureKind::Stockpile), (-18, -8));
+    vacate_and_set(
+        overlays,
+        (-19, -8),
+        Some(StructureKind::Stockpile),
+        (-18, -8),
+    );
     for bed in [(-19, -11), (-16, -11), (-16, -10)] {
         vacate_and_set(overlays, bed, Some(StructureKind::BambooBed), (-19, -8));
     }
 
     // 7. 許家農宅 (-13..=-6, -12..=-7)：一家 3 口純住宅，南門 (-9,-12) 直通南坡田畦
-    build_rect_room(rt, overlays, (-13, -6, -12, -7), &[(-9, -7), (-6, -9), (-9, -12)]);
+    build_rect_room(
+        rt,
+        overlays,
+        (-13, -6, -12, -7),
+        &[(-9, -7), (-6, -9), (-9, -12)],
+    );
     vacate_and_set(overlays, (-11, -8), Some(StructureKind::Campfire), (-7, -8));
     lay_if_clear(rt, overlays, (-7, -8), StructureKind::Stockpile);
     for bed in [(-12, -11), (-10, -11), (-8, -11)] {
@@ -344,7 +354,12 @@ pub fn apply_town_architecture(
     build_rect_room(rt, overlays, (10, 14, -12, -7), &[(12, -7)]);
     vacate_and_set(overlays, (11, -8), Some(StructureKind::Campfire), (13, -10));
     lay_if_clear(rt, overlays, (13, -10), StructureKind::Stockpile);
-    vacate_and_set(overlays, (11, -11), Some(StructureKind::BambooBed), (13, -10));
+    vacate_and_set(
+        overlays,
+        (11, -11),
+        Some(StructureKind::BambooBed),
+        (13, -10),
+    );
 
     // 9. 阿茶茶寮前檯茶席：保有 (28..=36, -10..=-4) 完整外框不變
     lay_if_clear(rt, overlays, (30, -5), StructureKind::Stockpile);
@@ -454,14 +469,7 @@ pub fn is_other_household_bed(actor_key: &str, pos: (i32, i32)) -> bool {
 
 /// 尋找優先收治傷患的濟安診所病榻，若遭拆除則退回旅宿客榻或任意空床。
 pub fn clinic_bed_near(overlays: &HashMap<(i32, i32), MicroCellOverlay>) -> Option<(i32, i32)> {
-    for &pos in &[
-        (18, -1),
-        (15, 4),
-        (-16, -10),
-        (-16, -11),
-        (8, 4),
-        (-7, 4),
-    ] {
+    for &pos in &[(18, -1), (15, 4), (-16, -10), (-16, -11), (8, 4), (-7, 4)] {
         if overlays.get(&pos).and_then(|o| o.structure) == Some(StructureKind::BambooBed) {
             return Some(pos);
         }
@@ -616,7 +624,11 @@ pub fn try_assign_town_duty_or_stroll(
     }
     let start = actor.micro_pos();
     let occ = world.occupied_cells(Some(idx));
-    let posts = if duty_only { &TOWN_POSTS[..6] } else { &TOWN_POSTS[..] };
+    let posts = if duty_only {
+        &TOWN_POSTS[..6]
+    } else {
+        &TOWN_POSTS[..]
+    };
     if let Some(&(_, post, tag)) = posts.iter().find(|&&(k, _, _)| k == actor.actor_key)
         && actor.hunger >= 35
         && actor.thirst >= 35
@@ -625,8 +637,11 @@ pub fn try_assign_town_duty_or_stroll(
             world.actors[idx].activity_tag = tag.into();
             return true;
         }
-        if !matches!(actor.task, PendingTask::CookAt { .. } | PendingTask::CraftAt { .. })
-            && let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, post, false, false, &occ)
+        if !matches!(
+            actor.task,
+            PendingTask::CookAt { .. } | PendingTask::CraftAt { .. }
+        ) && let Some(p) =
+            find_micro_path_crowded(rt, &world.overlays, start, post, false, false, &occ)
         {
             world.actors[idx].path = p.into();
             world.actors[idx].activity_tag = tag.into();
@@ -638,7 +653,9 @@ pub fn try_assign_town_duty_or_stroll(
         let angle = (world.tick as f32 * 0.7) + world.actors[idx].id as f32;
         let gx = base.0 + (angle.cos() * 3.0).round() as i32;
         let gy = base.1 + (angle.sin() * 3.0).round() as i32;
-        if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, (gx, gy), false, false, &occ) {
+        if let Some(p) =
+            find_micro_path_crowded(rt, &world.overlays, start, (gx, gy), false, false, &occ)
+        {
             world.actors[idx].path = p.into();
             world.actors[idx].activity_tag = "宅前歇息".into();
             return true;
@@ -648,17 +665,12 @@ pub fn try_assign_town_duty_or_stroll(
 }
 
 pub fn building_at(mx: i32, my: i32) -> Option<&'static TownBuildingSpec> {
-    TOWN_BUILDINGS.iter().find(|b| {
-        mx >= b.bbox.0 && mx <= b.bbox.1 && my >= b.bbox.2 && my <= b.bbox.3
-    })
+    TOWN_BUILDINGS
+        .iter()
+        .find(|b| mx >= b.bbox.0 && mx <= b.bbox.1 && my >= b.bbox.2 && my <= b.bbox.3)
 }
 
-pub fn enrich_card_with_building(
-    mx: i32,
-    my: i32,
-    title: &mut String,
-    tags: &mut Vec<String>,
-) {
+pub fn enrich_card_with_building(mx: i32, my: i32, title: &mut String, tags: &mut Vec<String>) {
     let Some(b) = building_at(mx, my) else {
         return;
     };
@@ -801,25 +813,49 @@ mod tests {
         );
         let rt = SubstrateRuntime::from_region(region);
 
-        assert_eq!(derive_micro_pristine(Some(&rt), -150, 5).0, MicroGround::TidalMudflat);
-        assert_eq!(derive_micro_pristine(Some(&rt), -110, 5).0, MicroGround::CoastalSand);
-        assert_eq!(derive_micro_pristine(Some(&rt), -70, 5).0, MicroGround::LoamGrass);
-        assert_eq!(derive_micro_pristine(Some(&rt), 15, 2).0, MicroGround::PebbleBank);
-        assert_eq!(derive_micro_pristine(Some(&rt), 90, 5).0, MicroGround::RedGravel);
-        assert_eq!(derive_micro_pristine(Some(&rt), 130, 5).0, MicroGround::BareRock);
+        assert_eq!(
+            derive_micro_pristine(Some(&rt), -150, 5).0,
+            MicroGround::TidalMudflat
+        );
+        assert_eq!(
+            derive_micro_pristine(Some(&rt), -110, 5).0,
+            MicroGround::CoastalSand
+        );
+        assert_eq!(
+            derive_micro_pristine(Some(&rt), -70, 5).0,
+            MicroGround::LoamGrass
+        );
+        assert_eq!(
+            derive_micro_pristine(Some(&rt), 15, 2).0,
+            MicroGround::PebbleBank
+        );
+        assert_eq!(
+            derive_micro_pristine(Some(&rt), 90, 5).0,
+            MicroGround::RedGravel
+        );
+        assert_eq!(
+            derive_micro_pristine(Some(&rt), 130, 5).0,
+            MicroGround::BareRock
+        );
 
         // 海岸、泥灘與低海拔沖積帶（< 18m）及裸岩皆不生莿竹與春筍
         for mx in -160..=-101 {
             for my in 0..=18 {
                 let (_, prop) = derive_micro_pristine(Some(&rt), mx, my);
                 assert!(
-                    !matches!(prop, Some(NaturalProp::BambooClump | NaturalProp::BambooShoot)),
+                    !matches!(
+                        prop,
+                        Some(NaturalProp::BambooClump | NaturalProp::BambooShoot)
+                    ),
                     "beach/mudflat ({mx},{my}) must not have bamboo or shoot"
                 );
             }
         }
         // 局部湧泉溪僅限 -46..=38，遠離溪段處不該出現偽山澗
-        assert_ne!(derive_micro_pristine(Some(&rt), -80, 11).0, MicroGround::ShallowStream);
+        assert_ne!(
+            derive_micro_pristine(Some(&rt), -80, 11).0,
+            MicroGround::ShallowStream
+        );
 
         // 紅土丘陵台地仍保有多簇莿竹林
         let rt_ref = &rt;
@@ -834,15 +870,51 @@ mod tests {
     fn shophouses_and_residences_have_front_back_rooms_and_bijective_household_beds() {
         let (overlays, actors, _) = seed_outpost(None);
         let rooms = detect_enclosed_rooms(&overlays);
-        assert!(rooms.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5));
-        assert!(rooms.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == -3 && r.y1 == 1));
-        assert!(rooms.iter().any(|r| r.x0 == 14 && r.x1 == 19 && r.y0 == -3 && r.y1 == 1));
-        assert!(rooms.iter().any(|r| r.x0 == 14 && r.x1 == 19 && r.y0 == 1 && r.y1 == 5));
-        assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -3 && r.y1 == 1));
-        assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == 1 && r.y1 == 5));
-        assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -9 && r.y1 == -7));
-        assert!(rooms.iter().any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -12 && r.y1 == -9));
-        assert!(rooms.iter().any(|r| r.x0 == 10 && r.x1 == 14 && r.y0 == -12 && r.y1 == -7));
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == -3 && r.y1 == 1)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 14 && r.x1 == 19 && r.y0 == -3 && r.y1 == 1)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 14 && r.x1 == 19 && r.y0 == 1 && r.y1 == 5)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -3 && r.y1 == 1)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == 1 && r.y1 == 5)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -9 && r.y1 == -7)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == -20 && r.x1 == -15 && r.y0 == -12 && r.y1 == -9)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 10 && r.x1 == 14 && r.y0 == -12 && r.y1 == -7)
+        );
 
         let mut seen_keys = HashSet::new();
         let mut seen_beds = HashSet::new();
@@ -869,7 +941,8 @@ mod tests {
         assert_eq!(clinic_bed_near(&overlays), Some((18, -1)));
         assert!(
             overlays.get(&(-16, -10)).and_then(|o| o.structure) == Some(StructureKind::BambooBed)
-                || overlays.get(&(-16, -11)).and_then(|o| o.structure) == Some(StructureKind::BambooBed)
+                || overlays.get(&(-16, -11)).and_then(|o| o.structure)
+                    == Some(StructureKind::BambooBed)
         );
     }
 

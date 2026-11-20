@@ -3,14 +3,10 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
-use super::rim_economy::{
-    SettlementId, find_best_stockpile_slot_for, quote_item,
-};
+use super::rim_economy::{SettlementId, find_best_stockpile_slot_for, quote_item};
 use super::rim_sim::{ActorFaction, PendingTask, RimActor, RimWorldState};
 use super::rim_town::building_at;
-use super::rim_world::{
-    RimItemKind, StructureKind, find_micro_path, find_micro_path_crowded,
-};
+use super::rim_world::{RimItemKind, StructureKind, find_micro_path, find_micro_path_crowded};
 use super::runtime::SubstrateRuntime;
 
 /// 角色隨身店舖契約、器物打造落款與診所賒欠帳目（隨 `phase_json` 持久化）。
@@ -55,34 +51,56 @@ struct ShopMeta {
 
 const SHOPS: [ShopMeta; 5] = [
     ShopMeta {
-        building_code: "chunshui_diner", label: "春水小吃",
-        proprietor_key: "res:liu_chunshui", assistant_key: Some("res:liu_abao"),
+        building_code: "chunshui_diner",
+        label: "春水小吃",
+        proprietor_key: "res:liu_chunshui",
+        assistant_key: Some("res:liu_abao"),
         shelf_slots: &[(-19, -1)],
-        accepted_inputs: &[RimItemKind::BeastMeat, RimItemKind::SweetTuber, RimItemKind::BambooShoot],
+        accepted_inputs: &[
+            RimItemKind::BeastMeat,
+            RimItemKind::SweetTuber,
+            RimItemKind::BambooShoot,
+        ],
     },
     ShopMeta {
-        building_code: "amu_smithy", label: "阿木鐵店",
-        proprietor_key: "res:lin_amu", assistant_key: Some("res:zhang_xiaoan"),
+        building_code: "amu_smithy",
+        label: "阿木鐵店",
+        proprietor_key: "res:lin_amu",
+        assistant_key: Some("res:zhang_xiaoan"),
         shelf_slots: &[(8, -1), (9, 2), (10, 2)],
         accepted_inputs: &[RimItemKind::RiverStone, RimItemKind::BambooPole],
     },
     ShopMeta {
-        building_code: "jian_clinic", label: "濟安診所",
-        proprietor_key: "res:zhang_jian", assistant_key: Some("res:zhang_suxin"),
+        building_code: "jian_clinic",
+        label: "濟安診所",
+        proprietor_key: "res:zhang_jian",
+        assistant_key: Some("res:zhang_suxin"),
         shelf_slots: &[(17, -1)],
         accepted_inputs: &[RimItemKind::MountainHerb],
     },
     ShopMeta {
-        building_code: "yingfeng_inn", label: "迎風宿屋",
-        proprietor_key: "res:xie_chengfeng", assistant_key: None,
+        building_code: "yingfeng_inn",
+        label: "迎風宿屋",
+        proprietor_key: "res:xie_chengfeng",
+        assistant_key: None,
         shelf_slots: &[(-19, -8)],
-        accepted_inputs: &[RimItemKind::RoastedShoot, RimItemKind::RoastedTuber, RimItemKind::BambooPole],
+        accepted_inputs: &[
+            RimItemKind::RoastedShoot,
+            RimItemKind::RoastedTuber,
+            RimItemKind::BambooPole,
+        ],
     },
     ShopMeta {
-        building_code: "acha_teahouse", label: "阿茶茶寮",
-        proprietor_key: "res:zhou_acha", assistant_key: Some("res:he_dashu"),
+        building_code: "acha_teahouse",
+        label: "阿茶茶寮",
+        proprietor_key: "res:zhou_acha",
+        assistant_key: Some("res:he_dashu"),
         shelf_slots: &[(30, -5), (34, -8)],
-        accepted_inputs: &[RimItemKind::BambooShoot, RimItemKind::MountainHerb, RimItemKind::BeastMeat],
+        accepted_inputs: &[
+            RimItemKind::BambooShoot,
+            RimItemKind::MountainHerb,
+            RimItemKind::BeastMeat,
+        ],
     },
 ];
 
@@ -137,15 +155,26 @@ fn consume_shop_item(
     customer_idx: Option<usize>,
 ) -> Option<RimItemKind> {
     for &item in items {
-        if meta.shelf_slots.iter().any(|&(sx, sy)| world.take_ground_item(sx, sy, item, 1) > 0) {
+        if meta
+            .shelf_slots
+            .iter()
+            .any(|&(sx, sy)| world.take_ground_item(sx, sy, item, 1) > 0)
+        {
             return Some(item);
         }
-        for k in [Some(meta.proprietor_key), meta.assistant_key].into_iter().flatten() {
-            if let Some(si) = find_actor_by_key(world, k) && world.actors[si].take_inv(item, 1) > 0 {
+        for k in [Some(meta.proprietor_key), meta.assistant_key]
+            .into_iter()
+            .flatten()
+        {
+            if let Some(si) = find_actor_by_key(world, k)
+                && world.actors[si].take_inv(item, 1) > 0
+            {
                 return Some(item);
             }
         }
-        if let Some(ci) = customer_idx && world.actors[ci].take_inv(item, 1) > 0 {
+        if let Some(ci) = customer_idx
+            && world.actors[ci].take_inv(item, 1) > 0
+        {
             return Some(item);
         }
     }
@@ -153,21 +182,37 @@ fn consume_shop_item(
 }
 
 fn shop_stock_count(world: &RimWorldState, meta: &ShopMeta, items: &[RimItemKind]) -> u16 {
-    let shelf: u16 = meta.shelf_slots.iter().filter_map(|&(sx, sy)| world.overlays.get(&(sx, sy))?.ground_item)
-        .filter(|g| items.contains(&g.item)).map(|g| g.count).sum();
-    let staff: u16 = [Some(meta.proprietor_key), meta.assistant_key].into_iter().flatten()
+    let shelf: u16 = meta
+        .shelf_slots
+        .iter()
+        .filter_map(|&(sx, sy)| world.overlays.get(&(sx, sy))?.ground_item)
+        .filter(|g| items.contains(&g.item))
+        .map(|g| g.count)
+        .sum();
+    let staff: u16 = [Some(meta.proprietor_key), meta.assistant_key]
+        .into_iter()
+        .flatten()
         .filter_map(|k| find_actor_by_key(world, k))
         .flat_map(|si| &world.actors[si].inventory)
-        .filter(|st| items.contains(&st.item)).map(|st| st.count).sum();
+        .filter(|st| items.contains(&st.item))
+        .map(|st| st.count)
+        .sum();
     shelf.saturating_add(staff)
 }
 
-fn shop_input_bid(world: &RimWorldState, s: SettlementId, meta: &ShopMeta, item: RimItemKind) -> u32 {
+fn shop_input_bid(
+    world: &RimWorldState,
+    s: SettlementId,
+    meta: &ShopMeta,
+    item: RimItemKind,
+) -> u32 {
     if shop_stock_count(world, meta, &[item]) >= 14 {
         return 0;
     }
     let avail = find_actor_by_key(world, meta.proprietor_key)
-        .map_or(world.economy.vault_mg[s.index()], |oi| world.actors[oi].magnesium);
+        .map_or(world.economy.vault_mg[s.index()], |oi| {
+            world.actors[oi].magnesium
+        });
     if avail < 3 {
         return 0;
     }
@@ -217,11 +262,15 @@ fn bump_proprietor_craft(world: &mut RimWorldState, meta: &ShopMeta, is_forge: b
 
 fn is_shop_closed_for_night(world: &RimWorldState, meta: &ShopMeta) -> bool {
     let mut has_staff = false;
-    for k in [Some(meta.proprietor_key), meta.assistant_key].into_iter().flatten() {
+    for k in [Some(meta.proprietor_key), meta.assistant_key]
+        .into_iter()
+        .flatten()
+    {
         if let Some(si) = find_actor_by_key(world, k) {
             has_staff = true;
             let a = &world.actors[si];
-            let sleeping = matches!(a.task, PendingTask::SleepBed { .. }) || a.activity_tag.contains("安歇");
+            let sleeping =
+                matches!(a.task, PendingTask::SleepBed { .. }) || a.activity_tag.contains("安歇");
             if !sleeping {
                 return false;
             }
@@ -258,8 +307,16 @@ pub fn execute_shop_service(
             let Some(meta) = meta_opt else {
                 return (false, "須於小吃店或茶寮門面辦理".into());
             };
-            let cooked = [RimItemKind::RoastedMeat, RimItemKind::RoastedTuber, RimItemKind::RoastedShoot];
-            let raws = [RimItemKind::BeastMeat, RimItemKind::SweetTuber, RimItemKind::BambooShoot];
+            let cooked = [
+                RimItemKind::RoastedMeat,
+                RimItemKind::RoastedTuber,
+                RimItemKind::RoastedShoot,
+            ];
+            let raws = [
+                RimItemKind::BeastMeat,
+                RimItemKind::SweetTuber,
+                RimItemKind::BambooShoot,
+            ];
             let dish = if let Some(ready) = consume_shop_item(world, meta, &cooked, None) {
                 ready
             } else if let Some(raw) = consume_shop_item(world, meta, &raws, None) {
@@ -282,19 +339,33 @@ pub fn execute_shop_service(
                 a.activity_tag = "堂食暖腹".into();
                 a.push_diary(format!("於{}堂食熱騰騰的{}", meta.label, dish.label()));
                 world.dirty_unsaved_ticks += 3;
-                (true, format!("在{}吃罷一頓熱{}（5 鎂）", meta.label, dish.label()))
+                (
+                    true,
+                    format!("在{}吃罷一頓熱{}（5 鎂）", meta.label, dish.label()),
+                )
             } else {
                 world.actors[idx].add_inv(dish, 1);
-                world.actors[idx].pop_text = Some((format!("外帶{}", dish.short_char()), tick + 10));
+                world.actors[idx].pop_text =
+                    Some((format!("外帶{}", dish.short_char()), tick + 10));
                 world.actors[idx].push_diary(format!("自{}買妥{}帶上身", meta.label, dish.label()));
                 world.dirty_unsaved_ticks += 3;
-                (true, format!("自{}打包了一份{}（5 鎂）", meta.label, dish.label()))
+                (
+                    true,
+                    format!("自{}打包了一份{}（5 鎂）", meta.label, dish.label()),
+                )
             }
         }
         ShopServiceOp::TeaRefresh => {
             let meta = meta_opt.unwrap_or(&SHOPS[4]);
             let Some(base) = consume_shop_item(
-                world, meta, &[RimItemKind::RoastedShoot, RimItemKind::MountainHerb, RimItemKind::BambooShoot], None,
+                world,
+                meta,
+                &[
+                    RimItemKind::RoastedShoot,
+                    RimItemKind::MountainHerb,
+                    RimItemKind::BambooShoot,
+                ],
+                None,
             ) else {
                 return (false, format!("{}茶罐暫缺茶葉與茶點", meta.label));
             };
@@ -324,14 +395,18 @@ pub fn execute_shop_service(
             }
             let aid = world.actors[idx].id;
             world.economy.tool_wear.insert(aid, 0);
-            if world.actors[idx].civic.tool_maker.as_deref() != Some("阿木鐵店・林阿木親鍛") {
+            if world.actors[idx].civic.tool_maker.as_deref() != Some("阿木鐵店・林阿木親鍛")
+            {
                 world.actors[idx].civic.tool_maker = Some("阿木鐵店・林阿木校刃".into());
             }
             world.actors[idx].pop_text = Some(("校刃雪亮".into(), tick + 12));
             world.actors[idx].push_diary(format!("請林阿木將{}重新開鋒校刃", tool.label()));
             bump_proprietor_craft(world, meta, true);
             world.dirty_unsaved_ticks += 3;
-            (true, format!("阿木已將{}重新校磨雪亮（4 鎂）", tool.label()))
+            (
+                true,
+                format!("阿木已將{}重新校磨雪亮（4 鎂）", tool.label()),
+            )
         }
         ShopServiceOp::CommissionBlade | ShopServiceOp::CommissionPick => {
             let prod = if op == ShopServiceOp::CommissionBlade {
@@ -369,7 +444,10 @@ pub fn execute_shop_service(
             world.actors[idx].push_diary(format!("委託林阿木親手鍛成{}", prod.label()));
             bump_proprietor_craft(world, meta, true);
             world.dirty_unsaved_ticks += 4;
-            (true, format!("取得阿木親鍛［{}］並落款上身（{} 鎂）", prod.label(), price))
+            (
+                true,
+                format!("取得阿木親鍛［{}］並落款上身（{} 鎂）", prod.label(), price),
+            )
         }
         ShopServiceOp::ClinicTreat => {
             let a_ref = &world.actors[idx];
@@ -435,18 +513,21 @@ pub fn execute_shop_service(
             world.actors[idx].civic.inn_lease_until = tick.saturating_add(720);
             world.actors[idx].push_diary("向迎風宿屋謝掌櫃付鎂投宿客榻");
             world.actors[idx].pop_text = Some(("入宿客榻".into(), tick + 12));
-            let guest_bed = [(-16, -10), (-16, -11)]
-                .into_iter()
-                .find(|&pos| {
-                    world.overlays.get(&pos).and_then(|o| o.structure)
-                        == Some(StructureKind::BambooBed)
-                });
+            let guest_bed = [(-16, -10), (-16, -11)].into_iter().find(|&pos| {
+                world.overlays.get(&pos).and_then(|o| o.structure) == Some(StructureKind::BambooBed)
+            });
             if let Some((bx, by)) = guest_bed {
                 let start = world.actors[idx].micro_pos();
                 let occ = world.occupied_cells(Some(idx));
-                if let Some(p) =
-                    find_micro_path_crowded(rt, &world.overlays, start, (bx, by), false, false, &occ)
-                {
+                if let Some(p) = find_micro_path_crowded(
+                    rt,
+                    &world.overlays,
+                    start,
+                    (bx, by),
+                    false,
+                    false,
+                    &occ,
+                ) {
                     world.actors[idx].path = p.into();
                     world.actors[idx].task = PendingTask::SleepBed { tx: bx, ty: by };
                     world.actors[idx].activity_tag = "入宿安歇".into();
@@ -494,7 +575,15 @@ pub fn execute_shop_service(
             let _ = pay_shop_mg(world, idx, Some(meta), q.ask_mg, s);
             world.actors[idx].add_inv(item, 1);
             world.dirty_unsaved_ticks += 3;
-            (true, format!("向{}購得［{}］（{} 鎂）", meta.label, item.label(), q.ask_mg))
+            (
+                true,
+                format!(
+                    "向{}購得［{}］（{} 鎂）",
+                    meta.label,
+                    item.label(),
+                    q.ask_mg
+                ),
+            )
         }
         ShopServiceOp::ShopSell(item) => {
             let Some(meta) = meta_opt else {
@@ -504,9 +593,17 @@ pub fn execute_shop_service(
             if paid == 0 {
                 return (false, "店家目前存料充裕或週轉暫歇，暫不收購".into());
             }
-            let dst = meta.shelf_slots.iter().copied().find(|&p| {
-                world.overlays.get(&p).is_some_and(|o| o.structure == Some(StructureKind::Stockpile) && o.ground_item.is_none_or(|g| g.item == item && g.count < 24))
-            }).or_else(|| find_best_stockpile_slot_for(&world.overlays, (mx, my), item, Some(s)));
+            let dst = meta
+                .shelf_slots
+                .iter()
+                .copied()
+                .find(|&p| {
+                    world.overlays.get(&p).is_some_and(|o| {
+                        o.structure == Some(StructureKind::Stockpile)
+                            && o.ground_item.is_none_or(|g| g.item == item && g.count < 24)
+                    })
+                })
+                .or_else(|| find_best_stockpile_slot_for(&world.overlays, (mx, my), item, Some(s)));
             let Some(slot) = dst else {
                 return (false, "店家儲架已滿".into());
             };
@@ -515,10 +612,13 @@ pub fn execute_shop_service(
             }
             world.add_ground_item(slot.0, slot.1, item, 1);
             let mut paid_out = paid;
-            if let Some(oi) = find_actor_by_key(world, meta.proprietor_key) && world.actors[oi].magnesium >= paid_out {
+            if let Some(oi) = find_actor_by_key(world, meta.proprietor_key)
+                && world.actors[oi].magnesium >= paid_out
+            {
                 if oi != idx {
                     world.actors[oi].magnesium -= paid_out;
-                    world.actors[idx].magnesium = world.actors[idx].magnesium.saturating_add(paid_out);
+                    world.actors[idx].magnesium =
+                        world.actors[idx].magnesium.saturating_add(paid_out);
                 }
             } else {
                 paid_out = paid_out.min(world.economy.vault_mg[s.index()]);
@@ -526,7 +626,15 @@ pub fn execute_shop_service(
                 world.actors[idx].magnesium = world.actors[idx].magnesium.saturating_add(paid_out);
             }
             world.dirty_unsaved_ticks += 3;
-            (true, format!("交售［{}］予{}（得 {} 鎂）", item.label(), meta.label, paid_out))
+            (
+                true,
+                format!(
+                    "交售［{}］予{}（得 {} 鎂）",
+                    item.label(),
+                    meta.label,
+                    paid_out
+                ),
+            )
         }
     }
 }
@@ -631,7 +739,10 @@ pub fn describe_shop_fixture_card(
             sockets.push(json!({ "label": format!("委託阿木親鍛導能獵刀（{b_p} 鎂）"), "cmd": "shop_cmd", "item_code": "commission_blade" }));
             sockets.push(json!({ "label": format!("委託阿木親鍛鋼製開山鎬（{p_p} 鎂）"), "cmd": "shop_cmd", "item_code": "commission_pick" }));
         }
-        ("jian_clinic", StructureKind::Workbench | StructureKind::Stockpile | StructureKind::BambooBed) => {
+        (
+            "jian_clinic",
+            StructureKind::Workbench | StructureKind::Stockpile | StructureKind::BambooBed,
+        ) => {
             if st == StructureKind::BambooBed && (mx, my) != (18, -1) {
                 return false;
             }
@@ -678,8 +789,10 @@ pub fn describe_shop_fixture_card(
         _ => return false,
     }
 
-    if matches!(meta.building_code, "chunshui_diner" | "amu_smithy" | "acha_teahouse")
-        && is_shop_closed_for_night(world, meta)
+    if matches!(
+        meta.building_code,
+        "chunshui_diner" | "amu_smithy" | "acha_teahouse"
+    ) && is_shop_closed_for_night(world, meta)
     {
         sockets.clear();
         tags.push("夜深歇業・店主於後宅安歇".into());
@@ -749,13 +862,21 @@ pub fn step_town_shops(world: &mut RimWorldState) {
                 let prepared = shop_stock_count(
                     world,
                     meta,
-                    &[RimItemKind::RoastedMeat, RimItemKind::RoastedTuber, RimItemKind::RoastedShoot],
+                    &[
+                        RimItemKind::RoastedMeat,
+                        RimItemKind::RoastedTuber,
+                        RimItemKind::RoastedShoot,
+                    ],
                 );
                 if prepared < 2
                     && let Some(raw) = consume_shop_item(
                         world,
                         meta,
-                        &[RimItemKind::BeastMeat, RimItemKind::SweetTuber, RimItemKind::BambooShoot],
+                        &[
+                            RimItemKind::BeastMeat,
+                            RimItemKind::SweetTuber,
+                            RimItemKind::BambooShoot,
+                        ],
                         None,
                     )
                 {
@@ -765,7 +886,11 @@ pub fn step_town_shops(world: &mut RimWorldState) {
                 }
             }
             1 => {
-                let tools = shop_stock_count(world, meta, &[RimItemKind::AlloyBlade, RimItemKind::AlloyPick]);
+                let tools = shop_stock_count(
+                    world,
+                    meta,
+                    &[RimItemKind::AlloyBlade, RimItemKind::AlloyPick],
+                );
                 if tools == 0
                     && shop_stock_count(world, meta, &[RimItemKind::BambooPole]) > 0
                     && shop_stock_count(world, meta, &[RimItemKind::RiverStone]) > 0
@@ -787,7 +912,8 @@ pub fn step_town_shops(world: &mut RimWorldState) {
                     && consume_shop_item(world, meta, &[RimItemKind::MountainHerb], None).is_some()
                 {
                     world.add_ground_item(shelf.0, shelf.1, RimItemKind::WoundSalve, 1);
-                    world.actors[oi].craft_harvest = world.actors[oi].craft_harvest.saturating_add(1);
+                    world.actors[oi].craft_harvest =
+                        world.actors[oi].craft_harvest.saturating_add(1);
                 }
             }
             _ => {}
@@ -812,14 +938,27 @@ pub fn try_autonomous_shop_patronage(
         ((15, -1), ShopServiceOp::RepayDebt, "赴診所還帳")
     } else if a.injury_ticks > 0
         && a.actor_key != "res:zhang_jian"
-        && shop_stock_count(world, &SHOPS[2], &[RimItemKind::WoundSalve, RimItemKind::MountainHerb]) > 0
+        && shop_stock_count(
+            world,
+            &SHOPS[2],
+            &[RimItemKind::WoundSalve, RimItemKind::MountainHerb],
+        ) > 0
     {
         ((15, -1), ShopServiceOp::ClinicTreat, "赴診所求醫")
     } else if a.hunger < 48
         && a.magnesium >= 6
         && !is_shop_closed_for_night(world, &SHOPS[0])
         && !matches!(a.actor_key.as_str(), "res:liu_chunshui" | "res:zhou_acha")
-        && shop_stock_count(world, &SHOPS[0], &[RimItemKind::RoastedMeat, RimItemKind::RoastedTuber, RimItemKind::RoastedShoot, RimItemKind::BambooShoot]) > 0
+        && shop_stock_count(
+            world,
+            &SHOPS[0],
+            &[
+                RimItemKind::RoastedMeat,
+                RimItemKind::RoastedTuber,
+                RimItemKind::RoastedShoot,
+                RimItemKind::BambooShoot,
+            ],
+        ) > 0
     {
         ((-19, -1), ShopServiceOp::DineIn, "上小吃店吃飯")
     } else if a.equipped_tool.is_some()
@@ -833,11 +972,16 @@ pub fn try_autonomous_shop_patronage(
         return false;
     };
 
-    let Some(path) = find_micro_path_crowded(rt, &world.overlays, start, target, true, false, &occ) else {
+    let Some(path) = find_micro_path_crowded(rt, &world.overlays, start, target, true, false, &occ)
+    else {
         return false;
     };
     world.actors[idx].path = path.into();
-    world.actors[idx].task = PendingTask::ShopPatron { tx: target.0, ty: target.1, op };
+    world.actors[idx].task = PendingTask::ShopPatron {
+        tx: target.0,
+        ty: target.1,
+        op,
+    };
     world.actors[idx].activity_tag = tag.into();
     true
 }
@@ -850,8 +994,14 @@ mod tests {
     fn seeded_world() -> RimWorldState {
         let (overlays, actors, events) = seed_outpost(None);
         RimWorldState {
-            tick: 100, overlays, actors, events,
-            economy: Default::default(), dirty_unsaved_ticks: 0, sub_step: 0, stall_tracker: Default::default(),
+            tick: 100,
+            overlays,
+            actors,
+            events,
+            economy: Default::default(),
+            dirty_unsaved_ticks: 0,
+            sub_step: 0,
+            stall_tracker: Default::default(),
         }
     }
 
@@ -875,8 +1025,15 @@ mod tests {
         w.actors[p_idx].add_inv(RimItemKind::RiverStone, 1);
         w.economy.tool_wear.insert(w.actors[p_idx].id, 24);
         assert!(execute_shop_service(&mut w, None, p_idx, 10, -1, ShopServiceOp::HoneTool).0);
-        assert_eq!(w.economy.tool_wear.get(&w.actors[p_idx].id).copied(), Some(0));
-        assert!(tool_detail_note(&w, &w.actors[p_idx]).unwrap_or_default().contains("鋒刃雪亮"));
+        assert_eq!(
+            w.economy.tool_wear.get(&w.actors[p_idx].id).copied(),
+            Some(0)
+        );
+        assert!(
+            tool_detail_note(&w, &w.actors[p_idx])
+                .unwrap_or_default()
+                .contains("鋒刃雪亮")
+        );
         assert_eq!(total_mg(&w), expected_mg);
     }
 
@@ -891,12 +1048,22 @@ mod tests {
         let start_mg = total_mg(&w);
 
         assert!(execute_shop_service(&mut w, None, p_idx, 15, -1, ShopServiceOp::ClinicTreat).0);
-        assert_eq!((w.actors[p_idx].injury_ticks, w.actors[p_idx].magnesium, w.actors[p_idx].civic.debt_mg), (0, 0, 4));
+        assert_eq!(
+            (
+                w.actors[p_idx].injury_ticks,
+                w.actors[p_idx].magnesium,
+                w.actors[p_idx].civic.debt_mg
+            ),
+            (0, 0, 4)
+        );
         assert_eq!(total_mg(&w), start_mg);
 
         w.actors[p_idx].magnesium = 10;
         assert!(execute_shop_service(&mut w, None, p_idx, 15, -1, ShopServiceOp::RepayDebt).0);
-        assert_eq!((w.actors[p_idx].civic.debt_mg, w.actors[p_idx].magnesium), (0, 6));
+        assert_eq!(
+            (w.actors[p_idx].civic.debt_mg, w.actors[p_idx].magnesium),
+            (0, 6)
+        );
         assert_eq!(total_mg(&w), start_mg + 10);
     }
 
@@ -909,9 +1076,13 @@ mod tests {
         w.actors[p_idx].magnesium = 15;
         let before_mg = total_mg(&w);
 
-        let (ok, msg) = execute_shop_service(&mut w, None, p_idx, -19, -8, ShopServiceOp::RentInnBed);
+        let (ok, msg) =
+            execute_shop_service(&mut w, None, p_idx, -19, -8, ShopServiceOp::RentInnBed);
         assert!(ok, "rent failed: {msg}");
-        assert!(w.actors[p_idx].civic.inn_lease_until > w.tick && matches!(w.actors[p_idx].task, PendingTask::SleepBed { .. }));
+        assert!(
+            w.actors[p_idx].civic.inn_lease_until > w.tick
+                && matches!(w.actors[p_idx].task, PendingTask::SleepBed { .. })
+        );
         assert_eq!(total_mg(&w), before_mg);
     }
 
@@ -921,7 +1092,10 @@ mod tests {
         let p_idx = w.ensure_player_actor("no_num", "雅", "F", 77);
         w.economy.tool_wear.insert(w.actors[p_idx].id, 24);
         let note = tool_detail_note(&w, &w.actors[p_idx]).expect("tool note");
-        assert!(!note.chars().any(|c| c.is_ascii_digit()), "must not leak digits: {note}");
+        assert!(
+            !note.chars().any(|c| c.is_ascii_digit()),
+            "must not leak digits: {note}"
+        );
         assert!(note.contains("阿木鐵店") && note.contains("微鈍"));
     }
 }

@@ -47,7 +47,9 @@ impl RimWorldState {
                             if ov.blueprint.is_some() {
                                 ov.blueprint = None;
                                 count += 1;
-                            } else if ov.structure.is_some_and(|st| !super::rim_town::is_protected_town_structure(mx, my, st)) {
+                            } else if ov.structure.is_some_and(|st| {
+                                !super::rim_town::is_protected_town_structure(mx, my, st)
+                            }) {
                                 ov.blueprint = Some(BlueprintJob::Deconstruct { progress: 0 });
                                 count += 1;
                             }
@@ -276,13 +278,8 @@ impl RimWorldState {
                 self.actors[p_idx].activity_tag = format!("赴火炙{}", raw.short_char());
                 Ok(format!("前往營火旁備妥{}", raw.label()))
             }
-            "craft_blade"
-            | "craft_pick"
-            | "craft_alloy_blade"
-            | "craft_alloy_pick"
-            | "craft_hat"
-            | "craft_pack"
-            | "craft_salve" => {
+            "craft_blade" | "craft_pick" | "craft_alloy_blade" | "craft_alloy_pick"
+            | "craft_hat" | "craft_pack" | "craft_salve" => {
                 let item = match action {
                     Some("craft_pick") => RimItemKind::StonePick,
                     Some("craft_alloy_blade") => RimItemKind::AlloyBlade,
@@ -413,12 +410,16 @@ mod tests {
             sub_step: 0,
             stall_tracker: HashMap::from([(1, ((0.0, 0.0), 3))]),
         };
-        world
-            .economy
-            .parcel_queues
-            .insert(1, VecDeque::from([(1, 0, FarmOp::Harvest), (2, 0, FarmOp::Harvest)]));
+        world.economy.parcel_queues.insert(
+            1,
+            VecDeque::from([(1, 0, FarmOp::Harvest), (2, 0, FarmOp::Harvest)]),
+        );
 
-        assert!(world.command_player("tester", -5, 0, Some("move"), None, true).is_ok());
+        assert!(
+            world
+                .command_player("tester", -5, 0, Some("move"), None, true)
+                .is_ok()
+        );
         assert!(!world.actors[0].autopilot);
         assert!(!world.economy.parcel_queues.contains_key(&1));
         assert!(!world.stall_tracker.contains_key(&1));
@@ -427,7 +428,10 @@ mod tests {
         for _ in 0..40 {
             world.step_physics_50ms();
             let cur_x = world.actors[0].px;
-            assert!(cur_x <= prev_x + 1e-4, "player rubber-banded: prev={prev_x} cur={cur_x}");
+            assert!(
+                cur_x <= prev_x + 1e-4,
+                "player rubber-banded: prev={prev_x} cur={cur_x}"
+            );
             assert_ne!(world.actors[0].activity_tag, "側身禮讓");
             prev_x = cur_x;
         }

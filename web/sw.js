@@ -1,15 +1,11 @@
-// PWA Service Worker：最小實作，支援「加入主畫面」
-// 改前端後必須 bump 此 CACHE 版號，瀏覽器才會偵測 SW 更新 → install/activate → claim
-// （比 index.html 的 ?v= 更深一層：即使 HTML ?v= 變了，若 SW 本身內容沒變，舊 SW 續命）
-const CACHE = 'sw-shell-v20261119b3';
+// PWA Service Worker（v20261120a17：行動端完整正體字型、WebP 原生硬體合成白鷗港手繪水彩海港輿圖）
+const CACHE = 'sw-shell-v20261120a17';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/style.css?v=20261119b3',
-  '/game.css?v=20261119b3',
-  '/game-grid.css?v=20261119b3',
-  '/route-b.css?v=20261119b3',
-  '/route-b-stage.js?v=20261119b3',
+  '/island-ui.css?v=20261120a17',
+  '/island-ui.js?v=20261120a17',
+  '/maps/white_gull_harbor.webp?v=20261120a17',
   '/icon.svg',
   '/manifest.webmanifest'
 ];
@@ -55,6 +51,5 @@ self.addEventListener('fetch', function (e) {
         });
       })
     );
-    return;
   }
 });

@@ -4,6 +4,7 @@ pub mod coord;
 pub mod r#gen;
 #[allow(clippy::module_inception)]
 pub mod grid;
+pub mod outer_island;
 pub mod reveal;
 pub mod shalu_zhulin;
 pub mod substrate;
@@ -13,8 +14,8 @@ pub mod zhulin;
 
 pub use cell::{Freshness, GridObject, GridObjectKind, Terrain};
 pub use coord::{
-    Direction, SquareCoord, grid_room_id_from_coord, grid_room_id_from_coord_z,
-    parse_grid_room_id, parse_grid_room_id_z,
+    Direction, SquareCoord, grid_room_id_from_coord, grid_room_id_from_coord_z, parse_grid_room_id,
+    parse_grid_room_id_z,
 };
 pub use r#gen::generate_white_tower_grid;
 pub use grid::{

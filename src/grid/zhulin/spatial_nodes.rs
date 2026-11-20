@@ -242,8 +242,7 @@ pub fn resolve_spatial_node_meta(
         },
         _ => {
             let clean_fallback = fallback_name.trim();
-            let is_bamboo = clean_fallback.contains("竹")
-                || (gx >= 0 && (-2..=3).contains(&gy));
+            let is_bamboo = clean_fallback.contains("竹") || (gx >= 0 && (-2..=3).contains(&gy));
             let is_water = clean_fallback.contains("泉")
                 || clean_fallback.contains("溪")
                 || clean_fallback.contains("灘");
@@ -270,7 +269,9 @@ pub fn resolve_spatial_node_meta(
                     (0, 2) | (1, 2) => "竹林北徑",
                     (2, 0) | (2, 1) => "高坡竹林",
                     (0, -1) => "竹林南緣",
-                    _ if !clean_fallback.is_empty() && clean_fallback != "刺竹林" => clean_fallback,
+                    _ if !clean_fallback.is_empty() && clean_fallback != "刺竹林" => {
+                        clean_fallback
+                    }
                     _ if gy > 0 => "北坡竹徑",
                     _ if gy < 0 => "南坡竹徑",
                     _ => "刺竹林間",
@@ -324,8 +325,16 @@ fn shophouse_meta_for_floor(
             } else {
                 sub.to_string()
             },
-            kind: if is_residence_plot { "residence" } else { "shop" },
-            kind_zh: if is_residence_plot { "住宅" } else { "店面" },
+            kind: if is_residence_plot {
+                "residence"
+            } else {
+                "shop"
+            },
+            kind_zh: if is_residence_plot {
+                "住宅"
+            } else {
+                "店面"
+            },
             region_id: "west_foothill_town",
             region_name: "西麓街市",
             privacy: "public",
@@ -339,8 +348,16 @@ fn shophouse_meta_for_floor(
             } else {
                 "店內後室".to_string()
             },
-            kind: if is_residence_plot { "residence" } else { "shop" },
-            kind_zh: if is_residence_plot { "住宅" } else { "內室" },
+            kind: if is_residence_plot {
+                "residence"
+            } else {
+                "shop"
+            },
+            kind_zh: if is_residence_plot {
+                "住宅"
+            } else {
+                "內室"
+            },
             region_id: "west_foothill_town",
             region_name: "西麓街市",
             privacy: "semi_private",
@@ -515,12 +532,8 @@ pub fn build_spatial_graph_view(
 
     // 3. 平面出入口與 2 跳連通拓撲 BFS（僅在 z == 0 層展開平面連通，室內 z > 0 聚焦本棟出入口）
     if gz == 0 {
-        const DIRS: [(i32, i32, &str); 4] = [
-            (0, 1, "北"),
-            (1, 0, "東"),
-            (0, -1, "南"),
-            (-1, 0, "西"),
-        ];
+        const DIRS: [(i32, i32, &str); 4] =
+            [(0, 1, "北"), (1, 0, "東"), (0, -1, "南"), (-1, 0, "西")];
         let mut snap_cache: HashMap<(i32, i32), crate::grid::substrate::facade::CellSnapshot> =
             HashMap::new();
         snap_cache.insert((gx, gy), cur_snap);

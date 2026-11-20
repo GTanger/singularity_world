@@ -288,13 +288,22 @@ pub fn spatial_node_live_badges() -> HashMap<(i32, i32), String> {
     };
     let mut badges: HashMap<(i32, i32), String> = HashMap::new();
     for echo in state.recent_echoes.iter().rev().take(18) {
-        let label = if echo.summary.contains("口角") || echo.summary.contains("爭") || echo.summary.contains("競") {
+        let label = if echo.summary.contains("口角")
+            || echo.summary.contains("爭")
+            || echo.summary.contains("競")
+        {
             "起口角"
-        } else if echo.summary.contains("欠") || echo.summary.contains("債") || echo.summary.contains("擔保") {
+        } else if echo.summary.contains("欠")
+            || echo.summary.contains("債")
+            || echo.summary.contains("擔保")
+        {
             "算舊帳"
         } else if echo.summary.contains("熟客") || echo.summary.contains("交貨") {
             "議行市"
-        } else if echo.summary.contains("搬") || echo.summary.contains("拉") || echo.summary.contains("台車") {
+        } else if echo.summary.contains("搬")
+            || echo.summary.contains("拉")
+            || echo.summary.contains("台車")
+        {
             "拉貨"
         } else {
             continue;

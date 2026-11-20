@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
-- **更新日期**：2026-11-19
-- **當前狀態**：`active`（已完成「真活世界」前四步全部落地（`v=20261119a12`）：① `微步 3a′＋3c`（`CellFacade`、`32×32` 快取、CAS `cell_overlay`、個人迷霧、西麓騎樓街屋與 `entities.grid_z (0..=3)` 三段房號隔離）、② `微步 3b′`（高水期與通行地帶遷移、惰性 `settle()`＋30s GC、玩家／NPC 共用四步仲裁＋`cell_overlay`×`entities.inventory` 原子 CAS）、③ 無職稱真活居民（320 人零寫死、`1 底板 × 4 內在槽` × `6 關係插座`、Dave Mark＋Hysteresis＋三大守恆閥門、`zhulin_social_state` zlib 落盤、`Look`/`Talk` 識名與 `/api/substrate/social_summary`）、④ `微步 3d` 60 遊戲日純 Rust Burn-in（`zhulin-social-burnin`，720 拍寫入正式 PG）與四大真活硬驗收（無玩家續行與重啟 SHA-256 位元等價、全守恆 `diff=0`、歷史湧現 8,147 邊／6 插座／高水改道／階級流動、「作品被活人接手」與有界加權 A* 遇事停步閉環）；全數通過單元測試、`tra-sw-gate` 6/6、實況 E2E 與實體 `Pixel 9 Pro XL` 真機視覺驗收 `PASS`）
+- **更新日期**：2026-11-20
+- **當前狀態**：`active`（已完成「對等實體人物 `UnifiedMindBody` 單一機制 × 獨立有界記憶 × 慢思考佇列 × PostgreSQL `UNNEST` `Commit-Before-Publish`」架構正典全量實裝上線（`v=20261120a17`）：徹底廢除 `PlayerIslandState`／`EmbodiedResidentState`／`resident_copper_delta` 雙軌結構，全體玩家、銀鷗島 674 名居民與動態熱生成新人物 100% 共用單一 `UnifiedMindBody`（僅以 `controller_id: Option<String>` 區分控制器歸屬，執行期完全脫離 `doc.residents` 靜態陣列），落地 `src/grid/outer_island/{types,sim_tick,slow_think,mind,movement,actions,explore_and_combat,dialogue_llm,views,engine,persist_pg,persist_v1_migrate,mod}.rs`（全數單檔 `< 950` 行）與 `ActorMap`（`Arc<UnifiedMindBody>` Copy-on-Write ＋ `O(D)` `dirty_keys` 增量提交）＋ $O(1)$ 記憶體四索引（`node_occupants`、`controller_to_actor`、SHA-256 不可逆 `p:<16hex>` `public_token_to_actor`、`used_soul_seeds`）＋ `oi_turning_points_archive` 冷庫封存；線上 `postgres-singularity` 無損升級至 `unified_v2 = true`（`oi_actors` 實況 674 名居民＋3 名玩家含 `pl:葉卅` 共 `677` 筆、`unique_soul_seeds = 677`、零測試假資料、守恆總額 `120,805` 銅幣、`conservation_diff == 0`）；通過 `13/13` `outer_island` 單元測試（含記憶體內熱新增 1,500 名共 2,175 人擴展壓測）、三輪 `Claude Opus 5.5` 異質規格盲審（`0 Critical / 0 High`）、`tra-sw-gate` 6/6 與 `Pixel 9 Pro XL` 真機及桌機雙視口視覺驗收 `PASS`）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -69,7 +69,12 @@
 
 ## 二、 關鍵檔案與正典錨點
 
-- **新生世界設計正典、關鍵字總表與 Wiki ADR**：
+- **現行最高世界觀與全大陸中文正典（2026-11-20 定案）**：
+  - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_高維混沌與奇幻百戶大世界總綱_2026-11-20.md`（高維混沌、不干涉自然演化四族、兩層自然權重種族生成、16 題系統總綱）
+  - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_全大陸中文地名政權物產戰史總冊_2026-11-20.md`（寧靜大洋、蒼淵主陸、銀鷗島、100 國、850 城、71 物產、76 信仰、14 災疫戰區、96 奇觀、12 場大戰與檀香走私暗線全中文總冊）
+  - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_對等實體人物與獨立有界記憶架構正典_2026-11-20.md`（`UnifiedMindBody` 單一機制、萬人擴展 `ActorMap` CoW + `UNNEST` 批次 `Commit-Before-Publish`、$O(1)$ 四索引與有界記憶／冷庫封存架構正典）
+  - `/home/tanger/Projects/singularity_world/data/world/tanger_full_zh_v1.json`、`data/world/tanger_glossary_zh_v1.json`、`data/world/tanger_outer_island_v1.json`
+- **前階段保留設計正典、關鍵字總表與 Wiki ADR**：
   - `/home/tanger/Projects/singularity_world/docs/DESIGN_KEYWORDS.md`（世界核心關鍵字清單與行為規範）
   - `/home/tanger/Projects/singularity_world/docs/design/energetic_taiwan_landmass_and_substrate_spec.md`（§1～§5.3 完整定案，含微步 3 五小刀契約）
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）

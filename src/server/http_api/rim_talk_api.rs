@@ -39,7 +39,11 @@ pub struct RimTradeBody {
     pub mode: String,
 }
 
-fn collect_trade_lists(world: &RimWorldState, player: &RimActor, npc: &RimActor) -> (Vec<Value>, Vec<Value>) {
+fn collect_trade_lists(
+    world: &RimWorldState,
+    player: &RimActor,
+    npc: &RimActor,
+) -> (Vec<Value>, Vec<Value>) {
     let s = settlement_of_pos(npc.micro_pos().0, npc.micro_pos().1);
     let npc_offers: Vec<Value> = npc
         .inventory

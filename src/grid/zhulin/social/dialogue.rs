@@ -198,30 +198,24 @@ pub fn build_tactical_choices(
     player_gz: i16,
 ) -> Vec<String> {
     let mut choices = Vec::with_capacity(4);
-    let has_pact = state
-        .ledger
-        .get(viewer_player_id, &r.id)
-        .is_some_and(|e| {
-            e.sockets
-                .iter()
-                .any(|s| matches!(s, RelationSocket::SupplyPact { .. }))
-        });
+    let has_pact = state.ledger.get(viewer_player_id, &r.id).is_some_and(|e| {
+        e.sockets
+            .iter()
+            .any(|s| matches!(s, RelationSocket::SupplyPact { .. }))
+    });
     let (owed_out, _) = state.ledger.debt_summary_of(&r.id);
 
     // 1. 易物議價 / 熟客詢價
     if has_pact {
-        choices.push(
-            "SocialBargain|熟客詢價|「老交情了，這批貨今天開個實在價來聽聽」".to_string(),
-        );
+        choices.push("SocialBargain|熟客詢價|「老交情了，這批貨今天開個實在價來聽聽」".to_string());
     } else {
-        choices.push(
-            "SocialBargain|易物議價|「我手頭有鮮貨，先開個熟客價來聽聽」".to_string(),
-        );
+        choices.push("SocialBargain|易物議價|「我手頭有鮮貨，先開個熟客價來聽聽」".to_string());
     }
 
     // 2. 請食套話（飢乏或愛傳話時特別有效）
     if r.deficit.hunger >= 0.45 {
-        choices.push("SocialTreat|請食套話|「熱湯算我的，坐下來把這條街的底細細說來聽」".to_string());
+        choices
+            .push("SocialTreat|請食套話|「熱湯算我的，坐下來把這條街的底細細說來聽」".to_string());
     } else {
         choices.push("SocialTreat|請茶套話|「請你喝盞涼茶，近來街坊間可有什麼暗流？」".to_string());
     }
@@ -239,13 +233,9 @@ pub fn build_tactical_choices(
 
     // 4. 公開街面避人私談 vs 室內深入問底
     if player_gz == 0 {
-        choices.push(
-            "SocialPrivateTalk|避人私談|「街面耳目雜，進內室避開旁人再細談」".to_string(),
-        );
+        choices.push("SocialPrivateTalk|避人私談|「街面耳目雜，進內室避開旁人再細談」".to_string());
     } else {
-        choices.push(
-            "Talk|趁靜問底|「這會兒沒外人旁聽，你把真正顧忌的事直說吧」".to_string(),
-        );
+        choices.push("Talk|趁靜問底|「這會兒沒外人旁聽，你把真正顧忌的事直說吧」".to_string());
     }
 
     choices
@@ -296,7 +286,9 @@ pub fn prepare_resident_dialogue_turn(
             sensitive_topic_triggered = true;
             mutated_world = true;
             let unit_mg = state.valves.shoot_unit_mg.max(2);
-            let edge = state.ledger.get_or_create_mut(viewer_player_id, &resident_id);
+            let edge = state
+                .ledger
+                .get_or_create_mut(viewer_player_id, &resident_id);
             let mut updated_existing = false;
             for sock in &mut edge.sockets {
                 if let RelationSocket::SupplyPact {
@@ -338,7 +330,10 @@ pub fn prepare_resident_dialogue_turn(
                 game_day,
                 player_gx,
                 player_gy,
-                format!("{resident_name}在{}與來客議定熟客交貨手路。", space_meta.name),
+                format!(
+                    "{resident_name}在{}與來客議定熟客交貨手路。",
+                    space_meta.name
+                ),
             );
             lever_fact_summary = if updated_existing {
                 "雙方剛再次敲定熟客留貨約定，你對這位來客手路更放心。".to_string()
@@ -352,22 +347,29 @@ pub fn prepare_resident_dialogue_turn(
             let was_hungry = r.deficit.hunger >= 0.45;
             r.deficit.hunger = (r.deficit.hunger - 0.35).max(0.0);
             r.deficit.fatigue = (r.deficit.fatigue - 0.12).max(0.0);
-            let edge = state.ledger.get_or_create_mut(viewer_player_id, &resident_id);
+            let edge = state
+                .ledger
+                .get_or_create_mut(viewer_player_id, &resident_id);
             edge.grant_right(GrantedRight::StreetWitnessGuarantee {
                 guarantor_id: resident_id.clone(),
                 beneficiary_id: viewer_player_id.to_string(),
             });
             let secret_lead = extract_real_secret_lead(state, &resident_id, player_gx, player_gy);
             lever_fact_summary = if was_hungry {
-                format!("對方請你吃了一碗熱騰騰的鮮筍湯，你飢意大減、話匣子打開，決定透露一條真實內幕：{secret_lead}")
+                format!(
+                    "對方請你吃了一碗熱騰騰的鮮筍湯，你飢意大減、話匣子打開，決定透露一條真實內幕：{secret_lead}"
+                )
             } else {
-                format!("對方請你喝了一盞涼茶示好，你賣個面子，順口透露一條真實街坊消息：{secret_lead}")
+                format!(
+                    "對方請你喝了一盞涼茶示好，你賣個面子，順口透露一條真實街坊消息：{secret_lead}"
+                )
             };
         }
         "SocialDebtInquiry" => {
             sensitive_topic_triggered = true;
             let lead = extract_real_debt_lead(state, &resident_id, player_gx, player_gy);
-            lever_fact_summary = format!("對方主動打聽這條街的欠帳與債權，你知道的真實情況是：{lead}");
+            lever_fact_summary =
+                format!("對方主動打聽這條街的欠帳與債權，你知道的真實情況是：{lead}");
         }
         "SocialSettleDebt" => {
             sensitive_topic_triggered = true;
@@ -394,9 +396,9 @@ pub fn prepare_resident_dialogue_turn(
                             *due_day = game_day + 7;
                         }
                     }
-                    debt_edge.sockets.retain(|s| {
-                        !matches!(s, RelationSocket::Debt { amount_mg: amt, .. } if *amt <= 0)
-                    });
+                    debt_edge.sockets.retain(
+                        |s| !matches!(s, RelationSocket::Debt { amount_mg: amt, .. } if *amt <= 0),
+                    );
                     debt_edge.append_history(SharedHistoryEntry {
                         game_day,
                         gx: player_gx,
@@ -407,7 +409,9 @@ pub fn prepare_resident_dialogue_turn(
                         },
                     });
                 }
-                let p_edge = state.ledger.get_or_create_mut(viewer_player_id, &resident_id);
+                let p_edge = state
+                    .ledger
+                    .get_or_create_mut(viewer_player_id, &resident_id);
                 p_edge.grant_right(GrantedRight::CreditExtension {
                     holder_id: viewer_player_id.to_string(),
                     extra_days: 7,
@@ -445,7 +449,8 @@ pub fn prepare_resident_dialogue_turn(
                     "來客剛出面替你向債主{creditor_name}擔保展期並分擔掉大半舊帳壓力，你心裡記下這份實打實的人情。"
                 );
             } else {
-                lever_fact_summary = "你目前自己手頭並未背著急債，但你確實知道附近有幾戶街坊手頭很緊。".to_string();
+                lever_fact_summary =
+                    "你目前自己手頭並未背著急債，但你確實知道附近有幾戶街坊手頭很緊。".to_string();
             }
         }
         "SocialPrivateTalk" => {
@@ -458,7 +463,8 @@ pub fn prepare_resident_dialogue_turn(
             } else if player_gz == 0 {
                 lever_fact_summary = "這裡是公開石板街面，你壓低聲音提醒對方：往北側或南側騎樓店面推門進內室，才不怕街坊聽見。".to_string();
             } else {
-                lever_fact_summary = "這裡已是室內隔間，四下沒有外人旁聽，你可以放開說話。".to_string();
+                lever_fact_summary =
+                    "這裡已是室內隔間，四下沒有外人旁聽，你可以放開說話。".to_string();
             }
         }
         _ => {
@@ -623,7 +629,8 @@ fn build_reply_prompts(
 ) -> (String, String, String) {
     let (space_name, privacy_zh) = space_info;
     let r = &state.residents[r_idx];
-    let fallback = compose_deterministic_speech(state, r, action, player_utterance, lever_fact_summary);
+    let fallback =
+        compose_deterministic_speech(state, r, action, player_utterance, lever_fact_summary);
 
     let (owed_out, owed_in) = state.ledger.debt_summary_of(&r.id);
     let debt_fact = if owed_out > 0 {
@@ -713,7 +720,11 @@ fn resolve_social_llm_target(viewer_player_id: &str) -> Option<(String, String, 
     if base.trim().is_empty() || model.trim().is_empty() {
         return None;
     }
-    Some((base.trim().to_string(), key.trim().to_string(), model.trim().to_string()))
+    Some((
+        base.trim().to_string(),
+        key.trim().to_string(),
+        model.trim().to_string(),
+    ))
 }
 
 fn maybe_bystander_witness(
@@ -730,7 +741,11 @@ fn maybe_bystander_witness(
         .iter()
         .position(|r| r.id != speaker_id && r.gx == gx && r.gy == gy && r.gz == 0)?;
     let b_name = state.residents[bystander_idx].true_name.clone();
-    let keyword = if action == "SocialSettleDebt" || utterance.contains('欠') || utterance.contains('帳') || utterance.contains('債') {
+    let keyword = if action == "SocialSettleDebt"
+        || utterance.contains('欠')
+        || utterance.contains('帳')
+        || utterance.contains('債')
+    {
         "舊帳"
     } else if action == "SocialBargain" || utterance.contains('價') || utterance.contains('貨') {
         "熟客價"
@@ -754,7 +769,10 @@ fn maybe_bystander_witness(
     ))
 }
 
-fn find_primary_debt_of(state: &SocialWorldState, debtor_id: &str) -> Option<(String, String, i32)> {
+fn find_primary_debt_of(
+    state: &SocialWorldState,
+    debtor_id: &str,
+) -> Option<(String, String, i32)> {
     for edge in state.ledger.edges.values() {
         for sock in &edge.sockets {
             if let RelationSocket::Debt {
@@ -774,12 +792,7 @@ fn find_primary_debt_of(state: &SocialWorldState, debtor_id: &str) -> Option<(St
     None
 }
 
-fn extract_real_debt_lead(
-    state: &SocialWorldState,
-    speaker_id: &str,
-    gx: i32,
-    gy: i32,
-) -> String {
+fn extract_real_debt_lead(state: &SocialWorldState, speaker_id: &str, gx: i32, gy: i32) -> String {
     if let Some((_, c_name, _)) = find_primary_debt_of(state, speaker_id) {
         return format!("我自己就還欠著{c_name}一筆舊帳還沒結清");
     }
@@ -788,7 +801,10 @@ fn extract_real_debt_lead(
         if r.id != speaker_id && (r.gx - gx).abs() <= 2 && (r.gy - gy).abs() <= 2 {
             if let Some((_, c_name, _)) = find_primary_debt_of(state, &r.id) {
                 let loc = resolve_spatial_node_meta(r.gx, r.gy, r.gz, "").name;
-                return format!("聽說{loc}那頭的{}最近手頭緊，欠著{c_name}的帳還沒軋平", r.true_name);
+                return format!(
+                    "聽說{loc}那頭的{}最近手頭緊，欠著{c_name}的帳還沒軋平",
+                    r.true_name
+                );
             }
         }
     }
@@ -831,8 +847,12 @@ fn render_belief_fact(state: &SocialWorldState, b: &SubjectiveBelief) -> String 
         BeliefKind::WitnessedTrade { item_label, .. } => {
             format!("這幾天騎樓裡頭{item_label}走貨特別勤")
         }
-        BeliefKind::SuspectedPoach { .. } => "東邊林子裡近來有人暗地摸別家做過記號的鮮貨".to_string(),
-        BeliefKind::SecretGroveTip { .. } => "雨後東側高坡竹根下常冒嫩筍，熟路人才找得到".to_string(),
+        BeliefKind::SuspectedPoach { .. } => {
+            "東邊林子裡近來有人暗地摸別家做過記號的鮮貨".to_string()
+        }
+        BeliefKind::SecretGroveTip { .. } => {
+            "雨後東側高坡竹根下常冒嫩筍，熟路人才找得到".to_string()
+        }
     }
 }
 
@@ -905,30 +925,22 @@ fn compose_deterministic_speech(
                 CoreObsession::HoardAndOwn => {
                     "「西麓正街一天比一天熱鬧，趁早攢下本錢盤口店面才是實在。」"
                 }
-                CoreObsession::ProtectKin => {
-                    "「街坊鄰里互相照應，誰碰上難處總不好袖手旁觀。」"
-                }
+                CoreObsession::ProtectKin => "「街坊鄰里互相照應，誰碰上難處總不好袖手旁觀。」",
                 CoreObsession::OutshinePeers => {
                     "「同一條街做買賣，不拿出真本事哪壓得住對面那幾家？」"
                 }
-                CoreObsession::PlaySafe => {
-                    "「夏漲一來低窪水路說漫就漫，還是石板正街最穩妥。」"
-                }
+                CoreObsession::PlaySafe => "「夏漲一來低窪水路說漫就漫，還是石板正街最穩妥。」",
                 CoreObsession::SeekWonders => {
                     "「東邊竹林深處聽說還藏著少人走透的冷泉窪地，遲早得去瞧瞧。」"
                 }
-                CoreObsession::FineAppetite => {
-                    "「忙活半天，趕上灶攤剛起鍋的鮮筍熱湯才算沒白忙。」"
-                }
+                CoreObsession::FineAppetite => "「忙活半天，趕上灶攤剛起鍋的鮮筍熱湯才算沒白忙。」",
                 CoreObsession::HonorLedger => {
                     "「欠債還錢、立約交貨，在這條街上站得住腳靠的就是信用。」"
                 }
                 CoreObsession::SelfMadeShop => {
                     "「替人幫工總有盡頭，攢夠本錢我也想在騎樓下立塊自己的招牌。」"
                 }
-                CoreObsession::BoldVengeance => {
-                    "「有恩報恩、有怨算清，吞聲忍氣可不是我的性子。」"
-                }
+                CoreObsession::BoldVengeance => "「有恩報恩、有怨算清，吞聲忍氣可不是我的性子。」",
             };
             format!("{}{tone}", r.true_name)
         }
@@ -951,7 +963,10 @@ mod tests {
             .iter()
             .position(|r| r.gz == 0)
             .expect("ground resident");
-        let (gx, gy) = (world.residents[target_idx].gx, world.residents[target_idx].gy);
+        let (gx, gy) = (
+            world.residents[target_idx].gx,
+            world.residents[target_idx].gy,
+        );
         let other_idx = world
             .residents
             .iter()
@@ -978,7 +993,10 @@ mod tests {
             "",
             true,
         );
-        assert!(p1.witness_line.is_some(), "z=0 bargain must trigger bystander witness");
+        assert!(
+            p1.witness_line.is_some(),
+            "z=0 bargain must trigger bystander witness"
+        );
         assert_eq!(p1.tactical_choices.len(), 4);
         assert_eq!(world.conservation_diff(), 0);
         let out1 = finalize_resident_dialogue_unlocked(p1);

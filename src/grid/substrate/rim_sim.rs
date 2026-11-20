@@ -492,10 +492,8 @@ fn load_or_seed_world() -> RimWorldState {
             if super::rim_ecology::reconcile_real_scale_layout_and_clutter(rt, &mut overlays) {
                 migrated = true;
             }
-            let town_v24b = overlays
-                .get(&(10, -1))
-                .and_then(|o| o.structure)
-                == Some(StructureKind::Workbench);
+            let town_v24b =
+                overlays.get(&(10, -1)).and_then(|o| o.structure) == Some(StructureKind::Workbench);
             super::rim_town::apply_town_architecture(rt, &mut overlays);
             if !town_v24b {
                 migrated = true;
@@ -618,16 +616,15 @@ impl RimWorldState {
             let economy = self.economy.clone();
             if let Ok(handle) = tokio::runtime::Handle::try_current() {
                 handle.spawn_blocking(move || {
-                    if let Err(e) = crate::pg::rim_persist::flush_snapshot(
-                        &pool, &overlays, &actors, &economy,
-                    ) {
+                    if let Err(e) =
+                        crate::pg::rim_persist::flush_snapshot(&pool, &overlays, &actors, &economy)
+                    {
                         tracing::warn!("rim_persist flush error: {e}");
                     }
                     FLUSH_IN_FLIGHT.store(false, Ordering::Release);
                 });
             } else {
-                let _ =
-                    crate::pg::rim_persist::flush_snapshot(&pool, &overlays, &actors, &economy);
+                let _ = crate::pg::rim_persist::flush_snapshot(&pool, &overlays, &actors, &economy);
                 FLUSH_IN_FLIGHT.store(false, Ordering::Release);
             }
             return;
@@ -873,8 +870,7 @@ impl RimWorldState {
                     }
                 }
             }
-            let manual_player =
-                self.actors[idx].entity_id.is_some() && !self.actors[idx].autopilot;
+            let manual_player = self.actors[idx].entity_id.is_some() && !self.actors[idx].autopilot;
             if !manual_player && !self.actors[idx].path.is_empty() {
                 let id = self.actors[idx].id;
                 let (px, py) = (self.actors[idx].px, self.actors[idx].py);

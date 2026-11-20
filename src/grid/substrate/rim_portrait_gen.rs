@@ -256,7 +256,9 @@ pub fn synthesize_portrait_texts(req: &PortraitRequest) -> PortraitTexts {
         )
     } else if tool_raw.contains("導能") || tool_raw.contains("獵刀") {
         (
-            format!("舉起左手穩握直立向上的冷鋼「{tool_raw}」（桃木短柄與銅格護手，帶微青導能刃紋）"),
+            format!(
+                "舉起左手穩握直立向上的冷鋼「{tool_raw}」（桃木短柄與銅格護手，帶微青導能刃紋）"
+            ),
             format!(
                 "raised left hand cleanly gripping an upright forged cold-steel hunting blade ({tool_raw}) with hardwood grip, bronze guard, and subtle celadon rune fuller pointing straight up"
             ),

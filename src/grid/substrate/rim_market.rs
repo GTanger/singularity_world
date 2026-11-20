@@ -68,8 +68,7 @@ pub fn try_guard_or_market_livelihood(
         .filter(|b| {
             is_dangerous_beast(b)
                 && (b.px - home_pt.0 as f32).hypot(b.py - home_pt.1 as f32) <= close_r
-                && (!is_shop_role
-                    || (b.px - actor.px).hypot(b.py - actor.py) <= 4.5)
+                && (!is_shop_role || (b.px - actor.px).hypot(b.py - actor.py) <= 4.5)
                 && count_active_chasers(world, b.id, idx) < 2
         })
         .min_by_key(|b| ((b.px - actor.px).hypot(b.py - actor.py) * 10.0) as i32)
@@ -77,7 +76,9 @@ pub fn try_guard_or_market_livelihood(
         let b_id = beast.id;
         let b_pos = beast.micro_pos();
         let occ = world.occupied_cells(Some(idx));
-        if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, b_pos, true, false, &occ) {
+        if let Some(p) =
+            find_micro_path_crowded(rt, &world.overlays, start, b_pos, true, false, &occ)
+        {
             world.actors[idx].path = p.into();
             world.actors[idx].task = PendingTask::ChaseTarget { target_id: b_id };
             world.actors[idx].activity_tag = "迎擊護營".into();
@@ -118,7 +119,8 @@ pub fn try_assign_market_livelihood(
     if sellable_inv >= 3
         && let Some((sx, sy)) =
             find_best_stockpile_slot_for(&world.overlays, start, RimItemKind::BeastMeat, Some(s))
-        && let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, (sx, sy), true, false, occ)
+        && let Some(p) =
+            find_micro_path_crowded(rt, &world.overlays, start, (sx, sy), true, false, occ)
     {
         world.actors[idx].path = p.into();
         world.actors[idx].task = PendingTask::StorehouseTrade { tx: sx, ty: sy };
@@ -141,10 +143,13 @@ pub fn try_assign_market_livelihood(
                     .filter(|((mx, my), ov)| {
                         settlement_of_pos(*mx, *my) == s
                             && ov.structure == Some(StructureKind::Stockpile)
-                            && ov.ground_item.is_some_and(|g| g.item == tool && g.count > 0)
+                            && ov
+                                .ground_item
+                                .is_some_and(|g| g.item == tool && g.count > 0)
                     })
                     .min_by_key(|(pos, _)| (pos.0 - start.0).abs() + (pos.1 - start.1).abs())
-                && let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, kpos, true, false, occ)
+                && let Some(p) =
+                    find_micro_path_crowded(rt, &world.overlays, start, kpos, true, false, occ)
             {
                 world.actors[idx].path = p.into();
                 world.actors[idx].task = PendingTask::StorehouseTrade {
@@ -200,7 +205,9 @@ pub fn try_assign_market_livelihood(
             })
             .min_by_key(|b| ((b.px - start.0 as f32).hypot(b.py - start.1 as f32) * 10.0) as i32)
     {
-        let dist = (b.px - start.0 as f32).hypot(b.py - start.1 as f32).max(2.0);
+        let dist = (b.px - start.0 as f32)
+            .hypot(b.py - start.1 as f32)
+            .max(2.0);
         let sc = ((meat_bid * 2.0) / (8.0 + dist)) * hunt_apt;
         consider(sc, Choice::Hunt(b.id, b.micro_pos()));
     }
@@ -214,7 +221,11 @@ pub fn try_assign_market_livelihood(
         .filter(|&(&pos, ov)| {
             matches!(
                 ov.structure,
-                Some(StructureKind::HerbMature | StructureKind::CropMature | StructureKind::TilledRidge)
+                Some(
+                    StructureKind::HerbMature
+                        | StructureKind::CropMature
+                        | StructureKind::TilledRidge
+                )
             ) && !claimed.contains(&pos)
                 && (pos.0 - home.0).abs() + (pos.1 - home.1).abs() <= 42
         })
@@ -253,7 +264,10 @@ pub fn try_assign_market_livelihood(
             (RimItemKind::SweetTuber, RimItemKind::RoastedTuber),
             (RimItemKind::BambooShoot, RimItemKind::RoastedShoot),
         ] {
-            let have_raw = world.actors[idx].inventory.iter().any(|x| x.item == raw && x.count > 0)
+            let have_raw = world.actors[idx]
+                .inventory
+                .iter()
+                .any(|x| x.item == raw && x.count > 0)
                 || world.find_nearest_ground_item(fpos, raw, false).is_some();
             if have_raw {
                 let c_bid = quote_item(world, s, cooked).bid_mg as f32;
@@ -280,7 +294,10 @@ pub fn try_assign_market_livelihood(
             (RimItemKind::StonePick, RimItemKind::BambooPole),
             (RimItemKind::BambooHat, RimItemKind::BambooPole),
         ] {
-            let have_mat = world.actors[idx].inventory.iter().any(|x| x.item == mat && x.count > 0)
+            let have_mat = world.actors[idx]
+                .inventory
+                .iter()
+                .any(|x| x.item == mat && x.count > 0)
                 || world.find_nearest_ground_item(wpos, mat, false).is_some();
             if have_mat {
                 let p_bid = quote_item(world, s, prod).bid_mg as f32;
@@ -289,10 +306,20 @@ pub fn try_assign_market_livelihood(
                 consider((margin / (5.0 + d)) * forge_apt, Choice::Craft(wpos, prod));
             }
         }
-        let have_bamboo = world.actors[idx].inventory.iter().any(|x| x.item == RimItemKind::BambooPole && x.count > 0)
-            || world.find_nearest_ground_item(wpos, RimItemKind::BambooPole, false).is_some();
-        let have_stone = world.actors[idx].inventory.iter().any(|x| x.item == RimItemKind::RiverStone && x.count > 0)
-            || world.find_nearest_ground_item(wpos, RimItemKind::RiverStone, false).is_some();
+        let have_bamboo = world.actors[idx]
+            .inventory
+            .iter()
+            .any(|x| x.item == RimItemKind::BambooPole && x.count > 0)
+            || world
+                .find_nearest_ground_item(wpos, RimItemKind::BambooPole, false)
+                .is_some();
+        let have_stone = world.actors[idx]
+            .inventory
+            .iter()
+            .any(|x| x.item == RimItemKind::RiverStone && x.count > 0)
+            || world
+                .find_nearest_ground_item(wpos, RimItemKind::RiverStone, false)
+                .is_some();
         if have_bamboo && have_stone {
             for prod in [RimItemKind::AlloyBlade, RimItemKind::AlloyPick] {
                 let p_bid = quote_item(world, s, prod).bid_mg as f32;
@@ -332,7 +359,9 @@ pub fn try_assign_market_livelihood(
     };
     match choice {
         Choice::Hunt(b_id, b_pos) => {
-            if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, b_pos, true, false, occ) {
+            if let Some(p) =
+                find_micro_path_crowded(rt, &world.overlays, start, b_pos, true, false, occ)
+            {
                 world.actors[idx].path = p.into();
                 world.actors[idx].task = PendingTask::ChaseTarget { target_id: b_id };
                 world.actors[idx].activity_tag = "按價出獵".into();
@@ -340,7 +369,9 @@ pub fn try_assign_market_livelihood(
             }
         }
         Choice::Farm(pos, op) => {
-            if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, pos, true, false, occ) {
+            if let Some(p) =
+                find_micro_path_crowded(rt, &world.overlays, start, pos, true, false, occ)
+            {
                 world.actors[idx].path = p.into();
                 world.actors[idx].task = PendingTask::FarmPlot {
                     tx: pos.0,
@@ -357,7 +388,9 @@ pub fn try_assign_market_livelihood(
             }
         }
         Choice::Cook(fpos, raw) => {
-            if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, fpos, true, false, occ) {
+            if let Some(p) =
+                find_micro_path_crowded(rt, &world.overlays, start, fpos, true, false, occ)
+            {
                 world.actors[idx].path = p.into();
                 world.actors[idx].task = PendingTask::CookAt {
                     tx: fpos.0,
@@ -369,7 +402,9 @@ pub fn try_assign_market_livelihood(
             }
         }
         Choice::Craft(wpos, item) => {
-            if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, wpos, true, false, occ) {
+            if let Some(p) =
+                find_micro_path_crowded(rt, &world.overlays, start, wpos, true, false, occ)
+            {
                 world.actors[idx].path = p.into();
                 world.actors[idx].task = PendingTask::CraftAt {
                     tx: wpos.0,
@@ -381,9 +416,14 @@ pub fn try_assign_market_livelihood(
             }
         }
         Choice::Forage(pos) => {
-            if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, pos, true, false, occ) {
+            if let Some(p) =
+                find_micro_path_crowded(rt, &world.overlays, start, pos, true, false, occ)
+            {
                 world.actors[idx].path = p.into();
-                world.actors[idx].task = PendingTask::ChopAt { tx: pos.0, ty: pos.1 };
+                world.actors[idx].task = PendingTask::ChopAt {
+                    tx: pos.0,
+                    ty: pos.1,
+                };
                 world.actors[idx].activity_tag = "林緣採收".into();
                 return true;
             }
@@ -393,11 +433,7 @@ pub fn try_assign_market_livelihood(
 }
 
 /// 跨聚落真實價差驅動之行商貨運（掃描全 14 物資選出淨利最高者購貨挑赴對岸）。
-pub fn prepare_caravan_arbitrage_cargo(
-    world: &mut RimWorldState,
-    idx: usize,
-    from: SettlementId,
-) {
+pub fn prepare_caravan_arbitrage_cargo(world: &mut RimWorldState, idx: usize, from: SettlementId) {
     let to = from.other();
     let carried: Vec<(RimItemKind, u16)> = world.actors[idx]
         .inventory
@@ -418,7 +454,9 @@ pub fn prepare_caravan_arbitrage_cargo(
             let has_stock = world.overlays.iter().any(|(&(mx, my), ov)| {
                 settlement_of_pos(mx, my) == from
                     && ov.structure == Some(StructureKind::Stockpile)
-                    && ov.ground_item.is_some_and(|g| g.item == item && g.count >= 2)
+                    && ov
+                        .ground_item
+                        .is_some_and(|g| g.item == item && g.count >= 2)
             });
             if !has_stock {
                 return None;
@@ -526,8 +564,20 @@ mod tests {
         w.actors[3].glyph = "豚".into();
         w.actors[3].hp = 80;
         w.actors[3].max_hp = 80;
-        assert!(try_guard_or_market_livelihood(&mut w, None, 0, (0, 0), (0, 0)));
-        assert!(try_guard_or_market_livelihood(&mut w, None, 1, (1, 0), (0, 0)));
+        assert!(try_guard_or_market_livelihood(
+            &mut w,
+            None,
+            0,
+            (0, 0),
+            (0, 0)
+        ));
+        assert!(try_guard_or_market_livelihood(
+            &mut w,
+            None,
+            1,
+            (1, 0),
+            (0, 0)
+        ));
         assert!(
             !try_guard_or_market_livelihood(&mut w, None, 2, (-1, 0), (0, 0)),
             "同一隻山豬最多兩名成員迎擊，不可全鎮出動排隊"

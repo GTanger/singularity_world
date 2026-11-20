@@ -5,11 +5,11 @@ use std::collections::{HashMap, VecDeque};
 use serde::{Deserialize, Serialize};
 
 use super::rim_ecology::FarmOp;
-use super::rim_sim::{ActorFaction, PendingTask, RimWorldState};
-use super::rim_world::{GroundStack, MicroCellOverlay, RimItemKind, StructureKind};
 pub use super::rim_market::{
     prepare_caravan_arbitrage_cargo, try_assign_market_livelihood, try_guard_or_market_livelihood,
 };
+use super::rim_sim::{ActorFaction, PendingTask, RimWorldState};
+use super::rim_world::{GroundStack, MicroCellOverlay, RimItemKind, StructureKind};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SettlementId {
@@ -269,12 +269,18 @@ pub fn quote_item(world: &RimWorldState, s: SettlementId, item: RimItemKind) -> 
                 v_committed += 1.0;
             }
             PendingTask::CraftAt { item: p, .. } if p == item => v_committed += 1.0,
-            PendingTask::FarmPlot { op: FarmOp::Harvest, tx, ty }
-                if matches!(
-                    (world.overlays.get(&(tx, ty)).and_then(|o| o.structure), item),
-                    (Some(StructureKind::HerbMature), RimItemKind::MountainHerb)
-                        | (Some(StructureKind::CropMature), RimItemKind::SweetTuber)
-                ) =>
+            PendingTask::FarmPlot {
+                op: FarmOp::Harvest,
+                tx,
+                ty,
+            } if matches!(
+                (
+                    world.overlays.get(&(tx, ty)).and_then(|o| o.structure),
+                    item
+                ),
+                (Some(StructureKind::HerbMature), RimItemKind::MountainHerb)
+                    | (Some(StructureKind::CropMature), RimItemKind::SweetTuber)
+            ) =>
             {
                 v_committed += 2.0;
             }
@@ -351,7 +357,9 @@ pub fn sell_to_storehouse(
             world.overlays.get(&p).is_some_and(|ov| {
                 ov.structure == Some(StructureKind::Stockpile)
                     && ov.ground_item.is_none_or(|g| {
-                        g.item == item && g.count < stockpile_slot_capacity(stockpile_is_indoor(p.0, p.1), item)
+                        g.item == item
+                            && g.count
+                                < stockpile_slot_capacity(stockpile_is_indoor(p.0, p.1), item)
                     })
             })
         })
@@ -371,7 +379,12 @@ pub fn sell_to_storehouse(
     world.dirty_unsaved_ticks += 3;
 
     let note = if paid > 0 {
-        format!("將［{}］售入{}倉廩，領得 {} 鎂", item.label(), s.label(), paid)
+        format!(
+            "將［{}］售入{}倉廩，領得 {} 鎂",
+            item.label(),
+            s.label(),
+            paid
+        )
     } else {
         format!("將［{}］歸入{}倉廩存儲", item.label(), s.label())
     };
@@ -396,7 +409,9 @@ pub fn buy_from_storehouse(
         .filter(|&p| {
             world.overlays.get(&p).is_some_and(|ov| {
                 ov.structure == Some(StructureKind::Stockpile)
-                    && ov.ground_item.is_some_and(|g| g.item == item && g.count > 0)
+                    && ov
+                        .ground_item
+                        .is_some_and(|g| g.item == item && g.count > 0)
             })
         })
         .or_else(|| {
@@ -406,7 +421,9 @@ pub fn buy_from_storehouse(
                 .filter(|((mx, my), ov)| {
                     settlement_of_pos(*mx, *my) == s
                         && ov.structure == Some(StructureKind::Stockpile)
-                        && ov.ground_item.is_some_and(|g| g.item == item && g.count > 0)
+                        && ov
+                            .ground_item
+                            .is_some_and(|g| g.item == item && g.count > 0)
                 })
                 .min_by_key(|((mx, my), _)| (*mx - pos.0).abs() + (*my - pos.1).abs())
                 .map(|(&p, _)| p)
@@ -419,13 +436,19 @@ pub fn buy_from_storehouse(
         return Err("倉廩內暫無此物現貨");
     }
     world.actors[buyer_idx].magnesium -= quote.ask_mg;
-    world.economy.vault_mg[s.index()] = world.economy.vault_mg[s.index()].saturating_add(quote.ask_mg);
+    world.economy.vault_mg[s.index()] =
+        world.economy.vault_mg[s.index()].saturating_add(quote.ask_mg);
     world.actors[buyer_idx].add_inv(item, 1);
     world.dirty_unsaved_ticks += 3;
 
     Ok((
         quote.ask_mg,
-        format!("向{}倉廩購取［{}］（{} 鎂）", s.label(), item.label(), quote.ask_mg),
+        format!(
+            "向{}倉廩購取［{}］（{} 鎂）",
+            s.label(),
+            item.label(),
+            quote.ask_mg
+        ),
     ))
 }
 
@@ -487,7 +510,8 @@ pub fn step_economy_tick(world: &mut RimWorldState) {
                 let total_out = each * (workers.len() as u32);
                 world.economy.vault_mg[s.index()] -= total_out;
                 for &w_idx in &workers {
-                    world.actors[w_idx].magnesium = world.actors[w_idx].magnesium.saturating_add(each);
+                    world.actors[w_idx].magnesium =
+                        world.actors[w_idx].magnesium.saturating_add(each);
                 }
             }
         } else if cur < 72 {
@@ -625,12 +649,21 @@ pub fn describe_stockpile_card(
 ) {
     let s = settlement_of_pos(mx, my);
     let indoor = stockpile_is_indoor(mx, my);
-    tags.push(if indoor { "倉廩木架儲位" } else { "竹木石料場" }.into());
+    tags.push(
+        if indoor {
+            "倉廩木架儲位"
+        } else {
+            "竹木石料場"
+        }
+        .into(),
+    );
     sockets.push(serde_json::json!({ "label": "走近倉架", "action": "move" }));
     if let Some(g) = ground_item {
         let q = quote_item(world, s, g.item);
         tags.push(format!("{}（{}）", g.item.label(), q.status_tag));
-        sockets.push(serde_json::json!({ "label": format!("抱取{}", g.item.label()), "action": "pickup" }));
+        sockets.push(
+            serde_json::json!({ "label": format!("抱取{}", g.item.label()), "action": "pickup" }),
+        );
         if q.ask_mg > 0 {
             sockets.push(serde_json::json!({
                 "label": format!("向公倉購{}（{} 鎂）", g.item.label(), q.ask_mg),
@@ -703,7 +736,11 @@ pub fn settlement_market_barter(
         }
         (n_idx, p_idx, q.bid_mg)
     };
-    if !world.actors[seller_idx].inventory.iter().any(|st| st.item == item && st.count > 0) {
+    if !world.actors[seller_idx]
+        .inventory
+        .iter()
+        .any(|st| st.item == item && st.count > 0)
+    {
         return Err("對方身上此物已空");
     }
     if world.actors[buyer_idx].magnesium < price {
@@ -813,13 +850,21 @@ mod tests {
     fn isoelastic_supply_demand_shifts_prices_and_halts_glut_naturally() {
         let mut w = base_world();
         let q_short = quote_item(&w, SettlementId::WestOutpost, RimItemKind::BeastMeat);
-        assert!(q_short.bid_mg >= 10, "scarce meat must pay high bid: {:?}", q_short);
+        assert!(
+            q_short.bid_mg >= 10,
+            "scarce meat must pay high bid: {:?}",
+            q_short
+        );
 
         // 填入大量獸肉至西麓倉廩（非寫死配額，純由等彈性供需曲線壓低收購價）
         w.add_ground_item(-12, 4, RimItemKind::BeastMeat, 18);
         let q_glut = quote_item(&w, SettlementId::WestOutpost, RimItemKind::BeastMeat);
         assert!(q_glut.bid_mg < q_short.bid_mg);
-        assert_eq!(q_glut.bid_mg, 0, "glutted storehouse stops buying naturally: {:?}", q_glut);
+        assert_eq!(
+            q_glut.bid_mg, 0,
+            "glutted storehouse stops buying naturally: {:?}",
+            q_glut
+        );
 
         // 當生肉過剩廉價時，炙獸肉（缺貨）與生肉形成鮮明加工毛利
         let q_roast = quote_item(&w, SettlementId::WestOutpost, RimItemKind::RoastedMeat);
@@ -833,15 +878,18 @@ mod tests {
             item: RimItemKind::BeastMeat,
             count: 14,
         });
-        let total_mg_before: u32 =
-            w.actors.iter().map(|a| a.magnesium).sum::<u32>() + w.economy.vault_mg.iter().sum::<u32>();
+        let total_mg_before: u32 = w.actors.iter().map(|a| a.magnesium).sum::<u32>()
+            + w.economy.vault_mg.iter().sum::<u32>();
 
         // 鄭石頭位於西麓準備赴水尾寮：應自動買入便宜的西麓山獸骨肉運去水尾寮
         w.actors[4].px = 0.0;
         w.actors[4].py = 0.0;
         prepare_caravan_arbitrage_cargo(&mut w, 4, SettlementId::WestOutpost);
         assert!(
-            w.actors[4].inventory.iter().any(|s| s.item == RimItemKind::BeastMeat && s.count > 0),
+            w.actors[4]
+                .inventory
+                .iter()
+                .any(|s| s.item == RimItemKind::BeastMeat && s.count > 0),
             "caravan should buy cheap surplus meat"
         );
 
@@ -849,16 +897,16 @@ mod tests {
         w.actors[4].px = 31.0;
         w.actors[4].py = -7.0;
         prepare_caravan_arbitrage_cargo(&mut w, 4, SettlementId::Shuoweiliao);
-        let total_mg_after: u32 =
-            w.actors.iter().map(|a| a.magnesium).sum::<u32>() + w.economy.vault_mg.iter().sum::<u32>();
+        let total_mg_after: u32 = w.actors.iter().map(|a| a.magnesium).sum::<u32>()
+            + w.economy.vault_mg.iter().sum::<u32>();
         assert_eq!(total_mg_before, total_mg_after);
     }
 
     #[test]
     fn multi_day_economy_simulation_strictly_conserves_magnesium_without_deadlock() {
         let mut w = base_world();
-        let initial_mg: u32 =
-            w.actors.iter().map(|a| a.magnesium).sum::<u32>() + w.economy.vault_mg.iter().sum::<u32>();
+        let initial_mg: u32 = w.actors.iter().map(|a| a.magnesium).sum::<u32>()
+            + w.economy.vault_mg.iter().sum::<u32>();
 
         for t in 1..=960_u64 {
             w.tick = t;
@@ -869,7 +917,8 @@ mod tests {
                     if w.actors[i].task == PendingTask::None {
                         let start = w.actors[i].micro_pos();
                         let home = settlement_of_pos(start.0, start.1).anchor();
-                        let _ = try_assign_market_livelihood(&mut w, None, i, start, home, &[], &[]);
+                        let _ =
+                            try_assign_market_livelihood(&mut w, None, i, start, home, &[], &[]);
                     }
                     if i == 0 && t % 24 == 0 {
                         let _ = sell_to_storehouse(&mut w, i, RimItemKind::MountainHerb, None);
@@ -877,8 +926,11 @@ mod tests {
                 }
             }
         }
-        let end_mg: u32 =
-            w.actors.iter().map(|a| a.magnesium).sum::<u32>() + w.economy.vault_mg.iter().sum::<u32>();
-        assert_eq!(initial_mg, end_mg, "total magnesium must be strictly conserved");
+        let end_mg: u32 = w.actors.iter().map(|a| a.magnesium).sum::<u32>()
+            + w.economy.vault_mg.iter().sum::<u32>();
+        assert_eq!(
+            initial_mg, end_mg,
+            "total magnesium must be strictly conserved"
+        );
     }
 }

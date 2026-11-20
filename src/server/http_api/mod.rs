@@ -4,6 +4,7 @@
 
 mod admin;
 mod eco;
+mod island_api;
 mod player;
 mod rim_api;
 mod rim_auth;
@@ -16,6 +17,10 @@ pub use admin::{AdminQuery, design_constants, wipe_entities};
 pub use eco::{
     eco_entities, eco_map, eco_npc_thoughts, eco_pulse, handle_eco_entities,
     handle_eco_npc_thoughts,
+};
+pub use island_api::{
+    island_act_post, island_map_get, island_move_post, island_setup_post, island_state_get,
+    island_talk_post,
 };
 pub use player::{climate, game_time, player_room, topology};
 pub use rim_api::{rim_cmd, rim_state, spawn_rim_tick_loop};

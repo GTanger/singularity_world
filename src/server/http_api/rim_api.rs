@@ -238,7 +238,10 @@ fn build_selection_card(
         );
         let sheltered = crate::grid::substrate::rim_shelter::sheltered_cell_set(&world.overlays);
         let viewer_idx = viewer_pid.and_then(|vp| {
-            world.actors.iter().position(|a| a.entity_id.as_deref() == Some(vp))
+            world
+                .actors
+                .iter()
+                .position(|a| a.entity_id.as_deref() == Some(vp))
         });
         title = st.label().to_string();
         if !crate::grid::substrate::rim_shops::describe_shop_fixture_card(
@@ -251,76 +254,83 @@ fn build_selection_card(
             &mut tags,
             &mut sockets,
         ) {
-        match st {
-            StructureKind::Workbench => {
-                tags.push("鍛造手藝".into());
-                sockets.push(json!({ "label": "鍛製導能獵刀", "action": "craft_alloy_blade" }));
-                sockets.push(json!({ "label": "鍛製鋼製開山鎬", "action": "craft_alloy_pick" }));
-                sockets.push(json!({ "label": "削製烤刃竹刀", "action": "craft_blade" }));
-                sockets.push(json!({ "label": "綁製石刃木鎬", "action": "craft_pick" }));
-                sockets.push(json!({ "label": "搗製敷傷藥膏", "action": "craft_salve" }));
-                sockets.push(json!({ "label": "劈篾編竹笠", "action": "craft_hat" }));
-                sockets.push(json!({ "label": "編紮竹背簍", "action": "craft_pack" }));
-            }
-            StructureKind::Campfire => {
-                if weather.is_raining() && !sheltered.contains(&(mx, my)) {
-                    tags.push("受雨轉弱・冒煙".into());
-                } else {
-                    tags.push("溫暖照明".into());
+            match st {
+                StructureKind::Workbench => {
+                    tags.push("鍛造手藝".into());
+                    sockets.push(json!({ "label": "鍛製導能獵刀", "action": "craft_alloy_blade" }));
+                    sockets
+                        .push(json!({ "label": "鍛製鋼製開山鎬", "action": "craft_alloy_pick" }));
+                    sockets.push(json!({ "label": "削製烤刃竹刀", "action": "craft_blade" }));
+                    sockets.push(json!({ "label": "綁製石刃木鎬", "action": "craft_pick" }));
+                    sockets.push(json!({ "label": "搗製敷傷藥膏", "action": "craft_salve" }));
+                    sockets.push(json!({ "label": "劈篾編竹笠", "action": "craft_hat" }));
+                    sockets.push(json!({ "label": "編紮竹背簍", "action": "craft_pack" }));
                 }
-                tags.push("駐足回氣".into());
-                sockets.push(json!({ "label": "籜裹煨筍", "action": "cook_shoot" }));
-                sockets.push(json!({ "label": "炭火煨甘薯", "action": "cook_tuber" }));
-                sockets.push(json!({ "label": "炭火炙肉", "action": "cook_meat" }));
-                sockets.push(json!({ "label": "圍爐盤坐歇息", "action": "rest" }));
-                sockets.push(json!({ "label": "走近烤火", "action": "move" }));
-            }
-            StructureKind::Stockpile => {
-                title = if crate::grid::substrate::rim_economy::stockpile_is_indoor(mx, my) {
-                    "倉廩木架儲位".into()
-                } else {
-                    "竹木石料場".into()
-                };
-                crate::grid::substrate::rim_economy::describe_stockpile_card(
-                    world, viewer_idx, mx, my, ov.and_then(|o| o.ground_item), &mut tags, &mut sockets,
-                );
-            }
-            StructureKind::WoodBridge => {
-                tags.push("跨澗通行".into());
-                sockets.push(json!({ "label": "踏橋而過", "action": "move" }));
-            }
-            StructureKind::BambooWall => tags.push("阻隔野獸與視線".into()),
-            StructureKind::BambooDoor => {
-                tags.push("同伴可通・擋野獸".into());
-                sockets.push(json!({ "label": "穿門而過", "action": "move" }));
-            }
-            StructureKind::BambooBed => {
-                tags.push("遮風安歇".into());
-                tags.push("調養傷疲".into());
-                if sheltered.contains(&(mx, my)) {
-                    tags.push("屋簷庇護".into());
+                StructureKind::Campfire => {
+                    if weather.is_raining() && !sheltered.contains(&(mx, my)) {
+                        tags.push("受雨轉弱・冒煙".into());
+                    } else {
+                        tags.push("溫暖照明".into());
+                    }
+                    tags.push("駐足回氣".into());
+                    sockets.push(json!({ "label": "籜裹煨筍", "action": "cook_shoot" }));
+                    sockets.push(json!({ "label": "炭火煨甘薯", "action": "cook_tuber" }));
+                    sockets.push(json!({ "label": "炭火炙肉", "action": "cook_meat" }));
+                    sockets.push(json!({ "label": "圍爐盤坐歇息", "action": "rest" }));
+                    sockets.push(json!({ "label": "走近烤火", "action": "move" }));
                 }
-                sockets.push(json!({ "label": "上榻安歇養傷", "action": "sleep_bed" }));
+                StructureKind::Stockpile => {
+                    title = if crate::grid::substrate::rim_economy::stockpile_is_indoor(mx, my) {
+                        "倉廩木架儲位".into()
+                    } else {
+                        "竹木石料場".into()
+                    };
+                    crate::grid::substrate::rim_economy::describe_stockpile_card(
+                        world,
+                        viewer_idx,
+                        mx,
+                        my,
+                        ov.and_then(|o| o.ground_item),
+                        &mut tags,
+                        &mut sockets,
+                    );
+                }
+                StructureKind::WoodBridge => {
+                    tags.push("跨澗通行".into());
+                    sockets.push(json!({ "label": "踏橋而過", "action": "move" }));
+                }
+                StructureKind::BambooWall => tags.push("阻隔野獸與視線".into()),
+                StructureKind::BambooDoor => {
+                    tags.push("同伴可通・擋野獸".into());
+                    sockets.push(json!({ "label": "穿門而過", "action": "move" }));
+                }
+                StructureKind::BambooBed => {
+                    tags.push("遮風安歇".into());
+                    tags.push("調養傷疲".into());
+                    if sheltered.contains(&(mx, my)) {
+                        tags.push("屋簷庇護".into());
+                    }
+                    sockets.push(json!({ "label": "上榻安歇養傷", "action": "sleep_bed" }));
+                }
+                StructureKind::StonePaving => {
+                    tags.push("平整好走".into());
+                    sockets.push(json!({ "label": "行至此處", "action": "move" }));
+                }
+                StructureKind::CoveredArcade => {
+                    tags.push("避雨通廊".into());
+                    sockets.push(json!({ "label": "廊下避雨", "action": "move" }));
+                }
+                StructureKind::StreetLamp => tags.push("晴雨常明・照亮街巷".into()),
+                other if other.is_garden_plot() => {
+                    crate::grid::substrate::rim_ecology::describe_ecology_structure(
+                        other,
+                        weather.is_raining(),
+                        &mut tags,
+                        &mut sockets,
+                    );
+                }
+                _ => {}
             }
-            StructureKind::StonePaving => {
-                tags.push("平整好走".into());
-                sockets.push(json!({ "label": "行至此處", "action": "move" }));
-            }
-            StructureKind::CoveredArcade => {
-                tags.push("避雨通廊".into());
-                sockets.push(json!({ "label": "廊下避雨", "action": "move" }));
-            }
-            StructureKind::StreetLamp => tags.push("晴雨常明・照亮街巷".into()),
-            other if other.is_garden_plot() => {
-                crate::grid::substrate::rim_ecology::describe_ecology_structure(
-                    other,
-                    weather.is_raining(),
-                    &mut tags,
-                    &mut sockets,
-                );
-            }
-            _ => {}
-        }
         }
         if !crate::grid::substrate::rim_town::is_protected_town_structure(mx, my, st) {
             sockets.push(json!({ "label": "標記拆除", "tool": "deconstruct" }));
@@ -500,7 +510,8 @@ pub async fn rim_state(headers: HeaderMap, Query(q): Query<RimStateQuery>) -> Re
     let weather = crate::grid::substrate::rim_shelter::weather_at_unix(
         crate::grid::substrate::rim_sim::now_unix_sec(),
     );
-    let enclosed_rooms = crate::grid::substrate::rim_shelter::detect_enclosed_rooms(&world.overlays);
+    let enclosed_rooms =
+        crate::grid::substrate::rim_shelter::detect_enclosed_rooms(&world.overlays);
     let mut sheltered_cells = std::collections::HashSet::new();
     for room in &enclosed_rooms {
         for &c in &room.cells {
@@ -705,7 +716,11 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
         "toggle_autopilot" => {
             let mut now_ap = false;
             let mut manual_aid = None;
-            if let Some(p) = world.actors.iter_mut().find(|a| a.entity_id.as_deref() == Some(pid.as_str())) {
+            if let Some(p) = world
+                .actors
+                .iter_mut()
+                .find(|a| a.entity_id.as_deref() == Some(pid.as_str()))
+            {
                 p.autopilot = !p.autopilot;
                 if p.autopilot {
                     p.activity_tag = "自主行事".into();
@@ -911,33 +926,74 @@ pub async fn rim_cmd(headers: HeaderMap, Json(body): Json<RimCmdBody>) -> Respon
             Json(json!({ "ok": true, "msg": "已回到營火旁歇息" })).into_response()
         }
         "vault_buy" | "vault_sell" => {
-            let (Some(mx), Some(my), Some(code)) = (body.mx, body.my, body.item_code.as_deref()) else {
-                return (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "缺少倉位或品項" }))).into_response();
+            let (Some(mx), Some(my), Some(code)) = (body.mx, body.my, body.item_code.as_deref())
+            else {
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(json!({ "ok": false, "msg": "缺少倉位或品項" })),
+                )
+                    .into_response();
             };
-            let Some(p_idx) = world.actors.iter().position(|a| a.entity_id.as_deref() == Some(pid.as_str())) else {
+            let Some(p_idx) = world
+                .actors
+                .iter()
+                .position(|a| a.entity_id.as_deref() == Some(pid.as_str()))
+            else {
                 return StatusCode::NOT_FOUND.into_response();
             };
-            let (ok, msg) = crate::grid::substrate::rim_economy::handle_vault_cmd(&mut world, p_idx, body.cmd == "vault_buy", mx, my, code);
+            let (ok, msg) = crate::grid::substrate::rim_economy::handle_vault_cmd(
+                &mut world,
+                p_idx,
+                body.cmd == "vault_buy",
+                mx,
+                my,
+                code,
+            );
             world.touch_player_activity(&pid);
-            if ok { world.push_event(msg.clone()); world.persist_if_needed(true); }
+            if ok {
+                world.push_event(msg.clone());
+                world.persist_if_needed(true);
+            }
             Json(json!({ "ok": ok, "msg": msg })).into_response()
         }
         "shop_cmd" => {
-            let (Some(mx), Some(my), Some(code)) = (body.mx, body.my, body.item_code.as_deref()) else {
-                return (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "缺少店面或項目" }))).into_response();
+            let (Some(mx), Some(my), Some(code)) = (body.mx, body.my, body.item_code.as_deref())
+            else {
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(json!({ "ok": false, "msg": "缺少店面或項目" })),
+                )
+                    .into_response();
             };
-            let Some(p_idx) = world.actors.iter().position(|a| a.entity_id.as_deref() == Some(pid.as_str())) else {
+            let Some(p_idx) = world
+                .actors
+                .iter()
+                .position(|a| a.entity_id.as_deref() == Some(pid.as_str()))
+            else {
                 return StatusCode::NOT_FOUND.into_response();
             };
-            let (ok, msg, path) = crate::grid::substrate::rim_shops::handle_shop_cmd(&mut world, runtime::global(), p_idx, mx, my, code);
+            let (ok, msg, path) = crate::grid::substrate::rim_shops::handle_shop_cmd(
+                &mut world,
+                runtime::global(),
+                p_idx,
+                mx,
+                my,
+                code,
+            );
             world.touch_player_activity(&pid);
             if ok {
-                if path.is_empty() { world.push_event(msg.clone()); }
+                if path.is_empty() {
+                    world.push_event(msg.clone());
+                }
                 world.persist_if_needed(true);
             }
             let p = &world.actors[p_idx];
             Json(json!({ "ok": ok, "msg": msg, "path": path, "px": p.px, "py": p.py, "running": p.running, "speed": if p.running { 4.2 } else { 1.45 } })).into_response()
         }
-        _ => (StatusCode::BAD_REQUEST, Json(json!({ "ok": false, "msg": "無法執行此動作" }))).into_response(),
+        _ => (
+            StatusCode::BAD_REQUEST,
+            Json(json!({ "ok": false, "msg": "無法執行此動作" })),
+        )
+            .into_response(),
     }
 }

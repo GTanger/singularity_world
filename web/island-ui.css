@@ -1,0 +1,919 @@
+/* 《奇點世界・銀鷗外島》三區鎖定沉浸介面（晝間羊皮紙／夜間燭火暖黑自動切換，零外溢捲動） */
+:root {
+  --bg-page: #efe8d8;
+  --bg-surface: #f8f3e7;
+  --bg-elevated: #fcf9f2;
+  --bg-chip: #e7decb;
+  --bg-chip-hover: #dcd0b8;
+  --ink-main: #261d14;
+  --ink-sub: #5c4d3c;
+  --ink-muted: #84735e;
+  --border-line: #d4c7b0;
+  --accent-main: #8b3a1e;
+  --accent-main-ink: #fdfaf4;
+  --accent-gold: #a67422;
+  --accent-jade: #2d6a56;
+  --danger-bg: #f9e6e2;
+  --danger-ink: #8a251b;
+  --map-sea: #d8e4e8;
+  --map-fog: #e6dfd1;
+  --shadow-sheet: 0 -8px 28px rgba(32, 22, 12, 0.16);
+  --font-serif: 'LXGW WenKai Mono TC', 'Noto Serif TC', 'Noto Sans TC', 'Noto Sans CJK TC', 'PingFang TC', serif;
+}
+
+body.sw-night {
+  --bg-page: #171411;
+  --bg-surface: #211c17;
+  --bg-elevated: #2a241d;
+  --bg-chip: #332b22;
+  --bg-chip-hover: #40362b;
+  --ink-main: #ebe2d3;
+  --ink-sub: #bbaea0;
+  --ink-muted: #8a7d6f;
+  --border-line: #3d342a;
+  --accent-main: #c8643b;
+  --accent-main-ink: #1a1410;
+  --accent-gold: #d9a443;
+  --accent-jade: #4ea085;
+  --danger-bg: #3b1f1c;
+  --danger-ink: #f29b91;
+  --map-sea: #162229;
+  --map-fog: #1f1b17;
+  --shadow-sheet: 0 -10px 32px rgba(0, 0, 0, 0.55);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg-page);
+  color: var(--ink-main);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+button, input, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* ═══ 登入與港務登岸冊 ═══ */
+.oi-auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: radial-gradient(circle at 50% 25%, var(--bg-elevated), var(--bg-page));
+  overflow-y: auto;
+}
+
+.oi-auth-card {
+  width: min(100%, 420px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: 14px;
+  padding: 24px 20px;
+  box-shadow: 0 12px 34px rgba(24, 16, 8, 0.14);
+}
+
+.oi-auth-title {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.oi-auth-sub {
+  margin: 6px 0 18px;
+  text-align: center;
+  color: var(--ink-sub);
+  font-size: 0.92rem;
+}
+
+.oi-auth-msg {
+  min-height: 20px;
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: var(--danger-ink);
+  text-align: center;
+}
+
+.oi-field {
+  margin-bottom: 14px;
+}
+
+.oi-field label {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--ink-sub);
+  margin-bottom: 5px;
+}
+
+.oi-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-line);
+  border-radius: 9px;
+}
+
+.oi-input:focus {
+  outline: 2px solid var(--accent-main);
+  border-color: transparent;
+}
+
+.oi-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.oi-btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  font-size: 0.96rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.08s ease;
+}
+
+.oi-btn:hover {
+  background: var(--bg-chip-hover);
+}
+
+.oi-btn:active {
+  transform: scale(0.98);
+}
+
+.oi-btn-primary {
+  flex: 1;
+  background: var(--accent-main);
+  color: var(--accent-main-ink);
+  border-color: var(--accent-main);
+}
+
+.oi-btn-primary:hover {
+  filter: brightness(1.07);
+  background: var(--accent-main);
+}
+
+/* 初抵白鷗港登岸冊 */
+.oi-origin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.oi-choice-card {
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-elevated);
+  cursor: pointer;
+}
+
+.oi-choice-card.active {
+  border-color: var(--accent-main);
+  box-shadow: inset 0 0 0 1px var(--accent-main);
+  background: var(--bg-chip);
+}
+
+.oi-choice-card strong {
+  display: block;
+  font-size: 0.94rem;
+}
+
+.oi-choice-card small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+  line-height: 1.35;
+}
+
+/* ═══ 主遊戲三區鎖定外殼 ═══ */
+.oi-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* 1. 固定頂欄 */
+.oi-topbar {
+  flex: 0 0 auto;
+  min-height: 46px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-line);
+}
+
+.oi-clock-text {
+  font-size: 0.88rem;
+  color: var(--ink-sub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oi-top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.oi-place-badge {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink-main);
+}
+
+.oi-icon-btn {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.oi-icon-btn.active {
+  background: var(--accent-main);
+  color: var(--accent-main-ink);
+  border-color: var(--accent-main);
+}
+
+.oi-close-x {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 9px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.oi-close-x:hover {
+  background: var(--bg-chip-hover);
+}
+
+.oi-close-x-primary {
+  background: var(--accent-main);
+  color: var(--accent-main-ink);
+  border-color: var(--accent-main);
+}
+
+.oi-block-gap {
+  margin-top: 12px;
+}
+
+.oi-aside-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+/* 2. 中央獨立捲動舞台（桌機雙欄、手機單欄純閱讀） */
+.oi-main-workspace {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.oi-scene-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px 16px 22px;
+  overscroll-behavior: contain;
+}
+
+.oi-scene-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.oi-scene-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.oi-scene-title {
+  margin: 0;
+  font-size: 1.32rem;
+  line-height: 1.3;
+}
+
+.oi-copper-pill {
+  font-size: 0.85rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--bg-chip);
+  color: var(--accent-gold);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.oi-wound-banner {
+  margin: 0 0 10px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  font-size: 0.88rem;
+}
+
+.oi-scene-desc {
+  margin: 0 0 14px;
+  font-size: 1.03rem;
+  line-height: 1.7;
+  color: var(--ink-main);
+}
+
+.oi-section-label {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
+  margin: 14px 0 7px;
+}
+
+.oi-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.oi-person-btn {
+  min-height: 44px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-surface);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.oi-person-btn:hover {
+  background: var(--bg-chip);
+  border-color: var(--accent-main);
+}
+
+.oi-person-top {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.oi-person-sub {
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+}
+
+.oi-deed-btn {
+  min-height: 44px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  text-align: left;
+}
+
+.oi-deed-btn:hover {
+  background: var(--bg-chip);
+}
+
+.oi-deed-btn strong {
+  display: block;
+  font-size: 0.93rem;
+}
+
+.oi-deed-btn small {
+  font-size: 0.78rem;
+  color: var(--accent-jade);
+}
+
+/* 當下呼吸敘事流 */
+.oi-breaths-box {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.oi-breath-item {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-sub);
+}
+
+.oi-breath-item.latest {
+  color: var(--ink-main);
+  font-weight: 600;
+}
+
+/* 桌機右側常駐彩色輿圖側欄 */
+.oi-desktop-aside {
+  flex: 0 0 400px;
+  border-left: 1px solid var(--border-line);
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 10px;
+}
+
+.oi-aside-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.oi-mini-map-frame {
+  flex: 1 1 auto;
+  min-height: 240px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  background: var(--map-sea);
+  overflow: hidden;
+  position: relative;
+}
+
+.oi-mini-map-frame svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 3. 鎖定底欄：方位出口列 ＋ 五鍵底欄 */
+.oi-bottom-dock {
+  flex: 0 0 auto;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 60;
+}
+
+.oi-exits-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border-line);
+}
+
+.oi-exits-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.oi-exit-pill {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-elevated);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.oi-exit-pill:hover {
+  background: var(--bg-chip);
+  border-color: var(--accent-main);
+}
+
+.oi-exit-pill.secret {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.oi-nav-five {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 5px 8px;
+}
+
+.oi-nav-btn {
+  min-height: 44px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink-sub);
+}
+
+.oi-nav-btn:hover, .oi-nav-btn.active {
+  background: var(--bg-chip);
+  color: var(--ink-main);
+}
+
+/* ═══ 貼底抽屜（當面交談／短兵交鋒／自身行囊木箱） ═══ */
+.oi-sheet-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 96px;
+  z-index: 50;
+  background: rgba(15, 11, 7, 0.42);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.oi-bottom-sheet {
+  width: min(100%, 680px);
+  max-height: 82dvh;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-line);
+  border-radius: 16px 16px 0 0;
+  box-shadow: var(--shadow-sheet);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+}
+
+.oi-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-line);
+}
+
+.oi-sheet-head h3 {
+  margin: 0;
+  font-size: 1.06rem;
+}
+
+.oi-sheet-body {
+  padding: 14px 16px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+/* 交談氣泡與輸入列（字級固定 16px 防手機自動放大頂飛） */
+.oi-talk-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+  max-height: 42vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.oi-talk-bubble {
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-line);
+  line-height: 1.6;
+  font-size: 0.96rem;
+}
+
+.oi-talk-bubble.overheard {
+  font-style: italic;
+  color: var(--ink-sub);
+  border-style: dashed;
+}
+
+.oi-talk-bubble.me {
+  align-self: flex-end;
+  background: var(--bg-chip);
+}
+
+.oi-talk-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.oi-topic-chip {
+  min-height: 36px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-elevated);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.oi-talk-form {
+  display: flex;
+  gap: 8px;
+}
+
+.oi-talk-input {
+  flex: 1;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 9px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-elevated);
+}
+
+/* 交鋒面板（場景內嵌置頂醒目卡） */
+.oi-skirmish-card {
+  margin: 0 0 14px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--accent-main);
+  background: var(--bg-elevated);
+}
+
+.oi-skirmish-title {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: var(--accent-main);
+}
+
+.oi-skirmish-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ═══ 全螢幕三尺度彩色 Voronoi 輿圖 ═══ */
+.oi-map-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--map-sea);
+  display: flex;
+  flex-direction: column;
+}
+
+.oi-map-top {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  z-index: 82;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.oi-map-banner {
+  pointer-events: auto;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.oi-map-canvas-wrap {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.oi-map-canvas-wrap:active {
+  cursor: grabbing;
+}
+
+.oi-map-canvas-wrap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 白鷗港原生硬體合成輿圖舞台（零 SVG 大底圖瓦片、零 2D transform 子層丟失，行動端 Mali GPU 100% 銳利） */
+.oi-wg-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #c9b183;
+  user-select: none;
+}
+
+.oi-wg-viewport.is-night {
+  background: #1b1712;
+}
+
+.oi-wg-stage {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.oi-wg-bg-img {
+  position: absolute;
+  left: -22.2222%;
+  top: -26.6667%;
+  width: 144.4444%;
+  height: 153.3333%;
+  max-width: none;
+  display: block;
+  pointer-events: none;
+}
+
+.oi-wg-night-shade {
+  position: absolute;
+  left: -22.2222%;
+  top: -26.6667%;
+  width: 144.4444%;
+  height: 153.3333%;
+  background: rgba(14, 11, 8, 0.52);
+  pointer-events: none;
+}
+
+.oi-wg-glow {
+  position: absolute;
+  margin-left: -6%;
+  margin-top: -5%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 176, 77, 0.46) 0%, rgba(255, 140, 43, 0.16) 55%, rgba(255, 140, 43, 0) 100%);
+  pointer-events: none;
+}
+
+.oi-wg-pill {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(110, 44, 20, 0.3);
+  background: rgba(246, 236, 212, 0.88);
+  color: #21150b;
+  font-family: inherit;
+  font-size: var(--wg-font, 11px);
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.oi-wg-pill-shop {
+  color: #591e0c;
+  font-size: calc(var(--wg-font, 11px) * 0.94);
+}
+
+.oi-wg-pill-alley {
+  color: #3b2a1b;
+  font-size: calc(var(--wg-font, 11px) * 0.88);
+  padding: 1px 5px;
+}
+
+.oi-wg-viewport.is-night .oi-wg-pill {
+  background: rgba(18, 14, 10, 0.84);
+  border-color: rgba(217, 164, 67, 0.36);
+  color: #faefd9;
+}
+
+.oi-wg-viewport.is-night .oi-wg-pill-shop {
+  color: #ffd2a1;
+}
+
+.oi-wg-viewport.is-night .oi-wg-pill-alley {
+  color: #e6d6be;
+}
+
+.oi-wg-marker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  margin-top: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c93824 0 28%, #fdf8ee 29% 42%, rgba(201, 56, 36, 0.25) 43% 100%);
+  border: 2px solid #f0b643;
+  pointer-events: none;
+}
+
+.oi-map-bottom-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-line);
+  flex-wrap: wrap;
+}
+
+.oi-map-tabs, .oi-map-zoom-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.oi-kv-list {
+  display: grid;
+  gap: 9px;
+}
+
+.oi-kv-card {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-elevated);
+}
+
+.oi-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-line);
+}
+
+.oi-item-row:last-child {
+  border-bottom: none;
+}
+
+.oi-toast {
+  position: fixed;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 95;
+  width: max-content;
+  max-width: min(90vw, 460px);
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--ink-main);
+  color: var(--bg-surface);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+  pointer-events: none;
+}
+
+/* 手機與平板響應式：必須置於 .oi-desktop-aside 之後以確保隱藏雙欄 */
+@media (max-width: 959px) {
+  .oi-desktop-aside {
+    display: none;
+  }
+  .oi-origin-grid {
+    grid-template-columns: 1fr;
+  }
+}

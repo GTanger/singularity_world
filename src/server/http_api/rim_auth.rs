@@ -117,7 +117,19 @@ fn authenticate_or_create_entity(
             ));
         }
         let pid_len = pid.chars().count();
-        if !(2..=32).contains(&pid_len) {
+        if !(2..=32).contains(&pid_len)
+            || pid.contains(':')
+            || pid.chars().any(|c| c.is_control() || c.is_whitespace())
+            || matches!(
+                pid.as_str(),
+                "municipal_treasury"
+                    | "silver_bank"
+                    | "mainland_clearing"
+                    | "dropped_loot_escrow"
+                    | "system"
+                    | "admin"
+            )
+        {
             return Err((StatusCode::BAD_REQUEST, gametext::client("create_id_len")));
         }
         let existing = db::get_entity(&pid).map_err(|_| {

@@ -349,7 +349,10 @@ mod tests {
         assert_eq!(grid_room_id_from_coord_z(-4, 1, 3), "grid:-4:1:3");
         for z in 0..=3 {
             let rid = grid_room_id_from_coord_z(-4, 1, z);
-            assert_eq!(parse_grid_room_id_z(&rid), Some((SquareCoord::new(-4, 1), z)));
+            assert_eq!(
+                parse_grid_room_id_z(&rid),
+                Some((SquareCoord::new(-4, 1), z))
+            );
             assert_eq!(parse_grid_room_id(&rid), Some(SquareCoord::new(-4, 1)));
         }
     }

@@ -44,7 +44,9 @@ impl RimWeatherKind {
 pub fn weather_at_unix(real_unix: i64) -> RimWeatherKind {
     let (epoch, scale) = crate::game::game_time_cfg();
     let (_, hour, _, days) = crate::game::game_time_now(real_unix, epoch, scale);
-    let slot = i64::from(days).saturating_mul(12).saturating_add(i64::from(hour / 2));
+    let slot = i64::from(days)
+        .saturating_mul(12)
+        .saturating_add(i64::from(hour / 2));
     let doy = days.rem_euclid(365);
 
     let mut z = (slot as u64)
@@ -99,7 +101,9 @@ fn is_wall_or_door(ov: Option<&MicroCellOverlay>) -> bool {
 }
 
 /// 掃描由竹木圍牆與竹編院門四連通閉合之單平面室內空間（自動涵蓋玩家自建屋舍）。
-pub fn detect_enclosed_rooms(overlays: &HashMap<(i32, i32), MicroCellOverlay>) -> Vec<EnclosedRoom> {
+pub fn detect_enclosed_rooms(
+    overlays: &HashMap<(i32, i32), MicroCellOverlay>,
+) -> Vec<EnclosedRoom> {
     let mut walls = Vec::new();
     for (&pos, ov) in overlays {
         if matches!(ov.structure, Some(StructureKind::BambooWall)) {
@@ -263,11 +267,8 @@ pub fn step_weather_and_bed_recovery(world: &mut RimWorldState, weather: RimWeat
         }
         let pos = a.micro_pos();
         let is_sheltered = sheltered.contains(&pos);
-        let on_bed = world
-            .overlays
-            .get(&pos)
-            .and_then(|o| o.structure)
-            == Some(StructureKind::BambooBed);
+        let on_bed =
+            world.overlays.get(&pos).and_then(|o| o.structure) == Some(StructureKind::BambooBed);
 
         if is_sheltered {
             a.wet_ticks = a.wet_ticks.saturating_sub(12);
@@ -369,10 +370,17 @@ pub fn try_seek_bed_or_rain_shelter(
             world.actors[idx].activity_tag = "榻上安歇".into();
             return true;
         }
-        if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, (bx, by), false, false, &occ) {
+        if let Some(p) =
+            find_micro_path_crowded(rt, &world.overlays, start, (bx, by), false, false, &occ)
+        {
             world.actors[idx].path = p.into();
             world.actors[idx].task = PendingTask::SleepBed { tx: bx, ty: by };
-            world.actors[idx].activity_tag = if need_rain_cover { "入屋就榻" } else { "前往就榻" }.into();
+            world.actors[idx].activity_tag = if need_rain_cover {
+                "入屋就榻"
+            } else {
+                "前往就榻"
+            }
+            .into();
             return true;
         }
     }
@@ -390,7 +398,8 @@ pub fn try_seek_bed_or_rain_shelter(
             })
             .filter(|&&(sx, sy)| (sx - start.0).abs() + (sy - start.1).abs() <= 26)
             .min_by_key(|&&(sx, sy)| (sx - start.0).abs() + (sy - start.1).abs())
-        && let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, (sx, sy), false, false, &occ)
+        && let Some(p) =
+            find_micro_path_crowded(rt, &world.overlays, start, (sx, sy), false, false, &occ)
     {
         world.actors[idx].path = p.into();
         world.actors[idx].task = PendingTask::RestAt { tx: sx, ty: sy };
@@ -429,13 +438,25 @@ mod tests {
     fn enclosed_rooms_detect_west_cabin_and_shuoweiliao_and_ignore_broken_walls() {
         let (mut overlays, _, _) = seed_outpost(None);
         let rooms = detect_enclosed_rooms(&overlays);
-        assert!(rooms.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5));
-        assert!(rooms.iter().any(|r| r.x0 == 28 && r.x1 == 36 && r.y0 == -10 && r.y1 == -4));
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5)
+        );
+        assert!(
+            rooms
+                .iter()
+                .any(|r| r.x0 == 28 && r.x1 == 36 && r.y0 == -10 && r.y1 == -4)
+        );
 
         // 拆掉北牆一塊後，該屋不應再判定為閉合室內
         overlays.remove(&(9, 5));
         let rooms_after = detect_enclosed_rooms(&overlays);
-        assert!(!rooms_after.iter().any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5));
+        assert!(
+            !rooms_after
+                .iter()
+                .any(|r| r.x0 == 7 && r.x1 == 11 && r.y0 == 1 && r.y1 == 5)
+        );
     }
 
     #[test]
@@ -514,7 +535,8 @@ mod tests {
             sub_step: 0,
             stall_tracker: HashMap::new(),
         };
-        let assigned = try_seek_bed_or_rain_shelter(&mut world, None, 0, RimWeatherKind::SummerSquall);
+        let assigned =
+            try_seek_bed_or_rain_shelter(&mut world, None, 0, RimWeatherKind::SummerSquall);
         assert!(assigned);
         assert!(!world.actors[0].path.is_empty());
     }

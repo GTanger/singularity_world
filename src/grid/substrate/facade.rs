@@ -81,8 +81,9 @@ impl CellFacade {
         };
         let synth = synthesize_cell(gx, gy, l0, slope, edge_cue.clone(), &slots, field);
         let max_z = effective_max_z(l0, &slots);
-        let step_ms = step_delay_ms(&slots)
-            .saturating_add(super::hydrology::high_water_step_penalty_ms(l0, &slots, field));
+        let step_ms = step_delay_ms(&slots).saturating_add(
+            super::hydrology::high_water_step_penalty_ms(l0, &slots, field),
+        );
         CellSnapshot {
             gx,
             gy,
@@ -147,9 +148,8 @@ impl CellFacade {
         let slope = rt.and_then(|r| r.slope(gx, gy));
         let edge_cue = rt.and_then(|r| r.edge_cue(gx, gy));
         let field = super::hydrology::derive_cell_field(gx, gy, l0, clock);
-        let overlay = pool.and_then(|p| {
-            super::settle::settle_cell_on_observe(p, gx, gy, l0, clock, field)
-        });
+        let overlay =
+            pool.and_then(|p| super::settle::settle_cell_on_observe(p, gx, gy, l0, clock, field));
         Self::snapshot_from_parts(
             gx,
             gy,

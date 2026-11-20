@@ -176,9 +176,7 @@ pub fn apply_shuoweiliao_outpost(
                 ground_item,
                 eco_ticks: 0,
             });
-            if ((x == 28 && y == -7)
-                || (x == 35 && (y == -5 || y == -9))
-                || (x == 31 && y == -7))
+            if ((x == 28 && y == -7) || (x == 35 && (y == -5 || y == -9)) || (x == 31 && y == -7))
                 && let Some(ov) = overlays.get_mut(&(x, y))
                 && ov.structure.is_none()
             {
@@ -310,7 +308,10 @@ pub fn ensure_outpost_residents(actors: &mut Vec<RimActor>) {
             magnesium: 38,
             hat: false,
             pack: false,
-            inv: &[(RimItemKind::RoastedShoot, 3), (RimItemKind::RoastedTuber, 2)],
+            inv: &[
+                (RimItemKind::RoastedShoot, 3),
+                (RimItemKind::RoastedTuber, 2),
+            ],
         },
         ResidentSpec {
             key: "res:liu_abao",
@@ -424,7 +425,10 @@ pub fn ensure_outpost_residents(actors: &mut Vec<RimActor>) {
             magnesium: 20,
             hat: true,
             pack: false,
-            inv: &[(RimItemKind::BambooShoot, 2), (RimItemKind::MountainHerb, 1)],
+            inv: &[
+                (RimItemKind::BambooShoot, 2),
+                (RimItemKind::MountainHerb, 1),
+            ],
         },
         ResidentSpec {
             key: "res:xu_xiaoman",

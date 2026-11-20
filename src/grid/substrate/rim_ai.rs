@@ -175,7 +175,9 @@ impl RimWorldState {
         if !is_night && super::rim_phase::try_assign_caravan_route(self, rt, idx) {
             return;
         }
-        if !is_night && super::rim_town::try_assign_town_duty_or_stroll(self, rt, idx, game_hour, true) {
+        if !is_night
+            && super::rim_town::try_assign_town_duty_or_stroll(self, rt, idx, game_hour, true)
+        {
             return;
         }
 
@@ -320,7 +322,9 @@ impl RimWorldState {
             return;
         }
 
-        if super::rim_economy::try_assign_market_livelihood(self, rt, idx, start, home, &claimed, &occ) {
+        if super::rim_economy::try_assign_market_livelihood(
+            self, rt, idx, start, home, &claimed, &occ,
+        ) {
             return;
         }
 
@@ -344,7 +348,13 @@ impl RimWorldState {
                     let s = self.actors[idx].micro_pos();
                     let occ = self.occupied_cells(Some(idx));
                     if let Some(p) = find_micro_path_crowded(
-                        rt, &self.overlays, s, t.micro_pos(), true, is_beast, &occ,
+                        rt,
+                        &self.overlays,
+                        s,
+                        t.micro_pos(),
+                        true,
+                        is_beast,
+                        &occ,
                     ) {
                         self.actors[idx].path = p.into();
                     }
@@ -410,10 +420,8 @@ impl RimWorldState {
                         .map(|s| s.count)
                         .sum();
                     if (self.actors[idx].entity_id.is_some() && !self.actors[idx].autopilot)
-                        || (matches!(
-                            prop,
-                            NaturalProp::BambooShoot | NaturalProp::WildHerb
-                        ) && inv_forage < 6)
+                        || (matches!(prop, NaturalProp::BambooShoot | NaturalProp::WildHerb)
+                            && inv_forage < 6)
                     {
                         self.actors[idx].add_inv(drop_item, drop_cnt);
                     } else {

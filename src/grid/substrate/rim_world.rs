@@ -515,9 +515,7 @@ pub fn derive_micro_pristine(
         return (base_ground, Some(NaturalProp::RiverStone));
     }
 
-    if matches!(base_ground, MicroGround::LoamGrass | MicroGround::RedGravel)
-        && detail % 43 == 0
-    {
+    if matches!(base_ground, MicroGround::LoamGrass | MicroGround::RedGravel) && detail % 43 == 0 {
         return (base_ground, Some(NaturalProp::WildHerb));
     }
 
@@ -542,7 +540,10 @@ pub fn micro_step_cost(
         if st == StructureKind::WoodBridge {
             return Some(10);
         }
-        if matches!(st, StructureKind::StonePaving | StructureKind::CoveredArcade) {
+        if matches!(
+            st,
+            StructureKind::StonePaving | StructureKind::CoveredArcade
+        ) {
             return Some(8);
         }
     }

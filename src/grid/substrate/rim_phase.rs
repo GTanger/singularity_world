@@ -144,7 +144,10 @@ pub fn synthesize_actor_skill_chips(actor: &RimActor) -> Vec<SkillChipDto> {
             ),
         },
         SkillChipDto {
-            label: format!("{}・{}", second_routine.slot_label_zh, second_routine.formal_name),
+            label: format!(
+                "{}・{}",
+                second_routine.slot_label_zh, second_routine.formal_name
+            ),
             detail: format!(
                 "{} {}",
                 second_routine.origin_basis_zh, second_routine.auto_trigger_desc_zh
@@ -316,7 +319,9 @@ pub fn resolve_actor_vs_beast_exchange(
             WordRegistry::global(),
         );
         let verdict_tag = match res.verdict {
-            ThreePhaseVerdict::Phase1ImpulseCrush { winner_is_a: true, .. } => {
+            ThreePhaseVerdict::Phase1ImpulseCrush {
+                winner_is_a: true, ..
+            } => {
                 format!("{}・重勢硬撼", routine.formal_name)
             }
             ThreePhaseVerdict::Phase2KinematicIntercept {
@@ -337,7 +342,11 @@ pub fn resolve_actor_vs_beast_exchange(
                 &bone_s,
                 carrier_s,
                 bone_s.dex_0,
-                if beast.name.contains('豬') { 145.0 } else { 115.0 },
+                if beast.name.contains('豬') {
+                    145.0
+                } else {
+                    115.0
+                },
                 anatomy_fam,
             );
             let bonus_cut = carrier_s == CarrierAffinity::Blade && seam.xi_index >= 0.96;
@@ -405,8 +414,7 @@ fn find_first_path_near(
     let occ = world.occupied_cells(Some(idx));
     for (ox, oy) in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)] {
         let g = (anchor.0 + ox, anchor.1 + oy);
-        if let Some(p) =
-            find_micro_path_crowded(rt, &world.overlays, start, g, false, false, &occ)
+        if let Some(p) = find_micro_path_crowded(rt, &world.overlays, start, g, false, false, &occ)
         {
             return Some(p);
         }
@@ -475,7 +483,11 @@ pub fn complete_caravan_arrival(
         world.actors[idx].caravan_leg = 1;
         world.actors[idx].push_diary("挑山貨抵西麓湧泉清倉並換裝順價行貨");
         world.actors[idx].pop_text = Some(("抵西麓換貨".into(), world.tick + 10));
-        if !world.events.front().is_some_and(|e| e.text.contains("交割換貨")) {
+        if !world
+            .events
+            .front()
+            .is_some_and(|e| e.text.contains("交割換貨"))
+        {
             world.push_event(format!("{}挑貨抵西麓按價交割換貨", world.actors[idx].name));
         }
         world.actors[idx].path.clear();
@@ -638,7 +650,10 @@ mod tests {
             skills_c[0].label.as_str(),
         ];
         let uniq: std::collections::HashSet<&str> = names.into_iter().collect();
-        assert!(uniq.len() >= 2, "expected varied emergent martial names across seeds: {skills_a:?} / {skills_b:?} / {skills_c:?}");
+        assert!(
+            uniq.len() >= 2,
+            "expected varied emergent martial names across seeds: {skills_a:?} / {skills_b:?} / {skills_c:?}"
+        );
         assert_ne!(skills_a[2].label, skills_c[2].label);
         for chip in skills_a.iter().chain(skills_b.iter()) {
             assert!(!chip.detail.contains('%'));
@@ -702,11 +717,18 @@ mod tests {
         };
         for _ in 0..140 {
             world.step_physics_50ms();
-            if world.actors.len() == 2 && world.actors[1].downed_ticks == 0 && world.actors[1].hp >= 30 {
+            if world.actors.len() == 2
+                && world.actors[1].downed_ticks == 0
+                && world.actors[1].hp >= 30
+            {
                 break;
             }
         }
-        assert_eq!(world.actors.len(), 2, "settler must never be deleted on defeat");
+        assert_eq!(
+            world.actors.len(),
+            2,
+            "settler must never be deleted on defeat"
+        );
         assert_eq!(world.actors[1].downed_ticks, 0);
         assert!(world.actors[1].hp >= 30, "victim hp={}", world.actors[1].hp);
         assert!(!world.actors[0].recent_diary.is_empty());
@@ -724,9 +746,15 @@ mod tests {
                     None
                 };
                 let gi = if (x, y) == (-3, -1) {
-                    Some(GroundStack { item: RimItemKind::BambooPole, count: 5 })
+                    Some(GroundStack {
+                        item: RimItemKind::BambooPole,
+                        count: 5,
+                    })
                 } else if (x, y) == (34, -8) {
-                    Some(GroundStack { item: RimItemKind::RoastedShoot, count: 3 })
+                    Some(GroundStack {
+                        item: RimItemKind::RoastedShoot,
+                        count: 3,
+                    })
                 } else {
                     None
                 };

@@ -41,6 +41,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     let state = AppState { hub, sessions, cfg };
     grid_manager::init();
     crate::grid::substrate::runtime::init_global();
+    let _ = crate::grid::outer_island::global_island();
     http_api::spawn_rim_tick_loop();
     if grid_manager::get_runtime_square_grid().is_some_and(|g| g.has_peninsula_wilderness()) {
         crate::game::object_ecology::ensure_ecology_items_in_store();
@@ -149,6 +150,13 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
             "/api/rim/byok",
             get(http_api::rim_byok_get).post(http_api::rim_byok_post),
         )
+        // 東南外海大島（Feature 6）奇幻百戶大世界 API
+        .route("/api/island/state", get(http_api::island_state_get))
+        .route("/api/island/map", get(http_api::island_map_get))
+        .route("/api/island/setup", post(http_api::island_setup_post))
+        .route("/api/island/move", post(http_api::island_move_post))
+        .route("/api/island/act", post(http_api::island_act_post))
+        .route("/api/island/talk", post(http_api::island_talk_post))
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())

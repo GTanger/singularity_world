@@ -295,11 +295,7 @@ fn try_entity_branch(
         let pz = player.grid_z;
         let res_opt = match action {
             "Look" => crate::grid::zhulin::social::inspect_resident(target_id, pid, px, py, pz),
-            "Talk"
-            | "SocialBargain"
-            | "SocialTreat"
-            | "SocialDebtInquiry"
-            | "SocialSettleDebt"
+            "Talk" | "SocialBargain" | "SocialTreat" | "SocialDebtInquiry" | "SocialSettleDebt"
             | "SocialPrivateTalk" => crate::grid::zhulin::social::talk_or_interact_resident(
                 target_id,
                 pid,
@@ -329,10 +325,7 @@ fn try_entity_branch(
             let departed = res.actions.is_empty();
             let should_refresh = res.unlocked_name
                 || departed
-                || matches!(
-                    action,
-                    "SocialBargain" | "SocialTreat" | "SocialSettleDebt"
-                );
+                || matches!(action, "SocialBargain" | "SocialTreat" | "SocialSettleDebt");
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
                 action: action.to_string(),
