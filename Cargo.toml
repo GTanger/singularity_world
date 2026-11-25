@@ -151,6 +151,14 @@ path = "src/bin/white_tower_economy_compile.rs"
 name = "zhulin-social-burnin"
 path = "src/bin/zhulin_social_burnin.rs"
 
+[[bin]]
+name = "bake-island-biographies"
+path = "src/bin/bake_island_biographies.rs"
+
+[[bin]]
+name = "chronicler-manual"
+path = "src/bin/chronicler_manual.rs"
+
 [dev-dependencies]
 tempfile = "3"
 

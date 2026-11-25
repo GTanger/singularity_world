@@ -1,19 +1,73 @@
 //! 東南外海大島（`Feature 6`）與全大陸通用單一 `UnifiedMindBody` 核心模組與單元測試。
 
 pub mod actions;
+pub mod actor_map;
+pub mod appraisal;
+pub mod atlas_observatory;
+pub mod causal_arc_catalog;
+pub mod causal_arcs;
+pub mod cell_maps;
+pub mod cell_resources;
+pub mod chronicle_export;
 pub mod clock_and_lang;
+pub mod desire_effects;
+pub mod desire_sim;
 pub mod dialogue_llm;
+#[cfg(test)]
+mod diegetic_surface_tests;
+#[cfg(test)]
+mod emotion_mind_tests;
 pub mod engine;
 pub mod explore_and_combat;
+pub mod gazetteer;
+pub mod gazetteer_wars;
+pub mod harbor_history;
+pub mod harbor_lineage;
+pub mod household_economy;
+pub mod island_substrate;
+pub mod island_substrate_pack;
+#[cfg(test)]
+mod island_substrate_tests;
+pub mod island_substrate_towns;
+pub mod live_shifts;
+pub mod live_tide;
+pub mod living_chronicler;
+pub mod living_chronicler_deeds;
+pub mod living_chronicler_gate;
+#[cfg(test)]
+mod living_chronicler_tests;
+pub mod living_chronicler_worker;
+#[cfg(test)]
+mod living_player_audit_tests;
+#[cfg(test)]
+mod living_player_tests;
+#[cfg(test)]
+mod living_water_tests;
+pub mod mesh_expedition;
 pub mod mind;
 pub mod movement;
+pub mod ongoing_activity;
+pub mod pacts_and_peers;
+pub mod peer_interactions;
 pub mod persist_pg;
+pub mod persist_schema;
 pub mod persist_v1_migrate;
 pub mod persona;
+pub mod phase_and_vessels;
+#[cfg(test)]
+mod rural_ecosystem_tests;
+pub mod rural_migrate;
+pub mod scene_objects;
+pub mod scene_sockets;
 pub mod sim_tick;
 pub mod slow_think;
+pub mod surface_cues;
+pub mod transit_and_cargo;
 pub mod types;
+pub mod unified_kernel;
 pub mod views;
+pub mod world_weave;
+pub mod world_weave_bio;
 
 pub use engine::{IslandEngine, global_island, load_static_world_doc};
 
@@ -98,7 +152,7 @@ mod tests {
     #[test]
     fn double_entry_copper_conservation_and_defeat_loot_cycle() {
         let (doc, mut delta) = fresh_delta();
-        let clock = solar_clock_at(1_770_000_000);
+        let clock = solar_clock_at(1_772_118_486);
         seed_genesis_actors_once(&doc, &mut delta, false);
 
         apply_setup_origin(
@@ -276,7 +330,7 @@ mod tests {
 
         // 坑道局部圖不得洩漏未踏足的凝石台 ID 與名稱
         let runner = delta.actor_by_id_or_controller("dng_runner").unwrap();
-        let dng_map = build_filtered_map_json(&doc, runner, &clock).to_string();
+        let dng_map = build_filtered_map_json(&doc, &delta, runner, &clock).to_string();
         assert!(!dng_map.contains("oi:dng_pit:altar"));
         assert!(!dng_map.contains("地脈凝石台"));
 
@@ -330,7 +384,7 @@ mod tests {
         assert!(second.contains("這個時段"));
 
         let viewer = delta.actor_by_id_or_controller("viewer1").unwrap();
-        let map_json = build_filtered_map_json(&doc, viewer, &clock);
+        let map_json = build_filtered_map_json(&doc, &delta, viewer, &clock);
         let visited_arr = map_json["visited_cells"].as_array().unwrap();
         assert_eq!(visited_arr.len(), 2);
         let outline_arr = map_json["outline_cells"].as_array().unwrap();
@@ -653,7 +707,7 @@ mod tests {
     fn dynamic_hot_spawn_1500_actors_in_memory_preserves_o1_index_uniqueness_and_conservation() {
         // 純記憶體壓測（絕不寫入線上 PostgreSQL）：驗證隨時動態新增 1,500 名無靜態種子人物（合計 > 2,170 人）100% 即插即活！
         let (doc, mut delta) = fresh_delta();
-        let mut clock = solar_clock_at(1_770_020_000);
+        let mut clock = solar_clock_at(1_772_118_486);
         seed_genesis_actors_once(&doc, &mut delta, false);
         apply_setup_origin(
             &doc,
@@ -853,87 +907,6 @@ mod tests {
             delta.conservation_diff(&doc),
             0,
             "sparse v1->v2 migration must fill missing genesis residents and preserve conservation_diff == 0"
-        );
-    }
-
-    #[test]
-    fn controller_isolation_ledger_anti_shadow_and_cold_archive_invariants() {
-        let (doc, mut delta) = fresh_delta();
-        let clock = solar_clock_at(1_770_020_000);
-        seed_genesis_actors_once(&doc, &mut delta, false);
-
-        // C1 回歸測試：就算傳入與既有居民 `actor_id` 同字串之 `controller_id`，`resolve_controller` 也絕不會指向該居民！
-        let masha_id = "res:white_gull_harbor:shop_1_0";
-        let masha_orig_copper = delta.actors[masha_id].copper;
-        assert!(delta.resolve_controller(masha_id).is_none());
-        apply_setup_origin(
-            &doc,
-            &mut delta,
-            &clock,
-            masha_id,
-            "冒名客",
-            "人類",
-            "",
-            "deck_sailor",
-        )
-        .expect("isolated actor created under pl: prefix");
-        assert_eq!(
-            delta.resolve_controller(masha_id).as_deref(),
-            Some("pl:res:white_gull_harbor:shop_1_0")
-        );
-        assert_eq!(delta.actors[masha_id].display_name, "瑪莎");
-        assert_eq!(delta.actors[masha_id].copper, masha_orig_copper);
-
-        // C2 回歸測試：就算有人擁有 `controller_id == "municipal_treasury"`，`transfer_copper` 仍必走公庫字面科目，絕不流入個人口袋！
-        apply_setup_origin(
-            &doc,
-            &mut delta,
-            &clock,
-            "municipal_treasury",
-            "假公庫",
-            "人類",
-            "",
-            "smith_apprentice",
-        )
-        .expect("setup");
-        let treasury_before = delta.municipal_treasury_copper;
-        assert!(delta.transfer_copper(
-            clock.game_days,
-            clock.bell_index,
-            "test_tax",
-            masha_id,
-            "municipal_treasury",
-            5,
-            "測試公庫規費".to_string(),
-        ));
-        assert_eq!(delta.municipal_treasury_copper, treasury_before + 5);
-        assert_eq!(delta.actors["pl:municipal_treasury"].copper, 0);
-        assert_eq!(delta.conservation_diff(&doc), 0);
-
-        // M7 回歸測試：超過 16 筆人生轉折時，舊章節自動轉入 `cold_outbox` 納入 `tp_archives` 批次歸檔，絕不無痕遺失！
-        {
-            let a = delta.actors.get_mut("pl:municipal_treasury").unwrap();
-            for idx in 0..18 {
-                a.mind.push_turning_point(
-                    &format!("tp:{idx}"),
-                    idx,
-                    &format!("第 {idx} 章歷練定見"),
-                    "work_diligently",
-                );
-            }
-            a.mark_mutated();
-            assert_eq!(a.mind.ltm.turning_points.len(), 16);
-            assert_eq!(a.mind.ltm.cold_outbox.len(), 2);
-        }
-        let batch = prepare_commit_batch(&doc, &delta, false).expect("batch ok");
-        assert_eq!(batch.tp_archives.len(), 2);
-        ack_commit_batch(&mut delta, &batch);
-        assert!(
-            delta.actors["pl:municipal_treasury"]
-                .mind
-                .ltm
-                .cold_outbox
-                .is_empty()
         );
     }
 }

@@ -2,12 +2,20 @@
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
+use super::appraisal::{ConcernCause, awaken_lived_concerns_and_intentions_once};
 use super::clock_and_lang::SolarClockSnapshot;
+use super::desire_effects::{
+    execute_arrived_desire_effect, propagate_gossip_o1, settle_due_contracts,
+};
+use super::desire_sim::{BellDecisionIndex, evaluate_personalized_desire};
+use super::household_economy::{
+    ensure_household_larders_seeded_once, find_town_tavern_and_keeper, restore_tavern_stock_one,
+    settle_daily_town_livelihood_and_levy, try_consume_household_meal,
+    try_consume_tavern_stock_one,
+};
 use super::mind::{ActiveIntention, CognitiveMind, EventPublicity, EvidenceTier};
 use super::movement::shortest_walk_path;
-use super::persona::{
-    InnatePersona, ResponseTendency, Situation16D, ValueAxis, derive_innate_persona,
-};
+use super::persona::{ResponseTendency, Situation16D, ValueAxis, derive_innate_persona};
 use super::types::{
     BoundTool, ContractRecord, IslandWorldDelta, NewActorSpawnSpec, UnifiedMindBody, WorldStaticDoc,
 };
@@ -44,6 +52,7 @@ pub fn default_tool_for_role(role: &str, name: &str) -> BoundTool {
         ("daily_knife", "隨身短裁刀")
     };
     BoundTool {
+        uid: String::new(),
         slug: slug.to_string(),
         name: label.to_string(),
         provenance: format!("{}慣用隨身傢伙", name),
@@ -79,20 +88,12 @@ pub fn seed_genesis_actors_once(
         if delta.node_occupants.is_empty() && !delta.actors.is_empty() {
             delta.rebuild_indexes();
         }
+        super::live_tide::ensure_porter_indoor_homes(doc, delta);
         return;
     }
 
     delta.rebuild_indexes();
     let cell_public_nodes = collect_cell_public_nodes(doc);
-
-    // 預建立同戶家眷索引，讓同屋家人在創世時自然相識
-    let mut household_members: BTreeMap<String, Vec<(String, String)>> = BTreeMap::new();
-    for r in &doc.residents {
-        household_members
-            .entry(r.household_id.clone())
-            .or_default()
-            .push((r.id.clone(), r.name.clone()));
-    }
 
     for seed in &doc.residents {
         if delta.actors.contains_key(&seed.id) {
@@ -133,13 +134,6 @@ pub fn seed_genesis_actors_once(
                 }
             }
         }
-        if let Some(fams) = household_members.get(&seed.household_id) {
-            for (fid, fname) in fams {
-                if fid != &seed.id {
-                    mind.record_pact_or_trade_evidence(fid, fname, 0, true, false, "同屋家眷師徒");
-                }
-            }
-        }
 
         let mut known_state = BTreeSet::new();
         known_state.insert(home_cell);
@@ -157,44 +151,43 @@ pub fn seed_genesis_actors_once(
             appearance: format!("常年在島上從事{}營生", seed.role),
             origin_pack: "island_native".to_string(),
             household_id: seed.household_id.clone(),
+            birth_year: 300,
+            household_bond: String::new(),
             home_node: seed.home_node.clone(),
             work_node: work_post,
             node_id: start_node,
-            route_plan: VecDeque::new(),
             copper: seed.copper,
-            fatigue: 0,
-            wound_part: None,
-            severe_wrist_warning: false,
             bound_weapon: default_tool_for_role(&seed.role, &seed.name),
-            backpack: Vec::new(),
-            inn_locker: Vec::new(),
-            inn_lockers: BTreeMap::new(),
-            inn_nights_left: 0,
-            owned_house_node: None,
-            rescue_pact_active: false,
-            conversing_until_ms: 0,
             languages: seed.languages.clone(),
-            lang_daily_gain: BTreeMap::new(),
-            lang_gain_day: 0,
             known_state_cells: known_state,
-            unlocked_secrets: BTreeSet::new(),
-            known_rumors: BTreeSet::new(),
-            explored_windows: BTreeSet::new(),
-            recent_breaths: VecDeque::new(),
-            active_skirmish: None,
-            active_transit: None,
-            last_step_unix_ms: 0,
-            last_talk_unix_ms: 0,
-            last_active_unix: 0,
-            drift: Default::default(),
             mind,
             dirty: true,
             flushed_rev: 0,
             flushed_copper: i64::MIN,
+            ..UnifiedMindBody::default()
         };
         delta.upsert_actor(actor);
     }
 
+    super::live_tide::ensure_porter_indoor_homes(doc, delta);
+    if is_night {
+        for pid in [
+            "res:white_gull_harbor:dock_porter",
+            "res:west_strait_ferry:dock_porter",
+            "res:gull_tail_port:dock_porter",
+            "res:north_cape_beacon:dock_porter",
+        ] {
+            if let Some(home) = delta.actors.get(pid).map(|a| a.home_node.clone())
+                && let Some(nd) = doc.nodes.get(&home)
+            {
+                delta.relocate_actor(pid, &home, nd.cell_id, true);
+            }
+        }
+    }
+    super::harbor_history::apply_island_history_backfill(doc, delta);
+    super::causal_arcs::apply_gazetteer_v3_upgrade(doc, delta);
+    ensure_household_larders_seeded_once(delta);
+    super::rural_migrate::apply_rural_v5_weave_and_init(doc, delta, 0);
     delta.genesis_seeded = true;
 }
 
@@ -236,7 +229,7 @@ pub fn spawn_dynamic_actors(
         let mut known_state = BTreeSet::new();
         known_state.insert(home_cell);
 
-        let actor = UnifiedMindBody {
+        let mut actor = UnifiedMindBody {
             actor_id: spec.actor_id.clone(),
             controller_id: spec.controller_id,
             soul_seed: spec.preferred_soul_seed.unwrap_or(0),
@@ -248,6 +241,8 @@ pub fn spawn_dynamic_actors(
             role: spec.role,
             appearance: spec.appearance,
             origin_pack: "mainland_migrant".to_string(),
+            birth_year: (super::clock_and_lang::solar_year_and_season_of_day(game_day).0 - 26)
+                .max(1),
             household_id: spec.household_id,
             home_node: spec.home_node,
             work_node: spec.work_node,
@@ -261,8 +256,11 @@ pub fn spawn_dynamic_actors(
             dirty: true,
             ..UnifiedMindBody::default()
         };
+        let _ =
+            super::world_weave_bio::refresh_actor_biography_if_needed(doc, &mut actor, game_day);
         let aid = actor.actor_id.clone();
         delta.upsert_actor(actor);
+        super::living_chronicler::record_cross_sea_arrival(doc, delta, game_day, bell_idx, &aid);
         if spec.initial_copper_from_mainland > 0 {
             let _ = delta.transfer_copper(
                 game_day,
@@ -319,6 +317,11 @@ pub fn broadcast_scene_event(
             continue;
         }
         let is_part = oid == subject_aid;
+        let eff_salience = if observer.controller_id.is_none() && observer.work_node == node_id {
+            salience.saturating_add(18).min(90)
+        } else {
+            salience
+        };
         let langs = observer.languages.clone();
         if observer.mind.ingest_sensory_event(
             &langs,
@@ -332,166 +335,43 @@ pub fn broadcast_scene_event(
             &subject_aid,
             actor_name,
             EvidenceTier::DirectWitness,
-            salience,
+            eff_salience,
             affect_charge,
             touched_axis,
             summary_zh,
         ) {
+            let obs_inn = derive_innate_persona(observer.soul_seed.max(1));
+            let abs_bell = clock.game_days * 12 + i64::from(clock.bell_index);
+            observer.mind.appraise_sensory_episode_auto(
+                &obs_inn,
+                &oid,
+                &subject_aid,
+                is_part,
+                &ev_id,
+                eff_salience,
+                affect_charge,
+                touched_axis,
+                abs_bell,
+            );
+            if !is_part
+                && observer.controller_id.is_some()
+                && eff_salience >= 30
+                && let Some(ep_txt) = observer
+                    .mind
+                    .stm
+                    .day_episodes
+                    .back()
+                    .map(|e| e.summary_zh.clone())
+            {
+                let td = super::live_tide::derive_tide_clock_details(clock);
+                super::movement::push_breath(
+                    observer,
+                    format!("〔{:02}:{:02}〕{ep_txt}", td.hour, td.minute),
+                );
+            }
             observer.mark_mutated();
         }
     }
-}
-
-fn find_town_tavern_and_keeper(
-    doc: &WorldStaticDoc,
-    delta: &IslandWorldDelta,
-    cell_id: u32,
-) -> (Option<String>, Option<String>) {
-    let tav_node = doc
-        .nodes
-        .values()
-        .find(|n| {
-            n.cell_id == cell_id
-                && !n.dungeon
-                && (n.name.contains("酒館") || n.name.contains("客棧") || n.kind == "tavern")
-        })
-        .or_else(|| {
-            doc.nodes
-                .values()
-                .find(|n| n.cell_id == cell_id && !n.dungeon && n.kind == "plaza")
-        })
-        .map(|n| n.id.clone());
-
-    // 先由該酒館節點之 `node_occupants` $O(1)$ 找在場掌櫃，其次僅查同聚落節點之 `node_occupants`（零全服 $O(N)$ 掃描）
-    let keeper_id = tav_node
-        .as_ref()
-        .and_then(|tn| delta.node_occupants.get(tn))
-        .and_then(|occ| {
-            occ.iter().find_map(|aid| {
-                let a = delta.actors.get(aid)?;
-                if a.alive && (a.role.contains("酒館") || a.role.contains("掌櫃")) {
-                    Some(aid.clone())
-                } else {
-                    None
-                }
-            })
-        })
-        .or_else(|| {
-            doc.nodes
-                .iter()
-                .filter(|(_, n)| n.cell_id == cell_id)
-                .filter_map(|(nid, _)| delta.node_occupants.get(nid))
-                .flat_map(|occ| occ.iter())
-                .find_map(|aid| {
-                    let a = delta.actors.get(aid)?;
-                    if a.alive && (a.role.contains("酒館") || a.role.contains("掌櫃")) {
-                        Some(aid.clone())
-                    } else {
-                        None
-                    }
-                })
-        });
-
-    (tav_node, keeper_id)
-}
-
-/// Dave Mark 多候選效用評估器：依個體 `骨底脾氣 × CAPS 條件傾向 × 核心價值 × 飢疲餘額` 動態決定當下意圖
-fn evaluate_daytime_utility<'a>(
-    a: &'a UnifiedMindBody,
-    innate: &InnatePersona,
-    tav_opt: Option<&'a str>,
-    bell_index: u8,
-) -> (&'static str, String, &'static str) {
-    let hunger = i32::from(a.mind.stm.affect.hunger);
-    let fatigue = i32::from(a.mind.stm.affect.fatigue.max(a.fatigue));
-    let sit = Situation16D::new(
-        0,
-        0,
-        15,
-        0,
-        if a.copper < 4 { -25 } else { 15 },
-        hunger - 35,
-        fatigue - 35,
-        if a.copper < 4 { 40 } else { 0 },
-        if bell_index >= 7 { 25 } else { 5 },
-        0,
-        0,
-        0,
-        hunger,
-        fatigue,
-        10,
-        10,
-    );
-    let tend = innate.choose_dominant_tendency(&sit, &a.drift);
-    let top_val = innate.top_value_axis(&a.drift);
-
-    let mut work_score = 48
-        + i32::from(innate.temperament.persistence) / 2
-        + if matches!(top_val, ValueAxis::CraftPride | ValueAxis::TangibleGain) {
-            16
-        } else {
-            0
-        }
-        + if a.mind.stm.active_goal_tag == "frugal_clear_debt" {
-            22
-        } else {
-            0
-        };
-    if a.copper < 4 {
-        work_score += 18;
-    }
-
-    let meal_score = if tav_opt.is_some() {
-        hunger * 2 - 42
-            + if matches!(tend, ResponseTendency::Bargain | ResponseTendency::SeekAlly) {
-                8
-            } else {
-                0
-            }
-    } else {
-        i32::MIN / 2
-    };
-
-    let social_score = if tav_opt.is_some() && a.copper >= 6 {
-        22 + i32::from(innate.temperament.approach_avoid) / 2
-            + if bell_index >= 7 { 24 } else { -12 }
-            + if matches!(
-                top_val,
-                ValueAxis::KinshipLoyalty | ValueAxis::CuriosityVenture
-            ) {
-                12
-            } else {
-                0
-            }
-    } else {
-        i32::MIN / 2
-    };
-
-    let rest_score = fatigue * 2 - 90
-        + if tend == ResponseTendency::Withdraw {
-            14
-        } else {
-            0
-        };
-
-    if meal_score >= work_score && meal_score >= social_score && meal_score >= rest_score {
-        if let Some(tn) = tav_opt {
-            return ("buy_meal", tn.to_string(), "往酒館吃口熱食");
-        }
-    }
-    if rest_score > work_score && rest_score > social_score {
-        let bed = a
-            .owned_house_node
-            .clone()
-            .unwrap_or_else(|| a.home_node.clone());
-        return ("go_home_sleep", bed, "回屋歇息養神");
-    }
-    if social_score > work_score
-        && let Some(tn) = tav_opt
-    {
-        return ("tavern_rest", tn.to_string(), "往酒館歇腳打聽街坊風聲");
-    }
-    ("walk_work", a.work_node.clone(), "前往當值處幹活")
 }
 
 /// 全服單一規則推進迴圈：對全體 `UnifiedMindBody` 一視同仁推進步履、生計、睡眠記憶整合與語言遮罩傳聞
@@ -502,52 +382,116 @@ pub fn tick_outer_island_world(
     now_unix_ms: u64,
 ) {
     seed_genesis_actors_once(doc, delta, clock.is_night);
+    ensure_household_larders_seeded_once(delta);
+    super::rural_migrate::ensure_rural_runtime_initialized(doc, delta, clock.game_days);
+    super::transit_and_cargo::tick_embodied_transit_vehicles(doc, delta, clock);
+    super::ongoing_activity::tick_ongoing_activities(doc, delta, clock);
+    awaken_lived_concerns_and_intentions_once(doc, delta, clock);
 
     let abs_bell = clock.game_days * 12 + i64::from(clock.bell_index);
-    let new_bell_arrived = abs_bell > delta.last_settled_bell;
-    if new_bell_arrived {
-        delta.last_settled_bell = abs_bell;
-    }
+    let start_bell = if delta.last_settled_bell <= 0 {
+        abs_bell - 1
+    } else {
+        delta.last_settled_bell.max(abs_bell - 12)
+    };
 
-    // 1. 推進所有在途 `UnifiedMindBody` 沿真實街道門戶邁出最多 2 步（對話駐足或玩家即時手操期間不搶步）
-    let walking_ids: Vec<String> = delta
+    // 1. 鐘響之間（`abs_bell <= start_bell`）每遊戲分鐘（2.5s）錯峰發起作息路線；整鐘邊界則交由下方共享動詞核優先決策（防覆寫探窟／護行！）
+    if abs_bell <= start_bell {
+        super::live_tide::step_staggered_minute_routines(doc, delta, clock, now_unix_ms);
+    }
+    super::unified_kernel::step_autonomous_skirmishes_and_transits(doc, delta, clock);
+    let mut walking_pairs: Vec<(u64, String)> = delta
         .actors
         .iter()
         .filter(|(_, a)| {
             a.alive
                 && a.setup_done
+                && a.active_skirmish.is_none()
+                && a.active_transit.is_none()
                 && !a.route_plan.is_empty()
                 && !(now_unix_ms > 0 && a.conversing_until_ms > now_unix_ms)
-                && !(a.controller_id.is_some() && clock.real_unix - a.last_active_unix < 1800)
+                && !super::live_tide::is_actor_online_protected(a, clock.real_unix)
         })
-        .map(|(id, _)| id.clone())
+        .map(|(id, a)| {
+            (
+                crate::combat::wordplate::splitmix64(a.soul_seed ^ now_unix_ms),
+                id.clone(),
+            )
+        })
         .collect();
+    walking_pairs.sort_by_key(|(rk, _)| *rk);
+    let walking_ids: Vec<String> = walking_pairs.into_iter().map(|(_, id)| id).collect();
 
     for aid in walking_ids {
         for _ in 0..2 {
-            let next_opt = delta
-                .actors
-                .get_mut(&aid)
-                .and_then(|a| a.route_plan.pop_front());
+            let (cur_nid, next_opt) = match delta.actors.get_mut(&aid) {
+                Some(a)
+                    if a.active_skirmish.is_none()
+                        && a.active_transit.is_none()
+                        && !super::live_tide::is_actor_online_protected(a, clock.real_unix) =>
+                {
+                    (a.node_id.clone(), a.route_plan.pop_front())
+                }
+                _ => break,
+            };
             if let Some(next_nid) = next_opt
                 && let Some(nd) = doc.nodes.get(&next_nid)
             {
-                let knows_state = nd.kind == "plaza" || nd.kind == "gate";
-                delta.relocate_actor(&aid, &next_nid, nd.cell_id, knows_state);
+                let cur_dng = doc.nodes.get(&cur_nid).is_some_and(|n| n.dungeon);
+                if nd.dungeon || cur_dng || doc.hidden_entrances.contains_key(&cur_nid) {
+                    let step_err =
+                        super::movement::apply_move_step(doc, delta, clock, &aid, &next_nid, 0)
+                            .is_err();
+                    if step_err
+                        || delta
+                            .actors
+                            .get(&aid)
+                            .is_some_and(|a| a.active_skirmish.is_some())
+                    {
+                        if let Some(a) = delta.actors.get_mut(&aid) {
+                            a.route_plan.clear();
+                            a.mark_mutated();
+                        }
+                        break;
+                    }
+                } else {
+                    if let (Some(actor_ro), Some(src_nd)) =
+                        (delta.actors.get(&aid), doc.nodes.get(&cur_nid))
+                        && super::transit_and_cargo::check_bulk_overland_move(actor_ro, src_nd, nd)
+                            .is_err()
+                    {
+                        if let Some(a) = delta.actors.get_mut(&aid) {
+                            a.route_plan.clear();
+                            a.mark_mutated();
+                        }
+                        break;
+                    }
+                    let knows_state = matches!(nd.kind.as_str(), "plaza" | "gate" | "village_gate");
+                    super::live_tide::relocate_actor_with_local_witness(
+                        doc,
+                        delta,
+                        clock,
+                        &aid,
+                        &cur_nid,
+                        &next_nid,
+                        nd.cell_id,
+                        knows_state,
+                    );
+                }
             } else {
                 break;
             }
         }
     }
 
-    if !new_bell_arrived {
+    if abs_bell <= start_bell {
         return;
     }
 
     // 預快取各聚落酒館與掌櫃（僅數個聚落，避免在萬人迴圈內重複查找）
     let mut cell_tavern_cache: BTreeMap<u32, (Option<String>, Option<String>)> = BTreeMap::new();
     for c in doc.cells.values() {
-        if c.kind == "settlement" {
+        if matches!(c.kind.as_str(), "settlement" | "rural_settlement") {
             cell_tavern_cache.insert(
                 c.cell_id,
                 find_town_tavern_and_keeper(doc, delta, c.cell_id),
@@ -555,21 +499,124 @@ pub fn tick_outer_island_world(
         }
     }
 
-    // 2. 新響鐘抵達：全體非在線手操之 `UnifiedMindBody`（含全體居民＋離線安寢之玩家角色）共用同一套生理、生計與睡眠整合規則！
-    let all_ids: Vec<String> = delta.actors.keys().cloned().collect();
-    for aid in &all_ids {
-        let mut pay_innkeeper: Option<(String, i64, String)> = None;
-        let mut open_meal_tab: Option<(String, i64, String)> = None;
-        let mut municipal_wage: Option<(i64, String)> = None;
+    // 2. 若跨響鐘重啟或跳鐘，先逐鐘補齊中間漏失之城鎮生計稅收與到期契約結算（確保第 5/8 響帳本絕不漏結，且不產生幽靈夜間路線覆寫當下決策！）
+    for missed_bell in (start_bell + 1)..abs_bell {
+        let missed_clk =
+            super::clock_and_lang::solar_clock_for_settled_bell(missed_bell, clock.real_unix);
+        settle_daily_town_livelihood_and_levy(doc, delta, &missed_clk, &cell_tavern_cache);
+        settle_due_contracts(doc, delta, &missed_clk);
+    }
+    delta.last_settled_bell = abs_bell;
 
+    let mut ranked_ids: Vec<(u64, String)> = delta
+        .actors
+        .iter()
+        .map(|(id, a)| {
+            (
+                crate::combat::wordplate::splitmix64(a.soul_seed ^ (abs_bell as u64)),
+                id.clone(),
+            )
+        })
+        .collect();
+    ranked_ids.sort_by_key(|(rk, _)| *rk);
+    let all_ids: Vec<String> = ranked_ids.into_iter().map(|(_, id)| id).collect();
+    let parity_claimed =
+        super::unified_kernel::execute_player_parity_bell_actions(doc, delta, clock, &all_ids);
+    let bell_idx_cache = BellDecisionIndex::build(delta);
+    for aid in &all_ids {
+        let mut pay_innkeeper: Option<(String, String, i64, String)> = None;
+        let mut open_meal_tab: Option<(String, String, i64, String)> = None;
+        let mut arrived_effect: Option<(
+            &'static str,
+            Option<String>,
+            Option<String>,
+            Option<String>,
+        )> = None;
+        let mut night_eat_home = false;
+
+        let larder_now = delta
+            .actors
+            .get(aid)
+            .map_or(0, |a| bell_idx_cache.larder_of(a));
+        let has_unpaid_debt = bell_idx_cache.debtors_with_unpaid_record.contains(aid);
+        let co_rival_opt = delta.actors.get(aid).and_then(|a| {
+            if a.controller_id.is_some() {
+                return None;
+            }
+            let sleep_home = a
+                .owned_house_node
+                .as_deref()
+                .unwrap_or(a.home_node.as_str());
+            if a.node_id == sleep_home {
+                return None;
+            }
+            let cur_stamp = (clock.game_days + 10_000).max(1);
+            let occ = delta.node_occupants.get(&a.node_id)?;
+            occ.iter()
+                .find(|&oid| {
+                    oid != aid
+                        && delta.actors.get(oid).is_none_or(|o| {
+                            (o.household_id.is_empty() || o.household_id != a.household_id)
+                                && !(o.controller_id.is_some()
+                                    && !super::live_tide::is_actor_online_protected(
+                                        o,
+                                        clock.real_unix,
+                                    ))
+                        })
+                        && a.mind.ltm.social.get(oid).is_some_and(|s| {
+                            !s.cohabiting
+                                && s.warmth <= -22
+                                && (s.last_confront_day == 0
+                                    || cur_stamp >= s.last_confront_day + 4)
+                        })
+                })
+                .cloned()
+        });
+        let desired_opt = delta.actors.get(aid).and_then(|a| {
+            let online_human = super::live_tide::is_actor_online_protected(a, clock.real_unix);
+            if !a.alive
+                || !a.setup_done
+                || a.active_skirmish.is_some()
+                || a.active_transit.is_some()
+                || online_human
+                || clock.is_night
+                || parity_claimed.contains(aid)
+            {
+                return None;
+            }
+            let sleep_home = a
+                .owned_house_node
+                .as_deref()
+                .unwrap_or(a.home_node.as_str());
+            let home_cell = doc.nodes.get(sleep_home).map_or(4616, |n| n.cell_id);
+            let (tav_opt, ik_opt) = cell_tavern_cache
+                .get(&home_cell)
+                .map_or((None, None), |(t, k)| (t.as_deref(), k.as_deref()));
+            if a.controller_id.is_some() {
+                return None;
+            }
+            let innate = derive_innate_persona(a.soul_seed.max(1));
+            Some(evaluate_personalized_desire(
+                doc,
+                delta,
+                &bell_idx_cache,
+                a,
+                &innate,
+                tav_opt,
+                ik_opt,
+                clock.bell_index,
+                abs_bell,
+            ))
+        });
+
+        let mut need_offline_shelter = false;
         if let Some(a) = delta.actors.get_mut(aid) {
             if !a.alive || !a.setup_done {
                 continue;
             }
-            let online_human =
-                a.controller_id.is_some() && clock.real_unix - a.last_active_unix < 1800;
-            if online_human {
-                if !clock.is_night {
+            let online_human = super::live_tide::is_actor_online_protected(a, clock.real_unix);
+            if online_human || a.active_skirmish.is_some() || a.active_transit.is_some() {
+                if online_human && !clock.is_night {
                     a.mind.stm.affect.hunger = (a.mind.stm.affect.hunger.saturating_add(3)).min(95);
                     a.mark_mutated();
                 }
@@ -577,15 +624,45 @@ pub fn tick_outer_island_world(
             }
 
             let mut mutated = false;
-            let innate = derive_innate_persona(a.soul_seed);
+            let innate = derive_innate_persona(a.soul_seed.max(1));
             if a.mind.pending_slow_think_score > 0 {
                 a.mind.slow_think_wait_bells = a.mind.slow_think_wait_bells.saturating_add(1);
                 mutated = true;
             }
 
-            if !clock.is_night {
-                a.mind.stm.affect.hunger = (a.mind.stm.affect.hunger.saturating_add(9)).min(95);
-                a.mind.stm.affect.fatigue = (a.mind.stm.affect.fatigue.saturating_add(6)).min(95);
+            if !clock.is_night && a.controller_id.is_none() {
+                a.mind.stm.affect.hunger = (a.mind.stm.affect.hunger.saturating_add(6)).min(95);
+                a.mind.stm.affect.fatigue = (a.mind.stm.affect.fatigue.saturating_add(5)).min(95);
+                a.mind.decay_concerns_and_sync_affect(&innate);
+                if let Some(ref rid) = co_rival_opt {
+                    let _ = a.mind.appraise_event(
+                        &innate,
+                        ConcernCause::RivalEncounter,
+                        Some(rid),
+                        None,
+                        42,
+                        abs_bell,
+                    );
+                }
+                if a.bound_weapon.wear_stage >= 2 {
+                    let _ = a.mind.appraise_event(
+                        &innate,
+                        ConcernCause::ToolDamaged,
+                        None,
+                        None,
+                        36,
+                        abs_bell,
+                    );
+                }
+                a.mind.tick_goal_strategy_expiry(
+                    clock.game_days,
+                    has_unpaid_debt,
+                    larder_now,
+                    a.copper,
+                    a.bound_weapon.wear_stage,
+                    &innate,
+                    abs_bell,
+                );
                 mutated = true;
             }
 
@@ -599,43 +676,57 @@ pub fn tick_outer_island_world(
                 .cloned()
                 .unwrap_or((None, None));
 
-            let target_opt: Option<(&str, String, &str)> = if clock.is_night {
-                let in_bed = a.node_id == sleep_home
-                    || (doc
-                        .nodes
-                        .get(&a.node_id)
-                        .is_some_and(|n| n.kind == "inn_room")
-                        && a.inn_nights_left > 0);
+            let target_opt: Option<(&'static str, String, String)> = if clock.is_night {
+                let in_bed = super::live_tide::has_real_indoor_bed(doc, a, &sleep_home);
                 if in_bed {
                     let stagger_ok = (a.soul_seed % 2) == u64::from(clock.bell_index % 2)
                         || clock.bell_index >= 10;
                     if stagger_ok {
-                        a.fatigue = 0;
-                        let short = a.copper < 4;
-                        a.mind.run_sleep_consolidation(
-                            &innate,
-                            &mut a.drift,
+                        super::live_tide::prune_stale_day_window_keys(
+                            &mut a.explored_windows,
                             clock.game_days,
-                            short,
                         );
-                        mutated = true;
+                        if a.controller_id.is_some() {
+                            a.fatigue = a.fatigue.saturating_sub(12);
+                            mutated = true;
+                        } else {
+                            if !a.actor_id.starts_with("pl:") && a.mind.stm.affect.hunger >= 36 {
+                                night_eat_home = true;
+                            }
+                            a.fatigue = 0;
+                            let short = a.copper < 4 || larder_now == 0;
+                            a.mind.run_sleep_consolidation(
+                                &innate,
+                                &mut a.drift,
+                                clock.game_days,
+                                short,
+                            );
+                            let _ = super::world_weave_bio::refresh_actor_biography_if_needed(
+                                doc,
+                                a,
+                                clock.game_days,
+                            );
+                            mutated = true;
+                        }
                     }
                     None
+                } else if a.controller_id.is_some() {
+                    a.fatigue = a.fatigue.saturating_sub(6);
+                    mutated = true;
+                    need_offline_shelter = true;
+                    None
                 } else {
-                    Some(("go_home_sleep", sleep_home, "收工回屋歇息"))
+                    Some(("go_home_sleep", sleep_home, "收工回屋歇息".to_string()))
                 }
-            } else {
-                let (chosen_kind, chosen_dst, chosen_reason) =
-                    evaluate_daytime_utility(a, &innate, tav_opt.as_deref(), clock.bell_index);
-                if chosen_kind == "buy_meal" && a.node_id == chosen_dst {
-                    if let Some(ref ik_id) = ik_opt
+            } else if let Some(dec) = desired_opt {
+                if dec.kind == "buy_meal" && a.node_id == dec.target_node {
+                    if let (Some(tn), Some(ik_id)) = (tav_opt.as_ref(), ik_opt.as_ref())
                         && ik_id != aid
                     {
                         if a.copper >= 2 {
-                            pay_innkeeper = Some((ik_id.clone(), 2, a.display_name.clone()));
-                            a.mind.stm.affect.hunger = a.mind.stm.affect.hunger.saturating_sub(48);
-                            a.mind.stm.today_goal_progressed = true;
-                        } else {
+                            pay_innkeeper =
+                                Some((ik_id.clone(), tn.clone(), 2, a.display_name.clone()));
+                        } else if !has_unpaid_debt {
                             let sit = Situation16D::new(
                                 5, 0, 25, 0, -20, 45, 35, 30, 15, 0, 0, 0, 50, 15, 10, 10,
                             );
@@ -646,35 +737,66 @@ pub fn tick_outer_island_world(
                                     | ResponseTendency::SeekAlly
                                     | ResponseTendency::ComplyOrder
                             ) {
-                                open_meal_tab = Some((ik_id.clone(), 2, a.display_name.clone()));
-                                a.mind.stm.affect.hunger =
-                                    a.mind.stm.affect.hunger.saturating_sub(42);
+                                open_meal_tab =
+                                    Some((ik_id.clone(), tn.clone(), 2, a.display_name.clone()));
                             } else {
-                                a.mind.stm.affect.hunger =
-                                    a.mind.stm.affect.hunger.saturating_sub(18);
+                                let _ = a.mind.appraise_event(
+                                    &innate,
+                                    ConcernCause::LivelihoodShortfall,
+                                    None,
+                                    None,
+                                    48,
+                                    abs_bell,
+                                );
                             }
+                        } else {
+                            let _ = a.mind.appraise_event(
+                                &innate,
+                                ConcernCause::LivelihoodShortfall,
+                                None,
+                                None,
+                                48,
+                                abs_bell,
+                            );
                         }
-                    } else {
-                        a.mind.stm.affect.hunger = a.mind.stm.affect.hunger.saturating_sub(40);
+                    } else if a.controller_id.is_none() {
+                        night_eat_home = true;
                     }
                     mutated = true;
                     None
-                } else if a.node_id != chosen_dst {
-                    Some((chosen_kind, chosen_dst, chosen_reason))
-                } else {
-                    a.mind.stm.today_goal_progressed = true;
-                    mutated = true;
-                    if a.controller_id.is_none()
-                        && matches!(
-                            a.role.as_str(),
-                            "石工" | "木匠" | "巡城衛兵" | "碼頭苦力" | "觀星領航員"
-                        )
-                        && clock.bell_index == 5
-                    {
-                        municipal_wage = Some((2, a.display_name.clone()));
+                } else if a.node_id != dec.target_node {
+                    if dec.kind == "forage_wild" {
+                        a.mind.ltm.known_nodes.insert(dec.target_node.clone());
                     }
+                    Some((dec.kind, dec.target_node, dec.reason_zh))
+                } else {
+                    if a.mind
+                        .stm
+                        .intentions
+                        .back()
+                        .is_none_or(|last| last.kind != dec.kind)
+                    {
+                        if a.mind.stm.intentions.len() >= 4 {
+                            a.mind.stm.intentions.pop_front();
+                        }
+                        a.mind.stm.intentions.push_back(ActiveIntention {
+                            kind: dec.kind.to_string(),
+                            target_node: dec.target_node.clone(),
+                            reason_zh: dec.reason_zh.clone(),
+                            created_bell: abs_bell,
+                        });
+                    }
+                    if dec.kind == "walk_work" {
+                        a.mind.stm.today_goal_progressed = true;
+                    } else {
+                        arrived_effect =
+                            Some((dec.kind, dec.focus_actor, tav_opt.clone(), ik_opt.clone()));
+                    }
+                    mutated = true;
                     None
                 }
+            } else {
+                None
             };
 
             if let Some((kind, dst_nid, reason)) = target_opt
@@ -684,6 +806,9 @@ pub fn tick_outer_island_world(
                 && let Some(full_path) =
                     shortest_walk_path(doc, &a.node_id, &dst_nid, &a.mind.ltm.known_nodes)
             {
+                if kind == "detour_avoid" {
+                    a.mind.stm.last_detour_bell = (abs_bell + 100_000).max(1);
+                }
                 a.route_plan = full_path.into_iter().skip(1).collect();
                 if a.mind.stm.intentions.len() >= 4 {
                     a.mind.stm.intentions.pop_front();
@@ -691,7 +816,7 @@ pub fn tick_outer_island_world(
                 a.mind.stm.intentions.push_back(ActiveIntention {
                     kind: kind.to_string(),
                     target_node: dst_nid,
-                    reason_zh: reason.to_string(),
+                    reason_zh: reason,
                     created_bell: abs_bell,
                 });
                 mutated = true;
@@ -702,8 +827,32 @@ pub fn tick_outer_island_world(
             }
         }
 
-        if let Some((ik_id, amt, dname)) = pay_innkeeper {
-            let _ = delta.transfer_copper(
+        if need_offline_shelter {
+            super::live_tide::assign_offline_shelter_route_if_needed(doc, delta, aid, abs_bell);
+        }
+
+        if night_eat_home {
+            let _ = try_consume_household_meal(delta, aid, abs_bell);
+        }
+
+        if let Some((ekind, f_actor, t_opt, k_opt)) = arrived_effect {
+            let _ = execute_arrived_desire_effect(
+                doc,
+                delta,
+                clock,
+                aid,
+                ekind,
+                f_actor.as_deref(),
+                t_opt.as_deref(),
+                k_opt.as_deref(),
+                abs_bell,
+            );
+        }
+
+        if let Some((ik_id, tn, amt, dname)) = pay_innkeeper
+            && try_consume_tavern_stock_one(delta, &ik_id, &tn)
+        {
+            if delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "npc_meal",
@@ -711,10 +860,43 @@ pub fn tick_outer_island_world(
                 &ik_id,
                 amt,
                 format!("{}向酒館買熱食", dname),
-            );
+            ) {
+                if let Some(a) = delta.actors.get_mut(aid) {
+                    a.mind.stm.affect.hunger = a.mind.stm.affect.hunger.saturating_sub(48);
+                    a.mind
+                        .resolve_concerns_matching(ConcernCause::LivelihoodShortfall, None, 28);
+                    a.mind.stm.today_goal_progressed = true;
+                    a.mark_mutated();
+                }
+                broadcast_scene_event(
+                    doc,
+                    delta,
+                    clock,
+                    &tn,
+                    aid,
+                    &dname,
+                    EventPublicity::PublicLoud,
+                    Some("harbor_trade"),
+                    32,
+                    10,
+                    ValueAxis::SurvivalSafety,
+                    "npc_meal",
+                    &format!("{dname}在酒館櫃前點了一份熱騰騰的魚麥熱食"),
+                );
+            } else {
+                restore_tavern_stock_one(delta, &ik_id, &tn);
+            }
         }
 
-        if let Some((ik_id, amt, dname)) = open_meal_tab {
+        if let Some((ik_id, tn, amt, dname)) = open_meal_tab
+            && try_consume_tavern_stock_one(delta, &ik_id, &tn)
+        {
+            if let Some(a) = delta.actors.get_mut(aid) {
+                a.mind.stm.affect.hunger = a.mind.stm.affect.hunger.saturating_sub(42);
+                a.mind
+                    .resolve_concerns_matching(ConcernCause::LivelihoodShortfall, None, 22);
+                a.mark_mutated();
+            }
             let cid = format!("tab:{}:{}:{}", aid, ik_id, clock.game_days);
             delta.dirty_contracts.insert(cid.clone());
             delta
@@ -732,217 +914,9 @@ pub fn tick_outer_island_world(
                     note_zh: format!("{}在酒館記下的熱食飯帳", dname),
                 });
         }
-
-        if let Some((wage, dname)) = municipal_wage
-            && delta.municipal_treasury_copper > 20_000 + wage
-        {
-            let _ = delta.transfer_copper(
-                clock.game_days,
-                clock.bell_index,
-                "municipal_wage",
-                "municipal_treasury",
-                aid,
-                wage,
-                format!("港務公庫發放{}修繕當值薪餉", dname),
-            );
-        }
     }
 
+    settle_daily_town_livelihood_and_levy(doc, delta, clock, &cell_tavern_cache);
     settle_due_contracts(doc, delta, clock);
     propagate_gossip_o1(delta, clock);
-}
-
-fn settle_due_contracts(
-    doc: &WorldStaticDoc,
-    delta: &mut IslandWorldDelta,
-    clock: &SolarClockSnapshot,
-) {
-    let due_keys: Vec<String> = delta
-        .contracts
-        .iter()
-        .filter(|(_, c)| {
-            (c.status == "open" || c.status == "defaulted") && clock.game_days >= c.due_day
-        })
-        .map(|(k, _)| k.clone())
-        .collect();
-
-    for ckey in due_keys {
-        let Some(c) = delta.contracts.get(&ckey).cloned() else {
-            continue;
-        };
-        let d_name = delta
-            .actor_by_id_or_controller(&c.debtor_id)
-            .map_or("欠債人", |a| a.display_name.as_str())
-            .to_string();
-        let c_name = delta
-            .actor_by_id_or_controller(&c.creditor_id)
-            .map_or("債主", |a| a.display_name.as_str())
-            .to_string();
-
-        if delta.transfer_copper(
-            clock.game_days,
-            clock.bell_index,
-            "contract_settle",
-            &c.debtor_id,
-            &c.creditor_id,
-            c.amount_copper,
-            format!("{d_name}如期結清欠{c_name}的帳款"),
-        ) {
-            if let Some(cmut) = delta.contracts.get_mut(&ckey) {
-                cmut.status = "settled".to_string();
-                delta.dirty_contracts.insert(ckey.clone());
-            }
-            if let Some(cr) = delta.actor_mut_by_id_or_controller(&c.creditor_id) {
-                cr.mind.record_pact_or_trade_evidence(
-                    &c.debtor_id,
-                    &d_name,
-                    clock.game_days,
-                    true,
-                    false,
-                    "準時結清舊帳",
-                );
-                cr.mark_mutated();
-            }
-        } else {
-            let strategy_note =
-                if let Some(cr) = delta.actor_mut_by_id_or_controller(&c.creditor_id) {
-                    let inn = derive_innate_persona(cr.soul_seed);
-                    let sit = Situation16D::new(
-                        15, 20, 20, -35, -30, 25, 40, 35, 45, 20, 0, 10, 20, 0, 25, 10,
-                    );
-                    let tend = inn.choose_dominant_tendency(&sit, &cr.drift);
-                    let action_desc = match tend {
-                        ResponseTendency::Confront => {
-                            format!("{c_name}當街攔住{d_name}拍桌催討欠帳")
-                        }
-                        ResponseTendency::SeekAlly => {
-                            format!("{c_name}在酒館向街坊公開點名{d_name}拖欠帳款")
-                        }
-                        ResponseTendency::Bargain | ResponseTendency::ComplyOrder => {
-                            format!("{c_name}要求{d_name}以打雜勞力折抵逾期帳款")
-                        }
-                        ResponseTendency::ShelterWeak => {
-                            format!("{c_name}嘆了口氣准許{d_name}寬限兩日再還")
-                        }
-                        _ => format!("{c_name}冷著臉把{d_name}記上拒賒黑冊"),
-                    };
-                    cr.mind.record_pact_or_trade_evidence(
-                        &c.debtor_id,
-                        &d_name,
-                        clock.game_days,
-                        false,
-                        false,
-                        &action_desc,
-                    );
-                    cr.mark_mutated();
-                    Some((cr.node_id.clone(), action_desc))
-                } else {
-                    None
-                };
-            if let Some(cmut) = delta.contracts.get_mut(&ckey) {
-                cmut.due_day = clock.game_days + 2;
-                cmut.status = "defaulted".to_string();
-                delta.dirty_contracts.insert(ckey.clone());
-            }
-            if let Some((nid, desc)) = strategy_note {
-                broadcast_scene_event(
-                    doc,
-                    delta,
-                    clock,
-                    &nid,
-                    &c.creditor_id,
-                    &c_name,
-                    EventPublicity::PublicLoud,
-                    Some("harbor_trade"),
-                    52,
-                    45,
-                    ValueAxis::PactIntegrity,
-                    "debt_chase",
-                    &desc,
-                );
-            }
-        }
-    }
-}
-
-/// 依 `node_occupants` $O(1)$ 空間分桶執行同場語言遮罩傳聞擴散（玩家與居民一視同仁）
-fn propagate_gossip_o1(delta: &mut IslandWorldDelta, clock: &SolarClockSnapshot) {
-    let crowded_nodes: Vec<(String, Vec<String>)> = delta
-        .node_occupants
-        .iter()
-        .filter(|(_, set)| set.len() >= 2)
-        .map(|(nid, set)| (nid.clone(), set.iter().cloned().collect()))
-        .collect();
-
-    for (nid, occupants) in crowded_nodes {
-        let pick_idx = ((clock.game_days.unsigned_abs() * 7 + u64::from(clock.bell_index))
-            as usize)
-            % occupants.len();
-        let speaker_id = &occupants[pick_idx];
-        let Some(speaker) = delta.actors.get(speaker_id) else {
-            continue;
-        };
-        if !speaker.alive || !speaker.setup_done {
-            continue;
-        }
-        let Some(best_ep) = speaker
-            .mind
-            .ltm
-            .episodic
-            .iter()
-            .filter(|e| clock.game_days - e.origin_day <= 12 && e.salience >= 48)
-            .max_by_key(|e| e.retention_score(clock.game_days))
-            .cloned()
-        else {
-            continue;
-        };
-
-        let sp_lang = match speaker.race.as_str() {
-            "矮人" if nid.contains("forge") || nid.contains("smithy") => "dwarven",
-            "精靈" if nid.contains("herb") || nid.contains("pine") => "elvish",
-            "獸人" if nid.contains("dock") && (clock.bell_index % 2 == 1) => "orcish",
-            _ => "harbor_trade",
-        };
-        let sp_name = speaker.display_name.clone();
-        let core_text = best_ep
-            .subjective_zh
-            .split_once('：')
-            .map_or(best_ep.subjective_zh.as_str(), |(_, rhs)| rhs);
-        let hearsay_text = format!("聽{}提起：{}", sp_name, core_text);
-
-        let start_offset = ((clock.game_days.unsigned_abs() * 3 + u64::from(clock.bell_index))
-            as usize)
-            % occupants.len();
-        for step in 0..occupants.len().min(4) {
-            let listener_id = &occupants[(start_offset + step) % occupants.len()];
-            if listener_id == speaker_id {
-                continue;
-            }
-            if let Some(listener) = delta.actors.get_mut(listener_id) {
-                if !listener.alive || !listener.setup_done {
-                    continue;
-                }
-                let langs = listener.languages.clone();
-                if listener.mind.ingest_sensory_event(
-                    &langs,
-                    EventPublicity::TableWhisper,
-                    Some(sp_lang),
-                    false,
-                    &best_ep.event_id,
-                    clock.game_days,
-                    clock.bell_index,
-                    &nid,
-                    &best_ep.subject_actor_id,
-                    &best_ep.subject_name,
-                    EvidenceTier::TavernHearsay,
-                    best_ep.salience.saturating_sub(8),
-                    35,
-                    ValueAxis::PactIntegrity,
-                    &hearsay_text,
-                ) {
-                    listener.mark_mutated();
-                }
-            }
-        }
-    }
 }

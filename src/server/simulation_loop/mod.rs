@@ -95,23 +95,23 @@ fn run_simulation_tick(
         {
             crate::grid::zhulin::social::tick_live(Some(&pool), clock);
         }
-        static LAST_ISLAND_TICK: std::sync::atomic::AtomicI64 =
-            std::sync::atomic::AtomicI64::new(0);
-        let prev_island = LAST_ISLAND_TICK.load(std::sync::atomic::Ordering::Relaxed);
-        if now_gc - prev_island >= 10
-            && LAST_ISLAND_TICK
+        static LAST_ISLAND_TICK_MS: std::sync::atomic::AtomicU64 =
+            std::sync::atomic::AtomicU64::new(0);
+        let now_ms = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis() as u64;
+        let prev_island_ms = LAST_ISLAND_TICK_MS.load(std::sync::atomic::Ordering::Relaxed);
+        if now_ms.saturating_sub(prev_island_ms) >= 2_500
+            && LAST_ISLAND_TICK_MS
                 .compare_exchange(
-                    prev_island,
-                    now_gc,
+                    prev_island_ms,
+                    now_ms,
                     std::sync::atomic::Ordering::SeqCst,
                     std::sync::atomic::Ordering::Relaxed,
                 )
                 .is_ok()
         {
-            let now_ms = SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_millis() as u64;
             crate::grid::outer_island::global_island().tick_live(now_ms);
         }
         if now_gc - prev_gc >= 30

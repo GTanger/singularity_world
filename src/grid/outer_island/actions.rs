@@ -3,9 +3,7 @@
 use super::clock_and_lang::SolarClockSnapshot;
 use super::explore_and_combat::resolve_skirmish_turn;
 use super::mind::EventPublicity;
-use super::movement::{
-    add_carry_item, add_language_exposure, apply_carriage_action, push_breath, take_carry_item,
-};
+use super::movement::{add_carry_item, add_language_exposure, push_breath, take_carry_item};
 use super::persona::{ValueAxis, derive_innate_persona};
 use super::sim_tick::broadcast_scene_event;
 use super::types::{CarryItem, IslandWorldDelta, PickupRecord, WorldStaticDoc};
@@ -38,42 +36,7 @@ fn record_mutual_trade_evidence(
     }
 }
 
-/// 優先自當前場景 `node_occupants` $O(1)$ 查找在場行當人物，其次僅查同聚落公共街區之 `node_occupants`（嚴守 $O(1)$ 城鎮局域查找，零全服 $O(N)$ 掃描、零 `doc.residents` 依賴！）
-fn find_counterparty_actor(
-    doc: &WorldStaticDoc,
-    delta: &IslandWorldDelta,
-    self_aid: &str,
-    node_id: &str,
-    cell_id: u32,
-    real_unix: i64,
-    role_name: &str,
-) -> Option<String> {
-    let can_transact = |a: &super::types::UnifiedMindBody| -> bool {
-        a.alive
-            && a.setup_done
-            && a.role == role_name
-            && (a.controller_id.is_none() || real_unix - a.last_active_unix >= 1800)
-    };
-    if let Some(occ) = delta.node_occupants.get(node_id)
-        && let Some(found) = occ
-            .iter()
-            .find(|&oid| oid != self_aid && delta.actors.get(oid).is_some_and(can_transact))
-    {
-        return Some(found.clone());
-    }
-    for (nid, nd) in &doc.nodes {
-        if nd.cell_id == cell_id
-            && nid != node_id
-            && let Some(occ) = delta.node_occupants.get(nid)
-            && let Some(found) = occ
-                .iter()
-                .find(|&oid| oid != self_aid && delta.actors.get(oid).is_some_and(can_transact))
-        {
-            return Some(found.clone());
-        }
-    }
-    None
-}
+use super::scene_sockets::{find_same_node_counterparty, parse_counterparty_and_quote};
 
 pub fn apply_world_action(
     doc: &WorldStaticDoc,
@@ -90,7 +53,9 @@ pub fn apply_world_action(
         let Some(a) = delta.actors.get_mut(&aid) else {
             return Err("請先向港務官核對通行身分。".to_string());
         };
-        a.last_active_unix = clock.real_unix;
+        if a.controller_id.is_some() {
+            a.last_active_unix = clock.real_unix;
+        }
         (
             a.setup_done,
             a.active_skirmish.is_some(),
@@ -109,141 +74,104 @@ pub fn apply_world_action(
     if in_skirmish {
         return Err("眼前正與敵手短兵相接，無暇分心做別的事！".to_string());
     }
-    if in_transit && action != "carriage_next" && action != "carriage_alight" {
-        return Err("雙馬篷車正在大路上奔馳，需下車後才能辦這件事。".to_string());
+    if in_transit
+        && !matches!(
+            action,
+            "carriage_next" | "carriage_alight" | "transit_alight_next"
+        )
+    {
+        return Err(
+            "車船正在航道官道上行進，可選擇「下一站下車」或「中途下車」後再辦這件事。".to_string(),
+        );
     }
 
     let Some(node) = doc.nodes.get(&node_id) else {
         return Err("四周霧氣迷濛，暫時辨不清方位。".to_string());
     };
 
-    let smith_id = match action {
-        "forge_help" | "repair_weapon" | "engrave_rune" | "sell_specialty" => {
-            find_counterparty_actor(
-                doc,
-                delta,
-                &aid,
-                &node_id,
-                node.cell_id,
-                clock.real_unix,
-                "鍛鐵匠",
-            )
+    let (explicit_cp_tok, quoted_copper) = parse_counterparty_and_quote(param);
+    let check_quote = |actual_price: i64| -> Result<(), String> {
+        if let Some(q) = quoted_copper
+            && q != actual_price
+        {
+            return Err(format!(
+                "當面議定現價已變為 {} 枚銅幣，請重新確認報價。",
+                actual_price
+            ));
         }
-        _ => None,
+        Ok(())
     };
-    let innkeeper_id = match action {
-        "redeem_voucher" | "rent_inn" | "buy_ration" => find_counterparty_actor(
-            doc,
+    let find_cp_roles = |roles: &[&str]| {
+        find_same_node_counterparty(
             delta,
             &aid,
             &node_id,
-            node.cell_id,
             clock.real_unix,
-            "酒館掌櫃",
-        ),
-        _ => None,
-    };
-    let coach_id = if action.starts_with("board_carriage") || action.starts_with("carriage_") {
-        find_counterparty_actor(
-            doc,
-            delta,
-            &aid,
-            &node_id,
-            node.cell_id,
-            clock.real_unix,
-            "車行掌櫃",
+            roles,
+            if action == "sell_specialty" {
+                None
+            } else {
+                explicit_cp_tok
+            },
         )
-    } else {
-        None
     };
-    let herb_id = if action == "bandage_wound" || action == "sell_specialty" {
-        find_counterparty_actor(
-            doc,
-            delta,
-            &aid,
-            &node_id,
-            node.cell_id,
-            clock.real_unix,
-            "草藥師",
-        )
-    } else {
-        None
-    };
-    let porter_id = if action == "work_dock" || action == "sell_specialty" {
-        find_counterparty_actor(
-            doc,
-            delta,
-            &aid,
-            &node_id,
-            node.cell_id,
-            clock.real_unix,
-            "碼頭苦力",
-        )
-    } else {
-        None
-    };
+    let smith_id = matches!(
+        action,
+        "forge_help"
+            | "repair_weapon"
+            | "engrave_rune"
+            | "sell_specialty"
+            | "commission_custom_vessel"
+            | "collect_custom_vessel"
+    )
+    .then(|| find_cp_roles(&["鍛鐵匠", "鍛鐵匠學徒", "木匠"]))
+    .flatten();
+    let innkeeper_id = matches!(action, "redeem_voucher" | "rent_inn" | "buy_ration")
+        .then(|| find_cp_roles(&["酒館掌櫃", "酒館掌櫃學徒"]))
+        .flatten();
+    let coach_id = (action.starts_with("board_carriage")
+        || action.starts_with("carriage_")
+        || action == "board_transit"
+        || action == "transit_alight_next")
+        .then(|| find_cp_roles(&["車行掌櫃"]))
+        .flatten();
+    let herb_id = (action == "bandage_wound" || action == "sell_specialty")
+        .then(|| find_cp_roles(&["草藥師", "草藥師學徒"]))
+        .flatten();
+    let porter_id = (action == "work_dock" || action == "sell_specialty")
+        .then(|| find_cp_roles(&["碼頭苦力", "港務記籌手"]))
+        .flatten();
+    let guard_id = (action == "declare_found_bag")
+        .then(|| find_cp_roles(&["巡城衛兵", "關哨衛兵", "檢疫衛兵"]))
+        .flatten();
 
     match action {
         "work_dock" => {
             if node.kind != "dock" {
-                return Err("需在港務碼頭才能幫忙扛貨賺取工錢。".to_string());
+                return Err("需在港務碼頭才能幫忙搬卸靠岸船貨。".to_string());
             }
-            if delta.actors.get(&aid).is_some_and(|a| a.fatigue >= 85) {
-                return Err("你雙肩痠沉氣喘吁吁，先吃口乾糧或回宿房歇息再扛重活吧。".to_string());
-            }
-            let paid_by_porter = if let Some(ref pid_npc) = porter_id {
-                delta.transfer_copper(
-                    clock.game_days,
-                    clock.bell_index,
-                    "work_dock",
-                    pid_npc,
-                    &aid,
-                    4,
-                    "港務碼頭扛貨工資".to_string(),
-                )
-            } else {
-                false
-            };
-            if paid_by_porter {
-                if let Some(ref pid_npc) = porter_id {
-                    record_mutual_trade_evidence(
-                        delta,
-                        clock.game_days,
-                        &aid,
-                        pid_npc,
-                        "港務碼頭扛貨工資",
-                    );
-                }
-            } else if !delta.transfer_copper(
-                clock.game_days,
-                clock.bell_index,
-                "work_dock",
-                "municipal_treasury",
+            check_quote(4)?;
+            super::live_tide::settle_work_dock_action(
+                doc,
+                delta,
+                clock,
+                &node_id,
                 &aid,
-                4,
-                "港務碼頭扛貨工資".to_string(),
-            ) {
-                return Err("今日碼頭貨船已卸完，暫無零工可派。".to_string());
-            }
-            let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            a.fatigue = (a.fatigue + 12).min(95);
-            a.mind.stm.today_goal_progressed = true;
-            a.mark_mutated();
-            let msg = "你捲起衣袖幫著把幾隻鹽漬海獸皮箱扛上棧橋，領工點給你 4 枚沉甸甸的銅幣。"
-                .to_string();
-            push_breath(a, msg.clone());
-            Ok(msg)
+                porter_id.as_deref(),
+            )
         }
         "forge_help" => {
             if !node.name.contains("鍛鐵") && !node.name.contains("鐵匠") {
-                return Err("需在鐵匠鋪或鐵匠街爐邊才能幫忙拉風箱打下手。".to_string());
+                return Err("需在鐵匠鋪爐邊才能幫忙拉風箱打下手。".to_string());
             }
-            if delta.actors.get(&aid).is_some_and(|a| a.fatigue >= 85) {
-                return Err("你手臂發軟，歇口氣再拉風箱才不會失手燙傷。".to_string());
+            if clock.is_night {
+                return Err("夜深鐵匠鋪已封爐落栓打烊，待破曉後晨鐘二響再開爐吧。".to_string());
             }
             let Some(ref sid) = smith_id else {
-                return Err("鐵匠師傅此刻不在爐邊。".to_string());
+                return Err("石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊。".to_string());
             };
+            check_quote(5)?;
+            super::live_tide::check_forge_shift_eligible(delta, clock, &aid)?;
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
@@ -255,6 +183,7 @@ pub fn apply_world_action(
             ) {
                 return Err("鐵匠鋪手頭零錢暫時周轉不開。".to_string());
             }
+            super::live_tide::record_forge_shift_claimed(delta, clock, &aid);
             record_mutual_trade_evidence(delta, clock.game_days, &aid, sid, "鐵匠鋪拉風箱工錢");
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             a.fatigue = (a.fatigue + 14).min(95);
@@ -274,32 +203,32 @@ pub fn apply_world_action(
             if !node.name.contains("鍛鐵") && !node.name.contains("鐵匠") {
                 return Err("需在鐵匠鋪內才能請師傅修補兵刃。".to_string());
             }
-            let payee = smith_id.as_deref().unwrap_or("municipal_treasury");
+            if clock.is_night {
+                return Err("夜深鐵匠鋪已封爐落栓打烊，待破曉後晨鐘二響再開爐吧。".to_string());
+            }
+            let Some(ref sid) = smith_id else {
+                return Err(
+                    "石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊，暫無法開爐修刃。".to_string()
+                );
+            };
+            check_quote(4)?;
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "repair_weapon",
                 &aid,
-                payee,
+                sid,
                 4,
                 "鐵匠鋪修補兵刃工資".to_string(),
             ) {
                 return Err("修補隨身器物需要 4 枚銅幣，你懷裡銅板還不夠。".to_string());
             }
-            if let Some(ref sid) = smith_id {
-                record_mutual_trade_evidence(
-                    delta,
-                    clock.game_days,
-                    &aid,
-                    sid,
-                    "鐵匠鋪修補兵刃工資",
-                );
-            }
+            record_mutual_trade_evidence(delta, clock.game_days, &aid, sid, "鐵匠鋪修補兵刃工資");
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             a.bound_weapon.wear_stage = 0;
             a.mark_mutated();
             let msg = format!(
-                "鐵匠接過你的【{}】燒紅校直、重新加固木柄，收下 4 枚銅幣，錘刃恢復完好如初。",
+                "匠師接過你的【{}】燒紅校直、重新加固木柄，收下 4 枚銅幣，錘刃恢復完好如初。",
                 a.bound_weapon.name
             );
             push_breath(a, msg.clone());
@@ -309,40 +238,44 @@ pub fn apply_world_action(
             if !node.name.contains("鍛鐵") && !node.name.contains("鐵匠") {
                 return Err("需在鐵匠鋪石爐旁才能鑲刻原石鐵紋。".to_string());
             }
-            let (has_stone, pname, wname) = {
+            if clock.is_night {
+                return Err("夜深鐵匠鋪已封爐落栓打烊，待破曉後晨鐘二響再開爐吧。".to_string());
+            }
+            let Some(ref sid) = smith_id else {
+                return Err(
+                    "石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊，暫無法鑲刻原石。".to_string()
+                );
+            };
+            check_quote(6)?;
+            let (has_stone, already_runed, pname, wname) = {
                 let a = delta.actors.get(&aid).ok_or("找不到旅人行蹤")?;
                 (
                     a.backpack
                         .iter()
-                        .any(|i| i.slug == "rune_stone" && i.count > 0),
+                        .any(|i| i.slug == "rune_stone" && i.count > 0 && i.bound_owner.is_none()),
+                    a.bound_weapon.rune_mark.is_some(),
                     a.display_name.clone(),
                     a.bound_weapon.name.clone(),
                 )
             };
+            if already_runed {
+                return Err("你掌中兵刃已刻有符紋，無須重複鑲刻損耗原石。".to_string());
+            }
             if !has_stone {
                 return Err("背囊裡沒有【古符文原石】，無法鑲刻鐵紋。".to_string());
             }
-            let payee = smith_id.as_deref().unwrap_or("municipal_treasury");
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "engrave_rune",
                 &aid,
-                payee,
+                sid,
                 6,
                 "鑲刻古符文原石鐵紋".to_string(),
             ) {
                 return Err("鑲刻工資需要 6 枚銅幣。".to_string());
             }
-            if let Some(ref sid) = smith_id {
-                record_mutual_trade_evidence(
-                    delta,
-                    clock.game_days,
-                    &aid,
-                    sid,
-                    "鑲刻古符文原石鐵紋",
-                );
-            }
+            record_mutual_trade_evidence(delta, clock.game_days, &aid, sid, "鑲刻古符文原石鐵紋");
             {
                 let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
                 let _ = take_carry_item(&mut a.backpack, "rune_stone", 1);
@@ -351,6 +284,15 @@ pub fn apply_world_action(
                 a.mind.stm.today_goal_progressed = true;
                 a.mark_mutated();
             }
+            let _ = super::phase_and_vessels::record_craft_work_and_check_phase(
+                doc,
+                delta,
+                clock,
+                &aid,
+                "engrave_rune",
+                "forge",
+                &node_id,
+            );
             broadcast_scene_event(
                 doc,
                 delta,
@@ -368,65 +310,131 @@ pub fn apply_world_action(
             );
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             let msg = format!(
-                "鐵匠以重錘將溫潤原石鍛入【{}】脊部，鏨出細密沉穩的鐵紋——此後揮擊重甲異獸將格外沉猛且不易崩口！",
+                "匠師以重錘將溫潤原石鍛入【{}】脊部，鏨出細密沉穩的鐵紋——此後揮擊重甲異獸將格外沉猛且不易崩口！",
                 a.bound_weapon.name
             );
             push_breath(a, msg.clone());
             Ok(msg)
         }
         "redeem_voucher" => {
-            if !node.name.contains("酒館") {
-                return Err("請在酒館櫃台前出示船東抵宿券。".to_string());
+            if node.kind != "shop" || !node.name.contains("酒館") {
+                return Err("請在一樓酒館櫃台前出示船東抵宿券。".to_string());
             }
+            if innkeeper_id.is_none() {
+                return Err("櫃台後此刻暫無人看顧房牌，稍候掌櫃或學徒回來即可換領。".to_string());
+            }
+            {
+                let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+                if take_carry_item(&mut a.backpack, "lodging_voucher", 1).is_none() {
+                    return Err("你身上並沒有船東抵宿券。".to_string());
+                }
+                a.inn_nights_left += 2;
+                a.mark_mutated();
+            }
+            let seed_now = delta.actors.get(&aid).map_or(1, |a| a.soul_seed.max(1));
+            let assigned = super::ongoing_activity::assign_numbered_inn_room(
+                doc,
+                delta,
+                node.cell_id,
+                seed_now,
+            );
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            if take_carry_item(&mut a.backpack, "lodging_voucher", 1).is_none() {
-                return Err("你身上並沒有船東抵宿券。".to_string());
-            }
-            a.inn_nights_left += 2;
-            a.mark_mutated();
-            let msg = "掌櫃核對完抵宿券上的船東印記，笑著遞來二樓閣樓木牌：「房間替你留好兩宿，隨時能上樓歇息或把重貨鎖進床頭木箱。」"
-                .to_string();
+            let room_note = if let Some((rid, rname)) = assigned {
+                a.assigned_inn_room = Some(rid);
+                rname.split('・').last().unwrap_or(&rname).to_string()
+            } else {
+                "二樓客房".to_string()
+            };
+            let msg = format!(
+                "櫃台核對完抵宿券上的船東印記，遞來二樓【{}】木牌：「房間替你留好兩宿，隨時能上樓推門歇息或把重貨鎖進床頭木箱。」",
+                room_note
+            );
             push_breath(a, msg.clone());
             Ok(msg)
         }
         "rent_inn" => {
-            if !node.name.contains("酒館") {
-                return Err("需在酒館櫃台才能付錢投宿。".to_string());
+            if node.kind != "shop" || !node.name.contains("酒館") {
+                return Err("需在一樓酒館櫃台才能付錢投宿。".to_string());
             }
-            let payee = innkeeper_id.as_deref().unwrap_or("municipal_treasury");
+            let Some(ref ik) = innkeeper_id else {
+                return Err(
+                    "櫃台後此刻暫無人看顧房牌，稍候掌櫃或值夜學徒回來即可投宿。".to_string()
+                );
+            };
+            check_quote(3)?;
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "rent_inn",
                 &aid,
-                payee,
+                ik,
                 3,
                 "續租二樓閣樓客房一宿".to_string(),
             ) {
                 return Err("投宿一晚需要 3 枚銅幣。".to_string());
             }
-            if let Some(ref ik) = innkeeper_id {
-                record_mutual_trade_evidence(
-                    delta,
-                    clock.game_days,
-                    &aid,
-                    ik,
-                    "續租二樓閣樓客房一宿",
-                );
-            }
+            record_mutual_trade_evidence(delta, clock.game_days, &aid, ik, "續租客房一宿");
+            let seed_now = delta.actors.get(&aid).map_or(1, |a| a.soul_seed.max(1));
+            let assigned = super::ongoing_activity::assign_numbered_inn_room(
+                doc,
+                delta,
+                node.cell_id,
+                seed_now,
+            );
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             a.inn_nights_left += 1;
+            let room_note = if let Some((rid, rname)) = assigned {
+                a.assigned_inn_room = Some(rid);
+                format!(
+                    "（分得二樓【{}】木牌）",
+                    rname.split('・').last().unwrap_or(&rname)
+                )
+            } else {
+                String::new()
+            };
             a.mark_mutated();
-            let msg = "你付了 3 枚銅幣續訂一宿二樓閣樓客房，可由樓梯上樓安歇與使用床頭厚木箱。"
-                .to_string();
+            let msg = format!(
+                "你付了 3 枚銅幣續訂一宿二樓獨立客房{}，可由樓梯上樓進房安歇與使用床頭厚木箱。",
+                room_note
+            );
             push_breath(a, msg.clone());
             Ok(msg)
         }
         "buy_ration" => {
-            if !node.name.contains("酒館") {
-                return Err("需在酒館櫃台才能購買乾糧。".to_string());
+            if node.kind != "shop" || !node.name.contains("酒館") {
+                return Err("需在一樓酒館才能購買黑麥乾糧。".to_string());
             }
-            let payee = innkeeper_id.as_deref().unwrap_or("municipal_treasury");
+            check_quote(2)?;
+            let is_self_basket = explicit_cp_tok == Some("self_basket");
+            let any_tavern_staff_present = find_same_node_counterparty(
+                delta,
+                &aid,
+                &node_id,
+                clock.real_unix,
+                &["酒館掌櫃", "酒館掌櫃學徒"],
+                None,
+            )
+            .is_some();
+            if is_self_basket && any_tavern_staff_present {
+                return Err("掌櫃或學徒正在櫃台當值，請直接向櫃台購買乾糧。".to_string());
+            }
+            if !is_self_basket && innkeeper_id.is_none() {
+                return Err(
+                    "掌櫃與學徒此刻暫不在櫃台後；若竹簍尚有存糧，可由櫃頭乾糧竹簍投幣自取。"
+                        .to_string(),
+                );
+            }
+            let (_, keeper_stock_id) =
+                super::household_economy::find_town_tavern_and_keeper(doc, delta, node.cell_id);
+            let Some(ref kid) = keeper_stock_id else {
+                return Err("酒館糧櫃尚未備妥。".to_string());
+            };
+            if !super::household_economy::try_consume_tavern_stock_one(delta, kid, &node_id) {
+                return Err(
+                    "今日酒館竹籃裡的黑麥乾糧剛被買空，得等明日農漁戶送來新糧。".to_string()
+                );
+            }
+            let payee = innkeeper_id.as_deref().unwrap_or(kid.as_str());
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
@@ -434,8 +442,13 @@ pub fn apply_world_action(
                 &aid,
                 payee,
                 2,
-                "購買酒館黑麥乾糧".to_string(),
+                if is_self_basket {
+                    "酒館竹簍投幣自取黑麥乾糧".to_string()
+                } else {
+                    "購買酒館黑麥乾糧".to_string()
+                },
             ) {
+                super::household_economy::restore_tavern_stock_one(delta, kid, &node_id);
                 return Err("一份黑麥乾糧需要 2 枚銅幣。".to_string());
             }
             if let Some(ref ik) = innkeeper_id {
@@ -448,15 +461,18 @@ pub fn apply_world_action(
                     slug: "rye_bread".to_string(),
                     name: "黑麥乾糧".to_string(),
                     count: 1,
-                    bound_owner: None,
-                    stolen_from: None,
                     weight_units: 1,
+                    ..CarryItem::default()
                 },
             );
             a.mark_mutated();
-            let msg =
-                "你花 2 枚銅幣買下一包烘得紮實的【黑麥乾糧】，遠行充飢或遇上灰耳斥候都派得上用場。"
-                    .to_string();
+            let msg = if is_self_basket {
+                "你往櫃頭誠實木筒裡投入 2 枚銅幣，從竹簍取走一包烘得紮實的【黑麥乾糧】。"
+                    .to_string()
+            } else {
+                "你花 2 枚銅幣向櫃台買下一包烘得紮實的【黑麥乾糧】，遠行充飢或遇上灰耳斥候都派得上用場。"
+                    .to_string()
+            };
             push_breath(a, msg.clone());
             Ok(msg)
         }
@@ -473,9 +489,12 @@ pub fn apply_world_action(
             Ok(msg)
         }
         "buy_rescue_pact" => {
-            if !node.name.contains("酒館") {
-                return Err("需在酒館櫃台才能簽立逾時搜救契。".to_string());
+            let at_public_board =
+                node.kind == "plaza" || (node.kind == "shop" && node.name.contains("酒館"));
+            if !at_public_board {
+                return Err("需在市集廣場或酒館的公櫃掛牌木欄前才能簽立逾時搜救契。".to_string());
             }
+            check_quote(5)?;
             if delta.actors.get(&aid).is_some_and(|a| a.rescue_pact_active) {
                 return Ok("你已簽有生效中的逾時搜救契，無須重複花錢。".to_string());
             }
@@ -486,14 +505,14 @@ pub fn apply_world_action(
                 &aid,
                 "municipal_treasury",
                 5,
-                "簽立逾時搜救契".to_string(),
+                "公櫃簽立逾時搜救契".to_string(),
             ) {
                 return Err("簽立逾時搜救契需要 5 枚銅幣。".to_string());
             }
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             a.rescue_pact_active = true;
             a.mark_mutated();
-            let msg = "你交出 5 枚銅幣在酒館木牌登記行蹤——萬一在荒野或坑道力竭昏厥，巡林隊會把你直接抬回草藥堂敷藥。"
+            let msg = "你往公櫃錢匣投入 5 枚銅幣並在巡防木牌簽下行蹤——萬一在荒野或坑道力竭昏厥，巡林隊會把你直接抬回草藥堂敷藥。"
                 .to_string();
             push_breath(a, msg.clone());
             Ok(msg)
@@ -515,6 +534,8 @@ pub fn apply_world_action(
             let cash_short = a.copper < 3;
             a.mind
                 .run_sleep_consolidation(&innate, &mut a.drift, clock.game_days, cash_short);
+            let _ =
+                super::world_weave_bio::refresh_actor_biography_if_needed(doc, a, clock.game_days);
             a.mark_mutated();
             let msg =
                 "你在乾燥溫暖的木床上沉沉睡了一覺，白日見聞在夢裡沉澱清晰，渾身疲乏盡數消散。"
@@ -534,8 +555,14 @@ pub fn apply_world_action(
                 );
             }
             let slug = param.trim();
-            if slug == "lodging_voucher" {
-                return Err("船東抵宿券是隨身住宿憑據，直接拿去樓下櫃台兌換即可。".to_string());
+            if slug == "lodging_voucher"
+                || a.backpack
+                    .iter()
+                    .any(|i| i.slug == slug && i.bound_owner.is_some())
+            {
+                return Err(
+                    "隨身記名憑據、借領工具與待送家書須隨身保管，不可鎖入木箱。".to_string()
+                );
             }
             let Some(item) = take_carry_item(&mut a.backpack, slug, 1) else {
                 return Err("背囊裡找不到該件物品。".to_string());
@@ -579,6 +606,13 @@ pub fn apply_world_action(
             if !node.name.contains("草藥") {
                 return Err("需在苦艾草藥堂才能請草藥師敷藥包紮。".to_string());
             }
+            if clock.is_night {
+                return Err("夜深草藥堂已落栓打烊，待破曉開門再來敷藥吧。".to_string());
+            }
+            let Some(ref hid) = herb_id else {
+                return Err("藥臼旁暫無人看顧，草藥師與學徒此刻不在堂內。".to_string());
+            };
+            check_quote(3)?;
             if delta
                 .actors
                 .get(&aid)
@@ -586,133 +620,55 @@ pub fn apply_world_action(
             {
                 return Ok("草藥師端詳了你的氣色：「筋骨完好無損，不用白花這筆藥錢。」".to_string());
             }
-            let payee = herb_id.as_deref().unwrap_or("municipal_treasury");
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "bandage_wound",
                 &aid,
-                payee,
+                hid,
                 3,
                 "草藥堂敷藥包紮傷處".to_string(),
             ) {
                 return Err("敷藥包紮需要 3 枚銅幣。".to_string());
             }
-            if let Some(ref hid) = herb_id {
-                record_mutual_trade_evidence(
-                    delta,
-                    clock.game_days,
-                    &aid,
-                    hid,
-                    "草藥堂敷藥包紮傷處",
-                );
-            }
+            record_mutual_trade_evidence(delta, clock.game_days, &aid, hid, "草藥堂敷藥包紮傷處");
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             let old_w = a.wound_part.take().unwrap_or_else(|| "舊傷".to_string());
             a.severe_wrist_warning = false;
             a.mark_mutated();
             let msg = format!(
-                "草藥師以溫熱苦艾膏替你敷妥【{}】並纏緊亞麻繃帶，瘀痛頓時消減大半。",
+                "堂內醫者以溫熱苦艾膏替你敷妥【{}】並纏緊亞麻繃帶，瘀痛頓時消減大半。",
                 old_w
             );
             push_breath(a, msg.clone());
             Ok(msg)
         }
-        "sell_specialty" => {
-            if node.kind != "shop" && node.kind != "dock" && node.kind != "plaza" {
-                return Err("需在商鋪、市集廣場或港務碼頭才能出售採集貨品。".to_string());
-            }
-            let sell_table = [
-                ("rune_stone", 15_i64),
-                ("spider_carapace", 12_i64),
-                ("iron_ore", 5_i64),
-                ("driftwood", 4_i64),
-                ("herb_bundle", 4_i64),
-            ];
-            let chosen = {
-                let a = delta.actors.get(&aid).ok_or("找不到旅人行蹤")?;
-                sell_table.iter().find_map(|(slug, price)| {
-                    a.backpack
-                        .iter()
-                        .find(|i| i.slug == *slug && i.count > 0 && i.bound_owner.is_none())
-                        .map(|i| {
-                            (
-                                (*slug).to_string(),
-                                i.name.clone(),
-                                *price,
-                                i.stolen_from.is_some(),
-                            )
-                        })
-                })
-            };
-            let Some((slug, iname, base_price, is_unclaimed)) = chosen else {
-                return Err(
-                    "背囊裡目前沒有可出售的山海貨品（如漂流木、止血草、粗鐵礦、巨蛛甲殼或原石）。"
-                        .to_string(),
-                );
-            };
-            let final_price = if is_unclaimed {
-                (base_price / 2).max(1)
-            } else {
-                base_price
-            };
-            let buyer = if node.name.contains("草藥") {
-                herb_id.as_deref().or(smith_id.as_deref())
-            } else {
-                smith_id
-                    .as_deref()
-                    .or(herb_id.as_deref())
-                    .or(porter_id.as_deref())
-            };
-            let summary = format!("收購山海特產【{}】", iname);
-            let paid_by_npc = if let Some(bid) = buyer {
-                if delta.transfer_copper(
-                    clock.game_days,
-                    clock.bell_index,
-                    "sell_specialty",
-                    bid,
-                    &aid,
-                    final_price,
-                    summary.clone(),
-                ) {
-                    record_mutual_trade_evidence(delta, clock.game_days, &aid, bid, &summary);
-                    true
-                } else {
-                    false
-                }
-            } else {
-                false
-            };
-            if !paid_by_npc {
-                let allow_public = node.kind == "dock" || node.kind == "plaza";
-                if !allow_public
-                    || !delta.transfer_copper(
-                        clock.game_days,
-                        clock.bell_index,
-                        "sell_specialty",
-                        "municipal_treasury",
-                        &aid,
-                        final_price,
-                        summary,
-                    )
-                {
-                    return Err("收貨商販手頭銅幣暫時不足。".to_string());
-                }
-            }
-            let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            let _ = take_carry_item(&mut a.backpack, &slug, 1);
-            a.mind.stm.today_goal_progressed = true;
-            a.mark_mutated();
-            let msg = format!(
-                "你將【{}】過秤交予收貨行商，當面點收 {} 枚銅幣。",
-                iname, final_price
-            );
-            push_breath(a, msg.clone());
-            Ok(msg)
-        }
-        "board_carriage_west" | "board_carriage_east" | "carriage_next" | "carriage_alight" => {
-            apply_carriage_action(doc, delta, clock, &aid, node, coach_id.as_deref(), action)
-        }
+        "sell_specialty" => super::cell_resources::settle_sell_specialty_action(
+            delta,
+            clock,
+            &aid,
+            node,
+            param,
+            smith_id.as_deref(),
+            herb_id.as_deref(),
+            porter_id.as_deref(),
+            record_mutual_trade_evidence,
+        ),
+        "board_carriage_west"
+        | "board_carriage_east"
+        | "carriage_next"
+        | "carriage_alight"
+        | "board_transit"
+        | "transit_alight_next" => super::transit_and_cargo::apply_carriage_action(
+            doc,
+            delta,
+            clock,
+            &aid,
+            node,
+            coach_id.as_deref(),
+            action,
+            param,
+        ),
         "pickup_dropped_bag" => {
             let bag_opt = delta
                 .dropped_loot_by_node
@@ -739,15 +695,33 @@ pub fn apply_world_action(
             };
             let is_own =
                 bag.owner_id == aid || ctrl_opt.as_deref().is_some_and(|cid| bag.owner_id == cid);
-            let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            a.copper += bag.copper;
-            for mut it in bag.items {
-                if !is_own {
-                    it.stolen_from = Some(bag.owner_id.clone());
+            let mut restored_haul: Option<super::types::OngoingActivityState> = None;
+            let mut has_non_dock_item = false;
+            {
+                let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+                a.copper += bag.copper;
+                for mut it in bag.items {
+                    if it.slug == "dock_cargo_crate" {
+                        if a.ongoing_activity.is_none() && restored_haul.is_none() {
+                            restored_haul =
+                                super::ongoing_activity::reconstruct_dock_haul_from_crate(
+                                    doc, &node_id, &it,
+                                );
+                        }
+                    } else {
+                        has_non_dock_item = true;
+                        if !is_own {
+                            it.stolen_from = Some(bag.owner_id.clone());
+                        }
+                    }
+                    add_carry_item(&mut a.backpack, it);
                 }
-                add_carry_item(&mut a.backpack, it);
+                if let Some(st) = restored_haul.clone() {
+                    a.ongoing_activity = Some(st);
+                }
+                a.mark_mutated();
             }
-            a.mark_mutated();
+            delta.extras_dirty = true;
             if bag.copper > 0 {
                 delta.push_ledger_entry(
                     clock.game_days,
@@ -759,7 +733,7 @@ pub fn apply_world_action(
                     format!("於{}拾起遺落行囊內銅幣", node.name),
                 );
             }
-            if !is_own {
+            if !is_own && (has_non_dock_item || bag.copper > 0) {
                 delta.pickup_ledger.push(PickupRecord {
                     picker_id: aid.clone(),
                     original_owner: bag.owner_id.clone(),
@@ -769,7 +743,12 @@ pub fn apply_world_action(
                 });
             }
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            let msg = if is_own {
+            let msg = if let Some(st) = restored_haul {
+                format!(
+                    "你彎腰重新扛起地上的港務封蠟貨箱（{}），送抵指定店鋪即可領取腳錢，或隨時放下。",
+                    st.label_zh
+                )
+            } else if is_own {
                 format!(
                     "你找回了自己先前遺落的行囊，清點取回 {} 枚銅幣與隨身貨品！",
                     bag.copper
@@ -785,7 +764,12 @@ pub fn apply_world_action(
         }
         "declare_found_bag" => {
             if node.kind != "gate" && node.kind != "plaza" {
-                return Err("請在城門衛兵或市集廣場公設木牌處申報拾遺。".to_string());
+                return Err("請向城門當值衛兵或市集廣場公櫃木牌申報拾遺。".to_string());
+            }
+            if node.kind == "gate" && guard_id.is_none() {
+                return Err(
+                    "城門哨口此刻沒有衛兵在場核對章記，可稍候或改赴市集廣場公櫃登記。".to_string(),
+                );
             }
             let mut declared_any = false;
             for rec in &mut delta.pickup_ledger {
@@ -873,6 +857,9 @@ pub fn apply_world_action(
                 a.mark_mutated();
                 a.display_name.clone()
             };
+            super::living_chronicler::record_vacant_house_bought(
+                doc, delta, clock, &aid, &node_id, price,
+            );
             broadcast_scene_event(
                 doc,
                 delta,
@@ -910,8 +897,29 @@ pub fn apply_world_action(
                 )
             };
             push_breath(a, msg.clone());
+            a.mark_mutated();
             Ok(msg)
         }
-        _ => Err("此處暫無這項舉動。".to_string()),
+        _ => {
+            if let Some(res) = super::mesh_expedition::apply_expedition_action(
+                doc, delta, clock, &aid, node, action,
+            ) {
+                return res;
+            }
+            if let Some(res) = super::ongoing_activity::try_dispatch_embodied_action(
+                doc,
+                delta,
+                clock,
+                &aid,
+                node,
+                smith_id.as_deref(),
+                action,
+            ) {
+                return res;
+            }
+            super::unified_kernel::dispatch_extended_shared_verb(
+                doc, delta, clock, &aid, action, param,
+            )
+        }
     }
 }

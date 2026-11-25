@@ -1,0 +1,60 @@
+{
+  "id": "oi:burg_4695:h1",
+  "name": "風語橋哨・一號盾牌達因家",
+  "desc": "矮人巡城衛兵盾牌達因一家四口居所，西廂擺著四張矮人紅毯木床，東廳石灶熬著滾燙麥湯，牆邊立著巡城圓盾、鐵矛與號角架。",
+  "world_w": 2048,
+  "world_h": 2048,
+  "is_indoor": true,
+  "floor_terrain": "oak_planks",
+  "seed": 469511,
+  "gpu_strength": 0.32,
+  "gpu_prompt": "90-degree straight-down zenithal top-down hand-inked sepia pen and warm mineral watercolor RPG dwarven guard cottage interior on parchment, four red-quilted wooden beds in west room, glowing stone fireplace hearth and barley stew cauldron, wooden feast table, shield and spear weapon rack, Dungeondraft style, zero perspective, no text",
+  "room_rect": [260, 280, 1788, 1720],
+  "ext_step": [910, 1720, 1138, 1855],
+  "exit_xy": [1024, 1745],
+  "spawn_xy": [1024, 1520],
+  "npc_spots": [
+    [1120, 990],
+    [1460, 700],
+    [570, 990],
+    [1310, 1380]
+  ],
+  "rugs": [
+    { "shape": "oval", "box": [1145, 785, 1535, 1195], "col": [148, 72, 56] }
+  ],
+  "walls": [
+    [260, 280, 1788, 280, "stone", 38],
+    [260, 280, 260, 1720, "stone", 38],
+    [1788, 280, 1788, 1720, "stone", 38],
+    [260, 1720, 920, 1720, "stone", 38],
+    [1128, 1720, 1788, 1720, "stone", 38],
+    [880, 280, 880, 850, "wood", 30],
+    [880, 1150, 880, 1720, "wood", 30]
+  ],
+  "door_leaves": [
+    [920, 1720, 995, 1655],
+    [880, 850, 945, 910]
+  ],
+  "props": [
+    { "asset": "rug_kilim", "x": 570, "y": 995, "w": 360, "h": 250, "solid": false },
+    { "asset": "bed_dwarf", "x": 435, "y": 495, "w": 192, "h": 276, "solid": true },
+    { "asset": "bed_dwarf", "x": 705, "y": 495, "w": 192, "h": 276, "solid": true },
+    { "asset": "bed_dwarf", "x": 435, "y": 1495, "w": 192, "h": 276, "deg": 180, "solid": true },
+    { "asset": "bed_dwarf", "x": 705, "y": 1495, "w": 192, "h": 276, "deg": 180, "solid": true },
+    { "asset": "hearth_stone", "x": 1335, "y": 425, "w": 320, "h": 240, "solid": true },
+    { "asset": "cauldron_pot", "x": 1595, "y": 450, "w": 158, "h": 158, "solid": true },
+    { "asset": "table_feast", "x": 1340, "y": 990, "w": 300, "h": 336, "solid": true },
+    { "asset": "shield_spear_rack", "x": 1655, "y": 990, "w": 210, "h": 210, "deg": 90, "solid": true },
+    { "asset": "wormwood_bundles", "x": 1245, "y": 1565, "w": 165, "h": 198, "solid": true },
+    { "asset": "barrel_cluster", "x": 1615, "y": 1545, "w": 190, "h": 215, "solid": true }
+  ],
+  "lights": [
+    { "x": 1335, "y": 475, "radius": 820, "intensity": 0.66, "color": [1.0, 0.68, 0.30] },
+    { "x": 570, "y": 995, "radius": 480, "intensity": 0.28, "color": [1.0, 0.84, 0.58] }
+  ],
+  "npcs": [
+    { "id": "res:burg_4695:h1_1", "name": "號角格林", "role": "矮人家眷", "x": 1460, "y": 700 },
+    { "id": "res:burg_4695:h1_3", "name": "盾牌布隆", "role": "矮人年輕幫手", "x": 1120, "y": 990 },
+    { "id": "res:burg_4695:h1_2", "name": "鐵矛烏爾", "role": "矮人年輕幫手", "x": 570, "y": 990 }
+  ]
+}

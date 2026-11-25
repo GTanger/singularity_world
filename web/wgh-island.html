@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>銀鷗島全島單一畫布（93地塊 × 34聚落 × 381處手繪室內無縫引擎）</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #ece3cf; color: #2b221b;
+      font-family: "Noto Serif TC", "Source Han Serif TC", "PingFang TC", serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    .app { display: flex; flex-direction: column; width: 100%; height: 100dvh; }
+    .topbar {
+      flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 6px; padding: 7px 11px; background: #f5eedc; border-bottom: 1px solid #d5c7ab; z-index: 20;
+    }
+    .mode-tabs, .tool-toggles { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    button.pill, a.pill {
+      appearance: none; text-decoration: none; border: 1px solid #bca989; background: #efe5ce; color: #3a2e25;
+      border-radius: 999px; padding: 5px 10px; font-size: 12.5px; font-weight: 600;
+      font-family: inherit; cursor: pointer; line-height: 1.25; white-space: nowrap;
+    }
+    button.pill.active, a.pill.active { background: #6f2c1d; border-color: #592014; color: #fbf6ec; }
+    button.pill.sub, a.pill.sub { font-size: 12px; padding: 4px 9px; background: #f8f2e4; }
+    button.pill.sub.on { background: #2f4c58; border-color: #213842; color: #f4f7f8; }
+    button.pill.action {
+      background: #fff9eb; border-color: #9e6b43; color: #5c2818;
+      padding: 5px 12px; font-size: 13px;
+    }
+    button.pill.action.warn {
+      background: #fff3ee; border-color: #b54834; color: #7a1f12;
+    }
+
+    .main-stage { flex: 1 1 auto; display: flex; flex-direction: column; position: relative; min-height: 0; }
+    .story-pane {
+      flex: 0 0 32%; overflow-y: auto;
+      padding: 10px 14px; background: #f3ead7; border-bottom: 1px solid #d2c3a5;
+    }
+    .app.fullmap-mode .story-pane { display: none; }
+    .story-meta {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 12px; color: #73614e; padding-bottom: 5px; margin-bottom: 6px;
+      border-bottom: 1px solid #dfd2b9;
+    }
+    .story-badge { background: #e5dac2; padding: 2px 9px; border-radius: 999px; color: #4f4031; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+    .story-badge.indoor { background: #6f2c1d; color: #fbf5ea; }
+    .story-badge.running { background: #8f331e; color: #fff8ed; }
+    .story-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+    .story-title { font-size: 17.5px; font-weight: 700; color: #241b15; margin: 0; }
+    .story-body { font-size: 13.8px; line-height: 1.6; color: #382d24; margin: 0 0 7px; }
+    .story-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .story-sublog {
+      font-size: 12.5px; color: #5b4938; background: #ebe0c8;
+      padding: 6px 10px; border-radius: 8px; line-height: 1.48;
+    }
+
+    .map-wrap { flex: 1 1 auto; position: relative; min-height: 0; overflow: hidden; background: #46737d; touch-action: none; }
+    canvas#mapCanvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+    .hud-readout {
+      position: absolute; top: 9px; left: 10px;
+      background: rgba(26, 33, 35, 0.84); color: #f4efe2;
+      font-size: 12px; padding: 5px 10px; border-radius: 8px;
+      pointer-events: none; line-height: 1.42; max-width: calc(100% - 20px);
+    }
+    .quick-bar {
+      position: absolute; left: 10px; bottom: 11px; right: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 6px; pointer-events: none; z-index: 12;
+    }
+    .quick-group {
+      display: flex; gap: 5px; flex-wrap: wrap; pointer-events: auto;
+      background: rgba(245, 238, 220, 0.94); backdrop-filter: blur(6px);
+      padding: 5px 8px; border-radius: 999px; border: 1px solid rgba(168, 148, 118, 0.78);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+    }
+    @media (min-width: 960px) {
+      .main-stage { flex-direction: row; }
+      .story-pane { flex: 0 0 390px; border-bottom: none; border-right: 1px solid #d2c3a5; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="appRoot">
+  <div class="topbar">
+    <div class="mode-tabs">
+      <button class="pill active" id="btnModeSplit">上文下圖・全島單一畫布</button>
+      <button class="pill" id="btnModeFull">展開全幅輿圖</button>
+    </div>
+    <div class="tool-toggles">
+      <button class="pill sub" id="btnJumpOverview">全島鳥瞰(93格)</button>
+      <button class="pill sub on" id="btnJumpWGH">白鷗港(95戶)</button>
+      <button class="pill sub" id="btnJumpHarbor">北棧・銀翼號</button>
+      <button class="pill sub" id="btnJumpGreypine">灰松林驛(島心)</button>
+      <button class="pill sub" id="btnJumpGullTail">鷗尾漁港(65戶)</button>
+      <button class="pill sub" id="btnJumpWestFerry">西峽渡口(35戶)</button>
+      <button class="pill sub" id="btnJumpNorthBeacon">北岬燈塔(27戶)</button>
+      <button class="pill sub" id="btnJumpPlague">南境封村遺址</button>
+      <button class="pill sub on" id="btnToggleBorders">區域界帶：顯</button>
+      <button class="pill sub" id="btnToggleDebug">碰撞透視：關</button>
+      <a class="pill sub" href="/wgh-core.html">回四宮格對照版</a>
+    </div>
+  </div>
+
+  <div class="main-stage">
+    <div class="story-pane" id="storyPane">
+      <div class="story-meta">
+        <span id="clockText">太陽曆 329 年・寒冬・19 日 ｜ 巳時 10:30</span>
+        <span class="story-badge" id="stateBadge">戶外步行</span>
+      </div>
+      <div class="story-title-row">
+        <h1 class="story-title" id="stTitle">銀鷗島・白鷗港市集廣場</h1>
+        <span class="story-badge" id="nearCountBadge">全島 93 地塊無縫連通</span>
+      </div>
+      <p class="story-body" id="stDesc">載入銀鷗島 94,000 × 104,000 單一畫布座標與手繪水彩圖集中…</p>
+      <div class="story-actions" id="stActions"></div>
+      <div class="story-sublog" id="stSublog">操作：滾輪或雙指可從「93 地塊全島鳥瞰」一鏡到底放大至「單戶屋瓦與庭院」；單擊地圖從容步行、雙擊加速奔跑，走近全島 381 棟屋舍／商船／燈塔／封村地城門口皆可推門切入手繪水彩室內平面圖！</div>
+    </div>
+
+    <div class="map-wrap" id="mapWrap">
+      <canvas id="mapCanvas"></canvas>
+      <div class="hud-readout" id="hudReadout">正在編織銀鷗島全島手繪水彩底圖與 381 處室內平面…</div>
+      <div class="quick-bar">
+        <div class="quick-group">
+          <button class="pill sub on" id="btnFollow">◎ 鏡頭跟隨</button>
+          <button class="pill sub" id="btnZoomStreet">街巷近景</button>
+          <button class="pill sub" id="btnZoomTown">城鎮全覽</button>
+          <button class="pill sub" id="btnZoomIn">＋ 放大</button>
+          <button class="pill sub" id="btnZoomOut">－ 縮小</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const WALK_SPEED = 104;
+  const RUN_SPEED = 268;
+  const DBL_TAP_MS = 380;
+  const PROX_FULL = 165, PROX_FADE = 280;
+  const SIGHT_RADIUS = 880; // Only render patrolling NPCs inside player's sight radius (zero ant-farm!)
+
+  const MATERIALS = {
+    1: { name: "青石官道／石橋", mu: 0.92, speedMul: 1.00 },
+    2: { name: "夯土坊巷／野徑", mu: 0.84, speedMul: 0.92 },
+    3: { name: "港棧木板／防波堤", mu: 0.78, speedMul: 0.90 },
+    4: { name: "山海草甸／林地", mu: 0.68, speedMul: 0.78 },
+    6: { name: "室內橡木／石板地", mu: 0.88, speedMul: 0.96 }
+  };
+
+  const REGION_COLORS = {
+    "白鷗東岸領（首邑轄區）": { band: "rgba(178, 72, 48, 0.34)", stroke: "#7a2e1d" },
+    "灰松林驛・島心高地":     { band: "rgba(62, 108, 78, 0.34)", stroke: "#284d35" },
+    "西峽渡口與古加河谷":     { band: "rgba(58, 106, 138, 0.34)", stroke: "#244963" },
+    "鷗尾漁港與南灣漁村":     { band: "rgba(182, 128, 46, 0.34)", stroke: "#734e14" },
+    "北岬燈塔與黑煤山區":     { band: "rgba(104, 92, 138, 0.34)", stroke: "#3f355c" },
+    "南境熱病封鎖區":         { band: "rgba(126, 62, 68, 0.42)", stroke: "#5c1f25" }
+  };
+
+  // DOM Elements
+  const appRoot = document.getElementById("appRoot");
+  const canvas = document.getElementById("mapCanvas");
+  const ctx = canvas.getContext("2d");
+  const hudReadout = document.getElementById("hudReadout");
+  const stTitle = document.getElementById("stTitle");
+  const stDesc = document.getElementById("stDesc");
+  const stActions = document.getElementById("stActions");
+  const stSublog = document.getElementById("stSublog");
+  const stateBadge = document.getElementById("stateBadge");
+  const nearCountBadge = document.getElementById("nearCountBadge");
+  const clockText = document.getElementById("clockText");
+
+  // Loaded Assets & World State
+  let SCENE = null;
+  let ATLAS_META = null;
+  let imgBuildings = null;
+  let imgProps = null;
+  let patterns = {};
+  let overviewCanvas = null;
+  const OVERVIEW_DIV = 40; // 94,000 / 40 = 2350 px wide crisp whole-island watercolor buffer
+
+  // Spatial Hash Indices (Bucket = 512 world px) for O(1) rendering & 0.00px collision!
+  const BUCKET = 512;
+  const gridCells = new Map();
+  const gridBuildings = new Map();
+  const gridProps = new Map();
+  const gridWalls = new Map();
+  const gridTownWalls = new Map();
+  const gridCliffs = new Map();
+  const gridRoads = new Map();
+  const gridRivers = new Map();
+  const gridBridges = new Map();
+  const gridPiers = new Map();
+  let liveOutdoorNpcs = [];
+
+  // Player & Camera State
+  const player = {
+    x: 69587, y: 47135,
+    vx: 0, vy: 0,
+    running: false,
+    path: [],
+    mode: "outdoor", // "outdoor" | "indoor"
+    indoorRoom: null,
+    returnOutdoor: null,
+    gameMinutes: 10 * 60 + 30
+  };
+
+  const cam = {
+    x: 69587, y: 47135,
+    scale: 0.72,
+    follow: true,
+    showBorders: true,
+    showDebug: false
+  };
+
+  // Exposed QA hooks for automated visual acceptance (`tra-phone-web-qa`)
+  window.__ISLAND_QA__ = {
+    jumpTo(wx, wy, scale, movePlayer = false) {
+      cam.x = wx; cam.y = wy; cam.scale = scale;
+      cam.follow = movePlayer;
+      if (movePlayer) {
+        player.mode = "outdoor";
+        player.indoorRoom = null;
+        player.x = wx; player.y = wy; player.path = [];
+        syncStoryUI();
+      }
+      render();
+    },
+    enterBuildingById(nid, floorIdx = 0) {
+      if (!SCENE) return false;
+      const b = SCENE.buildings.find(it => it.nid === nid) || SCENE.buildings[0];
+      if (!b) return false;
+      enterBuilding(b, floorIdx);
+      render();
+      return true;
+    },
+    renderNow() { render(); return true; },
+    setDebug(on) { cam.showDebug = !!on; render(); },
+    getState() {
+      return {
+        loaded: !!SCENE,
+        mode: player.mode,
+        px: Math.round(player.x),
+        py: Math.round(player.y),
+        camScale: cam.scale,
+        indoorTitle: player.indoorRoom ? player.indoorRoom.title : null
+      };
+    }
+  };
+
+  // --- Deterministic PRNG ---
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function() {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function hashStr(s) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  // --- Geometry Helpers ---
+  function pointInPoly(px, py, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i][0], yi = poly[i][1];
+      const xj = poly[j][0], yj = poly[j][1];
+      if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi + 1e-9) + xi)) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
+  function distToSegSq(px, py, x0, y0, x1, y1) {
+    const dx = x1 - x0, dy = y1 - y0;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq < 1e-6) return (px - x0) * (px - x0) + (py - y0) * (py - y0);
+    let t = ((px - x0) * dx + (py - y0) * dy) / lenSq;
+    if (t < 0) t = 0; else if (t > 1) t = 1;
+    const cx = x0 + t * dx, cy = y0 + t * dy;
+    return (px - cx) * (px - cx) + (py - cy) * (py - cy);
+  }
+
+  function pointInRotBox(px, py, cx, cy, w, h, deg, pad = 0) {
+    const rad = -deg * Math.PI / 180;
+    const dx = px - cx, dy = py - cy;
+    const lx = dx * Math.cos(rad) - dy * Math.sin(rad);
+    const ly = dx * Math.sin(rad) + dy * Math.cos(rad);
+    return Math.abs(lx) <= (w * 0.5 + pad) && Math.abs(ly) <= (h * 0.5 + pad);
+  }
+
+  function addBBoxToGrid(grid, minX, minY, maxX, maxY, item) {
+    const gx0 = Math.floor(minX / BUCKET), gx1 = Math.floor(maxX / BUCKET);
+    const gy0 = Math.floor(minY / BUCKET), gy1 = Math.floor(maxY / BUCKET);
+    for (let gx = gx0; gx <= gx1; gx++) {
+      for (let gy = gy0; gy <= gy1; gy++) {
+        const key = (gx << 16) ^ (gy & 0xFFFF);
+        let arr = grid.get(key);
+        if (!arr) { arr = []; grid.set(key, arr); }
+        arr.push(item);
+      }
+    }
+  }
+
+  function queryGridBBox(grid, minX, minY, maxX, maxY) {
+    const out = new Set();
+    const gx0 = Math.floor(minX / BUCKET), gx1 = Math.floor(maxX / BUCKET);
+    const gy0 = Math.floor(minY / BUCKET), gy1 = Math.floor(maxY / BUCKET);
+    for (let gx = gx0; gx <= gx1; gx++) {
+      for (let gy = gy0; gy <= gy1; gy++) {
+        const arr = grid.get((gx << 16) ^ (gy & 0xFFFF));
+        if (arr) for (let i = 0; i < arr.length; i++) out.add(arr[i]);
+      }
+    }
+    return out;
+  }
+
+  function queryGridPoint(grid, wx, wy) {
+    const gx = Math.floor(wx / BUCKET), gy = Math.floor(wy / BUCKET);
+    return grid.get((gx << 16) ^ (gy & 0xFFFF)) || [];
+  }
+
+  // --- Seamless Hand-Inked Watercolor Texture Generator (Tileable 512x512 Patterns) ---
+  function makeWatercolorPattern(seed, baseHex, washes, detailKind) {
+    const S = 512;
+    const c = document.createElement("canvas");
+    c.width = S; c.height = S;
+    const g = c.getContext("2d");
+    const rng = mulberry32(seed);
+
+    g.fillStyle = baseHex;
+    g.fillRect(0, 0, S, S);
+
+    // Seamless wrapped watercolor pigment washes
+    for (let i = 0; i < 65; i++) {
+      const col = washes[Math.floor(rng() * washes.length)];
+      const rx = rng() * S, ry = rng() * S;
+      const rad = 36 + rng() * 92;
+      for (let ox = -S; ox <= S; ox += S) {
+        for (let oy = -S; oy <= S; oy += S) {
+          if (rx + ox + rad < 0 || rx + ox - rad > S || ry + oy + rad < 0 || ry + oy - rad > S) continue;
+          const grad = g.createRadialGradient(rx + ox, ry + oy, rad * 0.1, rx + ox, ry + oy, rad);
+          grad.addColorStop(0, col);
+          grad.addColorStop(1, "rgba(0,0,0,0)");
+          g.fillStyle = grad;
+          g.beginPath();
+          g.arc(rx + ox, ry + oy, rad, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+    }
+
+    // Fine cold-press watercolor paper grain
+    for (let i = 0; i < 900; i++) {
+      const px = rng() * S, py = rng() * S;
+      g.fillStyle = rng() > 0.5 ? "rgba(255,250,238,0.055)" : "rgba(42,34,24,0.055)";
+      g.fillRect(px, py, 2, 2);
+    }
+
+    if (detailKind === "meadow" || detailKind === "forest") {
+      // Hand-inked tiny botanical grass blades (wrapped seamlessly)
+      g.strokeStyle = detailKind === "forest" ? "rgba(42, 58, 34, 0.24)" : "rgba(58, 74, 42, 0.22)";
+      g.lineWidth = 1.2;
+      for (let i = 0; i < 110; i++) {
+        const gx = rng() * S, gy = rng() * S;
+        for (let ox = -S; ox <= S; ox += S) {
+          for (let oy = -S; oy <= S; oy += S) {
+            if (gx + ox < -10 || gx + ox > S + 10 || gy + oy < -10 || gy + oy > S + 10) continue;
+            g.beginPath();
+            g.moveTo(gx + ox - 3, gy + oy + 2);
+            g.lineTo(gx + ox - 5, gy + oy - 4);
+            g.moveTo(gx + ox, gy + oy + 2);
+            g.lineTo(gx + ox + 1, gy + oy - 5);
+            g.moveTo(gx + ox + 3, gy + oy + 2);
+            g.lineTo(gx + ox + 6, gy + oy - 3);
+            g.stroke();
+          }
+        }
+      }
+    } else if (detailKind === "ocean") {
+      // Hand-inked subtle wave ripples
+      g.strokeStyle = "rgba(232, 245, 246, 0.16)";
+      g.lineWidth = 1.4;
+      for (let i = 0; i < 55; i++) {
+        const wx = rng() * S, wy = rng() * S, wlen = 18 + rng() * 26;
+        for (let ox = -S; ox <= S; ox += S) {
+          g.beginPath();
+          g.moveTo(wx + ox - wlen * 0.5, wy);
+          g.quadraticCurveTo(wx + ox, wy - 3.5, wx + ox + wlen * 0.5, wy);
+          g.stroke();
+        }
+      }
+    } else if (detailKind === "cobble_main" || detailKind === "cobble_trail") {
+      // Organic rounded river-cobblestones (soft low-contrast sepia ink — NEVER mistaken for stone walls!)
+      const nStones = detailKind === "cobble_main" ? 310 : 190;
+      const palettes = detailKind === "cobble_main"
+        ? ["#cfc4ae", "#c3b79f", "#d7ccb8", "#bab09c", "#c9beaa"]
+        : ["#cbb894", "#bfa983", "#d4c2a0", "#b69f79"];
+      g.lineWidth = 1.15;
+      g.strokeStyle = detailKind === "cobble_main" ? "rgba(74, 62, 48, 0.36)" : "rgba(86, 68, 46, 0.28)";
+      for (let i = 0; i < nStones; i++) {
+        const sx = rng() * S, sy = rng() * S;
+        const rx = (detailKind === "cobble_main" ? 7.5 : 6.5) + rng() * 6.5;
+        const ry = (detailKind === "cobble_main" ? 5.5 : 4.8) + rng() * 4.2;
+        const rot = (rng() - 0.5) * 0.8;
+        g.fillStyle = palettes[Math.floor(rng() * palettes.length)];
+        for (let ox = -S; ox <= S; ox += S) {
+          for (let oy = -S; oy <= S; oy += S) {
+            if (sx + ox < -20 || sx + ox > S + 20 || sy + oy < -20 || sy + oy > S + 20) continue;
+            g.beginPath();
+            g.ellipse(sx + ox, sy + oy, rx, ry, rot, 0, Math.PI * 2);
+            g.fill();
+            g.stroke();
+          }
+        }
+      }
+    } else if (detailKind === "indoor_wood") {
+      // Hand-inked warm oak floorboards with woodgrain & nail dots!
+      const plankH = 32;
+      for (let y = 0; y < S; y += plankH) {
+        let x = -Math.floor(rng() * 80);
+        while (x < S) {
+          const pw = 96 + Math.floor(rng() * 88);
+          const shade = (rng() - 0.5) * 14;
+          g.fillStyle = `rgb(${182 + shade}, ${142 + shade * 0.8}, ${98 + shade * 0.6})`;
+          g.fillRect(x, y, pw, plankH);
+          g.strokeStyle = "rgba(56, 36, 20, 0.48)";
+          g.lineWidth = 1.5;
+          g.strokeRect(x, y, pw, plankH);
+          // Subtle wood grain lines
+          g.strokeStyle = "rgba(78, 50, 28, 0.16)";
+          g.lineWidth = 1.0;
+          g.beginPath();
+          g.moveTo(x + 8, y + plankH * 0.36);
+          g.bezierCurveTo(x + pw * 0.35, y + plankH * 0.25, x + pw * 0.65, y + plankH * 0.48, x + pw - 8, y + plankH * 0.35);
+          g.moveTo(x + 10, y + plankH * 0.7);
+          g.bezierCurveTo(x + pw * 0.4, y + plankH * 0.8, x + pw * 0.7, y + plankH * 0.6, x + pw - 10, y + plankH * 0.72);
+          g.stroke();
+          // Iron plank nails
+          g.fillStyle = "rgba(46, 30, 18, 0.55)";
+          g.beginPath();
+          g.arc(x + 6, y + 7, 1.6, 0, Math.PI * 2);
+          g.arc(x + 6, y + plankH - 7, 1.6, 0, Math.PI * 2);
+          g.fill();
+          x += pw;
+        }
+      }
+    } else if (detailKind === "indoor_stone") {
+      // Hand-inked dressed stone flagstones for market halls, smithies, towers & dungeons
+      const rowH = 42;
+      for (let y = 0; y < S; y += rowH) {
+        let x = -Math.floor(rng() * 60);
+        while (x < S) {
+          const sw = 54 + Math.floor(rng() * 52);
+          const sh = (rng() - 0.5) * 14;
+          g.fillStyle = `rgb(${186 + sh}, ${178 + sh}, ${162 + sh})`;
+          g.fillRect(x + 1, y + 1, sw - 2, rowH - 2);
+          g.strokeStyle = "rgba(52, 46, 38, 0.42)";
+          g.lineWidth = 1.6;
+          g.strokeRect(x, y, sw, rowH);
+          x += sw;
+        }
+      }
+    }
+    return ctx.createPattern(c, "repeat");
+  }
+
+  function buildAllPatterns() {
+    patterns.ocean = makeWatercolorPattern(101, "#4d7d87", ["rgba(62,105,115,0.35)", "rgba(92,142,152,0.28)", "rgba(52,92,102,0.30)"], "ocean");
+    patterns.meadow = makeWatercolorPattern(202, "#94a56e", ["rgba(134,152,96,0.34)", "rgba(162,174,120,0.28)", "rgba(118,136,84,0.28)"], "meadow");
+    patterns.forest = makeWatercolorPattern(303, "#7a905f", ["rgba(104,126,78,0.36)", "rgba(132,150,100,0.26)", "rgba(88,108,66,0.32)"], "forest");
+    patterns.plague = makeWatercolorPattern(404, "#968f6d", ["rgba(132,124,90,0.36)", "rgba(160,150,114,0.26)", "rgba(110,102,76,0.30)"], "meadow");
+    patterns.cobbleMain = makeWatercolorPattern(505, "#c5baa4", ["rgba(212,202,182,0.35)", "rgba(178,166,144,0.32)"], "cobble_main");
+    patterns.cobbleTrail = makeWatercolorPattern(606, "#c6b18c", ["rgba(214,194,158,0.35)", "rgba(176,154,118,0.32)"], "cobble_trail");
+    patterns.indoorWood = makeWatercolorPattern(707, "#b68e62", ["rgba(198,158,112,0.22)", "rgba(156,118,78,0.22)"], "indoor_wood");
+    patterns.indoorStone = makeWatercolorPattern(808, "#bab2a2", ["rgba(202,194,178,0.25)", "rgba(156,148,134,0.25)"], "indoor_stone");
+  }
+
+  // --- Bake Whole-Island Watercolor Master Map (`2350 x 2600` offscreen canvas) ---
+  function bakeWholeIslandOverview() {
+    const ow = Math.ceil(SCENE.world_w / OVERVIEW_DIV);
+    const oh = Math.ceil(SCENE.world_h / OVERVIEW_DIV);
+    overviewCanvas = document.createElement("canvas");
+    overviewCanvas.width = ow;
+    overviewCanvas.height = oh;
+    const g = overviewCanvas.getContext("2d");
+    const inv = 1 / OVERVIEW_DIV;
+
+    // 1. Smooth Watercolor Maritime Wash (zero repeating 512px grid stamp at whole-island scale!)
+    const seaGrad = g.createRadialGradient(ow * 0.52, oh * 0.50, ow * 0.12, ow * 0.52, oh * 0.50, ow * 0.85);
+    seaGrad.addColorStop(0, "#5c8d97");
+    seaGrad.addColorStop(0.55, "#4b7b85");
+    seaGrad.addColorStop(1, "#3d6973");
+    g.fillStyle = seaGrad;
+    g.fillRect(0, 0, ow, oh);
+    const rngOv = mulberry32(9901);
+    g.strokeStyle = "rgba(232, 245, 246, 0.13)";
+    g.lineWidth = 1.6;
+    for (let i = 0; i < 420; i++) {
+      const wx = rngOv() * ow, wy = rngOv() * oh, wl = 14 + rngOv() * 28;
+      g.beginPath();
+      g.moveTo(wx - wl * 0.5, wy);
+      g.quadraticCurveTo(wx, wy - 2.5, wx + wl * 0.5, wy);
+      g.stroke();
+    }
+
+    g.save();
+    g.scale(inv, inv);
+
+    // 2. Shallow turquoise coastal water halo + double shoreline ripples around `coast_loops`
+    for (const loop of SCENE.coast_loops) {
+      g.beginPath();
+      loop.forEach((p, idx) => idx === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]));
+      g.closePath();
+      g.lineJoin = "round";
+      g.strokeStyle = "rgba(154, 204, 200, 0.48)";
+      g.lineWidth = 960;
+      g.stroke();
+      g.strokeStyle = "rgba(228, 242, 236, 0.58)";
+      g.lineWidth = 280;
+      g.stroke();
+    }
+
+    // 3. Fill all 93 cells seamlessly with soft radial biome washes (ZERO polygonal Voronoi facet seams!)
+    for (const loop of SCENE.coast_loops) {
+      g.beginPath();
+      loop.forEach((p, idx) => idx === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]));
+      g.closePath();
+      g.fillStyle = "#91a36b";
+      g.fill();
+    }
+    for (const c of SCENE.cells) {
+      if (c.plague || c.h >= 22 || c.biome === 9) {
+        const rad = 5200;
+        const cg = g.createRadialGradient(c.cx, c.cy, 600, c.cx, c.cy, rad);
+        const colCore = c.plague ? "rgba(146, 136, 98, 0.52)" : (c.h >= 24 ? "rgba(96, 118, 74, 0.48)" : "rgba(116, 138, 86, 0.36)");
+        cg.addColorStop(0, colCore);
+        cg.addColorStop(1, "rgba(0,0,0,0)");
+        g.fillStyle = cg;
+        g.beginPath();
+        g.arc(c.cx, c.cy, rad, 0, Math.PI * 2);
+        g.fill();
+      }
+    }
+    // Carve Deep-Water Harbor Bays (`白鷗深水港池`) on overview map too!
+    for (const hb of (SCENE.harbor_bays || [])) {
+      g.beginPath();
+      hb.poly.forEach((p, idx) => idx === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]));
+      g.closePath();
+      g.fillStyle = "#588993";
+      g.fill();
+    }
+
+    // 4. Crisp hand-inked island coastline contour
+    for (const loop of SCENE.coast_loops) {
+      g.beginPath();
+      loop.forEach((p, idx) => idx === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]));
+      g.closePath();
+      g.strokeStyle = "rgba(218, 202, 166, 0.85)";
+      g.lineWidth = 150;
+      g.stroke();
+      g.strokeStyle = "#352c22";
+      g.lineWidth = 46;
+      g.stroke();
+    }
+
+    // 5. Rivers, highways, mountain cliff spines, forest clusters & town roof clusters
+    g.lineCap = "round"; g.lineJoin = "round";
+    for (const rv of SCENE.rivers) {
+      g.beginPath();
+      rv.pts.forEach((p, i) => i === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]));
+      g.strokeStyle = "#4d7d87";
+      g.lineWidth = rv.w * 1.25;
+      g.stroke();
+    }
+
+    for (const rd of SCENE.roads) {
+      g.beginPath();
+      rd.pts.forEach((p, i) => i === 0 ? g.moveTo(p[0], p[1]) : g.lineTo(p[0], p[1]));
+      g.strokeStyle = rd.kind === "highway" ? "#d5c7a9" : "rgba(208, 190, 154, 0.86)";
+      g.lineWidth = rd.kind === "highway" ? Math.max(115, rd.w * 1.25) : Math.max(76, rd.w);
+      g.stroke();
+    }
+
+    // Impassable Mountain Cliff Ridges (`25` natural barriers!)
+    for (const cr of SCENE.cliff_ridges) {
+      g.beginPath();
+      g.moveTo(cr[0], cr[1]); g.lineTo(cr[2], cr[3]);
+      g.strokeStyle = "rgba(58, 50, 44, 0.62)";
+      g.lineWidth = 260;
+      g.stroke();
+      g.strokeStyle = "#8d8276";
+      g.lineWidth = 135;
+      g.stroke();
+    }
+
+    // Forest canopies on overview
+    for (const pr of SCENE.props) {
+      if (pr.sprite === "tree_oak" || pr.sprite === "tree_pine") {
+        g.fillStyle = pr.sprite === "tree_pine" ? "rgba(62, 82, 54, 0.72)" : "rgba(86, 108, 62, 0.68)";
+        g.beginPath();
+        g.arc(pr.x, pr.y, pr.w * 0.56, 0, Math.PI * 2);
+        g.fill();
+      }
+    }
+
+    // Town rampart walls & crisp roof blocks on overview
+    g.strokeStyle = "#4a3f35";
+    g.lineWidth = 58;
+    for (const tw of SCENE.town_walls) {
+      g.beginPath();
+      g.moveTo(tw[0], tw[1]); g.lineTo(tw[2], tw[3]);
+      g.stroke();
+    }
+
+    for (const b of SCENE.buildings) {
+      g.save();
+      g.translate(b.x, b.y);
+      g.rotate(b.deg * Math.PI / 180);
+      g.fillStyle = b.sprite.includes("slate") || b.sprite === "city_hall" || b.sprite === "forge_shop"
+        ? "#6b7885"
+        : (b.sprite.includes("wood") || b.sprite.includes("ship") ? "#8c694a" : "#b86b52");
+      g.fillRect(-b.w * 0.55, -b.h * 0.55, b.w * 1.1, b.h * 1.1);
+      g.strokeStyle = "#2d231b";
+      g.lineWidth = 22;
+      g.strokeRect(-b.w * 0.55, -b.h * 0.55, b.w * 1.1, b.h * 1.1);
+      g.restore();
+    }
+
+    g.restore();
+  }
+
+  // --- Sprite Atlas Drawing Helper ---
+  function drawSprite(spriteName, cx, cy, w, h, deg = 0, withShadow = true, shadowOff = 9) {
+    const m = ATLAS_META[spriteName];
+    if (!m) return;
+    const img = m.sheet === "buildings" ? imgBuildings : imgProps;
+    if (!img) return;
+    const rad = deg * Math.PI / 180;
+    if (withShadow) {
+      ctx.save();
+      ctx.translate(cx + shadowOff, cy + shadowOff * 1.12);
+      ctx.rotate(rad);
+      ctx.fillStyle = "rgba(26, 22, 17, 0.27)";
+      if (spriteName.startsWith("tree_") || spriteName === "bush_cluster" || spriteName === "well_stone" || spriteName === "lighthouse_tower") {
+        ctx.beginPath();
+        ctx.ellipse(0, 0, w * 0.45, h * 0.43, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.roundRect(-w * 0.47, -h * 0.46, w * 0.94, h * 0.92, 6);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rad);
+    ctx.drawImage(img, m.x, m.y, m.w, m.h, -w * 0.5, -h * 0.5, w, h);
+    ctx.restore();
+  }
+
+  // --- Analytical 0.00px Collision & Material Query ---
+  function queryOutdoorPoint(wx, wy, radius = 11) {
+    // 1. Solid Buildings (slightly inset from roof eaves so player can walk right up to walls!)
+    for (const b of queryGridPoint(gridBuildings, wx, wy)) {
+      if (b.kind === "ship") continue; // Ships sit in harbor water; boarding happens at gangplank door!
+      if (pointInRotBox(wx, wy, b.x, b.y, b.w * 0.86, b.h * 0.84, b.deg, radius)) {
+        return { walkable: false, reason: "building", obj: b };
+      }
+    }
+    // 2. Solid Props (wells, boulders, stacked crates)
+    for (const pr of queryGridPoint(gridProps, wx, wy)) {
+      if (!pr.solid) continue;
+      const rSum = Math.min(pr.w, pr.h) * 0.36 + radius;
+      if ((wx - pr.x) ** 2 + (wy - pr.y) ** 2 < rSum * rSum) {
+        return { walkable: false, reason: "prop", obj: pr };
+      }
+    }
+    // 3. High Town Rampart Walls (`Code 0` impassable except through open gates!)
+    for (const tw of queryGridPoint(gridTownWalls, wx, wy)) {
+      if (distToSegSq(wx, wy, tw[0], tw[1], tw[2], tw[3]) < (14 + radius) ** 2) {
+        return { walkable: false, reason: "town_wall" };
+      }
+    }
+    // 4. Low Courtyard Stone Walls (`Code 7` blocks walk, but enables vaulting!)
+    for (const wseg of queryGridPoint(gridWalls, wx, wy)) {
+      if (distToSegSq(wx, wy, wseg[0], wseg[1], wseg[2], wseg[3]) < (6.5 + radius * 0.7) ** 2) {
+        return { walkable: false, reason: "courtyard_wall", seg: wseg };
+      }
+    }
+    // 5. Bridges & Wooden Piers OVERRIDE river/ocean water & cliff checks!
+    for (const br of queryGridPoint(gridBridges, wx, wy)) {
+      if (pointInRotBox(wx, wy, br.cx, br.cy, br.w * 0.92, br.h * 1.04, br.deg, 0)) {
+        return { walkable: true, matCode: 1 };
+      }
+    }
+    for (const pi of queryGridPoint(gridPiers, wx, wy)) {
+      if (pointInRotBox(wx, wy, pi.cx, pi.cy, pi.w * 0.96, pi.h * 0.92, pi.deg, 0)) {
+        return { walkable: true, matCode: 3 };
+      }
+    }
+    // 5B. Carved Deep-Water Harbor Bays (`白鷗深水港池` — ocean water unless standing on a pier above!)
+    for (const hb of (SCENE.harbor_bays || [])) {
+      if (pointInPoly(wx, wy, hb.poly)) {
+        return { walkable: false, reason: "harbor_water" };
+      }
+    }
+    // 6. Impassable Mountain Cliff Ridges (`25` natural cell barriers!)
+    for (const cr of queryGridPoint(gridCliffs, wx, wy)) {
+      if (distToSegSq(wx, wy, cr[0], cr[1], cr[2], cr[3]) < (42 + radius) ** 2) {
+        return { walkable: false, reason: "cliff" };
+      }
+    }
+    // 7. Rivers (`澤昂河` — must cross via the 3 bridges!)
+    for (const rv of queryGridPoint(gridRivers, wx, wy)) {
+      const halfW = rv.w * 0.46 + radius * 0.5;
+      for (let i = 0; i < rv.pts.length - 1; i++) {
+        if (distToSegSq(wx, wy, rv.pts[i][0], rv.pts[i][1], rv.pts[i + 1][0], rv.pts[i + 1][1]) < halfW * halfW) {
+          return { walkable: false, reason: "river" };
+        }
+      }
+    }
+    // 8. Must be inside one of the 93 Land Cells of Silver Gull Island!
+    let inCell = null;
+    for (const c of queryGridPoint(gridCells, wx, wy)) {
+      if (pointInPoly(wx, wy, c.poly)) { inCell = c; break; }
+    }
+    if (!inCell) {
+      return { walkable: false, reason: "ocean" };
+    }
+    // 9. Surface Material: Road vs Alley/Trail vs Meadow/Forest
+    for (const rd of queryGridPoint(gridRoads, wx, wy)) {
+      const halfR = rd.w * 0.54;
+      for (let i = 0; i < rd.pts.length - 1; i++) {
+        if (distToSegSq(wx, wy, rd.pts[i][0], rd.pts[i][1], rd.pts[i + 1][0], rd.pts[i + 1][1]) <= halfR * halfR) {
+          return { walkable: true, matCode: rd.kind === "highway" ? 1 : 2, cell: inCell };
+        }
+      }
+    }
+    return { walkable: true, matCode: 4, cell: inCell };
+  }
+
+  // --- Fast Local A* Pathfinder (`28px` grid within `3000px` radius, routes through gates & over bridges!) ---
+  function findOutdoorPath(sx, sy, gx, gy) {
+    const dist = Math.hypot(gx - sx, gy - sy);
+    if (dist < 18) return [];
+
+    // Nudge target slightly if user clicked directly on a roof or wall
+    let tx = gx, ty = gy;
+    if (!queryOutdoorPoint(tx, ty, 9).walkable) {
+      // Check if user clicked on a building: route directly to its front door!
+      for (const b of queryGridPoint(gridBuildings, gx, gy)) {
+        if (pointInRotBox(gx, gy, b.x, b.y, b.w * 0.62, b.h * 0.62, b.deg, 18)) {
+          tx = b.door.x; ty = b.door.y;
+          break;
+        }
+      }
+      if (!queryOutdoorPoint(tx, ty, 9).walkable) {
+        let found = false;
+        for (let r = 20; r <= 140 && !found; r += 20) {
+          for (let a = 0; a < 12; a++) {
+            const nx = tx + Math.cos(a * Math.PI / 6) * r;
+            const ny = ty + Math.sin(a * Math.PI / 6) * r;
+            if (queryOutdoorPoint(nx, ny, 9).walkable) { tx = nx; ty = ny; found = true; break; }
+          }
+        }
+        if (!found) return [];
+      }
+    }
+
+    // Direct line-of-sight fast check first!
+    const stepsLos = Math.ceil(Math.hypot(tx - sx, ty - sy) / 18);
+    let losClear = true;
+    for (let i = 1; i <= stepsLos; i++) {
+      const t = i / stepsLos;
+      if (!queryOutdoorPoint(sx + (tx - sx) * t, sy + (ty - sy) * t, 9).walkable) {
+        losClear = false; break;
+      }
+    }
+    if (losClear) return [[tx, ty]];
+
+    // Local A* search (up to 4,200 nodes — < 6ms in JS!)
+    const STEP = dist > 1800 ? 42 : 26;
+    const ox = sx, oy = sy;
+    const endI = Math.round((tx - ox) / STEP), endJ = Math.round((ty - oy) / STEP);
+    const keyOf = (i, j) => ((i + 512) << 10) | ((j + 512) & 1023);
+
+    const gScore = new Map();
+    const cameFrom = new Map();
+    const closed = new Set();
+    // Tiny binary heap
+    const heap = [{ i: 0, j: 0, f: Math.hypot(endI, endJ) }];
+    gScore.set(keyOf(0, 0), 0);
+
+    const pushHeap = (node) => {
+      heap.push(node);
+      let idx = heap.length - 1;
+      while (idx > 0) {
+        const p = (idx - 1) >> 1;
+        if (heap[p].f <= heap[idx].f) break;
+        const tmp = heap[p]; heap[p] = heap[idx]; heap[idx] = tmp;
+        idx = p;
+      }
+    };
+    const popHeap = () => {
+      const top = heap[0];
+      const last = heap.pop();
+      if (heap.length > 0) {
+        heap[0] = last;
+        let idx = 0;
+        while (true) {
+          let l = idx * 2 + 1, r = l + 1, s = idx;
+          if (l < heap.length && heap[l].f < heap[s].f) s = l;
+          if (r < heap.length && heap[r].f < heap[s].f) s = r;
+          if (s === idx) break;
+          const tmp = heap[s]; heap[s] = heap[idx]; heap[idx] = tmp;
+          idx = s;
+        }
+      }
+      return top;
+    };
+
+    const dirs = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
+    let bestNode = { i: 0, j: 0 }, bestH = Math.hypot(endI, endJ);
+    let expanded = 0;
+
+    while (heap.length > 0 && expanded < 3800) {
+      const cur = popHeap();
+      const ck = keyOf(cur.i, cur.j);
+      if (closed.has(ck)) continue;
+      closed.add(ck);
+      expanded++;
+
+      const hCur = Math.hypot(endI - cur.i, endJ - cur.j);
+      if (hCur < bestH) { bestH = hCur; bestNode = cur; }
+      if (hCur <= 1.5) { bestNode = cur; break; }
+
+      const baseG = gScore.get(ck);
+      for (const [di, dj, dlen] of dirs) {
+        const ni = cur.i + di, nj = cur.j + dj;
+        if (Math.abs(ni) > 480 || Math.abs(nj) > 480) continue;
+        const nk = keyOf(ni, nj);
+        if (closed.has(nk)) continue;
+        const wx = ox + ni * STEP, wy = oy + nj * STEP;
+        const q = queryOutdoorPoint(wx, wy, 9);
+        if (!q.walkable) continue;
+        const stepCost = dlen * (q.matCode === 1 ? 0.92 : (q.matCode === 2 ? 1.0 : 1.24));
+        const ng = baseG + stepCost;
+        const prevG = gScore.get(nk);
+        if (prevG === undefined || ng < prevG) {
+          gScore.set(nk, ng);
+          cameFrom.set(nk, cur);
+          pushHeap({ i: ni, j: nj, f: ng + Math.hypot(endI - ni, endJ - nj) * 0.98 });
+        }
+      }
+    }
+
+    const raw = [];
+    let cur = bestNode;
+    while (cur && (cur.i !== 0 || cur.j !== 0)) {
+      raw.push([ox + cur.i * STEP, oy + cur.j * STEP]);
+      cur = cameFrom.get(keyOf(cur.i, cur.j));
+    }
+    raw.reverse();
+    if (bestH <= 2.2) raw.push([tx, ty]);
+    return raw;
+  }
+
+  // --- Deterministic Hand-Inked Watercolor Interior Generator (ALL 381 Buildings, Ships, Towers & Dungeons!) ---
+  function buildInteriorForBuilding(b, floorIdx = 0) {
+    const rng = mulberry32(hashStr(b.nid + ":" + floorIdx));
+    const kind = b.kind;
+    const isStoneFloor = (kind === "market" || kind === "forge" || kind === "tower" || kind === "plague_ruin" || kind === "dungeon" || b.nid === "pub_hall");
+    let rw = 960, rh = 700;
+    if (kind === "market") { rw = 1220; rh = 820; }
+    else if (kind === "tavern" || kind === "civic" || kind === "carriage") { rw = 1080; rh = 780; }
+    else if (kind === "ship") { rw = 1140; rh = 520; }
+    else if (kind === "tower") { rw = 740; rh = 740; }
+
+    const room = {
+      building: b,
+      floorIdx,
+      title: `${b.town}・${b.name}${floorIdx === 1 ? "（二樓上層）" : "（室內平面）"}`,
+      desc: b.desc,
+      w: rw, h: rh,
+      floorPat: isStoneFloor ? "indoorStone" : "indoorWood",
+      isShip: kind === "ship",
+      partitions: [], // [x0, y0, x1, y1] interior walls
+      sprites: [],    // {sprite, x, y, w, h, deg, solid, glow}
+      hotspots: [],   // {id, x, y, label, kind, ...}
+      npcs: []
+    };
+
+    // Place exit door on matching wall side (`b.gside`) — guaranteed clear of north-wall fireplaces!
+    const gside = b.gside || "south";
+    const isCottage = (kind === "house" || kind === "vacant" || !["tavern","market","herb","forge","civic","tally","carriage","ship","tower","plague_ruin","dungeon"].includes(kind));
+    const doorSouthX = isCottage ? 285 : rw * 0.5;
+    const doorNorthX = isCottage ? 415 : (kind === "market" ? rw * 0.5 : rw * 0.62);
+    let spawnX = doorSouthX, spawnY = rh - 95;
+    if (floorIdx === 0) {
+      const doorPos = {
+        south: { x: doorSouthX, y: rh - 44, sx: doorSouthX, sy: rh - 102 },
+        north: { x: doorNorthX, y: 44, sx: doorNorthX, sy: 108 },
+        west:  { x: 44, y: rh * 0.52, sx: 105, sy: rh * 0.52 },
+        east:  { x: rw - 44, y: rh * 0.52, sx: rw - 105, sy: rh * 0.52 }
+      }[gside] || { x: doorSouthX, y: rh - 44, sx: doorSouthX, sy: rh - 102 };
+      spawnX = doorPos.sx; spawnY = doorPos.sy;
+      room.hotspots.push({
+        id: "exit_main", x: doorPos.x, y: doorPos.y,
+        label: kind === "ship" ? `踏上跳板離船（回${b.town}碼頭）` : `推門外出（回到${b.town}街巷）`,
+        kind: "exit"
+      });
+    }
+
+    // Populate hand-inked RGBA furniture sprites by building archetype!
+    if (kind === "tavern") {
+      if (floorIdx === 0) {
+        room.desc = `${b.name}一樓大酒廳：石砌大壁爐柴火溫暖，橡木長吧檯後擺滿黑麥酒桶，旅人與船工圍坐木桌低聲交談。東北角木梯可登上二樓宿房長廊。`;
+        room.sprites.push(
+          { sprite: "in_fireplace", x: rw * 0.46, y: 78, w: 230, h: 108, deg: 0, solid: true, glow: true },
+          { sprite: "in_bar_counter", x: 260, y: 255, w: 275, h: 125, deg: 0, solid: true },
+          { sprite: "barrels_crates", x: 135, y: 635, w: 130, h: 95, deg: 0, solid: true },
+          { sprite: "in_table_set", x: 640, y: 290, w: 185, h: 138, deg: 0, solid: true },
+          { sprite: "in_table_set", x: 865, y: 290, w: 185, h: 138, deg: 0, solid: true },
+          { sprite: "in_table_set", x: 640, y: 535, w: 185, h: 138, deg: 0, solid: true },
+          { sprite: "in_table_set", x: 865, y: 535, w: 185, h: 138, deg: 0, solid: true },
+          { sprite: "in_stairs", x: rw - 145, y: 125, w: 155, h: 105, deg: 0, solid: false }
+        );
+        room.hotspots.push({ id: "up_2f", x: rw - 145, y: 155, label: "踏上木梯（前往二樓宿房）", kind: "stairs", toFloor: 1 });
+      } else {
+        room.desc = `${b.name}二樓宿房長廊：厚木隔間將客房分為南北三間，走廊盡頭木梯通往一樓酒廳，二號客房門後放著旅人上鎖的行李木箱。`;
+        room.partitions.push([120, 265, 430, 265], [530, 265, 860, 265], [120, 520, 480, 520], [580, 520, 860, 520], [490, 40, 490, 265]);
+        room.sprites.push(
+          { sprite: "in_bed_single", x: 225, y: 125, w: 168, h: 112, deg: 0, solid: true },
+          { sprite: "in_bed_single", x: 715, y: 125, w: 168, h: 112, deg: 0, solid: true },
+          { sprite: "in_chest_locked", x: 845, y: 125, w: 108, h: 72, deg: 0, solid: true },
+          { sprite: "in_bed_single", x: 235, y: 655, w: 168, h: 112, deg: 0, solid: true },
+          { sprite: "in_desk_cabinet", x: 720, y: 660, w: 175, h: 88, deg: 0, solid: true },
+          { sprite: "in_stairs", x: rw - 145, y: 390, w: 155, h: 105, deg: 0, solid: false }
+        );
+        spawnX = rw - 235; spawnY = 390;
+        room.hotspots.push(
+          { id: "down_1f", x: rw - 145, y: 390, label: "下木梯（回到一樓大酒廳）", kind: "stairs", toFloor: 0 },
+          { id: "chest_inn", x: 845, y: 175, label: "查探客房銅鎖木箱", kind: "chest", unlocked: false }
+        );
+      }
+    } else if (kind === "market") {
+      room.sprites.push(
+        { sprite: "in_market_stall", x: 340, y: 255, w: 235, h: 138, deg: 0, solid: true },
+        { sprite: "in_market_stall", x: 880, y: 255, w: 235, h: 138, deg: 0, solid: true },
+        { sprite: "in_market_stall", x: 340, y: 565, w: 235, h: 138, deg: 0, solid: true },
+        { sprite: "in_market_stall", x: 880, y: 565, w: 235, h: 138, deg: 0, solid: true },
+        { sprite: "barrels_crates", x: 145, y: 155, w: 125, h: 90, deg: 8, solid: true },
+        { sprite: "barrels_crates", x: 1075, y: 675, w: 125, h: 90, deg: -6, solid: true }
+      );
+    } else if (kind === "herb") {
+      room.partitions.push([560, 40, 560, 290], [560, 420, 560, rh - 40]);
+      room.sprites.push(
+        { sprite: "in_desk_cabinet", x: 300, y: 120, w: 215, h: 106, deg: 0, solid: true },
+        { sprite: "in_table_set", x: 315, y: 485, w: 185, h: 138, deg: 0, solid: true },
+        { sprite: "in_fireplace", x: 785, y: 90, w: 205, h: 98, deg: 0, solid: true, glow: true },
+        { sprite: "herb_rows", x: 790, y: 345, w: 195, h: 138, deg: 0, solid: true },
+        { sprite: "in_chest_locked", x: 815, y: 575, w: 125, h: 84, deg: 0, solid: true }
+      );
+      room.hotspots.push({ id: "chest_herb", x: 815, y: 515, label: "查看封蠟珍貴藥材箱", kind: "chest", unlocked: false });
+    } else if (kind === "forge") {
+      room.partitions.push([650, 40, 650, 290], [650, 410, 650, rh - 40]);
+      room.sprites.push(
+        { sprite: "in_fireplace", x: 330, y: 92, w: 245, h: 116, deg: 0, solid: true, glow: true },
+        { sprite: "barrels_crates", x: 165, y: 290, w: 135, h: 96, deg: 0, solid: true },
+        { sprite: "in_desk_cabinet", x: 350, y: 560, w: 210, h: 104, deg: 0, solid: true },
+        { sprite: "in_bed_single", x: 810, y: 155, w: 170, h: 114, deg: 0, solid: true },
+        { sprite: "in_chest_locked", x: 815, y: 565, w: 125, h: 84, deg: 0, solid: true }
+      );
+    } else if (kind === "civic" || kind === "tally" || kind === "carriage") {
+      room.partitions.push([680, 40, 680, 310], [680, 430, 680, rh - 40]);
+      room.sprites.push(
+        { sprite: "in_fireplace", x: 360, y: 86, w: 225, h: 106, deg: 0, solid: true, glow: true },
+        { sprite: "in_desk_cabinet", x: 355, y: 285, w: 235, h: 116, deg: 0, solid: true },
+        { sprite: "in_table_set", x: 355, y: 545, w: 195, h: 142, deg: 0, solid: true },
+        { sprite: "barrels_crates", x: 880, y: 185, w: 145, h: 104, deg: 0, solid: true },
+        { sprite: "in_chest_locked", x: 885, y: 545, w: 140, h: 92, deg: 0, solid: true }
+      );
+      room.hotspots.push({ id: "chest_vault", x: 820, y: 545, label: "查驗公庫鐵箍金櫃", kind: "chest", unlocked: false });
+      if (kind === "carriage") {
+        for (const dest of [
+          { name: "白鷗港", slug: "white_gull_harbor" },
+          { name: "灰松林驛", slug: "greypine_post" },
+          { name: "西峽渡口", slug: "west_strait_ferry" },
+          { name: "鷗尾漁港", slug: "gull_tail_port" }
+        ]) {
+          if (dest.name !== b.town) {
+            room.hotspots.push({ id: `coach_${dest.slug}`, x: 355, y: 365, label: `搭乘雙馬驛車前往：${dest.name}`, kind: "fast_travel", slug: dest.slug });
+          }
+        }
+      }
+    } else if (kind === "ship") {
+      room.partitions.push([360, 45, 360, 200], [360, 320, 360, rh - 45]);
+      room.sprites.push(
+        { sprite: "in_bed_single", x: 185, y: 135, w: 165, h: 110, deg: 0, solid: true },
+        { sprite: "in_desk_cabinet", x: 195, y: 385, w: 185, h: 94, deg: 0, solid: true },
+        { sprite: "in_chest_locked", x: 295, y: 135, w: 105, h: 72, deg: 0, solid: true },
+        { sprite: "barrels_crates", x: 560, y: 155, w: 145, h: 104, deg: 0, solid: true },
+        { sprite: "barrels_crates", x: 785, y: 155, w: 145, h: 104, deg: 12, solid: true },
+        { sprite: "in_table_set", x: 700, y: 365, w: 180, h: 132, deg: 0, solid: true },
+        { sprite: "in_stairs", x: 965, y: 260, w: 140, h: 95, deg: 0, solid: false }
+      );
+      for (const port of [
+        { name: "白鷗港", slug: "white_gull_harbor" },
+        { name: "鷗尾漁港", slug: "gull_tail_port" },
+        { name: "西峽渡口", slug: "west_strait_ferry" },
+        { name: "北岬燈塔", slug: "north_cape_beacon" }
+      ]) {
+        if (port.name !== b.town) {
+          room.hotspots.push({ id: `sail_${port.slug}`, x: 255, y: 325, label: `揚帆航往：${port.name}`, kind: "fast_travel", slug: port.slug });
+        }
+      }
+    } else if (kind === "tower") {
+      if (floorIdx === 0) {
+        room.sprites.push(
+          { sprite: "in_fireplace", x: rw * 0.5, y: 95, w: 195, h: 92, deg: 0, solid: true, glow: true },
+          { sprite: "in_desk_cabinet", x: 225, y: 340, w: 185, h: 92, deg: 0, solid: true },
+          { sprite: "in_bed_single", x: 535, y: 495, w: 165, h: 110, deg: 0, solid: true },
+          { sprite: "in_stairs", x: 545, y: 215, w: 150, h: 102, deg: 0, solid: false }
+        );
+        room.hotspots.push({ id: "tower_up", x: 545, y: 245, label: "登上螺旋石梯（前往塔頂燈室）", kind: "stairs", toFloor: 1 });
+      } else {
+        room.desc = `${b.name}塔頂銅鏡燈室：海風自四面拱窗呼嘯灌入，中央青銅油燈盆映照外洋白浪。`;
+        room.sprites.push(
+          { sprite: "campfire_ring", x: rw * 0.5, y: rh * 0.46, w: 145, h: 138, deg: 0, solid: true, glow: true },
+          { sprite: "barrels_crates", x: 210, y: 220, w: 125, h: 90, deg: 0, solid: true },
+          { sprite: "in_stairs", x: 545, y: 525, w: 150, h: 102, deg: 0, solid: false }
+        );
+        spawnX = 460; spawnY = 525;
+        room.hotspots.push({ id: "tower_down", x: 545, y: 525, label: "下螺旋石梯（回到塔底值房）", kind: "stairs", toFloor: 0 });
+      }
+    } else if (kind === "plague_ruin" || kind === "dungeon") {
+      room.sprites.push(
+        { sprite: "cliff_rock", x: 230, y: 195, w: 185, h: 130, deg: 14, solid: true },
+        { sprite: "cliff_rock", x: 745, y: 510, w: 175, h: 122, deg: -22, solid: true },
+        { sprite: "campfire_ring", x: 480, y: 350, w: 115, h: 108, deg: 0, solid: false, glow: kind === "dungeon" },
+        { sprite: "in_chest_locked", x: 735, y: 175, w: 135, h: 90, deg: -5, solid: true }
+      );
+      room.hotspots.push({ id: "chest_ruin", x: 735, y: 235, label: kind === "dungeon" ? "開啟古試煉石匣" : "翻找封村遺留木箱", kind: "chest", unlocked: false });
+    } else {
+      // Residential Cottage (`330+` real households across 34 settlements — deterministically varied by household seed!)
+      const splitX = Math.round(520 + (rng() - 0.5) * 90);
+      room.partitions.push([splitX, 40, splitX, 275], [splitX, 405, splitX, rh - 40]);
+      if (kind === "vacant") {
+        room.sprites.push(
+          { sprite: "in_fireplace", x: 280, y: 84, w: 195, h: 92, deg: 0, solid: true, glow: false },
+          { sprite: "barrels_crates", x: splitX + 195, y: 210, w: 120, h: 86, deg: 15, solid: true }
+        );
+      } else {
+        const nBeds = Math.max(1, Math.min(2, (b.npcs ? b.npcs.length : 1)));
+        room.sprites.push(
+          { sprite: "in_fireplace", x: 195, y: 84, w: 198, h: 94, deg: 0, solid: true, glow: true },
+          { sprite: "in_table_set", x: 265, y: 380, w: 182, h: 135, deg: rng() > 0.5 ? 0 : 90, solid: true },
+          { sprite: "barrels_crates", x: 145, y: 565, w: 112, h: 80, deg: 0, solid: true },
+          { sprite: "in_bed_single", x: splitX + 255, y: 140, w: 172, h: 114, deg: 0, solid: true },
+          { sprite: "in_desk_cabinet", x: splitX + 265, y: 585, w: 185, h: 92, deg: 0, solid: true },
+          { sprite: "in_chest_locked", x: splitX + 105, y: 580, w: 112, h: 76, deg: 0, solid: true }
+        );
+        if (nBeds >= 2) {
+          room.sprites.push({ sprite: "in_bed_single", x: splitX + 255, y: 335, w: 172, h: 114, deg: 0, solid: true });
+        }
+        room.hotspots.push({ id: "chest_home", x: splitX + 105, y: 515, label: `查探${b.name}家傳木箱`, kind: "chest", unlocked: false });
+      }
+    }
+
+    // Spawn real named household/shop residents inside the room!
+    const npcPalette = ["#9e3d2b", "#2f5d73", "#4c6e3d", "#7a496b", "#8c6229"];
+    (b.npcs || []).slice(0, 4).forEach((npc, idx) => {
+      const spots = [[230, 235], [420, 465], [635, 345], [360, 240]];
+      const sp = spots[idx % spots.length];
+      room.npcs.push({
+        name: npc.name, race: npc.race, role: npc.role,
+        x: sp[0], y: sp[1], col: npcPalette[idx % npcPalette.length]
+      });
+      room.hotspots.push({
+        id: `npc_${idx}`, x: sp[0], y: sp[1] + 24,
+        label: `與${npc.role}「${npc.name}」（${npc.race}）交談`,
+        kind: "npc",
+        line: `${npc.name}（${npc.race}・${npc.role}）望向你說道：「這裡是${b.town}的${b.name}。外頭海風寒涼，進屋歇口氣吧！」`
+      });
+    });
+
+    room.spawnX = spawnX;
+    room.spawnY = spawnY;
+    return room;
+  }
+
+  function queryIndoorWalkable(room, ix, iy, radius = 12) {
+    if (ix < 46 + radius || ix > room.w - 46 - radius || iy < 46 + radius || iy > room.h - 46 - radius) return false;
+    for (const seg of room.partitions) {
+      if (distToSegSq(ix, iy, seg[0], seg[1], seg[2], seg[3]) < (9 + radius) ** 2) return false;
+    }
+    for (const sp of room.sprites) {
+      if (!sp.solid) continue;
+      if (pointInRotBox(ix, iy, sp.x, sp.y, sp.w * 0.82, sp.h * 0.78, sp.deg || 0, radius)) return false;
+    }
+    return true;
+  }
+
+  function enterBuilding(b, floorIdx = 0) {
+    if (player.mode === "outdoor") {
+      player.returnOutdoor = { x: b.door.x, y: b.door.y, scale: Math.max(0.65, cam.scale) };
+    }
+    const room = buildInteriorForBuilding(b, floorIdx);
+    player.mode = "indoor";
+    player.indoorRoom = room;
+    player.x = room.spawnX;
+    player.y = room.spawnY;
+    player.path = [];
+    cam.x = room.w * 0.5;
+    cam.y = room.h * 0.5;
+    cam.scale = Math.min((canvas.clientWidth - 40) / room.w, (canvas.clientHeight - 50) / room.h, 1.05);
+    stSublog.textContent = `已推門進入【${room.title}】——手繪橡木／石板地磚、壁爐火光與常住居民皆由單一畫布水彩圖集即時渲染。`;
+    syncStoryUI();
+    render();
+  }
+
+  function exitIndoor() {
+    if (player.mode !== "indoor") return;
+    const ret = player.returnOutdoor || SCENE.spawn;
+    player.mode = "outdoor";
+    player.indoorRoom = null;
+    player.x = ret.x; player.y = ret.y;
+    player.path = [];
+    cam.x = ret.x; cam.y = ret.y;
+    cam.scale = ret.scale || 0.78;
+    cam.follow = true;
+    stSublog.textContent = "你推開木門回到街巷戶外，海風與石板路聲息撲面而來。";
+    syncStoryUI();
+    render();
+  }
+
+  // --- Vault Low Courtyard Wall (`〔翻牆潛入〕`) ---
+  function findNearbyVaultTarget() {
+    if (player.mode !== "outdoor") return null;
+    for (const wseg of queryGridPoint(gridWalls, player.x, player.y)) {
+      const dSq = distToSegSq(player.x, player.y, wseg[0], wseg[1], wseg[2], wseg[3]);
+      if (dSq <= 42 * 42) {
+        const mx = (wseg[0] + wseg[2]) * 0.5, my = (wseg[1] + wseg[3]) * 0.5;
+        const dx = wseg[2] - wseg[0], dy = wseg[3] - wseg[1];
+        const len = Math.max(1, Math.hypot(dx, dy));
+        let nx = -dy / len, ny = dx / len;
+        if ((mx - player.x) * nx + (my - player.y) * ny < 0) { nx = -nx; ny = -ny; }
+        const landX = player.x + nx * 56, landY = player.y + ny * 56;
+        if (queryOutdoorPoint(landX, landY, 9).walkable) {
+          return { x: landX, y: landY };
+        }
+      }
+    }
+    return null;
+  }
+
+  // --- Sync Left/Top Narrative & Proximity Action Capsules ---
+  function syncStoryUI() {
+    if (!SCENE) return;
+    stActions.innerHTML = "";
+
+    if (player.mode === "indoor" && player.indoorRoom) {
+      const rm = player.indoorRoom;
+      stateBadge.textContent = "室內平面";
+      stateBadge.className = "story-badge indoor";
+      stTitle.textContent = rm.title;
+      stDesc.textContent = rm.desc;
+      nearCountBadge.textContent = `在場 ${rm.npcs.length} 人`;
+
+      for (const hs of rm.hotspots) {
+        const d = Math.hypot(hs.x - player.x, hs.y - player.y);
+        if (d > 260 && hs.kind !== "exit" && hs.kind !== "fast_travel") continue;
+        const btn = document.createElement("button");
+        btn.className = "pill action" + (hs.kind === "chest" && !hs.unlocked ? " warn" : "");
+        btn.textContent = hs.label;
+        btn.onclick = () => {
+          if (hs.kind === "exit") {
+            exitIndoor();
+          } else if (hs.kind === "stairs") {
+            enterBuilding(rm.building, hs.toFloor);
+          } else if (hs.kind === "npc") {
+            stSublog.textContent = hs.line;
+          } else if (hs.kind === "chest") {
+            if (rm.npcs.length > 0 && !hs.unlocked) {
+              stSublog.textContent = `⚠️ 屋內「${rm.npcs[0].name}」正盯著這邊，當面撬鎖會觸發治安通報！`;
+            } else {
+              hs.unlocked = true;
+              stSublog.textContent = `已開啟【${hs.label.replace("查探", "").replace("查看", "")}】，裡頭整齊收著銀鷗島銅幣、封蠟契紙與乾糧。`;
+              syncStoryUI();
+            }
+          } else if (hs.kind === "fast_travel") {
+            const targetTown = SCENE.settlements.find(s => s.slug === hs.slug);
+            if (targetTown) {
+              player.mode = "outdoor";
+              player.indoorRoom = null;
+              player.x = targetTown.x; player.y = targetTown.y + 85;
+              player.path = [];
+              player.gameMinutes += 140;
+              cam.x = player.x; cam.y = player.y; cam.scale = 0.72; cam.follow = true;
+              stSublog.textContent = `旅途推進兩小時二十分，已平安抵達【${targetTown.name}】！`;
+              syncStoryUI();
+            }
+          }
+        };
+        stActions.appendChild(btn);
+      }
+      return;
+    }
+
+    // Outdoor narrative & proximity doorway capsules
+    stateBadge.textContent = player.running ? "戶外奔跑" : "戶外步行";
+    stateBadge.className = "story-badge" + (player.running ? " running" : "");
+
+    const q = queryOutdoorPoint(player.x, player.y, 6);
+    const curCell = q.cell;
+    const nearDoors = [];
+    for (const b of queryGridBBox(gridBuildings, player.x - PROX_FADE, player.y - PROX_FADE, player.x + PROX_FADE, player.y + PROX_FADE)) {
+      const d = Math.hypot(b.door.x - player.x, b.door.y - player.y);
+      if (d <= PROX_FADE) nearDoors.push({ b, d });
+    }
+    nearDoors.sort((a, b) => a.d - b.d);
+
+    if (nearDoors.length > 0 && nearDoors[0].d < 190) {
+      const topB = nearDoors[0].b;
+      stTitle.textContent = `${topB.town}・${topB.name}`;
+      stDesc.textContent = topB.desc;
+    } else if (curCell) {
+      stTitle.textContent = `銀鷗島 #${curCell.cid}・${curCell.title}`;
+      stDesc.textContent = `所屬轄區：【${curCell.region}】（海拔高度 ${curCell.h}）。全島 93 個多邊形地塊、34 座城鎮村莊與山海官道皆處於同一張 94,000 × 104,000 連續座標畫布上，零拼接縫、零碰撞偏移。`;
+    } else {
+      stTitle.textContent = "銀鷗島沿岸海域・木棧埠頭";
+      stDesc.textContent = "腳下海浪拍打木樁，遠方海鷗盤旋於港灣防波石堤之上。";
+    }
+    nearCountBadge.textContent = nearDoors.length > 0 ? `近處 ${nearDoors.length} 處門戶` : "荒野／街巷漫步";
+
+    for (const item of nearDoors.slice(0, 4)) {
+      const btn = document.createElement("button");
+      btn.className = "pill action";
+      btn.textContent = item.b.door.label;
+      btn.onclick = () => enterBuilding(item.b, 0);
+      stActions.appendChild(btn);
+    }
+
+    const vault = findNearbyVaultTarget();
+    if (vault) {
+      const vBtn = document.createElement("button");
+      vBtn.className = "pill action warn";
+      vBtn.textContent = "〔翻牆潛入／躍出庭院矮石牆〕";
+      vBtn.onclick = () => {
+        player.x = vault.x; player.y = vault.y; player.path = [];
+        stSublog.textContent = "你雙手撐住砌石矮牆俐落翻越，輕聲落入牆另一側！";
+        syncStoryUI();
+      };
+      stActions.appendChild(vBtn);
+    }
+  }
+
+  // --- Render Hand-Inked Ashlar Stone Wall Segment (Unmistakably 3D Capped Wall vs Flat Cobble Road!) ---
+  function drawAshlarWallSeg(x0, y0, x1, y1, thick, isRampart) {
+    const dx = x1 - x0, dy = y1 - y0;
+    const len = Math.hypot(dx, dy);
+    if (len < 2) return;
+
+    // 1. Crisp SE Drop Shadow (instantly distinguishes raised stone walls from flat road curbs!)
+    ctx.save();
+    ctx.lineCap = "butt";
+    ctx.beginPath();
+    ctx.moveTo(x0 + (isRampart ? 9 : 5), y0 + (isRampart ? 11 : 6));
+    ctx.lineTo(x1 + (isRampart ? 9 : 5), y1 + (isRampart ? 11 : 6));
+    ctx.strokeStyle = "rgba(24, 20, 15, 0.34)";
+    ctx.lineWidth = thick + 2;
+    ctx.stroke();
+
+    // 2. Dark hand-inked outer stone casing
+    ctx.beginPath();
+    ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+    ctx.strokeStyle = "#2b231c";
+    ctx.lineWidth = thick + 3.4;
+    ctx.stroke();
+
+    // 3. Warm dressed-limestone cap fill
+    ctx.beginPath();
+    ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+    ctx.strokeStyle = isRampart ? "#aba191" : "#cfc6b4";
+    ctx.lineWidth = thick;
+    ctx.stroke();
+
+    // 4. Individual ashlar block joint ticks + corner coping pillars!
+    const step = isRampart ? 34 : 22;
+    const nx = -dy / len, ny = dx / len;
+    ctx.strokeStyle = "rgba(45, 36, 28, 0.62)";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    for (let d = step; d < len - 6; d += step) {
+      const px = x0 + (dx / len) * d, py = y0 + (dy / len) * d;
+      ctx.moveTo(px - nx * thick * 0.52, py - ny * thick * 0.52);
+      ctx.lineTo(px + nx * thick * 0.52, py + ny * thick * 0.52);
+    }
+    ctx.stroke();
+
+    // Gatepost stone caps at segment ends
+    ctx.fillStyle = isRampart ? "#9d9282" : "#dfd7c6";
+    ctx.strokeStyle = "#2b231c";
+    ctx.lineWidth = 1.8;
+    const rCap = thick * 0.64;
+    for (const [ex, ey] of [[x0, y0], [x1, y1]]) {
+      ctx.fillRect(ex - rCap, ey - rCap, rCap * 2, rCap * 2);
+      ctx.strokeRect(ex - rCap, ey - rCap, rCap * 2, rCap * 2);
+    }
+    ctx.restore();
+  }
+
+  // --- Render Wooden Porch / Ship Gangplank at Every Building Door ---
+  function drawDoorPorch(b) {
+    if (b.kind === "plague_ruin" || b.kind === "dungeon") return;
+    const mx = (b.x + b.door.x) * 0.5, my = (b.y + b.door.y) * 0.5;
+    const ang = Math.atan2(b.door.y - b.y, b.door.x - b.x);
+    const plen = b.kind === "ship" ? 44 : 26;
+    const pw = b.kind === "ship" ? 22 : 30;
+    ctx.save();
+    ctx.translate(b.kind === "ship" ? mx : (b.x + Math.cos(ang) * (Math.min(b.w, b.h) * 0.48)),
+                  b.kind === "ship" ? my : (b.y + Math.sin(ang) * (Math.min(b.w, b.h) * 0.48)));
+    ctx.rotate(ang);
+    ctx.fillStyle = "#a88256";
+    ctx.strokeStyle = "#332215";
+    ctx.lineWidth = 1.8;
+    ctx.fillRect(-plen * 0.5, -pw * 0.5, plen, pw);
+    ctx.strokeRect(-plen * 0.5, -pw * 0.5, plen, pw);
+    // Plank lines
+    ctx.beginPath();
+    for (let x = -plen * 0.3; x <= plen * 0.35; x += 7) {
+      ctx.moveTo(x, -pw * 0.48); ctx.lineTo(x, pw * 0.48);
+    }
+    ctx.strokeStyle = "rgba(56, 36, 20, 0.45)";
+    ctx.lineWidth = 1.1;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // --- Main Render Loop (Indoor vs Multi-Scale Single-Canvas Island!) ---
+  function render() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cw = canvas.clientWidth, ch = canvas.clientHeight;
+    if (canvas.width !== Math.round(cw * dpr) || canvas.height !== Math.round(ch * dpr)) {
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    if (!SCENE || !overviewCanvas) {
+      ctx.fillStyle = "#48747e";
+      ctx.fillRect(0, 0, cw, ch);
+      return;
+    }
+
+    if (player.mode === "indoor" && player.indoorRoom) {
+      renderIndoor(cw, ch);
+      return;
+    }
+
+    // --- OUTDOOR SINGLE-CANVAS SILVER GULL ISLAND ---
+    const sc = cam.scale;
+    const halfW = (cw * 0.5) / sc, halfH = (ch * 0.5) / sc;
+    const minX = cam.x - halfW - 320, maxX = cam.x + halfW + 320;
+    const minY = cam.y - halfH - 320, maxY = cam.y + halfH + 320;
+
+    ctx.fillStyle = "#48747e";
+    ctx.fillRect(0, 0, cw, ch);
+
+    ctx.save();
+    ctx.translate(cw * 0.5, ch * 0.5);
+    ctx.scale(sc, sc);
+    ctx.translate(-cam.x, -cam.y);
+
+    if (sc < 0.12) {
+      // === ZOOM TIER 1: WHOLE-ISLAND & REGIONAL WATERCOLOR OVERVIEW (`camScale < 0.12`) ===
+      ctx.drawImage(overviewCanvas, 0, 0, overviewCanvas.width * OVERVIEW_DIV, overviewCanvas.height * OVERVIEW_DIV);
+
+      // Regional Border Inner Color Bands (`wm_4655dbdadc724bfd`: ONLY along true inter-region / coastal borders, zero internal cell lines!)
+      const fadeAlpha = Math.max(0, Math.min(1, (0.115 - sc) / 0.055));
+      if (cam.showBorders && fadeAlpha > 0.02 && SCENE.region_borders) {
+        ctx.save();
+        ctx.globalAlpha = fadeAlpha;
+        ctx.lineCap = "round";
+        for (const rb of SCENE.region_borders) {
+          const rc = REGION_COLORS[rb.region];
+          if (!rc) continue;
+          ctx.beginPath();
+          ctx.moveTo(rb.x0, rb.y0); ctx.lineTo(rb.x1, rb.y1);
+          ctx.strokeStyle = rc.band;
+          ctx.lineWidth = 240;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Settlement Calligraphic Nameplates on Overview
+      ctx.save();
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (const s of SCENE.settlements) {
+        const isMajor = s.tier !== "village";
+        if (!isMajor && sc < 0.022) continue;
+        const fpx = Math.round((isMajor ? 14 : 11.5) / sc);
+        ctx.font = `${isMajor ? "700" : "600"} ${fpx}px "Noto Serif TC", serif`;
+        const label = isMajor ? `${s.name}（${s.houses}戶）` : s.name;
+        const tw = ctx.measureText(label).width;
+        const padX = 7 / sc, padY = 3.5 / sc;
+        const ly = s.y - (isMajor ? 22 / sc : 15 / sc);
+        ctx.fillStyle = isMajor ? "rgba(249, 241, 222, 0.92)" : "rgba(244, 236, 218, 0.80)";
+        ctx.strokeStyle = isMajor ? "#592619" : "rgba(92, 74, 54, 0.7)";
+        ctx.lineWidth = (isMajor ? 1.8 : 1.1) / sc;
+        ctx.beginPath();
+        ctx.roundRect(s.x - tw * 0.5 - padX, ly - fpx * 0.55 - padY, tw + padX * 2, fpx * 1.1 + padY * 2, 6 / sc);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = isMajor ? "#2b1912" : "#3a2e24";
+        ctx.fillText(label, s.x, ly);
+      }
+      ctx.restore();
+    } else {
+      // === ZOOM TIER 2: FULL-DETAIL SEAMLESS WATERCOLOR STREET, COURTYARD & WILDERNESS ENGINE (`camScale >= 0.12`) ===
+      // 1. Seamless Ocean Pattern Base
+      ctx.fillStyle = patterns.ocean;
+      ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
+
+      // 2. Shallow Foreshore Waves & Visible Land Cells (Zero artificial grid lines!)
+      const visCells = queryGridBBox(gridCells, minX, minY, maxX, maxY);
+      // Draw coastal shallow glow along visible coastline edges
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      for (const loop of SCENE.coast_loops) {
+        ctx.beginPath();
+        loop.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.closePath();
+        ctx.strokeStyle = "rgba(156, 206, 202, 0.42)";
+        ctx.lineWidth = 220;
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(235, 246, 240, 0.62)";
+        ctx.lineWidth = 54;
+        ctx.stroke();
+      }
+
+      for (const c of visCells) {
+        ctx.beginPath();
+        c.poly.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.closePath();
+        const pat = c.plague ? patterns.plague : (c.h >= 23 || c.biome === 9 ? patterns.forest : patterns.meadow);
+        ctx.fillStyle = pat;
+        ctx.fill();
+        ctx.strokeStyle = pat;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      }
+
+      // Sandy beach & hand-inked coastline contour
+      for (const loop of SCENE.coast_loops) {
+        ctx.beginPath();
+        loop.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.closePath();
+        ctx.strokeStyle = "rgba(222, 205, 168, 0.78)";
+        ctx.lineWidth = 28;
+        ctx.stroke();
+        ctx.strokeStyle = "#362c22";
+        ctx.lineWidth = 3.2;
+        ctx.stroke();
+      }
+
+      // 2B. Carved Deep-Water Harbor Bays (`白鷗深水港池`: deep ocean water + shallow surf + dressed stone quay wall!)
+      for (const hb of (SCENE.harbor_bays || [])) {
+        ctx.save();
+        ctx.beginPath();
+        hb.poly.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.closePath();
+        ctx.fillStyle = patterns.ocean;
+        ctx.fill();
+        ctx.clip();
+        ctx.beginPath();
+        hb.quay.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.strokeStyle = "rgba(162, 212, 208, 0.48)";
+        ctx.lineWidth = 130;
+        ctx.stroke();
+        ctx.strokeStyle = "rgba(238, 248, 244, 0.65)";
+        ctx.lineWidth = 34;
+        ctx.stroke();
+        ctx.restore();
+        // Dressed stone harbor seawall along the western quay edge
+        ctx.beginPath();
+        hb.quay.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.strokeStyle = "#2b221a";
+        ctx.lineWidth = 15;
+        ctx.stroke();
+        ctx.strokeStyle = "#c8bfb0";
+        ctx.lineWidth = 10;
+        ctx.stroke();
+      }
+
+      // 3. Rivers (`澤昂河` with stone/sand banks & water flow ripples!)
+      for (const rv of queryGridBBox(gridRivers, minX, minY, maxX, maxY)) {
+        ctx.beginPath();
+        rv.pts.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.strokeStyle = "rgba(198, 184, 152, 0.85)";
+        ctx.lineWidth = rv.w + 22;
+        ctx.stroke();
+        ctx.strokeStyle = "#3b2f24";
+        ctx.lineWidth = rv.w + 5;
+        ctx.stroke();
+        ctx.strokeStyle = patterns.ocean;
+        ctx.lineWidth = rv.w;
+        ctx.stroke();
+      }
+
+      // 4. Town Plazas + Seamless Continuous Watercolor Roads & Alleys (Shoulders unified first, then cobbles unified on top!)
+      const visRoads = Array.from(queryGridBBox(gridRoads, minX, minY, maxX, maxY));
+      const visPlazas = (SCENE.plazas || []).filter(plz => !(plz.x + plz.r < minX || plz.x - plz.r > maxX || plz.y + plz.r < minY || plz.y - plz.r > maxY));
+      // Pass 4A: Unified sandy/earthy shoulders for plazas & roads
+      for (const plz of visPlazas) {
+        ctx.beginPath();
+        ctx.arc(plz.x, plz.y, plz.r + 12, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(206, 188, 150, 0.72)";
+        ctx.fill();
+      }
+      for (const rd of visRoads) {
+        ctx.beginPath();
+        rd.pts.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.strokeStyle = "rgba(206, 188, 150, 0.68)";
+        ctx.lineWidth = rd.w + 16;
+        ctx.stroke();
+      }
+      // Pass 4B: Unified world-space cobblestone pattern for plazas & roads (zero shoulder seam lines!)
+      for (const plz of visPlazas) {
+        ctx.beginPath();
+        ctx.arc(plz.x, plz.y, plz.r, 0, Math.PI * 2);
+        ctx.fillStyle = patterns.cobbleMain;
+        ctx.fill();
+      }
+      for (const rd of visRoads) {
+        ctx.beginPath();
+        rd.pts.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.strokeStyle = rd.kind === "highway" ? patterns.cobbleMain : patterns.cobbleTrail;
+        ctx.lineWidth = rd.w;
+        ctx.stroke();
+      }
+
+      // 5. Wooden Piers & Stone Breakwaters + Twin-Parapet Stone Bridges!
+      for (const pi of queryGridBBox(gridPiers, minX, minY, maxX, maxY)) {
+        const isStoneMole = pi.name.includes("防波");
+        ctx.save();
+        ctx.translate(pi.cx, pi.cy);
+        ctx.rotate(pi.deg * Math.PI / 180);
+        // Water shadow
+        ctx.fillStyle = "rgba(20, 36, 40, 0.34)";
+        ctx.fillRect(-pi.w * 0.5 + 7, -pi.h * 0.5 + 8, pi.w, pi.h);
+        ctx.fillStyle = isStoneMole ? "#b8afa0" : "#a88055";
+        ctx.strokeStyle = "#2d2219";
+        ctx.lineWidth = 2.6;
+        ctx.fillRect(-pi.w * 0.5, -pi.h * 0.5, pi.w, pi.h);
+        ctx.strokeRect(-pi.w * 0.5, -pi.h * 0.5, pi.w, pi.h);
+        // Plank / stone joints + mooring bollards
+        ctx.beginPath();
+        const stepP = isStoneMole ? 26 : 12;
+        for (let x = -pi.w * 0.48; x < pi.w * 0.48; x += stepP) {
+          ctx.moveTo(x, -pi.h * 0.48); ctx.lineTo(x, pi.h * 0.48);
+        }
+        ctx.strokeStyle = isStoneMole ? "rgba(52,44,36,0.45)" : "rgba(58,36,18,0.42)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        if (!isStoneMole) {
+          ctx.fillStyle = "#5c4028";
+          for (let x = -pi.w * 0.44; x <= pi.w * 0.44; x += 68) {
+            for (const py of [-pi.h * 0.44, pi.h * 0.44]) {
+              ctx.beginPath(); ctx.arc(x, py, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            }
+          }
+        }
+        ctx.restore();
+      }
+
+      for (const br of queryGridBBox(gridBridges, minX, minY, maxX, maxY)) {
+        ctx.save();
+        ctx.translate(br.cx, br.cy);
+        ctx.rotate(br.deg * Math.PI / 180);
+        ctx.fillStyle = "rgba(22, 32, 34, 0.35)";
+        ctx.fillRect(-br.w * 0.5 + 8, -br.h * 0.5 + 9, br.w, br.h);
+        ctx.fillStyle = patterns.cobbleMain;
+        ctx.fillRect(-br.w * 0.5, -br.h * 0.5, br.w, br.h);
+        // Twin dressed-stone bridge parapets along left & right edges!
+        ctx.fillStyle = "#cfc6b4";
+        ctx.strokeStyle = "#2b221a";
+        ctx.lineWidth = 2.2;
+        ctx.fillRect(-br.w * 0.5 - 4, -br.h * 0.5, 13, br.h);
+        ctx.strokeRect(-br.w * 0.5 - 4, -br.h * 0.5, 13, br.h);
+        ctx.fillRect(br.w * 0.5 - 9, -br.h * 0.5, 13, br.h);
+        ctx.strokeRect(br.w * 0.5 - 9, -br.h * 0.5, 13, br.h);
+        ctx.restore();
+      }
+
+      // 6. Impassable Cliff Ridges (`25` dark rocky escarpment spines)
+      for (const cr of queryGridBBox(gridCliffs, minX, minY, maxX, maxY)) {
+        ctx.beginPath();
+        ctx.moveTo(cr[0], cr[1]); ctx.lineTo(cr[2], cr[3]);
+        ctx.strokeStyle = "rgba(56, 48, 40, 0.46)";
+        ctx.lineWidth = 96;
+        ctx.stroke();
+      }
+
+      // 7. Ground Props (`herb_rows`, `well_stone`, `barrels_crates`, `campfire_ring`)
+      const visProps = Array.from(queryGridBBox(gridProps, minX, minY, maxX, maxY));
+      for (const pr of visProps) {
+        if (pr.sprite === "tree_oak" || pr.sprite === "tree_pine" || pr.sprite === "bush_cluster" || pr.sprite === "cliff_rock") continue;
+        if (pr.sprite === "campfire_ring") {
+          const gGlow = ctx.createRadialGradient(pr.x, pr.y, 6, pr.x, pr.y, 72);
+          gGlow.addColorStop(0, "rgba(255, 168, 66, 0.36)");
+          gGlow.addColorStop(1, "rgba(255, 140, 40, 0)");
+          ctx.fillStyle = gGlow;
+          ctx.beginPath(); ctx.arc(pr.x, pr.y, 72, 0, Math.PI * 2); ctx.fill();
+        }
+        drawSprite(pr.sprite, pr.x, pr.y, pr.w, pr.h, pr.deg, pr.solid, 5);
+      }
+
+      // 8. 3D Shadow-Casting Courtyard Stone Walls (`Code 7`) & High Town Rampart Walls (`Code 0`)
+      for (const wseg of queryGridBBox(gridWalls, minX, minY, maxX, maxY)) {
+        drawAshlarWallSeg(wseg[0], wseg[1], wseg[2], wseg[3], 9.5, false);
+      }
+      for (const tw of queryGridBBox(gridTownWalls, minX, minY, maxX, maxY)) {
+        drawAshlarWallSeg(tw[0], tw[1], tw[2], tw[3], 24, true);
+      }
+
+      // 9. Wooden Door Porches + Zero-Fringe RGBA Hand-Inked Buildings & Ships!
+      const visBuildings = Array.from(queryGridBBox(gridBuildings, minX, minY, maxX, maxY));
+      for (const b of visBuildings) {
+        drawDoorPorch(b);
+        drawSprite(b.sprite, b.x, b.y, b.w, b.h, b.deg, true, 10);
+      }
+
+      // 10. Forest Canopy Trees & Cliff Boulders (`atlas_props.webp`)
+      for (const pr of visProps) {
+        if (pr.sprite === "tree_oak" || pr.sprite === "tree_pine" || pr.sprite === "bush_cluster" || pr.sprite === "cliff_rock") {
+          drawSprite(pr.sprite, pr.x, pr.y, pr.w, pr.h, pr.deg, true, 8);
+        }
+      }
+
+      // 11. Subtle Landmark & Alley Labels (only for major shops/bridges when zoomed in >= 0.36)
+      if (sc >= 0.36) {
+        ctx.save();
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        const fpx = Math.max(11, Math.min(15, 11.5 / sc));
+        ctx.font = `600 ${fpx}px "Noto Serif TC", serif`;
+        for (const b of visBuildings) {
+          if (b.kind === "house" || b.kind === "vacant") continue;
+          const ly = b.y - b.h * 0.56 - 10;
+          const tw = ctx.measureText(b.name).width;
+          ctx.fillStyle = "rgba(248, 241, 224, 0.88)";
+          ctx.strokeStyle = "rgba(92, 64, 42, 0.72)";
+          ctx.lineWidth = 1.2 / sc;
+          ctx.beginPath();
+          ctx.roundRect(b.x - tw * 0.5 - 6, ly - fpx * 0.62, tw + 12, fpx * 1.24, 5);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = "#2c1d14";
+          ctx.fillText(b.name, b.x, ly);
+        }
+        ctx.restore();
+      }
+
+      // 12. Optional Debug Collision X-Ray (`碰撞透視`)
+      if (cam.showDebug) {
+        ctx.save();
+        ctx.strokeStyle = "rgba(220, 38, 38, 0.85)";
+        ctx.lineWidth = 2.2 / sc;
+        for (const b of visBuildings) {
+          if (b.kind === "ship") continue;
+          ctx.save();
+          ctx.translate(b.x, b.y); ctx.rotate(b.deg * Math.PI / 180);
+          ctx.strokeRect(-b.w * 0.43, -b.h * 0.42, b.w * 0.86, b.h * 0.84);
+          ctx.restore();
+          ctx.fillStyle = "#16a34a";
+          ctx.beginPath(); ctx.arc(b.door.x, b.door.y, 6, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.strokeStyle = "rgba(245, 158, 11, 0.9)";
+        for (const wseg of queryGridBBox(gridWalls, minX, minY, maxX, maxY)) {
+          ctx.beginPath(); ctx.moveTo(wseg[0], wseg[1]); ctx.lineTo(wseg[2], wseg[3]); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // 13. Patrolling Resident NPCs (Strictly inside `SIGHT_RADIUS`, zero ant-farm!)
+      const nowSec = performance.now() * 0.001;
+      for (const npc of liveOutdoorNpcs) {
+        const nx = npc.ox + Math.sin(nowSec * 0.45 + npc.phase) * 34;
+        const ny = npc.oy + Math.cos(nowSec * 0.38 + npc.phase) * 22;
+        const distP = Math.hypot(nx - player.x, ny - player.y);
+        if (distP > SIGHT_RADIUS) continue;
+        const alpha = distP < SIGHT_RADIUS * 0.75 ? 1 : (SIGHT_RADIUS - distP) / (SIGHT_RADIUS * 0.25);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = "rgba(20,16,12,0.3)";
+        ctx.beginPath(); ctx.ellipse(nx + 2, ny + 4, 8, 5, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = npc.col;
+        ctx.strokeStyle = "#fbf5e8";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(nx, ny, 7.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        if (sc >= 0.52 && distP < 340) {
+          ctx.font = `600 11px "Noto Serif TC", serif`;
+          ctx.textAlign = "center";
+          ctx.fillStyle = "rgba(32, 24, 18, 0.82)";
+          ctx.fillText(npc.name, nx, ny - 13);
+        }
+        ctx.restore();
+      }
+    }
+
+    // --- Active Route Preview & Player Token (Visible at BOTH Overview & Street Zoom!) ---
+    if (player.path.length > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(player.x, player.y);
+      for (const pt of player.path) ctx.lineTo(pt[0], pt[1]);
+      ctx.strokeStyle = player.running ? "rgba(184, 56, 34, 0.82)" : "rgba(46, 98, 118, 0.82)";
+      ctx.lineWidth = Math.max(3, 3.2 / sc);
+      ctx.setLineDash([8 / sc, 6 / sc]);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const pRadius = Math.max(10, 9.5 / sc);
+    ctx.save();
+    ctx.fillStyle = "rgba(178, 52, 34, 0.24)";
+    ctx.beginPath(); ctx.arc(player.x, player.y, pRadius * 1.9, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#b53422";
+    ctx.strokeStyle = "#fff9ed";
+    ctx.lineWidth = Math.max(2.2, 2.4 / sc);
+    ctx.beginPath(); ctx.arc(player.x, player.y, pRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    ctx.restore();
+
+    // Update HUD Readout
+    const q = queryOutdoorPoint(player.x, player.y, 6);
+    const mat = MATERIALS[q.matCode || 4];
+    const cellTag = q.cell ? `#${q.cell.cid} ${q.cell.title}` : "沿岸港池／木棧埠";
+    hudReadout.textContent =
+      `全島單一畫布（94,000×104,000 px）｜ 當前地塊：${cellTag} ｜ 路面：${mat.name}（μ=${mat.mu.toFixed(2)}）｜ 縮放 ${(sc * 100).toFixed(1)}%`;
+  }
+
+  // --- Render Hand-Inked Watercolor Indoor Floorplan ---
+  function renderIndoor(cw, ch) {
+    const rm = player.indoorRoom;
+    ctx.fillStyle = "#241d17";
+    ctx.fillRect(0, 0, cw, ch);
+
+    ctx.save();
+    ctx.translate(cw * 0.5, ch * 0.5);
+    ctx.scale(cam.scale, cam.scale);
+    ctx.translate(-cam.x, -cam.y);
+
+    // Outer parchment drop-shadow frame
+    ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+    ctx.fillRect(16, 18, rm.w, rm.h);
+
+    // Hand-inked Oak Plank or Stone Flagstone Floor!
+    ctx.fillStyle = patterns[rm.floorPat] || patterns.indoorWood;
+    ctx.fillRect(36, 36, rm.w - 72, rm.h - 72);
+
+    // Warm Sunlight / Lantern Wash across floor
+    const sunGrad = ctx.createRadialGradient(rm.w * 0.5, rm.h * 0.5, 40, rm.w * 0.5, rm.h * 0.5, rm.w * 0.65);
+    sunGrad.addColorStop(0, "rgba(255, 240, 206, 0.14)");
+    sunGrad.addColorStop(1, "rgba(32, 22, 14, 0.22)");
+    ctx.fillStyle = sunGrad;
+    ctx.fillRect(36, 36, rm.w - 72, rm.h - 72);
+
+    // Perimeter Stone / Timber Hull Walls (`drawAshlarWallSeg`)
+    drawAshlarWallSeg(36, 36, rm.w - 36, 36, 24, !rm.isShip);
+    drawAshlarWallSeg(rm.w - 36, 36, rm.w - 36, rm.h - 36, 24, !rm.isShip);
+    drawAshlarWallSeg(rm.w - 36, rm.h - 36, 36, rm.h - 36, 24, !rm.isShip);
+    drawAshlarWallSeg(36, rm.h - 36, 36, 36, 24, !rm.isShip);
+
+    // Interior Timber/Stone Partition Walls
+    for (const seg of rm.partitions) {
+      drawAshlarWallSeg(seg[0], seg[1], seg[2], seg[3], 15, false);
+    }
+
+    // Hand-Inked RGBA Indoor Furniture Sprites + Warm Hearth Glow!
+    for (const sp of rm.sprites) {
+      if (sp.glow) {
+        const fg = ctx.createRadialGradient(sp.x, sp.y + 25, 10, sp.x, sp.y + 35, 190);
+        fg.addColorStop(0, "rgba(255, 166, 62, 0.34)");
+        fg.addColorStop(1, "rgba(255, 140, 40, 0)");
+        ctx.fillStyle = fg;
+        ctx.beginPath(); ctx.arc(sp.x, sp.y + 35, 190, 0, Math.PI * 2); ctx.fill();
+      }
+      drawSprite(sp.sprite, sp.x, sp.y, sp.w, sp.h, sp.deg || 0, true, 7);
+    }
+
+    // Exit Mat / Doorway Threshold Marker
+    for (const hs of rm.hotspots) {
+      if (hs.kind === "exit") {
+        ctx.fillStyle = "rgba(186, 134, 72, 0.88)";
+        ctx.strokeStyle = "#2b1d12";
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.roundRect(hs.x - 38, hs.y - 14, 76, 28, 6);
+        ctx.fill(); ctx.stroke();
+        ctx.font = `700 12px "Noto Serif TC", serif`;
+        ctx.fillStyle = "#fff8eb";
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText("門檻出口", hs.x, hs.y);
+      }
+    }
+
+    // Resident NPCs inside the room
+    for (const npc of rm.npcs) {
+      ctx.fillStyle = "rgba(24, 16, 10, 0.32)";
+      ctx.beginPath(); ctx.ellipse(npc.x + 3, npc.y + 5, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = npc.col;
+      ctx.strokeStyle = "#fbf5e8";
+      ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.arc(npc.x, npc.y, 12, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.font = `700 12.5px "Noto Serif TC", serif`;
+      ctx.textAlign = "center";
+      const lbl = `${npc.name}（${npc.role}）`;
+      const tw = ctx.measureText(lbl).width;
+      ctx.fillStyle = "rgba(248, 240, 224, 0.92)";
+      ctx.beginPath(); ctx.roundRect(npc.x - tw * 0.5 - 6, npc.y - 31, tw + 12, 18, 5); ctx.fill();
+      ctx.fillStyle = "#2a1b12";
+      ctx.fillText(lbl, npc.x, npc.y - 22);
+    }
+
+    // Player Token Inside Room
+    ctx.fillStyle = "rgba(178, 52, 34, 0.25)";
+    ctx.beginPath(); ctx.arc(player.x, player.y, 21, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#b53422";
+    ctx.strokeStyle = "#fff9ed";
+    ctx.lineWidth = 2.8;
+    ctx.beginPath(); ctx.arc(player.x, player.y, 12.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    ctx.restore();
+
+    hudReadout.textContent =
+      `手繪室內平面 ｜ ${rm.title}（${rm.w}×${rm.h}）｜ 點擊地板走動、走近居民／木箱／木梯／門檻即可互動`;
+  }
+
+  // --- Simulation Tick (60fps Movement + Game Clock `1 real hr = 1 game day`) ---
+  let lastTs = performance.now();
+  let uiSyncTimer = 0;
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTs) * 0.001);
+    lastTs = now;
+
+    if (SCENE) {
+      player.gameMinutes = (player.gameMinutes + dt * 24) % 1440; // 1 real hour = 1440 game minutes
+      const hh = Math.floor(player.gameMinutes / 60);
+      const mm = Math.floor(player.gameMinutes % 60);
+      const shichen = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"][Math.floor(((hh + 1) % 24) / 2)];
+      clockText.textContent = `太陽曆 329 年・寒冬・19 日 ｜ ${shichen}時 ${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+
+      if (player.path.length > 0) {
+        const target = player.path[0];
+        const dx = target[0] - player.x, dy = target[1] - player.y;
+        const dist = Math.hypot(dx, dy);
+        let spd = player.running ? RUN_SPEED : WALK_SPEED;
+        if (player.mode === "outdoor") {
+          const q = queryOutdoorPoint(player.x, player.y, 6);
+          spd *= (MATERIALS[q.matCode || 4]?.speedMul || 0.8);
+        }
+        const step = spd * dt;
+        if (dist <= step + 2) {
+          player.x = target[0]; player.y = target[1];
+          player.path.shift();
+          if (player.path.length === 0) player.running = false;
+          syncStoryUI();
+        } else {
+          const nx = player.x + (dx / dist) * step;
+          const ny = player.y + (dy / dist) * step;
+          const ok = player.mode === "indoor"
+            ? queryIndoorWalkable(player.indoorRoom, nx, ny, 10)
+            : queryOutdoorPoint(nx, ny, 8).walkable;
+          if (ok) {
+            player.x = nx; player.y = ny;
+          } else {
+            player.path = []; player.running = false;
+          }
+        }
+        if (cam.follow && player.mode === "outdoor") {
+          cam.x += (player.x - cam.x) * Math.min(1, dt * 8);
+          cam.y += (player.y - cam.y) * Math.min(1, dt * 8);
+        }
+      }
+
+      uiSyncTimer += dt;
+      if (uiSyncTimer > 0.35) {
+        uiSyncTimer = 0;
+        syncStoryUI();
+      }
+    }
+
+    render();
+    requestAnimationFrame(tick);
+  }
+
+  // --- Pointer, Pan, Pinch-Zoom & Click/Double-Click Walk/Run Controls ---
+  let pointerDown = null;
+  let dragged = false;
+  let lastTapTime = 0;
+  const activeTouches = new Map();
+  let lastPinchDist = 0;
+
+  function screenToWorld(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = clientX - rect.left, sy = clientY - rect.top;
+    return [
+      cam.x + (sx - rect.width * 0.5) / cam.scale,
+      cam.y + (sy - rect.height * 0.5) / cam.scale
+    ];
+  }
+
+  canvas.addEventListener("pointerdown", (e) => {
+    canvas.setPointerCapture(e.pointerId);
+    activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (activeTouches.size === 1) {
+      pointerDown = { x: e.clientX, y: e.clientY, camX: cam.x, camY: cam.y };
+      dragged = false;
+    } else if (activeTouches.size === 2) {
+      const pts = Array.from(activeTouches.values());
+      lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      dragged = true;
+    }
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (!activeTouches.has(e.pointerId)) return;
+    activeTouches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (activeTouches.size === 2) {
+      const pts = Array.from(activeTouches.values());
+      const d = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      if (lastPinchDist > 10) {
+        const minS = player.mode === "indoor" ? 0.35 : 0.0068;
+        cam.scale = Math.max(minS, Math.min(1.95, cam.scale * (d / lastPinchDist)));
+      }
+      lastPinchDist = d;
+      render();
+      return;
+    }
+    if (!pointerDown) return;
+    const dx = e.clientX - pointerDown.x, dy = e.clientY - pointerDown.y;
+    if (Math.hypot(dx, dy) > 7) {
+      dragged = true;
+      cam.follow = false;
+      document.getElementById("btnFollow").classList.remove("on");
+      cam.x = pointerDown.camX - dx / cam.scale;
+      cam.y = pointerDown.camY - dy / cam.scale;
+      render();
+    }
+  });
+
+  function onPointerFinish(e) {
+    activeTouches.delete(e.pointerId);
+    if (activeTouches.size > 0) return;
+    if (pointerDown && !dragged && SCENE) {
+      const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+      const now = performance.now();
+      const isDouble = (now - lastTapTime) <= DBL_TAP_MS;
+      lastTapTime = now;
+
+      if (player.mode === "indoor" && player.indoorRoom) {
+        // Check if clicked directly on exit threshold
+        const rm = player.indoorRoom;
+        const hitExit = rm.hotspots.find(h => h.kind === "exit" && Math.hypot(h.x - wx, h.y - wy) < 48);
+        if (hitExit && Math.hypot(hitExit.x - player.x, hitExit.y - player.y) < 150) {
+          exitIndoor();
+        } else {
+          player.running = isDouble;
+          player.path = [[Math.max(58, Math.min(rm.w - 58, wx)), Math.max(58, Math.min(rm.h - 58, wy))]];
+        }
+      } else if (cam.scale < 0.09) {
+        // At full-island overview, clicking zooms smoothly into that town/region!
+        cam.follow = false;
+        document.getElementById("btnFollow").classList.remove("on");
+        cam.x = wx; cam.y = wy;
+        cam.scale = Math.min(0.68, cam.scale * 3.4);
+      } else {
+        player.running = isDouble;
+        cam.follow = true;
+        document.getElementById("btnFollow").classList.add("on");
+        player.path = findOutdoorPath(player.x, player.y, wx, wy);
+        syncStoryUI();
+      }
+    }
+    pointerDown = null;
+  }
+  canvas.addEventListener("pointerup", onPointerFinish);
+  canvas.addEventListener("pointercancel", onPointerFinish);
+
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.18 : 1 / 1.18;
+    const minS = player.mode === "indoor" ? 0.35 : 0.0068;
+    const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+    const nextS = Math.max(minS, Math.min(1.95, cam.scale * factor));
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+    cam.scale = nextS;
+    if (!cam.follow) {
+      cam.x = wx - (sx - rect.width * 0.5) / nextS;
+      cam.y = wy - (sy - rect.height * 0.5) / nextS;
+    }
+    render();
+  }, { passive: false });
+
+  // --- UI Buttons & Quick-Jumps ---
+  document.getElementById("btnModeSplit").onclick = () => {
+    appRoot.classList.remove("fullmap-mode");
+    document.getElementById("btnModeSplit").classList.add("active");
+    document.getElementById("btnModeFull").classList.remove("active");
+    render();
+  };
+  document.getElementById("btnModeFull").onclick = () => {
+    appRoot.classList.add("fullmap-mode");
+    document.getElementById("btnModeFull").classList.add("active");
+    document.getElementById("btnModeSplit").classList.remove("active");
+    render();
+  };
+
+  function jumpTown(slug, targetScale = 0.72, teleportPlayer = true) {
+    if (!SCENE) return;
+    const s = SCENE.settlements.find(it => it.slug === slug);
+    if (!s) return;
+    player.mode = "outdoor"; player.indoorRoom = null; player.path = [];
+    if (teleportPlayer) { player.x = s.x; player.y = s.y + 85; }
+    cam.x = player.x; cam.y = player.y; cam.scale = targetScale; cam.follow = teleportPlayer;
+    document.getElementById("btnFollow").classList.toggle("on", cam.follow);
+    syncStoryUI();
+    render();
+  }
+
+  document.getElementById("btnJumpOverview").onclick = () => {
+    if (!SCENE) return;
+    player.mode = "outdoor"; player.indoorRoom = null;
+    cam.follow = false;
+    document.getElementById("btnFollow").classList.remove("on");
+    cam.x = SCENE.world_w * 0.51;
+    cam.y = SCENE.world_h * 0.52;
+    cam.scale = Math.min((canvas.clientWidth - 24) / SCENE.world_w, (canvas.clientHeight - 24) / SCENE.world_h) * 1.06;
+    render();
+  };
+  document.getElementById("btnJumpWGH").onclick = () => jumpTown("white_gull_harbor", 0.75, true);
+  document.getElementById("btnJumpHarbor").onclick = () => {
+    if (!SCENE) return;
+    const ship = SCENE.buildings.find(b => b.nid === "ship_silver_wing");
+    if (!ship) return;
+    player.mode = "outdoor"; player.indoorRoom = null; player.path = [];
+    player.x = ship.door.x - 120; player.y = ship.door.y;
+    cam.x = ship.door.x; cam.y = ship.door.y - 30; cam.scale = 0.82; cam.follow = true;
+    syncStoryUI();
+    render();
+  };
+  document.getElementById("btnJumpGreypine").onclick = () => jumpTown("greypine_post", 0.72, true);
+  document.getElementById("btnJumpGullTail").onclick = () => jumpTown("gull_tail_port", 0.68, true);
+  document.getElementById("btnJumpWestFerry").onclick = () => jumpTown("west_strait_ferry", 0.72, true);
+  document.getElementById("btnJumpNorthBeacon").onclick = () => jumpTown("north_cape_beacon", 0.68, true);
+  document.getElementById("btnJumpPlague").onclick = () => {
+    if (!SCENE) return;
+    const ruin = SCENE.buildings.find(b => b.kind === "plague_ruin");
+    if (!ruin) return;
+    player.mode = "outdoor"; player.indoorRoom = null; player.path = [];
+    player.x = ruin.door.x; player.y = ruin.door.y + 35;
+    cam.x = player.x; cam.y = player.y - 25; cam.scale = 0.78; cam.follow = true;
+    syncStoryUI();
+    render();
+  };
+
+  document.getElementById("btnToggleBorders").onclick = (e) => {
+    cam.showBorders = !cam.showBorders;
+    e.currentTarget.textContent = `區域界帶：${cam.showBorders ? "顯" : "隱"}`;
+    e.currentTarget.classList.toggle("on", cam.showBorders);
+    render();
+  };
+  document.getElementById("btnToggleDebug").onclick = (e) => {
+    cam.showDebug = !cam.showDebug;
+    e.currentTarget.textContent = `碰撞透視：${cam.showDebug ? "開" : "關"}`;
+    e.currentTarget.classList.toggle("on", cam.showDebug);
+    render();
+  };
+  document.getElementById("btnFollow").onclick = (e) => {
+    cam.follow = !cam.follow;
+    if (cam.follow && player.mode === "outdoor") { cam.x = player.x; cam.y = player.y; }
+    e.currentTarget.classList.toggle("on", cam.follow);
+    render();
+  };
+  document.getElementById("btnZoomStreet").onclick = () => { cam.scale = 0.88; if (player.mode === "outdoor") { cam.x = player.x; cam.y = player.y; } render(); };
+  document.getElementById("btnZoomTown").onclick = () => { cam.scale = 0.22; if (player.mode === "outdoor") { cam.x = player.x; cam.y = player.y; } render(); };
+  document.getElementById("btnZoomIn").onclick = () => { cam.scale = Math.min(1.95, cam.scale * 1.38); render(); };
+  document.getElementById("btnZoomOut").onclick = () => { cam.scale = Math.max(player.mode === "indoor" ? 0.35 : 0.0068, cam.scale / 1.38); render(); };
+
+  // --- Bootstrap: Load Atlas + Unified Silver Gull Island Scene & Index Spatial Hash ---
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = src;
+    });
+  }
+
+  async function init() {
+    buildAllPatterns();
+    const [metaRes, sceneRes, bImg, pImg] = await Promise.all([
+      fetch("/maps/wgh_island_atlas/atlas_meta.json?v=4").then(r => r.json()),
+      fetch("/maps/wgh_island_atlas/island_scene_v1.json?v=4").then(r => r.json()),
+      loadImage("/maps/wgh_island_atlas/atlas_buildings.webp?v=4"),
+      loadImage("/maps/wgh_island_atlas/atlas_props.webp?v=4")
+    ]);
+    ATLAS_META = metaRes;
+    imgBuildings = bImg;
+    imgProps = pImg;
+    SCENE = sceneRes;
+
+    // Populate Spatial Hash Buckets
+    for (const c of SCENE.cells) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const p of c.poly) {
+        if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0];
+        if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1];
+      }
+      addBBoxToGrid(gridCells, x0, y0, x1, y1, c);
+    }
+    for (const b of SCENE.buildings) {
+      const r = Math.max(b.w, b.h) * 0.72;
+      addBBoxToGrid(gridBuildings, b.x - r, b.y - r, b.x + r, b.y + r, b);
+    }
+    for (const pr of SCENE.props) {
+      const r = Math.max(pr.w, pr.h) * 0.65;
+      addBBoxToGrid(gridProps, pr.x - r, pr.y - r, pr.x + r, pr.y + r, pr);
+    }
+    for (const wseg of SCENE.walls) {
+      addBBoxToGrid(gridWalls, Math.min(wseg[0], wseg[2]) - 24, Math.min(wseg[1], wseg[3]) - 24, Math.max(wseg[0], wseg[2]) + 24, Math.max(wseg[1], wseg[3]) + 24, wseg);
+    }
+    for (const tw of SCENE.town_walls) {
+      addBBoxToGrid(gridTownWalls, Math.min(tw[0], tw[2]) - 36, Math.min(tw[1], tw[3]) - 36, Math.max(tw[0], tw[2]) + 36, Math.max(tw[1], tw[3]) + 36, tw);
+    }
+    for (const cr of SCENE.cliff_ridges) {
+      addBBoxToGrid(gridCliffs, Math.min(cr[0], cr[2]) - 80, Math.min(cr[1], cr[3]) - 80, Math.max(cr[0], cr[2]) + 80, Math.max(cr[1], cr[3]) + 80, cr);
+    }
+    for (const rd of SCENE.roads) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const p of rd.pts) {
+        if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0];
+        if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1];
+      }
+      addBBoxToGrid(gridRoads, x0 - rd.w, y0 - rd.w, x1 + rd.w, y1 + rd.w, rd);
+    }
+    for (const rv of SCENE.rivers) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const p of rv.pts) {
+        if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0];
+        if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1];
+      }
+      addBBoxToGrid(gridRivers, x0 - rv.w, y0 - rv.w, x1 + rv.w, y1 + rv.w, rv);
+    }
+    for (const br of SCENE.bridges) {
+      const r = Math.max(br.w, br.h) * 0.7;
+      addBBoxToGrid(gridBridges, br.cx - r, br.cy - r, br.cx + r, br.cy + r, br);
+    }
+    for (const pi of SCENE.piers) {
+      const r = Math.max(pi.w, pi.h) * 0.7;
+      addBBoxToGrid(gridPiers, pi.cx - r, pi.cy - r, pi.cx + r, pi.cy + r, pi);
+    }
+
+    // Spawn outdoor strolling NPCs outside populated houses
+    const npcCols = ["#8f3b2b", "#2e5c73", "#4b6b3c", "#734866", "#8a6129"];
+    SCENE.buildings.forEach((b, idx) => {
+      if (b.npcs && b.npcs.length > 0 && idx % 3 === 0 && b.kind !== "ship") {
+        liveOutdoorNpcs.push({
+          name: b.npcs[0].name,
+          ox: b.door.x, oy: b.door.y,
+          phase: (idx * 1.37) % 6.28,
+          col: npcCols[idx % npcCols.length]
+        });
+      }
+    });
+
+    bakeWholeIslandOverview();
+
+    player.x = SCENE.spawn.x;
+    player.y = SCENE.spawn.y;
+    cam.x = player.x;
+    cam.y = player.y;
+    cam.scale = 0.76;
+
+    // Support URL hash / query parameter `?view=overview|indoor|harbor|greypine|gull_tail` for instant deep-linking!
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    if (viewParam === "overview") {
+      document.getElementById("btnJumpOverview").click();
+    } else if (viewParam === "harbor") {
+      document.getElementById("btnJumpHarbor").click();
+    } else if (viewParam === "greypine") {
+      jumpTown("greypine_post", 0.72, true);
+    } else if (viewParam === "gull_tail") {
+      jumpTown("gull_tail_port", 0.68, true);
+    } else if (viewParam === "tavern_in") {
+      const tav = SCENE.buildings.find(b => b.nid === "oi:white_gull_harbor:rusty_anchor_tavern");
+      if (tav) enterBuilding(tav, 0);
+    } else if (viewParam === "house_in") {
+      const hs = SCENE.buildings.find(b => b.nid === "oi:white_gull_harbor:iron_anvil_ln:h2");
+      if (hs) enterBuilding(hs, 0);
+    }
+
+    syncStoryUI();
+    render();
+    window.addEventListener("resize", () => render());
+    requestAnimationFrame(tick);
+  }
+
+  init().catch(err => {
+    console.error(err);
+    hudReadout.textContent = "載入失敗：" + err.message;
+  });
+})();
+</script>
+</body>
+</html>

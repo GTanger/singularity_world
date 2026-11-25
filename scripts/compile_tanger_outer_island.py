@@ -19,7 +19,21 @@ import math
 from collections import deque
 from pathlib import Path
 
-SRC_JSON = Path("/home/tanger/下載/Tanger Full 2026-11-18-19-55.json")
+from outer_island_mesh_topology import (
+    assert_48_phase_non_blocking_invariant,
+    build_island_secret_shortcuts,
+    filter_voronoi_cell_edges,
+)
+from outer_island_rural_spec import (
+    PLAGUE_SEALED_RUIN_CIDS,
+    annotate_milestones_and_build_transit_lines,
+    build_all_88_between_town_cells,
+    enrich_five_core_towns,
+)
+
+PRIMARY_ZH_JSON = Path("/home/tanger/Projects/singularity_world/data/world/tanger_full_zh_v1.json")
+FALLBACK_RAW_JSON = Path("/home/tanger/下載/Tanger Full 2026-11-18-19-55.json")
+SRC_JSON = PRIMARY_ZH_JSON if PRIMARY_ZH_JSON.exists() else FALLBACK_RAW_JSON
 OUT_JSON = Path("/home/tanger/Projects/singularity_world/data/world/tanger_outer_island_v1.json")
 SCHEMA_VERSION = 1
 
@@ -331,83 +345,41 @@ def main() -> None:
         cell_map[4529]["title"] = "灰松斷橋石灘"
         cell_map[4529]["desc"] = "白鷗港往北出城後的第一處溪谷石灘，老石橋下雜草掩映，溪畔古松異常粗壯，偶有灰耳哥布林斥候出沒。"
 
-    # Determine cell-to-cell passability (Strict terrain & wall rules!)
-    # 1. Highway pairs are ALWAYS passable (road)
-    # 2. Walled settlements (4616, 4613) ONLY connect to external cells that have a highway! (Un-gated walls block!)
-    # 3. High central ridges (h >= 25) only connect along highways or at most 2 lowest-slope pass neighbors
-    allowed_cell_edges: dict[tuple[int, int], str] = {}
-    for a, b in highway_pairs:
-        allowed_cell_edges[(a, b)] = "highway"
+    # Determine cell-to-cell passability (Room 4387da46: no Voronoi auto-adjacent settlement collisions!)
+    burgs_by_cell_pre: dict[int, dict] = {}
+    for b in pack.get("burgs", []):
+        if isinstance(b, dict) and not b.get("removed") and b.get("cell") in f6_ids:
+            bc = int(b["cell"])
+            if bc not in settlement_defs:
+                burgs_by_cell_pre[bc] = b
 
-    for cid, cinfo in cell_map.items():
-        if cid in settlement_defs and settlement_defs[cid]["walled"]:
-            continue  # Walled towns strictly connect ONLY via gated highways!
-        nbs = sorted(
-            cinfo["neighbors_f6"],
-            key=lambda nb: (abs(cell_map[nb]["height"] - cinfo["height"]), nb),
-        )
-        wild_quota = 1 if cinfo["height"] >= 25 else 3
-        added = 0
-        for nb in nbs:
-            if nb in settlement_defs and settlement_defs[nb]["walled"]:
-                continue  # Cannot punch through another town's un-gated city wall!
-            pair = (min(cid, nb), max(cid, nb))
-            if pair in allowed_cell_edges:
-                continue
-            if cinfo["height"] >= 25 or cell_map[nb]["height"] >= 25:
-                if abs(cinfo["height"] - cell_map[nb]["height"]) > 2:
-                    continue
-            allowed_cell_edges[pair] = "wild_trail"
-            added += 1
-            if added >= wild_quota:
-                break
-
-    # Ensure 100% of all 93 cells are connected via BFS; if any isolated pocket exists, open lowest-slope pass
-    def bfs_cells(start_cid: int) -> set[int]:
-        adj: dict[int, list[int]] = {k: [] for k in cell_map}
-        for (a, b) in allowed_cell_edges:
-            adj[a].append(b)
-            adj[b].append(a)
-        vis = {start_cid}
-        q = deque([start_cid])
-        while q:
-            cur = q.popleft()
-            for nxt in adj[cur]:
-                if nxt not in vis:
-                    vis.add(nxt)
-                    q.append(nxt)
-        return vis
-
-    while True:
-        reached = bfs_cells(4616)
-        if len(reached) == len(cell_map):
-            break
-        missing = sorted(set(cell_map.keys()) - reached)
-        bridged = False
-        for m in missing:
-            for nb in cell_map[m]["neighbors_f6"]:
-                if nb in reached and not (nb in settlement_defs and settlement_defs[nb]["walled"]):
-                    pair = (min(m, nb), max(m, nb))
-                    allowed_cell_edges[pair] = "wild_trail"
-                    bridged = True
-                    break
-            if bridged:
-                break
-        if not bridged:
-            # Fallback allow non-walled connection
-            m = missing[0]
-            nb = cell_map[m]["neighbors_f6"][0]
-            allowed_cell_edges[(min(m, nb), max(m, nb))] = "wild_trail"
+    allowed_cell_edges = filter_voronoi_cell_edges(
+        cell_map=cell_map,
+        highway_pairs=highway_pairs,
+        settlement_defs=settlement_defs,
+        burgs_by_cell=burgs_by_cell_pre,
+        plague_ruin_cids=PLAGUE_SEALED_RUIN_CIDS,
+    )
 
     # Build Spatial Nodes, Town Fishbone Geometries, Households, and Residents
     nodes: dict[str, dict] = {}
-    edges: list[tuple[str, str, str, str]] = []  # (from_id, to_id, dir_label, kind)
+    edges: list[tuple[str, str, str, str, str]] = []  # (from_id, to_id, dir_label, kind, env_gate)
     households: list[dict] = []
     residents: list[dict] = []
     town_micro_maps: dict[str, dict] = {}
 
-    def add_node(nid: str, cell_id: int, name: str, kind: str, desc: str, pos: list[float], indoor: bool = False, dungeon: bool = False) -> None:
-        nodes[nid] = {
+    def add_node(
+        nid: str,
+        cell_id: int,
+        name: str,
+        kind: str,
+        desc: str,
+        pos: list[float],
+        indoor: bool = False,
+        dungeon: bool = False,
+        map_xy: list[int] | None = None,
+    ) -> None:
+        nd: dict = {
             "id": nid,
             "cell_id": cell_id,
             "name": name,
@@ -418,10 +390,21 @@ def main() -> None:
             "dungeon": dungeon,
             "exits": [],
         }
+        if map_xy is not None:
+            nd["map_xy"] = [int(map_xy[0]), int(map_xy[1])]
+        nodes[nid] = nd
 
-    def link_bi(a: str, b: str, dir_ab: str, dir_ba: str, kind: str = "street") -> None:
-        edges.append((a, b, dir_ab, kind))
-        edges.append((b, a, dir_ba, kind))
+    def link_bi(
+        a: str,
+        b: str,
+        dir_ab: str,
+        dir_ba: str,
+        kind: str = "street",
+        env_gate_ab: str = "",
+        env_gate_ba: str = "",
+    ) -> None:
+        edges.append((a, b, dir_ab, kind, env_gate_ab))
+        edges.append((b, a, dir_ba, kind, env_gate_ba))
 
     # Track entry node for each cell when entering from an external neighbor cell
     cell_entry_from_neighbor: dict[tuple[int, int], str] = {}
@@ -749,36 +732,44 @@ def main() -> None:
             "roofs": roof_rects,
         }
 
-    # 2. Build Wilderness Outdoor Nodes (1~2 meaningful nodes per cell, 0 empty filler rooms!)
-    for cid, cinfo in cell_map.items():
-        if cid in settlement_defs:
-            continue
-        cx, cy = cinfo["center"]
-        n0 = f"oi:cell{cid}:0"
-        add_node(n0, cid, cinfo["title"], "wild", cinfo["desc"], [cx, cy])
-        cell_default_node[cid] = n0
+    # 1b. Enrich the 5 core settlements with numbered rooms 1..6 & 4 Port Tally Clerks (`記籌手`)
+    core_5_resident_count = len(residents)
+    core_5_copper_sum = sum(int(r["copper"]) for r in residents)
+    assert core_5_resident_count == 674 and core_5_copper_sum == 55_805, (
+        f"Core 5 towns drifted: count={core_5_resident_count}, copper={core_5_copper_sum}"
+    )
 
-        # Add a second ecological / rural sub-node on highway or larger interior cells so cross-island journey is ~18-24 steps
-        has_hwy = any(cid in pair and kind == "highway" for pair, kind in allowed_cell_edges.items())
-        if has_hwy or (cid % 3 == 0):
-            n1 = f"oi:cell{cid}:1"
-            if cinfo["height"] >= 23:
-                sub_name = f"{cinfo['title']}・山腰石徑"
-                sub_desc = "順著山勢起伏開出的碎石坡道，路旁岩壁偶見抓痕與山羊蹄印。"
-            elif cinfo["is_coast"]:
-                sub_name = f"{cinfo['title']}・望海坡"
-                sub_desc = "海風勁吹的坡頂草地，可遠眺外海波濤與沿岸帆影。"
-            else:
-                sub_name = f"{cinfo['title']}・林間空地"
-                sub_desc = "老樹環繞的林間歇腳處，地上留著過路商旅生火的冷灰。"
-            add_node(n1, cid, sub_name, "wild", sub_desc, [cx + 0.8, cy + 0.6])
-            link_bi(n0, n1, "東南", "西北", "trail")
-            for nb in cinfo["neighbors_f6"]:
-                nb_cx = cell_map[nb]["center"][0]
-                cell_entry_from_neighbor[(cid, nb)] = n1 if nb_cx > cx else n0
-        else:
-            for nb in cinfo["neighbors_f6"]:
-                cell_entry_from_neighbor[(cid, nb)] = n0
+    enrich_five_core_towns(
+        settlement_defs=settlement_defs,
+        nodes=nodes,
+        households=households,
+        residents=residents,
+        add_node_fn=add_node,
+        link_bi_fn=link_bi,
+        det_u64_fn=det_u64,
+        pick_name_fn=pick_name,
+    )
+
+    # 2. Build all 88 between-town cells (35 canonical burgs + 20 road corridors + 33 wild mountain/coast cells)
+    rural_summary_counts = build_all_88_between_town_cells(
+        pack=pack,
+        f6_ids=f6_ids,
+        settlement_defs=settlement_defs,
+        cell_map=cell_map,
+        allowed_cell_edges=allowed_cell_edges,
+        nodes=nodes,
+        edges=edges,
+        households=households,
+        residents=residents,
+        town_micro_maps=town_micro_maps,
+        cell_entry_from_neighbor=cell_entry_from_neighbor,
+        cell_default_node=cell_default_node,
+        add_node_fn=add_node,
+        link_bi_fn=link_bi,
+        det_u64_fn=det_u64,
+        pick_name_fn=pick_name,
+        compass_dir_fn=compass_dir,
+    )
 
     # 3. Connect allowed inter-cell edges!
     for (ca, cb), ekind in sorted(allowed_cell_edges.items()):
@@ -808,43 +799,42 @@ def main() -> None:
     link_bi("oi:dng_pit:stele", "oi:dng_pit:lair", "東", "西", "dungeon")
     link_bi("oi:dng_pit:lair", "oi:dng_pit:altar", "南", "北", "dungeon")
     # Exit back up to surface bridge (one-way normal exit out; entering from surface requires discovering hidden entrance!)
-    edges.append(("oi:dng_pit:entry", "oi:cell4529:0", "出洞口", "secret_out"))
+    edges.append(("oi:dng_pit:entry", "oi:cell4529:0", "出洞口", "secret_out", ""))
+
+    hidden_entrances = build_island_secret_shortcuts(nodes, edges)
 
     # Populate exits on nodes, resolving duplicate direction labels cleanly
-    for src, dst, dlabel, ekind in edges:
+    for src, dst, dlabel, ekind, env_gate in edges:
         used = {e["dir"] for e in nodes[src]["exits"]}
         final_dir = dlabel
         if final_dir in used:
             # Disambiguate cleanly using destination short name
             short = nodes[dst]["name"].split("・")[-1]
             final_dir = f"{dlabel}（{short}）"
-        nodes[src]["exits"].append({
+        ex_item: dict = {
             "to": dst,
             "dir": final_dir,
             "to_name": nodes[dst]["name"],
             "kind": ekind,
-        })
+        }
+        if env_gate:
+            ex_item["env_gate"] = env_gate
+        nodes[src]["exits"].append(ex_item)
 
-    # Assert BFS connectivity across ALL non-dungeon outdoor nodes from starter spawn (`oi:white_gull_harbor:dock`)!
+    # Assert 48-phase non-blocking BFS connectivity across ALL non-dungeon outdoor nodes from starter spawn!
     spawn_node = "oi:white_gull_harbor:dock"
-    vis_nodes = {spawn_node}
-    q = deque([spawn_node])
-    dist_map = {spawn_node: 0}
-    while q:
-        cur = q.popleft()
-        for ex in nodes[cur]["exits"]:
-            nxt = ex["to"]
-            if nxt not in vis_nodes:
-                vis_nodes.add(nxt)
-                dist_map[nxt] = dist_map[cur] + 1
-                q.append(nxt)
-
+    phase_stats = assert_48_phase_non_blocking_invariant(nodes, spawn_node)
     outdoor_non_dng = [nid for nid, n in nodes.items() if not n["indoor"] and not n["dungeon"]]
-    unreachable = [nid for nid in outdoor_non_dng if nid not in vis_nodes]
-    assert not unreachable, f"BFS failed! Unreachable outdoor nodes: {unreachable[:10]}"
+    steps_to_west_ferry = phase_stats["ew_steps_low_tide"]
+    assert 24 <= steps_to_west_ferry <= 65, f"Cross-island step count {steps_to_west_ferry} out of expected 24..=65 range"
 
-    steps_to_west_ferry = dist_map["oi:west_strait_ferry:dock"]
-    assert 12 <= steps_to_west_ferry <= 35, f"Cross-island step count {steps_to_west_ferry} out of expected 12..35 range"
+    # Assert 88 between-town cells have 100% unique descriptions (0 copy-pasted canned templates!)
+    between_descs = [c["desc"] for cid, c in cell_map.items() if cid not in settlement_defs]
+    assert len(set(between_descs)) == len(between_descs), (
+        f"Duplicate cell descriptions remain: {len(between_descs) - len(set(between_descs))}"
+    )
+
+    transit_lines = annotate_milestones_and_build_transit_lines(nodes, cell_map)
 
     # Build 1-ring colorless neighbor polygons for map fog border guidance
     ring_polygons = []
@@ -857,11 +847,16 @@ def main() -> None:
                 "polygon": rpoly,
             })
 
-    # Double-entry initial coin supply ledger check
+    # Double-entry initial coin supply ledger check:
+    # Carve new rural & tally-clerk initial copper atomically from silver_bank_reserve_copper (40,000)
+    # so total_conserved_copper remains strictly 120,805!
     resident_copper_sum = sum(int(r["copper"]) for r in residents)
+    added_rural_copper = resident_copper_sum - core_5_copper_sum
+    assert 0 < added_rural_copper < 25_000, f"Unexpected added_rural_copper={added_rural_copper}"
     municipal_treasury_copper = 25_000
-    silver_bank_reserve_copper = 40_000
+    silver_bank_reserve_copper = 40_000 - added_rural_copper
     total_world_copper = resident_copper_sum + municipal_treasury_copper + silver_bank_reserve_copper
+    assert total_world_copper == 120_805, f"Copper conservation broken: {total_world_copper} != 120805"
 
     world_doc = {
         "schema_version": SCHEMA_VERSION,
@@ -869,23 +864,18 @@ def main() -> None:
         "world_name": "銀鷗外島",
         "state_name": "銀鷗海領",
         "spawn_node": spawn_node,
-        "hidden_entrances": {
-            "oi:cell4529:0": {
-                "target": "oi:dng_pit:entry",
-                "dir": "鑽入橋下石縫",
-                "to_name": "試煉坑・塌陷洞口",
-                "rumor_key": "pit_rumor",
-                "clue_text": "你撥開斷橋下的亂藤，發現石縫後竟吹出陣陣帶鐵鏽味的地底冷風——似乎藏著某處前朝坑道入口，若去鎮上鐵匠鋪或酒館探聽清楚或許能找到進去的方法。",
-                "found_text": "你順著巴爾提過的暗記搬開鬆動楔石，橋下赫然露出一道通往【試煉坑・塌陷洞口】的矮石拱門！",
-            }
-        },
+        "hidden_entrances": hidden_entrances,
         "stats": {
             "voronoi_cells": len(cell_map),
             "total_nodes": len(nodes),
             "outdoor_nodes": len(outdoor_non_dng),
+            "hidden_entrances": len(hidden_entrances),
             "households": len(households),
             "residents": len(residents),
+            "rural_summary": rural_summary_counts,
+            "transit_lines": len(transit_lines),
             "steps_east_to_west_ferry": steps_to_west_ferry,
+            "steps_east_to_west_high_tide": phase_stats["ew_steps_high_tide"],
             "total_conserved_copper": total_world_copper,
         },
         "ledger_genesis": {
@@ -894,6 +884,7 @@ def main() -> None:
             "resident_copper_sum": resident_copper_sum,
             "total_conserved_copper": total_world_copper,
         },
+        "transit_lines": transit_lines,
         "cells": cell_map,
         "ring_polygons": ring_polygons,
         "highways": highway_polylines,

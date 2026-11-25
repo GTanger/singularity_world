@@ -21,7 +21,7 @@
   --font-serif: 'LXGW WenKai Mono TC', 'Noto Serif TC', 'Noto Sans TC', 'Noto Sans CJK TC', 'PingFang TC', serif;
 }
 
-body.sw-night {
+:root.sw-night {
   --bg-page: #171411;
   --bg-surface: #211c17;
   --bg-elevated: #2a241d;
@@ -57,6 +57,14 @@ html, body {
   font-family: var(--font-serif);
   -webkit-font-smoothing: antialiased;
   touch-action: manipulation;
+}
+
+body.oi-sky-glide,
+body.oi-sky-glide .oi-topbar,
+body.oi-sky-glide .oi-bottom-dock,
+body.oi-sky-glide .oi-person-btn,
+body.oi-sky-glide .oi-deed-btn {
+  transition: background-color 8s linear;
 }
 
 [hidden] {
@@ -254,6 +262,17 @@ button, input, select {
   color: var(--ink-main);
 }
 
+.oi-tide-badge {
+  font-size: 0.8rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  color: var(--ink-sub);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .oi-icon-btn {
   min-width: 36px;
   min-height: 36px;
@@ -318,7 +337,7 @@ button, input, select {
   flex: 1 1 auto;
   min-width: 0;
   overflow-y: auto;
-  padding: 16px 16px 22px;
+  padding: 16px 16px 28px;
   overscroll-behavior: contain;
 }
 
@@ -351,13 +370,47 @@ button, input, select {
   white-space: nowrap;
 }
 
-.oi-wound-banner {
-  margin: 0 0 10px;
-  padding: 8px 11px;
-  border-radius: 8px;
+.oi-body-cues {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 12px;
+}
+
+.oi-body-cue-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  border: 1px solid var(--border-line);
+  border-left: 3px solid var(--accent-gold);
+  background: var(--bg-surface);
+  font-size: 0.9rem;
+  color: var(--ink-main);
+}
+
+.oi-body-cue-row.is-wound {
+  border-left-color: var(--danger-ink);
   background: var(--danger-bg);
   color: var(--danger-ink);
-  font-size: 0.88rem;
+}
+
+.oi-body-cue-btn {
+  min-height: 38px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  font-size: 0.84rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.oi-body-cue-btn:hover {
+  background: var(--bg-chip-hover);
 }
 
 .oi-scene-desc {
@@ -367,17 +420,54 @@ button, input, select {
   color: var(--ink-main);
 }
 
-.oi-section-label {
-  font-size: 0.8rem;
-  color: var(--ink-muted);
-  letter-spacing: 0.05em;
-  margin: 14px 0 7px;
-}
-
+.oi-presence-people,
+.oi-presence-objects,
 .oi-chip-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.oi-presence-people,
+.oi-presence-objects {
+  margin-top: 12px;
+}
+
+.oi-object-btn {
+  min-height: 44px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px dashed var(--border-line);
+  border-left: 3px solid var(--accent-gold);
+  background: var(--bg-elevated);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.oi-object-btn:hover {
+  background: var(--bg-chip);
+  border-color: var(--accent-gold);
+}
+
+.oi-counter-deeds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--border-line);
+}
+
+.oi-retreat-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-line);
+  display: flex;
+  justify-content: flex-end;
 }
 
 .oi-person-btn {
@@ -385,6 +475,7 @@ button, input, select {
   padding: 7px 12px;
   border-radius: 10px;
   border: 1px solid var(--border-line);
+  border-left: 3px solid var(--accent-main);
   background: var(--bg-surface);
   display: inline-flex;
   flex-direction: column;
@@ -414,6 +505,7 @@ button, input, select {
   padding: 7px 12px;
   border-radius: 10px;
   border: 1px solid var(--border-line);
+  border-left: 3px solid var(--accent-jade);
   background: var(--bg-elevated);
   cursor: pointer;
   text-align: left;
@@ -484,7 +576,10 @@ button, input, select {
   position: relative;
 }
 
-.oi-mini-map-frame svg {
+.oi-mini-map-frame svg,
+.oi-mini-map-frame canvas,
+.oi-map-canvas-wrap svg,
+.oi-map-canvas-wrap canvas {
   width: 100%;
   height: 100%;
   display: block;
@@ -562,12 +657,9 @@ button, input, select {
 /* ═══ 貼底抽屜（當面交談／短兵交鋒／自身行囊木箱） ═══ */
 .oi-sheet-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 96px;
-  z-index: 50;
-  background: rgba(15, 11, 7, 0.42);
+  inset: 0;
+  z-index: 75;
+  background: rgba(15, 11, 7, 0.48);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -575,14 +667,14 @@ button, input, select {
 
 .oi-bottom-sheet {
   width: min(100%, 680px);
-  max-height: 82dvh;
+  max-height: 84dvh;
   background: var(--bg-surface);
   border-top: 1px solid var(--border-line);
   border-radius: 16px 16px 0 0;
   box-shadow: var(--shadow-sheet);
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
 }
 
 .oi-sheet-head {
@@ -786,6 +878,15 @@ button, input, select {
   pointer-events: none;
 }
 
+.oi-wg-stage.full-bleed .oi-wg-bg-img,
+.oi-wg-stage.full-bleed .oi-wg-night-shade {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+}
+
 .oi-wg-glow {
   position: absolute;
   margin-left: -6%;
@@ -846,6 +947,48 @@ button, input, select {
   background: radial-gradient(circle, #c93824 0 28%, #fdf8ee 29% 42%, rgba(201, 56, 36, 0.25) 43% 100%);
   border: 2px solid #f0b643;
   pointer-events: none;
+}
+
+/* 試煉坑逐室照亮切片舞台（硬體合成無縫疊圖，未探區域零原圖外洩） */
+.oi-dng-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #11100e;
+  user-select: none;
+}
+
+.oi-dng-stage {
+  position: absolute;
+  pointer-events: none;
+}
+
+.oi-dng-slice {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+.oi-dng-pill {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(217, 164, 67, 0.38);
+  background: rgba(16, 13, 10, 0.86);
+  color: #f5ebd8;
+  font-size: var(--dng-font, 11px);
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.oi-dng-pill.is-current {
+  border-color: #f0b643;
+  background: rgba(88, 32, 16, 0.9);
+  color: #fff6e5;
 }
 
 .oi-map-bottom-bar {

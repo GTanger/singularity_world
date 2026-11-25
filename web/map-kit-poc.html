@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>風語橋哨・tra-map 工具鏈主線 vs 本機 R9700 後退方案 雙軌實證</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #ece3cf; color: #2b221b;
+      font-family: "Noto Serif TC", "Source Han Serif TC", "PingFang TC", serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    .app { display: flex; flex-direction: column; width: 100%; height: 100dvh; }
+    .topbar {
+      flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 6px; padding: 7px 11px; background: #f5eedc; border-bottom: 1px solid #d5c7ab; z-index: 20;
+    }
+    .track-tabs, .tool-toggles { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    button.pill, a.pill {
+      text-decoration: none; appearance: none; -webkit-appearance: none;
+      border: 1px solid #bca989; background-color: #efe5ce; color: #3a2e25;
+      border-radius: 999px; padding: 5px 11px; font-size: 12.5px; font-weight: 700;
+      font-family: inherit; cursor: pointer; line-height: 1.25; white-space: nowrap;
+    }
+    button.pill.active { background-color: #6f2c1d; border-color: #592014; color: #fbf6ec; }
+    button.pill.track2.active { background-color: #264b5a; border-color: #193440; color: #f4f8fa; }
+    button.pill.sub, a.pill.sub { font-size: 12px; padding: 4px 9px; background-color: #f8f2e4; color: #3a2e25; font-weight: 600; }
+    button.pill.sub.on { background-color: #355245; border-color: #23382f; color: #f4f8f5; }
+    button.pill.action {
+      background: #fff9eb; border-color: #9e6b43; color: #5c2818;
+      padding: 5px 12px; font-size: 13px;
+    }
+    button.pill.action.portal {
+      background: #eef6f8; border-color: #3b6978; color: #1d4350;
+    }
+
+    .main-stage { flex: 1 1 auto; display: flex; flex-direction: column; position: relative; min-height: 0; }
+    .story-pane {
+      flex: 0 0 32%; overflow-y: auto;
+      padding: 10px 14px; background: #f3ead7; border-bottom: 1px solid #d2c3a5;
+    }
+    .app.fullmap-mode .story-pane { display: none; }
+    .story-meta {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 12px; color: #73614e; padding-bottom: 5px; margin-bottom: 6px;
+      border-bottom: 1px solid #dfd2b9;
+    }
+    .story-badge { background: #e5dac2; padding: 2px 9px; border-radius: 999px; color: #4f4031; font-weight: 700; white-space: nowrap; }
+    .story-badge.track1 { background: #6f2c1d; color: #fbf5ea; }
+    .story-badge.track2 { background: #264b5a; color: #f3f8fa; }
+    .story-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+    .story-title { font-size: 18px; font-weight: 700; color: #241b15; margin: 0; }
+    .story-body { font-size: 13.8px; line-height: 1.58; color: #382d24; margin: 0 0 7px; }
+    .story-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .story-sublog {
+      font-size: 12.5px; color: #5b4938; background: #ebe0c8;
+      padding: 6px 10px; border-radius: 8px; line-height: 1.48;
+    }
+
+    .map-wrap { flex: 1 1 auto; position: relative; min-height: 0; overflow: hidden; background: #251f19; touch-action: none; }
+    canvas#mapCanvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+    .hud-readout {
+      position: absolute; top: 9px; left: 10px;
+      background: rgba(28, 24, 20, 0.86); color: #f4efe2;
+      font-size: 12px; padding: 5px 10px; border-radius: 8px;
+      pointer-events: none; line-height: 1.42; max-width: calc(100% - 20px);
+    }
+    .quick-bar {
+      position: absolute; left: 10px; bottom: 11px; right: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 6px; pointer-events: none; z-index: 12;
+    }
+    .quick-group {
+      display: flex; gap: 5px; flex-wrap: wrap; pointer-events: auto;
+      background: rgba(245, 238, 220, 0.94); backdrop-filter: blur(6px);
+      padding: 5px 8px; border-radius: 999px; border: 1px solid rgba(168, 148, 118, 0.78);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+    }
+    @media (min-width: 960px) {
+      .main-stage { flex-direction: row; }
+      .story-pane { flex: 0 0 390px; border-bottom: none; border-right: 1px solid #d2c3a5; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="appRoot">
+  <div class="topbar">
+    <div class="track-tabs">
+      <a class="pill active" href="/world-seamless-poc.html" style="background:#1f523e;border-color:#133829;">★ 前往 90° 無縫大地圖＋進門原地掀頂版</a>
+      <button class="pill active" id="btnTrack1">主線 Track 1：tra-map 工具鏈＋2D光影（&lt;1秒 + .tmj）</button>
+      <button class="pill track2" id="btnTrack2">後退 Track 2：本機 R9700 結構鎖定水彩精修</button>
+    </div>
+    <div class="tool-toggles">
+      <button class="pill sub on" id="btnJumpYard">戶外：檢疫石橋哨柵</button>
+      <button class="pill sub" id="btnJumpH1">室內一：盾牌達因家（矮人4床）</button>
+      <button class="pill sub" id="btnJumpH4">室內二：碎岩艾倫家（石工3床）</button>
+      <button class="pill sub" id="btnToggleFull">全幅地圖</button>
+      <button class="pill sub on" id="btnToggleMarkers">門牌：顯</button>
+      <button class="pill sub" id="btnToggleDebug">Tiled 碰撞層：關</button>
+    </div>
+  </div>
+
+  <div class="main-stage">
+    <div class="story-pane" id="storyPane">
+      <div class="story-meta">
+        <span>零雲端 API（USD 0.00）・100% 自有水彩素材庫</span>
+        <span class="story-badge track1" id="trackBadge">Track 1 工具鏈直出</span>
+      </div>
+      <div class="story-title-row">
+        <h1 class="story-title" id="stTitle">風語橋哨・檢疫石橋哨柵</h1>
+        <span class="story-badge" id="nearCountBadge">載入中</span>
+      </div>
+      <p class="story-body" id="stDesc">正在載入風語橋哨雙軌實證地圖…</p>
+      <div class="story-actions" id="stActions"></div>
+      <div class="story-sublog" id="stSublog">可隨時點擊頂端按鈕原位切換「Track 1（tra-map 多圖層＋2D 遮擋光影＋.tmj）」與「Track 2（本機 R9700 顯卡低強度筆觸精修）」，零座標漂移比對細節！</div>
+    </div>
+
+    <div class="map-wrap" id="mapWrap">
+      <canvas id="mapCanvas"></canvas>
+      <div class="hud-readout" id="hudReadout">載入風語橋哨雙軌地圖中…</div>
+      <div class="quick-bar">
+        <div class="quick-group">
+          <button class="pill sub on" id="btnFollow">◎ 鏡頭跟隨</button>
+          <button class="pill sub" id="btnFitScene">⊡ 顯示全圖</button>
+          <button class="pill sub" id="btnZoomIn">＋ 放大細看</button>
+          <button class="pill sub" id="btnZoomOut">－ 縮小</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const WALK_SPEED = 66;
+  const RUN_SPEED = 148;
+  const INDOOR_WALK_SPEED = 165;
+  const INDOOR_RUN_SPEED = 310;
+  const DBL_TAP_MS = 380;
+  const PROX_DOOR = 205;
+  const PROX_PORTAL = 225;
+  const PROX_INDOOR = 185;
+  const CACHE_TAG = "poc1_" + Date.now();
+
+  const MATERIALS = {
+    1: { name: "青石檢疫橋／幹道", mu: 0.92, speedMul: 1.00 },
+    2: { name: "哨所碎石支徑", mu: 0.85, speedMul: 0.94 },
+    4: { name: "河谷草坡／庭院", mu: 0.72, speedMul: 0.84 }
+  };
+
+  const SCENE_KEYS = {
+    yard: "burg4695_yard",
+    "oi:burg_4695:h1": "burg4695_h1_dain",
+    "oi:burg_4695:h4": "burg4695_h4_allen"
+  };
+
+  const appRoot = document.getElementById("appRoot");
+  const canvas = document.getElementById("mapCanvas");
+  const ctx = canvas.getContext("2d");
+  const hudReadout = document.getElementById("hudReadout");
+  const stTitle = document.getElementById("stTitle");
+  const stDesc = document.getElementById("stDesc");
+  const stActions = document.getElementById("stActions");
+  const stSublog = document.getElementById("stSublog");
+  const trackBadge = document.getElementById("trackBadge");
+  const nearCountBadge = document.getElementById("nearCountBadge");
+
+  const SPECS = {};
+  const IMAGES = new Map();
+  let curTrack = "track1"; // "track1" | "track2"
+  let yardSpec = null;
+
+  const player = {
+    x: 1024, y: 1680,
+    running: false,
+    path: [],
+    pendingDoor: null,
+    pendingIndoor: null,
+    mode: "outdoor",
+    indoorKey: null,
+    indoorRoom: null,
+    returnOutdoor: null
+  };
+
+  const cam = {
+    x: 1024, y: 1220,
+    scale: 0.45,
+    follow: true,
+    showMarkers: true,
+    showDebug: false
+  };
+
+  function distToSegSq(px, py, x0, y0, x1, y1) {
+    const dx = x1 - x0, dy = y1 - y0;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq < 1e-6) return (px - x0) ** 2 + (py - y0) ** 2;
+    let t = ((px - x0) * dx + (py - y0) * dy) / lenSq;
+    if (t < 0) t = 0; else if (t > 1) t = 1;
+    return (px - (x0 + t * dx)) ** 2 + (py - (y0 + t * dy)) ** 2;
+  }
+
+  function pointInPoly(px, py, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i][0], yi = poly[i][1];
+      const xj = poly[j][0], yj = poly[j][1];
+      if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi + 1e-9) + xi)) inside = !inside;
+    }
+    return inside;
+  }
+
+  function loadImg(url) {
+    return new Promise((res, rej) => {
+      const im = new Image();
+      im.onload = () => res(im);
+      im.onerror = rej;
+      im.src = url;
+    });
+  }
+
+  async function ensureMapImg(baseName, track) {
+    const k = `${baseName}_${track}`;
+    if (IMAGES.has(k)) return IMAGES.get(k);
+    const im = await loadImg(`/maps/poc_burg4695/${k}.webp?${CACHE_TAG}`);
+    IMAGES.set(k, im);
+    return im;
+  }
+
+  function propBlocksAt(sp, wx, wy, radius) {
+    for (const pr of (sp.props || [])) {
+      if (pr.solid === false || pr.layer === "canopy") continue;
+      let pw = (pr.w || 140) * 0.36;
+      let ph = (pr.h || 140) * 0.36;
+      if (Math.round(pr.deg || 0) % 180 === 90) { const t = pw; pw = ph; ph = t; }
+      if (Math.abs(wx - pr.x) <= pw + radius && Math.abs(wy - pr.y) <= ph + radius) return true;
+    }
+    return false;
+  }
+
+  function queryOutdoorWalkable(sp, wx, wy, radius = 11) {
+    if (!sp) return { walkable: false };
+    if (wx < 26 || wx > sp.world_w - 26 || wy < 26 || wy > sp.world_h - 26) return { walkable: false };
+    for (const b of (sp.buildings || [])) {
+      if (Math.abs(wx - b.x) <= b.w * 0.44 + radius && Math.abs(wy - b.y) <= b.h * 0.43 + radius) return { walkable: false };
+    }
+    if (propBlocksAt(sp, wx, wy, radius)) return { walkable: false };
+    for (const ws of (sp.walls || [])) {
+      if (distToSegSq(wx, wy, ws[0], ws[1], ws[2], ws[3]) < (11 + radius) ** 2) return { walkable: false };
+    }
+    for (const br of (sp.bridges || [])) {
+      if (Math.abs(wx - br.x) <= br.w * 0.46 && Math.abs(wy - br.y) <= br.h * 0.54) return { walkable: true, matCode: 1 };
+    }
+    for (const rv of (sp.rivers || [])) {
+      const hw = rv.w * 0.48 + radius * 0.5;
+      for (let i = 0; i < rv.pts.length - 1; i++) {
+        if (distToSegSq(wx, wy, rv.pts[i][0], rv.pts[i][1], rv.pts[i + 1][0], rv.pts[i + 1][1]) < hw * hw) return { walkable: false };
+      }
+    }
+    for (const plz of (sp.plazas || [])) {
+      if ((wx - plz.x) ** 2 + (wy - plz.y) ** 2 <= plz.r * plz.r) return { walkable: true, matCode: 1 };
+    }
+    for (const rd of (sp.roads || [])) {
+      const hr = rd.w * 0.52;
+      for (let i = 0; i < rd.pts.length - 1; i++) {
+        if (distToSegSq(wx, wy, rd.pts[i][0], rd.pts[i][1], rd.pts[i + 1][0], rd.pts[i + 1][1]) <= hr * hr) return { walkable: true, matCode: 1 };
+      }
+    }
+    return { walkable: true, matCode: 4 };
+  }
+
+  function queryIndoorWalkable(sp, ix, iy, radius = 10) {
+    if (!sp) return { walkable: false };
+    const nearExit = Math.hypot(ix - sp.exit_xy[0], iy - sp.exit_xy[1]) <= 80;
+    if (sp.hull_poly) {
+      if (!nearExit && !pointInPoly(ix, iy, sp.hull_poly)) return { walkable: false };
+    } else {
+      const [rx0, ry0, rx1, ry1] = sp.room_rect;
+      if (!nearExit && (ix < rx0 + radius || ix > rx1 - radius || iy < ry0 + radius || iy > ry1 - radius)) return { walkable: false };
+    }
+    if (propBlocksAt(sp, ix, iy, radius)) return { walkable: false };
+    for (const ws of (sp.walls || [])) {
+      if (distToSegSq(ix, iy, ws[0], ws[1], ws[2], ws[3]) < (12 + radius) ** 2) return { walkable: false };
+    }
+    return { walkable: true };
+  }
+
+  function findPathGeneric(sp, sx, sy, gx, gy, isIndoor) {
+    const qFn = (x, y, r) => isIndoor ? queryIndoorWalkable(sp, x, y, r) : queryOutdoorWalkable(sp, x, y, r);
+    let ax = sx, ay = sy;
+    if (!qFn(ax, ay, 8).walkable) {
+      for (let r = 16; r <= 160; r += 16) {
+        let found = false;
+        for (let a = 0; a < 16; a++) {
+          const nx = sx + Math.cos(a * Math.PI / 8) * r, ny = sy + Math.sin(a * Math.PI / 8) * r;
+          if (qFn(nx, ny, 9).walkable) { ax = nx; ay = ny; found = true; break; }
+        }
+        if (found) break;
+      }
+    }
+    let tx = Math.max(40, Math.min(sp.world_w - 40, gx));
+    let ty = Math.max(40, Math.min(sp.world_h - 40, gy));
+    if (!qFn(tx, ty, 9).walkable) {
+      if (!isIndoor) {
+        for (const b of (sp.buildings || [])) {
+          if (Math.abs(gx - b.x) <= b.w * 0.56 && Math.abs(gy - b.y) <= b.h * 0.56) {
+            tx = b.door.x; ty = b.door.y; break;
+          }
+        }
+      }
+      if (!qFn(tx, ty, 9).walkable) {
+        let ok = false;
+        for (let r = 16; r <= 150 && !ok; r += 16) {
+          for (let a = 0; a < 16; a++) {
+            const nx = tx + Math.cos(a * Math.PI / 8) * r, ny = ty + Math.sin(a * Math.PI / 8) * r;
+            if (qFn(nx, ny, 9).walkable) { tx = nx; ty = ny; ok = true; break; }
+          }
+        }
+        if (!ok) return [];
+      }
+    }
+
+    const nLos = Math.ceil(Math.hypot(tx - ax, ty - ay) / 13);
+    let losOk = true;
+    for (let i = 1; i <= nLos; i++) {
+      const t = i / nLos;
+      if (!qFn(ax + (tx - ax) * t, ay + (ty - ay) * t, 9).walkable) { losOk = false; break; }
+    }
+    if (losOk) return [[tx, ty]];
+
+    const STEP = 20;
+    const endI = Math.round((tx - ax) / STEP), endJ = Math.round((ty - ay) / STEP);
+    const keyOf = (i, j) => ((i + 256) << 9) | ((j + 256) & 511);
+    const gScore = new Map([[keyOf(0, 0), 0]]);
+    const cameFrom = new Map();
+    const closed = new Set();
+    const heap = [{ i: 0, j: 0, f: Math.hypot(endI, endJ) }];
+    const pushH = (n) => {
+      heap.push(n); let idx = heap.length - 1;
+      while (idx > 0) {
+        const p = (idx - 1) >> 1;
+        if (heap[p].f <= heap[idx].f) break;
+        [heap[p], heap[idx]] = [heap[idx], heap[p]]; idx = p;
+      }
+    };
+    const popH = () => {
+      const top = heap[0], last = heap.pop();
+      if (heap.length > 0) {
+        heap[0] = last; let idx = 0;
+        while (true) {
+          let l = idx * 2 + 1, r = l + 1, s = idx;
+          if (l < heap.length && heap[l].f < heap[s].f) s = l;
+          if (r < heap.length && heap[r].f < heap[s].f) s = r;
+          if (s === idx) break;
+          [heap[s], heap[idx]] = [heap[idx], heap[s]]; idx = s;
+        }
+      }
+      return top;
+    };
+    const dirs = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
+    let best = { i: 0, j: 0 }, bestH = Math.hypot(endI, endJ), iter = 0;
+    while (heap.length > 0 && iter++ < 5400) {
+      const cur = popH();
+      const ck = keyOf(cur.i, cur.j);
+      if (closed.has(ck)) continue;
+      closed.add(ck);
+      const h = Math.hypot(endI - cur.i, endJ - cur.j);
+      if (h < bestH) { bestH = h; best = cur; }
+      if (h <= 1.35) { best = cur; break; }
+      const bg = gScore.get(ck);
+      for (const [di, dj, dl] of dirs) {
+        const ni = cur.i + di, nj = cur.j + dj;
+        const nk = keyOf(ni, nj);
+        if (closed.has(nk)) continue;
+        const q = qFn(ax + ni * STEP, ay + nj * STEP, 9);
+        if (!q.walkable) continue;
+        const cost = dl * (!isIndoor && q.matCode === 1 ? 0.92 : 1.05);
+        const ng = bg + cost;
+        if (gScore.get(nk) === undefined || ng < gScore.get(nk)) {
+          gScore.set(nk, ng);
+          cameFrom.set(nk, cur);
+          pushH({ i: ni, j: nj, f: ng + Math.hypot(endI - ni, endJ - nj) });
+        }
+      }
+    }
+    const out = [];
+    let c = best;
+    while (c && (c.i !== 0 || c.j !== 0)) {
+      out.push([ax + c.i * STEP, ay + c.j * STEP]);
+      c = cameFrom.get(keyOf(c.i, c.j));
+    }
+    out.reverse();
+    if (bestH <= 2.2) out.push([tx, ty]);
+    return out;
+  }
+
+  function buildIndoorRoom(nid) {
+    const baseKey = SCENE_KEYS[nid];
+    const sp = SPECS[baseKey];
+    const cols = ["#9e3d2b", "#2f5d73", "#4c6e3d", "#7a496b"];
+    const rm = {
+      nid,
+      baseKey,
+      spec: sp,
+      title: sp.name,
+      desc: sp.desc,
+      hotspots: [
+        {
+          id: "exit",
+          x: sp.exit_xy[0],
+          y: sp.exit_xy[1],
+          badge: "門檻出口",
+          nearLabel: "推門外出（返回檢疫石橋哨柵）",
+          farLabel: "走向門口（抵達門檻後外出）",
+          kind: "exit"
+        }
+      ],
+      npcs: (sp.npcs || []).map((n, idx) => ({
+        ...n,
+        col: cols[idx % cols.length]
+      }))
+    };
+    rm.npcs.forEach((n, idx) => {
+      rm.hotspots.push({
+        id: `npc_${idx}`,
+        x: n.x,
+        y: n.y,
+        npcName: n.name,
+        nearLabel: `與「${n.name}」（${n.role}）交談`,
+        farLabel: `走近「${n.name}」交談`,
+        kind: "npc",
+        line: `${n.name}（${n.role}）抬手招呼：「橋頭日夜燒著苦艾草防南邊疫氣，屋裡剛熬好熱麥湯，坐下暖暖身子！」`
+      });
+    });
+    return rm;
+  }
+
+  function fitCurrentToViewport() {
+    const cw = canvas.clientWidth || 800, ch = canvas.clientHeight || 600;
+    if (player.mode === "indoor" && player.indoorRoom) {
+      const sp = player.indoorRoom.spec;
+      let rx0 = 260, ry0 = 280, rx1 = 1788, ry1 = 1720;
+      if (sp.room_rect) [rx0, ry0, rx1, ry1] = sp.room_rect;
+      else if (sp.hull_poly) {
+        rx0 = Math.min(...sp.hull_poly.map(p => p[0]));
+        ry0 = Math.min(...sp.hull_poly.map(p => p[1]));
+        rx1 = Math.max(...sp.hull_poly.map(p => p[0]));
+        ry1 = Math.max(...sp.hull_poly.map(p => p[1]));
+      }
+      cam.scale = Math.max(0.20, Math.min((cw - 18) / (rx1 - rx0 + 260), (ch - 18) / (ry1 - ry0 + 250), 1.15));
+      cam.x = (rx0 + rx1) * 0.5;
+      cam.y = (ry0 + ry1) * 0.5;
+    } else if (yardSpec) {
+      cam.scale = Math.min((cw - 16) / yardSpec.world_w, (ch - 16) / yardSpec.world_h);
+      cam.x = yardSpec.world_w * 0.5;
+      cam.y = yardSpec.world_h * 0.5;
+    }
+    cam.follow = false;
+    document.getElementById("btnFollow").classList.remove("on");
+    render();
+  }
+
+  function updateNavButtons() {
+    document.getElementById("btnJumpYard").classList.toggle("on", player.mode === "outdoor");
+    document.getElementById("btnJumpH1").classList.toggle("on", player.mode === "indoor" && player.indoorKey === "oi:burg_4695:h1");
+    document.getElementById("btnJumpH4").classList.toggle("on", player.mode === "indoor" && player.indoorKey === "oi:burg_4695:h4");
+  }
+
+  async function enterHouseByNid(nid) {
+    const baseKey = SCENE_KEYS[nid];
+    if (!baseKey) {
+      stSublog.textContent = "本次雙軌 PoC 精製「一號盾牌達因家（矮人4床）」與「四號碎岩艾倫家（L型石工3床）」作為對照樣本；請點擊該兩戶進入！";
+      render();
+      return false;
+    }
+    if (player.mode === "outdoor") {
+      const b = yardSpec.buildings.find(it => it.nid === nid);
+      player.returnOutdoor = b ? { x: b.door.x, y: b.door.y + 18 } : { x: player.x, y: player.y };
+    }
+    await Promise.all([ensureMapImg(baseKey, "track1"), ensureMapImg(baseKey, "track2")]);
+    const rm = buildIndoorRoom(nid);
+    player.mode = "indoor";
+    player.indoorKey = nid;
+    player.indoorRoom = rm;
+    player.x = rm.spec.spawn_xy[0];
+    player.y = rm.spec.spawn_xy[1];
+    player.path = [];
+    player.pendingIndoor = null;
+    updateNavButtons();
+    fitCurrentToViewport();
+    stSublog.textContent = `已踏入【${rm.title}】！可隨時點擊上方按鈕原位切換 Track 1 / Track 2 比對地板、床鋪與石灶火光。`;
+    syncStoryUI();
+    render();
+    return true;
+  }
+
+  function exitIndoorToYard() {
+    player.mode = "outdoor";
+    player.indoorKey = null;
+    player.indoorRoom = null;
+    player.path = [];
+    player.pendingIndoor = null;
+    if (player.returnOutdoor) {
+      player.x = player.returnOutdoor.x;
+      player.y = player.returnOutdoor.y;
+    }
+    updateNavButtons();
+    fitCurrentToViewport();
+    stSublog.textContent = "已推門跨出門檻，返回【風語橋哨・檢疫石橋哨柵】。";
+    syncStoryUI();
+    render();
+  }
+
+  function activateOrWalkIndoor(hs, isDbl = false) {
+    if (player.mode !== "indoor" || !player.indoorRoom || !hs) return;
+    const rm = player.indoorRoom;
+    if (Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR) {
+      player.pendingIndoor = null;
+      player.path = [];
+      if (hs.kind === "exit") exitIndoorToYard();
+      else if (hs.kind === "npc") { stSublog.textContent = hs.line; syncStoryUI(); render(); }
+      return;
+    }
+    player.pendingIndoor = hs;
+    player.running = isDbl;
+    player.path = findPathGeneric(rm.spec, player.x, player.y, hs.x, hs.y, true);
+    stSublog.textContent = hs.kind === "exit"
+      ? "距離門口尚遠，正在繞過隔間與家具走向門檻出口…"
+      : `正在走向「${hs.npcName}」身旁…`;
+    syncStoryUI();
+    render();
+  }
+
+  async function setTrack(nextTrack) {
+    curTrack = nextTrack;
+    document.getElementById("btnTrack1").classList.toggle("active", curTrack === "track1");
+    document.getElementById("btnTrack2").classList.toggle("active", curTrack === "track2");
+    trackBadge.textContent = curTrack === "track1" ? "Track 1 工具鏈直出（<1秒 + .tmj）" : "Track 2 本機 R9700 顯卡水彩精修";
+    trackBadge.className = "story-badge " + curTrack;
+    const curBase = player.mode === "indoor" ? player.indoorRoom.baseKey : "burg4695_yard";
+    await ensureMapImg(curBase, curTrack);
+    stSublog.textContent = curTrack === "track1"
+      ? "目前顯示【主線 Track 1】：tra-map 多圖層水彩零件合成＋2D SDF 接觸暗影＋牆體遮擋火光，同步附 Tiled 1.12 .tmj 分層檔。"
+      : "目前顯示【後退 Track 2】：以 Track 1 為 1:1 結構鎖定底稿，交由本機 R9700 32GB 顯卡低強度（0.32）融合手繪水彩筆觸。";
+    render();
+  }
+
+  function syncStoryUI() {
+    if (!yardSpec) return;
+    stActions.innerHTML = "";
+
+    if (player.mode === "indoor" && player.indoorRoom) {
+      const rm = player.indoorRoom;
+      stTitle.textContent = rm.title;
+      stDesc.textContent = rm.desc;
+      nearCountBadge.textContent = `屋內 ${rm.npcs.length} 人`;
+      for (const hs of rm.hotspots) {
+        const isNear = Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR;
+        const btn = document.createElement("button");
+        btn.className = "pill action" + (isNear ? "" : " portal");
+        btn.textContent = isNear ? hs.nearLabel : hs.farLabel;
+        btn.onclick = () => activateOrWalkIndoor(hs, false);
+        stActions.appendChild(btn);
+      }
+      return;
+    }
+
+    stTitle.textContent = yardSpec.name;
+    stDesc.textContent = yardSpec.desc;
+    nearCountBadge.textContent = `4 戶民居・雙層檢疫木柵`;
+
+    for (const nid of ["oi:burg_4695:h1", "oi:burg_4695:h4"]) {
+      const b = yardSpec.buildings.find(it => it.nid === nid);
+      if (!b) continue;
+      const isNear = Math.hypot(b.door.x - player.x, b.door.y - player.y) <= PROX_DOOR;
+      const btn = document.createElement("button");
+      btn.className = "pill action" + (isNear ? "" : " portal");
+      btn.textContent = isNear ? `推門進入【${b.name}】` : `走向【${b.name}】`;
+      btn.onclick = () => {
+        if (isNear) enterHouseByNid(nid);
+        else {
+          player.pendingDoor = b;
+          player.path = findPathGeneric(yardSpec, player.x, player.y, b.door.x, b.door.y, false);
+          stSublog.textContent = `正在過檢疫石橋走向【${b.name}】門前…`;
+          render();
+        }
+      };
+      stActions.appendChild(btn);
+    }
+
+    const tmjLink = document.createElement("a");
+    tmjLink.className = "pill sub";
+    tmjLink.href = "/maps/poc_burg4695/burg4695_yard.tmj";
+    tmjLink.target = "_blank";
+    tmjLink.textContent = "下載 Tiled .tmj 專案檔";
+    stActions.appendChild(tmjLink);
+  }
+
+  function drawDebugOverlay(sp, sc, isIndoor) {
+    ctx.save();
+    ctx.lineWidth = 3 / sc;
+    if (isIndoor) {
+      ctx.strokeStyle = "rgba(34, 211, 238, 0.9)";
+      if (sp.hull_poly) {
+        ctx.beginPath();
+        sp.hull_poly.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.closePath(); ctx.stroke();
+      } else if (sp.room_rect) {
+        const [x0, y0, x1, y1] = sp.room_rect;
+        ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+      }
+    } else {
+      ctx.strokeStyle = "rgba(220, 38, 38, 0.88)";
+      for (const b of (sp.buildings || [])) {
+        ctx.strokeRect(b.x - b.w * 0.44, b.y - b.h * 0.43, b.w * 0.88, b.h * 0.86);
+      }
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.9)";
+      for (const br of (sp.bridges || [])) {
+        ctx.strokeRect(br.x - br.w * 0.46, br.y - br.h * 0.54, br.w * 0.92, br.h * 1.08);
+      }
+    }
+    ctx.strokeStyle = "rgba(245, 158, 11, 0.95)";
+    for (const ws of (sp.walls || [])) {
+      ctx.beginPath(); ctx.moveTo(ws[0], ws[1]); ctx.lineTo(ws[2], ws[3]); ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(236, 72, 153, 0.88)";
+    for (const pr of (sp.props || [])) {
+      if (pr.solid === false || pr.layer === "canopy") continue;
+      let pw = (pr.w || 140) * 0.36, ph = (pr.h || 140) * 0.36;
+      if (Math.round(pr.deg || 0) % 180 === 90) { const t = pw; pw = ph; ph = t; }
+      ctx.strokeRect(pr.x - pw, pr.y - ph, pw * 2, ph * 2);
+    }
+    ctx.restore();
+  }
+
+  function render() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cw = canvas.clientWidth, ch = canvas.clientHeight;
+    if (canvas.width !== Math.round(cw * dpr) || canvas.height !== Math.round(ch * dpr)) {
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = "#251f19";
+    ctx.fillRect(0, 0, cw, ch);
+    if (!yardSpec) return;
+
+    const isIndoor = player.mode === "indoor" && player.indoorRoom;
+    const sp = isIndoor ? player.indoorRoom.spec : yardSpec;
+    const baseKey = isIndoor ? player.indoorRoom.baseKey : "burg4695_yard";
+    const bgImg = IMAGES.get(`${baseKey}_${curTrack}`);
+    const sc = cam.scale;
+
+    ctx.save();
+    ctx.translate(cw * 0.5, ch * 0.5);
+    ctx.scale(sc, sc);
+    ctx.translate(-cam.x, -cam.y);
+
+    if (bgImg) {
+      ctx.drawImage(bgImg, 0, 0, sp.world_w, sp.world_h);
+    }
+
+    if (cam.showDebug) {
+      drawDebugOverlay(sp, sc, isIndoor);
+    }
+
+    if (cam.showMarkers) {
+      ctx.save();
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      if (isIndoor) {
+        const rm = player.indoorRoom;
+        const hFont = 11.2 / sc;
+        ctx.font = `700 ${hFont}px "Noto Serif TC", serif`;
+        for (const hs of rm.hotspots) {
+          if (hs.kind === "exit") {
+            const isNear = Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR;
+            const tw = ctx.measureText(hs.badge).width;
+            ctx.fillStyle = isNear ? "rgba(156, 58, 32, 0.94)" : "rgba(48, 74, 86, 0.92)";
+            ctx.strokeStyle = "#fff8eb"; ctx.lineWidth = 1.8 / sc;
+            ctx.beginPath();
+            ctx.roundRect(hs.x - tw * 0.5 - 9 / sc, hs.y - hFont * 0.72, tw + 18 / sc, hFont * 1.44, 7 / sc);
+            ctx.fill(); ctx.stroke();
+            ctx.fillStyle = "#fff9ed";
+            ctx.fillText(hs.badge, hs.x, hs.y);
+          }
+        }
+        for (const n of rm.npcs) {
+          const nr = Math.max(13, 10.5 / sc);
+          ctx.fillStyle = n.col; ctx.strokeStyle = "#fbf5e8"; ctx.lineWidth = 2.4 / sc;
+          ctx.beginPath(); ctx.arc(n.x, n.y, nr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          const nFont = 10.6 / sc;
+          ctx.font = `700 ${nFont}px "Noto Serif TC", serif`;
+          const lbl = `${n.name}（${n.role}）`;
+          const tw = ctx.measureText(lbl).width;
+          ctx.fillStyle = "rgba(250, 243, 228, 0.92)";
+          ctx.strokeStyle = "rgba(82, 56, 36, 0.82)"; ctx.lineWidth = 1.2 / sc;
+          ctx.beginPath();
+          ctx.roundRect(n.x - tw * 0.5 - 6 / sc, n.y - nr - nFont * 1.35, tw + 12 / sc, nFont * 1.3, 5 / sc);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = "#2a1b12";
+          ctx.fillText(lbl, n.x, n.y - nr - nFont * 0.7);
+        }
+      } else {
+        const bFont = 10.5 / sc;
+        ctx.font = `700 ${bFont}px "Noto Serif TC", serif`;
+        for (const b of yardSpec.buildings) {
+          const hasIndoor = !!SCENE_KEYS[b.nid];
+          const lbl = hasIndoor ? `★ ${b.name}` : b.name;
+          const tw = ctx.measureText(lbl).width;
+          ctx.fillStyle = hasIndoor ? "rgba(252, 244, 224, 0.95)" : "rgba(238, 230, 214, 0.85)";
+          ctx.strokeStyle = hasIndoor ? "#7a2e1d" : "rgba(92, 62, 38, 0.75)";
+          ctx.lineWidth = (hasIndoor ? 1.8 : 1.2) / sc;
+          ctx.beginPath();
+          ctx.roundRect(b.x - tw * 0.5 - 6 / sc, b.y - bFont * 0.68, tw + 12 / sc, bFont * 1.36, 5 / sc);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = hasIndoor ? "#5c1f12" : "#3a2b1e";
+          ctx.fillText(lbl, b.x, b.y);
+
+          ctx.fillStyle = hasIndoor ? "rgba(186, 62, 32, 0.95)" : "rgba(138, 106, 76, 0.88)";
+          ctx.strokeStyle = "#fff8eb"; ctx.lineWidth = 1.8 / sc;
+          ctx.beginPath(); ctx.arc(b.door.x, b.door.y, 6.5 / sc, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        }
+        for (const n of (yardSpec.npcs || [])) {
+          const nr = Math.max(10, 8.8 / sc);
+          ctx.fillStyle = "#355c6e"; ctx.strokeStyle = "#fbf5e8"; ctx.lineWidth = 2 / sc;
+          ctx.beginPath(); ctx.arc(n.x, n.y, nr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        }
+        const pFont = 11 / sc;
+        ctx.font = `700 ${pFont}px "Noto Serif TC", serif`;
+        const minTopWorldY = cam.y - (ch * 0.5 - 64) / sc;
+        for (const pt of yardSpec.portals) {
+          const py = pt.y < 300 ? Math.max(pt.y, minTopWorldY) : pt.y;
+          const tw = ctx.measureText(pt.label).width;
+          ctx.fillStyle = "rgba(38, 76, 90, 0.92)";
+          ctx.strokeStyle = "#eef6f8"; ctx.lineWidth = 1.8 / sc;
+          ctx.beginPath();
+          ctx.roundRect(pt.x - tw * 0.5 - 9 / sc, py - pFont * 0.68, tw + 18 / sc, pFont * 1.36, 999);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = "#fbf8f0";
+          ctx.fillText(pt.label, pt.x, py);
+        }
+      }
+      ctx.restore();
+    }
+
+    if (player.path.length > 0) {
+      ctx.save();
+      ctx.beginPath(); ctx.moveTo(player.x, player.y);
+      for (const p of player.path) ctx.lineTo(p[0], p[1]);
+      ctx.strokeStyle = player.running ? "rgba(186, 56, 34, 0.88)" : "rgba(42, 96, 116, 0.88)";
+      ctx.lineWidth = 3.2 / sc;
+      ctx.setLineDash([8 / sc, 6 / sc]);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const pr = Math.max(12, 10.5 / sc);
+    ctx.fillStyle = "rgba(182, 52, 34, 0.26)";
+    ctx.beginPath(); ctx.arc(player.x, player.y, pr * 1.85, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#b53422"; ctx.strokeStyle = "#fff9ed"; ctx.lineWidth = 2.6 / sc;
+    ctx.beginPath(); ctx.arc(player.x, player.y, pr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    const trackLabel = curTrack === "track1" ? "主線 Track 1（tra-map 工具鏈）" : "後退 Track 2（本機 R9700 精修）";
+    if (isIndoor) {
+      const ex = player.indoorRoom.hotspots[0];
+      const exDist = Math.round(Math.hypot(ex.x - player.x, ex.y - player.y));
+      hudReadout.textContent = `${trackLabel} ｜ ${player.indoorRoom.title} ｜ 距出口：${exDist}px（≤${PROX_INDOOR}px 始可外出）`;
+    } else {
+      const q = queryOutdoorWalkable(yardSpec, player.x, player.y, 6);
+      const mat = MATERIALS[q.matCode || 4];
+      hudReadout.textContent = `${trackLabel} ｜ ${yardSpec.name} ｜ 路面：${mat.name} ｜ 縮放 ${(sc * 100).toFixed(0)}%`;
+    }
+  }
+
+  let lastTs = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTs) * 0.001);
+    lastTs = now;
+    if (yardSpec && player.path.length > 0) {
+      const tgt = player.path[0];
+      const dx = tgt[0] - player.x, dy = tgt[1] - player.y;
+      const dist = Math.hypot(dx, dy);
+      let spd = player.mode === "indoor"
+        ? (player.running ? INDOOR_RUN_SPEED : INDOOR_WALK_SPEED)
+        : (player.running ? RUN_SPEED : WALK_SPEED);
+      if (player.mode === "outdoor") {
+        const q = queryOutdoorWalkable(yardSpec, player.x, player.y, 6);
+        spd *= (MATERIALS[q.matCode || 4]?.speedMul || 0.85);
+      }
+      const step = spd * dt;
+      if (dist <= step + 1.5) {
+        player.x = tgt[0]; player.y = tgt[1];
+        player.path.shift();
+        if (player.path.length === 0) {
+          player.running = false;
+          if (player.mode === "indoor" && player.pendingIndoor) {
+            const hs = player.pendingIndoor;
+            player.pendingIndoor = null;
+            if (Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR + 28) {
+              if (hs.kind === "exit") { exitIndoorToYard(); requestAnimationFrame(tick); return; }
+              if (hs.kind === "npc") stSublog.textContent = hs.line;
+            }
+          }
+          if (player.mode === "outdoor" && player.pendingDoor && Math.hypot(player.pendingDoor.door.x - player.x, player.pendingDoor.door.y - player.y) < 120) {
+            const b = player.pendingDoor;
+            player.pendingDoor = null;
+            enterHouseByNid(b.nid);
+            requestAnimationFrame(tick);
+            return;
+          }
+        }
+        syncStoryUI();
+      } else {
+        player.x += (dx / dist) * step;
+        player.y += (dy / dist) * step;
+      }
+      if (cam.follow) {
+        cam.x += (player.x - cam.x) * Math.min(1, dt * 6.5);
+        cam.y += (player.y - cam.y) * Math.min(1, dt * 6.5);
+      }
+      render();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  let ptrDown = null, dragged = false, lastTap = 0;
+  const touches = new Map();
+  let pinchD = 0;
+
+  function s2w(cx, cy) {
+    const r = canvas.getBoundingClientRect();
+    return [cam.x + (cx - r.left - r.width * 0.5) / cam.scale, cam.y + (cy - r.top - r.height * 0.5) / cam.scale];
+  }
+
+  canvas.addEventListener("pointerdown", (e) => {
+    canvas.setPointerCapture(e.pointerId);
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 1) {
+      ptrDown = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y };
+      dragged = false;
+    } else if (touches.size === 2) {
+      const ps = Array.from(touches.values());
+      pinchD = Math.hypot(ps[1].x - ps[0].x, ps[1].y - ps[0].y);
+      dragged = true;
+    }
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (!touches.has(e.pointerId)) return;
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 2) {
+      const ps = Array.from(touches.values());
+      const d = Math.hypot(ps[1].x - ps[0].x, ps[1].y - ps[0].y);
+      if (pinchD > 10) {
+        cam.scale = Math.max(0.20, Math.min(2.2, cam.scale * (d / pinchD)));
+        render();
+      }
+      pinchD = d;
+      return;
+    }
+    if (!ptrDown) return;
+    const dx = e.clientX - ptrDown.x, dy = e.clientY - ptrDown.y;
+    if (Math.hypot(dx, dy) > 7) {
+      dragged = true;
+      cam.follow = false;
+      document.getElementById("btnFollow").classList.remove("on");
+      cam.x = ptrDown.cx - dx / cam.scale;
+      cam.y = ptrDown.cy - dy / cam.scale;
+      render();
+    }
+  });
+
+  function endPtr(e) {
+    touches.delete(e.pointerId);
+    if (touches.size > 0) return;
+    if (ptrDown && !dragged && yardSpec) {
+      const [wx, wy] = s2w(e.clientX, e.clientY);
+      const now = performance.now();
+      const isDbl = (now - lastTap) <= DBL_TAP_MS;
+      lastTap = now;
+
+      if (player.mode === "indoor" && player.indoorRoom) {
+        const rm = player.indoorRoom;
+        const hitHs = rm.hotspots.find(h => Math.hypot(h.x - wx, h.y - wy) < 88 / Math.min(1, cam.scale * 1.4));
+        if (hitHs) {
+          activateOrWalkIndoor(hitHs, isDbl);
+          ptrDown = null;
+          return;
+        }
+        player.pendingIndoor = null;
+        player.running = isDbl;
+        player.path = findPathGeneric(rm.spec, player.x, player.y, wx, wy, true);
+        syncStoryUI();
+        render();
+        ptrDown = null;
+        return;
+      }
+
+      const hitBld = yardSpec.buildings.find(b => Math.hypot(b.door.x - wx, b.door.y - wy) < 46 / Math.min(1, cam.scale * 1.3));
+      if (hitBld) {
+        if (Math.hypot(hitBld.door.x - player.x, hitBld.door.y - player.y) <= PROX_DOOR) {
+          enterHouseByNid(hitBld.nid);
+        } else {
+          player.pendingDoor = hitBld;
+          player.running = isDbl;
+          player.path = findPathGeneric(yardSpec, player.x, player.y, hitBld.door.x, hitBld.door.y, false);
+          stSublog.textContent = `正在走向【${hitBld.name}】入口…`;
+          render();
+        }
+        ptrDown = null;
+        return;
+      }
+
+      player.pendingDoor = null;
+      player.running = isDbl;
+      player.path = findPathGeneric(yardSpec, player.x, player.y, wx, wy, false);
+      syncStoryUI();
+      render();
+    }
+    ptrDown = null;
+  }
+  canvas.addEventListener("pointerup", endPtr);
+  canvas.addEventListener("pointercancel", endPtr);
+
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.18 : 1 / 1.18;
+    cam.scale = Math.max(0.20, Math.min(2.2, cam.scale * factor));
+    render();
+  }, { passive: false });
+
+  document.getElementById("btnTrack1").onclick = () => setTrack("track1");
+  document.getElementById("btnTrack2").onclick = () => setTrack("track2");
+  document.getElementById("btnJumpYard").onclick = () => {
+    if (player.mode === "indoor") exitIndoorToYard();
+    else fitCurrentToViewport();
+  };
+  document.getElementById("btnJumpH1").onclick = () => enterHouseByNid("oi:burg_4695:h1");
+  document.getElementById("btnJumpH4").onclick = () => enterHouseByNid("oi:burg_4695:h4");
+  document.getElementById("btnToggleFull").onclick = (e) => {
+    const full = appRoot.classList.toggle("fullmap-mode");
+    e.currentTarget.classList.toggle("on", full);
+    fitCurrentToViewport();
+  };
+  document.getElementById("btnToggleMarkers").onclick = (e) => {
+    cam.showMarkers = !cam.showMarkers;
+    e.currentTarget.textContent = `門牌：${cam.showMarkers ? "顯" : "隱"}`;
+    e.currentTarget.classList.toggle("on", cam.showMarkers);
+    render();
+  };
+  document.getElementById("btnToggleDebug").onclick = (e) => {
+    cam.showDebug = !cam.showDebug;
+    e.currentTarget.textContent = `Tiled 碰撞層：${cam.showDebug ? "開" : "關"}`;
+    e.currentTarget.classList.toggle("on", cam.showDebug);
+    render();
+  };
+  document.getElementById("btnFollow").onclick = (e) => {
+    cam.follow = !cam.follow;
+    if (cam.follow) { cam.x = player.x; cam.y = player.y; }
+    e.currentTarget.classList.toggle("on", cam.follow);
+    render();
+  };
+  document.getElementById("btnFitScene").onclick = () => fitCurrentToViewport();
+  document.getElementById("btnZoomIn").onclick = () => { cam.scale = Math.min(2.2, cam.scale * 1.32); render(); };
+  document.getElementById("btnZoomOut").onclick = () => { cam.scale = Math.max(0.20, cam.scale / 1.32); render(); };
+
+  window.__POC_QA__ = {
+    async setTrack(t) { await setTrack(t); return curTrack; },
+    async goYard() { if (player.mode === "indoor") exitIndoorToYard(); fitCurrentToViewport(); return yardSpec.name; },
+    async goHouse(nid) { await enterHouseByNid(nid); return player.indoorRoom ? player.indoorRoom.title : null; },
+    setDebug(v) { cam.showDebug = !!v; render(); },
+    testFarExitWalk(ix, iy) {
+      if (player.mode !== "indoor" || !player.indoorRoom) return null;
+      player.x = ix; player.y = iy; player.path = [];
+      const ex = player.indoorRoom.hotspots[0];
+      activateOrWalkIndoor(ex, false);
+      return { modeAfterTap: player.mode, pathLen: player.path.length, dist: Math.round(Math.hypot(ex.x - ix, ex.y - iy)) };
+    }
+  };
+
+  async function init() {
+    const [sYard, sH1, sH4] = await Promise.all([
+      fetch(`/maps/poc_burg4695/specs/burg4695_yard.json?${CACHE_TAG}`).then(r => r.json()),
+      fetch(`/maps/poc_burg4695/specs/burg4695_h1_dain.json?${CACHE_TAG}`).then(r => r.json()),
+      fetch(`/maps/poc_burg4695/specs/burg4695_h4_allen.json?${CACHE_TAG}`).then(r => r.json())
+    ]);
+    SPECS.burg4695_yard = sYard;
+    SPECS.burg4695_h1_dain = sH1;
+    SPECS.burg4695_h4_allen = sH4;
+    yardSpec = sYard;
+
+    await Promise.all([
+      ensureMapImg("burg4695_yard", "track1"),
+      ensureMapImg("burg4695_yard", "track2")
+    ]);
+    player.x = yardSpec.spawn.x;
+    player.y = yardSpec.spawn.y;
+    syncStoryUI();
+    fitCurrentToViewport();
+    window.addEventListener("resize", () => render());
+    requestAnimationFrame(tick);
+  }
+
+  init().catch(err => {
+    console.error(err);
+    hudReadout.textContent = "載入失敗：" + err.message;
+  });
+})();
+</script>
+</body>
+</html>

@@ -42,6 +42,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     grid_manager::init();
     crate::grid::substrate::runtime::init_global();
     let _ = crate::grid::outer_island::global_island();
+    crate::grid::outer_island::living_chronicler_worker::spawn_living_chronicler_worker();
     http_api::spawn_rim_tick_loop();
     if grid_manager::get_runtime_square_grid().is_some_and(|g| g.has_peninsula_wilderness()) {
         crate::game::object_ecology::ensure_ecology_items_in_store();
@@ -106,7 +107,23 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         // HTML 頁面路由
         .route("/map_viewer", get(serve_map_viewer))
         .route("/eco_viewer", get(serve_eco_viewer))
-        .route("/world_atlas", get(serve_world_atlas))
+        .route("/world_atlas", get(http_api::world_atlas_page_get))
+        .route(
+            "/api/world_atlas/snapshot",
+            get(http_api::world_atlas_snapshot_get),
+        )
+        .route("/api/world_atlas/node", get(http_api::world_atlas_node_get))
+        .route("/chronicle", get(http_api::chronicle_page_get))
+        .route("/api/chronicle/index", get(http_api::chronicle_index_get))
+        .route("/api/chronicle/actor", get(http_api::chronicle_actor_get))
+        .route(
+            "/api/chronicle/article",
+            get(http_api::chronicle_article_get),
+        )
+        .route(
+            "/api/chronicle/export-md",
+            post(http_api::chronicle_export_md_post),
+        )
         .route("/rim", get(serve_rim_world))
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
@@ -152,11 +169,18 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         )
         // 東南外海大島（Feature 6）奇幻百戶大世界 API
         .route("/api/island/state", get(http_api::island_state_get))
+        .route("/api/island/pulse", get(http_api::island_pulse_get))
+        .route("/api/island/leave", post(http_api::island_leave_post))
         .route("/api/island/map", get(http_api::island_map_get))
         .route("/api/island/setup", post(http_api::island_setup_post))
         .route("/api/island/move", post(http_api::island_move_post))
         .route("/api/island/act", post(http_api::island_act_post))
         .route("/api/island/talk", post(http_api::island_talk_post))
+        .route("/api/island/scroll", get(http_api::island_scroll_get))
+        .route(
+            "/api/island/qa_cleanup",
+            post(http_api::island_qa_cleanup_post),
+        )
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())
@@ -172,7 +196,11 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .map_err(|e| anyhow::anyhow!("bad port: {e}"))?;
     tracing::info!("Rust server listening on http://{addr} (WebSocket /ws)");
     let listener = tokio::net::TcpListener::bind(addr).await?;
-    axum::serve(listener, app).await?;
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await?;
     Ok(())
 }
 
@@ -204,9 +232,6 @@ async fn serve_map_viewer() -> impl IntoResponse {
 }
 async fn serve_eco_viewer() -> impl IntoResponse {
     serve_html_page("eco_viewer.html").await
-}
-async fn serve_world_atlas() -> impl IntoResponse {
-    serve_html_page("world_atlas.html").await
 }
 async fn serve_rim_world() -> impl IntoResponse {
     serve_html_page("rim.html").await

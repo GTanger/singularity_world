@@ -1,79 +1,126 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant-TW">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>山海地貌・全開啟大地圖</title>
-<link rel="stylesheet" href="/world-atlas.css?v=20261112a4">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>奇點世界｜銀鷗島實況全開大地圖・設計者審閱台</title>
+<link rel="stylesheet" href="/world-atlas.css?v=20261123r2" />
 </head>
 <body>
-<header id="topbar">
-  <button id="menu-btn" class="pill" aria-label="收展側欄">☰ 目錄</button>
-  <h1>山海地貌・全開啟大地圖</h1>
-  <span class="seal" title="真實 20m 地形與連續水系母圖">首發陸塊 #01・真實山河母圖</span>
-  <div class="stats">
-    <span class="badge">開放陸塊 <b id="st-cells">載入中…</b> 格</span>
-    <span class="badge">面積 <b id="st-area">—</b></span>
-    <span class="badge">斷層湧泉 <b id="st-spring">—</b></span>
-    <span class="badge">在場實體 <b id="st-ent">—</b></span>
+<header class="wa-header">
+  <div class="wa-brand">
+    <h1>奇點世界｜實況全開大地圖</h1>
+    <span class="wa-clock" id="waClock">載入世界時鐘…</span>
+    <span class="wa-ledger-pill" id="waLedgerPill">對帳中…</span>
   </div>
-  <nav id="modes" aria-label="底圖模式">
-    <button class="pill mode" data-mode="terrain">山海實景</button>
-    <button class="pill mode" data-mode="material">母岩土層</button>
-    <button class="pill mode" data-mode="water">水脈湧泉</button>
-    <button class="pill mode" data-mode="energy">散逸能量</button>
-    <button class="pill mode" data-mode="landmass">自然陸塊界</button>
-  </nav>
+  <div class="wa-top-actions">
+    <label class="wa-check">
+      <input type="checkbox" id="chkUnbuilt" checked />
+      <span>鄉野村莊與實體車船</span>
+    </label>
+    <label class="wa-check">
+      <input type="checkbox" id="chkOcc" checked />
+      <span>即時人數徽記</span>
+    </label>
+    <label class="wa-check">
+      <input type="checkbox" id="chkAutoPoll" checked />
+      <span>自動脈動 (5s)</span>
+    </label>
+    <button type="button" id="btnRefresh">↻ 立即同步</button>
+    <button type="button" id="btnTheme">燭夜／宣紙</button>
+    <a class="wa-link-btn" href="/chronicle">📖 人物誌列傳</a>
+  </div>
 </header>
 
-<div id="layout">
-  <aside id="sidebar">
-    <section>
-      <h2>山河地標快跳</h2>
-      <div id="landmarks" class="btn-grid"><span class="muted">載入中…</span></div>
-    </section>
-    <section>
-      <h2>視角預設</h2>
-      <div class="btn-grid two">
-        <button class="pill" id="btn-fit">全陸塊總覽</button>
-        <button class="pill" id="btn-origin">原點 (0,0) 微觀</button>
+<nav class="wa-mobile-tabs" id="waMobileTabs" aria-label="行動端檢視切換">
+  <button type="button" class="active" data-mpane="map">🗺️ 實況輿圖</button>
+  <button type="button" data-mpane="left">👥 活人與稽核</button>
+  <button type="button" data-mpane="right">📋 場所與人物卡</button>
+</nav>
+
+<div class="wa-workspace" id="waWorkspace" data-mobile-pane="map">
+  <aside class="wa-left" id="waLeft">
+    <div class="wa-pane-tabs" id="leftTabs">
+      <button type="button" class="active" data-ltab="residents">活人名冊</button>
+      <button type="button" data-ltab="pulse">自主發展實況</button>
+      <button type="button" data-ltab="audit">落實度稽核</button>
+    </div>
+
+    <div class="wa-ltab-body" id="ltabResidents">
+      <div class="wa-filter-box">
+        <input type="search" id="resSearch" placeholder="搜尋姓名、行當、所在場所、心事…" />
+        <div class="wa-pills" id="resTownPills">
+          <button type="button" class="active" data-town="all">全島</button>
+          <button type="button" data-town="white_gull_harbor">白鷗港</button>
+          <button type="button" data-town="gull_tail_port">鷗尾漁港</button>
+          <button type="button" data-town="west_strait_ferry">西峽渡口</button>
+          <button type="button" data-town="greypine_post">灰松林驛</button>
+          <button type="button" data-town="north_cape_beacon">北岬燈塔</button>
+          <button type="button" data-town="rural">鄉野29村莊</button>
+        </div>
+        <div class="wa-pills" id="resActPills">
+          <button type="button" class="active" data-act="all">全部狀態</button>
+          <button type="button" data-act="moving">趕路中</button>
+          <button type="button" data-act="at_work">在崗營生</button>
+          <button type="button" data-act="wild">野採／探窟</button>
+          <button type="button" data-act="concern">心有掛念</button>
+        </div>
       </div>
-    </section>
-    <section>
-      <h2>當前底圖圖例</h2>
-      <div id="legend"></div>
-    </section>
-    <section class="grow">
-      <h2>在場人物目錄 <button id="btn-refresh" class="mini" title="重新整理人物位置">↻ 重新整理</button></h2>
-      <input id="ent-search" type="search" placeholder="搜尋人物、生靈、活動…">
-      <div class="chips" id="ent-filter">
-        <button class="chip on" data-k="all">全部</button>
-        <button class="chip" data-k="human">人物</button>
-        <button class="chip" data-k="creature">生靈</button>
-      </div>
-      <div id="ent-list"></div>
-    </section>
+      <div class="wa-scroll-list" id="resList"></div>
+    </div>
+
+    <div class="wa-ltab-body hidden" id="ltabPulse">
+      <div class="wa-scroll-list" id="pulseBody"></div>
+    </div>
+
+    <div class="wa-ltab-body hidden" id="ltabAudit">
+      <div class="wa-scroll-list" id="auditBody"></div>
+    </div>
   </aside>
 
-  <main id="stage">
-    <canvas id="atlas-canvas"></canvas>
-    <div id="hud">
-      <span id="hud-pos">(0, 0)</span>
-      <span id="hud-zoom">縮放 —</span>
-      <span id="hud-load">載入底圖中…</span>
+  <main class="wa-center" id="waCenter">
+    <div class="wa-scale-bar" id="scaleBar">
+      <button type="button" class="active" data-scale="island">全島山海 (93格)</button>
+      <button type="button" data-scale="town:white_gull_harbor">白鷗港</button>
+      <button type="button" data-scale="town:gull_tail_port">鷗尾漁港</button>
+      <button type="button" data-scale="town:west_strait_ferry">西峽渡口</button>
+      <button type="button" data-scale="town:greypine_post">灰松林驛</button>
+      <button type="button" data-scale="town:north_cape_beacon">北岬燈塔</button>
+      <select id="waCellMapSelect" class="wa-cell-select" aria-label="單格手繪地景輿圖快選">
+        <option value="">🖼️ 村塢／封村手繪地景（36 格）…</option>
+      </select>
+      <button type="button" data-scale="dungeon">試煉坑總覽</button>
+      <button type="button" data-scale="dngroom:oi:dng_pit:entry">①塌陷洞口</button>
+      <button type="button" data-scale="dngroom:oi:dng_pit:hall">②斷柱前廳</button>
+      <button type="button" data-scale="dngroom:oi:dng_pit:side">③棄械偏室</button>
+      <button type="button" data-scale="dngroom:oi:dng_pit:stele">④古銘文室</button>
+      <button type="button" data-scale="dngroom:oi:dng_pit:lair">⑤吞石蛛巢</button>
+      <button type="button" data-scale="dngroom:oi:dng_pit:altar">⑥地脈石台</button>
     </div>
-    <div id="zoom-ctl">
-      <button class="pill" id="z-in" aria-label="放大">＋</button>
-      <button class="pill" id="z-out" aria-label="縮小">－</button>
-    </div>
-    <div id="toast" hidden></div>
 
-    <aside id="inspector" class="hidden" aria-live="polite">
-      <button id="insp-close" class="mini" aria-label="關閉">✕</button>
-      <div id="insp-body"></div>
-    </aside>
+    <div class="wa-map-viewport" id="mapViewport">
+      <div class="wa-svg-host" id="svgHost"></div>
+
+      <div class="wa-map-zoom">
+        <button type="button" id="btnZoomIn" aria-label="放大">＋</button>
+        <button type="button" id="btnZoomOut" aria-label="縮小">－</button>
+        <button type="button" id="btnZoomReset" title="重置視角">復位</button>
+      </div>
+
+      <div class="wa-map-legend" id="mapLegend"></div>
+      <div class="wa-mobile-pick-bar hidden" id="mobilePickBar"></div>
+    </div>
   </main>
+
+  <aside class="wa-right" id="waRight">
+    <div class="wa-right-scroll" id="inspectorBody">
+      <div class="wa-empty-hint">點選地圖上任意地塊、街道、鋪號、支巷屋頂，或左側任一位居民，即可在此檢視即時後台狀態、木箱存貨與人物內心盤算。</div>
+    </div>
+  </aside>
 </div>
-<script src="/world-atlas.js?v=20261112a4"></script>
+
+<script src="/town-basemaps.js?v=20261123r4"></script>
+<script src="/world-atlas-panels.js?v=20261123r4"></script>
+<script src="/world-atlas.js?v=20261123r4"></script>
 </body>
 </html>

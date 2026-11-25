@@ -23,11 +23,10 @@ use super::persist_pg::{
 use super::persona::derive_innate_persona;
 use super::sim_tick::{seed_genesis_actors_once, spawn_dynamic_actors, tick_outer_island_world};
 use super::slow_think::{
-    execute_slow_think_off_lock, pop_top_slow_think_candidate, push_validated_goal_intention,
+    coerce_feasible_strategy, execute_slow_think_off_lock, mask_player_names_in_text,
+    pop_top_slow_think_candidate,
 };
-use super::types::{
-    IslandWorldDelta, NewActorSpawnSpec, SpatialNodeDef, UnifiedMindBody, WorldStaticDoc,
-};
+use super::types::{IslandWorldDelta, NewActorSpawnSpec, WorldStaticDoc};
 use super::views::{build_filtered_map_json, build_view_json};
 
 pub struct IslandEngine {
@@ -64,15 +63,29 @@ pub fn load_static_world_doc() -> WorldStaticDoc {
 }
 
 fn preserve_transient_leases(live: &IslandWorldDelta, working: &mut IslandWorldDelta) {
+    working.last_stagger_minute = working.last_stagger_minute.max(live.last_stagger_minute);
+    super::living_chronicler::preserve_polished_projections(
+        &live.living_chronicle,
+        &mut working.living_chronicle,
+    );
     for (aid, live_a) in &live.actors {
-        if (live_a.conversing_until_ms > 0 || live_a.last_talk_unix_ms > 0)
+        if (live_a.conversing_until_ms > 0
+            || live_a.last_talk_unix_ms > 0
+            || live_a.last_active_unix > 0)
             && let Some(wa_ro) = working.actors.get(aid)
             && (live_a.conversing_until_ms > wa_ro.conversing_until_ms
-                || live_a.last_talk_unix_ms > wa_ro.last_talk_unix_ms)
+                || live_a.last_talk_unix_ms > wa_ro.last_talk_unix_ms
+                || live_a.last_active_unix > wa_ro.last_active_unix)
             && let Some(wa) = working.actors.get_mut(aid)
         {
             wa.conversing_until_ms = wa.conversing_until_ms.max(live_a.conversing_until_ms);
             wa.last_talk_unix_ms = wa.last_talk_unix_ms.max(live_a.last_talk_unix_ms);
+            if live_a.last_active_unix > wa.last_active_unix {
+                wa.last_active_unix = live_a.last_active_unix;
+                if live_a.controller_id.is_some() && live_a.route_plan.is_empty() {
+                    wa.route_plan.clear();
+                }
+            }
         }
     }
 }
@@ -101,8 +114,12 @@ impl IslandEngine {
                     for a in delta.actors.values_mut() {
                         a.dirty = true;
                     }
-                    let _ = commit_delta_atomic(&doc, &pool, &mut delta, true);
-                    has_pg = true;
+                    match commit_delta_atomic(&doc, &pool, &mut delta, true) {
+                        Ok(()) => has_pg = true,
+                        Err(err) => tracing::error!(
+                            "[outer_island] initial genesis PG commit failed, deferring: {err}"
+                        ),
+                    }
                 }
                 NormalizedLoadOutcome::Corrupt => {
                     has_pg = true;
@@ -152,7 +169,12 @@ impl IslandEngine {
                 if let Ok(mut g) = self.delta.write() {
                     let clk = current_solar_clock();
                     seed_genesis_actors_once(&self.doc, &mut g, clk.is_night);
-                    let _ = commit_delta_atomic(&self.doc, &pool, &mut g, true);
+                    commit_delta_atomic(&self.doc, &pool, &mut g, true).map_err(|err| {
+                        tracing::error!(
+                            "[outer_island] ensure_pg_ready genesis commit failed: {err}"
+                        );
+                        "港務木冊暫時忙碌，請稍候片刻再試。".to_string()
+                    })?;
                 }
                 self.loaded_from_pg.store(true, Ordering::Release);
                 Ok(())
@@ -173,6 +195,13 @@ impl IslandEngine {
     where
         F: FnOnce(&WorldStaticDoc, &mut IslandWorldDelta) -> Result<T, String>,
     {
+        self.mutate_commit_opt(false, mutator)
+    }
+
+    fn mutate_commit_opt<T, F>(&self, skip_if_clean: bool, mutator: F) -> Result<T, String>
+    where
+        F: FnOnce(&WorldStaticDoc, &mut IslandWorldDelta) -> Result<T, String>,
+    {
         self.ensure_pg_ready()?;
         let _serial = self.persist_lock.lock().unwrap_or_else(|e| e.into_inner());
 
@@ -181,11 +210,21 @@ impl IslandEngine {
                 let guard = self.delta.read().unwrap_or_else(|e| e.into_inner());
                 guard.clone()
             };
+            let prev_bell = working.last_settled_bell;
+            let prev_stagger = working.last_stagger_minute;
             let out = mutator(&self.doc, &mut working)?;
+            if skip_if_clean && !super::live_tide::delta_has_pending_commit(&working, prev_bell) {
+                if working.last_stagger_minute > prev_stagger
+                    && let Ok(mut guard) = self.delta.write()
+                {
+                    guard.last_stagger_minute =
+                        guard.last_stagger_minute.max(working.last_stagger_minute);
+                }
+                return Ok(out);
+            }
             let batch = prepare_commit_batch(&self.doc, &working, false)?;
             execute_commit_batch_pg(&pool, &batch).map_err(|err| {
                 tracing::error!("[outer_island] commit_before_publish PG failed: {err}");
-                // M3 防護：若交易在網路邊界處於未決狀態，強制下次請求自 PG 權威重載以對齊 rev
                 self.loaded_from_pg.store(false, Ordering::Release);
                 "港務木冊暫時無法落筆，剛才的舉動尚未生效，請稍候再試。".to_string()
             })?;
@@ -200,26 +239,38 @@ impl IslandEngine {
         }
     }
 
-    /// 背景模擬迴圈每 10 秒呼叫：全服全體 `UnifiedMindBody` 共用同一時間流、效用決策、睡眠整合與慢思考佇列
+    /// 背景模擬迴圈每 2.5 秒（1 遊戲分鐘）呼叫：全服全體 `UnifiedMindBody` 共用同一連續時間流、錯峰作息與慢思考佇列
     pub fn tick_live(&self, now_ms: u64) {
         let clock = current_solar_clock();
-        let abs_bell = clock.game_days * 12 + i64::from(clock.bell_index);
         let slow_cand = self
-            .mutate_commit_before_publish(|doc, working| {
+            .mutate_commit_opt(true, |doc, working| {
                 tick_outer_island_world(doc, working, &clock, now_ms);
-                Ok(pop_top_slow_think_candidate(
-                    doc,
-                    working,
-                    clock.game_days,
-                    abs_bell,
-                ))
+                Ok(pop_top_slow_think_candidate(doc, working, clock.game_days))
             })
             .ok()
             .flatten();
 
         if let Some(cand) = slow_cand {
-            let (lesson_zh, goal_tag) = execute_slow_think_off_lock(&cand);
-            let _ = self.mutate_commit_before_publish(|_doc, working| {
+            let llm_out = execute_slow_think_off_lock(&cand);
+            let _ = self.mutate_commit_before_publish(|doc, working| {
+                let owes_debt = working.contracts.values().any(|c| {
+                    c.debtor_id == cand.actor_id && (c.status == "open" || c.status == "defaulted")
+                });
+                let safe_llm_out =
+                    llm_out.map(|(l_zh, sk)| (mask_player_names_in_text(working, &l_zh), sk));
+                let feasible_llm = safe_llm_out.map(|(l_zh, sk)| {
+                    (
+                        l_zh,
+                        coerce_feasible_strategy(doc, working, &cand.actor_id, sk, owes_debt),
+                    )
+                });
+                let feasible_fb = coerce_feasible_strategy(
+                    doc,
+                    working,
+                    &cand.actor_id,
+                    cand.fallback_strategy,
+                    owes_debt,
+                );
                 if let Some(a) = working.actors.get_mut(&cand.actor_id)
                     && a.alive
                 {
@@ -230,11 +281,32 @@ impl IslandEngine {
                         .last()
                         .map(|t| t.anchor_event_id.as_str());
                     if cur_last == cand.last_tp_anchor.as_deref() {
-                        let anchor = format!("slow:{}:{}:{}", cand.actor_id, cand.game_day, a.rev);
-                        a.mind
-                            .push_turning_point(&anchor, cand.game_day, &lesson_zh, &goal_tag);
-                        if a.mind.ltm.known_nodes.contains(&cand.validated_goal_node) {
-                            push_validated_goal_intention(a, &goal_tag, cand.abs_bell);
+                        let wear_now = a.bound_weapon.wear_stage;
+                        if let Some((lesson_zh, strat_opt)) = feasible_llm {
+                            let anchor =
+                                format!("slow:{}:{}:{}", cand.actor_id, cand.game_day, a.rev);
+                            let slug = strat_opt.map_or("steady_work", |k| k.tag_slug());
+                            a.mind
+                                .push_turning_point(&anchor, cand.game_day, &lesson_zh, slug);
+                            if let Some(strat_kind) = strat_opt {
+                                a.mind.apply_goal_strategy_with_snapshot(
+                                    strat_kind,
+                                    cand.focus_target_id.clone(),
+                                    cand.game_day,
+                                    4,
+                                    wear_now,
+                                    owes_debt,
+                                );
+                            }
+                        } else if let Some(fb_kind) = feasible_fb {
+                            a.mind.apply_goal_strategy_with_snapshot(
+                                fb_kind,
+                                cand.focus_target_id.clone(),
+                                cand.game_day,
+                                3,
+                                wear_now,
+                                owes_debt,
+                            );
                         }
                         a.mark_mutated();
                     } else {
@@ -303,6 +375,7 @@ impl IslandEngine {
     ) -> Result<String, String> {
         let clock = current_solar_clock();
         self.mutate_commit_before_publish(|doc, working| {
+            super::live_tide::wake_player_on_explicit_input(working, pid, clock.real_unix);
             apply_setup_origin(
                 doc,
                 working,
@@ -319,6 +392,7 @@ impl IslandEngine {
     pub fn move_player(&self, pid: &str, target_node: &str, now_ms: u64) -> Result<String, String> {
         let clock = current_solar_clock();
         self.mutate_commit_before_publish(|doc, working| {
+            super::live_tide::wake_player_on_explicit_input(working, pid, clock.real_unix);
             let aid = working
                 .resolve_controller(pid)
                 .ok_or("請先向港務官核對通行身分。")?;
@@ -329,6 +403,7 @@ impl IslandEngine {
     pub fn explore_here(&self, pid: &str) -> Result<String, String> {
         let clock = current_solar_clock();
         self.mutate_commit_before_publish(|doc, working| {
+            super::live_tide::wake_player_on_explicit_input(working, pid, clock.real_unix);
             let aid = working
                 .resolve_controller(pid)
                 .ok_or("請先向港務官核對通行身分。")?;
@@ -339,11 +414,124 @@ impl IslandEngine {
     pub fn do_action(&self, pid: &str, action: &str, param: &str) -> Result<String, String> {
         let clock = current_solar_clock();
         self.mutate_commit_before_publish(|doc, working| {
+            super::live_tide::wake_player_on_explicit_input(working, pid, clock.real_unix);
             let aid = working
                 .resolve_controller(pid)
                 .ok_or("請先向港務官核對通行身分。")?;
             apply_world_action(doc, working, &clock, &aid, action, param)
         })
+    }
+
+    /// 若當面交談對象為另一名真人玩家（`controller_id.is_some()`），直接走源頭語言遮罩＋在場旁聽＋拆穿吹牛（零 AI 代言冒充！）
+    pub fn try_peer_direct_talk(
+        &self,
+        pid: &str,
+        target_token: &str,
+        message: &str,
+        now_ms: u64,
+    ) -> Option<Result<Value, String>> {
+        self.ensure_pg_ready().ok()?;
+        let precheck = {
+            let guard = self.delta.read().ok()?;
+            let tid = guard.resolve_public_target(target_token)?;
+            let t = guard.actors.get(&tid)?;
+            if t.controller_id.is_none() && !tid.starts_with("pl:") {
+                return None;
+            }
+            let Some(sp_aid) = guard.resolve_controller(pid) else {
+                return Some(Err("請先向港務官核對通行身分。".to_string()));
+            };
+            if sp_aid == tid {
+                return Some(Err("無須對著自己的影子自言自語。".to_string()));
+            }
+            let Some(sp) = guard.actors.get(&sp_aid) else {
+                return Some(Err("請先向港務官核對通行身分。".to_string()));
+            };
+            if let Err(e) = super::live_tide::check_speaker_ready_to_talk(sp) {
+                return Some(Err(e));
+            }
+            let co_present = t.alive
+                && t.setup_done
+                && t.node_id == sp.node_id
+                && guard
+                    .node_occupants
+                    .get(&sp.node_id)
+                    .is_some_and(|occ| occ.contains(&tid));
+            if !co_present {
+                return Some(Err("對方此刻已走遠，不在你的視線範圍內。".to_string()));
+            }
+            let shown_name = if sp.is_acquainted_with(&tid) || t.is_acquainted_with(&sp_aid) {
+                t.display_name.clone()
+            } else {
+                format!("陌生的{}", t.role)
+            };
+            (shown_name, t.role.clone(), t.race.clone())
+        };
+        if message.trim().is_empty() {
+            let (shown_name, t_role, t_race) = precheck;
+            let v = self.build_player_view(pid, pid);
+            return Some(Ok(json!({
+                "ok": true,
+                "is_peer_player": true,
+                "npc_id": target_token,
+                "npc_name": shown_name,
+                "npc_role": t_role,
+                "npc_race": t_race,
+                "reply": "（對方是同在現場的旅人，可在下方直接輸入話語當面開口，或進行亮物談價、託事與點到為止切磋。）",
+                "view": v,
+            })));
+        }
+        let clock = current_solar_clock();
+        let res = self.mutate_commit_before_publish(|doc, working| {
+            let sp_aid = working
+                .resolve_controller(pid)
+                .ok_or("請先向港務官核對通行身分。")?;
+            {
+                let sp = working
+                    .actors
+                    .get_mut(&sp_aid)
+                    .ok_or("請先向港務官核對通行身分。")?;
+                super::live_tide::check_speaker_ready_to_talk(sp)?;
+                if now_ms > 0
+                    && sp.last_talk_unix_ms > 0
+                    && now_ms.saturating_sub(sp.last_talk_unix_ms) < 1200
+                {
+                    return Err("對方正在思索你的話意，請稍候片刻再開口。".to_string());
+                }
+                sp.last_talk_unix_ms = now_ms;
+                sp.last_active_unix = clock.real_unix;
+                sp.mark_mutated();
+            }
+            let tid = working
+                .resolve_public_target(target_token)
+                .ok_or("對方已不在場。")?;
+            let (_masked, exposed) = super::pacts_and_peers::apply_peer_direct_speech(
+                doc,
+                working,
+                &clock,
+                &sp_aid,
+                target_token,
+                message,
+            )?;
+            let (t_name, t_role, t_race) = {
+                let t = working.actors.get(&tid).ok_or("對方已不在場。")?;
+                (t.display_name.clone(), t.role.clone(), t.race.clone())
+            };
+            Ok((t_name, t_role, t_race, exposed))
+        });
+        Some(res.map(|(t_name, t_role, t_race, exposed)| {
+            json!({
+                "ok": true,
+                "is_peer_player": true,
+                "npc_id": target_token,
+                "npc_name": t_name,
+                "npc_role": t_role,
+                "npc_race": t_race,
+                "reply": "（話音已當面傳入對方耳中，待對方親自開口回應。）",
+                "side_overheard": exposed,
+                "view": self.build_player_view(pid, pid),
+            })
+        }))
     }
 
     pub fn prepare_talk_input(
@@ -377,15 +565,9 @@ impl IslandEngine {
                 .actors
                 .get_mut(&speaker_aid)
                 .ok_or("請先向港務官核對通行身分。")?;
-            if !sp.setup_done {
-                return Err("請先在港務登岸木冊留下你的名號與來歷。".to_string());
-            }
-            if sp.active_skirmish.is_some() {
-                return Err("眼前正與敵手短兵相接，無暇分心攀談！".to_string());
-            }
-            if sp.active_transit.is_some() {
-                return Err("雙馬篷車正在大路上奔馳，需下車後才能與街坊交談。".to_string());
-            }
+            super::live_tide::check_speaker_ready_to_talk(sp)?;
+            let _ = super::live_tide::touch_client_lease(pid, clock.real_unix, true);
+            sp.route_plan.clear();
             if now_ms > 0
                 && sp.last_talk_unix_ms > 0
                 && now_ms.saturating_sub(sp.last_talk_unix_ms) < 1200
@@ -420,6 +602,12 @@ impl IslandEngine {
                 .actors
                 .get_mut(&target_aid)
                 .ok_or("眼前找不到這位街坊。")?;
+            if t_mut.controller_id.is_some() || target_aid.starts_with("pl:") {
+                return Err(format!(
+                    "旅人{}正專注於自身行止，未曾搭腔。",
+                    t_mut.display_name
+                ));
+            }
             if clock.is_night && t_mut.node_id != t_mut.home_node {
                 if t_mut.conversing_until_ms <= now_ms {
                     t_mut.conversing_until_ms = now_ms.saturating_add(8_000);
@@ -469,10 +657,17 @@ impl IslandEngine {
         let kept = soc_opt.map_or(0, |s| s.kept_pacts);
         let broken = soc_opt.map_or(0, |s| s.broken_pacts);
         let rep_press = soc_opt.map_or(0, |s| s.pressure_tactic_count);
-        let stance_verdict = innate.arbitrate_dialogue_stance(
+        let fam = soc_opt.map_or(if acquainted { 40 } else { 0 }, |s| s.familiarity);
+        let warmth = soc_opt.map_or(0, |s| s.warmth);
+        let is_kin_or_hh = (!sp.household_id.is_empty() && sp.household_id == target.household_id)
+            || soc_opt.is_some_and(|s| s.is_kin());
+        let mut stance_verdict = innate.arbitrate_dialogue_stance_with_memory(
             &target.drift,
             &target.role,
             acquainted,
+            fam,
+            warmth,
+            is_kin_or_hh,
             kept,
             broken,
             rep_press,
@@ -489,19 +684,39 @@ impl IslandEngine {
             .map(|t| (t.partner_said.clone(), t.self_replied.clone()))
             .collect();
 
-        let mut relevant_memories_zh = Vec::new();
-        if let Some(soc) = soc_opt
-            && !soc.notable_note_zh.is_empty()
+        let mut relevant_memories_zh = target.mind.recall_relevant_for_utterance(
+            &speaker_aid,
+            &trimmed_msg,
+            topic.trim(),
+            clock.game_days,
+        );
+        super::surface_cues::enrich_dialogue_with_graduated_disclosure(
+            &self.doc,
+            &guard,
+            sp,
+            target,
+            &innate,
+            topic.trim(),
+            &trimmed_msg,
+            &mut stance_verdict,
+            &mut relevant_memories_zh,
+        );
+        if !target.ancestor_note_zh.is_empty() && relevant_memories_zh.len() < 5 {
+            relevant_memories_zh.push(target.ancestor_note_zh.clone());
+        }
+        if !target.bound_weapon.provenance.is_empty()
+            && (trimmed_msg.contains("錘")
+                || trimmed_msg.contains("刀")
+                || trimmed_msg.contains("傢伙")
+                || trimmed_msg.contains("手藝"))
         {
-            relevant_memories_zh.push(format!("與此人往來紀錄：{}", soc.notable_note_zh));
-        }
-        for tp in target.mind.ltm.turning_points.iter().rev().take(1) {
-            relevant_memories_zh.push(tp.lesson_zh.clone());
-        }
-        let mut ep_sorted: Vec<_> = target.mind.ltm.episodic.iter().collect();
-        ep_sorted.sort_by_key(|e| std::cmp::Reverse(e.retention_score(clock.game_days)));
-        for ep in ep_sorted.into_iter().take(3) {
-            relevant_memories_zh.push(ep.subjective_zh.clone());
+            relevant_memories_zh.insert(
+                0,
+                format!(
+                    "手頭這把{}是{}",
+                    target.bound_weapon.name, target.bound_weapon.provenance
+                ),
+            );
         }
 
         let known_local_landmarks_zh: Vec<String> = target
@@ -563,9 +778,9 @@ impl IslandEngine {
         npc_id: &str,
         npc_name: &str,
         out: &NpcDialogueOutcome,
-    ) -> Result<Option<String>, String> {
+    ) -> Result<(Option<String>, Option<String>), String> {
         let clock = current_solar_clock();
-        self.mutate_commit_before_publish(|_doc, working| {
+        self.mutate_commit_before_publish(|doc, working| {
             let speaker_aid = working.resolve_controller(pid).ok_or("找不到旅人行蹤")?;
             let target_aid = working
                 .resolve_public_target(npc_id)
@@ -595,11 +810,29 @@ impl IslandEngine {
                     out.used_pressure_tactic,
                 );
                 if out.used_pressure_tactic {
-                    target.mind.stm.affect.anger =
-                        (target.mind.stm.affect.anger.saturating_add(14)).min(95);
+                    let t_inn = derive_innate_persona(target.soul_seed.max(1));
+                    let abs_bell = clock.game_days * 12 + i64::from(clock.bell_index);
+                    let _ = target.mind.appraise_event(
+                        &t_inn,
+                        super::appraisal::ConcernCause::PactBetrayed,
+                        Some(&speaker_aid),
+                        Some(super::persona::ValueAxis::Autonomy),
+                        46,
+                        abs_bell,
+                    );
                 }
                 target.mark_mutated();
             }
+
+            let boast_callout = super::pacts_and_peers::check_and_expose_unwitnessed_boast(
+                doc,
+                working,
+                &clock,
+                &speaker_aid,
+                &p_node_id,
+                "harbor_trade",
+                &out.player_said,
+            );
 
             let mut lang_msg = None;
             let sp = working
@@ -622,15 +855,38 @@ impl IslandEngine {
             if let Some((ref lcode, gain)) = out.learned_lang {
                 lang_msg = add_language_exposure(sp, clock.game_days, lcode, gain);
             }
-            push_breath(sp, format!("{}：{}", npc_name, out.npc_reply));
+            let breath_line = if out.npc_reply.starts_with('「')
+                && out.npc_reply.contains('」')
+                && out.npc_reply.contains(npc_name)
+            {
+                out.npc_reply.clone()
+            } else {
+                format!(
+                    "「{}」{}應道。",
+                    out.npc_reply.trim_matches(|c| c == '「' || c == '」'),
+                    npc_name
+                )
+            };
+            push_breath(sp, breath_line);
             sp.mark_mutated();
-            Ok(lang_msg)
+            Ok((lang_msg, boast_callout))
         })
+    }
+
+    pub fn pulse_meta(&self, pid: &str) -> Value {
+        let clock = current_solar_clock();
+        let now_ms = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |d| u64::try_from(d.as_millis()).unwrap_or(0));
+        let _ = super::live_tide::touch_client_lease(pid, clock.real_unix, false);
+        let seq = self.delta.read().map_or(0, |g| g.persist_seq);
+        json!({ "ok": true, "boot_epoch": super::live_tide::boot_epoch_ms(), "persist_seq": seq, "server_unix": clock.real_unix, "server_unix_ms": now_ms })
     }
 
     pub fn build_player_view(&self, pid: &str, fallback_name: &str) -> Value {
         self.ensure_player(pid, fallback_name);
         let clock = current_solar_clock();
+        let _ = super::live_tide::touch_client_lease(pid, clock.real_unix, false);
         let Ok(guard) = self.delta.read() else {
             return json!({ "ok": false, "msg": "海霧迷濛，請稍候再看。" });
         };
@@ -643,53 +899,25 @@ impl IslandEngine {
     pub fn build_map_view(&self, pid: &str, fallback_name: &str) -> Value {
         self.ensure_player(pid, fallback_name);
         let clock = current_solar_clock();
+        let _ = super::live_tide::touch_client_lease(pid, clock.real_unix, false);
         let Ok(guard) = self.delta.read() else {
             return json!({ "ok": false, "msg": "海霧迷濛，請稍候再展卷。" });
         };
         let Some(viewer) = guard.actor_by_controller(pid) else {
             return json!({ "ok": false, "msg": "尚未在港務冊查見你的名號。" });
         };
-        build_filtered_map_json(&self.doc, viewer, &clock)
+        build_filtered_map_json(&self.doc, &guard, viewer, &clock)
+    }
+
+    pub fn cleanup_qa_actor(&self, pid: &str) -> Result<bool, String> {
+        super::live_tide::revoke_client_lease(pid);
+        self.ensure_pg_ready()?;
+        self.mutate_commit_before_publish(|_doc, working| {
+            Ok(super::persist_pg::purge_test_actor_conserving_copper(
+                working, pid,
+            ))
+        })
     }
 }
 
-/// 依 $O(1)$ `node_occupants` 空間索引與釘選優先序回傳同節點全體在場人物（零 `doc.residents` 依賴、零 `.take(8)` 截斷！）
-pub fn ordered_actors_at_node<'a>(
-    delta: &'a IslandWorldDelta,
-    viewer: &UnifiedMindBody,
-    node: &SpatialNodeDef,
-    now_ms: u64,
-) -> Vec<&'a UnifiedMindBody> {
-    let Some(occ) = delta.node_occupants.get(&node.id) else {
-        return Vec::new();
-    };
-
-    let mut list: Vec<(u8, &'a UnifiedMindBody)> = occ
-        .iter()
-        .filter(|&aid| aid != &viewer.actor_id)
-        .filter_map(|aid| delta.actors.get(aid))
-        .filter(|other| other.alive && other.setup_done && other.node_id == node.id)
-        .map(|other| {
-            let conversing = now_ms > 0 && other.conversing_until_ms > now_ms;
-            let at_post = other.controller_id.is_none()
-                && (other.work_node == node.id
-                    || (node.kind == "shop" && other.home_node == node.id))
-                && matches!(node.kind.as_str(), "shop" | "dock" | "gate");
-            let acquainted = viewer.is_acquainted_with(&other.actor_id)
-                || other.is_acquainted_with(&viewer.actor_id);
-            let rank = if conversing {
-                0
-            } else if at_post {
-                1
-            } else if acquainted {
-                2
-            } else {
-                3
-            };
-            (rank, other)
-        })
-        .collect();
-
-    list.sort_by(|a, b| a.0.cmp(&b.0).then_with(|| a.1.actor_id.cmp(&b.1.actor_id)));
-    list.into_iter().map(|(_, other)| other).collect()
-}
+pub use super::live_shifts::ordered_actors_at_node;

@@ -1,0 +1,151 @@
+{
+  "id": "oi:burg_4695:yard",
+  "name": "風語橋哨・檢疫石橋哨柵",
+  "desc": "橫跨南境溪流的石橋釘著雙層檢疫木柵，火盆日夜焚燒苦艾煙，衛兵與草藥師逐一查驗過往封條，嚴禁疫區生鮮北運與非檢疫糧食私自南運入封鎖區。",
+  "world_w": 2048,
+  "world_h": 2048,
+  "is_indoor": false,
+  "seed": 469501,
+  "gpu_strength": 0.33,
+  "gpu_prompt": "90-degree straight-down zenithal top-down hand-inked sepia pen and warm mineral watercolor RPG settlement map, stone bridge crossing a clear mountain creek, double wooden quarantine palisades, glowing wormwood braziers, four shingle-roofed stone cottages, Dungeondraft tabletop style, zero perspective, no text",
+  "spawn": { "x": 1024, "y": 1680 },
+  "portals": [
+    { "id": "oi:cell4695:skirt_a", "label": "往外郊苦艾警戒坡", "dir": "北", "x": 1024, "y": 115 },
+    { "id": "oi:cell4695:0", "label": "檢疫橋頭・往界石林徑", "dir": "南", "x": 1024, "y": 1930 }
+  ],
+  "rivers": [
+    {
+      "w": 164,
+      "pts": [[-40, 1345], [480, 1298], [1024, 1320], [1560, 1358], [2088, 1308]]
+    }
+  ],
+  "bridges": [
+    { "x": 1024, "y": 1320, "w": 236, "h": 284 }
+  ],
+  "earth_patches": [
+    [290, 290, 660, 620],
+    [1385, 290, 1745, 620],
+    [325, 695, 705, 955],
+    [1345, 695, 1735, 955],
+    [780, 1020, 1268, 1185],
+    [790, 1450, 1258, 1740]
+  ],
+  "plazas": [
+    { "x": 1024, "y": 730, "r": 185 },
+    { "x": 1024, "y": 1660, "r": 125 }
+  ],
+  "roads": [
+    { "w": 144, "pts": [[1024, 40], [1024, 730], [1024, 1320], [1024, 2008]] },
+    { "w": 92, "pts": [[470, 565], [740, 635], [1024, 685], [1310, 635], [1560, 565]] },
+    { "w": 88, "pts": [[670, 820], [1024, 785], [1375, 820]] }
+  ],
+  "walls": [
+    [560, 1135, 922, 1135, "palisade", 22],
+    [590, 1092, 922, 1092, "palisade", 20],
+    [1126, 1135, 1488, 1135, "palisade", 22],
+    [1126, 1092, 1458, 1092, "palisade", 20],
+    [640, 1495, 922, 1495, "palisade", 22],
+    [670, 1538, 922, 1538, "palisade", 20],
+    [1126, 1495, 1408, 1495, "palisade", 22],
+    [1126, 1538, 1378, 1538, "palisade", 20],
+    [285, 290, 285, 560, "stone", 18],
+    [1750, 290, 1750, 560, "stone", 18]
+  ],
+  "buildings": [
+    {
+      "nid": "oi:burg_4695:h1",
+      "name": "一號盾牌達因家",
+      "sub": "矮人巡城衛兵（4人）",
+      "kind": "house",
+      "x": 470,
+      "y": 415,
+      "w": 332,
+      "h": 224,
+      "deg": 0,
+      "roof_col": "slate",
+      "door": { "x": 470, "y": 552 }
+    },
+    {
+      "nid": "oi:burg_4695:h2",
+      "name": "二號夜巡莫莉家",
+      "sub": "人類巡城衛兵（4人）",
+      "kind": "house",
+      "x": 1560,
+      "y": 415,
+      "w": 324,
+      "h": 220,
+      "deg": 0,
+      "roof_col": "terra",
+      "door": { "x": 1560, "y": 550 }
+    },
+    {
+      "nid": "oi:burg_4695:h3",
+      "name": "三號盾牌羅蘭家",
+      "sub": "人類巡城衛兵（3人）",
+      "kind": "house",
+      "x": 485,
+      "y": 820,
+      "w": 304,
+      "h": 212,
+      "deg": 0,
+      "roof_col": "wood",
+      "door": { "x": 662, "y": 820 }
+    },
+    {
+      "nid": "oi:burg_4695:h4",
+      "name": "四號碎岩艾倫家",
+      "sub": "人類石工（3人）",
+      "kind": "house",
+      "x": 1555,
+      "y": 820,
+      "w": 316,
+      "h": 218,
+      "deg": 0,
+      "roof_col": "terra_warm",
+      "door": { "x": 1372, "y": 820 }
+    }
+  ],
+  "props": [
+    { "asset": "brazier_wormwood", "x": 878, "y": 1168, "w": 98, "h": 98, "solid": true },
+    { "asset": "brazier_wormwood", "x": 1170, "y": 1168, "w": 98, "h": 98, "solid": true },
+    { "asset": "brazier_wormwood", "x": 878, "y": 1465, "w": 92, "h": 92, "solid": true },
+    { "asset": "brazier_wormwood", "x": 1170, "y": 1465, "w": 92, "h": 92, "solid": true },
+    { "asset": "wormwood_bundles", "x": 805, "y": 1030, "w": 96, "h": 116, "solid": true },
+    { "asset": "wormwood_bundles", "x": 1245, "y": 1030, "w": 96, "h": 116, "solid": true },
+    { "asset": "wormwood_bundles", "x": 345, "y": 575, "w": 88, "h": 106, "solid": true },
+    { "asset": "barrel_cluster", "x": 640, "y": 540, "w": 96, "h": 110, "solid": true },
+    { "asset": "stonemason_bench", "x": 1685, "y": 978, "w": 112, "h": 118, "solid": true },
+    { "asset": "boulder_moss", "x": 1545, "y": 990, "w": 108, "h": 104, "solid": true },
+    { "asset": "cart_quarantine", "x": 835, "y": 1665, "w": 150, "h": 150, "deg": 18, "solid": true },
+    { "asset": "stone_stele", "x": 1190, "y": 1690, "w": 116, "h": 116, "solid": true },
+    { "asset": "boulder_moss", "x": 270, "y": 1215, "w": 155, "h": 148, "solid": true },
+    { "asset": "boulder_moss", "x": 1765, "y": 1240, "w": 162, "h": 154, "deg": 45, "solid": true },
+    { "asset": "shrub_bush", "x": 745, "y": 510, "w": 102, "h": 102, "solid": false },
+    { "asset": "shrub_bush", "x": 1300, "y": 510, "w": 102, "h": 102, "solid": false },
+    { "asset": "shrub_bush", "x": 510, "y": 1465, "w": 114, "h": 114, "solid": false },
+    { "asset": "shrub_bush", "x": 1545, "y": 1485, "w": 114, "h": 114, "solid": false },
+    { "asset": "tree_oak", "x": 175, "y": 210, "w": 275, "h": 268, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 785, "y": 185, "w": 215, "h": 222, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 1265, "y": 180, "w": 215, "h": 222, "deg": 35, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 1875, "y": 215, "w": 280, "h": 272, "deg": 90, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 180, "y": 1025, "w": 225, "h": 232, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 1885, "y": 1045, "w": 265, "h": 258, "deg": 180, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 235, "y": 1645, "w": 295, "h": 285, "deg": 40, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 540, "y": 1840, "w": 230, "h": 238, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 1805, "y": 1660, "w": 290, "h": 282, "deg": 135, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 1490, "y": 1855, "w": 225, "h": 232, "deg": 70, "layer": "canopy", "solid": false }
+  ],
+  "lights": [
+    { "x": 878, "y": 1168, "radius": 340, "intensity": 0.56, "color": [1.0, 0.66, 0.28] },
+    { "x": 1170, "y": 1168, "radius": 340, "intensity": 0.56, "color": [1.0, 0.66, 0.28] },
+    { "x": 878, "y": 1465, "radius": 310, "intensity": 0.50, "color": [1.0, 0.66, 0.28] },
+    { "x": 1170, "y": 1465, "radius": 310, "intensity": 0.50, "color": [1.0, 0.66, 0.28] },
+    { "x": 1024, "y": 730, "radius": 440, "intensity": 0.22, "color": [1.0, 0.88, 0.68] }
+  ],
+  "npcs": [
+    { "id": "res:burg_4695:h1_0", "name": "盾牌達因", "role": "矮人巡城衛兵", "x": 955, "y": 1105 },
+    { "id": "res:burg_4695:h2_0", "name": "夜巡莫莉", "role": "人類巡城衛兵", "x": 1095, "y": 1105 },
+    { "id": "res:burg_4695:h3_0", "name": "盾牌羅蘭", "role": "人類巡城衛兵", "x": 965, "y": 1525 },
+    { "id": "res:burg_4695:h4_0", "name": "碎岩艾倫", "role": "人類石工", "x": 1295, "y": 820 }
+  ]
+}

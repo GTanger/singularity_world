@@ -27,9 +27,13 @@ pub fn apply_explore(
         if a.active_transit.is_some() {
             return Err("篷車正在大路上疾馳，無法彎腰翻找路邊。".to_string());
         }
+        let req_rumor = doc
+            .hidden_entrances
+            .get(&a.node_id)
+            .map_or("", |h| h.rumor_key.as_str());
         (
             a.node_id.clone(),
-            a.known_rumors.contains("pit_rumor"),
+            req_rumor.is_empty() || a.known_rumors.contains(req_rumor),
             a.unlocked_secrets.contains(&a.node_id),
         )
     };
@@ -55,12 +59,12 @@ pub fn apply_explore(
         && !already_unlocked
     {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
         a.explored_windows.insert(win_key);
         a.last_active_unix = clock.real_unix;
         a.mark_mutated();
         if has_rumor {
-            a.unlocked_secrets.insert(node_id);
-            a.mind.ltm.known_nodes.insert(hid.target.clone());
+            super::mesh_expedition::unlock_bidirectional_secret(doc, a, &node_id);
             push_breath(a, hid.found_text.clone());
             return Ok(hid.found_text.clone());
         }
@@ -74,6 +78,7 @@ pub fn apply_explore(
         .is_some_and(|v| !v.is_empty())
     {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
         a.explored_windows.insert(win_key);
         a.mark_mutated();
         let msg = "你在草叢石縫間發現一隻沾泥的遺落行囊，隨時可彎腰拾起清點！".to_string();
@@ -83,6 +88,7 @@ pub fn apply_explore(
 
     if node_id == "oi:dng_pit:stele" {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
         a.explored_windows.insert(win_key);
         a.last_active_unix = clock.real_unix;
         add_carry_item(
@@ -91,9 +97,8 @@ pub fn apply_explore(
                 slug: "stele_rubbing".to_string(),
                 name: "矮人古碑拓片".to_string(),
                 count: 1,
-                bound_owner: None,
-                stolen_from: None,
                 weight_units: 1,
+                ..CarryItem::default()
             },
         );
         let lang_note =
@@ -118,6 +123,7 @@ pub fn apply_explore(
             "試煉坑木架下拾獲舊銅幣".to_string(),
         );
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
         a.explored_windows.insert(win_key);
         a.last_active_unix = clock.real_unix;
         a.mark_mutated();
@@ -131,59 +137,101 @@ pub fn apply_explore(
     }
 
     if node_id == "oi:dng_pit:lair" {
+        super::phase_and_vessels::ensure_chaos_rune_pool_seeded(delta);
         let cleared_until = delta
             .cleared_nests_until_day
             .get(&node_id)
             .copied()
             .unwrap_or(-1);
+        let primordial_gone = delta.first_spider_slain.is_some();
+        let altar_next = delta
+            .harvested_altars_until_day
+            .get("oi:dng_pit:altar")
+            .copied()
+            .unwrap_or(-1);
+        let altar_also_empty = clock.game_days < altar_next || delta.chaos_rune_pool == 0;
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
         a.explored_windows.insert(win_key);
         a.last_active_unix = clock.real_unix;
         a.mark_mutated();
         if clock.game_days < cleared_until {
-            let msg = "巨蛛巢穴裡只剩斷裂的灰白蛛網，那頭吞石巨蛛暫時尚未重返巢中。".to_string();
+            if altar_also_empty {
+                a.known_rumors.insert("pit_cleared".to_string());
+            }
+            let msg = if primordial_gone {
+                "元祖吞石巨蛛早已伏誅，空曠石巢裡只剩碎裂甲片，目前尚無其他荒野異獸遷入。"
+                    .to_string()
+            } else {
+                "巨蛛巢穴裡只剩斷裂的灰白蛛網，裡頭已被前人清掃一空。".to_string()
+            };
             push_breath(a, msg.clone());
             return Ok(msg);
         }
+        a.known_rumors.remove("pit_cleared");
+        let (f_slug, f_name, intro_msg) = if !primordial_gone {
+            (
+                "stone_spider",
+                "背嵌原石的吞石巨蛛",
+                "灰白蛛網劇烈震顫，盤踞多年的吞石巨蛛嘶鳴著撲出，前螯直取你的手腕！",
+            )
+        } else {
+            (
+                "cave_lizard",
+                "循荒氣佔巢的嗜石岩蜥",
+                "舊蛛巢已被山林異獸空巢易主——一頭鱗甲粗硬的嗜石岩蜥自暗處猛撲而出！",
+            )
+        };
         a.active_skirmish = Some(SkirmishState {
-            foe_slug: "stone_spider".to_string(),
-            foe_name: "背嵌原石的吞石巨蛛".to_string(),
+            foe_slug: f_slug.to_string(),
+            foe_name: f_name.to_string(),
             can_speak_goblin: false,
             foe_stagger: 0,
             player_guard: false,
             round_idx: 1,
         });
-        let msg = "灰白蛛網劇烈震顫，一頭甲殼厚如鐵板的吞石巨蛛嘶鳴著撲出，前螯直取你的手腕！"
-            .to_string();
+        let msg = intro_msg.to_string();
         push_breath(a, msg.clone());
         return Ok(msg);
     }
 
     if node_id == "oi:dng_pit:altar" {
+        super::phase_and_vessels::ensure_chaos_rune_pool_seeded(delta);
         let cleared_spider = delta
             .cleared_nests_until_day
             .get("oi:dng_pit:lair")
             .copied()
             .unwrap_or(-1);
         if clock.game_days >= cleared_spider {
-            return Err("外頭巢穴的吞石巨蛛仍在虎視眈眈，不敢貿然鑿石驚動牠！".to_string());
+            return Err("外頭巢穴仍有凶獸盤踞，不敢貿然鑿石驚動牠！".to_string());
         }
         let next_avail = delta
             .harvested_altars_until_day
             .get(&node_id)
             .copied()
             .unwrap_or(-1);
-        if clock.game_days < next_avail {
+        if clock.game_days < next_avail || delta.chaos_rune_pool == 0 {
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            let msg = "石台岩縫間新凝的原石尚小，還需過幾日才會成形。".to_string();
+            a.explored_windows.insert(win_key);
+            a.known_rumors.insert("pit_cleared".to_string());
+            a.mark_mutated();
+            let msg = if delta.chaos_rune_pool == 0 {
+                "石台地脈荒氣已被採斂殆盡，須待外頭銘器磨損解構或下一波地脈潮湧方能再凝原石。"
+                    .to_string()
+            } else {
+                "石台岩縫間已被前人撬空，殘餘荒氣尚未重新凝成原石。".to_string()
+            };
             push_breath(a, msg.clone());
             return Ok(msg);
         }
+        delta.chaos_rune_pool = delta.chaos_rune_pool.saturating_sub(1);
         delta
             .harvested_altars_until_day
-            .insert(node_id, clock.game_days + 3);
+            .insert(node_id, clock.game_days + 6);
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
         a.explored_windows.insert(win_key);
+        a.known_rumors.insert("pit_cleared".to_string());
         a.last_active_unix = clock.real_unix;
         add_carry_item(
             &mut a.backpack,
@@ -191,9 +239,8 @@ pub fn apply_explore(
                 slug: "rune_stone".to_string(),
                 name: "古符文原石".to_string(),
                 count: 1,
-                bound_owner: None,
-                stolen_from: None,
                 weight_units: 2,
+                ..CarryItem::default()
             },
         );
         a.mark_mutated();
@@ -203,103 +250,7 @@ pub fn apply_explore(
         return Ok(msg);
     }
 
-    let cell = doc.cells.get(&node.cell_id.to_string());
-    let is_coast = cell.is_some_and(|c| c.is_coast);
-    let height = cell.map_or(20, |c| c.height);
-
-    let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-    a.explored_windows.insert(win_key);
-    a.last_active_unix = clock.real_unix;
-    a.mark_mutated();
-
-    if node.kind != "wild" {
-        let msg = format!(
-            "你留心觀察【{}】四周往來行色：門廊木牌字跡清晰，地面石板被車馬磨得光滑。",
-            node.name
-        );
-        push_breath(a, msg.clone());
-        return Ok(msg);
-    }
-
-    let roll = ((u64::from(node.cell_id) * 31)
-        .wrapping_add(clock.game_days.unsigned_abs() * 17)
-        .wrapping_add(u64::from(clock.hour)))
-        % 4;
-
-    if roll == 0 && !is_coast {
-        let can_gob = a.languages.get("goblin").copied().unwrap_or(0) >= 25;
-        let boss_prefix = delta
-            .dropped_loot_by_node
-            .get(&node_id)
-            .and_then(|v| v.last())
-            .and_then(|b| b.promoted_boss_name.clone());
-        let foe_name = boss_prefix.unwrap_or_else(|| "灰耳哥布林斥候".to_string());
-        a.active_skirmish = Some(SkirmishState {
-            foe_slug: "grey_ear_goblin".to_string(),
-            foe_name: foe_name.clone(),
-            can_speak_goblin: can_gob,
-            foe_stagger: 0,
-            player_guard: false,
-            round_idx: 1,
-        });
-        let msg = format!(
-            "灌木叢驟然分開，一名手持骨柄短刀的【{}】伏低身子竄出，緊盯著你腰間行囊！",
-            foe_name
-        );
-        push_breath(a, msg.clone());
-        return Ok(msg);
-    }
-
-    if is_coast {
-        add_carry_item(
-            &mut a.backpack,
-            CarryItem {
-                slug: "driftwood".to_string(),
-                name: "異國刻紋漂流木".to_string(),
-                count: 1,
-                bound_owner: None,
-                stolen_from: None,
-                weight_units: 2,
-            },
-        );
-        let msg = "你在潮線碎石間拾獲一截堅實的【異國刻紋漂流木】，帶回港邊木匠或碼頭商販處可換幾枚銅幣。"
-            .to_string();
-        push_breath(a, msg.clone());
-        return Ok(msg);
-    }
-
-    if height >= 23 {
-        add_carry_item(
-            &mut a.backpack,
-            CarryItem {
-                slug: "iron_ore".to_string(),
-                name: "粗鐵礦石".to_string(),
-                count: 1,
-                bound_owner: None,
-                stolen_from: None,
-                weight_units: 3,
-            },
-        );
-        let msg =
-            "你在裸露岩縫間敲下一塊沉甸甸的【粗鐵礦石】，鐵匠鋪長年收購這類礦料。".to_string();
-        push_breath(a, msg.clone());
-        return Ok(msg);
-    }
-
-    add_carry_item(
-        &mut a.backpack,
-        CarryItem {
-            slug: "herb_bundle".to_string(),
-            name: "山林止血草束".to_string(),
-            count: 1,
-            bound_owner: None,
-            stolen_from: None,
-            weight_units: 1,
-        },
-    );
-    let msg = "你在背陰老樹根旁採到一束鮮嫩的【山林止血草束】，草藥堂很樂意收購。".to_string();
-    push_breath(a, msg.clone());
-    Ok(msg)
+    super::cell_resources::apply_cell_ecology_explore(doc, delta, clock, &aid, node, win_key)
 }
 
 pub fn resolve_skirmish_turn(
@@ -399,20 +350,31 @@ pub fn resolve_skirmish_turn(
             Ok(msg)
         }
         "skirmish_wrist" | "skirmish_heavy" => {
-            let is_spider = sk.foe_slug == "stone_spider";
+            let is_apex = super::cell_resources::is_apex_beast_slug(&sk.foe_slug);
+            let is_spider = matches!(sk.foe_slug.as_str(), "stone_spider" | "cave_lizard");
+            let is_primordial_spider =
+                sk.foe_slug == "stone_spider" && delta.first_spider_slain.is_none();
             let reckless_defeat = action == "skirmish_heavy"
                 && !sk.player_guard
-                && ((is_spider && !has_rune && (fatigue >= 65 || wound_exists))
+                && (((is_spider || is_apex) && !has_rune && (fatigue >= 65 || wound_exists))
                     || (fatigue >= 85 && wound_exists));
 
             if reckless_defeat {
                 return trigger_non_lethal_defeat(delta, clock, &aid, &node_id, &sk.foe_name);
             }
 
-            let win_threshold = if is_spider && !has_rune { 2 } else { 1 };
+            let has_priv_phase = delta
+                .actors
+                .get(&aid)
+                .is_some_and(|a| a.mind.ltm.mastery.private_martial_phase.is_some());
+            let win_threshold = if (is_spider || is_apex) && !has_rune && !has_priv_phase {
+                2
+            } else {
+                1
+            };
             let next_stagger = if action == "skirmish_wrist" {
                 sk.foe_stagger + 1
-            } else if has_rune || fam >= 14 || sk.player_guard {
+            } else if has_rune || fam >= 14 || sk.player_guard || has_priv_phase {
                 sk.foe_stagger + 2
             } else {
                 sk.foe_stagger + 1
@@ -420,10 +382,12 @@ pub fn resolve_skirmish_turn(
 
             if next_stagger >= win_threshold {
                 if is_spider {
+                    let vac_days = if is_primordial_spider { 8 } else { 6 };
                     delta
                         .cleared_nests_until_day
-                        .insert(node_id.clone(), clock.game_days + 3);
+                        .insert(node_id.clone(), clock.game_days + vac_days);
                 }
+                let mut rune_loosened = false;
                 {
                     let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
                     a.active_skirmish = None;
@@ -432,26 +396,93 @@ pub fn resolve_skirmish_turn(
                         a.bound_weapon.grip_familiarity.saturating_add(3);
                     if a.bound_weapon.wear_stage < 2 && !has_rune {
                         a.bound_weapon.wear_stage += 1;
+                    } else if has_rune && is_spider && a.mind.ltm.mastery.martial_bouts % 4 == 3 {
+                        a.bound_weapon.wear_stage = (a.bound_weapon.wear_stage + 1).min(3);
+                        if a.bound_weapon.wear_stage >= 3 {
+                            let was_true_rune =
+                                a.bound_weapon.rune_mark.as_deref() == Some("穩固鐵紋");
+                            a.bound_weapon.rune_mark = None;
+                            rune_loosened = was_true_rune;
+                        }
                     }
                     a.mind.stm.today_goal_progressed = true;
                     a.mark_mutated();
                 }
+                if rune_loosened {
+                    delta.chaos_rune_pool = (delta.chaos_rune_pool + 1).min(12);
+                }
+                let _ = super::phase_and_vessels::record_martial_victory_and_check_phase(
+                    doc,
+                    delta,
+                    clock,
+                    &aid,
+                    &sk.foe_slug,
+                    &sk.foe_name,
+                    &node_id,
+                    is_primordial_spider,
+                );
+
+                if is_apex
+                    && let Some(apex_msg) = super::cell_resources::record_apex_beast_slain(
+                        doc,
+                        delta,
+                        clock,
+                        &aid,
+                        &node_id,
+                        &sk.foe_name,
+                    )
+                {
+                    if let Some(a) = delta.actors.get_mut(&aid) {
+                        push_breath(a, apex_msg.clone());
+                    }
+                    return Ok(apex_msg);
+                }
 
                 if is_spider {
+                    let (loot_slug, loot_name, loot_w) = if is_primordial_spider {
+                        ("spider_carapace", "吞石巨蛛厚甲殼", 3u16)
+                    } else {
+                        ("lizard_scale", "嗜石岩蜥厚鱗皮", 2u16)
+                    };
                     let (pname, wname) = {
                         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
                         add_carry_item(
                             &mut a.backpack,
                             CarryItem {
-                                slug: "spider_carapace".to_string(),
-                                name: "吞石巨蛛厚甲殼".to_string(),
+                                slug: loot_slug.to_string(),
+                                name: loot_name.to_string(),
                                 count: 1,
                                 bound_owner: None,
                                 stolen_from: None,
-                                weight_units: 3,
+                                weight_units: loot_w,
+                                vessel_meta: None,
                             },
                         );
                         (a.display_name.clone(), a.bound_weapon.name.clone())
+                    };
+                    let (ev_key, ev_zh, msg) = if is_primordial_spider {
+                        delta.first_spider_slain =
+                            Some((aid.clone(), pname.clone(), clock.game_days));
+                        super::living_chronicler::record_primordial_spider_slain(
+                            doc, delta, clock, &aid, None, &node_id, &wname,
+                        );
+                        (
+                            "slay_stone_spider",
+                            format!("{}在灰松試煉坑底擊潰吞石巨蛛並撬下厚甲殼", pname),
+                            format!(
+                                "你趁巨蛛前螯彈開的空檔踏步猛擊關節，【{}】應聲碎裂重甲！巨蛛嘶鳴潰逃入岩縫，地上留下一片值錢的【吞石巨蛛厚甲殼】，南面通往地脈凝石台的道路已暢行無阻！",
+                                wname
+                            ),
+                        )
+                    } else {
+                        (
+                            "repel_cave_lizard",
+                            format!("{}在舊蛛巢擊退空巢易主的{}並剝下厚鱗皮", pname, sk.foe_name),
+                            format!(
+                                "你沉腰揮動【{}】重重劈開【{}】背脊硬鱗！異獸吃痛鑽回深澗，留下一片堅韌的【嗜石岩蜥厚鱗皮】，通往深處石台的去路重歸暢通！",
+                                wname, sk.foe_name
+                            ),
+                        )
                     };
                     broadcast_scene_event(
                         doc,
@@ -465,12 +496,8 @@ pub fn resolve_skirmish_turn(
                         88,
                         65,
                         ValueAxis::CraftPride,
-                        "slay_stone_spider",
-                        &format!("{}在灰松試煉坑底擊潰吞石巨蛛並撬下厚甲殼", pname),
-                    );
-                    let msg = format!(
-                        "你趁巨蛛前螯彈開的空檔踏步猛擊關節，【{}】應聲碎裂重甲！巨蛛嘶鳴潰逃入岩縫，地上留下一片值錢的【吞石巨蛛厚甲殼】，南面通往地脈凝石台的道路已暢行無阻！",
-                        wname
+                        ev_key,
+                        &ev_zh,
                     );
                     if let Some(a) = delta.actors.get_mut(&aid) {
                         push_breath(a, msg.clone());
@@ -573,6 +600,7 @@ pub fn trigger_non_lethal_defeat(
         a.wound_part = Some("左腕重挫瘀腫".to_string());
         a.severe_wrist_warning = true;
         a.fatigue = 65;
+        a.known_rumors.insert("pit_casualty".to_string());
 
         let wake = if a.rescue_pact_active {
             a.rescue_pact_active = false;
@@ -605,6 +633,28 @@ pub fn trigger_non_lethal_defeat(
         a.mark_mutated();
         (wake, dc, dropped, a.bound_weapon.name.clone())
     };
+
+    // 同場袖手旁觀留痕：若現場有氣力尚健之熟人卻未拔刀相助，落敗者心頭記下寒意（見死不救）
+    let idle_bystanders: Vec<(String, String)> =
+        super::phase_and_vessels::witnesses_at_node(delta, node_id, &aid)
+            .into_iter()
+            .filter(|(wid, _)| {
+                delta.actors.get(wid).is_some_and(|w| {
+                    w.fatigue < 65 && w.wound_part.is_none() && w.active_skirmish.is_none()
+                })
+            })
+            .collect();
+    if !idle_bystanders.is_empty()
+        && let Some(a) = delta.actors.get_mut(&aid)
+    {
+        for (wid, wname) in idle_bystanders {
+            if let Some(soc) = a.mind.ltm.social.get_mut(&wid) {
+                soc.warmth = (soc.warmth - 16).max(-95);
+                soc.notable_note_zh = format!("那日遇險力竭時，{}就在旁邊卻袖手旁觀", wname);
+            }
+        }
+        a.mark_mutated();
+    }
 
     delta.relocate_actor(&aid, wake_node, 4616, true);
 

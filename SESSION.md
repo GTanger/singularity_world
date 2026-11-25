@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
-- **更新日期**：2026-11-20
-- **當前狀態**：`active`（已完成「對等實體人物 `UnifiedMindBody` 單一機制 × 獨立有界記憶 × 慢思考佇列 × PostgreSQL `UNNEST` `Commit-Before-Publish`」架構正典全量實裝上線（`v=20261120a17`）：徹底廢除 `PlayerIslandState`／`EmbodiedResidentState`／`resident_copper_delta` 雙軌結構，全體玩家、銀鷗島 674 名居民與動態熱生成新人物 100% 共用單一 `UnifiedMindBody`（僅以 `controller_id: Option<String>` 區分控制器歸屬，執行期完全脫離 `doc.residents` 靜態陣列），落地 `src/grid/outer_island/{types,sim_tick,slow_think,mind,movement,actions,explore_and_combat,dialogue_llm,views,engine,persist_pg,persist_v1_migrate,mod}.rs`（全數單檔 `< 950` 行）與 `ActorMap`（`Arc<UnifiedMindBody>` Copy-on-Write ＋ `O(D)` `dirty_keys` 增量提交）＋ $O(1)$ 記憶體四索引（`node_occupants`、`controller_to_actor`、SHA-256 不可逆 `p:<16hex>` `public_token_to_actor`、`used_soul_seeds`）＋ `oi_turning_points_archive` 冷庫封存；線上 `postgres-singularity` 無損升級至 `unified_v2 = true`（`oi_actors` 實況 674 名居民＋3 名玩家含 `pl:葉卅` 共 `677` 筆、`unique_soul_seeds = 677`、零測試假資料、守恆總額 `120,805` 銅幣、`conservation_diff == 0`）；通過 `13/13` `outer_island` 單元測試（含記憶體內熱新增 1,500 名共 2,175 人擴展壓測）、三輪 `Claude Opus 5.5` 異質規格盲審（`0 Critical / 0 High`）、`tra-sw-gate` 6/6 與 `Pixel 9 Pro XL` 真機及桌機雙視口視覺驗收 `PASS`）
+- **更新日期**：2026-11-26
+- **當前狀態**：`active`（《銀鷗海領》於既有 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民基礎上，正式以 `860×930` 連續全島水彩古卷無切圖 Canvas2D 輿圖替換首頁 `/` 靜態 `.webp` 切圖，達成 0 外部圖檔、嚴格伺服器端迷霧與 48 候晝暮夜燈火連動；現將推進「讓世界自己運轉」三刀規劃，首刀為四季水文漲退與橋樑、林田、屋舍、疫氣活狀態）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -66,6 +66,8 @@
     - 實機比較 2D 像素畫布（`Chibi_Ultica` 與純 `UltiCa` 寫實對照）後，操作者拍板回歸 `11/05～11/12` 定案之正統「單格即物件 × 插座插件」LPC MUD 文字主線：主入口 `web/index.html` 與 `web/sw.js` 還原接回 `7c464445` 四層零跳動文字介面（`CLS=0px`，`Pixel 9 Pro XL` 真機驗收 `PASS`），原 2D 畫布入口改移至 `/rim`（`web/rim.html` ＋ `src/server/run.rs`）完整留痕不抹除。
 20. **2026-11-19 方案 B：拔除九宮格，符號大地圖升至第一層主舞台＋直接點格移動（`v=20261119a05`）**：
     - 依操作者指定調整 [index.html](file:///home/tanger/Projects/singularity_world/web/index.html)、[grid-map.js](file:///home/tanger/Projects/singularity_world/web/grid-map.js)、[game-grid.css](file:///home/tanger/Projects/singularity_world/web/game-grid.css) 與 [sw.js](file:///home/tanger/Projects/singularity_world/web/sw.js)：移除視覺九宮格（保留隱藏鍵盤相容節點供 WASD 與 `SwMoveDirection`），將可拖曳符號大地圖直接置於第一層主舞台（手機上半 ~56%、桌機左欄 63% 滿寬），點擊任一可通行鄰格或已探足跡即直接送步移動並自動置中跟隨、附即時 `泉涼↑` 角標與在場人跡紅點，底欄收為 `32px` 單行（含 `[全圖]` 全螢幕展開切換）；通過 `tra-sw-gate` 6/6 全綠、桌機 1280×800 與 `Pixel 9 Pro XL` 真機驗收（`Zero-CLS = 0px`、`0px` 水平溢位、`0` 錯誤）。
+21. **2026-11-26 銀鷗海領全島無縫水彩古卷程序活輿圖正式上線（`v=20261126r1`）**：
+    - 完成 `src/grid/outer_island/{island_substrate,island_substrate_towns,island_substrate_pack,island_substrate_tests}.rs`（`860×930` 連續格網、雙趟 Chamfer 圓弧海岸迷霧、34 座城鎮城牆圓塔回字中庭酒館與 859 節點精準錨點、退潮露礁／儲量／動態宅院疊加與 RLE Base64 壓縮）及純 Canvas2D 手繪水彩渲染器 `web/island-parchment-map.js`（首頁 `/` `0` `.webp` 請求、`0` console 錯誤）；通過 `52/52` `outer_island` 單元測試、`code_guard_rs`（`hard=0`）、`tra-sw-gate --deploy`、桌機 Chrome 與 `Pixel 9 Pro XL` 真機視覺驗收。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -73,6 +75,7 @@
   - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_高維混沌與奇幻百戶大世界總綱_2026-11-20.md`（高維混沌、不干涉自然演化四族、兩層自然權重種族生成、16 題系統總綱）
   - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_全大陸中文地名政權物產戰史總冊_2026-11-20.md`（寧靜大洋、蒼淵主陸、銀鷗島、100 國、850 城、71 物產、76 信仰、14 災疫戰區、96 奇觀、12 場大戰與檀香走私暗線全中文總冊）
   - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_對等實體人物與獨立有界記憶架構正典_2026-11-20.md`（`UnifiedMindBody` 單一機制、萬人擴展 `ActorMap` CoW + `UNNEST` 批次 `Commit-Before-Publish`、$O(1)$ 四索引與有界記憶／冷庫封存架構正典）
+  - `/home/tanger/Projects/singularity_world/docs/design/奇點世界_銀鷗島白鷗港公史與百戶家史脈絡冊_2026-11-20.md`（太陽曆 123～329 年七階段白鷗公史、6 棟待售空屋前塵台帳、主街師門↔支巷血親雙線與 `credence`/`fidelity` 分離羅生門正典）
   - `/home/tanger/Projects/singularity_world/data/world/tanger_full_zh_v1.json`、`data/world/tanger_glossary_zh_v1.json`、`data/world/tanger_outer_island_v1.json`
 - **前階段保留設計正典、關鍵字總表與 Wiki ADR**：
   - `/home/tanger/Projects/singularity_world/docs/DESIGN_KEYWORDS.md`（世界核心關鍵字清單與行為規範）

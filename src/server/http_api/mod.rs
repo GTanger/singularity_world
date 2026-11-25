@@ -3,6 +3,7 @@
 //! 路由在 `server/run.rs`，此處僅匯出 handler 與共用型別。
 
 mod admin;
+mod chronicle_api;
 mod eco;
 mod island_api;
 mod player;
@@ -14,12 +15,17 @@ mod rooms;
 mod substrate_atlas;
 
 pub use admin::{AdminQuery, design_constants, wipe_entities};
+pub use chronicle_api::{
+    chronicle_actor_get, chronicle_article_get, chronicle_export_md_post, chronicle_index_get,
+    chronicle_page_get, world_atlas_node_get, world_atlas_page_get, world_atlas_snapshot_get,
+};
 pub use eco::{
     eco_entities, eco_map, eco_npc_thoughts, eco_pulse, handle_eco_entities,
     handle_eco_npc_thoughts,
 };
 pub use island_api::{
-    island_act_post, island_map_get, island_move_post, island_setup_post, island_state_get,
+    island_act_post, island_leave_post, island_map_get, island_move_post, island_pulse_get,
+    island_qa_cleanup_post, island_scroll_get, island_setup_post, island_state_get,
     island_talk_post,
 };
 pub use player::{climate, game_time, player_room, topology};

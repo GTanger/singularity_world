@@ -329,6 +329,9 @@ pub async fn rim_auth_me(headers: HeaderMap) -> Response {
 }
 
 pub async fn rim_auth_logout(headers: HeaderMap) -> Response {
+    if let Some(pid) = resolve_viewer_pid(&headers) {
+        crate::grid::outer_island::live_tide::revoke_client_lease(&pid);
+    }
     if let Some(sid) = extract_sid_from_headers(&headers) {
         if let Ok(mut guard) = RIM_SESSIONS.write() {
             guard.remove(&sid);

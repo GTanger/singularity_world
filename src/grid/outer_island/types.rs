@@ -1,13 +1,14 @@
 //! 東南外海大島與全大陸通用靜態地景定義、全服唯一人物結構 `UnifiedMindBody` 與 $O(1)$ 空間索引狀態。
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
-use std::ops::Index;
-use std::sync::{Arc, LazyLock};
+use std::sync::LazyLock;
 
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use crate::combat::wordplate::splitmix64;
+
+pub use super::actor_map::ActorMap;
 
 static PROCESS_PUBLIC_TOKEN_SECRET: LazyLock<[u8; 32]> = LazyLock::new(|| {
     let mut hasher = Sha256::new();
@@ -36,6 +37,8 @@ pub struct WorldStaticDoc {
     pub ring_polygons: Vec<RingPolygonDef>,
     pub highways: Vec<HighwayDef>,
     pub sea_corridors: Vec<SeaCorridorDef>,
+    #[serde(default)]
+    pub transit_lines: Vec<TransitLineDef>,
     pub town_micro_maps: BTreeMap<String, serde_json::Value>,
     pub nodes: BTreeMap<String, SpatialNodeDef>,
     pub households: Vec<HouseholdDef>,
@@ -60,6 +63,27 @@ pub struct HiddenEntranceDef {
     pub found_text: String,
 }
 
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct ApexBeastDef {
+    #[serde(alias = "beast_id")]
+    pub slug: String,
+    pub name_zh: String,
+    pub title_zh: String,
+    pub lair_hint_zh: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct TransitLineDef {
+    pub line_id: String,
+    pub name_zh: String,
+    pub mode: String,
+    pub vehicle_count: usize,
+    pub fare_copper: i64,
+    pub route_nodes: Vec<String>,
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VoronoiCellDef {
     pub cell_id: u32,
@@ -73,6 +97,16 @@ pub struct VoronoiCellDef {
     pub title: String,
     pub desc: String,
     pub neighbors_f6: Vec<u32>,
+    #[serde(default)]
+    pub resource_slug: String,
+    #[serde(default)]
+    pub stock_cap: u16,
+    #[serde(default)]
+    pub regen_per_day: u16,
+    #[serde(default)]
+    pub plague_sealed: bool,
+    #[serde(default)]
+    pub apex_beast: Option<ApexBeastDef>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -106,6 +140,8 @@ pub struct SpatialNodeDef {
     pub pos: [f64; 2],
     pub indoor: bool,
     pub dungeon: bool,
+    #[serde(default)]
+    pub map_xy: Option<[u16; 2]>,
     pub exits: Vec<NodeExitDef>,
 }
 
@@ -115,6 +151,10 @@ pub struct NodeExitDef {
     pub dir: String,
     pub to_name: String,
     pub kind: String,
+    #[serde(default)]
+    pub milestone_zh: String,
+    #[serde(default)]
+    pub env_gate: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -129,7 +169,7 @@ pub struct HouseholdDef {
     pub members: Vec<String>,
 }
 
-/// 僅供創世建檔（Genesis）一次性灌入初始人口之種子定義；執行期徹底與此表脫鉤！
+/// 僅供創世建檔（Genesis）一次性灌入初始人口之種子定義
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ResidentSeedDef {
     pub id: String,
@@ -145,8 +185,10 @@ pub struct ResidentSeedDef {
     pub persona: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
 pub struct BoundTool {
+    pub uid: String,
     pub slug: String,
     pub name: String,
     pub provenance: String,
@@ -155,7 +197,8 @@ pub struct BoundTool {
     pub rune_mark: Option<String>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
 pub struct CarryItem {
     pub slug: String,
     pub name: String,
@@ -163,6 +206,8 @@ pub struct CarryItem {
     pub bound_owner: Option<String>,
     pub stolen_from: Option<String>,
     pub weight_units: u16,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vessel_meta: Option<BoundTool>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -175,12 +220,79 @@ pub struct SkirmishState {
     pub round_idx: u8,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
 pub struct TransitState {
     pub line_name: String,
     pub route_nodes: Vec<String>,
     pub step_idx: usize,
     pub started_unix: i64,
+    pub vehicle_id: String,
+    pub alight_next_stop: bool,
+    pub target_stop_node: Option<String>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct OngoingActivityState {
+    pub kind: String,
+    pub label_zh: String,
+    pub started_node: String,
+    pub target_node: String,
+    pub ticks_remaining: u8,
+    pub cargo_item: Option<CarryItem>,
+    pub payer_id: String,
+    pub wage_copper: i64,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct VehicleCargoCrate {
+    pub slug: String,
+    pub name_zh: String,
+    pub count: u32,
+    pub dest_node: String,
+    pub owner_id: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct TransitVehicleState {
+    pub vehicle_id: String,
+    pub line_id: String,
+    pub name_zh: String,
+    pub mode: String,
+    pub route_nodes: Vec<String>,
+    pub route_idx: usize,
+    pub forward: bool,
+    pub fare_copper: i64,
+    pub passengers: BTreeSet<String>,
+    pub cargo_hold: Vec<VehicleCargoCrate>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct DockCargoOrder {
+    pub order_id: String,
+    pub dock_node: String,
+    pub dest_shop_node: String,
+    pub shop_name_zh: String,
+    pub shopkeeper_id: String,
+    pub item_slug: String,
+    pub item_name_zh: String,
+    pub count: u32,
+    pub wage_copper: i64,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct CustomForgeOrder {
+    pub order_id: String,
+    pub shop_node: String,
+    pub customer_id: String,
+    pub smith_id: String,
+    pub ready_abs_bell: i64,
+    pub vessel_tool: BoundTool,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -216,6 +328,14 @@ pub struct UnifiedMindBody {
     pub appearance: String,
     pub origin_pack: String,
     pub household_id: String,
+    pub birth_year: i16,
+    pub household_bond: String,
+    pub ancestor_note_zh: String,
+    pub personal_bio_zh: String,
+    #[serde(default)]
+    pub bio_core_zh: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub bio_post_chapters_zh: Vec<String>,
     pub home_node: String,
     pub work_node: String,
     pub node_id: String,
@@ -229,6 +349,8 @@ pub struct UnifiedMindBody {
     pub inn_locker: Vec<CarryItem>,
     pub inn_lockers: BTreeMap<String, Vec<CarryItem>>,
     pub inn_nights_left: u32,
+    #[serde(default)]
+    pub assigned_inn_room: Option<String>,
     pub owned_house_node: Option<String>,
     pub rescue_pact_active: bool,
     pub conversing_until_ms: u64,
@@ -242,6 +364,8 @@ pub struct UnifiedMindBody {
     pub recent_breaths: VecDeque<String>,
     pub active_skirmish: Option<SkirmishState>,
     pub active_transit: Option<TransitState>,
+    #[serde(default)]
+    pub ongoing_activity: Option<OngoingActivityState>,
     pub last_step_unix_ms: u64,
     pub last_talk_unix_ms: u64,
     pub last_active_unix: i64,
@@ -269,6 +393,12 @@ impl Default for UnifiedMindBody {
             appearance: "披著海風舊斗篷".to_string(),
             origin_pack: "smith_apprentice".to_string(),
             household_id: String::new(),
+            birth_year: 305,
+            household_bond: "外來旅人".to_string(),
+            ancestor_note_zh: String::new(),
+            personal_bio_zh: String::new(),
+            bio_core_zh: String::new(),
+            bio_post_chapters_zh: Vec::new(),
             home_node: "oi:white_gull_harbor:dock".to_string(),
             work_node: "oi:white_gull_harbor:dock".to_string(),
             node_id: "oi:white_gull_harbor:dock".to_string(),
@@ -278,6 +408,7 @@ impl Default for UnifiedMindBody {
             wound_part: None,
             severe_wrist_warning: false,
             bound_weapon: BoundTool {
+                uid: String::new(),
                 slug: "harbor_hammer".to_string(),
                 name: "港務舊鍛錘".to_string(),
                 provenance: String::new(),
@@ -289,6 +420,7 @@ impl Default for UnifiedMindBody {
             inn_locker: Vec::new(),
             inn_lockers: BTreeMap::new(),
             inn_nights_left: 0,
+            assigned_inn_room: None,
             owned_house_node: None,
             rescue_pact_active: false,
             conversing_until_ms: 0,
@@ -302,6 +434,7 @@ impl Default for UnifiedMindBody {
             recent_breaths: VecDeque::new(),
             active_skirmish: None,
             active_transit: None,
+            ongoing_activity: None,
             last_step_unix_ms: 0,
             last_talk_unix_ms: 0,
             last_active_unix: 0,
@@ -326,6 +459,7 @@ impl UnifiedMindBody {
             .social
             .get(target_actor_id)
             .is_some_and(|s| s.acquainted)
+            || self.mind.ltm.recognized_faces.contains_key(target_actor_id)
     }
 
     pub fn record_step_visit(&mut self, node_id: &str, cell_id: u32, knows_state: bool) {
@@ -352,127 +486,6 @@ impl UnifiedMindBody {
         } else {
             self.actor_id.clone()
         }
-    }
-}
-
-/// Copy-on-Write 全服人物表：工作副本 `clone()` 僅遞增 `Arc` 計數（萬人規模 < 0.2ms 零深拷貝），`get_mut` 自動執行 `Arc::make_mut` 並登記 `dirty_keys`！
-#[derive(Debug, Clone, Default)]
-pub struct ActorMap {
-    inner: BTreeMap<String, Arc<UnifiedMindBody>>,
-    dirty_keys: BTreeSet<String>,
-}
-
-impl Serialize for ActorMap {
-    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        serializer.collect_map(self.inner.iter().map(|(k, v)| (k, v.as_ref())))
-    }
-}
-
-impl<'de> Deserialize<'de> for ActorMap {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let raw = BTreeMap::<String, UnifiedMindBody>::deserialize(deserializer)?;
-        let mut inner = BTreeMap::new();
-        let mut dirty_keys = BTreeSet::new();
-        for (k, v) in raw {
-            if v.dirty {
-                dirty_keys.insert(k.clone());
-            }
-            inner.insert(k, Arc::new(v));
-        }
-        Ok(Self { inner, dirty_keys })
-    }
-}
-
-impl ActorMap {
-    pub fn len(&self) -> usize {
-        self.inner.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.inner.is_empty()
-    }
-
-    pub fn contains_key(&self, k: &str) -> bool {
-        self.inner.contains_key(k)
-    }
-
-    pub fn get(&self, k: &str) -> Option<&UnifiedMindBody> {
-        self.inner.get(k).map(Arc::as_ref)
-    }
-
-    pub fn get_mut(&mut self, k: &str) -> Option<&mut UnifiedMindBody> {
-        if let Some(arc) = self.inner.get_mut(k) {
-            self.dirty_keys.insert(k.to_string());
-            Some(Arc::make_mut(arc))
-        } else {
-            None
-        }
-    }
-
-    pub fn insert(&mut self, k: String, v: UnifiedMindBody) -> Option<UnifiedMindBody> {
-        if v.dirty || v.rev != v.flushed_rev || v.copper != v.flushed_copper {
-            self.dirty_keys.insert(k.clone());
-        } else {
-            self.dirty_keys.remove(&k);
-        }
-        self.inner.insert(k, Arc::new(v)).map(Arc::unwrap_or_clone)
-    }
-
-    pub fn remove(&mut self, k: &str) -> Option<UnifiedMindBody> {
-        self.dirty_keys.remove(k);
-        self.inner.remove(k).map(Arc::unwrap_or_clone)
-    }
-
-    pub fn keys(&self) -> std::collections::btree_map::Keys<'_, String, Arc<UnifiedMindBody>> {
-        self.inner.keys()
-    }
-
-    pub fn values(&self) -> impl Iterator<Item = &UnifiedMindBody> {
-        self.inner.values().map(Arc::as_ref)
-    }
-
-    pub fn values_mut(&mut self) -> impl Iterator<Item = &mut UnifiedMindBody> {
-        for k in self.inner.keys() {
-            self.dirty_keys.insert(k.clone());
-        }
-        self.inner.values_mut().map(Arc::make_mut)
-    }
-
-    pub fn iter(&self) -> impl Iterator<Item = (&String, &UnifiedMindBody)> {
-        self.inner.iter().map(|(k, v)| (k, v.as_ref()))
-    }
-
-    pub fn dirty_keys(&self) -> &BTreeSet<String> {
-        &self.dirty_keys
-    }
-
-    pub fn unmark_dirty_key(&mut self, k: &str) {
-        self.dirty_keys.remove(k);
-    }
-}
-
-impl Index<&str> for ActorMap {
-    type Output = UnifiedMindBody;
-    fn index(&self, index: &str) -> &Self::Output {
-        self.get(index).expect("actor key exists")
-    }
-}
-
-impl Index<&String> for ActorMap {
-    type Output = UnifiedMindBody;
-    fn index(&self, index: &String) -> &Self::Output {
-        self.get(index.as_str()).expect("actor key exists")
-    }
-}
-
-impl<'a> IntoIterator for &'a ActorMap {
-    type Item = (&'a String, &'a UnifiedMindBody);
-    type IntoIter = std::iter::Map<
-        std::collections::btree_map::Iter<'a, String, Arc<UnifiedMindBody>>,
-        fn((&'a String, &'a Arc<UnifiedMindBody>)) -> (&'a String, &'a UnifiedMindBody),
-    >;
-    fn into_iter(self) -> Self::IntoIter {
-        self.inner.iter().map(|(k, v)| (k, v.as_ref()))
     }
 }
 
@@ -526,11 +539,18 @@ pub struct LedgerEntry {
 pub struct IslandWorldDelta {
     pub persist_seq: u64,
     pub last_settled_bell: i64,
+    #[serde(skip)]
+    pub last_stagger_minute: i64,
     pub genesis_seeded: bool,
     pub genesis_total_copper: i64,
     pub municipal_treasury_copper: i64,
     pub silver_bank_reserve_copper: i64,
     pub mainland_clearing_copper: i64,
+    pub contract_escrow_copper: i64,
+    pub chaos_rune_seeded: bool,
+    pub chaos_rune_pool: u16,
+    pub first_spider_slain: Option<(String, String, i64)>,
+    pub built_houses: BTreeMap<String, super::phase_and_vessels::BuiltHomestead>,
     pub actors: ActorMap,
     pub contracts: BTreeMap<String, ContractRecord>,
     pub pending_ledger: Vec<LedgerEntry>,
@@ -540,6 +560,13 @@ pub struct IslandWorldDelta {
     pub harvested_altars_until_day: BTreeMap<String, i64>,
     pub sold_houses: BTreeMap<String, String>,
     pub pickup_ledger: Vec<PickupRecord>,
+    pub cell_stocks: BTreeMap<u32, u16>,
+    pub cell_last_regen_day: i64,
+    pub slain_apex_beasts: BTreeMap<u32, (String, i64)>,
+    pub transit_vehicles: Vec<TransitVehicleState>,
+    pub dock_cargo_piles: BTreeMap<String, Vec<DockCargoOrder>>,
+    pub forge_orders: BTreeMap<String, Vec<CustomForgeOrder>>,
+    pub survivor_letters_delivered: BTreeSet<String>,
     #[serde(skip)]
     pub controller_to_actor: BTreeMap<String, String>,
     #[serde(skip)]
@@ -552,6 +579,10 @@ pub struct IslandWorldDelta {
     pub dirty_contracts: BTreeSet<String>,
     #[serde(skip)]
     pub obsolete_actor_ids: Vec<String>,
+    #[serde(skip)]
+    pub extras_dirty: bool,
+    #[serde(skip)]
+    pub living_chronicle: super::living_chronicler::LivingChronicleState,
 }
 
 impl IslandWorldDelta {
@@ -577,6 +608,7 @@ impl IslandWorldDelta {
         let now_sum = self.municipal_treasury_copper
             + self.silver_bank_reserve_copper
             + self.mainland_clearing_copper
+            + self.contract_escrow_copper
             + actor_total
             + unseeded_genesis
             + loot_total;
@@ -784,7 +816,7 @@ impl IslandWorldDelta {
     fn resolve_ledger_party(&self, raw_key: &str) -> String {
         if matches!(
             raw_key,
-            "municipal_treasury" | "silver_bank" | "mainland_clearing"
+            "municipal_treasury" | "silver_bank" | "mainland_clearing" | "contract_escrow"
         ) {
             return raw_key.to_string();
         }
@@ -792,7 +824,7 @@ impl IslandWorldDelta {
             .unwrap_or_else(|| raw_key.to_string())
     }
 
-    /// 全世界唯一複式銅幣過戶入口（系統三大帳戶字面值最高優先，嚴防註冊同名帳號劫持公庫金流！）
+    /// 全世界唯一複式銅幣過戶入口（系統四大帳戶字面值最高優先，嚴防註冊同名帳號劫持公庫金流！）
     #[expect(clippy::too_many_arguments, reason = "double-entry transfer context")]
     pub fn transfer_copper(
         &mut self,
@@ -825,6 +857,11 @@ impl IslandWorldDelta {
                     return false;
                 }
             }
+            "contract_escrow" => {
+                if self.contract_escrow_copper < amount {
+                    return false;
+                }
+            }
             "mainland_clearing" => {}
             other => {
                 let Some(src) = self.actors.get(other) else {
@@ -838,7 +875,7 @@ impl IslandWorldDelta {
         // 檢查入帳方存在
         if !matches!(
             credit_resolved.as_str(),
-            "municipal_treasury" | "silver_bank" | "mainland_clearing"
+            "municipal_treasury" | "silver_bank" | "mainland_clearing" | "contract_escrow"
         ) && !self.actors.contains_key(&credit_resolved)
         {
             return false;
@@ -848,6 +885,7 @@ impl IslandWorldDelta {
         match debit_resolved.as_str() {
             "municipal_treasury" => self.municipal_treasury_copper -= amount,
             "silver_bank" => self.silver_bank_reserve_copper -= amount,
+            "contract_escrow" => self.contract_escrow_copper -= amount,
             "mainland_clearing" => self.mainland_clearing_copper -= amount,
             other => {
                 if let Some(src) = self.actors.get_mut(other) {
@@ -859,6 +897,7 @@ impl IslandWorldDelta {
         match credit_resolved.as_str() {
             "municipal_treasury" => self.municipal_treasury_copper += amount,
             "silver_bank" => self.silver_bank_reserve_copper += amount,
+            "contract_escrow" => self.contract_escrow_copper += amount,
             "mainland_clearing" => self.mainland_clearing_copper += amount,
             other => {
                 if let Some(dst) = self.actors.get_mut(other) {

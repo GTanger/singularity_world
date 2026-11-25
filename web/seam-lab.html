@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>銀鷗島・圓點順路移動 × 靠近顯現探索 (7168×10240)</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #ece3cf; color: #2b221b;
+      font-family: "Noto Serif TC", "Source Han Serif TC", "PingFang TC", serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    .app { display: flex; flex-direction: column; width: 100%; height: 100dvh; }
+    .topbar {
+      flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 6px; padding: 7px 11px; background: #f5eedc; border-bottom: 1px solid #d5c7ab; z-index: 20;
+    }
+    .mode-tabs, .tool-toggles { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    button.pill {
+      appearance: none; border: 1px solid #bca989; background: #efe5ce; color: #3a2e25;
+      border-radius: 999px; padding: 5px 11px; font-size: 13px; font-weight: 600;
+      font-family: inherit; cursor: pointer; line-height: 1.25;
+    }
+    button.pill.active { background: #6f2c1d; border-color: #592014; color: #fbf6ec; }
+    button.pill.sub { font-size: 12px; padding: 4px 9px; background: #f8f2e4; }
+    button.pill.sub.on { background: #2f4c58; border-color: #213842; color: #f4f7f8; }
+    button.pill.action {
+      background: #fff9eb; border-color: #9e6b43; color: #5c2818;
+      padding: 5px 12px; font-size: 13px;
+    }
+    button.pill.action.exit {
+      background: #6f2c1d; border-color: #521d11; color: #fdf7ec;
+    }
+
+    .main-stage { flex: 1 1 auto; display: flex; flex-direction: column; position: relative; min-height: 0; }
+
+    .story-pane {
+      flex: 0 0 34%; overflow-y: auto;
+      padding: 11px 15px 10px; background: #f3ead7; border-bottom: 1px solid #d2c3a5;
+    }
+    .app.fullmap-mode .story-pane { display: none; }
+    .story-meta {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 12px; color: #73614e; padding-bottom: 6px; margin-bottom: 8px;
+      border-bottom: 1px solid #dfd2b9;
+    }
+    .story-badge { background: #e5dac2; padding: 2px 9px; border-radius: 999px; color: #4f4031; font-weight: 600; }
+    .story-badge.indoor { background: #6f2c1d; color: #fbf5ea; }
+    .story-badge.running { background: #8f331e; color: #fff8ed; }
+    .story-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+    .story-title { font-size: 18.5px; font-weight: 700; color: #241b15; margin: 0; }
+    .story-body { font-size: 14.5px; line-height: 1.66; color: #382d24; margin: 0 0 8px; }
+    .story-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .story-sublog {
+      font-size: 12.5px; color: #5b4938; background: #ebe0c8;
+      padding: 6px 10px; border-radius: 8px; line-height: 1.48;
+    }
+
+    .map-wrap { flex: 1 1 auto; position: relative; min-height: 0; overflow: hidden; background: #2d4c5b; touch-action: none; }
+    canvas#mapCanvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+    .quick-bar {
+      position: absolute; left: 10px; bottom: 11px; right: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 6px; pointer-events: none; z-index: 12;
+    }
+    .quick-group {
+      display: flex; gap: 5px; flex-wrap: wrap; pointer-events: auto;
+      background: rgba(245, 238, 220, 0.93); backdrop-filter: blur(6px);
+      padding: 5px 8px; border-radius: 999px; border: 1px solid rgba(168, 148, 118, 0.78);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+    }
+    .hud-readout {
+      position: absolute; top: 9px; left: 10px;
+      background: rgba(28, 34, 36, 0.80); color: #f4efe2;
+      font-size: 12px; padding: 5px 10px; border-radius: 8px;
+      pointer-events: none; line-height: 1.42; max-width: calc(100% - 20px);
+    }
+    @media (min-width: 920px) {
+      .main-stage { flex-direction: row; }
+      .story-pane { flex: 0 0 390px; border-bottom: none; border-right: 1px solid #d2c3a5; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="appRoot">
+  <div class="topbar">
+    <div class="mode-tabs">
+      <button class="pill active" id="btnModeSplit">上文下圖・圓點探索</button>
+      <button class="pill" id="btnModeFull">展開全幅地圖</button>
+    </div>
+    <div class="tool-toggles">
+      <button class="pill sub" id="btnJumpMenu">測試跳點 ▾</button>
+      <button class="pill sub" id="btnToggleSeam">縫合線檢視</button>
+    </div>
+  </div>
+
+  <div class="main-stage">
+    <div class="story-pane" id="storyPane">
+      <div class="story-meta">
+        <span id="clockText">太陽曆 329 年・寒冬・19 日 ｜ 巳正 10:25</span>
+        <span class="story-badge" id="stateBadge">戶外步行</span>
+      </div>
+      <div class="story-title-row">
+        <h1 class="story-title" id="stTitle">白鷗港・北城門外官道</h1>
+        <span class="story-badge" id="nearCountBadge">近處 1 處可互動</span>
+      </div>
+      <p class="story-body" id="stDesc">腳下是通往白鷗港雙塔北城門的平整青石官道。遠處城牆內的二十餘棟屋瓦與北側農莊皆靜靜融入手繪山海之中，不帶任何突兀標記；唯有當你邁步走近屋舍、城門或路人身邊時，可進出的互動膠囊才會自然浮現。</p>
+      <div class="story-actions" id="stActions"></div>
+      <div class="story-sublog" id="stSublog">提示：單擊地圖「從容步行」，快速雙擊「加速奔跑」（抵達自動收勢）；不同地面材質（青石路、濕木棧橋、草坡、鬆土麥田、樹叢、碎石坡）皆具真實抓地摩擦係數與行進阻力。</div>
+    </div>
+
+    <div class="map-wrap" id="mapWrap">
+      <canvas id="mapCanvas"></canvas>
+      <div class="hud-readout" id="hudReadout">載入 7168×10240 無縫地圖與真實地貌尋路網格中…</div>
+      <div class="quick-bar">
+        <div class="quick-group" id="leftBar">
+          <button class="pill sub on" id="btnFollow">◎ 鏡頭跟隨圓點</button>
+          <button class="pill sub" data-jump="ngate" style="display:none">北門外</button>
+          <button class="pill sub" data-jump="plaza" style="display:none">城心廣場</button>
+          <button class="pill sub" data-jump="weswood" style="display:none">韋斯塢</button>
+          <button class="pill sub" data-jump="bridge" style="display:none">澤昂河拱橋</button>
+        </div>
+        <div class="quick-group">
+          <button class="pill sub" id="btnZoomOut">－</button>
+          <button class="pill sub" id="btnZoomIn">＋</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const W = 7168, H = 10240;
+
+  // 零微光點鐵律：遠處完全不畫任何標記；唯有圓點真正走近門前（~1.5 棟屋寬內）才平滑浮現膠囊，離開即自動隱沒
+  const PROX_FULL = 205;
+  const PROX_FADE_OUT = 295;
+  const NPC_SIGHT_RADIUS = 880;
+  const NPC_PROX_FADE = 275;
+
+  // 18px ≈ 1m 比例尺：單擊從容步行 (54 px/s ≈ 經過一棟屋舍 3.2 秒)、雙擊加速奔跑 (148 px/s ≈ 經過一棟屋舍 1.2 秒)
+  const BASE_WALK = 54;
+  const BASE_RUN = 148;
+
+  // 七種真實手繪地面材質：speedMul 控制穩定行進阻力，mu (摩擦係數) 控制起步、轉彎與煞車慣性
+  const MATERIALS = {
+    0: { name: "深水峭壁", speedMul: 0.00, mu: 0.20, cost: 999, dust: "rgba(90,80,70,0.3)" },
+    1: { name: "青石官道", speedMul: 1.00, mu: 0.92, cost: 1.00, dust: "rgba(138,122,102,0.42)" },
+    2: { name: "夯土坊巷", speedMul: 0.90, mu: 0.82, cost: 1.11, dust: "rgba(156,128,94,0.48)" },
+    3: { name: "濕木棧橋", speedMul: 0.86, mu: 0.36, cost: 1.16, dust: "rgba(195,216,224,0.46)" },
+    4: { name: "短草坡地", speedMul: 0.72, mu: 0.68, cost: 1.39, dust: "rgba(112,134,82,0.44)" },
+    5: { name: "黑麥鬆土", speedMul: 0.56, mu: 0.52, cost: 1.79, dust: "rgba(142,112,72,0.54)" },
+    6: { name: "密林灌木", speedMul: 0.46, mu: 0.48, cost: 2.17, dust: "rgba(84,108,68,0.48)" },
+    7: { name: "碎石山坡", speedMul: 0.40, mu: 0.28, cost: 2.50, dust: "rgba(136,130,122,0.55)" }
+  };
+
+  // 全圖 58 棟真實繪出之建築、店鋪、住戶、門橋與碼頭（零假背景屋！）
+  const PLACES = [
+    // 韋斯塢 & 望海驛道 (10)
+    { id: "wes_shed1", name: "北頭漁具棚", kind: "house", action: "掀簾入棚", x: 4610, y: 1480,
+      nearDesc: "木棚簷下掛滿修補一半的麻線魚網與浮木標，鹹腥海風穿過木條縫隙。",
+      inDesc: "棚內堆著備用船槳、桐油桶與幾簍鉛墜，角落炭盆還留著烘乾麻繩的餘溫。",
+      resident: { stranger: "補網的老漁人", known: "老漁人・胡伯", line: "「東北浪急，網腳不多綁兩顆石墜，一下海就被暗流捲走囉。」" } },
+    { id: "wes_salt", name: "鹽魚醃桶倉", kind: "house", action: "推門查看", x: 4580, y: 1650,
+      nearDesc: "厚實石牆木屋旁排著十幾口橡木大桶，空氣裡飄著濃郁粗鹽與風乾海魚的氣息。",
+      inDesc: "倉房陰涼乾燥，一排排壓著鵝卵石的木桶正醃漬冬汛銀鯡，牆上粉筆記著送往白鷗港的桶數。",
+      resident: { stranger: "秤鹽的婦人", known: "鹽倉管事・周嫂", line: "「這批粗鹽還是上個月南棧商船捎來的，得省著點壓桶。」" } },
+    { id: "wes_catch", name: "港邊收魚寮", kind: "house", action: "進寮歇腳", x: 4900, y: 1820,
+      nearDesc: "緊鄰棧橋岔路的木造收魚寮，門前木架晾著一排剖開風乾的銀鱈。",
+      inDesc: "寮內長桌擺著銅桿秤與竹編魚簍，地上濕漉漉地沾著魚鱗，牆邊掛著防風油布斗篷。",
+      resident: { stranger: "記帳的青年", known: "收魚伙計・阿順", line: "「今早灣裡起了三簍青背魚，阿海剛挑了兩簍往白鷗港魚市去了。」" } },
+    { id: "wes_pier", name: "韋斯塢木棧橋", kind: "pier", action: "踏上棧橋", x: 5360, y: 1685,
+      nearDesc: "粗松木樁深入避風海灣，兩艘小木舟隨著碧綠湧浪輕輕碰撞棧橋護木。",
+      inDesc: "站在棧橋盡頭俯看，清澈海水下可見礁石間游動的魚群，東面外洋白浪拍打著玄武岩海岬。",
+      resident: null },
+    { id: "wes_manor", name: "老韋家藍瓦大宅", kind: "house", action: "叩門造訪", x: 4460, y: 1960,
+      nearDesc: "韋斯塢最寬敞的石基藍瓦院落，矮石牆內堆著劈整齊的松木柴薪。",
+      inDesc: "堂屋石壁爐燒著松柴，牆上掛著一柄早年捕大魚用的舊鐵魚叉，木桌擺著粗陶茶壺。",
+      resident: { stranger: "白鬚里正", known: "韋斯塢里正・老韋頭", line: "「順著門外石板路一直往南走，過了望海驛道與佩克崖莊，就是白鷗港北城門。」" } },
+    { id: "wes_stele", name: "韋斯塢南口界碑", kind: "landmark", action: "端詳石碑", x: 5080, y: 2310,
+      nearDesc: "海岸官道旁立著一塊半人高的風化青石碑，碑底長滿耐鹽的矮草。",
+      inDesc: "青石碑正面深深刻著『北至韋斯塢一里・南距白鷗港六里』，字口嵌著淡淡海鹽結晶。",
+      resident: null },
+    { id: "cliff_tea", name: "崖路紅瓦茶肆", kind: "shop", action: "入內飲茶", x: 4610, y: 2650,
+      nearDesc: "官道西側紅瓦木舍前挑出一面粗布茶幌，爐上大鐵壺正冒著白氣。",
+      inDesc: "店內四張粗木方桌擦得乾淨，爐火旁烘著帶鹹味的烤麥餅，供往來挑夫與行商歇腿。",
+      resident: { stranger: "添柴的茶博士", known: "茶肆掌櫃・老秦", line: "「客官喝碗熱薑茶驅驅海風吧！往南走不遠還有望潮石亭可以歇腳看海。」" } },
+    { id: "post_sentry", name: "路口巡哨石亭", kind: "landmark", action: "走近石亭", x: 4845, y: 3235,
+      nearDesc: "海岸官道與西向登山古道交會處的石砌哨亭，柱上釘著指路木牌。",
+      inDesc: "木牌寫著：『東出臨海台・西登雷原古加坡・南下佩克崖莊』，石凳被過路行人磨得發亮。",
+      resident: null },
+    { id: "post_pavilion", name: "望潮六角石亭", kind: "landmark", action: "入亭小憩", x: 5235, y: 3235,
+      nearDesc: "六根青石柱撐起藍灰石板攢尖頂，海風穿亭而過，帶著陣陣浪濤聲。",
+      inDesc: "亭心圓石桌上刻著簡易方位盤，從東側石欄望出去即是懸崖邊的半圓觀濤石台。",
+      resident: null },
+    { id: "post_terrace", name: "臨海觀濤石台", kind: "landmark", action: "憑欄遠眺", x: 5495, y: 3220,
+      nearDesc: "探出黑色海崖的半圓形石砌露台，腳下數十丈深處白浪翻湧。",
+      inDesc: "扶著厚重石欄遠望寧靜大洋，海風獵獵作響，往南可隱約望見白鷗港防波堤外的遠洋帆影。",
+      resident: null },
+
+    // 佩克崖莊 (7)
+    { id: "peke_barn_w", name: "西壟穀倉棚", kind: "house", action: "推門查看", x: 4880, y: 4270,
+      nearDesc: "緊挨著西側黑麥田壟的紅瓦木倉，門口停著一輛沾滿泥土的雙輪木板車。",
+      inDesc: "倉內高高疊起紮緊的乾麥稈與麻布穀袋，樑上懸著防鼠的木鉤籃。",
+      resident: { stranger: "扛麻袋的短工", known: "農莊短工・石頭", line: "「冬裡最後一批黑麥剛收進倉，等老磨坊騰出空就送去磨粉。」" } },
+    { id: "peke_barn_n", name: "北坡麥捆倉", kind: "house", action: "進倉查看", x: 5185, y: 4210,
+      nearDesc: "石砌矮牆北側的儲草大棚，屋簷下掛著成排連枷與木齒耙。",
+      inDesc: "乾燥溫暖的麥草堆散發著陽光曬過的穀香，牆角整齊碼放著修補田埂用的扁石塊。",
+      resident: null },
+    { id: "peke_fodder", name: "臨崖草料棚", kind: "house", action: "掀門入內", x: 5410, y: 4255,
+      nearDesc: "靠近東側海崖防風牆的木造飼草棚，裡頭傳來耕牛反芻的低沉鼻息。",
+      inDesc: "兩頭健壯的褐毛耕牛正低頭嚼著乾苜蓿，木槽旁放著裝滿井水的木桶與鐵刷。",
+      resident: { stranger: "刷牛背的牧童", known: "牧童・小麥", line: "「別看大角脾氣溫，拉起石磙翻整片坡地都不帶喘的！」" } },
+    { id: "peke_thresh", name: "石圍曬穀場", kind: "landmark", action: "步入曬場", x: 5260, y: 4440,
+      nearDesc: "矮石牆圍成的圓形夯土曬穀場，三座金黃草垛立在場邊擋住海風。",
+      inDesc: "夯實平整的泥地上還留著石磙碾壓麥穗的淺痕，幾隻灰雀見人走近便撲翅飛上石牆。",
+      resident: null },
+    { id: "peke_mill", name: "老磨坊藍瓦屋", kind: "shop", action: "進坊看磨", x: 5440, y: 4500,
+      nearDesc: "曬穀場東側的厚牆藍瓦石屋，裡頭傳來沉穩規律的石磨轉動悶響。",
+      inDesc: "屋內大青石磨盤正由驢子拉動緩緩旋轉，細密帶麩皮的黑麥粉順著木槽落入白布袋中。",
+      resident: { stranger: "拍麵粉的磨坊主", known: "磨坊主・韓老四", line: "「城裡烘焙房指名要咱佩克崖莊的粗磨黑麥粉，烤出來的麥餅特別耐餓。」" } },
+    { id: "peke_manor", name: "莊頭藍瓦農宅", kind: "house", action: "叩門入內", x: 4480, y: 4960,
+      nearDesc: "坐落在成片黑麥梯田中央的大農宅，石板院落裡曬著蘿蔔乾與南瓜。",
+      inDesc: "寬敞廳堂擺著厚榆木長桌，牆邊立著鐵鋤與鐮刀架，火塘上燉著香氣四溢的菜根羊肉湯。",
+      resident: { stranger: "算田租的莊頭", known: "崖莊莊頭・佩克嬸", line: "「今年雨水勻，交完白鷗港稅關的公糧，各家地窖還能留足過冬口糧。」" } },
+    { id: "peke_cider", name: "南坡果酒農舍", kind: "house", action: "進屋討水", x: 5310, y: 5660,
+      nearDesc: "靠近白鷗港北郊坡地的木石農舍，院裡木榨機飄出微酸清爽的野蘋發酵果香。",
+      inDesc: "屋後地窖口排著十幾壇封著紅泥的酸果酒，木架上擺著乾淨的粗陶碗。",
+      resident: { stranger: "封酒壇的農婦", known: "釀果酒的林氏", line: "「再往南下坡就是白鷗港北城門了，城門衛兵換崗後最愛來打兩碗酸果酒。」" } },
+
+    // 西側山谷・古加坡・澤昂河・南嶺 (7)
+    { id: "gu_hunter", name: "古加坡獵戶長屋", kind: "house", action: "推門入屋", x: 2260, y: 4880,
+      nearDesc: "雷原主峰南麓的粗原木長屋，屋簷下繃著兩張正在風乾的野鹿皮。",
+      inDesc: "屋內火塘上方燻著野豬肉條，木牆掛著紫杉獵弓、皮箭壺與上山防滑用的鐵爪鞋。",
+      resident: { stranger: "削羽箭的獵人", known: "老獵戶・山鷹", line: "「北邊雷原岩脊太陡，上去可得留神落石；往西南過青石拱橋就能通往河對岸。」" } },
+    { id: "gu_furshop", name: "山貨木柵鋪", kind: "shop", action: "入鋪挑看", x: 1870, y: 5020,
+      nearDesc: "古加坡三岔路西側圍著木柵欄的山貨鋪，院裡堆著松脂塊、山菌乾與獸皮。",
+      inDesc: "貨架上擺滿晾乾的苦參、野生蜂蠟與樺木皮簍，是山民與城裡行商換鹽鐵的落腳點。",
+      resident: { stranger: "捆藥草的掌櫃", known: "山貨商・老葛", line: "「白鷗港百草堂的掌櫃每旬都會派人過橋來收這兒的岩生黃精。」" } },
+    { id: "gu_woodcutter", name: "溪畔樵夫家", kind: "house", action: "叩門拜訪", x: 2210, y: 5290,
+      nearDesc: "靠近山泉支流的木石小屋，院前木樁上插著一把磨得雪亮的單手山斧。",
+      inDesc: "屋裡瀰漫著新鮮松木刨花的清香，牆角整齊碼著準備運往城內鐵匠鋪燒炭的硬櫟木。",
+      resident: { stranger: "磨斧頭的樵夫", known: "樵夫・大柱", line: "「聽橋那頭來的行腳商說，南棧碼頭昨天剛靠了一艘大帆船。」" } },
+    { id: "zeang_bridge", name: "澤昂河青石拱橋", kind: "landmark", action: "踏上石橋", x: 1430, y: 5670,
+      nearDesc: "單孔青石大拱橋穩穩橫跨湍急清澈的澤昂河，橋欄石縫長著青苔。",
+      inDesc: "站在拱頂俯看，冰涼的山谷河水拍打橋墩向東南奔流，一路穿入遠處白鷗港的西水門。",
+      resident: null },
+    { id: "valley_dyemill", name: "溪灣水車染坊", kind: "shop", action: "進坊查看", x: 2860, y: 7280,
+      nearDesc: "澤昂河南岸山麓的木石工坊，竹架上晾著一匹匹隨風輕擺的靛青粗麻布。",
+      inDesc: "坊內埋著六口深藍染缸，空氣裡帶著藍草發酵的微苦草木氣，東南方小徑通往白鷗港南城門。",
+      resident: { stranger: "攪染缸的老匠人", known: "染匠・廖師傅", line: "「北邊隔著澤昂河過不去，咱這兒的染布都是順著東南外牆小路送進南城門的。」" } },
+    { id: "south_station", name: "南嶺巡山驛舍", kind: "house", action: "入驛歇息", x: 3420, y: 9180,
+      nearDesc: "南出官道西側背靠岩嶺的石砌驛舍，門前拴馬樁旁備著清水石槽。",
+      inDesc: "驛舍內設通鋪木榻與火盆，牆上掛著南嶺山道巡邏木牌與備用火把。",
+      resident: { stranger: "擦長槍的驛卒", known: "巡山驛卒・老鄧", line: "「再往南就是通往島南群村的山嶺官道，天黑前趕回白鷗港城門才穩當。」" } },
+    { id: "ridge_climb", name: "雷原東脊攀岩口", kind: "landmark", action: "仰望岩壁", x: 3440, y: 3840,
+      nearDesc: "林間山徑在此抵住陡峭冷峻的花崗岩山壁，岩縫間釘著幾枚生鏽鐵環。",
+      inDesc: "抬頭可見刀削般的灰白岩脊直插雲端，碎石坡上散落著山羊蹄印與高山松果。",
+      resident: null },
+
+    // 白鷗港門橋港池 (7)
+    { id: "wgh_ngate", name: "白鷗港北城門", kind: "landmark", action: "穿過城門", x: 4615, y: 6035,
+      nearDesc: "高聳厚實的雙塔花崗岩北城門，包鐵橡木大門洞開，車轍在門洞青石板上磨出深槽。",
+      inDesc: "穿過陰涼深邃的拱形城門洞，眼前豁然開朗，筆直北大街一路通往城心噴泉市集廣場。",
+      resident: { stranger: "拄戟的值守門卒", known: "北門守卒・雷恩", line: "「進城守規矩，拉貨木車靠右走，別堵了北大街口！」" } },
+    { id: "wgh_plaza", name: "中央噴泉廣場", kind: "landmark", action: "駐足廣場", x: 4590, y: 6670,
+      nearDesc: "白鷗港南北主街與東西坊巷交會的圓形石板廣場，中央石雕海鷗噴泉水聲潺潺。",
+      inDesc: "引自山泉的活水從三層石盆湧出，四周商行與茶樓幌子迎風招展，往南幾步即是跨河石橋。",
+      resident: null },
+    { id: "wgh_bridge", name: "城內澤昂河橋", kind: "landmark", action: "踏上石橋", x: 4695, y: 7015,
+      nearDesc: "連接白鷗港南北兩坊的寬闊青石拱橋，橋面車馬行人絡繹不絕。",
+      inDesc: "憑著橋欄東望，澤昂河水在此匯入敞開的深水港池，南北兩座木棧碼頭與遠洋帆船盡收眼底。",
+      resident: null },
+    { id: "wgh_watergate", name: "西城河道水門塔", kind: "house", action: "登塔查看", x: 3690, y: 6670,
+      nearDesc: "跨在澤昂河入城口上的堅固石砌水門樓，厚重鐵柵欄貼著水面垂下。",
+      inDesc: "塔樓內設絞盤與粗鐵鍊，負責在夜間或漲水時升降河道鐵柵，窗孔可俯視整段穿城河面。",
+      resident: { stranger: "看守絞盤的衛兵", known: "水門衛兵・霍克", line: "「上游山洪下來的枯枝全攔在鐵柵外頭，得天天拿長鉤清乾淨。」" } },
+    { id: "wgh_npier", name: "北棧商船碼頭", kind: "pier", action: "走上碼頭", x: 5340, y: 6755,
+      nearDesc: "北側防波堤內寬闊的木造深水碼頭，幾名腳夫正順著跳板往商船搬運木箱。",
+      inDesc: "碼頭木板瀰漫著焦油與海鹽氣息，泊在岸邊的雙桅商船正收緊麻纜準備啟航。",
+      resident: { stranger: "清點貨單的水手長", known: "水手長・巴爾", line: "「等東北風轉順，這船布匹與山貨就直發蒼淵主陸東岸！」" } },
+    { id: "wgh_spier", name: "南棧魚貨碼頭", kind: "pier", action: "走上碼頭", x: 5360, y: 7420,
+      nearDesc: "港池南岸熱鬧的近海船埠，成排漁船卸下剛捕獲的銀鱗海魚與海帶。",
+      inDesc: "棧橋邊擺滿裝著海水活魚的木盆，海鷗在桅杆頂端盤旋鳴叫，西側緊鄰鹽倉與魚市亭。",
+      resident: null },
+    { id: "wgh_sgate", name: "白鷗港南門箭樓", kind: "landmark", action: "穿過南門", x: 4350, y: 7950,
+      nearDesc: "鎮守南出官道的圓形花崗岩箭樓城門，門外石路分往南嶺驛舍與溪灣染坊。",
+      inDesc: "厚重石拱門洞內貼著港務告示，從城門踏出即可望見南嶺蒼翠山勢與東岸斷崖。",
+      resident: { stranger: "查驗路引的門兵", known: "南門伍長・柯林", line: "「往西南走山腳小路去染坊挺近，往正南走大官道則是去南嶺驛舍。」" } },
+
+    // 白鷗港城內 27 棟屋舍店鋪（一棟不漏！）
+    { id: "wgh_livery", name: "北門車馬行", kind: "shop", action: "進院查看", x: 4290, y: 6280,
+      nearDesc: "緊鄰北城門西側的大院，棚下停著幾輛載貨四輪馬車，傳來陣陣乾草與皮革味。",
+      inDesc: "馬廄乾淨敞亮，車匠正替一輛遠途貨車更換磨薄的包鐵木輪。",
+      resident: { stranger: "上車軸油的車夫", known: "車行頭領・老馬", line: "「跑山谷石橋得用窄輪車，跑東岸官道還是寬輪大車最穩！」" } },
+    { id: "wgh_grain", name: "城北糧油鋪", kind: "shop", action: "入店選購", x: 4500, y: 6260,
+      nearDesc: "北大街西側敞開門面的糧鋪，幾口大木斗滿滿盛著黑麥粒、燕麥與菜籽油甕。",
+      inDesc: "櫃檯後整齊疊著來自佩克崖莊的麵粉袋，木升與刮板擦得溫潤發亮。",
+      resident: { stranger: "拿木升量米的掌櫃", known: "糧商・陳掌櫃", line: "「剛收進兩車佩克崖莊的新磨黑麥粉，麥香足得很！」" } },
+    { id: "wgh_smith", name: "老鍛爐鐵匠鋪", kind: "shop", action: "踏入鐵鋪", x: 4040, y: 6390,
+      nearDesc: "西北坊街角紅磚煙囪冒著青煙，清脆有勁的鐵鎚敲擊鐵砧聲隔街可聞。",
+      inDesc: "熊熊炭爐映紅了半間石屋，牆上掛著新打好的船錨鉤、馬蹄鐵、山斧與厚背獵刀。",
+      resident: { stranger: "赤膊揮鎚的鐵匠", known: "鐵匠・托爾森", line: "「咱這爐燒的是古加坡送來的硬櫟木炭，打出來的船錨在暗礁裡都崩不了口！」" } },
+    { id: "wgh_herb", name: "百草堂藥鋪", kind: "shop", action: "進堂問藥", x: 4360, y: 6460,
+      nearDesc: "藍瓦木樓前懸著藥葫蘆木牌，門內飄出清苦回甘的草藥煎煮香氣。",
+      inDesc: "整面牆的百子櫃貼著工整藥名，銅藥碾旁攤著剛從古加坡收來的山黃精與止血苔。",
+      resident: { stranger: "切藥片的郎中", known: "藥師・溫先生", line: "「海港風濕重，出海的水手總得帶兩包驅寒薑桂散在身上。」" } },
+    { id: "wgh_tanner", name: "西牆皮匠坊", kind: "shop", action: "進坊查看", x: 3810, y: 6560,
+      nearDesc: "靠著西城牆根的石木作坊，院架繃著鞣製好的厚牛皮與防雨油皮。",
+      inDesc: "工作檯上擺滿彎刀、骨錐與麻蠟線，幾雙高筒水手皮靴正上著蜂蠟防水油。",
+      resident: { stranger: "穿蠟線的皮匠", known: "皮匠・老巴克", line: "「上山穿硬底釘靴，上船穿軟底防滑靴，差一點腳感都不行。」" } },
+    { id: "wgh_tailor", name: "織帆裁縫店", kind: "shop", action: "入店查看", x: 4115, y: 6620,
+      nearDesc: "門前竹竿掛著厚實耐風的米白船帆布與靛藍短褐，剪刀開合聲細碎輕快。",
+      inDesc: "長案上鋪著大幅亞麻帆布，角落整齊疊著由溪灣染坊送來的靛青布匹。",
+      resident: { stranger: "縫帆角的裁縫", known: "裁縫・蘇娘子", line: "「遠洋船的主帆得用雙股麻線鎖三道邊，才頂得住冬天的外海勁風。」" } },
+    { id: "wgh_tavern", name: "河畔海風酒館", kind: "shop", action: "推門入席", x: 4320, y: 6780,
+      nearDesc: "緊臨穿城澤昂河北岸的雙層木石酒館，門縫透出溫暖燈火與麥酒香氣。",
+      inDesc: "大堂橡木酒桶架在吧檯後，水手與商隊護衛圍坐長桌談論外海航情，爐火烤著鹹魚乾。",
+      resident: { stranger: "擦木酒杯的酒保", known: "酒館老闆・紅鬍羅伊", line: "「來杯黑麥濃啤還是崖莊酸果酒？想打聽船期問咱這桌水手準沒錯！」" } },
+
+    { id: "wgh_customs", name: "港務稅關署", kind: "house", action: "步入廳堂", x: 4815, y: 6265,
+      nearDesc: "東北坊青石台階上的莊重藍瓦官署，門側掛著銀鷗海領紋章木牌。",
+      inDesc: "廳內高櫃擺滿厚重牛皮船籍冊與貨稅底帳，兩名書吏正伏案核對入港艙單。",
+      resident: { stranger: "核對帳冊的稅吏", known: "稅關主事・維克", line: "「凡進出南北兩棧的大宗貨品皆按實秤登冊，一分銅幣也不會多收少算。」" } },
+    { id: "wgh_rope", name: "東牆繩纜庫", kind: "house", action: "推門查看", x: 5080, y: 6385,
+      nearDesc: "靠近東北城牆的狹長木石庫房，空氣裡滿是松焦油與新絞亞麻繩的氣味。",
+      inDesc: "庫內木樁盤著碗口粗的錨纜與桅索，絞繩車旁堆著一捆捆上等劍麻纖維。",
+      resident: null },
+    { id: "wgh_guild", name: "銀鷗商會總號", kind: "shop", action: "進號洽詢", x: 4845, y: 6485,
+      nearDesc: "氣派的雙層石木商號，門前停著裝卸貨樣的手推車，銅算盤聲清脆響亮。",
+      inDesc: "正廳牆上懸著大幅寧靜大洋與蒼淵主陸海圖，櫃檯陳列著各地礦鹽、毛皮與鐵器貨樣。",
+      resident: { stranger: "撥銅算盤的大掌櫃", known: "商會管事・沈先生", line: "「銀鷗島雖在外海，卻是往來東南航道最安穩的補給良港。」" } },
+    { id: "wgh_shipwright", name: "船具修造坊", kind: "shop", action: "進坊查看", x: 5105, y: 6625,
+      nearDesc: "緊鄰北棧碼頭入口的工坊，院裡架著刨光的新船桅與青銅滑輪組。",
+      inDesc: "木匠正用彎刨修整橡木肋材，爐上小鍋熬著填補船縫用的松脂瀝青。",
+      resident: { stranger: "刨船板的木匠", known: "老船匠・魯本", line: "「海船就是水手半條命，每道龍骨榫頭都得嚴絲合縫！」" } },
+    { id: "wgh_teahouse", name: "臨津茶樓", kind: "shop", action: "登樓品茗", x: 4895, y: 6845,
+      nearDesc: "坐落在城內石橋北側、俯瞰河口港池的雅致木樓，二樓窗欄坐滿看船客商。",
+      inDesc: "臨窗木席正好望見澤昂河水流入港池，銅壺熱茶配著芝麻小餅，最宜歇腳聽曲。",
+      resident: { stranger: "提銅壺沏茶的跑堂", known: "茶樓伙計・小六", line: "「客官坐臨河窗位吧，橋上橋下與港裡進出的大船一眼全看清！」" } },
+
+    { id: "wgh_sguard", name: "水門守備哨屋", kind: "house", action: "入哨查看", x: 3830, y: 6940,
+      nearDesc: "澤昂河南岸靠近西城牆的值勤石屋，門前槍架立著四柄制式長矛。",
+      inDesc: "屋內擺著巡城更鼓、號角與防雨蓑衣，是西南城牆段守軍輪休之處。",
+      resident: null },
+    { id: "wgh_cooper", name: "木桶箍匠鋪", kind: "shop", action: "進鋪查看", x: 4050, y: 7110,
+      nearDesc: "鋪前空地疊著大大小小的橡木水桶與酒桶，傳來木槌敲緊鐵箍的咚咚聲。",
+      inDesc: "烘彎木板用的小火盆冒著青煙，箍匠正替遠洋船訂製密封淡水桶。",
+      resident: { stranger: "敲鐵箍的匠人", known: "箍匠・老摩爾", line: "「裝淡水的橡木桶裡頭得微火烤過一層炭，出海三個月水都不壞！」" } },
+    { id: "wgh_mason", name: "石匠老陳宅", kind: "house", action: "叩門造訪", x: 4340, y: 7185,
+      nearDesc: "青石砌得格外方整考究的民宅，院角堆著幾塊雕了一半的柱礎石。",
+      inDesc: "堂屋簡樸整潔，桌上擺著鐵鑿、墨斗與修繕南城牆垛口的尺寸草圖。",
+      resident: { stranger: "打磨石鑿的石匠", known: "老石匠・陳伯", line: "「城裡那座跨河拱橋的欄板，還是我年輕時跟著師父一錘一鑿打出來的。」" } },
+    { id: "wgh_inn", name: "南街旅人客棧", kind: "shop", action: "投店歇腳", x: 4580, y: 7225,
+      nearDesc: "城內石橋南頭最顯眼的紅瓦客棧，門廊掛著防風紙燈籠，馬夫正替住客牽馬。",
+      inDesc: "一樓飯堂飄著烤肉與濃湯香氣，樓梯通往乾淨的客房木廊，是外地行旅首選落腳處。",
+      resident: { stranger: "笑臉迎客的掌櫃", known: "客棧老闆娘・梅嬸", line: "「熱水剛燒好，樓上靠河的乾淨單間還留著一間呢！」" } },
+    { id: "wgh_dyehouse", name: "染布坊民宅", kind: "house", action: "叩門查看", x: 4060, y: 7350,
+      nearDesc: "院牆竹竿晾著藍白花布的清幽民居，門口石臼裡搗著固色明礬。",
+      inDesc: "屋內木架整齊碼著染好熨平的細棉布，專供城內裁縫與船旗縫製。",
+      resident: null },
+    { id: "wgh_bakery", name: "烘焙麥餅房", kind: "shop", action: "進房買餅", x: 4390, y: 7420,
+      nearDesc: "還沒走到巷口就聞到撲鼻的焦香烤麥味，石砌烤窯正透出融融暖意。",
+      inDesc: "木鏟剛從紅磚圓窯裡鏟出一爐外脆內軟的黑麥圓餅與海鹽脆餅，熱氣騰騰。",
+      resident: { stranger: "揉麵團的麵包師", known: "烘焙師・胖漢斯", line: "「剛出爐的崖莊黑麥大圓餅，三個銅幣一塊，帶在路上三天都不硬！」" } },
+    { id: "wgh_drygoods", name: "南街乾貨木棚", kind: "shop", action: "掀簾挑看", x: 4555, y: 7455,
+      nearDesc: "緊挨著烘焙房東側的小巧木造貨棚，簷下成串掛著風乾章魚、海帶結與蒜頭。",
+      inDesc: "窄小卻收拾得井井有條的木棚裡擺滿竹簍，裝著蝦皮、紫菜、乾豆與粗海鹽。",
+      resident: { stranger: "編草繩的小販", known: "乾貨小販・阿吉", line: "「買兩塊隔壁漢斯的熱麥餅，再配咱一包烤魚片，走遍全島都香！」" } },
+    { id: "wgh_potter", name: "南牆陶匠家", kind: "house", action: "推門查看", x: 4220, y: 7635,
+      nearDesc: "西南城牆內側的紅瓦院落，矮牆頭整齊倒扣著一排粗陶水甕與油罐。",
+      inDesc: "腳踏拉坯輪旁擺著未上釉的濕陶坯，後院小柴窯剛停火冷卻。",
+      resident: { stranger: "擦泥手的陶匠", known: "陶匠・泥鰍叔", line: "「鹽倉跟果酒農舍用的大肚陶壇，全出自咱這口柴窯。」" } },
+    { id: "wgh_barracks", name: "南門守卒宿舍", kind: "house", action: "步入營舍", x: 4445, y: 7725,
+      nearDesc: "南城門內側的石造營房，院裡木架擺著練武木盾與擦亮的鎖子甲。",
+      inDesc: "雙層木床收拾得棱角分明，下哨的衛兵正坐在板凳上給皮靴補油。",
+      resident: null },
+
+    { id: "wgh_fishmart", name: "河口魚市亭", kind: "shop", action: "步入魚市", x: 5065, y: 7125,
+      nearDesc: "澤昂河入港池南岸的敞軒石柱市亭，叫賣鮮魚與討價還價聲此起彼落。",
+      inDesc: "石板地面引著活水沖洗，攤位上銀鯧、大蟹與牡蠣鮮亮誘人，買賣皆以銅幣現結。",
+      resident: { stranger: "拍案叫賣的魚販", known: "魚市頭人・海大姐", line: "「剛從南棧大船卸下的深海紅鯛，慢一步可就被海風酒館包圓啦！」" } },
+    { id: "wgh_charts", name: "遠洋海圖書肆", kind: "shop", action: "入肆翻閱", x: 4900, y: 7265,
+      nearDesc: "東南坊安靜雅致的藍瓦石屋，櫥窗裡擺著黃銅分規、沙漏與羊皮卷軸。",
+      inDesc: "木格架收著手繪近岸暗礁圖、潮汐曆書與鵝毛筆墨水，帶著淡淡羊皮紙與松煙墨香。",
+      resident: { stranger: "描繪海圖的老學者", known: "繪圖師・埃德溫", line: "「每一處礁石與海灣水深都得親自丈量落筆，差一筆可是會讓船擱淺的。」" } },
+    { id: "wgh_saltdepot", name: "南棧鹽倉", kind: "house", action: "進倉查看", x: 5115, y: 7395,
+      nearDesc: "緊靠南棧碼頭的高地基石砌大倉，厚木門縫隙沾著雪白鹽霜。",
+      inDesc: "架高的防潮木地板上堆滿粗麻鹽包，專供全島漁村醃魚與山民換購。",
+      resident: null },
+    { id: "wgh_captains", name: "船長公會堂", kind: "house", action: "推門入堂", x: 4825, y: 7515,
+      nearDesc: "門楣鑲著青銅船舵徽記的氣派廳堂，台階前常有船東與領航員駐足交談。",
+      inDesc: "高挑大廳懸掛著舊戰船木模型與風向銅鐘，木牌公告著近期招募水手與護航的船隻。",
+      resident: { stranger: "披深藍大衣的老船長", known: "領航船長・葛雷", line: "「寒冬外洋風急浪高，敢在這個月出港的都是識水性的老手。」" } },
+    { id: "wgh_lampoil", name: "東南角燈油庫", kind: "house", action: "推門查看", x: 5125, y: 7575,
+      nearDesc: "東南城牆角塔旁的獨立石造庫房，門外備著防火沙桶與鐵鍬。",
+      inDesc: "石室陰涼通風，整齊存放著供防波堤燈塔與全城街燈使用的魚油與松脂火把。",
+      resident: null },
+    { id: "wgh_sundry", name: "南牆雜貨行", kind: "shop", action: "入行選購", x: 4800, y: 7785,
+      nearDesc: "靠近南城門內街的熱鬧雜貨鋪，門口擺著草鞋、麻繩、火石與行路水囊。",
+      inDesc: "從鐵鍋、粗瓷碗到防雨斗笠應有盡有，專為準備出南門遠行的旅人補齊行囊。",
+      resident: { stranger: "清點貨架的店主", known: "雜貨店主・老周", line: "「出南門往南嶺走山路長，火摺子跟乾糧袋可得帶齊全了！」" } }
+  ];
+
+  // 5 位順著道路真實行走之活態居民（全體居民平權：未結識前顯示陌生人，步速與人類自然步行一致！）
+  const NPCS = [
+    { id: "npc_fisher", strangerName: "挑擔陌生漁夫", knownName: "韋斯塢漁夫・阿海", met: false,
+      color: "#355c6e", speed: 46, waypoints: [[4900, 1820], [5235, 3235], [4615, 6035], [5065, 7125]], wpIdx: 1,
+      x: 4960, y: 2850, path: [], pauseUntil: 0,
+      greet: "對方放下肩上沉甸甸的兩簍鮮魚擦了擦汗：「我是韋斯塢的阿海，趁早潮把剛收的青背魚挑進白鷗港魚市換幾枚銅幣！」" },
+    { id: "npc_farmer", strangerName: "推車陌生農人", knownName: "崖莊麥農・老佩克", met: false,
+      color: "#7a5b2b", speed: 42, waypoints: [[5440, 4500], [4960, 5200], [4615, 6035], [4500, 6260]], wpIdx: 2,
+      x: 4950, y: 5520, path: [], pauseUntil: 0,
+      greet: "推著獨輪木車的農人停下腳步憨厚一笑：「咱是佩克崖莊的老佩克，這車剛磨好的黑麥粉要送去城北糧油鋪交貨。」" },
+    { id: "npc_guard", strangerName: "披甲巡街衛兵", knownName: "白鷗港衛兵・馬庫斯", met: false,
+      color: "#5b3b34", speed: 49, waypoints: [[4615, 6035], [4590, 6670], [4695, 7015], [4350, 7950]], wpIdx: 1,
+      x: 4600, y: 6320, path: [], pauseUntil: 0,
+      greet: "衛兵按著腰間鐵柄長劍點頭致意：「白鷗港衛戍隊馬庫斯，負責巡視南北城門與跨河石橋，城裡治安儘管放心。」" },
+    { id: "npc_hunter", strangerName: "背弓陌生山民", knownName: "古加坡獵戶・巴圖", met: false,
+      color: "#3f5d3a", speed: 53, waypoints: [[1430, 5670], [2260, 4880], [3760, 5320], [4360, 6460]], wpIdx: 2,
+      x: 4380, y: 5710, path: [], pauseUntil: 0,
+      greet: "背著紫杉獵弓的山民爽朗抱拳：「我是古加坡的巴圖，剛過澤昂河石拱橋，帶幾株山黃精進城裡百草堂換鹽巴！」" },
+    { id: "npc_dyer", strangerName: "提籃陌生染工", knownName: "溪灣染匠・芸娘", met: false,
+      color: "#4a436e", speed: 45, waypoints: [[2860, 7280], [4350, 7950], [4695, 7015], [4115, 6620]], wpIdx: 1,
+      x: 3780, y: 7980, path: [], pauseUntil: 0,
+      greet: "提著竹籃的女子微微欠身，露出染著淡藍指尖的雙手：「我是溪灣染坊的芸娘，正要把這批新染的靛藍細麻送到織帆裁縫店。」" }
+  ];
+
+  const appRoot = document.getElementById("appRoot");
+  const canvas = document.getElementById("mapCanvas");
+  const ctx = canvas.getContext("2d");
+  const mapWrap = document.getElementById("mapWrap");
+  const hud = document.getElementById("hudReadout");
+
+  let fullMapMode = false;
+  let showSeam = false;
+  let showJumpBtns = false;
+  let followPlayer = true;
+  let seamMeta = null;
+  let nav = null; // { w, h, cell, gw, gh, grid: Uint8Array }
+
+  // 玩家圓點初始站在白鷗港北城門外官道：近處看得到北城門膠囊，城內 27 棟屋瓦完全乾淨零微光點，走進城門即逐戶浮現！
+  const player = {
+    x: 4615,
+    y: 5820,
+    vx: 0,
+    vy: 0,
+    isRunning: false,
+    strideAccum: 0,
+    dustPuffs: [],  // [{x, y, r, age, maxAge, col}]
+    ripples: [],    // [{x, y, age, maxAge, run}]
+    path: [],       // [{x, y}]
+    dest: null,     // {x, y}
+    pendingAct: null, // { type: 'place'|'npc', target }
+    indoorPlace: null,
+    doorOutside: { x: 4615, y: 5820 },
+    totalWalkedPx: 0
+  };
+
+  let worldMinutes = 10 * 60 + 25; // 10:25
+
+  let camX = player.x, camY = player.y, camScale = 0.62;
+  let camAnim = null;
+
+  const mipZ4 = new Image();
+  const mipZ5 = new Image();
+  const mipZ6 = new Image();
+  const qTiles = {};
+
+  mipZ4.onload = () => draw();
+  mipZ5.onload = () => draw();
+  mipZ6.onload = () => draw();
+  mipZ4.src = "/maps/clean7k_lab/mip_z4.webp";
+  mipZ5.src = "/maps/clean7k_lab/mip_z5.webp";
+  mipZ6.src = "/maps/clean7k_lab/mip_z6.webp";
+
+  fetch("/maps/clean7k_lab/seam_meta_7k.json?v=20261124w3").then(r => r.json()).then(d => { seamMeta = d; draw(); }).catch(() => {});
+  fetch("/maps/clean7k_lab/nav_grid.json?v=20261124w3").then(r => r.json()).then(d => {
+    const arr = new Uint8Array(d.gw * d.gh);
+    for (let y = 0; y < d.gh; y++) {
+      const row = d.rows[y];
+      const off = y * d.gw;
+      for (let x = 0; x < d.gw; x++) arr[off + x] = row.charCodeAt(x) - 48;
+    }
+    nav = { w: d.w, h: d.h, cell: d.cell, gw: d.gw, gh: d.gh, grid: arr };
+    // Pre-compute each building's exact walkable front doorway!
+    PLACES.forEach(p => {
+      const [gx, gy] = nearestWalkableCell(p.x, p.y);
+      p.doorX = (gx + 0.5) * nav.cell;
+      p.doorY = (gy + 0.5) * nav.cell;
+    });
+    if (cellAtWorld(player.x, player.y) === 0) {
+      const [pxG, pyG] = nearestWalkableCell(player.x, player.y);
+      player.x = (pxG + 0.5) * nav.cell;
+      player.y = (pyG + 0.5) * nav.cell;
+    }
+    initNpcPaths();
+    updateStoryUI();
+    draw();
+  });
+
+  function getQTile(c, r) {
+    const k = `${c}_${r}`;
+    if (!qTiles[k]) {
+      const im = new Image();
+      im.onload = () => draw();
+      im.src = `/maps/clean7k_lab/q_${c}_${r}.webp`;
+      qTiles[k] = im;
+    }
+    return qTiles[k];
+  }
+
+  function cellAtWorld(wx, wy) {
+    if (!nav) return 1;
+    const gx = Math.max(0, Math.min(nav.gw - 1, Math.floor(wx / nav.cell)));
+    const gy = Math.max(0, Math.min(nav.gh - 1, Math.floor(wy / nav.cell)));
+    return nav.grid[gy * nav.gw + gx];
+  }
+
+  function nearestWalkableCell(wx, wy) {
+    if (!nav) return [Math.floor(wx / 32), Math.floor(wy / 32)];
+    const gx0 = Math.max(0, Math.min(nav.gw - 1, Math.floor(wx / nav.cell)));
+    const gy0 = Math.max(0, Math.min(nav.gh - 1, Math.floor(wy / nav.cell)));
+    if (nav.grid[gy0 * nav.gw + gx0] > 0) return [gx0, gy0];
+    let best = null, bestD2 = 1e9;
+    for (let r = 1; r <= 18; r++) {
+      for (let dy = -r; dy <= r; dy++) {
+        const ny = gy0 + dy;
+        if (ny < 0 || ny >= nav.gh) continue;
+        for (let dx = -r; dx <= r; dx++) {
+          const nx = gx0 + dx;
+          if (nx < 0 || nx >= nav.gw) continue;
+          const v = nav.grid[ny * nav.gw + nx];
+          if (v > 0) {
+            const cCost = (MATERIALS[v] || MATERIALS[4]).cost;
+            const d2 = dx * dx + dy * dy + cCost * 0.15;
+            if (d2 < bestD2) { bestD2 = d2; best = [nx, ny]; }
+          }
+        }
+      }
+      if (best) return best;
+    }
+    return [gx0, gy0];
+  }
+
+  // Binary Min-Heap A* on 224x320 (< 1.5ms on mobile!) + same-terrain line-of-sight smoothing
+  function findSmoothPath(sxW, syW, txW, tyW) {
+    if (!nav) return [{ x: txW, y: tyW }];
+    const [sx, sy] = nearestWalkableCell(sxW, syW);
+    const [tx, ty] = nearestWalkableCell(txW, tyW);
+    if (sx === tx && sy === ty) {
+      return [{ x: (tx + 0.5) * nav.cell, y: (ty + 0.5) * nav.cell }];
+    }
+    const gw = nav.gw, gh = nav.gh, N = gw * gh;
+    const gScore = new Float32Array(N);
+    gScore.fill(1e15);
+    const parent = new Int32Array(N);
+    parent.fill(-1);
+
+    const startIdx = sy * gw + sx;
+    const goalIdx = ty * gw + tx;
+    gScore[startIdx] = 0;
+
+    // Tiny binary min-heap of [f, idx]
+    const heapF = [0];
+    const heapI = [startIdx];
+    function pushH(f, idx) {
+      let i = heapF.length;
+      heapF.push(f); heapI.push(idx);
+      while (i > 0) {
+        const p = (i - 1) >> 1;
+        if (heapF[p] <= f) break;
+        heapF[i] = heapF[p]; heapI[i] = heapI[p];
+        i = p;
+      }
+      heapF[i] = f; heapI[i] = idx;
+    }
+    function popH() {
+      const topI = heapI[0];
+      const lastF = heapF.pop(), lastI = heapI.pop();
+      const n = heapF.length;
+      if (n > 0) {
+        let i = 0;
+        while (true) {
+          let l = i * 2 + 1, r = l + 1, s = i;
+          if (l < n && heapF[l] < lastF) s = l;
+          if (r < n && heapF[r] < (s === i ? lastF : heapF[l])) s = r;
+          if (s === i) break;
+          heapF[i] = heapF[s]; heapI[i] = heapI[s];
+          i = s;
+        }
+        heapF[i] = lastF; heapI[i] = lastI;
+      }
+      return topI;
+    }
+
+    const DIRS = [
+      [-1, 0, 1.0], [1, 0, 1.0], [0, -1, 1.0], [0, 1, 1.0],
+      [-1, -1, 1.4142], [1, -1, 1.4142], [-1, 1, 1.4142], [1, 1, 1.4142]
+    ];
+    const COSTS = [999, 1.00, 1.11, 1.16, 1.39, 1.79, 2.17, 2.50];
+
+    let found = false;
+    while (heapF.length > 0) {
+      const cur = popH();
+      if (cur === goalIdx) { found = true; break; }
+      const cx = cur % gw, cy = (cur / gw) | 0;
+      const gCur = gScore[cur];
+      for (let d = 0; d < 8; d++) {
+        const dx = DIRS[d][0], dy = DIRS[d][1];
+        const nx = cx + dx, ny = cy + dy;
+        if (nx < 0 || nx >= gw || ny < 0 || ny >= gh) continue;
+        const nIdx = ny * gw + nx;
+        const v = nav.grid[nIdx];
+        if (v === 0) continue;
+        if (dx !== 0 && dy !== 0) {
+          if (nav.grid[cy * gw + nx] === 0 || nav.grid[ny * gw + cx] === 0) continue;
+        }
+        const ng = gCur + DIRS[d][2] * COSTS[v];
+        if (ng + 1e-4 < gScore[nIdx]) {
+          gScore[nIdx] = ng;
+          parent[nIdx] = cur;
+          const h = Math.hypot(tx - nx, ty - ny);
+          pushH(ng + h, nIdx);
+        }
+      }
+    }
+    if (!found) return [];
+
+    const cells = [];
+    let c = goalIdx;
+    while (c !== -1) {
+      cells.push([c % gw, (c / gw) | 0]);
+      c = parent[c];
+    }
+    cells.reverse();
+
+    // Smooth staircase jaggies locally (<= 4.2 cells) while strictly preserving bridgeheads & riverbanks!
+    function canShortcut(i0, i1) {
+      const [x0, y0] = cells[i0], [x1, y1] = cells[i1];
+      let worstCost = 1.0;
+      for (let k = i0; k <= i1; k++) {
+        const c = COSTS[nav.grid[cells[k][1] * gw + cells[k][0]]];
+        if (c > worstCost) worstCost = c;
+      }
+      const dist = Math.hypot(x1 - x0, y1 - y0);
+      if (dist > 4.2) return false;
+      const steps = Math.max(4, Math.ceil(dist * 6));
+      for (let s = 1; s < steps; s++) {
+        const t = s / steps;
+        const fx = x0 + (x1 - x0) * t + 0.5, fy = y0 + (y1 - y0) * t + 0.5;
+        for (let oy = -0.38; oy <= 0.38; oy += 0.76) {
+          for (let ox = -0.38; ox <= 0.38; ox += 0.76) {
+            const tx2 = Math.min(gw - 1, Math.max(0, Math.floor(fx + ox)));
+            const ty2 = Math.min(gh - 1, Math.max(0, Math.floor(fy + oy)));
+            const vv = nav.grid[ty2 * gw + tx2];
+            if (vv === 0 || COSTS[vv] > worstCost + 0.02) return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    const smoothed = [];
+    let idx = 0;
+    while (idx < cells.length - 1) {
+      let nextIdx = idx + 1;
+      for (let probe = Math.min(cells.length - 1, idx + 4); probe > idx + 1; probe--) {
+        if (canShortcut(idx, probe)) { nextIdx = probe; break; }
+      }
+      smoothed.push({ x: (cells[nextIdx][0] + 0.5) * nav.cell, y: (cells[nextIdx][1] + 0.5) * nav.cell });
+      idx = nextIdx;
+    }
+    return smoothed;
+  }
+
+  function initNpcPaths() {
+    NPCS.forEach(npc => {
+      const wp = npc.waypoints[npc.wpIdx];
+      npc.path = findSmoothPath(npc.x, npc.y, wp[0], wp[1]);
+    });
+  }
+
+  function formatWorldClock(minsTotal) {
+    const mDay = ((Math.floor(minsTotal) % 1440) + 1440) % 1440;
+    const hh = Math.floor(mDay / 60);
+    const mm = mDay % 60;
+    const shichen = ["子時", "丑時", "寅時", "卯時", "辰時", "巳時", "午時", "未時", "申時", "酉時", "戌時", "亥時"][Math.floor(((hh + 1) % 24) / 2)];
+    const pad = n => (n < 10 ? "0" + n : "" + n);
+    return `太陽曆 329 年・寒冬・19 日 ｜ ${shichen} ${pad(hh)}:${pad(mm)}`;
+  }
+
+  function setSublog(msg) {
+    document.getElementById("stSublog").textContent = msg;
+  }
+
+  function enterOrInspectPlace(p) {
+    player.isRunning = false;
+    if (p.kind === "house" || p.kind === "shop") {
+      player.indoorPlace = p;
+      player.doorOutside = { x: p.doorX || p.x, y: p.doorY || p.y };
+      player.x = p.x;
+      player.y = p.y;
+      player.vx = 0;
+      player.vy = 0;
+      player.path = [];
+      player.dest = null;
+      if (followPlayer) { camX = p.x; camY = p.y; }
+      setSublog(p.resident
+        ? `你推開【${p.name}】的木門走入屋內，看見${p.resident.met ? p.resident.known : p.resident.stranger}正在裡頭忙碌。`
+        : `你推門走入【${p.name}】室內，打量著屋裡的器物與陳設。`);
+    } else {
+      player.indoorPlace = null;
+      setSublog(`你走近【${p.name}】駐足端詳：${p.inDesc}`);
+    }
+    updateStoryUI(p);
+    draw();
+  }
+
+  function exitIndoors(silent) {
+    if (!player.indoorPlace) return;
+    const prev = player.indoorPlace;
+    player.indoorPlace = null;
+    player.x = player.doorOutside.x;
+    player.y = player.doorOutside.y;
+    if (!silent) {
+      setSublog(`你推開木門走出【${prev.name}】，重新回到門外街道上。`);
+    }
+    updateStoryUI();
+    draw();
+  }
+
+  function greetNpc(npc, nowMs) {
+    npc.pauseUntil = nowMs + 6500;
+    npc.met = true;
+    setSublog(npc.greet);
+    updateStoryUI();
+    draw();
+  }
+
+  function commandWalkTo(wx, wy, actAfter, runMode) {
+    if (player.indoorPlace) {
+      exitIndoors(true);
+    }
+    const pts = findSmoothPath(player.x, player.y, wx, wy);
+    if (pts.length === 0) {
+      setSublog("該處隔著深水或峭壁，無法直接通行。");
+      return;
+    }
+    player.path = pts;
+    player.dest = pts[pts.length - 1];
+    player.pendingAct = actAfter || null;
+    player.isRunning = !!runMode;
+    player.ripples.push({
+      x: player.dest.x,
+      y: player.dest.y,
+      age: 0,
+      maxAge: player.isRunning ? 0.65 : 0.48,
+      run: player.isRunning
+    });
+    followPlayer = true;
+    document.getElementById("btnFollow").classList.add("on");
+    updateStoryUI();
+    draw();
+  }
+
+  function nearbyVisiblePlaces() {
+    const out = [];
+    for (let i = 0; i < PLACES.length; i++) {
+      const p = PLACES[i];
+      const d = Math.hypot(player.x - p.x, player.y - p.y);
+      if (d <= PROX_FADE_OUT) {
+        const alpha = d <= PROX_FULL ? 1 : Math.max(0, 1 - (d - PROX_FULL) / (PROX_FADE_OUT - PROX_FULL));
+        if (alpha >= 0.12) out.push({ p, d, alpha });
+      }
+    }
+    out.sort((a, b) => a.d - b.d);
+    return out;
+  }
+
+  function nearbyVisibleNpcs() {
+    if (player.indoorPlace) return [];
+    const out = [];
+    for (let i = 0; i < NPCS.length; i++) {
+      const n = NPCS[i];
+      const d = Math.hypot(player.x - n.x, player.y - n.y);
+      if (d <= NPC_PROX_FADE) {
+        const alpha = d <= 185 ? 1 : Math.max(0, 1 - (d - 185) / (NPC_PROX_FADE - 185));
+        if (alpha >= 0.12) out.push({ n, d, alpha });
+      }
+    }
+    out.sort((a, b) => a.d - b.d);
+    return out;
+  }
+
+  function regionTitleFor(wx, wy) {
+    if (wx >= 3660 && wx <= 5380 && wy >= 6010 && wy <= 7980) {
+      return wy < 7015 ? "白鷗港・城北街坊" : "白鷗港・城南街坊";
+    }
+    if (wy < 2450 && wx > 4200) return "韋斯塢・海岸漁村";
+    if (wy < 3850 && wx > 4400) return "望海驛道・臨海斷崖";
+    if (wy < 5780 && wx > 4300) return "佩克崖莊・黑麥梯田";
+    if (wx < 2650 && wy > 4500 && wy < 6100) return "古加坡與澤昂河谷";
+    if (wy > 8000) return "白鷗港南郊・南嶺官道";
+    return "銀鷗島・東岸山海郊野";
+  }
+
+  function updateStoryUI(inspectedPlace) {
+    document.getElementById("clockText").textContent = formatWorldClock(worldMinutes);
+    const badge = document.getElementById("stateBadge");
+    const stTitle = document.getElementById("stTitle");
+    const stDesc = document.getElementById("stDesc");
+    const stActions = document.getElementById("stActions");
+    const nearBadge = document.getElementById("nearCountBadge");
+
+    stActions.innerHTML = "";
+
+    if (player.indoorPlace) {
+      const p = player.indoorPlace;
+      badge.textContent = p.kind === "shop" ? "店鋪室內" : "屋舍室內";
+      badge.className = "story-badge indoor";
+      stTitle.textContent = p.name;
+      stDesc.textContent = p.inDesc;
+      nearBadge.textContent = "室內空間";
+
+      const btnExit = document.createElement("button");
+      btnExit.className = "pill action exit";
+      btnExit.textContent = "〔推門走出屋外〕";
+      btnExit.onclick = () => exitIndoors(false);
+      stActions.appendChild(btnExit);
+
+      if (p.resident) {
+        const btnTalk = document.createElement("button");
+        btnTalk.className = "pill action";
+        const rName = p.resident.met ? p.resident.known : p.resident.stranger;
+        btnTalk.textContent = `〔與${rName}交談〕`;
+        btnTalk.onclick = () => {
+          p.resident.met = true;
+          setSublog(`${p.resident.known}：${p.resident.line}`);
+          updateStoryUI();
+        };
+        stActions.appendChild(btnTalk);
+      }
+      return;
+    }
+
+    const nearP = nearbyVisiblePlaces();
+    const nearN = nearbyVisibleNpcs();
+    nearBadge.textContent = `身邊顯現 ${nearP.length + nearN.length} 處`;
+
+    const moving = player.path.length > 0 || Math.hypot(player.vx, player.vy) > 4;
+    const tv = cellAtWorld(player.x, player.y) || 1;
+    const mat = MATERIALS[tv] || MATERIALS[1];
+    if (moving && player.isRunning) {
+      badge.className = "story-badge running";
+      badge.textContent = `奔跑・${mat.name} (μ=${mat.mu.toFixed(2)})`;
+    } else if (moving) {
+      badge.className = "story-badge";
+      badge.textContent = `步行・${mat.name} (μ=${mat.mu.toFixed(2)})`;
+    } else {
+      badge.className = "story-badge";
+      badge.textContent = `駐足・${mat.name} (μ=${mat.mu.toFixed(2)})`;
+    }
+
+    const focusP = inspectedPlace || (nearP.length > 0 && nearP[0].d < 290 ? nearP[0].p : null);
+    if (focusP) {
+      stTitle.textContent = focusP.name;
+      stDesc.textContent = inspectedPlace ? focusP.inDesc : focusP.nearDesc;
+    } else {
+      stTitle.textContent = regionTitleFor(player.x, player.y);
+      stDesc.textContent = moving
+        ? "腳步順著地勢與石板路穩定推進，沿途擦身而過的屋舍與旅人隨距離自然顯隱，遠處群屋則維持純粹無標記的手繪山海景致。"
+        : "四周風聲與遠處海浪清晰可聞。點擊地圖任意處即可順路走過去；靠近任何一棟房屋、店鋪或橋門時，互動膠囊才會浮現。";
+    }
+
+    // Show top 4 closest currently-revealed capsules as mirrored quick buttons in story pane too
+    nearP.slice(0, 3).forEach(({ p }) => {
+      const b = document.createElement("button");
+      b.className = "pill action";
+      b.textContent = `〔${p.name}・${p.action}〕`;
+      b.onclick = () => {
+        const tx = p.doorX || p.x, ty = p.doorY || p.y;
+        if (Math.hypot(player.x - tx, player.y - ty) < 75) enterOrInspectPlace(p);
+        else commandWalkTo(tx, ty, { type: "place", target: p });
+      };
+      stActions.appendChild(b);
+    });
+    nearN.slice(0, 2).forEach(({ n }) => {
+      const b = document.createElement("button");
+      b.className = "pill action";
+      b.textContent = `〔${n.met ? n.knownName : n.strangerName}・搭話〕`;
+      b.onclick = () => {
+        if (Math.hypot(player.x - n.x, player.y - n.y) < 110) greetNpc(n, performance.now());
+        else commandWalkTo(n.x, n.y, { type: "npc", target: n });
+      };
+      stActions.appendChild(b);
+    });
+  }
+
+  // Deterministic 60Hz world simulation loop (using setInterval so USB asleep-screen QA never stalls!)
+  let lastTickMs = performance.now();
+  let uiSyncAccum = 0;
+
+  setInterval(function () {
+    const now = performance.now();
+    const dt = Math.min(0.06, Math.max(0.001, (now - lastTickMs) / 1000));
+    lastTickMs = now;
+    let dirty = false;
+
+    // 1. Advance Player Dot with 2D Velocity Inertia + Surface Friction Coefficient (mu)
+    const tv = cellAtWorld(player.x, player.y) || 1;
+    const mat = MATERIALS[tv] || MATERIALS[1];
+
+    if (!player.indoorPlace) {
+      let desVx = 0, desVy = 0;
+      if (player.path.length > 0) {
+        const turnRadius = player.isRunning ? 24 : 14;
+        while (player.path.length > 1 && Math.hypot(player.path[0].x - player.x, player.path[0].y - player.y) < turnRadius) {
+          player.path.shift();
+        }
+        const wp = player.path[0];
+        const dx = wp.x - player.x, dy = wp.y - player.y;
+        const dist = Math.hypot(dx, dy);
+        if (player.path.length === 1 && dist < 7) {
+          player.path = [];
+          player.dest = null;
+          player.isRunning = false; // 抵達終點自動收勢
+          if (player.pendingAct) {
+            const act = player.pendingAct;
+            player.pendingAct = null;
+            if (act.type === "place") enterOrInspectPlace(act.target);
+            else if (act.type === "npc") greetNpc(act.target, now);
+          }
+          dirty = true;
+        } else if (dist > 1e-4) {
+          const baseSpd = player.isRunning ? BASE_RUN : BASE_WALK;
+          let targetSpd = baseSpd * mat.speedMul;
+          if (player.path.length === 1) {
+            // 依據地面摩擦係數 mu 決定煞車距離（濕木棧橋與碎石坡減速距離較長）
+            const decel = 95 + 340 * mat.mu;
+            const brakeCap = Math.sqrt(2 * decel * Math.max(0, dist - 2)) + 14;
+            if (brakeCap < targetSpd) targetSpd = brakeCap;
+          }
+          desVx = (dx / dist) * targetSpd;
+          desVy = (dy / dist) * targetSpd;
+        }
+      }
+
+      const tractionRate = 1.2 + 9.2 * mat.mu;
+      const blend = 1 - Math.exp(-tractionRate * dt);
+      player.vx += (desVx - player.vx) * blend;
+      player.vy += (desVy - player.vy) * blend;
+
+      const curSpd = Math.hypot(player.vx, player.vy);
+      if (player.path.length === 0 && curSpd < 2.2) {
+        player.vx = 0; player.vy = 0;
+      } else if (curSpd >= 0.2) {
+        const stepX = player.vx * dt, stepY = player.vy * dt;
+        const nx = player.x + stepX, ny = player.y + stepY;
+        const curOnZero = cellAtWorld(player.x, player.y) === 0;
+        if (cellAtWorld(nx, ny) > 0 || (curOnZero && player.path.length > 0)) {
+          player.x = nx; player.y = ny;
+        } else if (cellAtWorld(nx, player.y) > 0) {
+          player.x = nx; player.vy = 0;
+        } else if (cellAtWorld(player.x, ny) > 0) {
+          player.y = ny; player.vx = 0;
+        } else {
+          player.vx = 0; player.vy = 0;
+        }
+        const moved = curSpd * dt;
+        player.totalWalkedPx += moved;
+        worldMinutes += moved / 780;
+
+        if (player.isRunning && curSpd > 68) {
+          player.strideAccum += moved;
+          if (player.strideAccum >= 26) {
+            player.strideAccum = 0;
+            const inv = 1 / curSpd;
+            player.dustPuffs.push({
+              x: player.x - player.vx * inv * 6,
+              y: player.y - player.vy * inv * 6,
+              r: 3.4,
+              age: 0,
+              maxAge: 0.44,
+              col: mat.dust
+            });
+          }
+        }
+        dirty = true;
+      }
+    }
+
+    // Age visual ripples & running stride dust puffs
+    for (let i = player.dustPuffs.length - 1; i >= 0; i--) {
+      player.dustPuffs[i].age += dt;
+      if (player.dustPuffs[i].age >= player.dustPuffs[i].maxAge) player.dustPuffs.splice(i, 1);
+      dirty = true;
+    }
+    for (let i = player.ripples.length - 1; i >= 0; i--) {
+      player.ripples[i].age += dt;
+      if (player.ripples[i].age >= player.ripples[i].maxAge) player.ripples.splice(i, 1);
+      dirty = true;
+    }
+
+    if (followPlayer && !camAnim) {
+      if (Math.hypot(player.x - camX, player.y - camY) > 0.8) {
+        camX += (player.x - camX) * Math.min(1, dt * 8.0);
+        camY += (player.y - camY) * Math.min(1, dt * 8.0);
+        dirty = true;
+      }
+    }
+
+    // 2. Advance Living Road Travelers (also respecting surface speedMul!)
+    if (nav) {
+      for (let i = 0; i < NPCS.length; i++) {
+        const n = NPCS[i];
+        if (now < n.pauseUntil) continue;
+        if (!n.path || n.path.length === 0) {
+          n.wpIdx = (n.wpIdx + 1) % n.waypoints.length;
+          const wp = n.waypoints[n.wpIdx];
+          n.path = findSmoothPath(n.x, n.y, wp[0], wp[1]);
+          continue;
+        }
+        const nMat = MATERIALS[cellAtWorld(n.x, n.y) || 1] || MATERIALS[1];
+        let rem = n.speed * nMat.speedMul * dt;
+        while (rem > 0 && n.path.length > 0) {
+          const wp = n.path[0];
+          const dx = wp.x - n.x, dy = wp.y - n.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist <= rem) {
+            n.x = wp.x; n.y = wp.y;
+            rem -= dist;
+            n.path.shift();
+          } else {
+            n.x += (dx / dist) * rem;
+            n.y += (dy / dist) * rem;
+            rem = 0;
+          }
+        }
+        if (Math.hypot(n.x - camX, n.y - camY) * camScale < Math.max(canvas.width, canvas.height)) {
+          dirty = true;
+        }
+      }
+    }
+
+    uiSyncAccum += dt;
+    if (dirty && uiSyncAccum >= 0.22) {
+      uiSyncAccum = 0;
+      updateStoryUI();
+    }
+    if (dirty) draw();
+  }, 16);
+
+  function resizeCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    canvas.width = Math.max(1, Math.round(mapWrap.clientWidth * dpr));
+    canvas.height = Math.max(1, Math.round(mapWrap.clientHeight * dpr));
+    draw();
+  }
+  window.addEventListener("resize", resizeCanvas);
+
+  function animateCamTo(tx, ty, tScale, durMs) {
+    if (camAnim) clearInterval(camAnim);
+    const sx = camX, sy = camY, ss = camScale;
+    const t0 = performance.now();
+    camAnim = setInterval(function () {
+      const u = Math.min(1, (performance.now() - t0) / durMs);
+      const e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+      camX = sx + (tx - sx) * e;
+      camY = sy + (ty - sy) * e;
+      camScale = ss * Math.pow(tScale / ss, e);
+      draw();
+      if (u >= 1) {
+        camX = tx; camY = ty; camScale = tScale;
+        draw();
+        clearInterval(camAnim);
+        camAnim = null;
+      }
+    }, 16);
+  }
+
+  function wToScreen(wx, wy, cw, ch) {
+    return [cw * 0.5 + (wx - camX) * camScale, ch * 0.5 + (wy - camY) * camScale];
+  }
+  function screenToW(px, py, cw, ch) {
+    return [camX + (px - cw * 0.5) / camScale, camY + (py - ch * 0.5) / camScale];
+  }
+
+  let hitBoxes = [];
+
+  function draw() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const cw = canvas.width, ch = canvas.height;
+    if (cw <= 0 || ch <= 0) return;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = "#2b4b5a";
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    let baseImg = mipZ4;
+    if (camScale > 0.28 && mipZ6.complete && mipZ6.naturalWidth > 0) baseImg = mipZ6;
+    else if (camScale > 0.14 && mipZ5.complete && mipZ5.naturalWidth > 0) baseImg = mipZ5;
+
+    if (baseImg.complete && baseImg.naturalWidth > 0) {
+      const [x0, y0] = wToScreen(0, 0, cw, ch);
+      ctx.drawImage(baseImg, x0, y0, W * camScale, H * camScale);
+    }
+
+    // Stream native 1:1 7168x10240 quadrants when zoomed > 0.50!
+    if (camScale > 0.50) {
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 2; c++) {
+          const qx = c * 3584, qy = r * 2560;
+          const [sx, sy] = wToScreen(qx, qy, cw, ch);
+          const sw = 3584 * camScale, sh = 2560 * camScale;
+          if (sx + sw > 0 && sx < cw && sy + sh > 0 && sy < ch) {
+            const qim = getQTile(c, r);
+            if (qim.complete && qim.naturalWidth > 0) {
+              ctx.drawImage(qim, sx, sy, sw, sh);
+            }
+          }
+        }
+      }
+    }
+
+    if (showSeam && seamMeta) {
+      ctx.save();
+      ctx.setLineDash([]);
+      ctx.lineWidth = 2.6 * dpr;
+      ctx.strokeStyle = "#00f5d4";
+      ctx.beginPath();
+      seamMeta.seam_vert_x.forEach((sx, idx) => {
+        const [px, py] = wToScreen(sx, idx * 32, cw, ch);
+        if (idx === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+
+      ctx.strokeStyle = "#ffbe0b";
+      [
+        { arr: seamMeta.seam_w1_y, x0: 0 },
+        { arr: seamMeta.seam_w2_y, x0: 0 },
+        { arr: seamMeta.seam_e1_y, x0: 3072 },
+        { arr: seamMeta.seam_e2_y, x0: 3072 }
+      ].forEach(s => {
+        ctx.beginPath();
+        s.arr.forEach((sy, idx) => {
+          const [px, py] = wToScreen(s.x0 + idx * 32, sy, cw, ch);
+          if (idx === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        });
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    hitBoxes = [];
+
+    // 1. Subtle warm-ink footstep trail + single/double tap destination ripples + running dust puffs
+    if (!player.indoorPlace && player.path.length > 0) {
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.setLineDash(player.isRunning ? [8 * dpr, 6 * dpr] : [4 * dpr, 7 * dpr]);
+      ctx.lineWidth = (player.isRunning ? 3.0 : 2.3) * dpr;
+      ctx.strokeStyle = player.isRunning ? "rgba(168, 42, 20, 0.85)" : "rgba(116, 68, 42, 0.72)";
+      ctx.beginPath();
+      const [sx0, sy0] = wToScreen(player.x, player.y, cw, ch);
+      ctx.moveTo(sx0, sy0);
+      for (let i = 0; i < player.path.length; i++) {
+        const [wx, wy] = wToScreen(player.path[i].x, player.path[i].y, cw, ch);
+        ctx.lineTo(wx, wy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (player.dest) {
+        const [dx, dy] = wToScreen(player.dest.x, player.dest.y, cw, ch);
+        ctx.beginPath();
+        ctx.arc(dx, dy, (player.isRunning ? 7.5 : 5.8) * dpr, 0, Math.PI * 2);
+        ctx.strokeStyle = player.isRunning ? "rgba(168, 42, 20, 0.90)" : "rgba(116, 68, 42, 0.80)";
+        ctx.lineWidth = 2 * dpr;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    if (player.ripples.length > 0 || player.dustPuffs.length > 0) {
+      ctx.save();
+      for (let i = 0; i < player.dustPuffs.length; i++) {
+        const dp = player.dustPuffs[i];
+        const u = dp.age / dp.maxAge;
+        const [px, py] = wToScreen(dp.x, dp.y, cw, ch);
+        ctx.globalAlpha = Math.max(0, 1 - u);
+        ctx.beginPath();
+        ctx.arc(px, py, (dp.r + u * 5.5) * dpr, 0, Math.PI * 2);
+        ctx.fillStyle = dp.col;
+        ctx.fill();
+      }
+      for (let i = 0; i < player.ripples.length; i++) {
+        const rp = player.ripples[i];
+        const u = rp.age / rp.maxAge;
+        const [rx, ry] = wToScreen(rp.x, rp.y, cw, ch);
+        ctx.globalAlpha = Math.max(0, 1 - u);
+        ctx.strokeStyle = rp.run ? "#b93822" : "#6e4e35";
+        ctx.lineWidth = (rp.run ? 2.2 : 1.6) * dpr;
+        ctx.beginPath();
+        ctx.arc(rx, ry, (6 + u * 22) * dpr, 0, Math.PI * 2);
+        ctx.stroke();
+        if (rp.run && u > 0.12) {
+          const u2 = (u - 0.12) / 0.88;
+          ctx.globalAlpha = Math.max(0, 1 - u2);
+          ctx.beginPath();
+          ctx.arc(rx, ry, (5 + u2 * 15) * dpr, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    // 2. Living Road Traveler Dots (subtle ink-toned dots ONLY within sight range; ZERO distant glow on buildings!)
+    ctx.save();
+    for (let i = 0; i < NPCS.length; i++) {
+      const n = NPCS[i];
+      const distP = Math.hypot(player.x - n.x, player.y - n.y);
+      if (distP > NPC_SIGHT_RADIUS) continue;
+      const sightAlpha = distP < 720 ? 1 : Math.max(0, 1 - (distP - 720) / (NPC_SIGHT_RADIUS - 720));
+      const [nx, ny] = wToScreen(n.x, n.y, cw, ch);
+      if (nx < -40 || nx > cw + 40 || ny < -40 || ny > ch + 40) continue;
+
+      ctx.globalAlpha = sightAlpha;
+      ctx.beginPath();
+      ctx.arc(nx, ny, 5.0 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = n.color;
+      ctx.fill();
+      ctx.lineWidth = 1.6 * dpr;
+      ctx.strokeStyle = "#faf3e3";
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // 3. Player Dot (or Indoor Roof Indicator)
+    ctx.save();
+    const [pScreenX, pScreenY] = wToScreen(player.x, player.y, cw, ch);
+    if (player.indoorPlace) {
+      // Warm indoor lantern ring over the building you are currently inside
+      ctx.beginPath();
+      ctx.arc(pScreenX, pScreenY, 13 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(232, 168, 56, 0.34)";
+      ctx.fill();
+      ctx.lineWidth = 2.2 * dpr;
+      ctx.strokeStyle = "#b93822";
+      ctx.stroke();
+    } else {
+      // Crisp cinnabar-red player dot on parchment-ivory border + subtle perception aura
+      ctx.beginPath();
+      ctx.arc(pScreenX, pScreenY, 11.5 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(218, 152, 58, 0.28)";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(pScreenX, pScreenY, 6.6 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = "#b93822";
+      ctx.fill();
+      ctx.lineWidth = 2.2 * dpr;
+      ctx.strokeStyle = "#fff9ef";
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // 4. Pure Proximity-Triggered Capsules (100% hidden outside PROX_FADE_OUT — ZERO distant glow dots!)
+    ctx.save();
+    ctx.font = `700 ${Math.round(12.5 * dpr)}px "Noto Serif TC", serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    if (player.indoorPlace) {
+      // While indoors, show ONLY the current building's exit capsule right above its roof!
+      const p = player.indoorPlace;
+      const txt = `〔走出・${p.name}〕`;
+      const tw = ctx.measureText(txt).width;
+      const pw = tw + 18 * dpr, ph = 26 * dpr;
+      const px = pScreenX, py = pScreenY - 26 * dpr;
+      const pillX = px - pw * 0.5, pillY = py - ph * 0.5;
+
+      ctx.fillStyle = "rgba(24, 18, 14, 0.32)";
+      ctx.beginPath(); ctx.roundRect(pillX, pillY + 2 * dpr, pw, ph, 999); ctx.fill();
+
+      ctx.fillStyle = "#6f2c1d";
+      ctx.strokeStyle = "#fbf3e4";
+      ctx.lineWidth = 1.8 * dpr;
+      ctx.beginPath(); ctx.roundRect(pillX, pillY, pw, ph, 999); ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle = "#fff9ef";
+      ctx.fillText(txt, px, pillY + ph * 0.52);
+
+      hitBoxes.push({
+        x0: pillX / dpr - 6, y0: pillY / dpr - 6, x1: (pillX + pw) / dpr + 6, y1: (pillY + ph) / dpr + 6,
+        onClick: () => exitIndoors(false)
+      });
+    } else {
+      const candidates = [];
+      const visPlaces = nearbyVisiblePlaces();
+      visPlaces.forEach(({ p, d, alpha }, idx) => {
+        const [sx, sy] = wToScreen(p.x, p.y, cw, ch);
+        if (sx < -120 || sx > cw + 120 || sy < -80 || sy > ch + 80) return;
+        const label = d < 185 ? `${p.name}・${p.action}` : p.name;
+        candidates.push({
+          sx, sy, anchorY: sy - 20 * dpr, alpha, isClosest: idx === 0 && d < 260,
+          label, kind: p.kind,
+          onActivate: (isDbl) => {
+            const tx = p.doorX || p.x, ty = p.doorY || p.y;
+            if (Math.hypot(player.x - tx, player.y - ty) < 75) enterOrInspectPlace(p);
+            else commandWalkTo(tx, ty, { type: "place", target: p }, isDbl);
+          }
+        });
+      });
+
+      const visNpcs = nearbyVisibleNpcs();
+      visNpcs.forEach(({ n, alpha }) => {
+        const [sx, sy] = wToScreen(n.x, n.y, cw, ch);
+        if (sx < -120 || sx > cw + 120 || sy < -80 || sy > ch + 80) return;
+        const label = `${n.met ? n.knownName : n.strangerName}・搭話`;
+        candidates.push({
+          sx, sy, anchorY: sy - 19 * dpr, alpha, isClosest: false, isNpc: true,
+          label, kind: "npc",
+          onActivate: (isDbl) => {
+            if (Math.hypot(player.x - n.x, player.y - n.y) < 110) greetNpc(n, performance.now());
+            else commandWalkTo(n.x, n.y, { type: "npc", target: n }, isDbl);
+          }
+        });
+      });
+
+      // Deterministic vertical collision avoidance so adjacent street capsules never overlap
+      const placedRects = [];
+      candidates.forEach(c => {
+        const tw = ctx.measureText(c.label).width;
+        const pw = tw + 18 * dpr, ph = 24 * dpr;
+        let cx = Math.max(pw * 0.5 + 6 * dpr, Math.min(cw - pw * 0.5 - 6 * dpr, c.sx));
+        let cy = c.anchorY;
+        for (let tries = 0; tries < 5; tries++) {
+          let hit = false;
+          for (let j = 0; j < placedRects.length; j++) {
+            const r = placedRects[j];
+            if (Math.abs(cx - r.cx) < (pw + r.pw) * 0.5 + 4 * dpr && Math.abs(cy - r.cy) < (ph + r.ph) * 0.5 + 3 * dpr) {
+              cy = r.cy - (ph + 4 * dpr);
+              hit = true;
+              break;
+            }
+          }
+          if (!hit) break;
+        }
+        placedRects.push({ cx, cy, pw, ph });
+        c.cx = cx; c.cy = cy; c.pw = pw; c.ph = ph;
+      });
+
+      // Draw back-to-front so closest capsule sits crispest on top
+      for (let i = candidates.length - 1; i >= 0; i--) {
+        const c = candidates[i];
+        ctx.globalAlpha = c.alpha;
+        const pillX = c.cx - c.pw * 0.5, pillY = c.cy - c.ph * 0.5;
+
+        // Subtle leader line to doorway/roof if nudged
+        if (Math.hypot(c.cx - c.sx, (pillY + c.ph) - c.sy) > 10 * dpr) {
+          ctx.beginPath();
+          ctx.moveTo(c.cx, pillY + c.ph);
+          ctx.lineTo(c.sx, c.sy);
+          ctx.strokeStyle = "rgba(58, 44, 32, 0.55)";
+          ctx.lineWidth = 1.3 * dpr;
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "rgba(24, 20, 16, 0.28)";
+        ctx.beginPath(); ctx.roundRect(pillX, pillY + 2 * dpr, c.pw, c.ph, 999); ctx.fill();
+
+        if (c.isNpc) {
+          ctx.fillStyle = "rgba(43, 72, 85, 0.95)";
+          ctx.strokeStyle = "#dce8ec";
+          ctx.lineWidth = 1.4 * dpr;
+        } else if (c.isClosest) {
+          ctx.fillStyle = "#fff8e7";
+          ctx.strokeStyle = "#9c331c";
+          ctx.lineWidth = 2.0 * dpr;
+        } else {
+          ctx.fillStyle = "rgba(247, 240, 224, 0.95)";
+          ctx.strokeStyle = "#7d6b52";
+          ctx.lineWidth = 1.3 * dpr;
+        }
+        ctx.beginPath(); ctx.roundRect(pillX, pillY, c.pw, c.ph, 999); ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = c.isNpc ? "#f7f4eb" : (c.isClosest ? "#6e2212" : "#2b2118");
+        ctx.fillText(c.label, c.cx, pillY + c.ph * 0.52);
+
+        if (c.alpha > 0.22) {
+          hitBoxes.unshift({
+            x0: pillX / dpr - 5, y0: pillY / dpr - 5, x1: (pillX + c.pw) / dpr + 5, y1: (pillY + c.ph) / dpr + 5,
+            onClick: c.onActivate
+          });
+        }
+      }
+    }
+    ctx.restore();
+
+    const fitS = Math.min(cw / W, ch / H) * 0.94;
+    const zMult = (camScale / Math.max(0.01, fitS)).toFixed(1);
+    const visCnt = player.indoorPlace ? 1 : (nearbyVisiblePlaces().length + nearbyVisibleNpcs().length);
+    const tvNow = cellAtWorld(player.x, player.y) || 1;
+    const matNow = MATERIALS[tvNow] || MATERIALS[1];
+    const curSpd = Math.round(Math.hypot(player.vx, player.vy));
+    const gaitTxt = player.indoorPlace ? "室內" : (curSpd < 3 ? "駐足" : (player.isRunning ? `奔跑 ${curSpd}px/s` : `步行 ${curSpd}px/s`));
+    hud.textContent = `單擊走・雙擊跑 ｜ ${gaitTxt}・${matNow.name} (μ=${matNow.mu.toFixed(2)}) ｜ 身邊顯現：${visCnt} 處 ｜ ${zMult}x`;
+  }
+
+  // Pointer pan, pinch-zoom, and 0ms single-tap walk / double-tap run!
+  let pointers = new Map(), lastPan = null, lastPinch = null, downPos = null;
+  let lastTap = { t: 0, cx: -999, cy: -999 };
+  canvas.addEventListener("pointerdown", e => {
+    canvas.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 1) {
+      lastPan = { x: e.clientX, y: e.clientY };
+      downPos = { x: e.clientX, y: e.clientY, t: performance.now() };
+      if (camAnim) { clearInterval(camAnim); camAnim = null; }
+    } else if (pointers.size === 2) {
+      const pts = Array.from(pointers.values());
+      lastPinch = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      downPos = null;
+    }
+  });
+
+  canvas.addEventListener("pointermove", e => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    if (pointers.size === 1 && lastPan) {
+      const dx = e.clientX - lastPan.x, dy = e.clientY - lastPan.y;
+      if (downPos && Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y) > 9) {
+        followPlayer = false;
+        document.getElementById("btnFollow").classList.remove("on");
+      }
+      camX = Math.max(150, Math.min(W - 150, camX - (dx * dpr) / camScale));
+      camY = Math.max(150, Math.min(H - 150, camY - (dy * dpr) / camScale));
+      lastPan = { x: e.clientX, y: e.clientY };
+      draw();
+    } else if (pointers.size === 2) {
+      const pts = Array.from(pointers.values());
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const rect = canvas.getBoundingClientRect();
+      if (lastPinch && lastPinch > 10) {
+        zoomAt(((pts[0].x + pts[1].x) * 0.5 - rect.left) * dpr, ((pts[0].y + pts[1].y) * 0.5 - rect.top) * dpr, dist / lastPinch);
+      }
+      lastPinch = dist;
+    }
+  });
+
+  function onUp(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) lastPinch = null;
+    lastPan = pointers.size === 1 ? Array.from(pointers.values())[0] : null;
+    const now = performance.now();
+    if (downPos && Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y) < 11 && (now - downPos.t) < 450) {
+      const rect = canvas.getBoundingClientRect();
+      const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+      const isDoubleTap = (now - lastTap.t <= 390) && (Math.hypot(cx - lastTap.cx, cy - lastTap.cy) <= 78);
+      lastTap = isDoubleTap ? { t: 0, cx: -999, cy: -999 } : { t: now, cx, cy };
+
+      let hitCapsule = false;
+      for (let i = 0; i < hitBoxes.length; i++) {
+        const b = hitBoxes[i];
+        if (cx >= b.x0 && cx <= b.x1 && cy >= b.y0 && cy <= b.y1) {
+          b.onClick(isDoubleTap);
+          hitCapsule = true;
+          break;
+        }
+      }
+      if (!hitCapsule) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        const [wx, wy] = screenToW(cx * dpr, cy * dpr, canvas.width, canvas.height);
+        commandWalkTo(wx, wy, null, isDoubleTap);
+      }
+    }
+    downPos = null;
+  }
+  canvas.addEventListener("pointerup", onUp);
+  canvas.addEventListener("pointercancel", onUp);
+
+  canvas.addEventListener("wheel", e => {
+    e.preventDefault();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const rect = canvas.getBoundingClientRect();
+    zoomAt((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr, e.deltaY < 0 ? 1.22 : 1 / 1.22);
+  }, { passive: false });
+
+  function zoomAt(sx, sy, factor) {
+    const cw = canvas.width, ch = canvas.height;
+    const [wx, wy] = screenToW(sx, sy, cw, ch);
+    const minS = Math.min(cw / W, ch / H) * 0.85;
+    camScale = Math.max(minS, Math.min(3.2, camScale * factor));
+    camX = Math.max(150, Math.min(W - 150, wx - (sx - cw * 0.5) / camScale));
+    camY = Math.max(150, Math.min(H - 150, wy - (sy - ch * 0.5) / camScale));
+    draw();
+  }
+
+  function setMapLayout(full) {
+    fullMapMode = full;
+    appRoot.classList.toggle("fullmap-mode", full);
+    document.getElementById("btnModeSplit").classList.toggle("active", !full);
+    document.getElementById("btnModeFull").classList.toggle("active", full);
+    resizeCanvas();
+  }
+
+  document.getElementById("btnModeSplit").onclick = () => setMapLayout(false);
+  document.getElementById("btnModeFull").onclick = () => setMapLayout(true);
+
+  document.getElementById("btnFollow").onclick = function () {
+    followPlayer = true;
+    this.classList.add("on");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    animateCamTo(player.x, player.y, Math.max(camScale, 0.56 * dpr), 360);
+  };
+
+  document.getElementById("btnToggleSeam").onclick = function () {
+    showSeam = !showSeam;
+    this.classList.toggle("on", showSeam);
+    draw();
+  };
+
+  document.getElementById("btnJumpMenu").onclick = function () {
+    showJumpBtns = !showJumpBtns;
+    this.classList.toggle("on", showJumpBtns);
+    document.querySelectorAll("[data-jump]").forEach(b => {
+      b.style.display = showJumpBtns ? "inline-block" : "none";
+    });
+  };
+
+  document.querySelectorAll("[data-jump]").forEach(btn => {
+    btn.onclick = () => {
+      const k = btn.getAttribute("data-jump");
+      exitIndoors(true);
+      player.path = [];
+      player.dest = null;
+      player.vx = 0;
+      player.vy = 0;
+      player.isRunning = false;
+      if (k === "ngate") { player.x = 4615; player.y = 5820; }
+      else if (k === "plaza") { player.x = 4590; player.y = 6670; }
+      else if (k === "weswood") { player.x = 4810; player.y = 1665; }
+      else if (k === "bridge") { player.x = 1620; player.y = 5520; }
+      followPlayer = true;
+      document.getElementById("btnFollow").classList.add("on");
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      camX = player.x; camY = player.y; camScale = 0.62 * dpr;
+      updateStoryUI();
+      draw();
+    };
+  });
+
+  document.getElementById("btnZoomIn").onclick = () => zoomAt(canvas.width * 0.5, canvas.height * 0.5, 1.42);
+  document.getElementById("btnZoomOut").onclick = () => zoomAt(canvas.width * 0.5, canvas.height * 0.5, 1 / 1.42);
+
+  // Deterministic QA hooks for automated phone & browser acceptance testing
+  window.__qaState = () => {
+    const tv = cellAtWorld(player.x, player.y) || 1;
+    const mat = MATERIALS[tv] || MATERIALS[1];
+    return {
+      px: Math.round(player.x),
+      py: Math.round(player.y),
+      spd: Math.round(Math.hypot(player.vx, player.vy)),
+      isRunning: player.isRunning,
+      mat: mat.name,
+      mu: mat.mu,
+      pathLen: player.path.length,
+      indoor: player.indoorPlace ? player.indoorPlace.id : null,
+      visPlaces: nearbyVisiblePlaces().map(x => x.p.name)
+    };
+  };
+  window.__qaTeleport = (x, y, scaleMult) => {
+    exitIndoors(true);
+    player.path = []; player.dest = null;
+    player.vx = 0; player.vy = 0; player.isRunning = false;
+    if (nav && cellAtWorld(x, y) === 0) {
+      const [gx, gy] = nearestWalkableCell(x, y);
+      x = (gx + 0.5) * nav.cell;
+      y = (gy + 0.5) * nav.cell;
+    }
+    player.x = x; player.y = y;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    camX = x; camY = y; camScale = (scaleMult || 0.62) * dpr;
+    followPlayer = true;
+    updateStoryUI();
+    draw();
+  };
+  window.__qaWalkTo = (x, y) => commandWalkTo(x, y, null, false);
+  window.__qaRunTo = (x, y) => commandWalkTo(x, y, null, true);
+  window.__qaEnterNearest = () => {
+    const vp = nearbyVisiblePlaces();
+    if (vp.length > 0) enterOrInspectPlace(vp[0].p);
+  };
+
+  // Initialize camera at crisp 1:1 village exploration zoom centered on player dot
+  const initDpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  camScale = 0.62 * initDpr;
+  camX = player.x;
+  camY = player.y;
+  resizeCanvas();
+  updateStoryUI();
+})();
+</script>
+</body>
+</html>

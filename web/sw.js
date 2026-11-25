@@ -1,11 +1,11 @@
-// PWA Service Worker（v20261120a17：行動端完整正體字型、WebP 原生硬體合成白鷗港手繪水彩海港輿圖）
-const CACHE = 'sw-shell-v20261120a17';
+// PWA Service Worker（v20261126r1：零圖檔水彩古卷全島無縫輿圖）
+const CACHE = 'sw-shell-v20261126r1';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261120a17',
-  '/island-ui.js?v=20261120a17',
-  '/maps/white_gull_harbor.webp?v=20261120a17',
+  '/island-ui.css?v=20261126r1',
+  '/island-parchment-map.js?v=20261126r1',
+  '/island-ui.js?v=20261126r1',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

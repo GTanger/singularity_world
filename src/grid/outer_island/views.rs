@@ -7,7 +7,7 @@ use serde_json::{Value, json};
 use super::clock_and_lang::{SolarClockSnapshot, language_name_zh};
 use super::engine::ordered_actors_at_node;
 use super::persona::derive_innate_persona;
-use super::types::{IslandWorldDelta, SpatialNodeDef, UnifiedMindBody, WorldStaticDoc};
+use super::types::{IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
 
 const PRIMARY_SCENE_NPC_SLOTS: usize = 6;
 
@@ -36,45 +36,37 @@ pub fn build_view_json(
             let shown_name = if known || at_public_post {
                 other.display_name.clone()
             } else {
-                format!("陌生的{}{}", other.race, other.role)
+                format!("陌生的{}", other.role)
             };
 
-            let wealth_cue = if other.copper >= 150 {
-                "錢袋鼓實"
-            } else if other.copper >= 40 {
-                "衣著整潔"
-            } else {
-                "手頭略緊"
-            };
             let innate = derive_innate_persona(other.soul_seed.max(1));
-            let moving_to = other
-                .route_plan
-                .front()
-                .and_then(|nx| doc.nodes.get(nx))
-                .map(|nd| nd.name.split('・').next_back().unwrap_or(nd.name.as_str()));
-            let posture = innate.body_posture_cue(
-                other.mind.stm.affect.hunger,
-                other.mind.stm.affect.fatigue.max(other.fatigue),
-                other.mind.stm.affect.anger,
-                moving_to,
+            let live_cue =
+                super::surface_cues::build_observable_npc_cue(doc, delta, clock, other, &innate);
+
+            let peer_meta = build_peer_interaction_meta_json(delta, viewer, other);
+            let deeds = super::scene_sockets::build_actor_deeds_for_viewer(
+                doc, delta, viewer, other, node, clock,
             );
-            let live_cue = if moving_to.is_some() {
-                posture
-            } else {
-                format!("{}・{}", posture, wealth_cue)
-            };
 
             json!({
                 "id": other.public_actor_token(),
                 "name": shown_name,
                 "race": other.race,
                 "role": other.role,
+                "is_player": other.controller_id.is_some(),
                 "known": known,
-                "pinned": at_public_post || known,
+                "pinned": at_public_post || known || !deeds.is_empty(),
                 "cue": live_cue,
+                "deeds": deeds,
+                "peer": peer_meta,
             })
         })
         .collect();
+
+    let (scene_objects, body_cues, scene_actions) =
+        super::scene_sockets::build_scene_presence_sockets(
+            doc, delta, viewer, node, clock, &all_npcs,
+        );
 
     let (visible_npcs, crowd_overflow): (Vec<Value>, Vec<Value>) =
         if all_npcs.len() > PRIMARY_SCENE_NPC_SLOTS {
@@ -92,15 +84,22 @@ pub fn build_view_json(
         .iter()
         .map(|ex| {
             let dst_opt = doc.nodes.get(&ex.to);
-            let ambient_cue = dst_opt.and_then(|dst| {
-                if dst.kind == "wild" {
-                    Some("遠處傳來風吹林葉聲")
-                } else if dst.kind == "plaza" {
-                    Some("傳來市集人聲")
-                } else {
-                    None
-                }
-            });
+            let ambient_cue =
+                super::mesh_expedition::exit_gate_ambient_cue(ex, clock).or_else(|| {
+                    dst_opt.and_then(|dst| {
+                        if dst.kind == "wild" {
+                            Some("遠處傳來風吹林葉聲")
+                        } else if dst.kind == "plaza" {
+                            Some("傳來市集人聲")
+                        } else if dst.kind == "campfire_nook" {
+                            Some("石窩乾爽避風・宜歇腳回氣")
+                        } else if dst.kind == "summit_outlook" {
+                            Some("高處視野開闊・可眺望山海")
+                        } else {
+                            None
+                        }
+                    })
+                });
             let safe_to_name =
                 if dst_opt.is_some_and(|dst| dst.dungeon) && !known_nodes.contains(&ex.to) {
                     "幽暗石道深處".to_string()
@@ -112,6 +111,7 @@ pub fn build_view_json(
                 "to": ex.to,
                 "to_name": safe_to_name,
                 "kind": ex.kind,
+                "milestone_zh": ex.milestone_zh,
                 "ambient_cue": ambient_cue,
             })
         })
@@ -128,8 +128,6 @@ pub fn build_view_json(
             "ambient_cue": "石縫深處湧出微涼氣流",
         }));
     }
-
-    let scene_actions = collect_scene_actions(doc, delta, viewer, node);
 
     let eff_fatigue = viewer.fatigue.max(viewer.mind.stm.affect.fatigue);
     let vibe_text = if eff_fatigue >= 80 {
@@ -201,10 +199,11 @@ pub fn build_view_json(
     });
 
     let transit_json = viewer.active_transit.as_ref().map(|tr| {
+        let next_stop = super::transit_and_cargo::resolve_next_stop_name_zh(doc, delta, tr);
         json!({
             "line_name": tr.line_name,
-            "step_idx": tr.step_idx,
-            "total_steps": tr.route_nodes.len().saturating_sub(1),
+            "next_stop_name": next_stop,
+            "alight_next_stop": tr.alight_next_stop,
         })
     });
 
@@ -233,14 +232,53 @@ pub fn build_view_json(
 
     let public_id = viewer.controller_id.as_deref().unwrap_or(&viewer.actor_id);
 
+    let mut scene_desc = if !delta.sold_houses.contains_key(&node.id)
+        && let Some(trace) = super::harbor_history::vacant_house_trace_zh(&node.id)
+    {
+        format!("{} {}", node.desc, trace)
+    } else {
+        node.desc.clone()
+    };
+    let homestead_labels: Vec<&str> = delta
+        .built_houses
+        .values()
+        .filter(|bh| bh.anchor_node_id == node.id)
+        .map(|bh| bh.label_zh.as_str())
+        .take(4)
+        .collect();
+    if !homestead_labels.is_empty() {
+        scene_desc.push_str(&format!(
+            " 街巷旁新立石木宅院：【{}】。",
+            homestead_labels.join("】、【")
+        ));
+    }
+
+    let live_desc = super::live_tide::compose_live_scene_desc(doc, delta, node, clock, &scene_desc);
+    let td = super::live_tide::derive_tide_clock_details(clock);
+
     json!({
         "ok": true,
         "setup_done": viewer.setup_done,
+        "sync": {
+            "boot_epoch": super::live_tide::boot_epoch_ms(),
+            "persist_seq": delta.persist_seq,
+        },
         "clock": {
             "calendar": clock.calendar_label,
             "bell": clock.bell_label,
+            "bell_index": clock.bell_index,
             "is_night": clock.is_night,
-            "hour": clock.hour,
+            "hour": td.hour,
+            "minute": td.minute,
+            "sec_since_midnight": td.sec_since_midnight,
+            "server_unix": clock.real_unix,
+            "server_unix_ms": now_ms,
+            "epoch_unix": td.epoch_unix,
+            "scale": td.scale,
+            "tide_slot": td.tide_slot,
+            "tide_name": td.tide_name,
+            "weather": td.weather_zh,
+            "exposure": super::live_tide::node_exposure_kind(node),
         },
         "scene": {
             "node_id": node.id,
@@ -249,12 +287,14 @@ pub fn build_view_json(
             "kind": node.kind,
             "indoor": node.indoor,
             "dungeon": node.dungeon,
-            "desc": node.desc,
+            "desc": live_desc,
             "npcs": visible_npcs,
             "crowd_overflow": crowd_overflow,
+            "objects": scene_objects,
             "exits": exits_out,
             "actions": scene_actions,
-            "breaths": viewer.recent_breaths,
+            "transit_signboards": super::transit_and_cargo::build_node_transit_signboards(doc, delta, &node.id),
+            "breaths": super::surface_cues::filter_clean_scene_breaths(&viewer.recent_breaths, &clock.bell_label),
         },
         "player": {
             "id": public_id,
@@ -263,13 +303,18 @@ pub fn build_view_json(
             "appearance": viewer.appearance,
             "copper": viewer.copper,
             "vibe": vibe_text,
+            "body_cues": body_cues,
             "temper_cue": v_motive_cue,
+            "self_bio": super::world_weave_bio::compose_player_biography_zh(doc, viewer, clock.game_days),
             "memorable_notes": memorable_notes,
             "wound": viewer.wound_part,
             "severe_warning": viewer.severe_wrist_warning,
             "inn_nights_left": viewer.inn_nights_left,
+            "assigned_inn_room": viewer.assigned_inn_room,
+            "ongoing_activity": viewer.ongoing_activity,
             "rescue_pact": viewer.rescue_pact_active,
             "owned_house_node": viewer.owned_house_node,
+            "mastery": super::phase_and_vessels::format_mastery_status_zh(viewer),
             "weapon": {
                 "name": viewer.bound_weapon.name,
                 "provenance": viewer.bound_weapon.provenance,
@@ -281,8 +326,10 @@ pub fn build_view_json(
                 "slug": it.slug,
                 "name": it.name,
                 "count": it.count,
+                "fair_copper": super::phase_and_vessels::appraise_item_fair_copper(it),
                 "is_voucher": it.bound_owner.is_some(),
                 "is_unclaimed": it.stolen_from.is_some(),
+                "is_vessel": it.vessel_meta.is_some(),
             })).collect::<Vec<_>>(),
             "inn_locker": viewer.inn_lockers.get(&node.id).unwrap_or(&viewer.inn_locker).iter().map(|it| json!({
                 "slug": it.slug,
@@ -296,136 +343,108 @@ pub fn build_view_json(
     })
 }
 
-fn collect_scene_actions(
-    doc: &WorldStaticDoc,
+pub fn build_peer_interaction_meta_json(
     delta: &IslandWorldDelta,
     viewer: &UnifiedMindBody,
-    node: &SpatialNodeDef,
-) -> Vec<Value> {
-    let mut acts = Vec::new();
-    if viewer.active_skirmish.is_some() {
-        return acts;
-    }
-    if viewer.active_transit.is_some() {
-        acts.push(json!({ "id": "carriage_next", "label": "繼續乘車前行", "sub": "順大路推進" }));
-        acts.push(json!({ "id": "carriage_alight", "label": "拍板中途下車", "sub": "改為步行" }));
-        return acts;
-    }
+    other: &UnifiedMindBody,
+) -> Value {
+    let other_tok = other.public_actor_token();
+    let other_is_npc = other.controller_id.is_none() && !other.actor_id.starts_with("pl:");
+    let tradable_goods: Vec<Value> = if other_is_npc {
+        let inn = derive_innate_persona(other.soul_seed.max(1));
+        let warmth = other
+            .mind
+            .ltm
+            .social
+            .get(&viewer.actor_id)
+            .map_or(0, |s| i64::from(s.warmth));
+        other
+            .backpack
+            .iter()
+            .filter(|i| i.count > 0 && i.bound_owner.is_none() && i.stolen_from.is_none())
+            .take(4)
+            .map(|i| {
+                let fair = super::phase_and_vessels::appraise_item_fair_copper(i);
+                let ask = if warmth >= 35 {
+                    (fair - 1).max(2)
+                } else if inn.concession_slope < -10 {
+                    fair + 2
+                } else {
+                    fair + 1
+                };
+                json!({
+                    "slug": i.slug,
+                    "name": i.name,
+                    "ask_copper": ask,
+                    "is_vessel": i.vessel_meta.is_some(),
+                })
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
 
-    if delta
-        .dropped_loot_by_node
-        .get(&node.id)
-        .is_some_and(|v| !v.is_empty())
-    {
-        acts.push(
-            json!({ "id": "pickup_dropped_bag", "label": "拾起遺落行囊", "sub": "查看散落物" }),
-        );
-    }
-    if node.kind == "dock" {
-        acts.push(json!({ "id": "work_dock", "label": "幫忙扛貨上棧橋", "sub": "領 4 枚銅幣" }));
-    }
-    if node.id.starts_with("oi:west_strait_ferry") {
-        acts.push(
-            json!({ "id": "inquire_ferry", "label": "查看跨海雙桅渡輪", "sub": "船票 25 銅幣" }),
-        );
-    }
-    if node.name.contains("鍛鐵") || node.name.contains("鐵匠") {
-        acts.push(json!({ "id": "forge_help", "label": "拉風箱協助打鐵", "sub": "領 5 枚銅幣" }));
-        if viewer.bound_weapon.wear_stage > 0 {
-            acts.push(
-                json!({ "id": "repair_weapon", "label": "請師傅修補兵刃", "sub": "4 枚銅幣" }),
-            );
-        }
-        if viewer
-            .backpack
-            .iter()
-            .any(|i| i.slug == "rune_stone" && i.count > 0)
-        {
-            acts.push(
-                json!({ "id": "engrave_rune", "label": "將原石鍛入兵刃", "sub": "6 枚銅幣" }),
-            );
-        }
-    }
-    if node.name.contains("酒館") {
-        if viewer
-            .backpack
-            .iter()
-            .any(|i| i.slug == "lodging_voucher" && i.count > 0)
-        {
-            acts.push(
-                json!({ "id": "redeem_voucher", "label": "出示船東抵宿券", "sub": "換二樓住兩宿" }),
-            );
-        }
-        acts.push(json!({ "id": "rent_inn", "label": "租下二樓閣樓一宿", "sub": "3 枚銅幣" }));
-        acts.push(json!({ "id": "buy_ration", "label": "購買黑麥乾糧", "sub": "2 枚銅幣" }));
-        if !viewer.rescue_pact_active {
-            acts.push(
-                json!({ "id": "buy_rescue_pact", "label": "登記逾時搜救契", "sub": "5 枚銅幣" }),
-            );
-        }
-    }
-    let in_owned = viewer.owned_house_node.as_deref() == Some(node.id.as_str());
-    if node.kind == "inn_room" || in_owned {
-        acts.push(json!({ "id": "rest_bed", "label": "上床寬衣安睡", "sub": "消除奔波疲乏" }));
-    }
-    if node.name.contains("草藥") && viewer.wound_part.is_some() {
-        acts.push(json!({ "id": "bandage_wound", "label": "敷苦艾膏包紮傷處", "sub": "3 枚銅幣" }));
-    }
-    if (node.kind == "shop" || node.kind == "dock" || node.kind == "plaza")
-        && viewer.backpack.iter().any(|i| {
-            matches!(
-                i.slug.as_str(),
-                "rune_stone" | "spider_carapace" | "iron_ore" | "driftwood" | "herb_bundle"
-            ) && i.count > 0
+    let open_pacts: Vec<Value> = delta
+        .contracts
+        .values()
+        .filter(|c| {
+            super::pacts_and_peers::is_escrow_pact_kind(&c.kind)
+                && ((c.creditor_id == other.actor_id && c.status == "escrowed")
+                    || (c.debtor_id == viewer.actor_id
+                        && c.status == "in_progress"
+                        && (c.creditor_id == other.actor_id
+                            || super::pacts_and_peers::parse_pact_note(&c.note_zh).0
+                                == other.actor_id)))
         })
-    {
-        acts.push(
-            json!({ "id": "sell_specialty", "label": "出售採集山海貨品", "sub": "當面過秤點銅" }),
-        );
-    }
-    if node.name.contains("驛馬") || node.name.contains("車馬") {
-        if !node.id.starts_with("oi:west_strait_ferry") {
-            acts.push(json!({ "id": "board_carriage_west", "label": "搭篷車往西峽渡口", "sub": "車資 3 銅幣" }));
-        }
-        if !node.id.starts_with("oi:white_gull_harbor") {
-            acts.push(json!({ "id": "board_carriage_east", "label": "搭篷車回白鷗港", "sub": "車資 3 銅幣" }));
-        }
-    }
-    if (node.kind == "gate" || node.kind == "plaza")
-        && viewer.backpack.iter().any(|i| i.stolen_from.is_some())
-    {
-        acts.push(
-            json!({ "id": "declare_found_bag", "label": "向衛兵申報拾遺物", "sub": "蓋章轉正當留用" }),
-        );
-    }
-    if node.kind == "house_vacant"
-        && viewer.owned_house_node.is_none()
-        && !delta.sold_houses.contains_key(&node.id)
-    {
-        let price = doc
-            .households
-            .iter()
-            .find(|h| h.node_id == node.id)
-            .map_or(360, |h| h.price_copper);
-        acts.push(json!({
-            "id": "buy_vacant_house",
-            "label": "購置此棟石木屋舍",
-            "sub": format!("{price} 枚銅幣")
-        }));
-    }
-    if viewer.fatigue >= 20
-        && viewer
-            .backpack
-            .iter()
-            .any(|i| i.slug == "rye_bread" && i.count > 0)
-    {
-        acts.push(json!({ "id": "eat_ration", "label": "嚼塊黑麥乾糧", "sub": "恢復腳力" }));
-    }
-    acts
+        .take(3)
+        .map(|c| {
+            let (_, desc) = super::pacts_and_peers::parse_pact_note(&c.note_zh);
+            json!({
+                "contract_id": c.contract_id,
+                "kind": c.kind,
+                "status": c.status,
+                "reward_copper": c.amount_copper,
+                "desc_zh": desc,
+                "can_accept": c.status == "escrowed",
+                "can_fulfill": c.status == "in_progress" && c.debtor_id == viewer.actor_id,
+            })
+        })
+        .collect();
+
+    let incoming_offer = viewer
+        .mind
+        .stm
+        .pending_trade_offer
+        .as_ref()
+        .filter(|o| o.seller_id == other.actor_id && o.node_id == viewer.node_id)
+        .map(|o| {
+            json!({
+                "item_name": o.item_name,
+                "price_copper": o.price_copper,
+            })
+        });
+    let incoming_spar = viewer
+        .mind
+        .stm
+        .pending_spar_from
+        .as_ref()
+        .is_some_and(|(from_id, nid, _)| from_id == &other.actor_id && nid == &viewer.node_id);
+
+    json!({
+        "target_token": other_tok,
+        "in_skirmish": other.active_skirmish.as_ref().map(|s| s.foe_name.clone()),
+        "phase_badge": other.mind.ltm.mastery.witnessed_martial_phase.clone()
+            .or_else(|| other.mind.ltm.mastery.witnessed_craft_phase.clone()),
+        "tradable_goods": tradable_goods,
+        "open_pacts": open_pacts,
+        "incoming_offer": incoming_offer,
+        "incoming_spar": incoming_spar,
+    })
 }
 
 pub fn build_filtered_map_json(
     doc: &WorldStaticDoc,
+    delta: &super::types::IslandWorldDelta,
     viewer: &UnifiedMindBody,
     clock: &SolarClockSnapshot,
 ) -> Value {
@@ -599,6 +618,8 @@ pub fn build_filtered_map_json(
         }
         Some(json!({
             "current_room": cur_node.id,
+            "stage_size": [900, 900],
+            "bg_color": "#11100e",
             "rooms": rooms,
         }))
     } else {
@@ -606,11 +627,13 @@ pub fn build_filtered_map_json(
     };
 
     if !min_x.is_finite() {
-        min_x = 690.0;
-        min_y = 510.0;
-        max_x = 740.0;
-        max_y = 560.0;
+        min_x = 1460.0;
+        min_y = 690.0;
+        max_x = 1485.0;
+        max_y = 712.0;
     }
+
+    let substrate = super::island_substrate::build_viewer_substrate_json(doc, delta, viewer, clock);
 
     json!({
         "ok": true,
@@ -627,6 +650,10 @@ pub fn build_filtered_map_json(
         "highways": visible_highways,
         "sea_corridors": visible_sea,
         "town_micro_maps": visited_towns,
+        "current_cell_map": Value::Null,
         "dungeon_local": dungeon_local,
+        "substrate": substrate,
     })
 }
+
+pub(crate) use super::cell_maps::{cell_illustrated_map_spec, dungeon_room_tile_spec};

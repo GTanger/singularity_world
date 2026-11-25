@@ -14,6 +14,25 @@ pub struct SolarClockSnapshot {
     pub is_night: bool,
 }
 
+/// 開服基準遊戲日（太陽曆 329 年初春第 1 日 = 第 6,188 遊戲日；此日及之後發生之轉折皆歸入「近歲經歷」續寫章節）
+pub const WORLD_OPEN_DAY: i64 = (329 - 312) * 364;
+
+/// 由任意遊戲日反推太陽曆年份與四季名稱（供人物傳記按年份季節自動續寫）
+pub fn solar_year_and_season_of_day(days: i64) -> (i16, &'static str) {
+    let day_of_year = days.rem_euclid(364);
+    let season = if day_of_year < 91 {
+        "初春"
+    } else if day_of_year < 182 {
+        "仲夏"
+    } else if day_of_year < 273 {
+        "金秋"
+    } else {
+        "寒冬"
+    };
+    let year = (days.div_euclid(364) + 312).clamp(1, 9_999) as i16;
+    (year, season)
+}
+
 /// 依伺服器權威即時時鐘（`1 真實小時 = 1 遊戲日`）換算太陽曆與一日十二鐘響。
 pub fn current_solar_clock() -> SolarClockSnapshot {
     let real_unix = now_unix();
@@ -67,6 +86,50 @@ pub fn solar_clock_at(real_unix: i64) -> SolarClockSnapshot {
         bell_label,
         six_phase_key,
         is_night,
+    }
+}
+
+/// 為跨響鐘追趕迴圈重建指定 `settled_bell` 之完整曆法與時段鍵（保留 `live_real_unix` 供在線租約判定）。
+pub fn solar_clock_for_settled_bell(settled_bell: i64, live_real_unix: i64) -> SolarClockSnapshot {
+    let days = settled_bell.div_euclid(12).max(0);
+    let bell_idx = settled_bell.rem_euclid(12) as u8;
+    let hour = u32::from(bell_idx) * 2;
+    let day_of_year = days.rem_euclid(364);
+    let (season, day_in_season) = if day_of_year < 91 {
+        ("初春", day_of_year + 1)
+    } else if day_of_year < 182 {
+        ("仲夏", day_of_year - 90)
+    } else if day_of_year < 273 {
+        ("金秋", day_of_year - 181)
+    } else {
+        ("寒冬", day_of_year - 272)
+    };
+    let year = (days.div_euclid(364)).max(0) + 312;
+    let calendar_label = format!("太陽曆 {year} 年・{season}・{} 日", day_in_season);
+    let bell_label = match bell_idx {
+        0 => "子夜沉鐘",
+        1 => "殘夜二鐘",
+        2 => "破曉初鐘",
+        3 => "晨鐘二響",
+        4 => "晨鐘三響",
+        5 => "日高四響",
+        6 => "正午鐘響",
+        7 => "午後初鐘",
+        8 => "申時二鐘",
+        9 => "黃昏鐘響",
+        10 => "暮色二鐘",
+        _ => "入夜初鐘",
+    }
+    .to_string();
+    SolarClockSnapshot {
+        real_unix: live_real_unix,
+        game_days: days,
+        hour,
+        bell_index: bell_idx,
+        calendar_label,
+        bell_label,
+        six_phase_key: format!("d{days}:p{}", hour / 4),
+        is_night: !(6..19).contains(&hour),
     }
 }
 

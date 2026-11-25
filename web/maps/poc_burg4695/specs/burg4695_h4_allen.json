@@ -1,0 +1,65 @@
+{
+  "id": "oi:burg_4695:h4",
+  "name": "風語橋哨・四號碎岩艾倫家",
+  "desc": "人類石工碎岩艾倫一家三口居所，青石板地呈 L 型格局：北廂並列三張綠被木床，西灶滾著麥湯，東側石工坊擺滿石鑿木槌、角尺與待雕方石。",
+  "world_w": 2048,
+  "world_h": 2048,
+  "is_indoor": true,
+  "floor_terrain": "stone_flag",
+  "seed": 469544,
+  "gpu_strength": 0.32,
+  "gpu_prompt": "90-degree straight-down zenithal top-down hand-inked sepia pen and warm mineral watercolor RPG stonemason cottage L-shaped interior on parchment, limestone flagstone floor, three green-quilted beds in north room, stone fireplace hearth, stonemason workbench with chisels mallet and limestone block in east wing, Dungeondraft style, zero perspective, no text",
+  "hull_poly": [
+    [280, 300],
+    [1320, 300],
+    [1320, 760],
+    [1780, 760],
+    [1780, 1700],
+    [280, 1700]
+  ],
+  "ext_step": [870, 1700, 1090, 1840],
+  "exit_xy": [980, 1725],
+  "spawn_xy": [980, 1500],
+  "npc_spots": [
+    [1350, 1060],
+    [680, 1240],
+    [1120, 800]
+  ],
+  "rugs": [
+    { "shape": "rect", "box": [340, 665, 1060, 855], "col": [92, 118, 84] },
+    { "shape": "oval", "box": [790, 965, 1130, 1315], "col": [162, 106, 68] }
+  ],
+  "walls": [
+    [280, 300, 1320, 300, "stone", 38],
+    [1320, 300, 1320, 760, "stone", 38],
+    [1320, 760, 1780, 760, "stone", 38],
+    [1780, 760, 1780, 1700, "stone", 38],
+    [1780, 1700, 1082, 1700, "stone", 38],
+    [878, 1700, 280, 1700, "stone", 38],
+    [280, 1700, 280, 300, "stone", 38],
+    [280, 910, 720, 910, "wood", 28]
+  ],
+  "door_leaves": [
+    [878, 1700, 950, 1635]
+  ],
+  "props": [
+    { "asset": "bed_human", "x": 440, "y": 500, "w": 196, "h": 252, "solid": true },
+    { "asset": "bed_human", "x": 700, "y": 500, "w": 196, "h": 252, "solid": true },
+    { "asset": "bed_human", "x": 960, "y": 500, "w": 196, "h": 252, "solid": true },
+    { "asset": "hearth_stone", "x": 425, "y": 1245, "w": 285, "h": 216, "deg": 270, "solid": true },
+    { "asset": "cauldron_pot", "x": 445, "y": 1495, "w": 152, "h": 152, "solid": true },
+    { "asset": "table_feast", "x": 960, "y": 1140, "w": 284, "h": 318, "solid": true },
+    { "asset": "stonemason_bench", "x": 1555, "y": 1035, "w": 258, "h": 272, "solid": true },
+    { "asset": "boulder_moss", "x": 1605, "y": 1485, "w": 176, "h": 170, "solid": true },
+    { "asset": "wormwood_bundles", "x": 1255, "y": 1545, "w": 158, "h": 190, "solid": true },
+    { "asset": "barrel_cluster", "x": 685, "y": 1535, "w": 172, "h": 196, "solid": true }
+  ],
+  "lights": [
+    { "x": 475, "y": 1245, "radius": 780, "intensity": 0.64, "color": [1.0, 0.68, 0.30] },
+    { "x": 1555, "y": 1035, "radius": 440, "intensity": 0.38, "color": [1.0, 0.86, 0.62] }
+  ],
+  "npcs": [
+    { "id": "res:burg_4695:h4_1", "name": "碎岩布蘭", "role": "石工家眷", "x": 680, "y": 1240 },
+    { "id": "res:burg_4695:h4_2", "name": "方石克萊爾", "role": "石工年輕幫手", "x": 1350, "y": 1060 }
+  ]
+}

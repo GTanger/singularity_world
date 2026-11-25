@@ -1,0 +1,226 @@
+{
+  "city_hall": {
+    "sheet": "buildings",
+    "x": 56.5,
+    "y": 93.5,
+    "w": 428.0,
+    "h": 333.0
+  },
+  "market_hall": {
+    "sheet": "buildings",
+    "x": 570.0,
+    "y": 119.5,
+    "w": 397.0,
+    "h": 273.0
+  },
+  "tavern_inn": {
+    "sheet": "buildings",
+    "x": 1133.5,
+    "y": 121.5,
+    "w": 294.0,
+    "h": 300.5
+  },
+  "lighthouse_tower": {
+    "sheet": "buildings",
+    "x": 1645.0,
+    "y": 109.0,
+    "w": 294.0,
+    "h": 293.5
+  },
+  "forge_shop": {
+    "sheet": "buildings",
+    "x": 122.5,
+    "y": 587.5,
+    "w": 325.5,
+    "h": 275.0
+  },
+  "herb_shop": {
+    "sheet": "buildings",
+    "x": 645.0,
+    "y": 640.0,
+    "w": 247.0,
+    "h": 217.0
+  },
+  "shipyard_barn": {
+    "sheet": "buildings",
+    "x": 1122.0,
+    "y": 672.0,
+    "w": 316.5,
+    "h": 193.5
+  },
+  "ruin_house": {
+    "sheet": "buildings",
+    "x": 1638.5,
+    "y": 636.0,
+    "w": 309.0,
+    "h": 266.0
+  },
+  "house_slate_a": {
+    "sheet": "buildings",
+    "x": 133.0,
+    "y": 1196.0,
+    "w": 247.0,
+    "h": 168.5
+  },
+  "house_slate_b": {
+    "sheet": "buildings",
+    "x": 649.0,
+    "y": 1195.5,
+    "w": 238.5,
+    "h": 170.0
+  },
+  "house_terra_a": {
+    "sheet": "buildings",
+    "x": 1157.5,
+    "y": 1196.0,
+    "w": 245.5,
+    "h": 168.5
+  },
+  "house_terra_b": {
+    "sheet": "buildings",
+    "x": 1675.0,
+    "y": 1197.0,
+    "w": 234.5,
+    "h": 166.0
+  },
+  "house_wood_a": {
+    "sheet": "buildings",
+    "x": 135.0,
+    "y": 1708.0,
+    "w": 244.0,
+    "h": 169.5
+  },
+  "house_wood_b": {
+    "sheet": "buildings",
+    "x": 648.5,
+    "y": 1708.5,
+    "w": 239.5,
+    "h": 168.0
+  },
+  "ship_merchant": {
+    "sheet": "buildings",
+    "x": 1111.5,
+    "y": 1703.0,
+    "w": 400.0,
+    "h": 180.0
+  },
+  "ship_barge": {
+    "sheet": "buildings",
+    "x": 1647.0,
+    "y": 1733.5,
+    "w": 288.0,
+    "h": 117.5
+  },
+  "tree_oak": {
+    "sheet": "props",
+    "x": 113.0,
+    "y": 135.0,
+    "w": 285.0,
+    "h": 264.5
+  },
+  "tree_pine": {
+    "sheet": "props",
+    "x": 635.5,
+    "y": 126.5,
+    "w": 275.5,
+    "h": 283.5
+  },
+  "bush_cluster": {
+    "sheet": "props",
+    "x": 1197.5,
+    "y": 203.5,
+    "w": 155.5,
+    "h": 121.0
+  },
+  "cliff_rock": {
+    "sheet": "props",
+    "x": 1663.0,
+    "y": 153.5,
+    "w": 274.0,
+    "h": 204.0
+  },
+  "well_stone": {
+    "sheet": "props",
+    "x": 168.5,
+    "y": 680.0,
+    "w": 176.5,
+    "h": 176.0
+  },
+  "barrels_crates": {
+    "sheet": "props",
+    "x": 663.5,
+    "y": 697.5,
+    "w": 206.5,
+    "h": 141.5
+  },
+  "campfire_ring": {
+    "sheet": "props",
+    "x": 1199.5,
+    "y": 705.5,
+    "w": 170.0,
+    "h": 124.5
+  },
+  "herb_rows": {
+    "sheet": "props",
+    "x": 1668.0,
+    "y": 677.0,
+    "w": 252.0,
+    "h": 180.5
+  },
+  "in_fireplace": {
+    "sheet": "props",
+    "x": 118.0,
+    "y": 1214.5,
+    "w": 277.5,
+    "h": 130.0
+  },
+  "in_bar_counter": {
+    "sheet": "props",
+    "x": 614.0,
+    "y": 1218.5,
+    "w": 310.0,
+    "h": 141.0
+  },
+  "in_table_set": {
+    "sheet": "props",
+    "x": 1160.0,
+    "y": 1190.0,
+    "w": 242.5,
+    "h": 181.0
+  },
+  "in_bed_single": {
+    "sheet": "props",
+    "x": 1677.5,
+    "y": 1204.5,
+    "w": 232.0,
+    "h": 152.0
+  },
+  "in_desk_cabinet": {
+    "sheet": "props",
+    "x": 126.5,
+    "y": 1728.0,
+    "w": 261.0,
+    "h": 128.5
+  },
+  "in_chest_locked": {
+    "sheet": "props",
+    "x": 666.5,
+    "y": 1727.0,
+    "w": 205.5,
+    "h": 133.0
+  },
+  "in_market_stall": {
+    "sheet": "props",
+    "x": 1141.0,
+    "y": 1711.0,
+    "w": 280.5,
+    "h": 164.5
+  },
+  "in_stairs": {
+    "sheet": "props",
+    "x": 1675.0,
+    "y": 1714.5,
+    "w": 239.5,
+    "h": 154.5
+  }
+}

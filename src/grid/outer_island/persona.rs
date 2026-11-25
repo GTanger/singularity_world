@@ -11,7 +11,7 @@ use crate::combat::human_phase::InnateBonePhase;
 use crate::combat::wordplate::splitmix64;
 
 /// 八項核心人生價值軸（8! = 40,320 種偏序排列）
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum ValueAxis {
     SurvivalSafety = 0,   // 活命安穩
@@ -433,8 +433,33 @@ impl InnatePersona {
         } else if self.temperament.persistence > 20 {
             "神色專注守著手邊活計".to_string()
         } else {
-            "神態從容在鋪前忙碌".to_string()
+            "神態從容守著手邊活計".to_string()
         }
+    }
+
+    /// 計算本人對另一位角色之先天脾氣與逆鱗相性差值（`[-36, +32]`，可不對稱，用於解釋為何血親亦會疏遠或外人一見投緣）
+    pub fn interpersonal_compat_delta(&self, other: &Self) -> i8 {
+        let other_top = other.top_value_axis(&CharacterDriftState::default());
+        let self_top = self.top_value_axis(&CharacterDriftState::default());
+        let mut score: i32 = 0;
+        if other_top == self.taboo_axis {
+            score -= 24;
+        } else if other_top == self.soft_spot_axis || other_top == self_top {
+            score += 18;
+        }
+        if self.temperament.ignition < -14 && other.temperament.ignition < -14 {
+            score -= 10;
+        } else if (i32::from(self.temperament.persistence)
+            - i32::from(other.temperament.persistence))
+        .abs()
+            <= 16
+        {
+            score += 8;
+        }
+        if self.temperament.damping > 18 && score < 0 {
+            score -= 6;
+        }
+        score.clamp(-36, 32) as i8
     }
 
     /// 對話前純 Rust 鎖死立場與零形容詞語用規則（封死 RLHF 順從與舞台劇小丑）
@@ -443,6 +468,40 @@ impl InnatePersona {
         drift: &CharacterDriftState,
         role: &str,
         acquainted: bool,
+        kept_pacts: u16,
+        broken_pacts: u16,
+        repeated_pressure_count: u8,
+        anger: u8,
+        utterance: &str,
+    ) -> StanceVerdict {
+        self.arbitrate_dialogue_stance_with_memory(
+            drift,
+            role,
+            acquainted,
+            if acquainted { 45 } else { 0 },
+            0,
+            false,
+            kept_pacts,
+            broken_pacts,
+            repeated_pressure_count,
+            anger,
+            utterance,
+        )
+    }
+
+    /// 結合記憶中對說話者之熟稔度（`familiarity`）、心頭冷暖（`warmth`）與親族同屋護欄裁定對話立場
+    #[expect(
+        clippy::too_many_arguments,
+        reason = "explicit social memory stance arbitration"
+    )]
+    pub fn arbitrate_dialogue_stance_with_memory(
+        &self,
+        drift: &CharacterDriftState,
+        role: &str,
+        acquainted: bool,
+        familiarity: u8,
+        warmth: i8,
+        is_kin_or_household: bool,
         kept_pacts: u16,
         broken_pacts: u16,
         repeated_pressure_count: u8,
@@ -459,11 +518,23 @@ impl InnatePersona {
             || utterance.contains("砸")
             || utterance.contains("廢話");
 
+        let fam_signal = if acquainted {
+            (i32::from(familiarity) - 20).clamp(-10, 65)
+        } else {
+            -20
+        };
+        let favor_signal = (i32::from(warmth) + i32::from(kept_pacts) * 18
+            - i32::from(broken_pacts) * 45)
+            .clamp(-95, 95);
         let sit = Situation16D::new(
-            if threatens { 55 } else { 5 },
+            if threatens && !is_kin_or_household {
+                55
+            } else {
+                5
+            },
             0,
-            if acquainted { 35 } else { -20 },
-            i32::from(kept_pacts) * 20 - i32::from(broken_pacts) * 45,
+            fam_signal,
+            favor_signal,
             if asks_discount { -25 } else { 10 },
             15,
             10,
@@ -473,7 +544,7 @@ impl InnatePersona {
             0,
             if acquainted { 0 } else { 20 },
             i32::from(anger),
-            0,
+            if is_kin_or_household { 35 } else { 0 },
             20,
             20,
         );
@@ -482,7 +553,8 @@ impl InnatePersona {
 
         // 讓步曲線 × 施壓抗性記憶：同一招賣慘／施壓重複第 2 次以上，抗性陡增
         let pressure_penalty = i32::from(repeated_pressure_count) * 14;
-        let effective_concession = i32::from(self.concession_slope) - pressure_penalty;
+        let effective_concession =
+            i32::from(self.concession_slope) + i32::from(warmth) / 6 - pressure_penalty;
 
         let (stance, price_adjust_pct) = if broken_pacts > 0
             && (self.taboo_axis == ValueAxis::PactIntegrity
@@ -490,10 +562,17 @@ impl InnatePersona {
         {
             (DialogueHardStance::RefuseColdly, 30)
         } else if threatens {
-            if tendency == ResponseTendency::Withdraw {
+            if tendency == ResponseTendency::Withdraw || is_kin_or_household {
                 (DialogueHardStance::GuardedEvade, 15)
             } else {
                 (DialogueHardStance::RefuseColdly, 25)
+            }
+        } else if warmth <= -18 {
+            // 關係冷淡或嫌隙（含疏遠血親）：不觸發暴力，僅收緊口風與拒絕人情賒讓
+            if asks_discount {
+                (DialogueHardStance::HaggleFirm, 5)
+            } else {
+                (DialogueHardStance::GuardedEvade, 0)
             }
         } else if asks_discount {
             if effective_concession >= 12 && acquainted && broken_pacts == 0 {
@@ -503,7 +582,7 @@ impl InnatePersona {
             } else {
                 (DialogueHardStance::HaggleFirm, 0)
             }
-        } else if kept_pacts >= 2 {
+        } else if (kept_pacts >= 2 || (warmth >= 45 && acquainted)) && broken_pacts == 0 {
             (DialogueHardStance::GrudgingFavor, -5)
         } else if !acquainted && self.temperament.approach_avoid < -18 {
             (DialogueHardStance::GuardedEvade, 0)

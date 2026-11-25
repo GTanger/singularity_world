@@ -1,0 +1,259 @@
+{
+  "id": "oi:cell4695:seamless",
+  "name": "風語橋哨・全境無縫大地圖（90°正俯視＋進門原地掀頂）",
+  "desc": "從北側外郊苦艾警戒坡、聚落四戶民居、雙層檢疫木柵石橋一路無縫延伸至南側界石林徑；推門踏入任一住戶門檻，屋頂即原地淡出掀開。",
+  "world_w": 3072,
+  "world_h": 5120,
+  "chunk_size": 1024,
+  "seed": 469590,
+  "spawn": { "x": 1536, "y": 4220 },
+  "zones": [
+    { "id": "oi:cell4695:skirt_a", "name": "風語橋哨・外郊苦艾警戒坡", "y0": 0, "y1": 1360, "desc": "北通鷗尾漁港的高地碎石坡，山風捲著野生苦艾草香。" },
+    { "id": "oi:burg_4695:hamlet", "name": "風語橋哨・哨所聚落院落", "y0": 1360, "y1": 3180, "desc": "四戶巡城衛兵與石工家庭圍繞石板小廣場而居，屋內石灶飄著熱麥湯香。" },
+    { "id": "oi:burg_4695:yard", "name": "風語橋哨・檢疫石橋哨柵", "y0": 3180, "y1": 4040, "desc": "橫跨南境溪流的青石橋釘著雙層檢疫木柵，四座銅火盆日夜焚燒苦艾煙查驗封條。" },
+    { "id": "oi:cell4695:0", "name": "風語橋哨・檢疫橋頭與界石林徑", "y0": 4040, "y1": 5120, "desc": "幹道旁立著風化青石界碑，待檢糧車停靠路側，南接幽深松橡林徑。" }
+  ],
+  "landmarks": [
+    { "id": "north_pass", "name": "北往鷗尾漁港官道", "xy": [1536, 180] },
+    { "id": "quarantine_bridge", "name": "檢疫石橋中央", "xy": [1536, 3670] },
+    { "id": "south_trail", "name": "南往界石林徑", "xy": [1585, 4940] }
+  ],
+  "rivers": [
+    {
+      "w": 196,
+      "pts": [[-80, 3695], [740, 3630], [1536, 3670], [2330, 3725], [3152, 3650]]
+    }
+  ],
+  "bridges": [
+    { "x": 1536, "y": 3670, "w": 272, "h": 328 }
+  ],
+  "earth_patches": [
+    [260, 1410, 1150, 2140],
+    [1920, 1410, 2810, 2140],
+    [300, 2290, 1160, 2930],
+    [1910, 2260, 2830, 2960],
+    [1180, 3340, 1892, 3530],
+    [1190, 3820, 1882, 4340]
+  ],
+  "plazas": [
+    { "x": 1536, "y": 2220, "r": 235 },
+    { "x": 1536, "y": 4160, "r": 165 }
+  ],
+  "roads": [
+    { "w": 154, "pts": [[1536, 20], [1445, 580], [1585, 1120], [1536, 1680], [1536, 2220], [1536, 3670], [1536, 4220], [1475, 4660], [1590, 5100]] },
+    { "w": 106, "pts": [[870, 2080], [1180, 2150], [1536, 2180], [1890, 2150], [2202, 2080]] },
+    { "w": 104, "pts": [[1110, 2600], [1536, 2520], [1962, 2600]] }
+  ],
+  "houses": [
+    {
+      "id": "oi:burg_4695:h1",
+      "slug": "h1_dain",
+      "name": "一號盾牌達因家",
+      "sub": "矮人巡城衛兵（4人）",
+      "desc": "矮人衛兵盾牌達因一家四口居所：西廂擺設四張 90° 正俯視矮人紅毯木床與編織地毯，東廳石灶熬著熱麥湯，牆邊立著圓盾長矛架。",
+      "rect": [320, 1460, 1080, 2020],
+      "porch": [790, 2020, 950, 2096],
+      "door_xy": [870, 2020],
+      "inside_xy": [870, 1875],
+      "floor_terrain": "oak_planks",
+      "roof_col": "slate",
+      "ridge_axis": "x"
+    },
+    {
+      "id": "oi:burg_4695:h2",
+      "slug": "h2_molly",
+      "name": "二號夜巡莫莉家",
+      "sub": "人類巡城衛兵（4人）",
+      "desc": "人類衛兵夜巡莫莉一家四口居所：東廂四張綠被木床整齊並列，西廳石灶火光映照餐桌與巡城兵械架。",
+      "rect": [1992, 1460, 2752, 2020],
+      "porch": [2122, 2020, 2282, 2096],
+      "door_xy": [2202, 2020],
+      "inside_xy": [2202, 1875],
+      "floor_terrain": "oak_planks",
+      "roof_col": "terra",
+      "ridge_axis": "x"
+    },
+    {
+      "id": "oi:burg_4695:h3",
+      "slug": "h3_roland",
+      "name": "三號盾牌羅蘭家",
+      "sub": "人類巡城衛兵（3人）",
+      "desc": "人類衛兵盾牌羅蘭一家三口居所：北側木隔屏內擺設三張綠被木床，南側石灶滾著大麥湯。",
+      "rect": [360, 2340, 1060, 2860],
+      "porch": [1060, 2520, 1136, 2680],
+      "door_xy": [1060, 2600],
+      "inside_xy": [925, 2600],
+      "floor_terrain": "oak_planks",
+      "roof_col": "wood",
+      "ridge_axis": "x"
+    },
+    {
+      "id": "oi:burg_4695:h4",
+      "slug": "h4_allen",
+      "name": "四號碎岩艾倫家",
+      "sub": "人類石工（3人・L型工坊）",
+      "desc": "人類石工碎岩艾倫一家三口居所：青石板地呈 L 型格局，北廂三張木床，東翼石工坊擺設正俯視石鑿木槌角尺工作台與待雕方石。",
+      "hull_poly": [[2012, 2300], [2512, 2300], [2512, 2520], [2772, 2520], [2772, 2900], [2012, 2900]],
+      "roof_rects": [[2012, 2300, 2512, 2900, "y"], [2460, 2520, 2772, 2900, "x"]],
+      "porch": [1936, 2520, 2012, 2680],
+      "door_xy": [2012, 2600],
+      "inside_xy": [2145, 2600],
+      "floor_terrain": "stone_flag",
+      "roof_col": "terra_warm"
+    }
+  ],
+  "rugs": [
+    { "shape": "oval", "box": [765, 1655, 975, 1865], "col": [148, 72, 56] },
+    { "shape": "oval", "box": [2095, 1655, 2305, 1865], "col": [72, 106, 118] },
+    { "shape": "rect", "box": [2440, 1685, 2695, 1815], "col": [142, 98, 62] },
+    { "shape": "oval", "box": [685, 2625, 895, 2815], "col": [138, 78, 58] },
+    { "shape": "rect", "box": [2055, 2480, 2465, 2565], "col": [92, 118, 84] }
+  ],
+  "walls": [
+    [320, 1460, 1080, 1460, "stone", 24],
+    [320, 1460, 320, 2020, "stone", 24],
+    [1080, 1460, 1080, 2020, "stone", 24],
+    [320, 2020, 800, 2020, "stone", 24],
+    [940, 2020, 1080, 2020, "stone", 24],
+    [660, 1460, 660, 1685, "wood", 18],
+    [660, 1835, 660, 2020, "wood", 18],
+
+    [1992, 1460, 2752, 1460, "stone", 24],
+    [1992, 1460, 1992, 2020, "stone", 24],
+    [2752, 1460, 2752, 2020, "stone", 24],
+    [1992, 2020, 2132, 2020, "stone", 24],
+    [2272, 2020, 2752, 2020, "stone", 24],
+    [2392, 1460, 2392, 1685, "wood", 18],
+    [2392, 1835, 2392, 2020, "wood", 18],
+
+    [360, 2340, 1060, 2340, "stone", 24],
+    [360, 2340, 360, 2860, "stone", 24],
+    [360, 2860, 1060, 2860, "stone", 24],
+    [1060, 2340, 1060, 2530, "stone", 24],
+    [1060, 2670, 1060, 2860, "stone", 24],
+    [360, 2575, 680, 2575, "wood", 18],
+
+    [2012, 2300, 2512, 2300, "stone", 24],
+    [2512, 2300, 2512, 2520, "stone", 24],
+    [2512, 2520, 2772, 2520, "stone", 24],
+    [2772, 2520, 2772, 2900, "stone", 24],
+    [2772, 2900, 2012, 2900, "stone", 24],
+    [2012, 2900, 2012, 2670, "stone", 24],
+    [2012, 2530, 2012, 2300, "stone", 24],
+
+    [880, 3455, 1412, 3455, "palisade", 22],
+    [920, 3408, 1412, 3408, "palisade", 20],
+    [1660, 3455, 2192, 3455, "palisade", 22],
+    [1660, 3408, 2152, 3408, "palisade", 20],
+    [960, 3885, 1412, 3885, "palisade", 22],
+    [1000, 3932, 1412, 3932, "palisade", 20],
+    [1660, 3885, 2112, 3885, "palisade", 22],
+    [1660, 3932, 2072, 3932, "palisade", 20]
+  ],
+  "door_leaves": [
+    [800, 2020, 852, 1972],
+    [2132, 2020, 2184, 1972],
+    [1060, 2530, 1012, 2582],
+    [2012, 2530, 2060, 2582]
+  ],
+  "props": [
+    { "asset": "rug_kilim", "x": 490, "y": 1740, "w": 185, "h": 128, "solid": false },
+    { "asset": "bed_dwarf", "x": 415, "y": 1565, "w": 96, "h": 140, "deg": 0, "solid": true },
+    { "asset": "bed_dwarf", "x": 555, "y": 1565, "w": 96, "h": 140, "deg": 0, "solid": true },
+    { "asset": "bed_dwarf", "x": 415, "y": 1915, "w": 96, "h": 140, "deg": 180, "solid": true },
+    { "asset": "bed_dwarf", "x": 555, "y": 1915, "w": 96, "h": 140, "deg": 180, "solid": true },
+    { "asset": "hearth_stone", "x": 835, "y": 1540, "w": 152, "h": 124, "deg": 0, "solid": true },
+    { "asset": "cauldron_pot", "x": 985, "y": 1540, "w": 86, "h": 86, "solid": true },
+    { "asset": "table_feast", "x": 870, "y": 1755, "w": 150, "h": 168, "solid": true },
+    { "asset": "shield_spear_rack", "x": 1030, "y": 1755, "w": 144, "h": 68, "deg": 90, "solid": true },
+    { "asset": "barrel_cluster", "x": 1005, "y": 1945, "w": 94, "h": 94, "solid": true },
+
+    { "asset": "bed_human", "x": 2495, "y": 1565, "w": 96, "h": 140, "deg": 0, "solid": true },
+    { "asset": "bed_human", "x": 2640, "y": 1565, "w": 96, "h": 140, "deg": 0, "solid": true },
+    { "asset": "bed_human", "x": 2495, "y": 1915, "w": 96, "h": 140, "deg": 180, "solid": true },
+    { "asset": "bed_human", "x": 2640, "y": 1915, "w": 96, "h": 140, "deg": 180, "solid": true },
+    { "asset": "hearth_stone", "x": 2210, "y": 1540, "w": 152, "h": 124, "deg": 0, "solid": true },
+    { "asset": "cauldron_pot", "x": 2070, "y": 1540, "w": 86, "h": 86, "solid": true },
+    { "asset": "table_feast", "x": 2200, "y": 1755, "w": 150, "h": 168, "solid": true },
+    { "asset": "shield_spear_rack", "x": 2042, "y": 1755, "w": 144, "h": 68, "deg": 270, "solid": true },
+    { "asset": "wormwood_bundles", "x": 2065, "y": 1945, "w": 86, "h": 86, "solid": true },
+
+    { "asset": "bed_human", "x": 445, "y": 2440, "w": 92, "h": 134, "deg": 0, "solid": true },
+    { "asset": "bed_human", "x": 580, "y": 2440, "w": 92, "h": 134, "deg": 0, "solid": true },
+    { "asset": "bed_human", "x": 715, "y": 2440, "w": 92, "h": 134, "deg": 0, "solid": true },
+    { "asset": "hearth_stone", "x": 440, "y": 2725, "w": 144, "h": 116, "deg": 270, "solid": true },
+    { "asset": "cauldron_pot", "x": 565, "y": 2785, "w": 82, "h": 82, "solid": true },
+    { "asset": "table_feast", "x": 790, "y": 2720, "w": 146, "h": 162, "solid": true },
+    { "asset": "barrel_cluster", "x": 975, "y": 2425, "w": 92, "h": 92, "solid": true },
+
+    { "asset": "bed_human", "x": 2110, "y": 2400, "w": 92, "h": 134, "deg": 0, "solid": true },
+    { "asset": "bed_human", "x": 2255, "y": 2400, "w": 92, "h": 134, "deg": 0, "solid": true },
+    { "asset": "bed_human", "x": 2400, "y": 2400, "w": 92, "h": 134, "deg": 0, "solid": true },
+    { "asset": "hearth_stone", "x": 2225, "y": 2820, "w": 146, "h": 118, "deg": 180, "solid": true },
+    { "asset": "cauldron_pot", "x": 2095, "y": 2815, "w": 82, "h": 82, "solid": true },
+    { "asset": "table_feast", "x": 2365, "y": 2675, "w": 146, "h": 162, "solid": true },
+    { "asset": "stonemason_bench", "x": 2640, "y": 2655, "w": 136, "h": 136, "solid": true },
+    { "asset": "boulder_moss", "x": 2655, "y": 2825, "w": 94, "h": 90, "solid": true },
+
+    { "asset": "brazier_wormwood", "x": 1362, "y": 3495, "w": 96, "h": 96, "solid": true },
+    { "asset": "brazier_wormwood", "x": 1710, "y": 3495, "w": 96, "h": 96, "solid": true },
+    { "asset": "brazier_wormwood", "x": 1362, "y": 3845, "w": 92, "h": 92, "solid": true },
+    { "asset": "brazier_wormwood", "x": 1710, "y": 3845, "w": 92, "h": 92, "solid": true },
+    { "asset": "wormwood_bundles", "x": 1265, "y": 3355, "w": 92, "h": 92, "solid": true },
+    { "asset": "wormwood_bundles", "x": 1805, "y": 3355, "w": 92, "h": 92, "solid": true },
+    { "asset": "wormwood_bundles", "x": 695, "y": 2080, "w": 84, "h": 84, "solid": true },
+    { "asset": "cart_quarantine", "x": 1335, "y": 4165, "w": 118, "h": 148, "deg": 12, "solid": true },
+    { "asset": "stone_stele", "x": 1725, "y": 4195, "w": 112, "h": 112, "solid": true },
+    { "asset": "stone_stele", "x": 1365, "y": 310, "w": 98, "h": 98, "solid": true },
+    { "asset": "boulder_moss", "x": 1085, "y": 680, "w": 165, "h": 158, "solid": true },
+    { "asset": "boulder_moss", "x": 2040, "y": 880, "w": 175, "h": 168, "deg": 60, "solid": true },
+    { "asset": "boulder_moss", "x": 420, "y": 3560, "w": 175, "h": 168, "solid": true },
+    { "asset": "boulder_moss", "x": 2610, "y": 3590, "w": 180, "h": 172, "deg": 90, "solid": true },
+
+    { "asset": "shrub_bush", "x": 1280, "y": 520, "w": 108, "h": 108, "solid": false },
+    { "asset": "shrub_bush", "x": 1785, "y": 760, "w": 112, "h": 112, "solid": false },
+    { "asset": "shrub_bush", "x": 1220, "y": 1960, "w": 98, "h": 98, "solid": false },
+    { "asset": "shrub_bush", "x": 1850, "y": 1960, "w": 98, "h": 98, "solid": false },
+    { "asset": "shrub_bush", "x": 760, "y": 3840, "w": 116, "h": 116, "solid": false },
+    { "asset": "shrub_bush", "x": 2290, "y": 3860, "w": 116, "h": 116, "solid": false },
+
+    { "asset": "tree_pine", "x": 480, "y": 320, "w": 260, "h": 270, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 860, "y": 420, "w": 310, "h": 300, "deg": 35, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 2180, "y": 340, "w": 320, "h": 310, "deg": 110, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 2640, "y": 540, "w": 265, "h": 275, "deg": 45, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 380, "y": 980, "w": 255, "h": 265, "deg": 80, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 2590, "y": 1050, "w": 300, "h": 292, "deg": 160, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 180, "y": 2180, "w": 275, "h": 268, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 2910, "y": 2180, "w": 275, "h": 268, "deg": 90, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 240, "y": 3240, "w": 250, "h": 260, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 2820, "y": 3280, "w": 295, "h": 288, "deg": 200, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 420, "y": 4280, "w": 325, "h": 316, "deg": 50, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 880, "y": 4680, "w": 270, "h": 280, "deg": 25, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 2580, "y": 4320, "w": 325, "h": 316, "deg": 140, "layer": "canopy", "solid": false },
+    { "asset": "tree_pine", "x": 2140, "y": 4740, "w": 270, "h": 280, "deg": 75, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 480, "y": 4880, "w": 310, "h": 300, "deg": 240, "layer": "canopy", "solid": false },
+    { "asset": "tree_oak", "x": 2660, "y": 4880, "w": 310, "h": 300, "deg": 310, "layer": "canopy", "solid": false }
+  ],
+  "lights": [
+    { "x": 835, "y": 1555, "radius": 480, "intensity": 0.64, "color": [1.0, 0.68, 0.30] },
+    { "x": 2210, "y": 1555, "radius": 480, "intensity": 0.64, "color": [1.0, 0.68, 0.30] },
+    { "x": 455, "y": 2725, "radius": 440, "intensity": 0.62, "color": [1.0, 0.68, 0.30] },
+    { "x": 2225, "y": 2805, "radius": 460, "intensity": 0.62, "color": [1.0, 0.68, 0.30] },
+    { "x": 2640, "y": 2655, "radius": 290, "intensity": 0.36, "color": [1.0, 0.86, 0.60] },
+    { "x": 1362, "y": 3495, "radius": 340, "intensity": 0.56, "color": [1.0, 0.66, 0.28] },
+    { "x": 1710, "y": 3495, "radius": 340, "intensity": 0.56, "color": [1.0, 0.66, 0.28] },
+    { "x": 1362, "y": 3845, "radius": 320, "intensity": 0.52, "color": [1.0, 0.66, 0.28] },
+    { "x": 1710, "y": 3845, "radius": 320, "intensity": 0.52, "color": [1.0, 0.66, 0.28] }
+  ],
+  "npcs": [
+    { "id": "res:burg_4695:h1_0", "name": "盾牌達因", "race": "矮人", "role": "巡城衛兵", "x": 1465, "y": 3425, "house_id": null, "line": "南境溪以南正在封鎖檢疫，過橋糧貨都得驗過封條、燻過苦艾煙！" },
+    { "id": "res:burg_4695:h1_1", "name": "號角格林", "race": "矮人", "role": "家眷", "x": 745, "y": 1645, "house_id": "oi:burg_4695:h1", "line": "達因在橋頭站崗，屋裡大麥湯正滾著，進來歇歇腳吧。" },
+    { "id": "res:burg_4695:h1_3", "name": "盾牌布隆", "race": "矮人", "role": "年輕幫手", "x": 500, "y": 1740, "house_id": "oi:burg_4695:h1", "line": "剛把四張床鋪曬過苦艾草，夜裡睡得踏實。" },
+    { "id": "res:burg_4695:h2_0", "name": "夜巡莫莉", "race": "人類", "role": "巡城衛兵", "x": 1605, "y": 3425, "house_id": null, "line": "北往鷗尾漁港的坡道暢通無阻，但生鮮肉魚一律不得私運過柵。" },
+    { "id": "res:burg_4695:h2_1", "name": "盾牌莉亞", "race": "人類", "role": "家眷", "x": 2315, "y": 1645, "house_id": "oi:burg_4695:h2", "line": "夜巡換班時最冷，灶上永遠溫著熱湯。" },
+    { "id": "res:burg_4695:h3_0", "name": "盾牌羅蘭", "race": "人類", "role": "巡城衛兵", "x": 1470, "y": 3915, "house_id": null, "line": "橋頭青石界碑往南就是林徑，天黑前別在深林逗留。" },
+    { "id": "res:burg_4695:h3_1", "name": "夜巡妮娜", "race": "人類", "role": "家眷", "x": 635, "y": 2690, "house_id": "oi:burg_4695:h3", "line": "院外風大，進屋關上門就暖和了。" },
+    { "id": "res:burg_4695:h4_0", "name": "碎岩艾倫", "race": "人類", "role": "石工", "x": 1885, "y": 2600, "house_id": null, "line": "這座檢疫石橋的護欄青石就是我帶著幫手一塊塊鑿出來的！" },
+    { "id": "res:burg_4695:h4_2", "name": "方石克萊爾", "race": "人類", "role": "年輕幫手", "x": 2525, "y": 2665, "house_id": "oi:burg_4695:h4", "line": "東廂這張石工台剛擺好角尺與新石鑿，正在替北坡修補界石。" }
+  ]
+}

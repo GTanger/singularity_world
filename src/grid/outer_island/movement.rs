@@ -7,15 +7,15 @@ use super::mind::{CognitiveMind, EventPublicity};
 use super::persona::{CharacterDriftState, ValueAxis};
 use super::sim_tick::broadcast_scene_event;
 use super::types::{
-    BoundTool, CarryItem, IslandWorldDelta, SkirmishState, SpatialNodeDef, TransitState,
-    UnifiedMindBody, WorldStaticDoc,
+    BoundTool, CarryItem, IslandWorldDelta, SkirmishState, SpatialNodeDef, UnifiedMindBody,
+    WorldStaticDoc,
 };
 
 pub const MAX_BREATHS: usize = 8;
 
 pub fn push_breath(a: &mut UnifiedMindBody, text: impl Into<String>) {
-    let line = text.into();
-    if line.trim().is_empty() {
+    let line = super::surface_cues::normalize_breath_line(&text.into());
+    if line.is_empty() || a.recent_breaths.back().is_some_and(|prev| prev == &line) {
         return;
     }
     a.recent_breaths.push_back(line);
@@ -44,11 +44,6 @@ pub fn new_uninitialized_actor(
         );
     }
 
-    let mut breaths = VecDeque::new();
-    breaths.push_back(
-        "海霧散開，雙桅商船緩緩靠上白鷗港石棧橋，潮濕海風裡傳來遠處矮人鐵砧的敲擊聲。".to_string(),
-    );
-
     UnifiedMindBody {
         actor_id: format!("pl:{controller_id}"),
         controller_id: Some(controller_id.to_string()),
@@ -65,48 +60,28 @@ pub fn new_uninitialized_actor(
         role: "遠航旅人".to_string(),
         appearance: "風塵僕僕的遠航旅人".to_string(),
         origin_pack: "smith_apprentice".to_string(),
-        household_id: String::new(),
+        birth_year: 306,
+        household_bond: "外來旅人".to_string(),
         home_node: doc.spawn_node.clone(),
         work_node: doc.spawn_node.clone(),
         node_id: doc.spawn_node.clone(),
-        route_plan: VecDeque::new(),
-        copper: 0,
         fatigue: 8,
-        wound_part: None,
-        severe_wrist_warning: false,
         bound_weapon: BoundTool {
             slug: "harbor_hammer".to_string(),
             name: "港務舊鍛錘".to_string(),
             provenance: "白鷗港港務局借予初抵學徒的粗鐵短錘，柄尾烙有港務火印".to_string(),
-            wear_stage: 0,
             grip_familiarity: 8,
-            rune_mark: None,
+            ..BoundTool::default()
         },
-        backpack: Vec::new(),
-        inn_locker: Vec::new(),
-        inn_lockers: BTreeMap::new(),
-        inn_nights_left: 0,
-        owned_house_node: None,
-        rescue_pact_active: false,
-        conversing_until_ms: 0,
         languages: langs,
-        lang_daily_gain: BTreeMap::new(),
-        lang_gain_day: 0,
         known_state_cells,
-        unlocked_secrets: BTreeSet::new(),
-        known_rumors: BTreeSet::new(),
-        explored_windows: BTreeSet::new(),
-        recent_breaths: breaths,
-        active_skirmish: None,
-        active_transit: None,
-        last_step_unix_ms: 0,
-        last_talk_unix_ms: 0,
-        last_active_unix: 0,
+        recent_breaths: VecDeque::new(),
         drift: CharacterDriftState::default(),
         mind,
         dirty: true,
         flushed_rev: 0,
         flushed_copper: i64::MIN,
+        ..UnifiedMindBody::default()
     }
 }
 
@@ -151,11 +126,14 @@ pub fn add_language_exposure(
 }
 
 pub fn add_carry_item(list: &mut Vec<CarryItem>, item: CarryItem) {
-    if let Some(existing) = list.iter_mut().find(|x| {
-        x.slug == item.slug
-            && x.bound_owner == item.bound_owner
-            && x.stolen_from == item.stolen_from
-    }) {
+    if item.vessel_meta.is_none()
+        && let Some(existing) = list.iter_mut().find(|x| {
+            x.vessel_meta.is_none()
+                && x.slug == item.slug
+                && x.bound_owner == item.bound_owner
+                && x.stolen_from == item.stolen_from
+        })
+    {
         existing.count += item.count;
         return;
     }
@@ -174,6 +152,45 @@ pub fn take_carry_item(list: &mut Vec<CarryItem>, slug: &str, count: u32) -> Opt
         list[idx].count -= count;
     }
     Some(taken)
+}
+
+/// 跨堆疊精確扣減「無記名借領且無贓物標記」之乾淨貨品；數量不足時零副作用回傳 `None`
+pub fn take_clean_carry_items(
+    list: &mut Vec<CarryItem>,
+    slug: &str,
+    need: u32,
+) -> Option<CarryItem> {
+    if need == 0 {
+        return None;
+    }
+    let is_clean = |x: &CarryItem| {
+        x.slug == slug && x.count > 0 && x.bound_owner.is_none() && x.stolen_from.is_none()
+    };
+    let avail: u32 = list.iter().filter(|x| is_clean(x)).map(|x| x.count).sum();
+    if avail < need {
+        return None;
+    }
+    let mut template: Option<CarryItem> = None;
+    let mut rem = need;
+    let mut idx = 0;
+    while idx < list.len() && rem > 0 {
+        if is_clean(&list[idx]) {
+            if template.is_none() {
+                let mut t = list[idx].clone();
+                t.count = need;
+                template = Some(t);
+            }
+            let take_here = list[idx].count.min(rem);
+            rem -= take_here;
+            if list[idx].count == take_here {
+                list.remove(idx);
+                continue;
+            }
+            list[idx].count -= take_here;
+        }
+        idx += 1;
+    }
+    template
 }
 
 #[expect(clippy::too_many_arguments, reason = "explicit origin setup arguments")]
@@ -224,6 +241,25 @@ pub fn apply_setup_origin(
         .actors
         .get_mut(&canonical_aid)
         .ok_or("找不到旅人行蹤")?;
+    if !entry.display_name.is_empty()
+        && entry.display_name != clean_name
+        && !entry
+            .mind
+            .ltm
+            .mastery
+            .past_aliases
+            .contains(&entry.display_name)
+    {
+        if entry.mind.ltm.mastery.past_aliases.len() >= 8 {
+            entry.mind.ltm.mastery.past_aliases.remove(0);
+        }
+        entry
+            .mind
+            .ltm
+            .mastery
+            .past_aliases
+            .push(entry.display_name.clone());
+    }
     entry.display_name = clean_name;
     entry.appearance = clean_app.chars().take(40).collect();
     entry.last_active_unix = clock.real_unix;
@@ -256,26 +292,23 @@ pub fn apply_setup_origin(
     }
 
     entry.backpack.clear();
-    let (role_zh, tool, starter_item, intro) = match valid_pack {
+    let (role_zh, tool, starter_item) = match valid_pack {
         "forest_hunter" => (
             "山林獵戶",
             BoundTool {
                 slug: "old_hunting_knife".to_string(),
                 name: "舊鹿角獵刀".to_string(),
                 provenance: "隨身帶下船的厚背短獵刀，刀鞘纏著防滑麻繩".to_string(),
-                wear_stage: 0,
                 grip_familiarity: 10,
-                rune_mark: None,
+                ..BoundTool::default()
             },
             CarryItem {
                 slug: "rye_bread".to_string(),
                 name: "黑麥乾糧".to_string(),
                 count: 2,
-                bound_owner: None,
-                stolen_from: None,
                 weight_units: 1,
+                ..CarryItem::default()
             },
-            "你緊了緊腰間的舊鹿角獵刀，踏上白鷗港濕潤的石棧橋。",
         ),
         "fallen_peddler" => (
             "行腳商旅",
@@ -283,19 +316,16 @@ pub fn apply_setup_origin(
                 slug: "iron_walking_rod".to_string(),
                 name: "包鐵行商手杖".to_string(),
                 provenance: "走南闖北防身撐路用的硬木包鐵長杖".to_string(),
-                wear_stage: 0,
                 grip_familiarity: 6,
-                rune_mark: None,
+                ..BoundTool::default()
             },
             CarryItem {
                 slug: "lodging_voucher".to_string(),
                 name: "船東抵宿券".to_string(),
                 count: 1,
                 bound_owner: Some(canonical_aid.clone()),
-                stolen_from: None,
-                weight_units: 0,
+                ..CarryItem::default()
             },
-            "你揣好懷裡那張寫著你名字的船東抵宿券，拄著包鐵長杖走下跳板，可先去鏽錨酒館換兩宿安穩住處。",
         ),
         "deck_sailor" => (
             "遠航水手",
@@ -303,19 +333,16 @@ pub fn apply_setup_origin(
                 slug: "belaying_club".to_string(),
                 name: "包銅繫纜短棍".to_string(),
                 provenance: "甲板上敲緊纜樁與防身兩用的沉手硬木棍".to_string(),
-                wear_stage: 0,
                 grip_familiarity: 10,
-                rune_mark: None,
+                ..BoundTool::default()
             },
             CarryItem {
                 slug: "hemp_rope".to_string(),
                 name: "粗麻繩".to_string(),
                 count: 1,
-                bound_owner: None,
-                stolen_from: None,
                 weight_units: 2,
+                ..CarryItem::default()
             },
-            "你扛起一卷結實粗麻繩踏上白鷗港碼頭，港邊搬運苦力正吆喝著缺人搭手。",
         ),
         _ => (
             "鍛鐵學徒",
@@ -323,27 +350,41 @@ pub fn apply_setup_origin(
                 slug: "harbor_hammer".to_string(),
                 name: "港務舊鍛錘".to_string(),
                 provenance: "白鷗港港務局借予初抵學徒的粗鐵短錘，柄尾烙有港務火印".to_string(),
-                wear_stage: 0,
                 grip_familiarity: 10,
-                rune_mark: None,
+                ..BoundTool::default()
             },
             CarryItem {
                 slug: "lodging_voucher".to_string(),
                 name: "船東抵宿券".to_string(),
                 count: 1,
                 bound_owner: Some(canonical_aid.clone()),
-                stolen_from: None,
-                weight_units: 0,
+                ..CarryItem::default()
             },
-            "你拎著港務舊鍛錘與一張船東抵宿券踏上白鷗港碼頭——西面鐵匠街爐火正旺，鏽錨酒館也能憑券歇腳。",
         ),
     };
+    let (arrival_line, intro) = super::live_tide::compose_arrival_breaths(clock, valid_pack);
     entry.role = role_zh.to_string();
     entry.bound_weapon = tool;
     add_carry_item(&mut entry.backpack, starter_item);
     entry.setup_done = true;
-    push_breath(entry, intro);
-    Ok(intro.to_string())
+    entry.recent_breaths.clear();
+    push_breath(entry, arrival_line);
+    push_breath(entry, intro.clone());
+    Ok(intro)
+}
+
+fn reconstruct_bfs_path(prev: &BTreeMap<String, String>, start: &str, goal: &str) -> Vec<String> {
+    let mut path = vec![goal.to_string()];
+    let mut p = goal.to_string();
+    while let Some(parent) = prev.get(&p) {
+        path.push(parent.clone());
+        if parent == start {
+            break;
+        }
+        p = parent.clone();
+    }
+    path.reverse();
+    path
 }
 
 pub fn shortest_node_path(doc: &WorldStaticDoc, start: &str, goal: &str) -> Option<Vec<String>> {
@@ -368,17 +409,7 @@ pub fn shortest_node_path(doc: &WorldStaticDoc, start: &str, goal: &str) -> Opti
                 vis.insert(ex.to.clone());
                 prev.insert(ex.to.clone(), cur.clone());
                 if ex.to == goal {
-                    let mut path = vec![goal.to_string()];
-                    let mut p = goal.to_string();
-                    while let Some(parent) = prev.get(&p) {
-                        path.push(parent.clone());
-                        if parent == start {
-                            break;
-                        }
-                        p = parent.clone();
-                    }
-                    path.reverse();
-                    return Some(path);
+                    return Some(reconstruct_bfs_path(&prev, start, goal));
                 }
                 q.push_back(ex.to.clone());
             }
@@ -387,7 +418,17 @@ pub fn shortest_node_path(doc: &WorldStaticDoc, start: &str, goal: &str) -> Opti
     None
 }
 
-/// 供步行使用之真實街道與門戶尋路（允許出入起終點房門，不穿越他人私宅或未探索地城）
+pub fn find_hidden_entrance_for_rumor<'a>(
+    doc: &'a WorldStaticDoc,
+    rumor_key: &str,
+) -> Option<(&'a str, &'a super::types::HiddenEntranceDef)> {
+    doc.hidden_entrances
+        .iter()
+        .find(|(_, h)| h.rumor_key == rumor_key)
+        .map(|(k, h)| (k.as_str(), h))
+}
+
+/// 供步行使用之真實街道與門戶尋路（允許出入起終點房門，地城內角色夜間可經 `secret_out` 返回地面）
 pub fn shortest_walk_path(
     doc: &WorldStaticDoc,
     start: &str,
@@ -397,6 +438,7 @@ pub fn shortest_walk_path(
     if start == goal {
         return Some(vec![start.to_string()]);
     }
+    let start_in_dungeon = doc.nodes.get(start).is_some_and(|n| n.dungeon);
     let mut prev: BTreeMap<String, String> = BTreeMap::new();
     let mut vis: BTreeSet<String> = BTreeSet::new();
     let mut q = VecDeque::new();
@@ -408,18 +450,20 @@ pub fn shortest_walk_path(
             continue;
         };
         for ex in &node.exits {
-            if ex.kind == "dungeon" || ex.kind == "secret_out" {
+            if !start_in_dungeon && (ex.kind == "dungeon" || ex.kind == "secret_out") {
                 continue;
             }
             if vis.contains(&ex.to) {
                 continue;
             }
             if ex.to != goal {
-                if !known_nodes.is_empty() && !known_nodes.contains(&ex.to) {
+                if !start_in_dungeon && !known_nodes.is_empty() && !known_nodes.contains(&ex.to) {
                     continue;
                 }
                 if let Some(dst) = doc.nodes.get(&ex.to)
-                    && (dst.dungeon || dst.kind == "house" || dst.kind == "house_vacant")
+                    && ((!start_in_dungeon && dst.dungeon)
+                        || dst.kind == "house"
+                        || dst.kind == "house_vacant")
                 {
                     continue;
                 }
@@ -427,19 +471,68 @@ pub fn shortest_walk_path(
             vis.insert(ex.to.clone());
             prev.insert(ex.to.clone(), cur.clone());
             if ex.to == goal {
-                let mut path = vec![goal.to_string()];
-                let mut p = goal.to_string();
-                while let Some(parent) = prev.get(&p) {
-                    path.push(parent.clone());
-                    if parent == start {
-                        break;
-                    }
-                    p = parent.clone();
-                }
-                path.reverse();
-                return Some(path);
+                return Some(reconstruct_bfs_path(&prev, start, goal));
             }
             q.push_back(ex.to.clone());
+        }
+    }
+    None
+}
+
+/// 供自主長途遠行、就醫、購屋與知情秘境探窟使用之完整門戶＋已解鎖暗門尋路
+pub fn shortest_expedition_path(
+    doc: &WorldStaticDoc,
+    start: &str,
+    goal: &str,
+    unlocked_secrets: &BTreeSet<String>,
+) -> Option<Vec<String>> {
+    if start == goal {
+        return Some(vec![start.to_string()]);
+    }
+    if !doc.nodes.contains_key(start) || !doc.nodes.contains_key(goal) {
+        return None;
+    }
+    let goal_is_dng = doc.nodes.get(goal).is_some_and(|n| n.dungeon);
+    let start_is_dng = doc.nodes.get(start).is_some_and(|n| n.dungeon);
+    let mut prev: BTreeMap<String, String> = BTreeMap::new();
+    let mut vis: BTreeSet<String> = BTreeSet::new();
+    let mut q = VecDeque::new();
+    vis.insert(start.to_string());
+    q.push_back(start.to_string());
+
+    while let Some(cur) = q.pop_front() {
+        let Some(node) = doc.nodes.get(&cur) else {
+            continue;
+        };
+        let mut nexts: Vec<(&str, &str)> = node
+            .exits
+            .iter()
+            .map(|e| (e.to.as_str(), e.kind.as_str()))
+            .collect();
+        if unlocked_secrets.contains(&cur)
+            && let Some(hid) = doc.hidden_entrances.get(&cur)
+        {
+            nexts.push((hid.target.as_str(), "secret_in"));
+        }
+        for (to_id, ekind) in nexts {
+            if vis.contains(to_id) {
+                continue;
+            }
+            if (ekind == "dungeon" || ekind == "secret_out") && !goal_is_dng && !start_is_dng {
+                continue;
+            }
+            if to_id != goal
+                && let Some(dst) = doc.nodes.get(to_id)
+                && (dst.kind == "house" || dst.kind == "house_vacant")
+            {
+                continue;
+            }
+            vis.insert(to_id.to_string());
+            prev.insert(to_id.to_string(), cur.clone());
+            if to_id == goal {
+                return Some(reconstruct_bfs_path(&prev, start, goal));
+            }
+            q.push_back(to_id.to_string());
         }
     }
     None
@@ -467,7 +560,7 @@ pub fn apply_move_step(
             return Err("眼前正與敵手短兵對峙，請先出招應對或虛晃退開！".to_string());
         }
         if a.active_transit.is_some() {
-            return Err("你正坐在雙馬篷車上趕路，若要改走山徑請先拍板中途下車。".to_string());
+            return Err("你正坐在車船座艙內趕路，若要改走山徑請先拍板中途下車。".to_string());
         }
         if now_ms > 0 && a.last_step_unix_ms > 0 && now_ms.saturating_sub(a.last_step_unix_ms) < 180
         {
@@ -487,28 +580,39 @@ pub fn apply_move_step(
             .copied()
             .unwrap_or(-1);
         if clock.game_days >= cleared_until {
+            let primordial_gone = delta.first_spider_slain.is_some();
+            let (f_slug, f_name, ambush_msg) = if !primordial_gone {
+                (
+                    "stone_spider",
+                    "背嵌原石的吞石巨蛛",
+                    "你剛想繞過蛛網邁向深處石台，盤踞窟頂的吞石巨蛛猛然垂落攔住去路！",
+                )
+            } else {
+                (
+                    "cave_lizard",
+                    "循荒氣佔巢的嗜石岩蜥",
+                    "你剛邁向深處石台，空巢易主遷入舊巢的嗜石岩蜥猛然竄出攔住去路！",
+                )
+            };
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             a.active_skirmish = Some(SkirmishState {
-                foe_slug: "stone_spider".to_string(),
-                foe_name: "背嵌原石的吞石巨蛛".to_string(),
+                foe_slug: f_slug.to_string(),
+                foe_name: f_name.to_string(),
                 can_speak_goblin: false,
                 foe_stagger: 0,
                 player_guard: false,
                 round_idx: 1,
             });
             a.mark_mutated();
-            let ambush =
-                "你剛想繞過蛛網邁向深處石台，盤踞窟頂的吞石巨蛛猛然垂落攔住去路！".to_string();
+            let ambush = ambush_msg.to_string();
             push_breath(a, ambush.clone());
             return Ok(ambush);
         }
     }
 
-    let mut valid_exit_dir: Option<String> = cur_node
-        .exits
-        .iter()
-        .find(|e| e.to == target_node)
-        .map(|e| e.dir.clone());
+    let matched_exit: Option<super::types::NodeExitDef> =
+        cur_node.exits.iter().find(|e| e.to == target_node).cloned();
+    let mut valid_exit_dir: Option<String> = matched_exit.as_ref().map(|e| e.dir.clone());
 
     let mut entering_secret = false;
     if valid_exit_dir.is_none()
@@ -529,13 +633,19 @@ pub fn apply_move_step(
         return Err("前方雲霧深鎖，無路可通。".to_string());
     };
 
+    let is_town_fabric = |k: &str| {
+        !matches!(
+            k,
+            "wild" | "road" | "campfire_nook" | "summit_outlook" | "plague_ruin" | "ruin"
+        )
+    };
     let mut town_shortcut_nodes: Vec<String> = Vec::new();
     if valid_exit_dir.is_none()
         && cur_node.cell_id == dst_node.cell_id
         && !cur_node.dungeon
         && !dst_node.dungeon
-        && cur_node.kind != "wild"
-        && dst_node.kind != "wild"
+        && is_town_fabric(&cur_node.kind)
+        && is_town_fabric(&dst_node.kind)
     {
         let mut q = VecDeque::new();
         let mut prev: BTreeMap<String, String> = BTreeMap::new();
@@ -564,7 +674,7 @@ pub fn apply_move_step(
                         && let Some(nx) = doc.nodes.get(&ex.to)
                         && nx.cell_id == cur_node.cell_id
                         && !nx.dungeon
-                        && nx.kind != "wild"
+                        && is_town_fabric(&nx.kind)
                     {
                         prev.insert(ex.to.clone(), u.clone());
                         q.push_back((ex.to.clone(), depth + 1));
@@ -578,8 +688,14 @@ pub fn apply_move_step(
         return Err("那個方向沒有可直接通行的道路或門戶。".to_string());
     };
 
+    let mut gate_step_cost_opt: Option<(u8, Option<&'static str>)> = None;
+    if let (Some(ex_def), Some(actor_ro)) = (matched_exit.as_ref(), delta.actors.get(&aid)) {
+        gate_step_cost_opt = Some(super::mesh_expedition::evaluate_exit_env_gate(
+            actor_ro, ex_def, dst_node, clock,
+        )?);
+    }
+
     if entering_secret {
-        // 透過 `node_occupants` $O(1)$ 通知同場全體見證者（不分玩家或居民！）
         if let Some(occ) = delta.node_occupants.get(&cur_node_id).cloned() {
             for wid in occ {
                 if wid == aid {
@@ -632,24 +748,65 @@ pub fn apply_move_step(
         }
     }
 
+    let from_nid = delta
+        .actors
+        .get(&aid)
+        .map(|a| a.node_id.clone())
+        .unwrap_or_default();
+    if let (Some(actor_ro), Some(src_nd)) = (delta.actors.get(&aid), doc.nodes.get(&from_nid)) {
+        super::transit_and_cargo::check_bulk_overland_move(actor_ro, src_nd, dst_node)?;
+    }
     let knows_dst_state = doc
         .cells
         .get(&dst_node.cell_id.to_string())
         .is_some_and(|c| {
-            c.kind == "settlement" || dst_node.kind == "gate" || dst_node.kind == "plaza"
+            c.kind == "settlement"
+                || c.kind == "rural_settlement"
+                || dst_node.kind == "gate"
+                || dst_node.kind == "plaza"
+                || dst_node.kind == "village_gate"
         });
-    delta.relocate_actor(&aid, target_node, dst_node.cell_id, knows_dst_state);
+    super::live_tide::relocate_actor_with_local_witness(
+        doc,
+        delta,
+        clock,
+        &aid,
+        &from_nid,
+        target_node,
+        dst_node.cell_id,
+        knows_dst_state,
+    );
+
+    if delta.actors.get(&aid).is_some_and(|a| {
+        a.ongoing_activity
+            .as_ref()
+            .is_some_and(|st| st.kind == "dock_haul" && st.target_node == target_node)
+    }) {
+        let _ = super::ongoing_activity::settle_dock_haul_delivery(doc, delta, clock, &aid);
+    }
 
     let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
     a.last_step_unix_ms = now_ms;
-    a.last_active_unix = clock.real_unix;
+    if now_ms > 0 && a.controller_id.is_some() {
+        a.last_active_unix = clock.real_unix;
+    }
 
-    let carry_weight: u32 = a
-        .backpack
-        .iter()
-        .map(|i| u32::from(i.weight_units) * i.count)
-        .sum();
-    if dst_node.kind == "wild" || dst_node.dungeon {
+    let mut env_flavor_suffix = String::new();
+    if let Some((gate_cost, note_opt)) = gate_step_cost_opt {
+        if gate_cost > 0 {
+            a.fatigue = a.fatigue.saturating_add(gate_cost).min(95);
+        } else if a.fatigue > 0 && dst_node.kind == "plaza" {
+            a.fatigue = a.fatigue.saturating_sub(1);
+        }
+        if let Some(note) = note_opt {
+            env_flavor_suffix = format!(" {note}");
+        }
+    } else if dst_node.kind == "wild" || dst_node.dungeon {
+        let carry_weight: u32 = a
+            .backpack
+            .iter()
+            .map(|i| u32::from(i.weight_units) * i.count)
+            .sum();
         let step_cost = if carry_weight >= 8 { 4 } else { 2 };
         a.fatigue = a.fatigue.saturating_add(step_cost).min(95);
     } else if a.fatigue > 0 && dst_node.kind == "plaza" {
@@ -658,15 +815,22 @@ pub fn apply_move_step(
 
     let clean_dir = dir_label.split('（').next().unwrap_or(&dir_label);
     let msg = if clean_dir == "穿過街坊" {
-        format!("你穿過街坊石板路，來到【{}】。", dst_node.name)
+        format!(
+            "你穿過街坊石板路，來到【{}】。{}",
+            dst_node.name, env_flavor_suffix
+        )
     } else {
-        format!("你往{}邁步，來到【{}】。", clean_dir, dst_node.name)
+        format!(
+            "你往{}邁步，來到【{}】。{}",
+            clean_dir, dst_node.name, env_flavor_suffix
+        )
     };
-    push_breath(a, msg.clone());
+    let td = super::live_tide::derive_tide_clock_details(clock);
+    push_breath(a, format!("〔{:02}:{:02}〕{msg}", td.hour, td.minute));
     Ok(msg)
 }
 
-/// 雙馬篷車乘行與中途下車推進（共用 `delta.transfer_copper` 與 `delta.relocate_actor`）
+/// 雙馬篷車與沿岸貨駁乘行推進（薄委託至 `transit_and_cargo` 實體逐拍載具引擎）
 pub fn apply_carriage_action(
     doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
@@ -676,144 +840,7 @@ pub fn apply_carriage_action(
     coach_id: Option<&str>,
     action: &str,
 ) -> Result<String, String> {
-    let aid = delta.resolve_actor_id(actor_key).ok_or("找不到旅人行蹤")?;
-    match action {
-        "board_carriage_west" | "board_carriage_east" => {
-            if !node.name.contains("驛馬") && !node.name.contains("車馬") && node.kind != "plaza"
-            {
-                return Err("請在驛馬行或市集廣場搭乘雙馬篷車。".to_string());
-            }
-            let dest = if action == "board_carriage_west" {
-                "oi:west_strait_ferry:plaza"
-            } else {
-                "oi:white_gull_harbor:plaza"
-            };
-            let start_plaza = if node.indoor {
-                node.exits
-                    .first()
-                    .map(|e| e.to.clone())
-                    .unwrap_or_else(|| node.id.clone())
-            } else {
-                node.id.clone()
-            };
-            if start_plaza == dest {
-                return Err("你已經在這一端的終點站了。".to_string());
-            }
-            if delta.actors.get(&aid).map_or(0, |a| a.copper) < 3 {
-                return Err("搭乘驛馬車專線需要 3 枚銅幣車資。".to_string());
-            }
-            let Some(route) = shortest_node_path(doc, &start_plaza, dest) else {
-                return Err("目前道路受阻，馬車暫停發班。".to_string());
-            };
-            let payee = coach_id.unwrap_or("municipal_treasury");
-            if !delta.transfer_copper(
-                clock.game_days,
-                clock.bell_index,
-                "carriage_fare",
-                &aid,
-                payee,
-                3,
-                "搭乘雙馬篷車車資".to_string(),
-            ) {
-                return Err("車資結算受阻，請稍候再試。".to_string());
-            }
-            if let Some(cid) = coach_id
-                && let Some(cname) = delta.actors.get(cid).map(|c| c.display_name.clone())
-                && let Some(a) = delta.actors.get_mut(&aid)
-            {
-                a.mind.record_pact_or_trade_evidence(
-                    cid,
-                    &cname,
-                    clock.game_days,
-                    true,
-                    false,
-                    "搭乘雙馬篷車車資",
-                );
-            }
-            let start_cell = doc
-                .nodes
-                .get(&start_plaza)
-                .map_or(node.cell_id, |n| n.cell_id);
-            delta.relocate_actor(&aid, &start_plaza, start_cell, true);
-            let dest_label = if action == "board_carriage_west" {
-                "西峽渡口"
-            } else {
-                "白鷗港"
-            };
-            let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            a.active_transit = Some(TransitState {
-                line_name: format!("疾風雙馬篷車（往{}）", dest_label),
-                route_nodes: route,
-                step_idx: 0,
-                started_unix: clock.real_unix,
-            });
-            a.mark_mutated();
-            let msg = format!(
-                "你付了 3 枚銅幣登上軸刻穩固紋路的雙馬篷車，馭手一抖長鞭，馬車順著大路穩穩駛向{}！",
-                dest_label
-            );
-            push_breath(a, msg.clone());
-            Ok(msg)
-        }
-        "carriage_next" => {
-            let mut tr = {
-                let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-                a.active_transit
-                    .take()
-                    .ok_or_else(|| "你目前並未搭乘馬車。".to_string())?
-            };
-            let advance_to = (tr.step_idx + 5).min(tr.route_nodes.len().saturating_sub(1));
-            for idx in (tr.step_idx + 1)..=advance_to {
-                let nid = &tr.route_nodes[idx];
-                if let Some(nd) = doc.nodes.get(nid) {
-                    let knows = nd.kind == "plaza" || nd.kind == "gate";
-                    delta.relocate_actor(&aid, nid, nd.cell_id, knows);
-                }
-            }
-            tr.step_idx = advance_to;
-            let cur_nid = tr.route_nodes[tr.step_idx].clone();
-            let cur_name = doc
-                .nodes
-                .get(&cur_nid)
-                .map_or_else(|| cur_nid.clone(), |n| n.name.clone());
-
-            let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            if tr.step_idx + 1 >= tr.route_nodes.len() {
-                a.mark_mutated();
-                let msg = format!(
-                    "雙馬篷車緩緩停靠在終點【{}】，你拎好行囊跳下車轅，沿途大路風光已盡收眼底。",
-                    cur_name
-                );
-                push_breath(a, msg.clone());
-                Ok(msg)
-            } else {
-                let left = tr.route_nodes.len() - 1 - tr.step_idx;
-                a.active_transit = Some(tr);
-                a.mark_mutated();
-                let msg = format!(
-                    "車輪滾滾駛過【{}】（距終點尚有 {} 段路程），窗外山林飛掠而過。",
-                    cur_name, left
-                );
-                push_breath(a, msg.clone());
-                Ok(msg)
-            }
-        }
-        _ => {
-            let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            if a.active_transit.take().is_none() {
-                return Err("你目前並未搭乘馬車。".to_string());
-            }
-            a.mark_mutated();
-            let cur_name = doc
-                .nodes
-                .get(&a.node_id)
-                .map_or_else(|| a.node_id.clone(), |n| n.name.clone());
-            let msg = format!(
-                "你拍了拍車廂木板示意停靠，在【{}】拎起行囊中途下車。",
-                cur_name
-            );
-            push_breath(a, msg.clone());
-            Ok(msg)
-        }
-    }
+    super::transit_and_cargo::apply_carriage_action(
+        doc, delta, clock, actor_key, node, coach_id, action, "",
+    )
 }

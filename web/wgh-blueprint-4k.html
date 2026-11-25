@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>白鷗港城心原生 4K 實心藍圖草圖檢視器（4096×7168・全域母座標零誤差對接）</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #ece3cf; color: #2b221b;
+      font-family: "Noto Serif TC", "Source Han Serif TC", "PingFang TC", serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    .app { display: flex; flex-direction: column; width: 100%; height: 100dvh; }
+    .topbar {
+      flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 6px; padding: 7px 11px; background: #f5eedc; border-bottom: 1px solid #d5c7ab; z-index: 20;
+    }
+    .group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    button.pill, a.pill {
+      appearance: none; text-decoration: none; border: 1px solid #bca989; background: #efe5ce; color: #3a2e25;
+      border-radius: 999px; padding: 5px 11px; font-size: 12.5px; font-weight: 600;
+      font-family: inherit; cursor: pointer; line-height: 1.25;
+    }
+    button.pill.on { background: #2f4c58; border-color: #213842; color: #f4f7f8; }
+    button.pill.warn { background: #7a2d1d; border-color: #591e12; color: #fff8ed; }
+    .stage { flex: 1 1 auto; position: relative; min-height: 0; overflow: hidden; background: #38493b; touch-action: none; }
+    canvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+    .hud {
+      position: absolute; top: 10px; left: 10px; right: 10px; max-width: 680px;
+      background: rgba(28, 34, 36, 0.86); color: #f4efe2;
+      font-size: 12.5px; padding: 7px 12px; border-radius: 9px;
+      pointer-events: none; line-height: 1.48;
+    }
+    .bottom-card {
+      position: absolute; left: 10px; bottom: 11px; right: 10px;
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; pointer-events: none;
+    }
+    .info-box {
+      pointer-events: auto; background: rgba(247, 241, 226, 0.96);
+      border: 1px solid #bfa986; border-radius: 10px; padding: 8px 12px;
+      max-width: min(460px, calc(100% - 140px)); box-shadow: 0 3px 14px rgba(0,0,0,0.22);
+    }
+    .info-box h2 { margin: 0 0 3px; font-size: 15px; color: #6e2414; }
+    .info-box p { margin: 0; font-size: 12.5px; line-height: 1.48; color: #3b2f23; }
+    .zoom-btns {
+      pointer-events: auto; display: flex; gap: 5px;
+      background: rgba(245, 238, 220, 0.94); padding: 5px 8px; border-radius: 999px;
+      border: 1px solid rgba(168, 148, 118, 0.8);
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="group">
+      <button class="pill on" id="btnXray">碰撞網格檢視：開</button>
+      <button class="pill on" id="btnSeam">四邊鄰片重疊框：開</button>
+      <button class="pill on" id="btnLabels">門牌與地標：開</button>
+      <button class="pill" id="btnPlaza">市集廣場</button>
+      <button class="pill" id="btnSouth">南端老井巷對接帶</button>
+    </div>
+    <div class="group">
+      <a class="pill" href="/wgh-draft.html">全城 95 戶總草圖</a>
+      <a class="pill" href="/wgh-core.html">水彩實證頁</a>
+    </div>
+  </div>
+  <div class="stage" id="wrap">
+    <canvas id="cv"></canvas>
+    <div class="hud" id="hud">載入原生 4K（4096×7168）碰撞先行藍圖草圖中…</div>
+    <div class="bottom-card">
+      <div class="info-box">
+        <h2 id="bTitle">原生 4K（4096×7168）碰撞先行母藍圖</h2>
+        <p id="bDesc">單擊地圖可實測尋路步行、走近 32px 石院牆可測試〔翻牆潛入〕；道路採柔邊平鋪無黑框（徹底根除路緣石誤判院牆），四邊與 C2／C4／R2／R5 鄰片共享同一套 16,384×21,312 母座標（0.00px 接縫誤差）。</p>
+        <div id="actRow" style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;"></div>
+      </div>
+      <div class="zoom-btns">
+        <button class="pill" id="btnZIn">＋ 1:1 放大</button>
+        <button class="pill" id="btnZOut">－ 鳥瞰</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const cv = document.getElementById("cv"), ctx = cv.getContext("2d"), wrap = document.getElementById("wrap");
+  const OUT_W = 4096, OUT_H = 7168;
+  let nav = null, buildings = [];
+  let showXray = true, showSeam = true, showLabels = true;
+  let camX = 2048, camY = 2350, camS = 0.34;
+  const player = { x: 1568, y: 2380, path: [] };
+
+  const mipLow = new Image(), mipMid = new Image(), hiTiles = {};
+  mipLow.onload = () => draw();
+  mipMid.onload = () => draw();
+  mipLow.src = "/maps/wgh_blueprint_4k/mip_low.webp?v=3";
+  mipMid.src = "/maps/wgh_blueprint_4k/mip_mid.webp?v=3";
+
+  function getHi(tx, ty) {
+    const k = `${tx}_${ty}`;
+    if (!hiTiles[k]) {
+      const im = new Image();
+      im.onload = () => draw();
+      im.src = `/maps/wgh_blueprint_4k/t_${tx}_${ty}.webp?v=3`;
+      hiTiles[k] = im;
+    }
+    return hiTiles[k];
+  }
+
+  fetch("/maps/wgh_blueprint_4k/blueprint_nav_grid.json?v=3").then(r => r.json()).then(d => {
+    const g = new Uint8Array(d.gw * d.gh);
+    for (let y = 0; y < d.gh; y++) {
+      const r = d.rows[y], off = y * d.gw;
+      for (let x = 0; x < d.gw; x++) g[off + x] = r.charCodeAt(x) - 48;
+    }
+    nav = { w: d.w, h: d.h, cell: d.cell, gw: d.gw, gh: d.gh, grid: g, coreX0: d.core_x0, coreY0: d.core_y0 };
+    buildings = d.buildings || [];
+    updateHud();
+    draw();
+  });
+
+  function isWalk(v) { return v > 0 && v !== 7; }
+
+  function nearestWalk(wx, wy) {
+    const gx0 = Math.max(0, Math.min(nav.gw - 1, Math.floor(wx / nav.cell)));
+    const gy0 = Math.max(0, Math.min(nav.gh - 1, Math.floor(wy / nav.cell)));
+    if (isWalk(nav.grid[gy0 * nav.gw + gx0])) return [gx0, gy0];
+    for (let r = 1; r <= 16; r++) {
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+        const nx = gx0 + dx, ny = gy0 + dy;
+        if (nx >= 0 && nx < nav.gw && ny >= 0 && ny < nav.gh && isWalk(nav.grid[ny * nav.gw + nx])) return [nx, ny];
+      }
+    }
+    return [gx0, gy0];
+  }
+
+  function findPath(sxW, syW, txW, tyW) {
+    const [sx, sy] = nearestWalk(sxW, syW), [tx, ty] = nearestWalk(txW, tyW);
+    const gw = nav.gw, gh = nav.gh, N = gw * gh;
+    const gS = new Float32Array(N); gS.fill(1e15);
+    const par = new Int32Array(N); par.fill(-1);
+    const sI = sy * gw + sx, gI = ty * gw + tx;
+    gS[sI] = 0;
+    const hF = [0], hI = [sI];
+    const push = (f, idx) => {
+      let i = hF.length; hF.push(f); hI.push(idx);
+      while (i > 0) { const p = (i - 1) >> 1; if (hF[p] <= f) break; hF[i] = hF[p]; hI[i] = hI[p]; i = p; }
+      hF[i] = f; hI[i] = idx;
+    };
+    const pop = () => {
+      const top = hI[0], lf = hF.pop(), li = hI.pop(), n = hF.length;
+      if (n > 0) {
+        let i = 0;
+        while (true) {
+          let l = i * 2 + 1, r = l + 1, s = i;
+          if (l < n && hF[l] < lf) s = l;
+          if (r < n && hF[r] < (s === i ? lf : hF[l])) s = r;
+          if (s === i) break;
+          hF[i] = hF[s]; hI[i] = hI[s]; i = s;
+        }
+        hF[i] = lf; hI[i] = li;
+      }
+      return top;
+    };
+    const D = [[-1,0,1],[1,0,1],[0,-1,1],[0,1,1],[-1,-1,1.414],[-1,1,1.414],[1,-1,1.414],[1,1,1.414]];
+    let ok = false;
+    while (hF.length) {
+      const c = pop();
+      if (c === gI) { ok = true; break; }
+      const cx = c % gw, cy = (c / gw) | 0;
+      for (let d = 0; d < 8; d++) {
+        const dx = D[d][0], dy = D[d][1], nx = cx + dx, ny = cy + dy;
+        if (nx < 0 || nx >= gw || ny < 0 || ny >= gh) continue;
+        const ni = ny * gw + nx;
+        if (!isWalk(nav.grid[ni])) continue;
+        if (dx && dy && (!isWalk(nav.grid[cy * gw + nx]) || !isWalk(nav.grid[ny * gw + cx]))) continue;
+        const ng = gS[c] + D[d][2];
+        if (ng + 1e-4 < gS[ni]) { gS[ni] = ng; par[ni] = c; push(ng + Math.hypot(tx - nx, ty - ny), ni); }
+      }
+    }
+    if (!ok) return [];
+    const pts = [];
+    for (let c = gI; c !== -1; c = par[c]) pts.push({ x: ((c % gw) + 0.5) * nav.cell, y: (((c / gw) | 0) + 0.5) * nav.cell });
+    pts.reverse();
+    return pts;
+  }
+
+  function findClimb() {
+    if (!nav) return null;
+    const pgx = Math.floor(player.x / nav.cell), pgy = Math.floor(player.y / nav.cell);
+    const CARD = [[0,-1],[0,1],[-1,0],[1,0]];
+    for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) {
+      const wx = pgx + ox, wy = pgy + oy;
+      if (wx < 2 || wx >= nav.gw - 2 || wy < 2 || wy >= nav.gh - 2) continue;
+      if (nav.grid[wy * nav.gw + wx] !== 7) continue;
+      for (const [dx, dy] of CARD) {
+        if (!isWalk(nav.grid[(wy - dy) * nav.gw + (wx - dx)])) continue;
+        for (let st = 2; st <= 4; st++) {
+          const fx = wx + dx * st, fy = wy + dy * st;
+          const fv = nav.grid[fy * nav.gw + fx];
+          if (fv === 0) break;
+          if (isWalk(fv)) return { landX: (fx + 0.5) * nav.cell, landY: (fy + 0.5) * nav.cell };
+        }
+      }
+    }
+    return null;
+  }
+
+  function updateHud() {
+    if (!nav) return;
+    const gx = Math.max(0, Math.min(nav.gw - 1, Math.floor(player.x / nav.cell)));
+    const gy = Math.max(0, Math.min(nav.gh - 1, Math.floor(player.y / nav.cell)));
+    const names = { 0: "屋頂／河道(阻擋)", 1: "青石官道", 2: "夯土坊巷", 3: "浣衣石埠", 4: "城內草坪", 5: "藥圃／馬場", 7: "32px矮石院牆" };
+    const code = nav.grid[gy * nav.gw + gx];
+    document.getElementById("hud").textContent =
+      `本片 4K 座標 (${Math.round(player.x)}, ${Math.round(player.y)}) ｜ 全城母座標 (${Math.round(player.x + nav.coreX0)}, ${Math.round(player.y + nav.coreY0)}) ｜ 格態：${names[code] || code} ｜ 建築數：${buildings.length} 棟（含跨界屋舍）`;
+    const act = document.getElementById("actRow");
+    act.innerHTML = "";
+    const cSpot = findClimb();
+    if (cSpot) {
+      const b = document.createElement("button");
+      b.className = "pill warn";
+      b.textContent = "〔翻牆潛入對側院落〕";
+      b.onclick = () => { player.x = cSpot.landX; player.y = cSpot.landY; player.path = []; updateHud(); draw(); };
+      act.appendChild(b);
+    }
+  }
+
+  function w2s(wx, wy) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    return [cv.width * 0.5 + (wx - camX) * camS * dpr, cv.height * 0.5 + (wy - camY) * camS * dpr];
+  }
+  function s2w(sx, sy) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    return [camX + (sx - cv.width * 0.5) / (camS * dpr), camY + (sy - cv.height * 0.5) / (camS * dpr)];
+  }
+
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    cv.width = Math.max(1, Math.floor(wrap.clientWidth * dpr));
+    cv.height = Math.max(1, Math.floor(wrap.clientHeight * dpr));
+    draw();
+  }
+  window.addEventListener("resize", resize);
+
+  function draw() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    ctx.fillStyle = "#334437";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    const [x0, y0] = w2s(0, 0), [x1, y1] = w2s(OUT_W, OUT_H);
+    if (mipLow.complete && mipLow.naturalWidth) ctx.drawImage(mipLow, x0, y0, x1 - x0, y1 - y0);
+    if (camS > 0.25 && mipMid.complete && mipMid.naturalWidth) ctx.drawImage(mipMid, x0, y0, x1 - x0, y1 - y0);
+    if (camS > 0.48) {
+      const [vL, vT] = s2w(0, 0), [vR, vB] = s2w(cv.width, cv.height);
+      for (let tx = 0; tx < 2; tx++) for (let ty = 0; ty < 4; ty++) {
+        const wx0 = tx * 2048, wy0 = ty * 1792, wx1 = wx0 + 2048, wy1 = wy0 + 1792;
+        if (wx1 < vL || wx0 > vR || wy1 < vT || wy0 > vB) continue;
+        const im = getHi(tx, ty);
+        if (im.complete && im.naturalWidth) {
+          const [sx0, sy0] = w2s(wx0, wy0), [sx1, sy1] = w2s(wx1, wy1);
+          ctx.drawImage(im, sx0 - 0.4, sy0 - 0.4, sx1 - sx0 + 0.8, sy1 - sy0 + 0.8);
+        }
+      }
+    }
+
+    if (showXray && nav) {
+      const [vL, vT] = s2w(0, 0), [vR, vB] = s2w(cv.width, cv.height);
+      const gx0 = Math.max(0, Math.floor(vL / nav.cell)), gx1 = Math.min(nav.gw - 1, Math.ceil(vR / nav.cell));
+      const gy0 = Math.max(0, Math.floor(vT / nav.cell)), gy1 = Math.min(nav.gh - 1, Math.ceil(vB / nav.cell));
+      const cw = nav.cell * camS * dpr;
+      for (let gy = gy0; gy <= gy1; gy++) {
+        const [, sy] = w2s(0, gy * nav.cell), off = gy * nav.gw;
+        for (let gx = gx0; gx <= gx1; gx++) {
+          const v = nav.grid[off + gx];
+          if (v === 7 || v === 0) {
+            const [sx] = w2s(gx * nav.cell, 0);
+            ctx.fillStyle = v === 7 ? "rgba(220, 0, 185, 0.50)" : "rgba(35, 95, 185, 0.34)";
+            ctx.fillRect(sx, sy, cw + 0.5, cw + 0.5);
+          }
+        }
+      }
+    }
+
+    if (showSeam) {
+      ctx.save();
+      ctx.setLineDash([8 * dpr, 6 * dpr]);
+      ctx.lineWidth = 2 * dpr;
+      const bands = [
+        [0, 0, 1024, OUT_H, "rgba(35,105,210,0.85)", "← 西鄰 C2 重疊帶 (1024px)", 512, 180],
+        [3072, 0, 4096, OUT_H, "rgba(35,105,210,0.85)", "東鄰 C4 重疊帶 (1024px) →", 3584, 180],
+        [0, 0, OUT_W, 1024, "rgba(40,145,95,0.85)", "↑ 北鄰 C3-R2 重疊帶 (1024px)", 2048, 80],
+        [0, 6144, OUT_W, 7168, "rgba(40,145,95,0.85)", "↓ 南鄰 C3-R5 重疊帶（銜接老井巷）", 2048, 7060],
+        [0, 3072, OUT_W, 4096, "rgba(215,75,30,0.90)", "↕ C3-R3 ↔ C3-R4 澤昂河重疊帶 (1024px)", 2048, 3140]
+      ];
+      ctx.font = `700 ${Math.round(12 * dpr)}px "Noto Serif TC", serif`;
+      ctx.textAlign = "center";
+      bands.forEach(([bx0, by0, bx1, by1, col, lbl, lx, ly]) => {
+        const [sx0, sy0] = w2s(bx0, by0), [sx1, sy1] = w2s(bx1, by1), [slx, sly] = w2s(lx, ly);
+        ctx.strokeStyle = col;
+        ctx.strokeRect(sx0, sy0, sx1 - sx0, sy1 - sy0);
+        ctx.fillStyle = "rgba(28,32,36,0.82)";
+        const tw = ctx.measureText(lbl).width + 14 * dpr;
+        ctx.fillRect(slx - tw * 0.5, sly - 11 * dpr, tw, 22 * dpr);
+        ctx.fillStyle = "#fff8ec";
+        ctx.fillText(lbl, slx, sly + 4 * dpr);
+      });
+      ctx.restore();
+    }
+
+    if (showLabels && camS >= 0.22) {
+      ctx.save();
+      ctx.font = `700 ${Math.max(10, Math.round(11.5 * dpr))}px "Noto Serif TC", serif`;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      buildings.forEach(b => {
+        if (b.x < -80 || b.x > OUT_W + 80 || b.y < -80 || b.y > OUT_H + 80) return;
+        const [bx, by] = w2s(b.x, b.y);
+        const tw = ctx.measureText(b.short).width + 10 * dpr;
+        ctx.fillStyle = b.kind === "shop" ? "rgba(148,38,24,0.88)" : (b.kind === "vacant" ? "rgba(248,242,232,0.92)" : "rgba(38,32,26,0.78)");
+        ctx.fillRect(bx - tw * 0.5, by - 9 * dpr, tw, 18 * dpr);
+        ctx.fillStyle = b.kind === "vacant" ? "#8f2216" : "#fff9ee";
+        ctx.fillText(b.short, bx, by + 0.5 * dpr);
+      });
+      ctx.restore();
+    }
+
+    if (player.path.length) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,248,220,0.88)"; ctx.lineWidth = 2.4 * dpr; ctx.setLineDash([5 * dpr, 5 * dpr]);
+      ctx.beginPath();
+      const [px0, py0] = w2s(player.x, player.y); ctx.moveTo(px0, py0);
+      player.path.forEach(pt => { const [sx, sy] = w2s(pt.x, pt.y); ctx.lineTo(sx, sy); });
+      ctx.stroke();
+      ctx.restore();
+    }
+    const [px, py] = w2s(player.x, player.y);
+    ctx.fillStyle = "#c83e2b"; ctx.strokeStyle = "#fffaf0"; ctx.lineWidth = 2.5 * dpr;
+    ctx.beginPath(); ctx.arc(px, py, 8.5 * dpr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  }
+
+  let lastTs = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTs) / 1000); lastTs = now;
+    if (player.path.length) {
+      const wp = player.path[0], dx = wp.x - player.x, dy = wp.y - player.y, d = Math.hypot(dx, dy);
+      if (d < 12) { player.x = wp.x; player.y = wp.y; player.path.shift(); updateHud(); }
+      else { player.x += (dx / d) * 260 * dt; player.y += (dy / d) * 260 * dt; }
+      draw();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const ptrs = new Map();
+  let downPt = null, moved = false, pinchD = 0;
+  cv.addEventListener("pointerdown", e => {
+    cv.setPointerCapture(e.pointerId);
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (ptrs.size === 1) { downPt = { x: e.clientX, y: e.clientY }; moved = false; }
+    else if (ptrs.size === 2) { moved = true; const [a, b] = [...ptrs.values()]; pinchD = Math.hypot(a.x - b.x, a.y - b.y); }
+  });
+  cv.addEventListener("pointermove", e => {
+    if (!ptrs.has(e.pointerId)) return;
+    const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    if (ptrs.size === 1) {
+      if (downPt && Math.hypot(e.clientX - downPt.x, e.clientY - downPt.y) > 8) moved = true;
+      if (moved) { camX -= (e.clientX - prev.x) / camS; camY -= (e.clientY - prev.y) / camS; draw(); }
+    } else if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchD > 8 && d > 8) {
+        const r = cv.getBoundingClientRect();
+        const mx = ((a.x + b.x) * 0.5 - r.left) * dpr, my = ((a.y + b.y) * 0.5 - r.top) * dpr;
+        const [wx, wy] = s2w(mx, my);
+        camS = Math.max(0.12, Math.min(1.8, camS * (d / pinchD)));
+        camX = wx - (mx - cv.width * 0.5) / (camS * dpr);
+        camY = wy - (my - cv.height * 0.5) / (camS * dpr);
+        pinchD = d; draw();
+      }
+    }
+  });
+  cv.addEventListener("pointerup", e => {
+    if (ptrs.size === 1 && !moved && downPt && nav) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5), r = cv.getBoundingClientRect();
+      const [wx, wy] = s2w((e.clientX - r.left) * dpr, (e.clientY - r.top) * dpr);
+      const hit = buildings.find(b => Math.hypot(wx - b.x, wy - b.y) <= Math.max(b.w, b.h) * 0.48);
+      if (hit) {
+        document.getElementById("bTitle").textContent = `${hit.name} ｜ 全域母座標 (${Math.round(hit.gx)}, ${Math.round(hit.gy)})`;
+        document.getElementById("bDesc").textContent = hit.desc;
+      }
+      const pts = findPath(player.x, player.y, wx, wy);
+      if (pts.length) player.path = pts;
+      updateHud(); draw();
+    }
+    ptrs.delete(e.pointerId);
+    if (ptrs.size < 2) pinchD = 0;
+  });
+  cv.addEventListener("wheel", e => {
+    e.preventDefault();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5), r = cv.getBoundingClientRect();
+    const sx = (e.clientX - r.left) * dpr, sy = (e.clientY - r.top) * dpr;
+    const [wx, wy] = s2w(sx, sy);
+    camS = Math.max(0.12, Math.min(1.8, camS * (e.deltaY < 0 ? 1.22 : 1 / 1.22)));
+    camX = wx - (sx - cv.width * 0.5) / (camS * dpr);
+    camY = wy - (sy - cv.height * 0.5) / (camS * dpr);
+    draw();
+  }, { passive: false });
+
+  document.getElementById("btnXray").onclick = function () { showXray = !showXray; this.classList.toggle("on", showXray); this.textContent = `碰撞網格檢視：${showXray ? "開" : "關"}`; draw(); };
+  document.getElementById("btnSeam").onclick = function () { showSeam = !showSeam; this.classList.toggle("on", showSeam); this.textContent = `四邊鄰片重疊框：${showSeam ? "開" : "關"}`; draw(); };
+  document.getElementById("btnLabels").onclick = function () { showLabels = !showLabels; this.classList.toggle("on", showLabels); this.textContent = `門牌與地標：${showLabels ? "開" : "關"}`; draw(); };
+  document.getElementById("btnPlaza").onclick = () => { camX = 1650; camY = 2240; camS = 0.44; draw(); };
+  document.getElementById("btnSouth").onclick = () => { camX = 2200; camY = 6480; camS = 0.42; draw(); };
+  document.getElementById("btnZIn").onclick = () => { camS = Math.min(1.8, camS * 1.35); draw(); };
+  document.getElementById("btnZOut").onclick = () => { camS = Math.max(0.12, camS / 1.35); draw(); };
+
+  window.__bpQA = { setCam: (x, y, s) => { camX = x; camY = y; camS = s; draw(); }, setXray: v => { showXray = v; draw(); } };
+  resize();
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

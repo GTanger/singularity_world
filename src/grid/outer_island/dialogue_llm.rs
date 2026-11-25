@@ -1,6 +1,13 @@
 //! 外海大島四族百戶當面交談、源頭異語遮罩與本機／雲端 LLM 對話橋接。
 
 use std::collections::BTreeMap;
+use std::sync::atomic::{AtomicUsize, Ordering};
+
+static DIALOGUE_GPU_IN_FLIGHT: AtomicUsize = AtomicUsize::new(0);
+
+pub fn is_dialogue_gpu_busy() -> bool {
+    DIALOGUE_GPU_IN_FLIGHT.load(Ordering::Acquire) > 0
+}
 
 use crate::ai::openai_chat::{
     DEFAULT_OPENROUTER_BASE_URL, DEFAULT_OPENROUTER_TALK_MODEL,
@@ -57,7 +64,9 @@ const SIMPLIFIED_CHARS: &[char] = &[
     '\u{8fd8}', '\u{6ca1}', '\u{7ed9}', '\u{8ba9}', '\u{5417}', '\u{542c}', '\u{8bdd}', '\u{89c1}',
     '\u{5f00}', '\u{95ee}', '\u{4e1c}', '\u{5934}', '\u{8fb9}', '\u{4e70}', '\u{5356}', '\u{94f6}',
     '\u{94dc}', '\u{5e01}', '\u{77ff}', '\u{5251}', '\u{836f}', '\u{5e08}', '\u{9986}', '\u{94fa}',
-    '\u{9547}', '\u{957f}', '\u{5f20}', '\u{4e24}', '\u{51e0}', '\u{513f}',
+    '\u{9547}', '\u{957f}', '\u{5f20}', '\u{4e24}', '\u{51e0}', '\u{513f}', '\u{503a}', '\u{5e10}',
+    '\u{4f20}', '\u{8bb0}', '\u{5fc6}', '\u{7237}', '\u{53f7}', '\u{4e3a}', '\u{4e48}', '\u{5f53}',
+    '\u{4ece}', '\u{89c9}', '\u{6837}',
 ];
 
 /// 對談對象之執行期公開摘要（自 `UnifiedMindBody` 直接投影，零 `ResidentSeedDef` 靜態表依賴）
@@ -312,7 +321,7 @@ pub fn generate_npc_dialogue(input: &NpcDialogueInput) -> NpcDialogueOutcome {
          所在位置：{}（{}・{}），當下神態：{}。\n\
          你手頭現有 {} 枚銅幣；面前搭話者是{}。\n\
          【當下處事定見與說話方式】：{}\n\
-         【你親身記得的近期見聞與往來紀錄】：{}\n\
+         【你腦中記得的家族往事、器物來歷與街坊紀錄】：{}（請站在自家立場說話，不必假裝中立）。\n\
          【你曾親自踏足知曉的地界】：{}（未列出的陌生荒野或地底深處你並未去過，絕不可裝熟指路）。\n\
          嚴格守則：\n\
          1. 只用台灣正體中文與口語化世界內對白回答（不超過 90 字），禁止加引號外旁白或舞台腔。\n\
@@ -428,6 +437,15 @@ fn call_talk_backends(
         }
     }
 
+    struct DialogueGpuGuard;
+    impl Drop for DialogueGpuGuard {
+        fn drop(&mut self) {
+            DIALOGUE_GPU_IN_FLIGHT.fetch_sub(1, Ordering::AcqRel);
+        }
+    }
+    DIALOGUE_GPU_IN_FLIGHT.fetch_add(1, Ordering::AcqRel);
+    let _gpu_guard = DialogueGpuGuard;
+
     call_openai_compatible_chat_with_history(
         LOCAL_FAST_TALK_URL,
         "",
@@ -458,13 +476,38 @@ fn deterministic_in_world_reply(input: &NpcDialogueInput) -> String {
     }
 
     let role = input.npc.role.as_str();
-    if let Some(mem) = input.relevant_memories_zh.first()
-        && input.topic == "rumor"
+    let asks_history = [
+        "空屋",
+        "隔壁",
+        "封門",
+        "船疫",
+        "熱病",
+        "封坑",
+        "礦坑",
+        "北林",
+        "開港",
+        "征荒",
+        "二成關稅",
+        "家傳",
+        "老輩",
+        "往事",
+        "來歷",
+    ]
+    .iter()
+    .any(|kw| input.player_utterance.contains(kw));
+    if input.stance_verdict.stance != DialogueHardStance::GuardedEvade
+        && let Some(mem) = input.relevant_memories_zh.first()
+        && (input.topic == "rumor" || asks_history)
     {
-        return format!(
-            "「這兩天鎮上大夥兒都在傳——{}。出門在外多留個心眼總沒錯。」{}（{}）低聲說道。",
-            mem, input.npc.name, input.stance_verdict.posture_zh
+        let candidate = format!(
+            "「你問起這樁舊事啊……{}。」{}（{}）頓了頓低聲說道。",
+            mem.trim_end_matches('。'),
+            input.npc.name,
+            input.stance_verdict.posture_zh
         );
+        if let Some(clean) = validate_clean_in_world_reply(&candidate) {
+            return clean;
+        }
     }
     if role.contains("鍛鐵匠") {
         if input.topic == "rumor" || input.player_utterance.contains("斷橋") {
@@ -522,4 +565,178 @@ fn deterministic_in_world_reply(input: &NpcDialogueInput) -> String {
         input.npc.name,
         input.stance_verdict.posture_zh
     )
+}
+
+impl super::mind::CognitiveMind {
+    /// 依當面交談話題與問句關鍵字，從本人記憶腦喚醒最相關之個人史／家史與跨區人際往來紀錄
+    pub fn recall_relevant_for_utterance(
+        &self,
+        speaker_id: &str,
+        utterance: &str,
+        topic: &str,
+        current_day: i64,
+    ) -> Vec<String> {
+        const QUERY_GROUPS: &[&[&str]] = &[
+            &["空屋", "待售", "隔壁", "封門", "搬走", "10號", "9號"],
+            &["疫", "熱病", "怪病", "苦艾", "熬藥", "藥錢", "古加"],
+            &["封坑", "礦坑", "北林", "斷橋", "試煉坑", "巨蛛", "鐵楔"],
+            &[
+                "開港",
+                "征荒",
+                "建城",
+                "石牆",
+                "石堤",
+                "防波堤",
+                "老輩",
+                "祖先",
+            ],
+            &[
+                "關稅", "渡輪", "對岸", "主陸", "商船", "走私", "斷貨", "羅泉",
+            ],
+            &["風暴", "翻船", "海難", "救命", "寒潮"],
+            &[
+                "錘", "刀", "手藝", "師父", "師傅", "師兄", "學徒", "家裡", "家傳",
+            ],
+            &["欠", "債", "借", "帳", "銅幣"],
+            &[
+                "兄弟", "姊妹", "娘家", "親戚", "舅", "西峽", "鷗尾", "灰松", "北塢",
+            ],
+        ];
+        const PRIVATE_MEM_TERMS: &[&str] = &[
+            "欠",
+            "債",
+            "賒",
+            "寬限",
+            "人情帳",
+            "帳款",
+            "逾期",
+            "催討",
+            "拖欠",
+            "拒賒",
+            "黑冊",
+            "決裂",
+            "反目",
+            "嫌隙",
+            "毀諾",
+            "背約",
+            "背棄然諾",
+            "私下",
+        ];
+
+        let mut out = Vec::new();
+        let sp_soc = self.ltm.social.get(speaker_id);
+        let speaker_warmth = sp_soc.map_or(0, |s| s.warmth);
+        let speaker_fam = sp_soc.map_or(0, |s| s.familiarity);
+        let speaker_kin_bonus = if sp_soc.is_some_and(|s| s.cohabiting || s.is_kin()) {
+            20
+        } else {
+            0
+        };
+        let speaker_trust = if speaker_warmth <= -15 {
+            0
+        } else {
+            i32::from(speaker_fam) / 2 + i32::from(speaker_warmth).max(0) + speaker_kin_bonus
+        };
+        let allow_private = speaker_trust >= 48;
+
+        if let Some(soc) = sp_soc
+            && !soc.notable_note_zh.is_empty()
+            && (soc.secret_hook_zh.is_empty() || speaker_warmth >= 55)
+            && (allow_private
+                || !PRIVATE_MEM_TERMS
+                    .iter()
+                    .any(|k| soc.notable_note_zh.contains(k)))
+        {
+            out.push(soc.notable_note_zh.clone());
+        }
+
+        // 若問起外鎮或親友師門，優先喚醒腦中對應城鎮或親疏記憶（暗線把柄與對生面孔之私密家醜絕不隨口外洩！）
+        for soc in self.ltm.social.values() {
+            if out.len() >= 2 {
+                break;
+            }
+            if !soc.secret_hook_zh.is_empty() && speaker_warmth < 55 {
+                continue;
+            }
+            if !allow_private
+                && (soc.warmth <= -15
+                    || PRIVATE_MEM_TERMS
+                        .iter()
+                        .any(|k| soc.notable_note_zh.contains(k)))
+            {
+                continue;
+            }
+            let hit_region = !soc.target_region_zh.is_empty()
+                && !utterance.is_empty()
+                && utterance.contains(soc.target_region_zh.as_str());
+            let hit_name = !soc.target_name.is_empty()
+                && !utterance.is_empty()
+                && utterance.contains(soc.target_name.as_str());
+            if (hit_region || hit_name) && !soc.notable_note_zh.is_empty() {
+                out.push(soc.notable_note_zh.clone());
+            }
+        }
+
+        let mut active_keywords: Vec<&str> = Vec::new();
+        for grp in QUERY_GROUPS {
+            if grp.iter().any(|kw| utterance.contains(kw)) {
+                active_keywords.extend_from_slice(grp);
+            }
+        }
+        if topic == "rumor" && active_keywords.is_empty() {
+            active_keywords.extend_from_slice(&["巷", "坑", "疫", "船", "屋", "關稅"]);
+        }
+
+        let mut scored: Vec<(i64, &str)> = Vec::with_capacity(self.ltm.episodic.len());
+        for ep in &self.ltm.episodic {
+            let is_public_hist = ep.event_id.starts_with("hist:pub");
+            if !allow_private
+                && !is_public_hist
+                && PRIVATE_MEM_TERMS
+                    .iter()
+                    .any(|k| ep.subjective_zh.contains(k))
+            {
+                continue;
+            }
+            let mut bonus = 0i64;
+            if !utterance.is_empty()
+                && !ep.subject_name.is_empty()
+                && utterance.contains(ep.subject_name.as_str())
+            {
+                bonus += 1_200;
+            }
+            for kw in &active_keywords {
+                if ep.subjective_zh.contains(kw) {
+                    bonus += 450;
+                }
+            }
+            scored.push((
+                ep.retention_score(current_day) + bonus + i64::from(ep.credence) * 2,
+                ep.subjective_zh.as_str(),
+            ));
+        }
+        scored.sort_by_key(|(sc, _)| std::cmp::Reverse(*sc));
+
+        for tp in self.ltm.turning_points.iter().rev() {
+            if (allow_private || !PRIVATE_MEM_TERMS.iter().any(|k| tp.lesson_zh.contains(k)))
+                && active_keywords.iter().any(|kw| tp.lesson_zh.contains(kw))
+                && out.len() < 4
+            {
+                out.push(tp.lesson_zh.clone());
+            }
+        }
+        for (_, text) in scored.into_iter().take(3) {
+            if out.len() < 4 && !out.iter().any(|x| x == text) {
+                out.push(text.to_string());
+            }
+        }
+        if out.len() < 4
+            && let Some(tp) = self.ltm.turning_points.last()
+            && (allow_private || !PRIVATE_MEM_TERMS.iter().any(|k| tp.lesson_zh.contains(k)))
+            && !out.iter().any(|x| x == &tp.lesson_zh)
+        {
+            out.push(tp.lesson_zh.clone());
+        }
+        out
+    }
 }

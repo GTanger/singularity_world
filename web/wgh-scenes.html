@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>白鷗港室外 16 格完整手繪場景・定點過圖與 95 戶全室內實證</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
+      background: #ece3cf; color: #2b221b;
+      font-family: "Noto Serif TC", "Source Han Serif TC", "PingFang TC", serif;
+      user-select: none; -webkit-user-select: none;
+    }
+    .app { display: flex; flex-direction: column; width: 100%; height: 100dvh; }
+    .topbar {
+      flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 6px; padding: 7px 11px; background: #f5eedc; border-bottom: 1px solid #d5c7ab; z-index: 20;
+    }
+    .mode-tabs, .tool-toggles { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    button.pill, a.pill, select.pill {
+      text-decoration: none;
+      border: 1px solid #bca989; background-color: #efe5ce; color: #3a2e25;
+      border-radius: 999px; padding: 5px 10px; font-size: 12.5px; font-weight: 600;
+      font-family: inherit; cursor: pointer; line-height: 1.25; white-space: nowrap;
+    }
+    button.pill, a.pill { appearance: none; -webkit-appearance: none; }
+    button.pill.active, a.pill.active { background-color: #6f2c1d; border-color: #592014; color: #fbf6ec; }
+    button.pill.sub, a.pill.sub, select.pill.sub { font-size: 12px; padding: 4px 9px; background-color: #f8f2e4; color: #3a2e25; }
+    button.pill.sub.on { background-color: #2f4c58; border-color: #213842; color: #f4f7f8; }
+    .alley-wrap { position: relative; display: inline-block; }
+    .alley-menu {
+      display: none; position: absolute; top: calc(100% + 5px); left: 0; z-index: 60;
+      background: #f8f2e4; border: 1px solid #a89372; border-radius: 12px;
+      padding: 6px; box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      grid-template-columns: 1fr 1fr; gap: 5px; min-width: 248px;
+    }
+    .alley-menu.open { display: grid; }
+    .alley-menu button.pill.sub { text-align: left; width: 100%; }
+    button.pill.action {
+      background: #fff9eb; border-color: #9e6b43; color: #5c2818;
+      padding: 5px 12px; font-size: 13px;
+    }
+    button.pill.action.portal {
+      background: #eef6f8; border-color: #3b6978; color: #1d4350;
+    }
+    button.pill.action.warn {
+      background: #fff3ee; border-color: #b54834; color: #7a1f12;
+    }
+
+    .main-stage { flex: 1 1 auto; display: flex; flex-direction: column; position: relative; min-height: 0; }
+    .story-pane {
+      flex: 0 0 33%; overflow-y: auto;
+      padding: 10px 14px; background: #f3ead7; border-bottom: 1px solid #d2c3a5;
+    }
+    .app.fullmap-mode .story-pane { display: none; }
+    .story-meta {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 12px; color: #73614e; padding-bottom: 5px; margin-bottom: 6px;
+      border-bottom: 1px solid #dfd2b9;
+    }
+    .story-badge { background: #e5dac2; padding: 2px 9px; border-radius: 999px; color: #4f4031; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+    .story-badge.indoor { background: #6f2c1d; color: #fbf5ea; }
+    .story-badge.running { background: #8f331e; color: #fff8ed; }
+    .story-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+    .story-title { font-size: 18px; font-weight: 700; color: #241b15; margin: 0; }
+    .story-body { font-size: 14px; line-height: 1.6; color: #382d24; margin: 0 0 7px; }
+    .story-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .story-sublog {
+      font-size: 12.5px; color: #5b4938; background: #ebe0c8;
+      padding: 6px 10px; border-radius: 8px; line-height: 1.48;
+    }
+
+    .map-wrap { flex: 1 1 auto; position: relative; min-height: 0; overflow: hidden; background: #2d261f; touch-action: none; }
+    canvas#mapCanvas { display: block; width: 100%; height: 100%; cursor: pointer; }
+    .hud-readout {
+      position: absolute; top: 9px; left: 10px;
+      background: rgba(28, 24, 20, 0.84); color: #f4efe2;
+      font-size: 12px; padding: 5px 10px; border-radius: 8px;
+      pointer-events: none; line-height: 1.42; max-width: calc(100% - 20px);
+    }
+    .quick-bar {
+      position: absolute; left: 10px; bottom: 11px; right: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 6px; pointer-events: none; z-index: 12;
+    }
+    .quick-group {
+      display: flex; gap: 5px; flex-wrap: wrap; pointer-events: auto;
+      background: rgba(245, 238, 220, 0.94); backdrop-filter: blur(6px);
+      padding: 5px 8px; border-radius: 999px; border: 1px solid rgba(168, 148, 118, 0.78);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+    }
+    @media (min-width: 960px) {
+      .main-stage { flex-direction: row; }
+      .story-pane { flex: 0 0 395px; border-bottom: none; border-right: 1px solid #d2c3a5; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="appRoot">
+  <div class="topbar">
+    <div class="mode-tabs">
+      <button class="pill active" id="btnModeSplit">上文下圖・16格手繪過圖</button>
+      <button class="pill" id="btnModeFull">展開全幅地圖</button>
+    </div>
+    <div class="tool-toggles">
+      <button class="pill sub" data-scene="north_gate">北城門</button>
+      <button class="pill sub" data-scene="smithy_st">鐵匠街</button>
+      <button class="pill sub on" data-scene="plaza">市集廣場</button>
+      <button class="pill sub" data-scene="tavern_st">驛站街</button>
+      <button class="pill sub" data-scene="south_gate">南城門</button>
+      <button class="pill sub" data-scene="dock">港務碼頭</button>
+      <div class="alley-wrap">
+        <button class="pill sub" id="btnAlleyMenu">▾ 十條支巷（90戶）</button>
+        <div class="alley-menu" id="alleyMenu">
+          <button class="pill sub" data-alley="iron_anvil_ln">鐵砧巷(10戶)</button>
+          <button class="pill sub" data-alley="sail_ln">船帆巷(10戶)</button>
+          <button class="pill sub" data-alley="copper_ln">銅幣巷(9戶)</button>
+          <button class="pill sub" data-alley="salted_fish_ln">鹹魚巷(10戶)</button>
+          <button class="pill sub" data-alley="cooper_ln">桶匠巷(9戶)</button>
+          <button class="pill sub" data-alley="rope_ln">繩索巷(9戶)</button>
+          <button class="pill sub" data-alley="lantern_ln">石燈巷(9戶)</button>
+          <button class="pill sub" data-alley="seabreeze_ln">海風巷(8戶)</button>
+          <button class="pill sub" data-alley="old_well_ln">老井巷(8戶)</button>
+          <button class="pill sub" data-alley="south_wall_ln">南牆根巷(8戶)</button>
+        </div>
+      </div>
+      <button class="pill sub on" id="btnToggleMarkers">路口門牌：顯</button>
+      <button class="pill sub" id="btnToggleDebug">碰撞透視：關</button>
+    </div>
+  </div>
+
+  <div class="main-stage">
+    <div class="story-pane" id="storyPane">
+      <div class="story-meta">
+        <span id="clockText">太陽曆 329 年・寒冬・19 日 ｜ 巳時 10:30</span>
+        <span class="story-badge" id="stateBadge">戶外步行（16格全開）</span>
+      </div>
+      <div class="story-title-row">
+        <h1 class="story-title" id="stTitle">白鷗港・市集廣場</h1>
+        <span class="story-badge" id="nearCountBadge">載入中</span>
+      </div>
+      <p class="story-body" id="stDesc">正在載入白鷗港室外 16 格獨立 4K 手繪水彩場景…</p>
+      <div class="story-actions" id="stActions"></div>
+      <div class="story-sublog" id="stSublog">操作：單擊石板路「從容慢步」、雙擊「小跑推進」；點擊圖邊緣「藍色路口路標」即自動走過去並切換下一格手繪圖，走近全城 95 戶家門、名店或停泊商船跳板皆可切入室內／船艙平面！</div>
+    </div>
+
+    <div class="map-wrap" id="mapWrap">
+      <canvas id="mapCanvas"></canvas>
+      <div class="hud-readout" id="hudReadout">載入白鷗港 16 格手繪場景與 95 戶室內平面中…</div>
+      <div class="quick-bar">
+        <div class="quick-group">
+          <button class="pill sub on" id="btnFollow">◎ 鏡頭跟隨</button>
+          <button class="pill sub" id="btnFitScene">⊡ 顯示全格</button>
+          <button class="pill sub" id="btnZoomIn">＋ 放大細看</button>
+          <button class="pill sub" id="btnZoomOut">－ 縮小</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Grounded, unhurried RPG cadence (~4.1s per ~270px house width when walking!)
+  const WALK_SPEED = 66;
+  const RUN_SPEED = 148;
+  const INDOOR_WALK_SPEED = 165;
+  const INDOOR_RUN_SPEED = 310;
+  const DBL_TAP_MS = 380;
+  const PROX_DOOR = 210;
+  const PROX_PORTAL = 235;
+  const PROX_INDOOR = 185;
+
+  const MATERIALS = {
+    1: { name: "青石主街／石橋", mu: 0.92, speedMul: 1.00 },
+    2: { name: "坊巷石路", mu: 0.85, speedMul: 0.94 },
+    3: { name: "港棧厚木板", mu: 0.80, speedMul: 0.92 },
+    4: { name: "庭院泥砂／草坡", mu: 0.70, speedMul: 0.82 }
+  };
+
+  const appRoot = document.getElementById("appRoot");
+  const canvas = document.getElementById("mapCanvas");
+  const ctx = canvas.getContext("2d");
+  const hudReadout = document.getElementById("hudReadout");
+  const stTitle = document.getElementById("stTitle");
+  const stDesc = document.getElementById("stDesc");
+  const stActions = document.getElementById("stActions");
+  const stSublog = document.getElementById("stSublog");
+  const stateBadge = document.getElementById("stateBadge");
+  const nearCountBadge = document.getElementById("nearCountBadge");
+  const clockText = document.getElementById("clockText");
+  const btnAlleyMenu = document.getElementById("btnAlleyMenu");
+  const alleyMenu = document.getElementById("alleyMenu");
+  const alleyBtns = Array.from(document.querySelectorAll("[data-alley]"));
+  const spineBtns = Array.from(document.querySelectorAll("[data-scene]"));
+
+  let META = null;
+  let INT_META = null;
+  const sceneImages = new Map();
+  const loadingPromises = new Map();
+  const indoorImages = new Map();
+  const indoorLoading = new Map();
+  const CACHE_TAG = "v17_" + Date.now();
+
+  let curScene = null;
+  const player = {
+    x: 1024, y: 1125,
+    running: false,
+    path: [],
+    pendingPortal: null,
+    pendingDoor: null,
+    pendingIndoor: null,
+    mode: "outdoor",
+    indoorRoom: null,
+    returnOutdoor: null,
+    gameMinutes: 10 * 60 + 30
+  };
+
+  const cam = {
+    x: 1024, y: 1024,
+    scale: 0.55,
+    follow: true,
+    showMarkers: true,
+    showDebug: false
+  };
+
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function() {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function hashStr(s) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+
+  function distToSegSq(px, py, x0, y0, x1, y1) {
+    const dx = x1 - x0, dy = y1 - y0;
+    const lenSq = dx * dx + dy * dy;
+    if (lenSq < 1e-6) return (px - x0) ** 2 + (py - y0) ** 2;
+    let t = ((px - x0) * dx + (py - y0) * dy) / lenSq;
+    if (t < 0) t = 0; else if (t > 1) t = 1;
+    return (px - (x0 + t * dx)) ** 2 + (py - (y0 + t * dy)) ** 2;
+  }
+
+  function pointInPoly(px, py, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i][0], yi = poly[i][1];
+      const xj = poly[j][0], yj = poly[j][1];
+      if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi + 1e-9) + xi)) inside = !inside;
+    }
+    return inside;
+  }
+
+  function pointInRotBox(px, py, cx, cy, w, h, deg = 0, pad = 0) {
+    const rad = -(deg || 0) * Math.PI / 180;
+    const dx = px - cx, dy = py - cy;
+    const lx = dx * Math.cos(rad) - dy * Math.sin(rad);
+    const ly = dx * Math.sin(rad) + dy * Math.cos(rad);
+    return Math.abs(lx) <= (w * 0.5 + pad) && Math.abs(ly) <= (h * 0.5 + pad);
+  }
+
+  // --- On-Demand Scene & Hand-Painted Indoor Image Loaders ---
+  function loadImg(src) {
+    return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+  }
+
+  function ensureSceneImage(slug) {
+    if (!META || !META.scenes[slug]) return Promise.resolve(null);
+    if (sceneImages.has(slug)) return Promise.resolve(sceneImages.get(slug));
+    if (loadingPromises.has(slug)) return loadingPromises.get(slug);
+    const p = loadImg(META.scenes[slug].img_url + "?" + CACHE_TAG).then(im => {
+      sceneImages.set(slug, im);
+      loadingPromises.delete(slug);
+      if (curScene && curScene.slug === slug && player.mode === "outdoor") render();
+      return im;
+    });
+    loadingPromises.set(slug, p);
+    return p;
+  }
+
+  function ensureIndoorImage(tid) {
+    if (!INT_META || !INT_META[tid]) return Promise.resolve(null);
+    if (indoorImages.has(tid)) return Promise.resolve(indoorImages.get(tid));
+    if (indoorLoading.has(tid)) return indoorLoading.get(tid);
+    const p = loadImg(INT_META[tid].img_url + "?" + CACHE_TAG).then(im => {
+      indoorImages.set(tid, im);
+      indoorLoading.delete(tid);
+      if (player.mode === "indoor" && player.indoorRoom && player.indoorRoom.tid === tid) render();
+      return im;
+    });
+    indoorLoading.set(tid, p);
+    return p;
+  }
+
+  function pickIndoorTemplate(b, floorIdx = 0) {
+    const exactKey = floorIdx > 0 ? `${b.nid}__${floorIdx}f` : b.nid;
+    if (INT_META && INT_META[exactKey]) return exactKey;
+    if (INT_META && INT_META[b.nid]) return b.nid;
+    return Object.keys(INT_META || {})[0];
+  }
+
+  function queryIndoorWalkable(rm, ix, iy, radius = 11) {
+    if (!rm || !rm.spec) return { walkable: false };
+    const sp = rm.spec;
+    const nearExit = Math.hypot(ix - sp.exit_xy[0], iy - sp.exit_xy[1]) <= 78;
+    if (sp.hull_poly) {
+      if (!nearExit && !pointInPoly(ix, iy, sp.hull_poly)) return { walkable: false, reason: "hull" };
+    } else {
+      const [rx0, ry0, rx1, ry1] = sp.room_rect;
+      if (!nearExit && (ix < rx0 + radius || ix > rx1 - radius || iy < ry0 + radius || iy > ry1 - radius)) {
+        return { walkable: false, reason: "bounds" };
+      }
+    }
+    for (const seg of (sp.walls || [])) {
+      if (distToSegSq(ix, iy, seg[0], seg[1], seg[2], seg[3]) < (14 + radius) ** 2) {
+        return { walkable: false, reason: "wall" };
+      }
+    }
+    for (const f of (sp.furniture || [])) {
+      if (f.solid === false) continue;
+      const [x0, y0, x1, y1] = f.box;
+      if (ix >= x0 - radius && ix <= x1 + radius && iy >= y0 - radius && iy <= y1 + radius) {
+        return { walkable: false, reason: "furniture" };
+      }
+    }
+    return { walkable: true };
+  }
+
+  function findIndoorPath(rm, sx, sy, gx, gy) {
+    const sp = rm.spec;
+    let ax = sx, ay = sy;
+    if (!queryIndoorWalkable(rm, ax, ay, 9).walkable) {
+      let sOk = false;
+      for (let r = 16; r <= 180 && !sOk; r += 16) {
+        for (let a = 0; a < 16; a++) {
+          const nx = sx + Math.cos(a * Math.PI / 8) * r, ny = sy + Math.sin(a * Math.PI / 8) * r;
+          if (queryIndoorWalkable(rm, nx, ny, 10).walkable) { ax = nx; ay = ny; sOk = true; break; }
+        }
+      }
+    }
+    let tx = Math.max(80, Math.min(sp.world_w - 80, gx));
+    let ty = Math.max(80, Math.min(sp.world_h - 80, gy));
+
+    if (!queryIndoorWalkable(rm, tx, ty, 10).walkable) {
+      let ok = false;
+      for (let r = 16; r <= 160 && !ok; r += 16) {
+        for (let a = 0; a < 16; a++) {
+          const nx = tx + Math.cos(a * Math.PI / 8) * r, ny = ty + Math.sin(a * Math.PI / 8) * r;
+          if (queryIndoorWalkable(rm, nx, ny, 10).walkable) { tx = nx; ty = ny; ok = true; break; }
+        }
+      }
+      if (!ok) return [];
+    }
+
+    const nLos = Math.ceil(Math.hypot(tx - ax, ty - ay) / 12);
+    let losOk = true;
+    for (let i = 1; i <= nLos; i++) {
+      const t = i / nLos;
+      if (!queryIndoorWalkable(rm, ax + (tx - ax) * t, ay + (ty - ay) * t, 10).walkable) { losOk = false; break; }
+    }
+    if (losOk) return [[tx, ty]];
+
+    const STEP = 20;
+    const endI = Math.round((tx - ax) / STEP), endJ = Math.round((ty - ay) / STEP);
+    const keyOf = (i, j) => ((i + 256) << 9) | ((j + 256) & 511);
+    const gScore = new Map([[keyOf(0, 0), 0]]);
+    const cameFrom = new Map();
+    const closed = new Set();
+    const heap = [{ i: 0, j: 0, f: Math.hypot(endI, endJ) }];
+
+    const pushH = (n) => {
+      heap.push(n); let idx = heap.length - 1;
+      while (idx > 0) {
+        const p = (idx - 1) >> 1;
+        if (heap[p].f <= heap[idx].f) break;
+        [heap[p], heap[idx]] = [heap[idx], heap[p]]; idx = p;
+      }
+    };
+    const popH = () => {
+      const top = heap[0], last = heap.pop();
+      if (heap.length > 0) {
+        heap[0] = last; let idx = 0;
+        while (true) {
+          let l = idx * 2 + 1, r = l + 1, s = idx;
+          if (l < heap.length && heap[l].f < heap[s].f) s = l;
+          if (r < heap.length && heap[r].f < heap[s].f) s = r;
+          if (s === idx) break;
+          [heap[s], heap[idx]] = [heap[idx], heap[s]]; idx = s;
+        }
+      }
+      return top;
+    };
+
+    const dirs = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
+    let best = { i: 0, j: 0 }, bestH = Math.hypot(endI, endJ), iter = 0;
+    while (heap.length > 0 && iter++ < 5200) {
+      const cur = popH();
+      const ck = keyOf(cur.i, cur.j);
+      if (closed.has(ck)) continue;
+      closed.add(ck);
+      const h = Math.hypot(endI - cur.i, endJ - cur.j);
+      if (h < bestH) { bestH = h; best = cur; }
+      if (h <= 1.35) { best = cur; break; }
+      const bg = gScore.get(ck);
+      for (const [di, dj, dl] of dirs) {
+        const ni = cur.i + di, nj = cur.j + dj;
+        const nk = keyOf(ni, nj);
+        if (closed.has(nk)) continue;
+        const wx = ax + ni * STEP, wy = ay + nj * STEP;
+        if (!queryIndoorWalkable(rm, wx, wy, 10).walkable) continue;
+        const ng = bg + dl;
+        if (gScore.get(nk) === undefined || ng < gScore.get(nk)) {
+          gScore.set(nk, ng);
+          cameFrom.set(nk, cur);
+          pushH({ i: ni, j: nj, f: ng + Math.hypot(endI - ni, endJ - nj) });
+        }
+      }
+    }
+    const out = [];
+    let c = best;
+    while (c && (c.i !== 0 || c.j !== 0)) {
+      out.push([ax + c.i * STEP, ay + c.j * STEP]);
+      c = cameFrom.get(keyOf(c.i, c.j));
+    }
+    out.reverse();
+    if (bestH <= 2.2) out.push([tx, ty]);
+    return out;
+  }
+
+  // --- Exact Analytical Collision Matching Blueprint (`0.00px` drift!) ---
+  function querySceneWalkable(sc, wx, wy, radius = 12) {
+    if (!sc) return { walkable: false };
+    if (wx < 26 || wx > sc.world_w - 26 || wy < 26 || wy > sc.world_h - 26) {
+      return { walkable: false, reason: "edge" };
+    }
+    // 1. Solid Buildings (Ships sit in water; boarding happens at gangplank door!)
+    for (const b of sc.buildings) {
+      if (b.kind === "ship") continue;
+      if (b.shape === "round_tower") {
+        if ((wx - b.x) ** 2 + (wy - b.y) ** 2 < (b.w * 0.45 + radius) ** 2) return { walkable: false, reason: "building" };
+      } else if (pointInRotBox(wx, wy, b.x, b.y, b.w * 0.88, b.h * 0.86, b.deg || 0, radius)) {
+        return { walkable: false, reason: "building" };
+      }
+    }
+    // 2. Heavy City Fortification Ramparts (`north_gate`, `south_gate`, `south_wall_ln`)
+    for (const rw of (sc.ramparts || [])) {
+      if (distToSegSq(wx, wy, rw[0], rw[1], rw[2], rw[3]) < (28 + radius) ** 2) {
+        return { walkable: false, reason: "rampart" };
+      }
+    }
+    // 3. Solid Stone Wells & Horse Paddock Fences
+    for (const wl of (sc.wells || [])) {
+      if ((wx - wl.x) ** 2 + (wy - wl.y) ** 2 < (wl.r * 0.92 + radius) ** 2) {
+        return { walkable: false, reason: "well" };
+      }
+    }
+    for (const pd of (sc.paddocks || [])) {
+      if (wx >= pd[0] - radius && wx <= pd[2] + radius && wy >= pd[1] - radius && wy <= pd[3] + radius) {
+        return { walkable: false, reason: "paddock" };
+      }
+    }
+    // 4. Freestanding Stone Courtyard Walls (`Code 7` vaultable!)
+    for (const seg of sc.walls) {
+      if (distToSegSq(wx, wy, seg[0], seg[1], seg[2], seg[3]) < (9 + radius * 0.75) ** 2) {
+        return { walkable: false, reason: "wall", seg };
+      }
+    }
+    // 5. Bridges & Wooden Harbor Piers OVERRIDE river/ocean water!
+    for (const br of (sc.bridges || [])) {
+      if (Math.abs(wx - br.x) <= br.w * 0.46 && Math.abs(wy - br.y) <= br.h * 0.54) {
+        return { walkable: true, matCode: 1 };
+      }
+    }
+    for (const pi of (sc.piers || [])) {
+      const [x0, y0, x1, y1] = pi.rect;
+      if (wx >= x0 - 8 && wx <= x1 - 6 && wy >= y0 + 6 && wy <= y1 - 6) {
+        return { walkable: true, matCode: 3 };
+      }
+    }
+    // 6. Harbor Ocean Water (`dock`) & Rivers (`plaza`)
+    for (const wp of (sc.water_polys || [])) {
+      if (pointInPoly(wx, wy, wp)) return { walkable: false, reason: "ocean" };
+    }
+    for (const rv of (sc.rivers || [])) {
+      const halfW = rv.w * 0.48 + radius * 0.5;
+      for (let i = 0; i < rv.pts.length - 1; i++) {
+        if (distToSegSq(wx, wy, rv.pts[i][0], rv.pts[i][1], rv.pts[i + 1][0], rv.pts[i + 1][1]) < halfW * halfW) {
+          return { walkable: false, reason: "river" };
+        }
+      }
+    }
+    // 7. Surface Material
+    for (const plz of (sc.plazas || [])) {
+      if ((wx - plz.x) ** 2 + (wy - plz.y) ** 2 <= plz.r * plz.r) return { walkable: true, matCode: 1 };
+    }
+    for (const rd of sc.roads) {
+      const halfR = rd.w * 0.52;
+      for (let i = 0; i < rd.pts.length - 1; i++) {
+        if (distToSegSq(wx, wy, rd.pts[i][0], rd.pts[i][1], rd.pts[i + 1][0], rd.pts[i + 1][1]) <= halfR * halfR) {
+          return { walkable: true, matCode: rd.kind === "main" ? 1 : 2 };
+        }
+      }
+    }
+    return { walkable: true, matCode: 4 };
+  }
+
+  function findScenePath(sc, sx, sy, gx, gy) {
+    let tx = Math.max(36, Math.min(sc.world_w - 36, gx));
+    let ty = Math.max(36, Math.min(sc.world_h - 36, gy));
+
+    if (!querySceneWalkable(sc, tx, ty, 10).walkable) {
+      for (const b of sc.buildings) {
+        if (pointInRotBox(gx, gy, b.x, b.y, b.w * 1.05, b.h * 1.05, b.deg || 0, 16)) {
+          tx = b.door.x; ty = b.door.y; break;
+        }
+      }
+      if (!querySceneWalkable(sc, tx, ty, 10).walkable) {
+        let ok = false;
+        for (let r = 18; r <= 130 && !ok; r += 18) {
+          for (let a = 0; a < 12; a++) {
+            const nx = tx + Math.cos(a * Math.PI / 6) * r, ny = ty + Math.sin(a * Math.PI / 6) * r;
+            if (querySceneWalkable(sc, nx, ny, 10).walkable) { tx = nx; ty = ny; ok = true; break; }
+          }
+        }
+        if (!ok) return [];
+      }
+    }
+
+    const nLos = Math.ceil(Math.hypot(tx - sx, ty - sy) / 14);
+    let losOk = true;
+    for (let i = 1; i <= nLos; i++) {
+      const t = i / nLos;
+      if (!querySceneWalkable(sc, sx + (tx - sx) * t, sy + (ty - sy) * t, 10).walkable) { losOk = false; break; }
+    }
+    if (losOk) return [[tx, ty]];
+
+    const STEP = 22;
+    const endI = Math.round((tx - sx) / STEP), endJ = Math.round((ty - sy) / STEP);
+    const keyOf = (i, j) => ((i + 256) << 9) | ((j + 256) & 511);
+    const gScore = new Map([[keyOf(0, 0), 0]]);
+    const cameFrom = new Map();
+    const closed = new Set();
+    const heap = [{ i: 0, j: 0, f: Math.hypot(endI, endJ) }];
+
+    const pushH = (n) => {
+      heap.push(n); let idx = heap.length - 1;
+      while (idx > 0) {
+        const p = (idx - 1) >> 1;
+        if (heap[p].f <= heap[idx].f) break;
+        [heap[p], heap[idx]] = [heap[idx], heap[p]]; idx = p;
+      }
+    };
+    const popH = () => {
+      const top = heap[0], last = heap.pop();
+      if (heap.length > 0) {
+        heap[0] = last; let idx = 0;
+        while (true) {
+          let l = idx * 2 + 1, r = l + 1, s = idx;
+          if (l < heap.length && heap[l].f < heap[s].f) s = l;
+          if (r < heap.length && heap[r].f < heap[s].f) s = r;
+          if (s === idx) break;
+          [heap[s], heap[idx]] = [heap[idx], heap[s]]; idx = s;
+        }
+      }
+      return top;
+    };
+
+    const dirs = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
+    let best = { i: 0, j: 0 }, bestH = Math.hypot(endI, endJ), iter = 0;
+    while (heap.length > 0 && iter++ < 4800) {
+      const cur = popH();
+      const ck = keyOf(cur.i, cur.j);
+      if (closed.has(ck)) continue;
+      closed.add(ck);
+      const h = Math.hypot(endI - cur.i, endJ - cur.j);
+      if (h < bestH) { bestH = h; best = cur; }
+      if (h <= 1.4) { best = cur; break; }
+      const bg = gScore.get(ck);
+      for (const [di, dj, dl] of dirs) {
+        const ni = cur.i + di, nj = cur.j + dj;
+        const nk = keyOf(ni, nj);
+        if (closed.has(nk)) continue;
+        const wx = sx + ni * STEP, wy = sy + nj * STEP;
+        const q = querySceneWalkable(sc, wx, wy, 10);
+        if (!q.walkable) continue;
+        const cost = dl * (q.matCode === 1 ? 0.92 : (q.matCode === 2 ? 1.0 : 1.25));
+        const ng = bg + cost;
+        if (gScore.get(nk) === undefined || ng < gScore.get(nk)) {
+          gScore.set(nk, ng);
+          cameFrom.set(nk, cur);
+          pushH({ i: ni, j: nj, f: ng + Math.hypot(endI - ni, endJ - nj) });
+        }
+      }
+    }
+    const out = [];
+    let c = best;
+    while (c && (c.i !== 0 || c.j !== 0)) {
+      out.push([sx + c.i * STEP, sy + c.j * STEP]);
+      c = cameFrom.get(keyOf(c.i, c.j));
+    }
+    out.reverse();
+    if (bestH <= 2.2) out.push([tx, ty]);
+    return out;
+  }
+
+  // --- Scene Switching (`定點點擊過圖` across all 16 White Gull Harbor grids!) ---
+  async function switchOutdoorScene(slug, spawnX, spawnY, msg) {
+    if (slug.startsWith("_wild")) {
+      stSublog.textContent = slug === "_wild_north"
+        ? "🌲 北出北城門即踏上【#4529 黑煤鎮舊址林徑】山野官道（白鷗港城內 16 格邊界）。"
+        : "🌊 南出南城門即踏上【#4617 望海驛道】臨海碎石坡（白鷗港城內 16 格邊界）。";
+      render();
+      return;
+    }
+    const nextSc = META && META.scenes[slug];
+    if (!nextSc) return;
+    await ensureSceneImage(slug);
+
+    curScene = nextSc;
+    player.mode = "outdoor";
+    player.indoorRoom = null;
+    player.path = [];
+    player.pendingPortal = null;
+    player.pendingDoor = null;
+    player.pendingIndoor = null;
+    player.x = spawnX !== undefined ? spawnX : nextSc.spawn.x;
+    player.y = spawnY !== undefined ? spawnY : nextSc.spawn.y;
+    cam.x = player.x;
+    cam.y = player.y;
+
+    // Update topbar active highlights
+    spineBtns.forEach(b => b.classList.toggle("on", b.dataset.scene === slug));
+    alleyBtns.forEach(b => b.classList.toggle("on", b.dataset.alley === slug));
+    const matchedAlley = alleyBtns.find(b => b.dataset.alley === slug);
+    btnAlleyMenu.textContent = matchedAlley ? `▾ ${matchedAlley.textContent}` : "▾ 十條支巷（90戶）";
+    btnAlleyMenu.classList.toggle("on", !!matchedAlley);
+    alleyMenu.classList.remove("open");
+
+    // Background prefetch connected neighbor scenes so portal clicks are 0ms!
+    for (const pt of nextSc.portals) {
+      if (pt.ready && META.scenes[pt.target_slug]) ensureSceneImage(pt.target_slug);
+    }
+
+    if (msg) stSublog.textContent = msg;
+    syncStoryUI();
+    render();
+  }
+
+  function triggerPortal(pt) {
+    if (pt.target_slug.startsWith("_wild")) {
+      switchOutdoorScene(pt.target_slug);
+      return;
+    }
+    const dst = META.scenes[pt.target_slug];
+    if (!dst) return;
+    switchOutdoorScene(pt.target_slug, pt.to_x, pt.to_y, `已通過路口定點過圖，進入【${dst.title}】！`);
+  }
+
+  // --- Hand-Inked Watercolor Indoor Room Builder & Walk-to-Threshold Controller ---
+  function buildIndoorRoom(b, floorIdx = 0) {
+    const tid = pickIndoorTemplate(b, floorIdx);
+    const spec = INT_META[tid];
+    const room = {
+      tid,
+      spec,
+      building: b,
+      floorIdx,
+      title: `${b.name}${floorIdx === 1 ? "・二樓宿房長廊" : (b.kind === "ship" ? "・甲板船艙平面" : "・手繪室內平面")}`,
+      desc: floorIdx === 1
+        ? "鏽錨酒館二樓宿房長廊：中央紅毯木廊通往兩側一至六號旅人客房，東側木梯下接一樓大酒廳。"
+        : b.desc,
+      w: spec.world_w,
+      h: spec.world_h,
+      spawnX: spec.spawn_xy[0],
+      spawnY: spec.spawn_xy[1],
+      hotspots: [],
+      npcs: []
+    };
+
+    if (floorIdx === 0) {
+      room.hotspots.push({
+        id: "exit",
+        x: spec.exit_xy[0],
+        y: spec.exit_xy[1],
+        badge: b.kind === "ship" ? "跳板下船" : "門檻出口",
+        nearLabel: b.kind === "ship" ? `踏上跳板下船（回到${curScene.title}）` : `推門外出（回到${curScene.title}）`,
+        farLabel: b.kind === "ship" ? "走向舷邊跳板（抵達後下船）" : "走向門口（抵達後外出）",
+        kind: "exit"
+      });
+    }
+
+    if (b.kind === "tavern") {
+      if (floorIdx === 0 && spec.stairs_xy) {
+        room.hotspots.push({
+          id: "up_2f",
+          x: spec.stairs_xy[0],
+          y: spec.stairs_xy[1],
+          badge: "二樓木梯",
+          nearLabel: "踏上木梯（前往二樓宿房 1～6 號房）",
+          farLabel: "走向木梯（抵達後上二樓）",
+          kind: "stairs",
+          toFloor: 1
+        });
+      } else if (floorIdx === 1 && spec.stairs_xy) {
+        room.hotspots.push({
+          id: "down_1f",
+          x: spec.stairs_xy[0],
+          y: spec.stairs_xy[1],
+          badge: "下樓木梯",
+          nearLabel: "下木梯（回到一樓大酒廳）",
+          farLabel: "走向木梯（抵達後回一樓）",
+          kind: "stairs",
+          toFloor: 0
+        });
+      }
+    }
+
+    const cols = ["#9e3d2b", "#2f5d73", "#4c6e3d", "#7a496b"];
+    const spots = spec.npc_spots || [];
+    if (floorIdx === 0 && spots.length > 0) {
+      (b.npcs || []).slice(0, spots.length).forEach((n, idx) => {
+        const sp = spots[idx];
+        room.npcs.push({ name: n.name, race: n.race, role: n.role, x: sp[0], y: sp[1], col: cols[idx % cols.length] });
+        room.hotspots.push({
+          id: `npc_${idx}`,
+          x: sp[0],
+          y: sp[1],
+          npcName: n.name,
+          nearLabel: `與${n.role}「${n.name}」（${n.race}）交談`,
+          farLabel: `走近「${n.name}」交談`,
+          kind: "npc",
+          line: `${n.name}（${n.race}・${n.role}）向你點頭致意：「這裡是${b.name}，外頭海風寒涼，進屋烤烤火歇歇腳吧！」`
+        });
+      });
+    }
+
+    return room;
+  }
+
+  function fitIndoorToViewport(rm) {
+    if (!rm || !rm.spec) return;
+    const cw = canvas.clientWidth || 800, ch = canvas.clientHeight || 600;
+    const [rx0, ry0, rx1, ry1] = rm.spec.room_rect;
+    const spanW = (rx1 - rx0) + 290, spanH = (ry1 - ry0) + 250;
+    cam.scale = Math.max(0.20, Math.min((cw - 16) / spanW, (ch - 16) / spanH, 1.15));
+    cam.x = (rx0 + rx1) * 0.5;
+    cam.y = (ry0 + ry1) * 0.5;
+  }
+
+  async function enterIndoor(b, floorIdx = 0) {
+    if (player.mode === "outdoor") {
+      player.returnOutdoor = { slug: curScene.slug, x: b.door.x, y: b.door.y, scale: cam.scale };
+    }
+    const rm = buildIndoorRoom(b, floorIdx);
+    await ensureIndoorImage(rm.tid);
+    player.mode = "indoor";
+    player.indoorRoom = rm;
+    player.x = rm.spawnX;
+    player.y = rm.spawnY;
+    player.path = [];
+    player.pendingIndoor = null;
+    fitIndoorToViewport(rm);
+    stSublog.textContent = `已進入【${rm.title}】！須走到門口門檻旁始可推門外出。`;
+    syncStoryUI();
+    render();
+  }
+
+  function exitIndoor() {
+    if (player.mode !== "indoor") return;
+    const ret = player.returnOutdoor;
+    player.mode = "outdoor";
+    player.indoorRoom = null;
+    player.pendingIndoor = null;
+    if (ret) {
+      curScene = META.scenes[ret.slug] || curScene;
+      player.x = ret.x; player.y = ret.y;
+      cam.x = ret.x; cam.y = ret.y; cam.scale = ret.scale || 0.58;
+    }
+    player.path = [];
+    stSublog.textContent = `已推門跨出門檻，回到【${curScene.title}】戶外街巷。`;
+    syncStoryUI();
+    render();
+  }
+
+  function activateOrWalkIndoor(hs, isDbl = false) {
+    if (player.mode !== "indoor" || !player.indoorRoom || !hs) return;
+    const rm = player.indoorRoom;
+    const dist = Math.hypot(hs.x - player.x, hs.y - player.y);
+    if (dist <= PROX_INDOOR) {
+      player.pendingIndoor = null;
+      player.path = [];
+      if (hs.kind === "exit") exitIndoor();
+      else if (hs.kind === "stairs") enterIndoor(rm.building, hs.toFloor);
+      else if (hs.kind === "npc") { stSublog.textContent = hs.line; syncStoryUI(); render(); }
+      return;
+    }
+    player.pendingIndoor = hs;
+    player.running = isDbl;
+    player.path = findIndoorPath(rm, player.x, player.y, hs.x, hs.y);
+    if (hs.kind === "exit") {
+      stSublog.textContent = "距離門口尚遠，正在繞過室內隔間與家具走向門檻出口…";
+    } else if (hs.kind === "stairs") {
+      stSublog.textContent = "正在走向木梯，抵達梯口後上下樓…";
+    } else if (hs.kind === "npc") {
+      stSublog.textContent = `正在走向「${hs.npcName}」身旁…`;
+    }
+    syncStoryUI();
+    render();
+  }
+
+  function findVaultSpot() {
+    if (player.mode !== "outdoor" || !curScene) return null;
+    for (const seg of curScene.walls) {
+      if (distToSegSq(player.x, player.y, seg[0], seg[1], seg[2], seg[3]) <= 46 * 46) {
+        const dx = seg[2] - seg[0], dy = seg[3] - seg[1];
+        const len = Math.max(1, Math.hypot(dx, dy));
+        let nx = -dy / len, ny = dx / len;
+        const mx = (seg[0] + seg[2]) * 0.5, my = (seg[1] + seg[3]) * 0.5;
+        if ((mx - player.x) * nx + (my - player.y) * ny < 0) { nx = -nx; ny = -ny; }
+        const tx = player.x + nx * 64, ty = player.y + ny * 64;
+        if (querySceneWalkable(curScene, tx, ty, 10).walkable) return { x: tx, y: ty };
+      }
+    }
+    return null;
+  }
+
+  function syncStoryUI() {
+    if (!curScene) return;
+    stActions.innerHTML = "";
+
+    if (player.mode === "indoor" && player.indoorRoom) {
+      const rm = player.indoorRoom;
+      stateBadge.textContent = player.running ? "室內快步" : "手繪室內／船艙";
+      stateBadge.className = "story-badge indoor";
+      stTitle.textContent = rm.title;
+      stDesc.textContent = rm.desc;
+      nearCountBadge.textContent = `在場 ${rm.npcs.length} 人`;
+      for (const hs of rm.hotspots) {
+        const isNear = Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR;
+        const btn = document.createElement("button");
+        btn.className = "pill action" + (isNear ? "" : " portal");
+        btn.textContent = isNear ? hs.nearLabel : hs.farLabel;
+        btn.onclick = () => activateOrWalkIndoor(hs, false);
+        stActions.appendChild(btn);
+      }
+      return;
+    }
+
+    stateBadge.textContent = player.running ? "戶外小跑" : "戶外慢步";
+    stateBadge.className = "story-badge" + (player.running ? " running" : "");
+    stTitle.textContent = curScene.title;
+    stDesc.textContent = curScene.desc;
+
+    const nearPortals = curScene.portals
+      .map(p => ({ p, d: Math.hypot(p.x - player.x, p.y - player.y) }))
+      .filter(it => it.d <= PROX_PORTAL)
+      .sort((a, b) => a.d - b.d);
+
+    const nearDoors = curScene.buildings
+      .map(b => ({ b, d: Math.hypot(b.door.x - player.x, b.door.y - player.y) }))
+      .filter(it => it.d <= PROX_DOOR)
+      .sort((a, b) => a.d - b.d);
+
+    nearCountBadge.textContent = `${curScene.buildings.length} 處門戶 ・ ${curScene.portals.length} 處路口`;
+
+    for (const { p } of nearPortals) {
+      const btn = document.createElement("button");
+      btn.className = "pill action portal";
+      btn.textContent = p.label;
+      btn.onclick = () => triggerPortal(p);
+      stActions.appendChild(btn);
+    }
+
+    for (const { b } of nearDoors.slice(0, 3)) {
+      const btn = document.createElement("button");
+      btn.className = "pill action";
+      btn.textContent = b.door.label;
+      btn.onclick = () => enterIndoor(b, 0);
+      stActions.appendChild(btn);
+    }
+
+    const vSpot = findVaultSpot();
+    if (vSpot) {
+      const vBtn = document.createElement("button");
+      vBtn.className = "pill action warn";
+      vBtn.textContent = "〔翻牆潛入／躍出庭院矮牆〕";
+      vBtn.onclick = () => {
+        player.x = vSpot.x; player.y = vSpot.y; player.path = [];
+        stSublog.textContent = "你雙手撐上庭院砌石矮牆，俐落翻越至另一側！";
+        syncStoryUI(); render();
+      };
+      stActions.appendChild(vBtn);
+    }
+
+    if (nearPortals.length === 0 && nearDoors.length === 0) {
+      for (const p of curScene.portals.slice(0, 4)) {
+        const btn = document.createElement("button");
+        btn.className = "pill action portal";
+        btn.textContent = p.label;
+        btn.onclick = () => {
+          player.pendingPortal = p;
+          player.pendingDoor = null;
+          player.running = false;
+          player.path = findScenePath(curScene, player.x, player.y, p.x, p.y);
+          render();
+        };
+        stActions.appendChild(btn);
+      }
+    }
+  }
+
+  function fitSceneToViewport() {
+    if (!curScene) return;
+    if (player.mode === "indoor" && player.indoorRoom) {
+      fitIndoorToViewport(player.indoorRoom);
+      cam.follow = false;
+      document.getElementById("btnFollow").classList.remove("on");
+      render();
+      return;
+    }
+    const cw = canvas.clientWidth || 800, ch = canvas.clientHeight || 600;
+    cam.scale = Math.min((cw - 16) / curScene.world_w, (ch - 16) / curScene.world_h);
+    cam.x = curScene.world_w * 0.5;
+    cam.y = curScene.world_h * 0.5;
+    cam.follow = false;
+    document.getElementById("btnFollow").classList.remove("on");
+    render();
+  }
+
+  function renderIndoor(cw, ch) {
+    const rm = player.indoorRoom;
+    const sp = rm.spec;
+    const sc = cam.scale;
+    ctx.fillStyle = sp.bg_color || "#241d17";
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.save();
+    ctx.translate(cw * 0.5, ch * 0.5);
+    ctx.scale(sc, sc);
+    ctx.translate(-cam.x, -cam.y);
+
+    const bgImg = indoorImages.get(rm.tid);
+    if (bgImg) {
+      ctx.drawImage(bgImg, 0, 0, sp.world_w, sp.world_h);
+    }
+
+    if (cam.showDebug) {
+      ctx.save();
+      ctx.lineWidth = 3 / sc;
+      ctx.strokeStyle = "rgba(34, 211, 238, 0.9)";
+      if (sp.hull_poly) {
+        ctx.beginPath();
+        sp.hull_poly.forEach((p, idx) => idx === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+        ctx.closePath(); ctx.stroke();
+      } else {
+        const [rx0, ry0, rx1, ry1] = sp.room_rect;
+        ctx.strokeRect(rx0, ry0, rx1 - rx0, ry1 - ry0);
+      }
+      ctx.strokeStyle = "rgba(245, 158, 11, 0.92)";
+      for (const seg of (sp.walls || [])) {
+        ctx.beginPath(); ctx.moveTo(seg[0], seg[1]); ctx.lineTo(seg[2], seg[3]); ctx.stroke();
+      }
+      ctx.strokeStyle = "rgba(220, 38, 38, 0.9)";
+      for (const f of (sp.furniture || [])) {
+        const [x0, y0, x1, y1] = f.box;
+        ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+      }
+      ctx.restore();
+    }
+
+    if (cam.showMarkers) {
+      const hFont = 11 / sc;
+      ctx.font = `700 ${hFont}px "Noto Serif TC", serif`;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (const hs of rm.hotspots) {
+        if (hs.kind === "exit" || hs.kind === "stairs") {
+          const isNear = Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR;
+          const tw = ctx.measureText(hs.badge).width;
+          const bx = Math.max(tw * 0.5 + 16 / sc, Math.min(sp.world_w - tw * 0.5 - 16 / sc, hs.x));
+          const by = Math.max(24 / sc, Math.min(sp.world_h - 24 / sc, hs.y));
+          ctx.fillStyle = isNear ? "rgba(156, 58, 32, 0.94)" : "rgba(56, 78, 88, 0.90)";
+          ctx.strokeStyle = "#fff8eb";
+          ctx.lineWidth = 1.8 / sc;
+          ctx.beginPath();
+          ctx.roundRect(bx - tw * 0.5 - 9 / sc, by - hFont * 0.7, tw + 18 / sc, hFont * 1.4, 7 / sc);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = "#fff9ed";
+          ctx.fillText(hs.badge, bx, by);
+        }
+      }
+    }
+
+    for (const n of rm.npcs) {
+      const nr = Math.max(13, 10.5 / sc);
+      ctx.fillStyle = n.col; ctx.strokeStyle = "#fbf5e8"; ctx.lineWidth = 2.4 / sc;
+      ctx.beginPath(); ctx.arc(n.x, n.y, nr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      const nFont = 10.8 / sc;
+      ctx.font = `700 ${nFont}px "Noto Serif TC", serif`;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      const lbl = `${n.name}（${n.role}）`;
+      const tw = ctx.measureText(lbl).width;
+      ctx.fillStyle = "rgba(250, 243, 228, 0.92)";
+      ctx.strokeStyle = "rgba(82, 56, 36, 0.8)";
+      ctx.lineWidth = 1.2 / sc;
+      ctx.beginPath();
+      ctx.roundRect(n.x - tw * 0.5 - 6 / sc, n.y - nr - nFont * 1.35, tw + 12 / sc, nFont * 1.3, 5 / sc);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#2a1b12";
+      ctx.fillText(lbl, n.x, n.y - nr - nFont * 0.7);
+    }
+
+    if (player.path.length > 0) {
+      ctx.save();
+      ctx.beginPath(); ctx.moveTo(player.x, player.y);
+      for (const p of player.path) ctx.lineTo(p[0], p[1]);
+      ctx.strokeStyle = player.running ? "rgba(186, 56, 34, 0.88)" : "rgba(42, 96, 116, 0.88)";
+      ctx.lineWidth = 3.2 / sc;
+      ctx.setLineDash([8 / sc, 6 / sc]);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const pr = Math.max(14, 11 / sc);
+    ctx.fillStyle = "rgba(178, 52, 34, 0.26)";
+    ctx.beginPath(); ctx.arc(player.x, player.y, pr * 1.85, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#b53422"; ctx.strokeStyle = "#fff9ed"; ctx.lineWidth = 2.6 / sc;
+    ctx.beginPath(); ctx.arc(player.x, player.y, pr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    const exHs = rm.hotspots.find(h => h.kind === "exit" || h.kind === "stairs");
+    const exDist = exHs ? Math.round(Math.hypot(exHs.x - player.x, exHs.y - player.y)) : 0;
+    hudReadout.textContent = `手繪室內 ｜ ${rm.title} ｜ 距出口：${exDist}px（須 ≤${PROX_INDOOR}px 始可外出）｜ 點擊地板或門口自動繞障慢步`;
+  }
+
+  function render() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cw = canvas.clientWidth, ch = canvas.clientHeight;
+    if (canvas.width !== Math.round(cw * dpr) || canvas.height !== Math.round(ch * dpr)) {
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    if (!curScene) {
+      ctx.fillStyle = "#2d261f"; ctx.fillRect(0, 0, cw, ch);
+      return;
+    }
+    if (player.mode === "indoor" && player.indoorRoom) {
+      renderIndoor(cw, ch);
+      return;
+    }
+
+    ctx.fillStyle = "#2d261f";
+    ctx.fillRect(0, 0, cw, ch);
+
+    const sc = cam.scale;
+    ctx.save();
+    ctx.translate(cw * 0.5, ch * 0.5);
+    ctx.scale(sc, sc);
+    ctx.translate(-cam.x, -cam.y);
+
+    const bgImg = sceneImages.get(curScene.slug);
+    if (bgImg) {
+      ctx.drawImage(bgImg, 0, 0, curScene.world_w, curScene.world_h);
+    }
+
+    if (cam.showDebug) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(220, 38, 38, 0.88)";
+      ctx.lineWidth = 3 / sc;
+      for (const b of curScene.buildings) {
+        if (b.kind === "ship") continue;
+        if (b.shape === "round_tower") {
+          ctx.beginPath(); ctx.arc(b.x, b.y, b.w * 0.45, 0, Math.PI * 2); ctx.stroke();
+        } else {
+          ctx.save(); ctx.translate(b.x, b.y); ctx.rotate((b.deg || 0) * Math.PI / 180);
+          ctx.strokeRect(-b.w * 0.44, -b.h * 0.43, b.w * 0.88, b.h * 0.86); ctx.restore();
+        }
+      }
+      ctx.strokeStyle = "rgba(245, 158, 11, 0.92)";
+      for (const seg of curScene.walls) {
+        ctx.beginPath(); ctx.moveTo(seg[0], seg[1]); ctx.lineTo(seg[2], seg[3]); ctx.stroke();
+      }
+      ctx.strokeStyle = "rgba(168, 85, 247, 0.92)";
+      for (const pd of (curScene.paddocks || [])) {
+        ctx.strokeRect(pd[0], pd[1], pd[2] - pd[0], pd[3] - pd[1]);
+      }
+      ctx.restore();
+    }
+
+    if (cam.showMarkers) {
+      ctx.save();
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+
+      const bFont = 10.2 / sc;
+      ctx.font = `700 ${bFont}px "Noto Serif TC", serif`;
+      const stripRe = /^(白鷗港・)?(鐵砧巷|船帆巷|銅幣巷|鹹魚巷|桶匠巷|繩索巷|石燈巷|海風巷|老井巷|南牆根巷)/;
+      for (const b of curScene.buildings) {
+        let shortName = b.name.replace("白鷗港・", "").replace(stripRe, "")
+          .replace("（含二樓宿房）", "").replace("北門西側", "西").replace("北門東側", "東")
+          .replace("南門西側", "西").replace("南門東側", "東");
+        if (shortName.endsWith("家") && shortName.includes("・")) shortName = shortName.slice(0, -1);
+        const tw = ctx.measureText(shortName).width;
+        const ly = b.shape === "round_tower" ? (b.y - b.h * 0.62) : b.y;
+        ctx.fillStyle = "rgba(250, 243, 228, 0.90)";
+        ctx.strokeStyle = "rgba(92, 62, 38, 0.82)";
+        ctx.lineWidth = 1.3 / sc;
+        ctx.beginPath();
+        ctx.roundRect(b.x - tw * 0.5 - 5 / sc, ly - bFont * 0.65, tw + 10 / sc, bFont * 1.3, 5 / sc);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#2b1c12";
+        ctx.fillText(shortName, b.x, ly);
+
+        ctx.fillStyle = "rgba(182, 92, 42, 0.92)";
+        ctx.strokeStyle = "#fff8eb";
+        ctx.lineWidth = 1.8 / sc;
+        ctx.beginPath(); ctx.arc(b.door.x, b.door.y, 6 / sc, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+
+      const pFont = 11.2 / sc;
+      ctx.font = `700 ${pFont}px "Noto Serif TC", serif`;
+      for (const pt of curScene.portals) {
+        const shortPortal = pt.label
+          .replace(/（\d+戶）/g, "")
+          .replace("北行前往：", "").replace("南行前往：", "").replace("東行前往：", "").replace("西行返回：", "回")
+          .replace("過白鷗大橋前往：", "").replace("北過白鷗大橋：", "")
+          .replace("南入城內：", "").replace("北返城內：", "")
+          .replace("北出城門：", "出城·").replace("南出城門：", "出城·")
+          .replace("東入支巷：", "").replace("西入支巷：", "")
+          .replace("西出巷口：回到", "回").replace("東出巷口：回到", "回");
+        const tw = ctx.measureText(shortPortal).width;
+        const lx = Math.max(tw * 0.5 + 16 / sc, Math.min(curScene.world_w - tw * 0.5 - 16 / sc, pt.x));
+        const ly = Math.max(26 / sc, Math.min(curScene.world_h - 26 / sc, pt.y));
+        const isCity = !pt.target_slug.startsWith("_wild");
+        ctx.fillStyle = isCity ? "rgba(38, 76, 90, 0.92)" : "rgba(92, 68, 44, 0.90)";
+        ctx.strokeStyle = "#eef6f8";
+        ctx.lineWidth = 1.8 / sc;
+        ctx.beginPath();
+        ctx.roundRect(lx - tw * 0.5 - 9 / sc, ly - pFont * 0.68, tw + 18 / sc, pFont * 1.36, 999);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#fbf8f0";
+        ctx.fillText(shortPortal, lx, ly);
+      }
+      ctx.restore();
+    }
+
+    if (player.path.length > 0) {
+      ctx.save();
+      ctx.beginPath(); ctx.moveTo(player.x, player.y);
+      for (const p of player.path) ctx.lineTo(p[0], p[1]);
+      ctx.strokeStyle = player.running ? "rgba(186, 56, 34, 0.85)" : "rgba(42, 96, 116, 0.85)";
+      ctx.lineWidth = 3.2 / sc;
+      ctx.setLineDash([8 / sc, 6 / sc]);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const pr = Math.max(11, 10.5 / sc);
+    ctx.fillStyle = "rgba(182, 52, 34, 0.26)";
+    ctx.beginPath(); ctx.arc(player.x, player.y, pr * 1.85, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#b53422";
+    ctx.strokeStyle = "#fff9ed";
+    ctx.lineWidth = 2.6 / sc;
+    ctx.beginPath(); ctx.arc(player.x, player.y, pr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+    ctx.restore();
+
+    const q = querySceneWalkable(curScene, player.x, player.y, 6);
+    const mat = MATERIALS[q.matCode || 4];
+    hudReadout.textContent =
+      `白鷗港 16 格手繪 ｜ ${curScene.title} ｜ 路面：${mat.name}（μ=${mat.mu.toFixed(2)}）｜ 步速：沉穩慢步 ｜ 縮放 ${(sc * 100).toFixed(0)}%`;
+  }
+
+  let lastTs = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTs) * 0.001);
+    lastTs = now;
+
+    if (curScene && player.path.length > 0) {
+      const tgt = player.path[0];
+      const dx = tgt[0] - player.x, dy = tgt[1] - player.y;
+      const dist = Math.hypot(dx, dy);
+      let spd = player.mode === "indoor"
+        ? (player.running ? INDOOR_RUN_SPEED : INDOOR_WALK_SPEED)
+        : (player.running ? RUN_SPEED : WALK_SPEED);
+      if (player.mode === "outdoor") {
+        const q = querySceneWalkable(curScene, player.x, player.y, 6);
+        spd *= (MATERIALS[q.matCode || 4]?.speedMul || 0.85);
+      }
+      const step = spd * dt;
+      if (dist <= step + 1.5) {
+        player.x = tgt[0]; player.y = tgt[1];
+        player.path.shift();
+        if (player.path.length === 0) {
+          player.running = false;
+          if (player.mode === "indoor" && player.pendingIndoor) {
+            const hs = player.pendingIndoor;
+            player.pendingIndoor = null;
+            if (Math.hypot(hs.x - player.x, hs.y - player.y) <= PROX_INDOOR + 28) {
+              if (hs.kind === "exit") { exitIndoor(); requestAnimationFrame(tick); return; }
+              if (hs.kind === "stairs") { enterIndoor(player.indoorRoom.building, hs.toFloor); requestAnimationFrame(tick); return; }
+              if (hs.kind === "npc") { stSublog.textContent = hs.line; }
+            }
+          }
+          if (player.pendingPortal && Math.hypot(player.pendingPortal.x - player.x, player.pendingPortal.y - player.y) < 165) {
+            const p = player.pendingPortal;
+            player.pendingPortal = null;
+            triggerPortal(p);
+            requestAnimationFrame(tick);
+            return;
+          }
+          if (player.pendingDoor && Math.hypot(player.pendingDoor.door.x - player.x, player.pendingDoor.door.y - player.y) < 125) {
+            const b = player.pendingDoor;
+            player.pendingDoor = null;
+            enterIndoor(b, 0);
+            requestAnimationFrame(tick);
+            return;
+          }
+        }
+        syncStoryUI();
+      } else {
+        player.x += (dx / dist) * step;
+        player.y += (dy / dist) * step;
+      }
+      if (cam.follow) {
+        cam.x += (player.x - cam.x) * Math.min(1, dt * 6.5);
+        cam.y += (player.y - cam.y) * Math.min(1, dt * 6.5);
+      }
+      render();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  let ptrDown = null, dragged = false, lastTap = 0;
+  const touches = new Map();
+  let pinchD = 0;
+
+  function s2w(cx, cy) {
+    const r = canvas.getBoundingClientRect();
+    return [cam.x + (cx - r.left - r.width * 0.5) / cam.scale, cam.y + (cy - r.top - r.height * 0.5) / cam.scale];
+  }
+
+  canvas.addEventListener("pointerdown", (e) => {
+    canvas.setPointerCapture(e.pointerId);
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 1) {
+      ptrDown = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y };
+      dragged = false;
+    } else if (touches.size === 2) {
+      const ps = Array.from(touches.values());
+      pinchD = Math.hypot(ps[1].x - ps[0].x, ps[1].y - ps[0].y);
+      dragged = true;
+    }
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (!touches.has(e.pointerId)) return;
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 2) {
+      const ps = Array.from(touches.values());
+      const d = Math.hypot(ps[1].x - ps[0].x, ps[1].y - ps[0].y);
+      if (pinchD > 10) {
+        cam.scale = Math.max(0.20, Math.min(2.2, cam.scale * (d / pinchD)));
+        render();
+      }
+      pinchD = d;
+      return;
+    }
+    if (!ptrDown) return;
+    const dx = e.clientX - ptrDown.x, dy = e.clientY - ptrDown.y;
+    if (Math.hypot(dx, dy) > 7) {
+      dragged = true;
+      cam.follow = false;
+      document.getElementById("btnFollow").classList.remove("on");
+      cam.x = ptrDown.cx - dx / cam.scale;
+      cam.y = ptrDown.cy - dy / cam.scale;
+      render();
+    }
+  });
+
+  function endPtr(e) {
+    touches.delete(e.pointerId);
+    if (touches.size > 0) return;
+    if (ptrDown && !dragged && curScene) {
+      const [wx, wy] = s2w(e.clientX, e.clientY);
+      const now = performance.now();
+      const isDbl = (now - lastTap) <= DBL_TAP_MS;
+      lastTap = now;
+
+      if (player.mode === "indoor" && player.indoorRoom) {
+        const rm = player.indoorRoom;
+        const hitHs = rm.hotspots.find(h => Math.hypot(h.x - wx, h.y - wy) < 88 / Math.min(1, cam.scale * 1.4));
+        if (hitHs) {
+          activateOrWalkIndoor(hitHs, isDbl);
+          ptrDown = null;
+          return;
+        }
+        player.pendingIndoor = null;
+        player.running = isDbl;
+        player.path = findIndoorPath(rm, player.x, player.y, wx, wy);
+        syncStoryUI();
+        render();
+        ptrDown = null;
+        return;
+      }
+
+      const hitPortal = curScene.portals.find(pt => Math.hypot(pt.x - wx, pt.y - wy) < 115 / Math.min(1, cam.scale * 1.4));
+      if (hitPortal) {
+        if (Math.hypot(hitPortal.x - player.x, hitPortal.y - player.y) <= PROX_PORTAL) {
+          triggerPortal(hitPortal);
+        } else {
+          player.pendingPortal = hitPortal;
+          player.pendingDoor = null;
+          player.running = isDbl;
+          player.path = findScenePath(curScene, player.x, player.y, hitPortal.x, hitPortal.y);
+          stSublog.textContent = `正在前往路口【${hitPortal.label}】，抵達後自動過圖…`;
+          render();
+        }
+        ptrDown = null;
+        return;
+      }
+
+      const hitBld = curScene.buildings.find(b => Math.hypot(b.door.x - wx, b.door.y - wy) < 42 / Math.min(1, cam.scale * 1.3));
+      if (hitBld) {
+        if (Math.hypot(hitBld.door.x - player.x, hitBld.door.y - player.y) <= PROX_DOOR) {
+          enterIndoor(hitBld, 0);
+        } else {
+          player.pendingDoor = hitBld;
+          player.pendingPortal = null;
+          player.running = isDbl;
+          player.path = findScenePath(curScene, player.x, player.y, hitBld.door.x, hitBld.door.y);
+          stSublog.textContent = `正在走向【${hitBld.name}】入口…`;
+          render();
+        }
+        ptrDown = null;
+        return;
+      }
+
+      player.pendingPortal = null;
+      player.pendingDoor = null;
+      player.running = isDbl;
+      player.path = findScenePath(curScene, player.x, player.y, wx, wy);
+      syncStoryUI();
+      render();
+    }
+    ptrDown = null;
+  }
+  canvas.addEventListener("pointerup", endPtr);
+  canvas.addEventListener("pointercancel", endPtr);
+
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.18 : 1 / 1.18;
+    const [wx, wy] = s2w(e.clientX, e.clientY);
+    const nextS = Math.max(0.20, Math.min(2.2, cam.scale * factor));
+    const r = canvas.getBoundingClientRect();
+    cam.scale = nextS;
+    if (!cam.follow) {
+      cam.x = wx - (e.clientX - r.left - r.width * 0.5) / nextS;
+      cam.y = wy - (e.clientY - r.top - r.height * 0.5) / nextS;
+    }
+    render();
+  }, { passive: false });
+
+  document.getElementById("btnModeSplit").onclick = () => {
+    appRoot.classList.remove("fullmap-mode");
+    document.getElementById("btnModeSplit").classList.add("active");
+    document.getElementById("btnModeFull").classList.remove("active");
+    render();
+  };
+  document.getElementById("btnModeFull").onclick = () => {
+    appRoot.classList.add("fullmap-mode");
+    document.getElementById("btnModeFull").classList.add("active");
+    document.getElementById("btnModeSplit").classList.remove("active");
+    fitSceneToViewport();
+  };
+
+  spineBtns.forEach(btn => {
+    btn.onclick = async () => {
+      await switchOutdoorScene(btn.dataset.scene);
+      fitSceneToViewport();
+    };
+  });
+  btnAlleyMenu.onclick = (e) => {
+    e.stopPropagation();
+    alleyMenu.classList.toggle("open");
+  };
+  document.addEventListener("pointerdown", (e) => {
+    if (!alleyMenu.contains(e.target) && e.target !== btnAlleyMenu) alleyMenu.classList.remove("open");
+  });
+  alleyBtns.forEach(btn => {
+    btn.onclick = async () => {
+      await switchOutdoorScene(btn.dataset.alley);
+      fitSceneToViewport();
+    };
+  });
+
+  document.getElementById("btnToggleMarkers").onclick = (e) => {
+    cam.showMarkers = !cam.showMarkers;
+    e.currentTarget.textContent = `路口門牌：${cam.showMarkers ? "顯" : "隱"}`;
+    e.currentTarget.classList.toggle("on", cam.showMarkers);
+    render();
+  };
+  document.getElementById("btnToggleDebug").onclick = (e) => {
+    cam.showDebug = !cam.showDebug;
+    e.currentTarget.textContent = `碰撞透視：${cam.showDebug ? "開" : "關"}`;
+    e.currentTarget.classList.toggle("on", cam.showDebug);
+    render();
+  };
+  document.getElementById("btnFollow").onclick = (e) => {
+    cam.follow = !cam.follow;
+    if (cam.follow && player.mode === "outdoor") { cam.x = player.x; cam.y = player.y; }
+    e.currentTarget.classList.toggle("on", cam.follow);
+    render();
+  };
+  document.getElementById("btnFitScene").onclick = () => fitSceneToViewport();
+  document.getElementById("btnZoomIn").onclick = () => { cam.scale = Math.min(2.2, cam.scale * 1.32); render(); };
+  document.getElementById("btnZoomOut").onclick = () => { cam.scale = Math.max(0.20, cam.scale / 1.32); render(); };
+
+  window.__SCENES_QA__ = {
+    async switchScene(slug) {
+      await switchOutdoorScene(slug);
+      fitSceneToViewport();
+      return curScene ? curScene.title : null;
+    },
+    setMarkers(v) { cam.showMarkers = !!v; render(); },
+    setDebug(v) { cam.showDebug = !!v; render(); },
+    async enterHouse(nid, floorIdx = 0) {
+      const b = curScene.buildings.find(it => it.nid === nid) || curScene.buildings[0];
+      if (b) await enterIndoor(b, floorIdx);
+      return b ? b.name : null;
+    },
+    teleportIndoor(ix, iy) {
+      if (player.mode !== "indoor" || !player.indoorRoom) return null;
+      player.x = ix; player.y = iy; player.path = []; player.pendingIndoor = null;
+      syncStoryUI(); render();
+      const ex = player.indoorRoom.hotspots.find(h => h.kind === "exit");
+      return {
+        x: player.x, y: player.y,
+        distToExit: ex ? Math.round(Math.hypot(ex.x - player.x, ex.y - player.y)) : null,
+        buttons: Array.from(stActions.querySelectorAll("button")).map(b => b.textContent)
+      };
+    },
+    tryExitFromCurrentSpot() {
+      if (player.mode !== "indoor" || !player.indoorRoom) return null;
+      const ex = player.indoorRoom.hotspots.find(h => h.kind === "exit");
+      activateOrWalkIndoor(ex, false);
+      return {
+        modeAfterClick: player.mode,
+        pathLen: player.path.length,
+        waypoints: player.path.slice(0, 8),
+        sublog: stSublog.textContent
+      };
+    }
+  };
+
+  async function init() {
+    const [metaJson, intJson] = await Promise.all([
+      fetch("/maps/wgh_scenes/wgh_scenes_v1.json?" + CACHE_TAG).then(r => r.json()),
+      fetch("/maps/wgh_interiors/wgh_interiors_v1.json?" + CACHE_TAG).then(r => r.json())
+    ]);
+    META = metaJson;
+    INT_META = intJson;
+
+    await switchOutdoorScene(META.default_scene || "plaza");
+    fitSceneToViewport();
+    window.addEventListener("resize", () => render());
+    requestAnimationFrame(tick);
+  }
+
+  init().catch(err => {
+    console.error(err);
+    hudReadout.textContent = "載入失敗：" + err.message;
+  });
+})();
+</script>
+</body>
+</html>

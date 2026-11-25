@@ -1,0 +1,449 @@
+{
+  "compressionlevel": -1,
+  "height": 32,
+  "infinite": false,
+  "nextlayerid": 5,
+  "nextobjectid": 19,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.12.2",
+  "tileheight": 64,
+  "tilewidth": 64,
+  "type": "map",
+  "version": "1.10",
+  "width": 32,
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "name": "tra_map_kit_props",
+      "tilewidth": 768,
+      "tileheight": 768,
+      "tilecount": 17,
+      "columns": 0,
+      "grid": {
+        "orientation": "orthogonal",
+        "width": 1,
+        "height": 1
+      },
+      "tiles": [
+        {
+          "id": 0,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/barrel_cluster.png",
+          "imagewidth": 481,
+          "imageheight": 479,
+          "type": "barrel_cluster"
+        },
+        {
+          "id": 1,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/bed_dwarf.png",
+          "imagewidth": 393,
+          "imageheight": 579,
+          "type": "bed_dwarf"
+        },
+        {
+          "id": 2,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/bed_human.png",
+          "imagewidth": 373,
+          "imageheight": 532,
+          "type": "bed_human"
+        },
+        {
+          "id": 3,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/boulder_moss.png",
+          "imagewidth": 492,
+          "imageheight": 475,
+          "type": "boulder_moss"
+        },
+        {
+          "id": 4,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/brazier_wormwood.png",
+          "imagewidth": 476,
+          "imageheight": 478,
+          "type": "brazier_wormwood"
+        },
+        {
+          "id": 5,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/cart_quarantine.png",
+          "imagewidth": 419,
+          "imageheight": 498,
+          "type": "cart_quarantine"
+        },
+        {
+          "id": 6,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/cauldron_pot.png",
+          "imagewidth": 515,
+          "imageheight": 464,
+          "type": "cauldron_pot"
+        },
+        {
+          "id": 7,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/hearth_stone.png",
+          "imagewidth": 521,
+          "imageheight": 430,
+          "type": "hearth_stone"
+        },
+        {
+          "id": 8,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/rug_kilim.png",
+          "imagewidth": 424,
+          "imageheight": 570,
+          "type": "rug_kilim"
+        },
+        {
+          "id": 9,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/shield_spear_rack.png",
+          "imagewidth": 556,
+          "imageheight": 285,
+          "type": "shield_spear_rack"
+        },
+        {
+          "id": 10,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/shrub_bush.png",
+          "imagewidth": 415,
+          "imageheight": 439,
+          "type": "shrub_bush"
+        },
+        {
+          "id": 11,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/stone_stele.png",
+          "imagewidth": 493,
+          "imageheight": 505,
+          "type": "stone_stele"
+        },
+        {
+          "id": 12,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/stonemason_bench.png",
+          "imagewidth": 501,
+          "imageheight": 521,
+          "type": "stonemason_bench"
+        },
+        {
+          "id": 13,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/table_feast.png",
+          "imagewidth": 521,
+          "imageheight": 587,
+          "type": "table_feast"
+        },
+        {
+          "id": 14,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/tree_oak.png",
+          "imagewidth": 643,
+          "imageheight": 627,
+          "type": "tree_oak"
+        },
+        {
+          "id": 15,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/tree_pine.png",
+          "imagewidth": 422,
+          "imageheight": 438,
+          "type": "tree_pine"
+        },
+        {
+          "id": 16,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/wormwood_bundles.png",
+          "imagewidth": 438,
+          "imageheight": 431,
+          "type": "wormwood_bundles"
+        }
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "Props_And_Furniture",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "rug_kilim",
+          "type": "prop",
+          "x": 390.0,
+          "y": 1120.0,
+          "width": 360.0,
+          "height": 250.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 9
+        },
+        {
+          "id": 2,
+          "name": "bed_dwarf",
+          "type": "prop",
+          "x": 339.0,
+          "y": 633.0,
+          "width": 192.0,
+          "height": 276.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 2
+        },
+        {
+          "id": 3,
+          "name": "bed_dwarf",
+          "type": "prop",
+          "x": 609.0,
+          "y": 633.0,
+          "width": 192.0,
+          "height": 276.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 2
+        },
+        {
+          "id": 4,
+          "name": "bed_dwarf",
+          "type": "prop",
+          "x": 339.0,
+          "y": 1633.0,
+          "width": 192.0,
+          "height": 276.0,
+          "rotation": 180.0,
+          "visible": true,
+          "gid": 2
+        },
+        {
+          "id": 5,
+          "name": "bed_dwarf",
+          "type": "prop",
+          "x": 609.0,
+          "y": 1633.0,
+          "width": 192.0,
+          "height": 276.0,
+          "rotation": 180.0,
+          "visible": true,
+          "gid": 2
+        },
+        {
+          "id": 6,
+          "name": "hearth_stone",
+          "type": "prop",
+          "x": 1175.0,
+          "y": 545.0,
+          "width": 320.0,
+          "height": 240.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 8
+        },
+        {
+          "id": 7,
+          "name": "cauldron_pot",
+          "type": "prop",
+          "x": 1516.0,
+          "y": 529.0,
+          "width": 158.0,
+          "height": 158.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 7
+        },
+        {
+          "id": 8,
+          "name": "table_feast",
+          "type": "prop",
+          "x": 1190.0,
+          "y": 1158.0,
+          "width": 300.0,
+          "height": 336.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 14
+        },
+        {
+          "id": 9,
+          "name": "shield_spear_rack",
+          "type": "prop",
+          "x": 1550.0,
+          "y": 1095.0,
+          "width": 210.0,
+          "height": 210.0,
+          "rotation": 90.0,
+          "visible": true,
+          "gid": 10
+        },
+        {
+          "id": 10,
+          "name": "wormwood_bundles",
+          "type": "prop",
+          "x": 1162.5,
+          "y": 1664.0,
+          "width": 165.0,
+          "height": 198.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 17
+        },
+        {
+          "id": 11,
+          "name": "barrel_cluster",
+          "type": "prop",
+          "x": 1520.0,
+          "y": 1652.5,
+          "width": 190.0,
+          "height": 215.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Collisions_And_Buildings",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 12,
+          "name": "wall",
+          "type": "wall",
+          "x": 260.0,
+          "y": 280.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 1528.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 13,
+          "name": "wall",
+          "type": "wall",
+          "x": 260.0,
+          "y": 280.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 1440.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 14,
+          "name": "wall",
+          "type": "wall",
+          "x": 1788.0,
+          "y": 280.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 1440.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 15,
+          "name": "wall",
+          "type": "wall",
+          "x": 260.0,
+          "y": 1720.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 660.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 16,
+          "name": "wall",
+          "type": "wall",
+          "x": 1128.0,
+          "y": 1720.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 660.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 17,
+          "name": "wall",
+          "type": "wall",
+          "x": 880.0,
+          "y": 280.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 570.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 18,
+          "name": "wall",
+          "type": "wall",
+          "x": 880.0,
+          "y": 1150.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 570.0
+            }
+          ],
+          "visible": true
+        }
+      ]
+    }
+  ]
+}

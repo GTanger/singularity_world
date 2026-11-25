@@ -3,144 +3,24 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use serde::{Deserialize, Serialize};
-
 use crate::store::sql::DbPool;
 
+pub(crate) use super::persist_schema::WorldExtrasBlob;
+use super::persist_schema::purge_test_actors_and_sanitize_breaths;
+pub use super::persist_schema::{
+    ActorCommitRow, CREATE_NORMALIZED_ISLAND_SCHEMA, CommitBatch, NormalizedLoadOutcome,
+    purge_test_actor_conserving_copper,
+};
 use super::persist_v1_migrate::{migrate_v1_player_json, migrate_v1_resident_json};
 use super::sim_tick::seed_genesis_actors_once;
 use super::types::{
-    ContractRecord, DroppedLootBag, IslandWorldDelta, LedgerEntry, PickupRecord, ResidentSeedDef,
-    UnifiedMindBody, WorldStaticDoc,
+    ContractRecord, IslandWorldDelta, ResidentSeedDef, UnifiedMindBody, WorldStaticDoc,
 };
 
 static NORMALIZED_SCHEMA_READY: AtomicBool = AtomicBool::new(false);
 const UNNEST_CHUNK_ROWS: usize = 4_096;
 
-pub const CREATE_NORMALIZED_ISLAND_SCHEMA: &str = "
-CREATE TABLE IF NOT EXISTS outer_island_world_state (
-    state_id SMALLINT PRIMARY KEY,
-    persist_seq BIGINT NOT NULL DEFAULT 0,
-    state_json TEXT NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-CREATE TABLE IF NOT EXISTS oi_world_globals (
-    singleton SMALLINT PRIMARY KEY CHECK (singleton = 1),
-    persist_seq BIGINT NOT NULL DEFAULT 1,
-    last_settled_bell BIGINT NOT NULL DEFAULT 0,
-    municipal_treasury_copper BIGINT NOT NULL,
-    silver_bank_reserve_copper BIGINT NOT NULL,
-    mainland_clearing_copper BIGINT NOT NULL DEFAULT 0,
-    ledger_seq_counter BIGINT NOT NULL DEFAULT 0,
-    genesis_initialized BOOLEAN NOT NULL DEFAULT true,
-    unified_v2 BOOLEAN NOT NULL DEFAULT false,
-    genesis_total_copper BIGINT NOT NULL DEFAULT 0,
-    extras_json TEXT NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-ALTER TABLE oi_world_globals ADD COLUMN IF NOT EXISTS unified_v2 BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE oi_world_globals ADD COLUMN IF NOT EXISTS genesis_total_copper BIGINT NOT NULL DEFAULT 0;
-CREATE TABLE IF NOT EXISTS oi_actors (
-    actor_id TEXT PRIMARY KEY,
-    is_player BOOLEAN NOT NULL,
-    soul_seed BIGINT UNIQUE NOT NULL,
-    rev BIGINT NOT NULL DEFAULT 1,
-    node_id TEXT NOT NULL,
-    copper_val BIGINT NOT NULL DEFAULT 0,
-    state_json TEXT NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-CREATE TABLE IF NOT EXISTS oi_contracts (
-    contract_id TEXT PRIMARY KEY,
-    kind TEXT NOT NULL,
-    creditor_id TEXT NOT NULL,
-    debtor_id TEXT NOT NULL,
-    amount_copper BIGINT NOT NULL,
-    due_day BIGINT NOT NULL,
-    status TEXT NOT NULL,
-    note_zh TEXT NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-CREATE TABLE IF NOT EXISTS oi_world_ledger (
-    seq BIGSERIAL PRIMARY KEY,
-    idempotency_key TEXT UNIQUE NOT NULL,
-    game_day BIGINT NOT NULL,
-    bell_idx SMALLINT NOT NULL,
-    kind TEXT NOT NULL,
-    debit_actor TEXT NOT NULL,
-    credit_actor TEXT NOT NULL,
-    amount_copper BIGINT NOT NULL CHECK (amount_copper >= 0),
-    summary_zh TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-CREATE TABLE IF NOT EXISTS oi_turning_points_archive (
-    actor_id TEXT NOT NULL,
-    anchor_event_id TEXT NOT NULL,
-    game_day BIGINT NOT NULL,
-    lesson_zh TEXT NOT NULL,
-    new_goal_tag TEXT NOT NULL,
-    archived_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    PRIMARY KEY (actor_id, anchor_event_id)
-);
-CREATE TABLE IF NOT EXISTS outer_island_world_state_corrupt_bak (
-    id BIGSERIAL PRIMARY KEY,
-    raw_json TEXT NOT NULL,
-    captured_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-";
-
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
-#[serde(default)]
-struct WorldExtrasBlob {
-    dropped_loot_by_node: BTreeMap<String, Vec<DroppedLootBag>>,
-    cleared_nests_until_day: BTreeMap<String, i64>,
-    harvested_altars_until_day: BTreeMap<String, i64>,
-    sold_houses: BTreeMap<String, String>,
-    pickup_ledger: Vec<PickupRecord>,
-}
-
-pub enum NormalizedLoadOutcome {
-    Loaded(IslandWorldDelta),
-    Empty,
-    Unavailable,
-    Corrupt,
-}
-
-#[derive(Debug, Clone)]
-pub struct ActorCommitRow {
-    pub actor_id: String,
-    pub is_player: bool,
-    pub soul_seed: i64,
-    pub rev_u64: u64,
-    pub rev_i64: i64,
-    pub node_id: String,
-    pub copper: i64,
-    pub cold_outbox_flushed: usize,
-    pub state_json: String,
-}
-
-/// 離鎖提交批次快照（全服全體人物共用單一 `actor_rows` 結構，零玩家／NPC 雙表分流）
-pub struct CommitBatch {
-    pub next_seq: u64,
-    pub last_settled_bell: i64,
-    pub genesis_seeded: bool,
-    pub genesis_total_copper: i64,
-    pub municipal_treasury_copper: i64,
-    pub silver_bank_reserve_copper: i64,
-    pub mainland_clearing_copper: i64,
-    pub ledger_seq_counter: u64,
-    pub extras_json: String,
-    pub actor_rows: Vec<ActorCommitRow>,
-    pub clean_dirty_keys: Vec<String>,
-    pub obsolete_actor_ids: Vec<String>,
-    pub tp_archives: Vec<(String, super::mind::LifeTurningPoint)>,
-    pub contracts: Vec<ContractRecord>,
-    pub ledger_entries: Vec<LedgerEntry>,
-}
-
 /// 啟動時自正規化表載入：
-/// - `unified_v2 == true`：直接反序列化 `UnifiedMindBody`（零 `doc.residents` 依賴，支援任意動態增長人口）；
-/// - `unified_v2 == false`：自動將既有 v1 玩家與居民列無損合流為 `UnifiedMindBody` 並原子回寫升格為 `unified_v2 = true`！
 pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> NormalizedLoadOutcome {
     let mut conn = match pool.get() {
         Ok(c) => c,
@@ -153,12 +33,19 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         tracing::error!("[outer_island] PG normalized schema init failed: {err}");
         return NormalizedLoadOutcome::Unavailable;
     }
+    if let Err(err) =
+        conn.batch_execute(super::living_chronicler_worker::CREATE_LIVING_CHRONICLER_SCHEMA)
+    {
+        tracing::error!("[outer_island] PG chronicler schema init failed: {err}");
+        return NormalizedLoadOutcome::Unavailable;
+    }
     NORMALIZED_SCHEMA_READY.store(true, Ordering::Release);
 
     let g_row_opt = match conn.query_opt(
         "SELECT persist_seq, last_settled_bell, municipal_treasury_copper, silver_bank_reserve_copper,
                 mainland_clearing_copper, ledger_seq_counter, genesis_initialized, unified_v2,
-                genesis_total_copper, extras_json
+                genesis_total_copper, extras_json, harbor_history_v1, world_lineage_v2, chronicle_gazetteer_v3,
+                living_chronicler_v4, rural_v5
          FROM oi_world_globals WHERE singleton = 1",
         &[],
     ) {
@@ -183,6 +70,11 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
     let unified_v2: bool = g_row.get(7);
     let genesis_total_col: i64 = g_row.get(8);
     let extras_raw: String = g_row.get(9);
+    let harbor_history_v1: bool = g_row.get(10);
+    let world_lineage_v2: bool = g_row.get(11);
+    let chronicle_gazetteer_v3: bool = g_row.get(12);
+    let living_chronicler_v4: bool = g_row.get(13);
+    let rural_v5: bool = g_row.get(14);
 
     let extras: WorldExtrasBlob = match serde_json::from_str(&extras_raw) {
         Ok(ex) => ex,
@@ -210,6 +102,18 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         harvested_altars_until_day: extras.harvested_altars_until_day,
         sold_houses: extras.sold_houses,
         pickup_ledger: extras.pickup_ledger,
+        contract_escrow_copper: extras.contract_escrow_copper,
+        chaos_rune_seeded: extras.chaos_rune_seeded,
+        chaos_rune_pool: extras.chaos_rune_pool,
+        first_spider_slain: extras.first_spider_slain,
+        built_houses: extras.built_houses,
+        cell_stocks: extras.cell_stocks,
+        cell_last_regen_day: extras.cell_last_regen_day,
+        slain_apex_beasts: extras.slain_apex_beasts,
+        transit_vehicles: extras.transit_vehicles,
+        dock_cargo_piles: extras.dock_cargo_piles,
+        forge_orders: extras.forge_orders,
+        survivor_letters_delivered: extras.survivor_letters_delivered,
         ..IslandWorldDelta::default()
     };
 
@@ -313,18 +217,20 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         let mut cred: String = r.get(2);
         let mut debt: String = r.get(3);
         if !unified_v2 {
-            if !cred.contains(':')
+            if !cred.is_empty()
+                && !cred.contains(':')
                 && !matches!(
                     cred.as_str(),
-                    "municipal_treasury" | "silver_bank" | "mainland_clearing"
+                    "municipal_treasury" | "silver_bank" | "mainland_clearing" | "contract_escrow"
                 )
             {
                 cred = format!("pl:{cred}");
             }
-            if !debt.contains(':')
+            if !debt.is_empty()
+                && !debt.contains(':')
                 && !matches!(
                     debt.as_str(),
-                    "municipal_treasury" | "silver_bank" | "mainland_clearing"
+                    "municipal_treasury" | "silver_bank" | "mainland_clearing" | "contract_escrow"
                 )
             {
                 debt = format!("pl:{debt}");
@@ -345,27 +251,93 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         );
     }
 
+    if let Err(err) = super::living_chronicler_worker::init_and_load_chronicle_pg(
+        &mut conn,
+        &mut delta.living_chronicle,
+    ) {
+        tracing::error!("[outer_island] load oi_chronicle_projections failed: {err}");
+        return NormalizedLoadOutcome::Unavailable;
+    }
     delta.rebuild_indexes();
     drop(conn);
 
-    // M2 防呆：載入後立即強制驗證全域銅幣守恆，若帳目失衡立即凍結拒絕靜默掉檔！
+    // M2 + M4 防呆：載入後立即強制驗證全域銅幣守恆與託管契約餘額對帳，若失衡立即凍結拒絕靜默掉檔！
     let load_diff = delta.conservation_diff(doc);
-    if load_diff != 0 {
+    let active_escrow_sum: i64 = delta
+        .contracts
+        .values()
+        .filter(|c| {
+            super::pacts_and_peers::is_escrow_pact_kind(&c.kind)
+                && (c.status == "escrowed" || c.status == "in_progress")
+        })
+        .map(|c| c.amount_copper)
+        .sum();
+    if load_diff != 0 || active_escrow_sum != delta.contract_escrow_copper {
         tracing::error!(
-            "[outer_island] conservation_diff={load_diff} after PG load, freezing as Corrupt"
+            "[outer_island] conservation_diff={load_diff} escrow_sum={active_escrow_sum} vs {} after PG load, freezing as Corrupt",
+            delta.contract_escrow_copper
         );
         return NormalizedLoadOutcome::Corrupt;
     }
 
-    if !unified_v2 {
-        tracing::info!(
-            "[outer_island] upgrading {} v1 actors into unified_v2 UnifiedMindBody",
-            delta.actors.len()
-        );
-        if let Err(err) = commit_delta_atomic(doc, pool, &mut delta, true) {
-            tracing::error!("[outer_island] v1->v2 atomic upgrade commit failed: {err}");
+    if !unified_v2
+        || !harbor_history_v1
+        || !world_lineage_v2
+        || !chronicle_gazetteer_v3
+        || !living_chronicler_v4
+        || !rural_v5
+    {
+        if !harbor_history_v1 {
+            let touched = super::harbor_history::apply_island_history_backfill(doc, &mut delta);
+            tracing::info!("[outer_island] backfilled harbor history ({touched} actors)");
+        }
+        if !world_lineage_v2 {
+            let woven = super::world_weave::apply_world_lineage_and_memory_weave(doc, &mut delta);
+            tracing::info!("[outer_island] woven lineage ties ({woven} actors)");
+        }
+        if !chronicle_gazetteer_v3 {
+            let upgraded = super::causal_arcs::apply_gazetteer_v3_upgrade(doc, &mut delta);
+            tracing::info!("[outer_island] upgraded gazetteer_v3 biographies ({upgraded} actors)");
+        }
+        if !living_chronicler_v4 {
+            let cleaned = super::living_chronicler_worker::apply_living_chronicler_v4_upgrade(
+                doc, &mut delta,
+            );
+            tracing::info!(
+                "[outer_island] upgraded living_chronicler_v4 (cleaned {cleaned} slogan-polluted actors)"
+            );
+        }
+        if !rural_v5 {
+            let clk = super::clock_and_lang::current_solar_clock();
+            let spawned = super::rural_migrate::apply_rural_v5_pg_upgrade(
+                doc,
+                &mut delta,
+                clk.game_days,
+                clk.bell_index,
+                clk.is_night,
+            );
+            tracing::info!(
+                "[outer_island] upgraded rural_v5 (spawned {spawned} rural/port actors, conserved_diff={})",
+                delta.conservation_diff(doc)
+            );
+        }
+        let flush_all =
+            !unified_v2 || !harbor_history_v1 || !world_lineage_v2 || !chronicle_gazetteer_v3;
+        if let Err(err) = commit_delta_atomic(doc, pool, &mut delta, flush_all) {
+            tracing::error!("[outer_island] atomic lineage/v5 upgrade commit failed: {err}");
             return NormalizedLoadOutcome::Unavailable;
         }
+    }
+
+    {
+        let clk = super::clock_and_lang::current_solar_clock();
+        super::rural_migrate::ensure_rural_runtime_initialized(doc, &mut delta, clk.game_days);
+    }
+
+    if purge_test_actors_and_sanitize_breaths(&mut delta)
+        && let Err(err) = commit_delta_atomic(doc, pool, &mut delta, false)
+    {
+        tracing::error!("[outer_island] test-actor cleanup commit failed: {err}");
     }
 
     NormalizedLoadOutcome::Loaded(delta)
@@ -378,8 +350,20 @@ pub fn prepare_commit_batch(
     flush_all_actors: bool,
 ) -> Result<CommitBatch, String> {
     let diff = delta.conservation_diff(doc);
-    if diff != 0 {
-        tracing::error!("[outer_island] copper conservation failed before commit: diff={diff}");
+    let active_escrow_sum: i64 = delta
+        .contracts
+        .values()
+        .filter(|c| {
+            super::pacts_and_peers::is_escrow_pact_kind(&c.kind)
+                && (c.status == "escrowed" || c.status == "in_progress")
+        })
+        .map(|c| c.amount_copper)
+        .sum();
+    if diff != 0 || active_escrow_sum != delta.contract_escrow_copper {
+        tracing::error!(
+            "[outer_island] copper/escrow conservation failed before commit: diff={diff}, escrow={active_escrow_sum} vs {}",
+            delta.contract_escrow_copper
+        );
         return Err("港務銀冊帳目核對未過，請稍候片刻再試。".to_string());
     }
 
@@ -389,6 +373,18 @@ pub fn prepare_commit_batch(
         harvested_altars_until_day: delta.harvested_altars_until_day.clone(),
         sold_houses: delta.sold_houses.clone(),
         pickup_ledger: delta.pickup_ledger.clone(),
+        contract_escrow_copper: delta.contract_escrow_copper,
+        chaos_rune_seeded: delta.chaos_rune_seeded,
+        chaos_rune_pool: delta.chaos_rune_pool,
+        first_spider_slain: delta.first_spider_slain.clone(),
+        built_houses: delta.built_houses.clone(),
+        cell_stocks: delta.cell_stocks.clone(),
+        cell_last_regen_day: delta.cell_last_regen_day,
+        slain_apex_beasts: delta.slain_apex_beasts.clone(),
+        transit_vehicles: delta.transit_vehicles.clone(),
+        dock_cargo_piles: delta.dock_cargo_piles.clone(),
+        forge_orders: delta.forge_orders.clone(),
+        survivor_letters_delivered: delta.survivor_letters_delivered.clone(),
     };
     let extras_json = serde_json::to_string(&extras).map_err(|e| e.to_string())?;
     let next_seq = delta.persist_seq.saturating_add(1);
@@ -482,6 +478,7 @@ pub fn prepare_commit_batch(
         tp_archives,
         contracts,
         ledger_entries: delta.pending_ledger.clone(),
+        chronicle_rows: delta.living_chronicle.pending_outbox.clone(),
     })
 }
 
@@ -490,6 +487,8 @@ pub fn execute_commit_batch_pg(pool: &DbPool, batch: &CommitBatch) -> Result<(),
     let mut conn = pool.get().map_err(|e| e.to_string())?;
     if !NORMALIZED_SCHEMA_READY.load(Ordering::Acquire) {
         conn.batch_execute(CREATE_NORMALIZED_ISLAND_SCHEMA)
+            .map_err(|e| e.to_string())?;
+        conn.batch_execute(super::living_chronicler_worker::CREATE_LIVING_CHRONICLER_SCHEMA)
             .map_err(|e| e.to_string())?;
         NORMALIZED_SCHEMA_READY.store(true, Ordering::Release);
     }
@@ -504,8 +503,8 @@ pub fn execute_commit_batch_pg(pool: &DbPool, batch: &CommitBatch) -> Result<(),
             "INSERT INTO oi_world_globals (
                 singleton, persist_seq, last_settled_bell, municipal_treasury_copper,
                 silver_bank_reserve_copper, mainland_clearing_copper, ledger_seq_counter,
-                genesis_initialized, unified_v2, genesis_total_copper, extras_json, updated_at
-            ) VALUES (1, $1, $2, $3, $4, $5, $6, $7, true, $8, $9, now())
+                genesis_initialized, unified_v2, harbor_history_v1, world_lineage_v2, chronicle_gazetteer_v3, living_chronicler_v4, rural_v5, genesis_total_copper, extras_json, updated_at
+            ) VALUES (1, $1, $2, $3, $4, $5, $6, $7, true, true, true, true, true, true, $8, $9, now())
             ON CONFLICT (singleton) DO UPDATE SET
                 persist_seq = EXCLUDED.persist_seq,
                 last_settled_bell = EXCLUDED.last_settled_bell,
@@ -515,6 +514,11 @@ pub fn execute_commit_batch_pg(pool: &DbPool, batch: &CommitBatch) -> Result<(),
                 ledger_seq_counter = EXCLUDED.ledger_seq_counter,
                 genesis_initialized = EXCLUDED.genesis_initialized,
                 unified_v2 = true,
+                harbor_history_v1 = true,
+                world_lineage_v2 = true,
+                chronicle_gazetteer_v3 = true,
+                living_chronicler_v4 = true,
+                rural_v5 = true,
                 genesis_total_copper = EXCLUDED.genesis_total_copper,
                 extras_json = EXCLUDED.extras_json,
                 updated_at = now()
@@ -715,26 +719,16 @@ pub fn execute_commit_batch_pg(pool: &DbPool, batch: &CommitBatch) -> Result<(),
             sums.push(le.summary_zh.clone());
         }
         tx.execute(
-            "INSERT INTO oi_world_ledger (
-                idempotency_key, game_day, bell_idx, kind, debit_actor, credit_actor, amount_copper, summary_zh
-             )
+            "INSERT INTO oi_world_ledger (idempotency_key, game_day, bell_idx, kind, debit_actor, credit_actor, amount_copper, summary_zh)
              SELECT u.ik, u.gd, u.bl, u.kn, u.db, u.cr, u.am, u.sm
-             FROM UNNEST(
-                $1::text[],
-                $2::bigint[],
-                $3::smallint[],
-                $4::text[],
-                $5::text[],
-                $6::text[],
-                $7::bigint[],
-                $8::text[]
-             ) AS u(ik, gd, bl, kn, db, cr, am, sm)
+             FROM UNNEST($1::text[], $2::bigint[], $3::smallint[], $4::text[], $5::text[], $6::text[], $7::bigint[], $8::text[]) AS u(ik, gd, bl, kn, db, cr, am, sm)
              ON CONFLICT (idempotency_key) DO NOTHING",
             &[&ikeys, &gdays, &bells, &kinds, &debs, &creds, &amts, &sums],
         )
         .map_err(|e| e.to_string())?;
     }
 
+    super::living_chronicler_worker::flush_chronicle_outbox_tx(&mut tx, &batch.chronicle_rows)?;
     tx.commit().map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -752,6 +746,16 @@ pub fn ack_commit_batch(delta: &mut IslandWorldDelta, batch: &CommitBatch) {
     delta
         .pending_ledger
         .retain(|e| !committed_keys.contains(e.idempotency_key.as_str()));
+    if !batch.chronicle_rows.is_empty() {
+        let committed_proj: BTreeSet<(&str, &str, &str)> = batch
+            .chronicle_rows
+            .iter()
+            .map(|r| (r.deed_id.as_str(), r.scope.as_str(), r.target_id.as_str()))
+            .collect();
+        delta.living_chronicle.pending_outbox.retain(|r| {
+            !committed_proj.contains(&(r.deed_id.as_str(), r.scope.as_str(), r.target_id.as_str()))
+        });
+    }
 
     let deleted_cids: BTreeSet<&str> = batch
         .contracts
@@ -766,6 +770,7 @@ pub fn ack_commit_batch(delta: &mut IslandWorldDelta, batch: &CommitBatch) {
         delta.dirty_contracts.remove(&c.contract_id);
     }
     delta.obsolete_actor_ids.clear();
+    delta.extras_dirty = false;
 
     for ck in &batch.clean_dirty_keys {
         if delta.actors.get(ck).is_none_or(|a| {

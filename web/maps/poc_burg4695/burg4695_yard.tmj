@@ -1,0 +1,757 @@
+{
+  "compressionlevel": -1,
+  "height": 32,
+  "infinite": false,
+  "nextlayerid": 5,
+  "nextobjectid": 43,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.12.2",
+  "tileheight": 64,
+  "tilewidth": 64,
+  "type": "map",
+  "version": "1.10",
+  "width": 32,
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "name": "tra_map_kit_props",
+      "tilewidth": 768,
+      "tileheight": 768,
+      "tilecount": 17,
+      "columns": 0,
+      "grid": {
+        "orientation": "orthogonal",
+        "width": 1,
+        "height": 1
+      },
+      "tiles": [
+        {
+          "id": 0,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/barrel_cluster.png",
+          "imagewidth": 481,
+          "imageheight": 479,
+          "type": "barrel_cluster"
+        },
+        {
+          "id": 1,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/bed_dwarf.png",
+          "imagewidth": 393,
+          "imageheight": 579,
+          "type": "bed_dwarf"
+        },
+        {
+          "id": 2,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/bed_human.png",
+          "imagewidth": 373,
+          "imageheight": 532,
+          "type": "bed_human"
+        },
+        {
+          "id": 3,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/boulder_moss.png",
+          "imagewidth": 492,
+          "imageheight": 475,
+          "type": "boulder_moss"
+        },
+        {
+          "id": 4,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/brazier_wormwood.png",
+          "imagewidth": 476,
+          "imageheight": 478,
+          "type": "brazier_wormwood"
+        },
+        {
+          "id": 5,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/cart_quarantine.png",
+          "imagewidth": 419,
+          "imageheight": 498,
+          "type": "cart_quarantine"
+        },
+        {
+          "id": 6,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/cauldron_pot.png",
+          "imagewidth": 515,
+          "imageheight": 464,
+          "type": "cauldron_pot"
+        },
+        {
+          "id": 7,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/hearth_stone.png",
+          "imagewidth": 521,
+          "imageheight": 430,
+          "type": "hearth_stone"
+        },
+        {
+          "id": 8,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/rug_kilim.png",
+          "imagewidth": 424,
+          "imageheight": 570,
+          "type": "rug_kilim"
+        },
+        {
+          "id": 9,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/shield_spear_rack.png",
+          "imagewidth": 556,
+          "imageheight": 285,
+          "type": "shield_spear_rack"
+        },
+        {
+          "id": 10,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/shrub_bush.png",
+          "imagewidth": 415,
+          "imageheight": 439,
+          "type": "shrub_bush"
+        },
+        {
+          "id": 11,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/stone_stele.png",
+          "imagewidth": 493,
+          "imageheight": 505,
+          "type": "stone_stele"
+        },
+        {
+          "id": 12,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/stonemason_bench.png",
+          "imagewidth": 501,
+          "imageheight": 521,
+          "type": "stonemason_bench"
+        },
+        {
+          "id": 13,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/table_feast.png",
+          "imagewidth": 521,
+          "imageheight": 587,
+          "type": "table_feast"
+        },
+        {
+          "id": 14,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/tree_oak.png",
+          "imagewidth": 643,
+          "imageheight": 627,
+          "type": "tree_oak"
+        },
+        {
+          "id": 15,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/tree_pine.png",
+          "imagewidth": 422,
+          "imageheight": 438,
+          "type": "tree_pine"
+        },
+        {
+          "id": 16,
+          "image": "/home/tanger/.local/share/tanger/external-tools/map-kit/assets/props/wormwood_bundles.png",
+          "imagewidth": 438,
+          "imageheight": 431,
+          "type": "wormwood_bundles"
+        }
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "Props_And_Furniture",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "brazier_wormwood",
+          "type": "prop",
+          "x": 829.0,
+          "y": 1217.0,
+          "width": 98.0,
+          "height": 98.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 5
+        },
+        {
+          "id": 2,
+          "name": "brazier_wormwood",
+          "type": "prop",
+          "x": 1121.0,
+          "y": 1217.0,
+          "width": 98.0,
+          "height": 98.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 5
+        },
+        {
+          "id": 3,
+          "name": "brazier_wormwood",
+          "type": "prop",
+          "x": 832.0,
+          "y": 1511.0,
+          "width": 92.0,
+          "height": 92.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 5
+        },
+        {
+          "id": 4,
+          "name": "brazier_wormwood",
+          "type": "prop",
+          "x": 1124.0,
+          "y": 1511.0,
+          "width": 92.0,
+          "height": 92.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 5
+        },
+        {
+          "id": 5,
+          "name": "wormwood_bundles",
+          "type": "prop",
+          "x": 757.0,
+          "y": 1088.0,
+          "width": 96.0,
+          "height": 116.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 17
+        },
+        {
+          "id": 6,
+          "name": "wormwood_bundles",
+          "type": "prop",
+          "x": 1197.0,
+          "y": 1088.0,
+          "width": 96.0,
+          "height": 116.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 17
+        },
+        {
+          "id": 7,
+          "name": "wormwood_bundles",
+          "type": "prop",
+          "x": 301.0,
+          "y": 628.0,
+          "width": 88.0,
+          "height": 106.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 17
+        },
+        {
+          "id": 8,
+          "name": "barrel_cluster",
+          "type": "prop",
+          "x": 592.0,
+          "y": 595.0,
+          "width": 96.0,
+          "height": 110.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 1
+        },
+        {
+          "id": 9,
+          "name": "stonemason_bench",
+          "type": "prop",
+          "x": 1629.0,
+          "y": 1037.0,
+          "width": 112.0,
+          "height": 118.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 13
+        },
+        {
+          "id": 10,
+          "name": "boulder_moss",
+          "type": "prop",
+          "x": 1491.0,
+          "y": 1042.0,
+          "width": 108.0,
+          "height": 104.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 4
+        },
+        {
+          "id": 11,
+          "name": "cart_quarantine",
+          "type": "prop",
+          "x": 760.0,
+          "y": 1740.0,
+          "width": 150.0,
+          "height": 150.0,
+          "rotation": 18.0,
+          "visible": true,
+          "gid": 6
+        },
+        {
+          "id": 12,
+          "name": "stone_stele",
+          "type": "prop",
+          "x": 1132.0,
+          "y": 1748.0,
+          "width": 116.0,
+          "height": 116.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 12
+        },
+        {
+          "id": 13,
+          "name": "boulder_moss",
+          "type": "prop",
+          "x": 192.5,
+          "y": 1289.0,
+          "width": 155.0,
+          "height": 148.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 4
+        },
+        {
+          "id": 14,
+          "name": "boulder_moss",
+          "type": "prop",
+          "x": 1684.0,
+          "y": 1317.0,
+          "width": 162.0,
+          "height": 154.0,
+          "rotation": 45.0,
+          "visible": true,
+          "gid": 4
+        },
+        {
+          "id": 15,
+          "name": "shrub_bush",
+          "type": "prop",
+          "x": 694.0,
+          "y": 561.0,
+          "width": 102.0,
+          "height": 102.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 11
+        },
+        {
+          "id": 16,
+          "name": "shrub_bush",
+          "type": "prop",
+          "x": 1249.0,
+          "y": 561.0,
+          "width": 102.0,
+          "height": 102.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 11
+        },
+        {
+          "id": 17,
+          "name": "shrub_bush",
+          "type": "prop",
+          "x": 453.0,
+          "y": 1522.0,
+          "width": 114.0,
+          "height": 114.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 11
+        },
+        {
+          "id": 18,
+          "name": "shrub_bush",
+          "type": "prop",
+          "x": 1488.0,
+          "y": 1542.0,
+          "width": 114.0,
+          "height": 114.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 11
+        },
+        {
+          "id": 19,
+          "name": "tree_oak",
+          "type": "prop",
+          "x": 37.5,
+          "y": 344.0,
+          "width": 275.0,
+          "height": 268.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 15
+        },
+        {
+          "id": 20,
+          "name": "tree_pine",
+          "type": "prop",
+          "x": 677.5,
+          "y": 296.0,
+          "width": 215.0,
+          "height": 222.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 16
+        },
+        {
+          "id": 21,
+          "name": "tree_pine",
+          "type": "prop",
+          "x": 1157.5,
+          "y": 291.0,
+          "width": 215.0,
+          "height": 222.0,
+          "rotation": 35.0,
+          "visible": true,
+          "gid": 16
+        },
+        {
+          "id": 22,
+          "name": "tree_oak",
+          "type": "prop",
+          "x": 1735.0,
+          "y": 351.0,
+          "width": 280.0,
+          "height": 272.0,
+          "rotation": 90.0,
+          "visible": true,
+          "gid": 15
+        },
+        {
+          "id": 23,
+          "name": "tree_pine",
+          "type": "prop",
+          "x": 67.5,
+          "y": 1141.0,
+          "width": 225.0,
+          "height": 232.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 16
+        },
+        {
+          "id": 24,
+          "name": "tree_oak",
+          "type": "prop",
+          "x": 1752.5,
+          "y": 1174.0,
+          "width": 265.0,
+          "height": 258.0,
+          "rotation": 180.0,
+          "visible": true,
+          "gid": 15
+        },
+        {
+          "id": 25,
+          "name": "tree_oak",
+          "type": "prop",
+          "x": 87.5,
+          "y": 1787.5,
+          "width": 295.0,
+          "height": 285.0,
+          "rotation": 40.0,
+          "visible": true,
+          "gid": 15
+        },
+        {
+          "id": 26,
+          "name": "tree_pine",
+          "type": "prop",
+          "x": 425.0,
+          "y": 1959.0,
+          "width": 230.0,
+          "height": 238.0,
+          "rotation": 0.0,
+          "visible": true,
+          "gid": 16
+        },
+        {
+          "id": 27,
+          "name": "tree_oak",
+          "type": "prop",
+          "x": 1660.0,
+          "y": 1801.0,
+          "width": 290.0,
+          "height": 282.0,
+          "rotation": 135.0,
+          "visible": true,
+          "gid": 15
+        },
+        {
+          "id": 28,
+          "name": "tree_pine",
+          "type": "prop",
+          "x": 1377.5,
+          "y": 1971.0,
+          "width": 225.0,
+          "height": 232.0,
+          "rotation": 70.0,
+          "visible": true,
+          "gid": 16
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Collisions_And_Buildings",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "opacity": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 29,
+          "name": "wall",
+          "type": "wall",
+          "x": 560.0,
+          "y": 1135.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 362.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 30,
+          "name": "wall",
+          "type": "wall",
+          "x": 590.0,
+          "y": 1092.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 332.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 31,
+          "name": "wall",
+          "type": "wall",
+          "x": 1126.0,
+          "y": 1135.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 362.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 32,
+          "name": "wall",
+          "type": "wall",
+          "x": 1126.0,
+          "y": 1092.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 332.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 33,
+          "name": "wall",
+          "type": "wall",
+          "x": 640.0,
+          "y": 1495.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 282.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 34,
+          "name": "wall",
+          "type": "wall",
+          "x": 670.0,
+          "y": 1538.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 252.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 35,
+          "name": "wall",
+          "type": "wall",
+          "x": 1126.0,
+          "y": 1495.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 282.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 36,
+          "name": "wall",
+          "type": "wall",
+          "x": 1126.0,
+          "y": 1538.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 252.0,
+              "y": 0.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 37,
+          "name": "wall",
+          "type": "wall",
+          "x": 285.0,
+          "y": 290.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 270.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 38,
+          "name": "wall",
+          "type": "wall",
+          "x": 1750.0,
+          "y": 290.0,
+          "width": 0,
+          "height": 0,
+          "polyline": [
+            {
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "x": 0.0,
+              "y": 270.0
+            }
+          ],
+          "visible": true
+        },
+        {
+          "id": 39,
+          "name": "一號盾牌達因家",
+          "type": "house",
+          "x": 304.0,
+          "y": 303.0,
+          "width": 332.0,
+          "height": 224.0,
+          "rotation": 0.0,
+          "visible": true
+        },
+        {
+          "id": 40,
+          "name": "二號夜巡莫莉家",
+          "type": "house",
+          "x": 1398.0,
+          "y": 305.0,
+          "width": 324.0,
+          "height": 220.0,
+          "rotation": 0.0,
+          "visible": true
+        },
+        {
+          "id": 41,
+          "name": "三號盾牌羅蘭家",
+          "type": "house",
+          "x": 333.0,
+          "y": 714.0,
+          "width": 304.0,
+          "height": 212.0,
+          "rotation": 0.0,
+          "visible": true
+        },
+        {
+          "id": 42,
+          "name": "四號碎岩艾倫家",
+          "type": "house",
+          "x": 1397.0,
+          "y": 711.0,
+          "width": 316.0,
+          "height": 218.0,
+          "rotation": 0.0,
+          "visible": true
+        }
+      ]
+    }
+  ]
+}
