@@ -8,6 +8,11 @@ use serde_json::{Value, json};
 use crate::combat::wordplate::splitmix64;
 
 use super::clock_and_lang::SolarClockSnapshot;
+use super::island_substrate::compiled_island_substrate;
+use super::live_land_tiles::{
+    carve_felled_tree_tile_at_actor, prune_tile_diffs_for_cell_day, reclaim_arable_tiles_at_actor,
+    resolve_actor_standing_xy, sync_river_crossings_with_substrate,
+};
 use super::movement::{add_carry_item, push_breath, take_clean_carry_items};
 use super::types::{CarryItem, IslandWorldDelta, SpatialNodeDef, WorldStaticDoc};
 
@@ -32,6 +37,8 @@ pub struct LiveLandState {
     pub water_stage_pct: u8,
     pub cells: BTreeMap<u32, CellLiveLand>,
     pub house_integrity: BTreeMap<String, u8>,
+    #[serde(skip)]
+    pub runtime_crossings_synced: bool,
 }
 
 /// 依太陽曆遊戲日計算全島季節性水位基準（`20..=98`）：
@@ -79,6 +86,11 @@ fn cell_forest_cap(c: &super::types::VoronoiCellDef, reclaimed_plots: u8) -> u8 
 /// 冪等初始化全島 93 地塊之水文、橋樑、林相、疫氣與待售空屋物理狀態。
 pub fn ensure_live_land_seeded(doc: &WorldStaticDoc, delta: &mut IslandWorldDelta, game_day: i64) {
     if delta.live_land.seeded {
+        if !delta.live_land.runtime_crossings_synced {
+            let sub = compiled_island_substrate(doc);
+            sync_river_crossings_with_substrate(doc, sub, delta);
+            delta.live_land.runtime_crossings_synced = true;
+        }
         return;
     }
     let stage = compute_seasonal_water_stage(game_day);
@@ -139,7 +151,10 @@ pub fn ensure_live_land_seeded(doc: &WorldStaticDoc, delta: &mut IslandWorldDelt
         water_stage_pct: stage,
         cells,
         house_integrity,
+        runtime_crossings_synced: true,
     };
+    let sub = compiled_island_substrate(doc);
+    sync_river_crossings_with_substrate(doc, sub, delta);
     delta.extras_dirty = true;
 }
 
@@ -212,7 +227,9 @@ pub fn tick_daily_live_land(
         };
 
         let cids: Vec<u32> = delta.live_land.cells.keys().copied().collect();
+        let sub = compiled_island_substrate(doc);
         let mut repair_queue: Vec<u32> = Vec::new();
+        let mut tile_prune_events: Vec<(u32, bool, bool)> = Vec::new();
         for cid in cids {
             let Some(c) = doc.cells.get(&cid.to_string()) else {
                 continue;
@@ -247,10 +264,13 @@ pub fn tick_daily_live_land(
             }
 
             let cap = cell_forest_cap(c, cl.reclaimed_plots);
+            let mut grew_forest = false;
             if cl.forest_density < cap && forest_grow > 0 {
                 cl.forest_density = cl.forest_density.saturating_add(forest_grow).min(cap);
+                grew_forest = true;
             }
 
+            let mut decayed_farm = false;
             let is_tended_farm_village =
                 !c.plague_sealed && c.kind == "rural_settlement" && cl.reclaimed_plots == 0;
             if (cl.reclaimed_plots > 0
@@ -261,6 +281,7 @@ pub fn tick_daily_live_land(
                 if cl.fallow_days >= 18 {
                     if cl.reclaimed_plots > 0 {
                         cl.reclaimed_plots -= 1;
+                        decayed_farm = true;
                     }
                     cl.fallow_days = 10;
                     cl.forest_density = cl.forest_density.saturating_add(4).min(85);
@@ -270,6 +291,12 @@ pub fn tick_daily_live_land(
             if is_winter && d.rem_euclid(14) == 0 && cl.plague_miasmas > 0 {
                 cl.plague_miasmas = cl.plague_miasmas.saturating_sub(1);
             }
+            if grew_forest || decayed_farm {
+                tile_prune_events.push((cid, grew_forest, decayed_farm));
+            }
+        }
+        for (cid, restore_forest, decay_farm) in tile_prune_events {
+            prune_tile_diffs_for_cell_day(sub, delta, cid, d, restore_forest, decay_farm);
         }
 
         // 未售出空屋自然失修：暴洪季節加速損耗，低於 30 則屋瓦塌落為斷牆
@@ -700,22 +727,33 @@ pub fn try_apply_live_land_action(
         }
         "fell_timber_clear" => {
             ensure_live_land_seeded(doc, delta, clock.game_days);
-            let density = delta
-                .live_land
-                .cells
-                .get(&node.cell_id)
-                .map_or(0, |cl| cl.forest_density);
-            if density < 20 {
+            if node.indoor
+                || node.dungeon
+                || doc
+                    .cells
+                    .get(&node.cell_id.to_string())
+                    .is_some_and(|c| c.kind == "settlement")
+            {
+                return Some(Err("城鎮石板街坊或屋簷坑穴內並無野林成木可伐。".to_string()));
+            }
+            if delta.actors.get(aid).is_some_and(|a| a.fatigue >= 85) {
+                return Some(Err("雙臂酸沉乏力，先歇一口氣再揮斧伐木。".to_string()));
+            }
+            let sub = compiled_island_substrate(doc);
+            super::map_walk::ensure_single_actor_grid_seeded(doc, sub, delta, aid);
+            let Some((actor_gx, actor_gy)) = resolve_actor_standing_xy(delta, aid) else {
+                return Some(Err("找不到旅人當下立足方位。".to_string()));
+            };
+            let carved =
+                carve_felled_tree_tile_at_actor(sub, delta, actor_gx, actor_gy, clock.game_days);
+            if carved == 0 {
                 return Some(Err(
-                    "這片林地已只剩零星幼苗與樹樁，再砍下去只會光禿成荒坡。".to_string(),
+                    "腳下四周並無可揮斧伐倒的成材林木，請先走近林緣樹叢再動手。".to_string(),
                 ));
             }
             let Some(a) = delta.actors.get_mut(aid) else {
                 return Some(Err("找不到旅人行蹤。".to_string()));
             };
-            if a.fatigue >= 85 {
-                return Some(Err("雙臂酸沉乏力，先歇一口氣再揮斧伐木。".to_string()));
-            }
             a.fatigue = a.fatigue.saturating_add(8).min(95);
             add_carry_item(
                 &mut a.backpack,
@@ -731,8 +769,16 @@ pub fn try_apply_live_land_action(
                 "你揮斧放倒一株壯實灰松並去枝截段，將 1 根【灰松厚原木】扛上行囊。".to_string();
             push_breath(a, msg.clone());
             a.mark_mutated();
+            super::map_memory::record_local_witness_at_tile(
+                doc,
+                delta,
+                aid,
+                actor_gx as f32 + 0.5,
+                actor_gy as f32 + 0.5,
+                clock.game_days,
+            );
             if let Some(cl) = delta.live_land.cells.get_mut(&node.cell_id) {
-                cl.forest_density = cl.forest_density.saturating_sub(12);
+                cl.forest_density = cl.forest_density.saturating_sub((carved as u8) * 6);
             }
             if let Some(stk) = delta.cell_stocks.get_mut(&node.cell_id) {
                 *stk = stk.saturating_sub(1);
@@ -742,11 +788,20 @@ pub fn try_apply_live_land_action(
         }
         "reclaim_farmland" => {
             ensure_live_land_seeded(doc, delta, clock.game_days);
-            let (plague_m, plots) = delta
+            if node.indoor
+                || node.dungeon
+                || doc
+                    .cells
+                    .get(&node.cell_id.to_string())
+                    .is_some_and(|c| c.kind == "settlement")
+            {
+                return Some(Err("城鎮石板街區與屋簷內並無農坡空地可開墾。".to_string()));
+            }
+            let plague_m = delta
                 .live_land
                 .cells
                 .get(&node.cell_id)
-                .map_or((100, 99), |cl| (cl.plague_miasmas, cl.reclaimed_plots));
+                .map_or(100, |cl| cl.plague_miasmas);
             if plague_m >= 30 {
                 return Some(Err("南岸疫氣未消，土壤混濁不宜直接開墾播穀。".to_string()));
             }
@@ -757,25 +812,40 @@ pub fn try_apply_live_land_action(
             {
                 return Some(Err("山勢陡峭多礫石，難以起出整片耕作田壟。".to_string()));
             }
-            if plots >= 8 {
+            if delta.actors.get(aid).is_some_and(|a| a.fatigue >= 84) {
+                return Some(Err("腰背痠麻氣喘，先歇息後再翻土開壟。".to_string()));
+            }
+            let sub = compiled_island_substrate(doc);
+            super::map_walk::ensure_single_actor_grid_seeded(doc, sub, delta, aid);
+            let Some((actor_gx, actor_gy)) = resolve_actor_standing_xy(delta, aid) else {
+                return Some(Err("找不到旅人當下立足方位。".to_string()));
+            };
+            let reclaimed =
+                reclaim_arable_tiles_at_actor(sub, delta, actor_gx, actor_gy, clock.game_days);
+            if reclaimed == 0 {
                 return Some(Err(
-                    "這帶平坡已闢滿新墾田壟，留些餘地給林間水土吧。".to_string()
+                    "腳下四周並無可翻土起壟的平曠草坡，請走近水畔空地再揮鋤。".to_string(),
                 ));
             }
             let Some(a) = delta.actors.get_mut(aid) else {
                 return Some(Err("找不到旅人行蹤。".to_string()));
             };
-            if a.fatigue >= 84 {
-                return Some(Err("腰背痠麻氣喘，先歇息後再翻土開壟。".to_string()));
-            }
             a.fatigue = a.fatigue.saturating_add(10).min(95);
             let msg = "你揮鋤清出亂草碎石並翻鬆表土，地坡上實實在在多出一片新墾田壟。".to_string();
             push_breath(a, msg.clone());
             a.mark_mutated();
+            super::map_memory::record_local_witness_at_tile(
+                doc,
+                delta,
+                aid,
+                actor_gx as f32 + 0.5,
+                actor_gy as f32 + 0.5,
+                clock.game_days,
+            );
             if let Some(cl) = delta.live_land.cells.get_mut(&node.cell_id) {
                 cl.reclaimed_plots = cl.reclaimed_plots.saturating_add(1).min(12);
                 cl.fallow_days = 0;
-                cl.forest_density = cl.forest_density.saturating_sub(6);
+                cl.forest_density = cl.forest_density.saturating_sub(4);
             }
             delta.extras_dirty = true;
             Some(Ok(msg))

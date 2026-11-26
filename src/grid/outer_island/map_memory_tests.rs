@@ -105,21 +105,10 @@ fn skirting_cell_edge_keeps_village_hidden_until_entering_core() {
     let viewer = delta.actors.get(&pid).unwrap();
     let pack = build_viewer_substrate_json(&doc, &delta, viewer, &clk);
     let tr = decode_rle_b64(pack["terrain_rle_b64"].as_str().unwrap());
-
-    let idx4432 = sub_ref.cell_index_by_id[&4432];
-    let mut total_4432 = 0usize;
-    let mut fog_4432 = 0usize;
-    for (pos, &own) in sub_ref.cell_owner.iter().enumerate() {
-        if own == idx4432 {
-            total_4432 += 1;
-            if tr[pos] == TERRAIN_FOG {
-                fog_4432 += 1;
-            }
-        }
-    }
-    assert!(
-        fog_4432 * 100 >= total_4432 * 70,
-        "skirting cell4432:skirt_a must leave >= 70% of #4432 under fog (got {fog_4432}/{total_4432})"
+    assert_eq!(
+        tr.iter().filter(|&&t| t == TERRAIN_FOG).count(),
+        0,
+        "skirting or explored map must contain ZERO TERRAIN_FOG across all 799,800 tiles"
     );
     let pois = pack["pois"].as_array().unwrap();
     assert!(
@@ -144,6 +133,12 @@ fn skirting_cell_edge_keeps_village_hidden_until_entering_core() {
         4432,
         true,
     );
+    if let Some(&[ax, ay]) = sub_ref.node_anchors.get("oi:cell4432:0")
+        && let Some(a) = delta.actors.get_mut(&pid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+    }
     let pack_core =
         build_viewer_substrate_json(&doc, &delta, delta.actors.get(&pid).unwrap(), &clk);
     assert!(
@@ -318,6 +313,12 @@ fn distant_disaster_and_band_stay_isolated_from_witnessed_memory_until_visited()
         4850,
         true,
     );
+    if let Some(&[ax, ay]) = sub_ref.node_anchors.get("oi:cell4850:0")
+        && let Some(a) = delta.actors.get_mut(&pid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+    }
     let onsite_pack =
         build_viewer_substrate_json(&doc, &delta, delta.actors.get(&pid).unwrap(), &clk);
     assert!(
@@ -433,11 +434,11 @@ fn memory_map_travel_follows_known_nodes_and_stops_on_surprise_or_tide() {
     )
     .expect("walk to alley");
     let alley_sub = build_viewer_substrate_json(&doc, &delta, &delta.actors[&pid], &clk);
-    let adj = alley_sub["adjacent_exits"].as_array().unwrap();
+    let caps = alley_sub["proximity_capsules"].as_array().unwrap();
     assert!(
-        !adj.iter()
-            .any(|e| e["id"].as_str().is_some_and(|s| s.contains(":h"))),
-        "alley adjacent_exits must omit per-house overlapping pills in favor of roof building_hits"
+        caps.iter()
+            .all(|c| c["dist"].as_f64().unwrap() <= 9.5 + 0.05),
+        "all proximity_capsules must stay within 9.5 tiles"
     );
     assert!(
         alley_sub["building_hits"]
@@ -447,6 +448,28 @@ fn memory_map_travel_follows_known_nodes_and_stops_on_surprise_or_tide() {
             .any(|b| b["nid"] == "oi:white_gull_harbor:rope_ln:h1" && b["door_badge"] == "1號"),
         "alley roof hits must provide 1號 door badge directly on roof"
     );
+
+    // 室內角色不得出現於大地圖 nearby_actors，且戶外 nearby_actors 嚴守 <= 14.0 格
+    let any_indoor_npc = delta
+        .actors
+        .iter()
+        .find(|(id, a)| {
+            *id != &pid
+                && a.alive
+                && a.setup_done
+                && doc.nodes.get(&a.node_id).is_some_and(|n| n.indoor)
+        })
+        .map(|(_, a)| a.public_actor_token());
+    if let Some(tok) = any_indoor_npc {
+        assert!(
+            !alley_sub["nearby_actors"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|na| na["id"] == tok),
+            "indoor NPC must disappear from overland map nearby_actors"
+        );
+    }
 
     // 驗證記憶與實況落差時當場驚見停步（模擬記憶中 #4850 完好，抵達 #4850 卻見木橋已沖斷）
     let p_to_4850 = super::movement::shortest_node_path(
@@ -517,12 +540,241 @@ fn memory_map_travel_follows_known_nodes_and_stops_on_surprise_or_tide() {
         doc.nodes[&near_4850].cell_id,
         true,
     );
-    let surprise_msg =
-        apply_memory_map_travel(&doc, &mut delta, &clk, "nav_qa", "oi:cell4850:0", 9_000)
-            .expect("arriving at changed bridge must return warning message");
+    if let Some(&[ax, ay]) = compiled_island_substrate(&doc).node_anchors.get(&near_4850)
+        && let Some(a) = delta.actors.get_mut(&pid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+    }
+    let surprise_msg = super::map_walk::handle_player_move_request(
+        &doc,
+        &mut delta,
+        &clk,
+        "nav_qa",
+        "oi:cell4850:0",
+        None,
+        None,
+        "",
+        None,
+        9_000,
+    )
+    .expect("arriving at changed bridge must return warning message");
     assert!(
         surprise_msg.contains("沖斷") || surprise_msg.contains("停步"),
         "expected bridge washout discovery stop cue, got: {surprise_msg}"
     );
     assert_eq!(delta.conservation_diff(&doc), 0);
+}
+
+#[test]
+fn local_tile_diffs_write_at_actor_xy_persist_and_isolate_distant_viewer() {
+    use super::island_substrate::{
+        BLDG_NONE, GRID_H, GRID_W, ROAD_NONE, TERRAIN_FARM, TERRAIN_LAND, TERRAIN_TREE,
+    };
+    use super::live_land_tiles::{carve_felled_tree_tile_at_actor, reclaim_arable_tiles_at_actor};
+    use super::persist_pg::prepare_commit_batch;
+    use super::persist_schema::WorldExtrasBlob;
+
+    let (doc, mut delta, clk) = setup_test_world(280, 4);
+    apply_setup_origin(
+        &doc,
+        &mut delta,
+        &clk,
+        "viewer_far",
+        "遠望旅人",
+        "人類",
+        "",
+        "smith_apprentice",
+    )
+    .expect("setup ok");
+    let pid = delta.resolve_actor_id("viewer_far").unwrap();
+    let sub = compiled_island_substrate(&doc);
+
+    let dock = sub.node_anchors["oi:white_gull_harbor:dock"];
+    let mut tree_xy: Option<(isize, isize, usize)> = None;
+    let mut farm_xy: Option<(isize, isize)> = None;
+    for (pos, &t) in sub.base_terrain.iter().enumerate() {
+        if sub.cell_owner[pos] == u16::MAX
+            || sub.sea_dist_by_cell_edge[pos] < 16
+            || sub.base_road[pos] != ROAD_NONE
+            || sub.base_bldg[pos] != BLDG_NONE
+        {
+            continue;
+        }
+        let gx = (pos % GRID_W) as isize;
+        let gy = (pos / GRID_W) as isize;
+        let d_dock = (gx as f32 - dock[0]).hypot(gy as f32 - dock[1]);
+        if d_dock < 40.0 {
+            continue;
+        }
+        if tree_xy.is_none() && t == TERRAIN_TREE {
+            tree_xy = Some((gx, gy, pos));
+        } else if farm_xy.is_none()
+            && t == TERRAIN_LAND
+            && tree_xy.is_some_and(|(tx, ty, _)| (gx - tx).abs() + (gy - ty).abs() > 40)
+        {
+            farm_xy = Some((gx, gy));
+        }
+        if tree_xy.is_some() && farm_xy.is_some() {
+            break;
+        }
+    }
+    let (tx, ty, _tpos) = tree_xy.expect("must find tree far from dock");
+    let (fx, fy) = farm_xy.expect("must find land far from tree & dock");
+
+    let felled = carve_felled_tree_tile_at_actor(sub, &mut delta, tx, ty, clk.game_days);
+    assert!(
+        felled > 0,
+        "must carve real forest tiles near actor ({tx},{ty})"
+    );
+    let felled_pos_list: Vec<usize> = delta
+        .tile_diffs
+        .iter()
+        .filter(|(_, e)| e.terrain == TERRAIN_LAND)
+        .map(|(&p, _)| p as usize)
+        .collect();
+    assert_eq!(felled_pos_list.len(), felled);
+    for &p in &felled_pos_list {
+        let px = (p % GRID_W) as isize;
+        let py = (p / GRID_W) as isize;
+        assert!((px - tx).abs() <= 18 && (py - ty).abs() <= 18);
+        assert_eq!(sub.base_terrain[p], TERRAIN_TREE);
+    }
+
+    let reclaimed = reclaim_arable_tiles_at_actor(sub, &mut delta, fx, fy, clk.game_days);
+    assert!(
+        reclaimed > 0,
+        "must reclaim real arable tiles near actor ({fx},{fy})"
+    );
+    let farm_pos_list: Vec<usize> = delta
+        .tile_diffs
+        .iter()
+        .filter(|(_, e)| e.terrain == TERRAIN_FARM)
+        .map(|(&p, _)| p as usize)
+        .collect();
+    assert_eq!(farm_pos_list.len(), reclaimed);
+    for &p in &farm_pos_list {
+        let px = (p % GRID_W) as isize;
+        let py = (p / GRID_W) as isize;
+        assert!((px - fx).abs() <= 18 && (py - fy).abs() <= 18);
+    }
+
+    // 驗證 prepare_commit_batch 序列化與還原完整保存逐格 tile_diffs
+    let batch = prepare_commit_batch(&doc, &delta, true).expect("commit batch ok");
+    let roundtrip: WorldExtrasBlob =
+        serde_json::from_str(&batch.extras_json).expect("deserialize extras");
+    assert_eq!(roundtrip.tile_diffs.len(), delta.tile_diffs.len());
+    for (&k, v) in &delta.tile_diffs {
+        let rv = roundtrip
+            .tile_diffs
+            .get(&k)
+            .expect("missing persisted tile_diff");
+        assert_eq!(
+            (rv.terrain, rv.road, rv.bldg, rv.changed_day),
+            (v.terrain, v.road, v.bldg, v.changed_day)
+        );
+    }
+
+    // 遠在港務碼頭尚未親臨現場時，私人底圖維持原貌（不透過衛星洩漏未見之砍樹與開墾）
+    let far_pack = build_viewer_substrate_json(&doc, &delta, &delta.actors[&pid], &clk);
+    let far_tr = decode_rle_b64(far_pack["terrain_rle_b64"].as_str().unwrap());
+    for &p in &felled_pos_list {
+        assert_eq!(
+            far_tr[p], TERRAIN_TREE,
+            "unwitnessed tree clearing must NOT leak to distant viewer"
+        );
+    }
+    for &p in &farm_pos_list {
+        assert_ne!(
+            far_tr[p], TERRAIN_FARM,
+            "unwitnessed reclaimed farmland must NOT leak to distant viewer"
+        );
+    }
+
+    // 走近林場視距 (<= 18 格) 親見後，立即寫入 witnessed_tile_diffs 並反映於旅人底圖
+    super::map_memory::record_local_witness_at_tile(
+        &doc,
+        &mut delta,
+        &pid,
+        tx as f32 + 0.5,
+        ty as f32 + 0.5,
+        clk.game_days,
+    );
+    if let Some(a) = delta.actors.get_mut(&pid) {
+        a.map_gx = tx as f32 + 0.5;
+        a.map_gy = ty as f32 + 0.5;
+        a.map_pos_seeded = true;
+    }
+    let near_pack = build_viewer_substrate_json(&doc, &delta, &delta.actors[&pid], &clk);
+    let near_tr = decode_rle_b64(near_pack["terrain_rle_b64"].as_str().unwrap());
+    for &p in &felled_pos_list {
+        assert_eq!(
+            near_tr[p], TERRAIN_LAND,
+            "local witness within 18 tiles must render newly felled clearing"
+        );
+    }
+
+    // 驗證實地無樹石板廣場禁止憑空伐木、以及僅擦過遠橋邊界（>18 格）絕不劇透斷橋
+    delta.relocate_actor(&pid, "oi:white_gull_harbor:plaza", 4616, true);
+    assert!(
+        super::actions::apply_world_action(
+            &doc,
+            &mut delta,
+            &clk,
+            "viewer_far",
+            "fell_timber_clear",
+            ""
+        )
+        .is_err(),
+        "fell_timber_clear on town cobble plaza with zero adjacent trees must fail without minting timber"
+    );
+
+    if let Some(cl) = delta.live_land.cells.get_mut(&4850) {
+        cl.has_river_crossing = true;
+        cl.bridge_integrity = 0;
+    }
+    let bidx_4850 = sub.cell_index_by_id[&4850];
+    if let Some(edge_pos) = sub.cell_owner.iter().enumerate().find_map(|(pos, &own)| {
+        if own != bidx_4850 {
+            return None;
+        }
+        let ex = (pos % GRID_W) as isize;
+        let ey = (pos / GRID_W) as isize;
+        let near_bridge = (0..GRID_W * GRID_H).any(|p2| {
+            sub.cell_owner[p2] == bidx_4850
+                && sub.base_terrain[p2] == TERRAIN_RIVER
+                && (sub.base_road[p2] & 0x07) == ROAD_BRIDGE_OR_PIER
+                && ((p2 % GRID_W) as isize - ex).pow(2) + ((p2 / GRID_W) as isize - ey).pow(2)
+                    <= 361
+        });
+        (!near_bridge).then_some((ex, ey))
+    }) {
+        delta
+            .actors
+            .get_mut(&pid)
+            .unwrap()
+            .mind
+            .ltm
+            .map_memory
+            .witnessed_cells
+            .remove(&4850);
+        super::map_memory::record_local_witness_at_tile(
+            &doc,
+            &mut delta,
+            &pid,
+            edge_pos.0 as f32 + 0.5,
+            edge_pos.1 as f32 + 0.5,
+            clk.game_days,
+        );
+        assert!(
+            !delta.actors[&pid]
+                .mind
+                .ltm
+                .map_memory
+                .witnessed_cells
+                .get(&4850)
+                .is_some_and(|s| s.bridge_down),
+            "grazing cell border >18 tiles from bridge must NOT spoil bridge_down"
+        );
+    }
 }

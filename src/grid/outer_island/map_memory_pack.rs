@@ -1,4 +1,4 @@
-//! 旅人個人記憶輿圖封包合成：局部節點 Chamfer 揭霧、遠端災變隔離與屋頂／傳聞點圖互動資料組裝。
+//! 玩家端無黑霧個人親見記憶輿圖封包編碼（`18` 格局部實況、`<= 14` 格戶外人物、`<= 9.5` 格近身膠囊）。
 
 use std::collections::BTreeSet;
 
@@ -7,104 +7,21 @@ use serde_json::{Value, json};
 use super::cell_resources::is_low_tide_window;
 use super::clock_and_lang::SolarClockSnapshot;
 use super::island_substrate::{
-    BLDG_NONE, BLDG_ROOF, BLDG_RUIN_WALL, CompiledIslandSubstrate, GRID_H, GRID_SCALE, GRID_W,
-    ROAD_BRIDGE_OR_PIER, ROAD_NONE, ROAD_STONE_WALL, ROAD_TOWN_COBBLE, TERRAIN_FARM, TERRAIN_FOG,
-    TERRAIN_LAND, TERRAIN_REEF_SAND, TERRAIN_RIVER, TERRAIN_TREE, WX0, WY0,
-    compiled_island_substrate, idx_of, noise01, world_to_grid_f32,
+    BLDG_ROOF, BLDG_RUIN_WALL, GRID_H, GRID_SCALE, GRID_W, WX0, WY0, compiled_island_substrate,
+    world_to_grid_f32,
 };
-use super::island_substrate_pack::{base64_encode, rle_encode_bytes};
+use super::island_substrate_pack::{
+    apply_tile_hydrology_and_tide, base64_encode, place_built_house_roof, rle_encode_bytes,
+};
 use super::live_land::house_is_ruined;
+use super::live_land_tiles::effective_tile_state;
 use super::map_memory::{WitnessedCellSnap, actor_has_core_cell_access, live_cell_snap};
 use super::types::{IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
 
-const SKIRT_REVEAL_CHAMFER: u16 = 115;
-const CORE_REVEAL_CHAMFER: u16 = 560;
-
-fn compute_node_chamfer_dists(
-    doc: &WorldStaticDoc,
-    sub: &CompiledIslandSubstrate,
-    viewer: &UnifiedMindBody,
-    core_by_idx: &[bool],
-) -> (Vec<u16>, Vec<u16>) {
-    let total = GRID_W * GRID_H;
-    let mut core_d = vec![u16::MAX / 2; total];
-    let mut skirt_d = vec![u16::MAX / 2; total];
-
-    for nid in &viewer.mind.ltm.known_nodes {
-        let Some(nd) = doc.nodes.get(nid) else {
-            continue;
-        };
-        if nd.dungeon {
-            continue;
-        }
-        let Some(&[ax, ay]) = sub.node_anchors.get(nid) else {
-            continue;
-        };
-        let gx = (ax.floor() as isize).clamp(0, GRID_W as isize - 1) as usize;
-        let gy = (ay.floor() as isize).clamp(0, GRID_H as isize - 1) as usize;
-        let pos = gy * GRID_W + gx;
-        let owner = sub.cell_owner[pos];
-        let is_core_cell =
-            owner != u16::MAX && core_by_idx.get(owner as usize).copied().unwrap_or(false);
-        if is_core_cell {
-            core_d[pos] = 0;
-        } else {
-            skirt_d[pos] = 0;
-        }
-    }
-
-    for dist in [&mut core_d, &mut skirt_d] {
-        for y in 0..GRID_H {
-            let row = y * GRID_W;
-            for x in 0..GRID_W {
-                let pos = row + x;
-                let mut d = dist[pos];
-                if d == 0 {
-                    continue;
-                }
-                if x > 0 {
-                    d = d.min(dist[pos - 1] + 10);
-                }
-                if y > 0 {
-                    let up = pos - GRID_W;
-                    d = d.min(dist[up] + 10);
-                    if x > 0 {
-                        d = d.min(dist[up - 1] + 14);
-                    }
-                    if x + 1 < GRID_W {
-                        d = d.min(dist[up + 1] + 14);
-                    }
-                }
-                dist[pos] = d;
-            }
-        }
-        for y in (0..GRID_H).rev() {
-            let row = y * GRID_W;
-            for x in (0..GRID_W).rev() {
-                let pos = row + x;
-                let mut d = dist[pos];
-                if d == 0 {
-                    continue;
-                }
-                if x + 1 < GRID_W {
-                    d = d.min(dist[pos + 1] + 10);
-                }
-                if y + 1 < GRID_H {
-                    let dn = pos + GRID_W;
-                    d = d.min(dist[dn] + 10);
-                    if x + 1 < GRID_W {
-                        d = d.min(dist[dn + 1] + 14);
-                    }
-                    if x > 0 {
-                        d = d.min(dist[dn - 1] + 14);
-                    }
-                }
-                dist[pos] = d;
-            }
-        }
-    }
-    (core_d, skirt_d)
-}
+const SIGHT_RADIUS_SQ: isize = 18 * 18;
+const SIGHT_RADIUS_F32_SQ: f32 = 18.0 * 18.0;
+const NEARBY_ACTOR_RADIUS_SQ: f32 = 14.0 * 14.0;
+const CAPSULE_RADIUS_SQ: f32 = 9.5 * 9.5;
 
 fn resolve_poi_nav_node(
     doc: &WorldStaticDoc,
@@ -138,7 +55,16 @@ fn resolve_poi_nav_node(
     }
 }
 
-/// 依旅人個人親見記憶、局部節點視距揭霧與 `？傳聞` 釘圖合成玩家端無縫輿圖封包。
+fn short_node_label(name: &str) -> &str {
+    name.rsplit('・')
+        .next()
+        .unwrap_or(name)
+        .split('（')
+        .next()
+        .unwrap_or(name)
+}
+
+/// 依旅人個人親見記憶與近身物理距離合成全島零黑霧底盤、近距實時地況、`nearby_actors` 與 `proximity_capsules`。
 pub fn build_viewer_memory_substrate_json(
     doc: &WorldStaticDoc,
     delta: &IslandWorldDelta,
@@ -152,31 +78,52 @@ pub fn build_viewer_memory_substrate_json(
         .nodes
         .get(&viewer.node_id)
         .or_else(|| doc.nodes.get(&doc.spawn_node));
+    let in_dungeon = cur_node.is_some_and(|nd| nd.dungeon);
+    let in_indoor = cur_node.is_some_and(|nd| nd.indoor);
     let cur_outdoor_cell = cur_node.filter(|nd| !nd.dungeon).map(|nd| nd.cell_id);
 
     let mem = &viewer.mind.ltm.map_memory;
-    let known_cells = &viewer.mind.ltm.known_cells;
     let known_nodes = &viewer.mind.ltm.known_nodes;
 
+    let [vx, vy] = if viewer.map_pos_seeded {
+        [viewer.map_gx, viewer.map_gy]
+    } else {
+        cur_node
+            .and_then(|nd| {
+                if nd.dungeon {
+                    sub.node_anchors.get("oi:cell4529:0").copied()
+                } else if nd.indoor {
+                    sub.door_tiles
+                        .get(&nd.id)
+                        .map(|&[dx, dy]| [dx as f32 + 0.5, dy as f32 + 0.5])
+                        .or_else(|| sub.node_anchors.get(&nd.id).copied())
+                } else {
+                    sub.node_anchors.get(&nd.id).copied()
+                }
+                .or_else(|| Some(world_to_grid_f32(nd.pos[0], nd.pos[1])))
+            })
+            .unwrap_or([430.0, 465.0])
+    };
+    let ivx = vx.floor() as isize;
+    let ivy = vy.floor() as isize;
+
     let mut core_by_idx = vec![false; sub.cell_ids.len()];
-    let mut cell_snap: Vec<WitnessedCellSnap> = Vec::with_capacity(sub.cell_ids.len());
+    let mut cell_live_snap: Vec<WitnessedCellSnap> = Vec::with_capacity(sub.cell_ids.len());
+    let mut cell_mem_snap: Vec<WitnessedCellSnap> = Vec::with_capacity(sub.cell_ids.len());
     let mut cell_reef = vec![false; sub.cell_ids.len()];
 
     for (idx, &cid) in sub.cell_ids.iter().enumerate() {
         let core_ok = actor_has_core_cell_access(doc, viewer, cid);
         core_by_idx[idx] = core_ok;
+        let mut plague_base = false;
         if let Some(c) = doc.cells.get(&cid.to_string()) {
             cell_reef[idx] = c.is_coast && c.resource_slug == "shellfish_meat";
+            plague_base = c.plague_sealed || c.kind == "plague_ruin";
         }
-        let snap = if cur_outdoor_cell == Some(cid) {
-            live_cell_snap(doc, delta, cid, core_ok, clock.game_days)
-        } else if let Some(saved) = mem.witnessed_cells.get(&cid) {
+        cell_live_snap.push(live_cell_snap(doc, delta, cid, core_ok, clock.game_days));
+        let mem_s = if let Some(saved) = mem.witnessed_cells.get(&cid) {
             saved.clone()
         } else {
-            let plague_base = doc
-                .cells
-                .get(&cid.to_string())
-                .is_some_and(|c| c.kind == "plague_ruin");
             WitnessedCellSnap {
                 flood_level: 0,
                 bridge_down: false,
@@ -189,150 +136,66 @@ pub fn build_viewer_memory_substrate_json(
                 witnessed_day: clock.game_days,
             }
         };
-        cell_snap.push(snap);
+        cell_mem_snap.push(mem_s);
     }
 
-    let (core_d, skirt_d) = compute_node_chamfer_dists(doc, sub, viewer, &core_by_idx);
-    let mut revealed = vec![false; total];
-    for pos in 0..total {
-        let owner = sub.cell_owner[pos];
-        if owner == u16::MAX {
-            if core_d[pos] <= 290 || skirt_d[pos] <= 190 {
-                revealed[pos] = true;
-            }
-            continue;
-        }
-        let oidx = owner as usize;
-        let cid = sub.cell_ids[oidx];
-        if !known_cells.contains(&cid) {
-            continue;
-        }
-        if core_by_idx[oidx] {
-            if core_d[pos] <= CORE_REVEAL_CHAMFER {
-                revealed[pos] = true;
-            }
-        } else if skirt_d[pos] <= SKIRT_REVEAL_CHAMFER {
-            revealed[pos] = true;
-        }
-    }
-
-    let mut terrain = vec![TERRAIN_FOG; total];
+    let mut terrain = vec![0u8; total];
     let mut overlay = vec![0u8; total];
     for y in 0..GRID_H {
         let row = y * GRID_W;
+        let dy = y as isize - ivy;
+        let dy2 = dy * dy;
         for x in 0..GRID_W {
             let pos = row + x;
-            if !revealed[pos] {
-                continue;
-            }
+            let dx = x as isize - ivx;
+            let in_sight = !in_dungeon && dx * dx + dy2 <= SIGHT_RADIUS_SQ;
+            let diffs_map = if in_sight {
+                &delta.tile_diffs
+            } else {
+                &mem.witnessed_tile_diffs
+            };
+            let (bt, br, bb) = effective_tile_state(sub, diffs_map, pos);
             let owner = sub.cell_owner[pos];
             if owner == u16::MAX {
-                terrain[pos] = sub.base_terrain[pos];
-                overlay[pos] = sub.base_road[pos] | (sub.base_bldg[pos] << 3);
+                terrain[pos] = bt;
+                overlay[pos] = br | (bb << 3);
                 continue;
             }
             let oidx = owner as usize;
-            let snap = &cell_snap[oidx];
-            let mut t = sub.base_terrain[pos];
-            let mut r = sub.base_road[pos];
-            let mut b = sub.base_bldg[pos];
-
-            if !core_by_idx[oidx] {
-                if b != BLDG_NONE {
-                    b = BLDG_NONE;
-                    t = TERRAIN_LAND;
-                }
-                if r == ROAD_STONE_WALL || r == ROAD_TOWN_COBBLE {
-                    r = ROAD_NONE;
-                }
-            }
-
-            if snap.flood_level >= 1
-                && t == TERRAIN_LAND
-                && b == BLDG_NONE
-                && r != ROAD_STONE_WALL
-                && r != ROAD_TOWN_COBBLE
-            {
-                let rad = isize::from(snap.flood_level).min(2);
-                let mut near_riv = false;
-                'flood_chk: for dy in -rad..=rad {
-                    for dx in -rad..=rad {
-                        if dx * dx + dy * dy <= rad * rad
-                            && let Some(npos) = idx_of(x as isize + dx, y as isize + dy)
-                            && sub.base_terrain[npos] == TERRAIN_RIVER
-                        {
-                            near_riv = true;
-                            break 'flood_chk;
-                        }
-                    }
-                }
-                if near_riv {
-                    t = TERRAIN_RIVER;
-                }
-            }
-            if snap.bridge_down && t == TERRAIN_RIVER && r == ROAD_BRIDGE_OR_PIER {
-                r = ROAD_NONE;
-            }
-            if low_tide
-                && t == TERRAIN_LAND
-                && cell_reef[oidx]
-                && sub.sea_dist_by_cell_edge[pos] <= 2
-                && b == BLDG_NONE
-                && r == ROAD_NONE
-            {
-                t = TERRAIN_REEF_SAND;
-            }
-            let pct = if t == TERRAIN_TREE {
-                (u32::from(snap.stock_pct) * u32::from(snap.forest_pct)) / 100
+            let snap = if in_sight {
+                &cell_live_snap[oidx]
             } else {
-                u32::from(snap.stock_pct)
+                &cell_mem_snap[oidx]
             };
-            if (t == TERRAIN_TREE || t == TERRAIN_FARM) && pct < 95 {
-                let h = ((x as u32).wrapping_mul(73) ^ (y as u32).wrapping_mul(179)) % 100;
-                if h >= pct {
-                    t = TERRAIN_LAND;
-                }
-            }
-            if core_by_idx[oidx]
-                && t == TERRAIN_LAND
-                && snap.reclaimed_plots > 0
-                && b == BLDG_NONE
-                && r == ROAD_NONE
-                && sub.sea_dist_by_cell_edge[pos] >= 2
-            {
-                let patch_slot = ((x / 5).wrapping_mul(31) ^ (y / 5).wrapping_mul(97)) % 12;
-                if patch_slot < usize::from(snap.reclaimed_plots) {
-                    t = TERRAIN_FARM;
-                }
-            } else if t == TERRAIN_FARM && snap.fallow_days >= 18 {
-                let reg_pct = ((snap.fallow_days - 15) * 8).min(80) as usize;
-                let rh = ((x as usize).wrapping_mul(53) ^ (y as usize).wrapping_mul(131)) % 100;
-                if rh < reg_pct {
-                    t = TERRAIN_LAND;
-                }
-            }
-            if snap.plague_active && b == BLDG_NONE && r == ROAD_NONE && t == TERRAIN_LAND {
-                let h = noise01(x as isize, y as isize, 0xDEAD_BEEF);
-                if h > 0.94 {
-                    b = BLDG_RUIN_WALL;
-                }
-            }
+            let (t, r, b) = apply_tile_hydrology_and_tide(
+                sub,
+                pos,
+                x,
+                y,
+                bt,
+                br,
+                bb,
+                snap.flood_level,
+                snap.bridge_down,
+                cell_reef[oidx],
+                low_tide,
+            );
             terrain[pos] = t;
             overlay[pos] = r | (b << 3);
         }
     }
 
     for (hnid, cells) in &sub.house_footprint_cells {
-        let Some(hnd) = doc.nodes.get(hnid) else {
-            continue;
-        };
-        let at_cur = cur_outdoor_cell == Some(hnd.cell_id);
-        let ruined = if at_cur {
+        let near_house = !in_dungeon
+            && sub.node_anchors.get(hnid).is_some_and(|&[ax, ay]| {
+                (ax - vx).powi(2) + (ay - vy).powi(2) <= SIGHT_RADIUS_F32_SQ
+            });
+        let ruined = if near_house {
             house_is_ruined(delta, hnid)
         } else {
             mem.witnessed_ruined_houses.contains(hnid)
         };
-        let sold = if at_cur {
+        let sold = if near_house {
             delta.sold_houses.contains_key(hnid)
         } else {
             mem.witnessed_sold_houses.contains(hnid)
@@ -346,9 +209,7 @@ pub fn build_viewer_memory_substrate_json(
         };
         if let Some(nb) = next_bldg {
             for &pos in cells {
-                if revealed[pos] {
-                    overlay[pos] = (overlay[pos] & 0x07) | (nb << 3);
-                }
+                overlay[pos] = (overlay[pos] & 0x07) | (nb << 3);
             }
         }
     }
@@ -367,33 +228,7 @@ pub fn build_viewer_memory_substrate_json(
         {
             return;
         }
-        let Some(&[ax, ay]) = sub.node_anchors.get(anchor_nid) else {
-            return;
-        };
-        let gx0 = ax.floor() as isize;
-        let gy0 = ay.floor() as isize;
-        let mut placed_xy = None;
-        for dy in -2..=2 {
-            for dx in -2..=2 {
-                if dx == 0 && dy == 0 {
-                    continue;
-                }
-                if let Some(pos) = idx_of(gx0 + dx, gy0 + dy)
-                    && revealed[pos]
-                    && terrain[pos] == TERRAIN_LAND
-                    && (overlay[pos] & 0x07) == ROAD_NONE
-                    && (overlay[pos] >> 3) == BLDG_NONE
-                {
-                    overlay[pos] = (overlay[pos] & 0x07) | (BLDG_ROOF << 3);
-                    placed_xy = Some([(gx0 + dx) as f32 + 0.5, (gy0 + dy) as f32 + 0.5]);
-                    break;
-                }
-            }
-            if placed_xy.is_some() {
-                break;
-            }
-        }
-        if let Some([px, py]) = placed_xy {
+        if let Some([px, py]) = place_built_house_roof(sub, &terrain, &mut overlay, anchor_nid) {
             visible_built.push((
                 house_id.to_string(),
                 anchor_nid.to_string(),
@@ -444,16 +279,14 @@ pub fn build_viewer_memory_substrate_json(
         }));
     }
     for band in delta.live_wilds.bands.values() {
-        if cur_outdoor_cell == Some(band.cell_id)
-            && core_by_idx
-                .get(
-                    sub.cell_index_by_id
-                        .get(&band.cell_id)
-                        .copied()
-                        .unwrap_or(u16::MAX) as usize,
-                )
-                .copied()
-                .unwrap_or(false)
+        let in_near_band = !in_dungeon
+            && sub
+                .node_anchors
+                .get(&band.camp_node_id)
+                .is_some_and(|&[ax, ay]| {
+                    (ax - vx).powi(2) + (ay - vy).powi(2) <= SIGHT_RADIUS_F32_SQ
+                });
+        if (cur_outdoor_cell == Some(band.cell_id) || in_near_band)
             && clock.game_days >= band.suppressed_until_day
             && (band.raid_pressure >= 60 || band.hoard_copper >= 8)
             && let Some(&[gx, gy]) = sub.node_anchors.get(&band.camp_node_id)
@@ -483,50 +316,158 @@ pub fn build_viewer_memory_substrate_json(
         }
     }
 
-    let mut adj_targets: BTreeSet<String> = BTreeSet::new();
-    let mut adj_exits: Vec<Value> = Vec::new();
-    let in_alley = cur_node.is_some_and(|nd| nd.kind == "alley");
-    if let Some(nd) = cur_node
-        && !nd.dungeon
-    {
-        for ex in &nd.exits {
-            if let Some(dst) = doc.nodes.get(&ex.to)
-                && !dst.dungeon
-                && (known_cells.contains(&dst.cell_id) || ex.kind != "secret")
+    let mut nearby_actors: Vec<(f32, Value)> = Vec::new();
+    if !in_dungeon {
+        for a in delta.actors.values() {
+            if !a.alive
+                || !a.setup_done
+                || a.actor_id == viewer.actor_id
+                || a.active_transit.is_some()
+                || !a.map_pos_seeded
             {
-                adj_targets.insert(dst.id.clone());
-                if in_alley && matches!(dst.kind.as_str(), "house" | "house_vacant") {
-                    continue;
+                continue;
+            }
+            if doc
+                .nodes
+                .get(&a.node_id)
+                .is_some_and(|nd| nd.indoor || nd.dungeon)
+            {
+                continue;
+            }
+            let d2 = (a.map_gx - vx).powi(2) + (a.map_gy - vy).powi(2);
+            if d2 <= NEARBY_ACTOR_RADIUS_SQ {
+                let shown = if a.controller_id.is_some() && !viewer.is_acquainted_with(&a.actor_id)
+                {
+                    format!("旅人・{}", a.role)
+                } else {
+                    a.display_name.clone()
+                };
+                nearby_actors.push((
+                    d2,
+                    json!({
+                        "id": a.public_actor_token(),
+                        "name": shown,
+                        "role": a.role,
+                        "gx": a.map_gx,
+                        "gy": a.map_gy,
+                        "walking": !a.walk_waypoints.is_empty(),
+                    }),
+                ));
+            }
+        }
+        nearby_actors.sort_by(|a, b| a.0.total_cmp(&b.0));
+    }
+    let nearby_actors_json: Vec<Value> = nearby_actors.into_iter().map(|(_, v)| v).collect();
+
+    let mut proximity_capsules: Vec<(u8, f32, Value)> = Vec::new();
+    if !in_dungeon {
+        let mut seen_ids = BTreeSet::new();
+        for (nid, nd) in &doc.nodes {
+            if nd.dungeon && nid != "oi:dng_pit:entry" {
+                continue;
+            }
+            if nid == "oi:dng_pit:entry" && !viewer.unlocked_secrets.contains("oi:cell4529:0") {
+                continue;
+            }
+            if !nd.indoor
+                && !matches!(
+                    nd.kind.as_str(),
+                    "gate" | "village_gate" | "dock" | "plaza" | "wild" | "camp" | "ruin"
+                )
+            {
+                continue;
+            }
+            let anchor = sub.node_anchors.get(nid).copied();
+            let door = sub
+                .door_tiles
+                .get(nid)
+                .map(|&[dx, dy]| [dx as f32 + 0.5, dy as f32 + 0.5]);
+            let Some([gx, gy]) = anchor.or(door) else {
+                continue;
+            };
+            let [dgx, dgy] = door.unwrap_or([gx, gy]);
+            let d2 = ((gx - vx).powi(2) + (gy - vy).powi(2))
+                .min((dgx - vx).powi(2) + (dgy - vy).powi(2));
+            if d2 <= CAPSULE_RADIUS_SQ {
+                let is_res_house = nid
+                    .rsplit(':')
+                    .next()
+                    .and_then(|tail| tail.strip_prefix('h'))
+                    .is_some_and(|num| !num.is_empty() && num.chars().all(|c| c.is_ascii_digit()));
+                if is_res_house {
+                    let is_vacant_sale = nd.kind == "vacant_house"
+                        && !delta.sold_houses.contains_key(nid)
+                        && !house_is_ruined(delta, nid);
+                    let max_res_d2 = if is_vacant_sale { 20.25 } else { 6.25 };
+                    if d2 > max_res_d2 {
+                        continue;
+                    }
                 }
-                if let Some(&[ax, ay]) = sub.node_anchors.get(&dst.id) {
-                    let short_lbl = dst
-                        .name
-                        .rsplit('・')
-                        .next()
-                        .unwrap_or(&dst.name)
-                        .split('（')
-                        .next()
-                        .unwrap_or(&dst.name);
-                    adj_exits.push(json!({
-                        "id": dst.id,
-                        "label": short_lbl,
-                        "gx": ax,
-                        "gy": ay,
-                    }));
+                if seen_ids.insert(nid.clone()) {
+                    proximity_capsules.push((
+                        u8::from(is_res_house),
+                        d2,
+                        json!({
+                            "id": nid,
+                            "label": short_node_label(&nd.name),
+                            "kind": nd.kind,
+                            "indoor": nd.indoor,
+                            "gx": gx,
+                            "gy": gy,
+                            "door_gx": dgx,
+                            "door_gy": dgy,
+                            "dist": d2.sqrt(),
+                        }),
+                    ));
                 }
             }
         }
+        for bh in delta.built_houses.values() {
+            if let Some(&[gx, gy]) = sub.node_anchors.get(&bh.anchor_node_id) {
+                let d2 = (gx - vx).powi(2) + (gy - vy).powi(2);
+                if d2 <= CAPSULE_RADIUS_SQ && seen_ids.insert(bh.house_id.clone()) {
+                    proximity_capsules.push((
+                        0,
+                        d2,
+                        json!({
+                            "id": bh.house_id,
+                            "label": bh.label_zh,
+                            "kind": "built",
+                            "indoor": true,
+                            "gx": gx,
+                            "gy": gy,
+                            "door_gx": gx,
+                            "door_gy": gy,
+                            "dist": d2.sqrt(),
+                        }),
+                    ));
+                }
+            }
+        }
+        proximity_capsules.sort_by(|a, b| a.0.cmp(&b.0).then_with(|| a.1.total_cmp(&b.1)));
     }
+    let proximity_capsules_json: Vec<Value> =
+        proximity_capsules.into_iter().map(|(_, _, v)| v).collect();
 
     let mut building_hits: Vec<Value> = Vec::new();
     for (nid, cells) in &sub.house_footprint_cells {
-        if cells.is_empty() || (!known_nodes.contains(nid) && !adj_targets.contains(nid)) {
+        if cells.is_empty() {
             continue;
         }
         let Some(nd) = doc.nodes.get(nid) else {
             continue;
         };
-        if !cells.iter().any(|&pos| revealed[pos]) {
+        let cidx = sub
+            .cell_index_by_id
+            .get(&nd.cell_id)
+            .copied()
+            .unwrap_or(u16::MAX) as usize;
+        let core_ok = core_by_idx.get(cidx).copied().unwrap_or(false);
+        let near_hit = !in_dungeon
+            && sub.node_anchors.get(nid).is_some_and(|&[ax, ay]| {
+                (ax - vx).powi(2) + (ay - vy).powi(2) <= CAPSULE_RADIUS_SQ
+            });
+        if !known_nodes.contains(nid) && !(core_ok && near_hit) {
             continue;
         }
         let (mut gx0, mut gy0, mut gx1, mut gy1) = (GRID_W, GRID_H, 0usize, 0usize);
@@ -538,14 +479,6 @@ pub fn build_viewer_memory_substrate_json(
             gx1 = gx1.max(x + 1);
             gy1 = gy1.max(y + 1);
         }
-        let short_lbl = nd
-            .name
-            .rsplit('・')
-            .next()
-            .unwrap_or(&nd.name)
-            .split('（')
-            .next()
-            .unwrap_or(&nd.name);
         let door_badge = nid
             .rsplit(':')
             .next()
@@ -554,7 +487,7 @@ pub fn build_viewer_memory_substrate_json(
             .map(|num| format!("{num}號"));
         building_hits.push(json!({
             "nid": nid,
-            "label": short_lbl,
+            "label": short_node_label(&nd.name),
             "door_badge": door_badge,
             "gx0": gx0,
             "gy0": gy0,
@@ -588,27 +521,7 @@ pub fn build_viewer_memory_substrate_json(
         }));
     }
 
-    let cur_anchor = cur_node.and_then(|nd| {
-        if nd.dungeon {
-            doc.nodes
-                .get("oi:cell4529:0")
-                .and_then(|ent| sub.node_anchors.get(&ent.id))
-                .copied()
-        } else {
-            sub.node_anchors
-                .get(&nd.id)
-                .copied()
-                .or_else(|| {
-                    delta
-                        .built_houses
-                        .get(&nd.id)
-                        .and_then(|bh| sub.node_anchors.get(&bh.anchor_node_id))
-                        .copied()
-                })
-                .or_else(|| Some(world_to_grid_f32(nd.pos[0], nd.pos[1])))
-        }
-    });
-
+    let walk_waypoints_json: Vec<[u16; 2]> = viewer.walk_waypoints.iter().copied().collect();
     json!({
         "grid_w": GRID_W,
         "grid_h": GRID_H,
@@ -616,12 +529,18 @@ pub fn build_viewer_memory_substrate_json(
         "wy0": WY0,
         "scale": GRID_SCALE,
         "low_tide": low_tide,
+        "in_indoor": in_indoor,
+        "indoor_node_id": if in_indoor { json!(viewer.node_id) } else { Value::Null },
+        "indoor_label": if in_indoor { json!(cur_node.map_or("", |n| short_node_label(&n.name))) } else { Value::Null },
         "terrain_rle_b64": base64_encode(&rle_encode_bytes(&terrain)),
         "overlay_rle_b64": base64_encode(&rle_encode_bytes(&overlay)),
-        "player_pos": cur_anchor,
+        "player_pos": [vx, vy],
+        "walk_waypoints": walk_waypoints_json,
+        "nearby_actors": nearby_actors_json,
+        "proximity_capsules": proximity_capsules_json,
         "pois": pois,
         "rumor_pins": rumor_pins_json,
         "building_hits": building_hits,
-        "adjacent_exits": adj_exits,
+        "adjacent_exits": [],
     })
 }

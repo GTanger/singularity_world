@@ -199,6 +199,7 @@ pub fn seed_genesis_actors_once(
     for aid in all_ids {
         super::map_memory::seed_actor_initial_map_witness(doc, delta, &aid, 0);
     }
+    super::map_walk::seed_missing_actor_grid_positions_once(doc, delta);
     delta.genesis_seeded = true;
 }
 
@@ -292,6 +293,7 @@ pub fn spawn_dynamic_actors(
     for aid in &created_ids {
         super::map_memory::seed_actor_initial_map_witness(doc, delta, aid, game_day);
     }
+    super::map_walk::seed_missing_actor_grid_positions_once(doc, delta);
     created_ids
 }
 
@@ -400,6 +402,7 @@ pub fn tick_outer_island_world(
     now_unix_ms: u64,
 ) {
     seed_genesis_actors_once(doc, delta, clock.is_night);
+    super::map_walk::seed_missing_actor_grid_positions_once(doc, delta);
     ensure_household_larders_seeded_once(delta);
     if super::live_commodities::ensure_shop_material_stocks_seeded(doc, delta) {
         delta.extras_dirty = true;
@@ -429,7 +432,7 @@ pub fn tick_outer_island_world(
                 && a.setup_done
                 && a.active_skirmish.is_none()
                 && a.active_transit.is_none()
-                && !a.route_plan.is_empty()
+                && (!a.route_plan.is_empty() || !a.walk_waypoints.is_empty())
                 && !(now_unix_ms > 0 && a.conversing_until_ms > now_unix_ms)
                 && !super::live_tide::is_actor_online_protected(a, clock.real_unix)
         })
@@ -443,68 +446,21 @@ pub fn tick_outer_island_world(
     walking_pairs.sort_by_key(|(rk, _)| *rk);
     let walking_ids: Vec<String> = walking_pairs.into_iter().map(|(_, id)| id).collect();
 
+    let dt_walk_ms = if delta.last_walk_tick_ms > 0 && now_unix_ms >= delta.last_walk_tick_ms {
+        now_unix_ms.saturating_sub(delta.last_walk_tick_ms)
+    } else {
+        2_500
+    };
+    if now_unix_ms > 0 {
+        delta.last_walk_tick_ms = now_unix_ms;
+    }
+    let step_budget = if abs_bell > start_bell {
+        320
+    } else {
+        ((dt_walk_ms / 250).max(10)).min(320) as usize
+    };
     for aid in walking_ids {
-        for _ in 0..2 {
-            let (cur_nid, next_opt) = match delta.actors.get_mut(&aid) {
-                Some(a)
-                    if a.active_skirmish.is_none()
-                        && a.active_transit.is_none()
-                        && !super::live_tide::is_actor_online_protected(a, clock.real_unix) =>
-                {
-                    (a.node_id.clone(), a.route_plan.pop_front())
-                }
-                _ => break,
-            };
-            if let Some(next_nid) = next_opt
-                && let Some(nd) = doc.nodes.get(&next_nid)
-            {
-                let cur_dng = doc.nodes.get(&cur_nid).is_some_and(|n| n.dungeon);
-                if nd.dungeon || cur_dng || doc.hidden_entrances.contains_key(&cur_nid) {
-                    let step_err =
-                        super::movement::apply_move_step(doc, delta, clock, &aid, &next_nid, 0)
-                            .is_err();
-                    if step_err
-                        || delta
-                            .actors
-                            .get(&aid)
-                            .is_some_and(|a| a.active_skirmish.is_some())
-                    {
-                        if let Some(a) = delta.actors.get_mut(&aid) {
-                            a.route_plan.clear();
-                            a.mark_mutated();
-                        }
-                        break;
-                    }
-                } else {
-                    if let (Some(actor_ro), Some(src_nd)) =
-                        (delta.actors.get(&aid), doc.nodes.get(&cur_nid))
-                        && super::transit_and_cargo::check_bulk_overland_move(
-                            doc, delta, actor_ro, src_nd, nd,
-                        )
-                        .is_err()
-                    {
-                        if let Some(a) = delta.actors.get_mut(&aid) {
-                            a.route_plan.clear();
-                            a.mark_mutated();
-                        }
-                        break;
-                    }
-                    let knows_state = matches!(nd.kind.as_str(), "plaza" | "gate" | "village_gate");
-                    super::live_tide::relocate_actor_with_local_witness(
-                        doc,
-                        delta,
-                        clock,
-                        &aid,
-                        &cur_nid,
-                        &next_nid,
-                        nd.cell_id,
-                        knows_state,
-                    );
-                }
-            } else {
-                break;
-            }
-        }
+        super::map_walk::step_npc_grid_walk_tick(doc, delta, clock, &aid, step_budget);
     }
 
     if abs_bell <= start_bell {
@@ -854,27 +810,37 @@ pub fn tick_outer_island_world(
                 None
             };
 
-            if let Some((kind, dst_nid, reason)) = target_opt
-                && a.route_plan.is_empty()
-                && a.node_id != dst_nid
-                && a.mind.ltm.known_nodes.contains(&dst_nid)
-                && let Some(full_path) =
-                    shortest_walk_path(doc, &a.node_id, &dst_nid, &a.mind.ltm.known_nodes)
-            {
-                if kind == "detour_avoid" {
-                    a.mind.stm.last_detour_bell = (abs_bell + 100_000).max(1);
+            if let Some((kind, dst_nid, reason)) = target_opt {
+                if kind == "go_home_sleep"
+                    && a.walk_goal_enter_node.as_deref() != Some(dst_nid.as_str())
+                    && a.route_plan.back().map(String::as_str) != Some(dst_nid.as_str())
+                {
+                    a.route_plan.clear();
+                    a.walk_waypoints.clear();
+                    a.walk_goal_enter_node = None;
                 }
-                a.route_plan = full_path.into_iter().skip(1).collect();
-                if a.mind.stm.intentions.len() >= 4 {
-                    a.mind.stm.intentions.pop_front();
+                if a.route_plan.is_empty()
+                    && a.walk_waypoints.is_empty()
+                    && a.node_id != dst_nid
+                    && a.mind.ltm.known_nodes.contains(&dst_nid)
+                    && let Some(full_path) =
+                        shortest_walk_path(doc, &a.node_id, &dst_nid, &a.mind.ltm.known_nodes)
+                {
+                    if kind == "detour_avoid" {
+                        a.mind.stm.last_detour_bell = (abs_bell + 100_000).max(1);
+                    }
+                    a.route_plan = full_path.into_iter().skip(1).collect();
+                    if a.mind.stm.intentions.len() >= 4 {
+                        a.mind.stm.intentions.pop_front();
+                    }
+                    a.mind.stm.intentions.push_back(ActiveIntention {
+                        kind: kind.to_string(),
+                        target_node: dst_nid,
+                        reason_zh: reason,
+                        created_bell: abs_bell,
+                    });
+                    mutated = true;
                 }
-                a.mind.stm.intentions.push_back(ActiveIntention {
-                    kind: kind.to_string(),
-                    target_node: dst_nid,
-                    reason_zh: reason,
-                    created_bell: abs_bell,
-                });
-                mutated = true;
             }
 
             if mutated {

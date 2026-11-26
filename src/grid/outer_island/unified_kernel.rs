@@ -418,6 +418,7 @@ fn evaluate_autonomous_player_verb(
         || a.active_skirmish.is_some()
         || a.active_transit.is_some()
         || !a.route_plan.is_empty()
+        || !a.walk_waypoints.is_empty()
     {
         return None;
     }

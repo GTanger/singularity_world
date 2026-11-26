@@ -12,11 +12,12 @@ use serde::{Deserialize, Serialize};
 
 use super::clock_and_lang::SolarClockSnapshot;
 use super::island_substrate::{
-    CompiledIslandSubstrate, compiled_island_substrate, world_to_grid_f32,
+    CompiledIslandSubstrate, GRID_W, ROAD_BRIDGE_OR_PIER, TERRAIN_RIVER, compiled_island_substrate,
+    idx_of, world_to_grid_f32,
 };
 use super::live_land::{house_is_ruined, is_bridge_washed_out, is_quarantine_restricted};
 use super::movement::{apply_move_step, push_breath, shortest_walk_path};
-use super::types::{IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
+use super::types::{IslandWorldDelta, TileDiffEntry, UnifiedMindBody, WorldStaticDoc};
 
 pub use super::map_memory_pack::build_viewer_memory_substrate_json;
 
@@ -72,6 +73,10 @@ pub struct ActorMapMemory {
     pub witnessed_built_houses: BTreeMap<String, WitnessedHomesteadSnap>,
     pub witnessed_bands: BTreeMap<u32, WitnessedBandSnap>,
     pub rumor_pins: BTreeMap<String, MapRumorPin>,
+    #[serde(default)]
+    pub witnessed_tile_diffs: BTreeMap<u32, TileDiffEntry>,
+    #[serde(default)]
+    pub witnessed_cleared_tiles: BTreeSet<u32>,
 }
 
 /// 區分外圍擦邊節點（`:skirt_*`／`:approach_*`）與真正踏入地塊核心（城鎮廣場、門戶、聚落院落、主道、營寨、遺址）。
@@ -80,6 +85,52 @@ pub fn is_core_cell_node(doc: &WorldStaticDoc, node_id: &str) -> bool {
         return false;
     }
     doc.nodes.get(node_id).is_none_or(|nd| !nd.dungeon)
+}
+
+fn default_unvisited_cell_snap(
+    doc: &WorldStaticDoc,
+    cid: u32,
+    core_visited: bool,
+    game_day: i64,
+) -> WitnessedCellSnap {
+    let plague_base = doc
+        .cells
+        .get(&cid.to_string())
+        .is_some_and(|c| c.plague_sealed || c.kind == "plague_ruin");
+    WitnessedCellSnap {
+        flood_level: 0,
+        bridge_down: false,
+        forest_pct: 100,
+        stock_pct: 100,
+        reclaimed_plots: 0,
+        fallow_days: 0,
+        plague_active: plague_base,
+        core_visited,
+        witnessed_day: game_day,
+    }
+}
+
+fn core_anchor_for_cell(doc: &WorldStaticDoc, sub: &CompiledIslandSubstrate, cid: u32) -> [f32; 2] {
+    for suffix in [":plaza", ":yard", ":market_plaza", ":0"] {
+        let prefix = format!("oi:cell{cid}{suffix}");
+        if let Some(&pos) = sub.node_anchors.get(&prefix) {
+            return pos;
+        }
+    }
+    if let Some(c) = doc.cells.get(&cid.to_string()) {
+        for (nid, nd) in &doc.nodes {
+            if nd.cell_id == cid
+                && !nd.dungeon
+                && is_core_cell_node(doc, nid)
+                && matches!(nd.kind.as_str(), "plaza" | "yard" | "gate" | "village_gate")
+                && let Some(&pos) = sub.node_anchors.get(nid)
+            {
+                return pos;
+            }
+        }
+        return world_to_grid_f32(c.center[0], c.center[1]);
+    }
+    [430.0, 465.0]
 }
 
 pub(crate) fn live_cell_snap(
@@ -92,17 +143,15 @@ pub(crate) fn live_cell_snap(
     let mut stock_pct = 100u8;
     let mut plague_base = false;
     if let Some(c) = doc.cells.get(&cid.to_string()) {
-        plague_base = c.kind == "plague_ruin";
+        plague_base = c.plague_sealed || c.kind == "plague_ruin";
         if c.stock_cap > 0 {
             let cur = delta.cell_stocks.get(&cid).copied().unwrap_or(c.stock_cap);
             stock_pct = ((u32::from(cur) * 100) / u32::from(c.stock_cap)).min(100) as u8;
         }
     }
     if let Some(cl) = delta.live_land.cells.get(&cid) {
-        let plague_active = if cl.plague_miasmas >= 30 && plague_base {
-            true
-        } else if cl.plague_miasmas < 30 && delta.live_land.seeded {
-            false
+        let plague_active = if delta.live_land.seeded {
+            cl.plague_miasmas >= 30
         } else {
             plague_base
         };
@@ -145,14 +194,14 @@ impl WitnessedCellSnap {
     }
 }
 
-/// 在場親見寫入：僅更新角色當下所在非地城地塊的個人地景記憶，並消解已被親眼驗證之該地塊傳聞問號釘。
+/// 在場親見寫入：僅於踏入非地城核心節點時更新該地塊核況；若為外圍擦邊節點則僅依實地視距 `18` 格局部見證。
 pub fn record_local_witness_at_cur_node(
     doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
     actor_id: &str,
     game_day: i64,
 ) {
-    let (cur_nid, is_player, prev_snap, has_cid_rumor, has_band_snap) = {
+    let (cur_nid, is_player, prev_snap, has_cid_rumor, has_band_snap, sight_xy, pos_seeded) = {
         let Some(a) = delta.actors.get(actor_id) else {
             return;
         };
@@ -172,12 +221,23 @@ pub fn record_local_witness_at_cur_node(
             .values()
             .any(|p| p.cell_id == cid);
         let has_b = a.mind.ltm.map_memory.witnessed_bands.contains_key(&cid);
+        let sub = compiled_island_substrate(doc);
+        let sxy = if a.map_pos_seeded {
+            [a.map_gx, a.map_gy]
+        } else {
+            sub.node_anchors
+                .get(&a.node_id)
+                .copied()
+                .unwrap_or_else(|| world_to_grid_f32(cur_nd.pos[0], cur_nd.pos[1]))
+        };
         (
             a.node_id.clone(),
             a.controller_id.is_some() || actor_id.starts_with("pl:"),
             prev,
             has_r,
             has_b,
+            sxy,
+            a.map_pos_seeded,
         )
     };
     let Some(cur_nd) = doc.nodes.get(&cur_nid) else {
@@ -187,7 +247,43 @@ pub fn record_local_witness_at_cur_node(
     let was_core = prev_snap.as_ref().is_some_and(|s| s.core_visited);
     let at_core = is_core_cell_node(doc, &cur_nid);
     let core_visited = was_core || at_core;
-    let snap = live_cell_snap(doc, delta, cid, core_visited, game_day);
+    let sub = compiled_island_substrate(doc);
+    let [cax, cay] = core_anchor_for_cell(doc, sub, cid);
+    let far_from_core =
+        pos_seeded && ((cax - sight_xy[0]).powi(2) + (cay - sight_xy[1]).powi(2) > 324.0);
+    if !at_core || far_from_core {
+        record_local_witness_at_tile(doc, delta, actor_id, sight_xy[0], sight_xy[1], game_day);
+        return;
+    }
+    let mut saw_bridge_near = false;
+    let mut saw_river_near = false;
+    let cx = sight_xy[0].floor() as isize;
+    let cy = sight_xy[1].floor() as isize;
+    for dy in -18isize..=18 {
+        for dx in -18isize..=18 {
+            if dx * dx + dy * dy > 324 {
+                continue;
+            }
+            if let Some(pos) = idx_of(cx + dx, cy + dy) {
+                let owner = sub.cell_owner[pos];
+                if owner != u16::MAX && sub.cell_ids[owner as usize] == cid {
+                    if sub.base_terrain[pos] == TERRAIN_RIVER {
+                        saw_river_near = true;
+                        if sub.base_road[pos] == ROAD_BRIDGE_OR_PIER {
+                            saw_bridge_near = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let mut snap = live_cell_snap(doc, delta, cid, core_visited, game_day);
+    if !saw_bridge_near {
+        snap.bridge_down = prev_snap.as_ref().is_some_and(|p| p.bridge_down);
+    }
+    if !saw_river_near {
+        snap.flood_level = prev_snap.as_ref().map_or(0, |p| p.flood_level);
+    }
     let band_now_active = core_visited
         && delta.live_wilds.bands.get(&cid).is_some_and(|band| {
             game_day >= band.suppressed_until_day
@@ -299,9 +395,197 @@ pub fn record_local_witness_at_cur_node(
         if k == "pit_rumor" {
             return !secret_unlocked;
         }
-        !core_visited && pin.node_id != cur_nid
+        !saw_bridge_near && pin.node_id != cur_nid
     });
     a.mark_mutated();
+}
+
+/// 依角色實地站立座標 `(gx, gy)` 半徑 `18` 格精準親見寫入：
+/// 嚴禁僅因擦過 Voronoi 地塊邊界 `1` 格便將整塊未見之斷橋或洪災寫入記憶；
+/// 唯獨實際在 `18` 格內目睹河格才記水勢、目睹橋格才記橋況、近抵聚落核心才記核況與屋宅，並同步 `witnessed_tile_diffs`。
+pub fn record_local_witness_at_tile(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    actor_id: &str,
+    gx: f32,
+    gy: f32,
+    game_day: i64,
+) {
+    let Some((cur_nid, is_player, secret_unlocked)) = delta.actors.get(actor_id).map(|a| {
+        (
+            a.node_id.clone(),
+            a.controller_id.is_some() || actor_id.starts_with("pl:"),
+            a.unlocked_secrets.contains("oi:cell4529:0"),
+        )
+    }) else {
+        return;
+    };
+    if doc.nodes.get(&cur_nid).is_some_and(|n| n.dungeon) {
+        return;
+    }
+    let sub = compiled_island_substrate(doc);
+    let cx = gx.floor() as isize;
+    let cy = gy.floor() as isize;
+    let mut touched_cids = BTreeSet::new();
+    let mut saw_bridge_cids = BTreeSet::new();
+    let mut saw_river_cids = BTreeSet::new();
+    for dy in -18isize..=18 {
+        for dx in -18isize..=18 {
+            if dx * dx + dy * dy > 324 {
+                continue;
+            }
+            if let Some(pos) = idx_of(cx + dx, cy + dy) {
+                let owner = sub.cell_owner[pos];
+                if owner != u16::MAX {
+                    let cid = sub.cell_ids[owner as usize];
+                    touched_cids.insert(cid);
+                    if sub.base_terrain[pos] == TERRAIN_RIVER {
+                        saw_river_cids.insert(cid);
+                        if sub.base_road[pos] == ROAD_BRIDGE_OR_PIER {
+                            saw_bridge_cids.insert(cid);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let cur_cid = doc.nodes.get(&cur_nid).map(|n| n.cell_id);
+    let at_core = is_core_cell_node(doc, &cur_nid);
+    let mut saw_core_cids = BTreeSet::new();
+    for &cid in &touched_cids {
+        if Some(cid) == cur_cid && !at_core {
+            continue;
+        }
+        let [cax, cay] = core_anchor_for_cell(doc, sub, cid);
+        if (cax - gx).powi(2) + (cay - gy).powi(2) <= 324.0 {
+            saw_core_cids.insert(cid);
+        }
+    }
+
+    let mut cell_snaps = Vec::new();
+    let mut band_updates: Vec<(u32, Option<WitnessedBandSnap>)> = Vec::new();
+    for &cid in &touched_cids {
+        let saw_b = saw_bridge_cids.contains(&cid);
+        let saw_r = saw_river_cids.contains(&cid);
+        let saw_c = saw_core_cids.contains(&cid);
+        if !saw_b && !saw_r && !saw_c {
+            continue;
+        }
+        let prev_opt = delta
+            .actors
+            .get(actor_id)
+            .and_then(|a| a.mind.ltm.map_memory.witnessed_cells.get(&cid).cloned());
+        let core_visited = saw_c || prev_opt.as_ref().is_some_and(|s| s.core_visited);
+        let live = live_cell_snap(doc, delta, cid, core_visited, game_day);
+        let mut merged = prev_opt
+            .unwrap_or_else(|| default_unvisited_cell_snap(doc, cid, core_visited, game_day));
+        if saw_c {
+            let keep_bridge = merged.bridge_down;
+            let keep_flood = merged.flood_level;
+            merged = live.clone();
+            if !saw_b {
+                merged.bridge_down = keep_bridge;
+            }
+            if !saw_r {
+                merged.flood_level = keep_flood;
+            }
+        }
+        if saw_r {
+            merged.flood_level = live.flood_level;
+            merged.witnessed_day = game_day;
+        }
+        if saw_b {
+            merged.bridge_down = live.bridge_down;
+            merged.witnessed_day = game_day;
+        }
+        cell_snaps.push((cid, merged));
+        if core_visited && saw_c {
+            let wb = delta
+                .live_wilds
+                .bands
+                .get(&cid)
+                .filter(|b| {
+                    game_day >= b.suppressed_until_day
+                        && (b.raid_pressure >= 60 || b.hoard_copper >= 8)
+                })
+                .map(|b| WitnessedBandSnap {
+                    cell_id: cid,
+                    camp_node_id: b.camp_node_id.clone(),
+                    band_name_zh: b.band_name_zh.clone(),
+                });
+            band_updates.push((cid, wb));
+        }
+    }
+
+    let mut add_diffs: Vec<(u32, TileDiffEntry)> = Vec::new();
+    for (&pos_u32, &entry) in &delta.tile_diffs {
+        let pos = pos_u32 as usize;
+        let tx = (pos % GRID_W) as isize;
+        let ty = (pos / GRID_W) as isize;
+        if (tx - cx).pow(2) + (ty - cy).pow(2) <= 324 {
+            add_diffs.push((pos_u32, entry));
+        }
+    }
+
+    let mut changed = false;
+    let Some(a) = delta.actors.get_mut(actor_id) else {
+        return;
+    };
+    let mem = &mut a.mind.ltm.map_memory;
+    for (cid, snap) in cell_snaps {
+        let same = mem
+            .witnessed_cells
+            .get(&cid)
+            .is_some_and(|p| p.same_terrain_state(&snap));
+        if !same || is_player {
+            mem.witnessed_cells.insert(cid, snap);
+            changed = true;
+        }
+    }
+    for (cid, wb_opt) in band_updates {
+        if let Some(wb) = wb_opt {
+            if mem.witnessed_bands.get(&cid) != Some(&wb) {
+                mem.witnessed_bands.insert(cid, wb);
+                changed = true;
+            }
+        } else if mem.witnessed_bands.remove(&cid).is_some() {
+            changed = true;
+        }
+    }
+    mem.witnessed_tile_diffs.retain(|&pos_u32, _| {
+        let pos = pos_u32 as usize;
+        let tx = (pos % GRID_W) as isize;
+        let ty = (pos / GRID_W) as isize;
+        let in_sight = (tx - cx).pow(2) + (ty - cy).pow(2) <= 324;
+        if in_sight && !delta.tile_diffs.contains_key(&pos_u32) {
+            changed = true;
+            false
+        } else {
+            true
+        }
+    });
+    for (pos_u32, entry) in add_diffs {
+        if mem.witnessed_tile_diffs.get(&pos_u32) != Some(&entry) {
+            mem.witnessed_tile_diffs.insert(pos_u32, entry);
+            mem.witnessed_cleared_tiles.remove(&pos_u32);
+            changed = true;
+        }
+    }
+    let before_pins = mem.rumor_pins.len();
+    mem.rumor_pins.retain(|k, pin| {
+        if k == "pit_rumor" && !secret_unlocked {
+            return true;
+        }
+        let d2 = (pin.gx - gx).powi(2) + (pin.gy - gy).powi(2);
+        d2 > 144.0
+    });
+    if mem.rumor_pins.len() != before_pins {
+        changed = true;
+    }
+    if changed {
+        a.mark_mutated();
+    }
 }
 
 /// 出生／遷入預設地景記憶播種：依據本人已知核心地塊播種初始親見快照，絕不偷開未訪區域。

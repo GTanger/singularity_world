@@ -70,19 +70,33 @@ fn preserve_transient_leases(live: &IslandWorldDelta, working: &mut IslandWorldD
     for (aid, live_a) in &live.actors {
         if (live_a.conversing_until_ms > 0
             || live_a.last_talk_unix_ms > 0
+            || live_a.last_step_unix_ms > 0
             || live_a.last_active_unix > 0)
             && let Some(wa_ro) = working.actors.get(aid)
             && (live_a.conversing_until_ms > wa_ro.conversing_until_ms
                 || live_a.last_talk_unix_ms > wa_ro.last_talk_unix_ms
+                || live_a.last_step_unix_ms > wa_ro.last_step_unix_ms
                 || live_a.last_active_unix > wa_ro.last_active_unix)
             && let Some(wa) = working.actors.get_mut(aid)
         {
             wa.conversing_until_ms = wa.conversing_until_ms.max(live_a.conversing_until_ms);
             wa.last_talk_unix_ms = wa.last_talk_unix_ms.max(live_a.last_talk_unix_ms);
-            if live_a.last_active_unix > wa.last_active_unix {
-                wa.last_active_unix = live_a.last_active_unix;
-                if live_a.controller_id.is_some() && live_a.route_plan.is_empty() {
-                    wa.route_plan.clear();
+            if live_a.last_step_unix_ms > wa.last_step_unix_ms
+                || live_a.last_active_unix > wa.last_active_unix
+            {
+                wa.last_step_unix_ms = wa.last_step_unix_ms.max(live_a.last_step_unix_ms);
+                wa.last_active_unix = wa.last_active_unix.max(live_a.last_active_unix);
+                if live_a.controller_id.is_some() {
+                    if live_a.route_plan.is_empty() {
+                        wa.route_plan.clear();
+                    }
+                    if live_a.map_pos_seeded {
+                        wa.map_pos_seeded = true;
+                        wa.map_gx = live_a.map_gx;
+                        wa.map_gy = live_a.map_gy;
+                        wa.walk_waypoints = live_a.walk_waypoints.clone();
+                        wa.walk_goal_enter_node = live_a.walk_goal_enter_node.clone();
+                    }
                 }
             }
         }
@@ -107,6 +121,8 @@ impl IslandEngine {
             match load_or_migrate_from_pg(&doc, &pool) {
                 NormalizedLoadOutcome::Loaded(loaded) => {
                     delta = loaded;
+                    super::live_land::ensure_live_land_seeded(&doc, &mut delta, clock.game_days);
+                    super::map_walk::seed_missing_actor_grid_positions_once(&doc, &mut delta);
                     has_pg = true;
                 }
                 NormalizedLoadOutcome::Empty => {
@@ -389,18 +405,36 @@ impl IslandEngine {
     }
 
     pub fn move_player(&self, pid: &str, target_node: &str, now_ms: u64) -> Result<String, String> {
+        self.move_player_ext(pid, target_node, None, None, "", None, now_ms)
+    }
+
+    #[expect(clippy::too_many_arguments, reason = "grid walk move parameters")]
+    pub fn move_player_ext(
+        &self,
+        pid: &str,
+        target_node: &str,
+        gx: Option<f32>,
+        gy: Option<f32>,
+        mode: &str,
+        steps: Option<u8>,
+        now_ms: u64,
+    ) -> Result<String, String> {
         let clock = current_solar_clock();
         self.mutate_commit_before_publish(|doc, working| {
             super::live_tide::wake_player_on_explicit_input(working, pid, clock.real_unix);
             let aid = working
                 .resolve_controller(pid)
                 .ok_or("請先向港務官核對通行身分。")?;
-            super::map_memory::apply_memory_map_travel(
+            super::map_walk::handle_player_move_request(
                 doc,
                 working,
                 &clock,
                 &aid,
                 target_node,
+                gx,
+                gy,
+                mode,
+                steps,
                 now_ms,
             )
         })

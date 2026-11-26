@@ -400,6 +400,7 @@ pub fn step_staggered_minute_routines(
             a.alive
                 && a.setup_done
                 && a.route_plan.is_empty()
+                && a.walk_waypoints.is_empty()
                 && a.active_skirmish.is_none()
                 && a.active_transit.is_none()
                 && !doc.nodes.get(&a.node_id).is_some_and(|n| n.dungeon)
@@ -532,6 +533,34 @@ pub fn relocate_actor_with_local_witness(
     to_cell: u32,
     knows_state: bool,
 ) {
+    relocate_actor_at_xy_with_local_witness(
+        doc,
+        delta,
+        clock,
+        actor_id,
+        from_nid,
+        to_nid,
+        to_cell,
+        knows_state,
+        None,
+    );
+}
+
+#[expect(
+    clippy::too_many_arguments,
+    reason = "relocation with explicit tile coordinate preservation"
+)]
+pub fn relocate_actor_at_xy_with_local_witness(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+    actor_id: &str,
+    from_nid: &str,
+    to_nid: &str,
+    to_cell: u32,
+    knows_state: bool,
+    xy_override: Option<[f32; 2]>,
+) {
     if from_nid == to_nid {
         return;
     }
@@ -629,6 +658,13 @@ pub fn relocate_actor_with_local_witness(
     }
 
     delta.relocate_actor(actor_id, to_nid, to_cell, knows_state);
+    if let Some([gx, gy]) = xy_override
+        && let Some(a) = delta.actors.get_mut(actor_id)
+    {
+        a.map_gx = gx;
+        a.map_gy = gy;
+        a.map_pos_seeded = true;
+    }
     super::map_memory::record_local_witness_at_cur_node(doc, delta, actor_id, clock.game_days);
 
     // 2. 終點在場觀察者：唯讀篩出真人玩家後方呼叫 `get_mut`，杜絕同場 NPC 被無故觸發 CoW 深拷貝！

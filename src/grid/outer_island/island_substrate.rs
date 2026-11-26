@@ -7,6 +7,9 @@ use std::sync::OnceLock;
 
 use crate::combat::wordplate::splitmix64;
 
+use super::island_substrate_paths::{
+    compile_all_trails_with_astar, compute_door_tiles, snap_outdoor_node_anchors,
+};
 use super::island_substrate_towns::compile_settlements;
 use super::types::{VoronoiCellDef, WorldStaticDoc};
 
@@ -61,6 +64,8 @@ pub struct CompiledIslandSubstrate {
     pub base_bldg: Vec<u8>,
     pub sea_dist_by_cell_edge: Vec<u8>,
     pub node_anchors: BTreeMap<String, [f32; 2]>,
+    pub outdoor_nodes_by_cell: Vec<Vec<(String, [f32; 2])>>,
+    pub door_tiles: BTreeMap<String, [u16; 2]>,
     pub house_footprint_cells: BTreeMap<String, Vec<usize>>,
     pub poi_base_entries: Vec<SubstratePoiSeed>,
 }
@@ -245,13 +250,30 @@ fn compile_substrate(doc: &WorldStaticDoc) -> CompiledIslandSubstrate {
     );
     ensure_all_rivers_reach_sea(&mut base_terrain);
 
-    compile_highways_and_exits(
+    snap_outdoor_node_anchors(
         doc,
         &cell_owner,
-        &base_terrain,
+        &mut base_terrain,
+        &base_road,
+        &base_bldg,
+        &mut node_anchors,
+    );
+    compile_all_trails_with_astar(
+        doc,
+        &cell_owner,
+        &mut base_terrain,
         &mut base_road,
         &base_bldg,
         &node_anchors,
+    );
+    let door_tiles = compute_door_tiles(
+        doc,
+        &cell_owner,
+        &base_terrain,
+        &base_road,
+        &base_bldg,
+        &node_anchors,
+        &house_footprint_cells,
     );
 
     compile_farms_and_forests(
@@ -284,6 +306,18 @@ fn compile_substrate(doc: &WorldStaticDoc) -> CompiledIslandSubstrate {
         });
     }
 
+    let mut outdoor_nodes_by_cell: Vec<Vec<(String, [f32; 2])>> = vec![Vec::new(); cell_ids.len()];
+    for (nid, nd) in &doc.nodes {
+        if nd.dungeon || nd.indoor {
+            continue;
+        }
+        if let (Some(&cidx), Some(&anchor)) =
+            (cell_index_by_id.get(&nd.cell_id), node_anchors.get(nid))
+        {
+            outdoor_nodes_by_cell[cidx as usize].push((nid.clone(), anchor));
+        }
+    }
+
     CompiledIslandSubstrate {
         seed_hash: doc.seed_hash.clone(),
         cell_ids,
@@ -294,6 +328,8 @@ fn compile_substrate(doc: &WorldStaticDoc) -> CompiledIslandSubstrate {
         base_bldg,
         sea_dist_by_cell_edge,
         node_anchors,
+        outdoor_nodes_by_cell,
+        door_tiles,
         house_footprint_cells,
         poi_base_entries,
     }
@@ -579,76 +615,6 @@ fn compile_mountains(
             };
             if d + wob <= limit {
                 terrain[pos] = TERRAIN_MOUNTAIN;
-            }
-        }
-    }
-}
-
-fn draw_road_segment(
-    p0: (isize, isize),
-    p1: (isize, isize),
-    cell_owner: &[u16],
-    terrain: &[u8],
-    road: &mut [u8],
-    bldg: &[u8],
-) {
-    let steps = (p1.0 - p0.0).abs().max((p1.1 - p0.1).abs()).max(1);
-    for s in 0..=steps {
-        let t = s as f64 / steps as f64;
-        let gx = (p0.0 as f64 + (p1.0 - p0.0) as f64 * t).round() as isize;
-        let gy = (p0.1 as f64 + (p1.1 - p0.1) as f64 * t).round() as isize;
-        let Some(pos) = idx_of(gx, gy) else {
-            continue;
-        };
-        if cell_owner[pos] == u16::MAX || terrain[pos] == TERRAIN_SEA || bldg[pos] != BLDG_NONE {
-            continue;
-        }
-        if terrain[pos] == TERRAIN_RIVER {
-            road[pos] = ROAD_BRIDGE_OR_PIER;
-        } else if road[pos] == ROAD_NONE {
-            road[pos] = ROAD_COUNTRY_TRACK;
-        }
-    }
-}
-
-fn compile_highways_and_exits(
-    doc: &WorldStaticDoc,
-    cell_owner: &[u16],
-    terrain: &[u8],
-    road: &mut [u8],
-    bldg: &[u8],
-    node_anchors: &BTreeMap<String, [f32; 2]>,
-) {
-    for hwy in &doc.highways {
-        for pair in hwy.points.windows(2) {
-            let p0 = world_to_grid(pair[0][0], pair[0][1]);
-            let p1 = world_to_grid(pair[1][0], pair[1][1]);
-            draw_road_segment(p0, p1, cell_owner, terrain, road, bldg);
-        }
-    }
-    for (nid, nd) in &doc.nodes {
-        if nd.dungeon
-            || nd.indoor
-            || !matches!(nd.kind.as_str(), "gate" | "village_gate" | "road" | "plaza")
-        {
-            continue;
-        }
-        let Some(&a0) = node_anchors.get(nid) else {
-            continue;
-        };
-        let p0 = (a0[0].floor() as isize, a0[1].floor() as isize);
-        for ex in &nd.exits {
-            if let Some(dst) = doc.nodes.get(&ex.to)
-                && !dst.dungeon
-                && !dst.indoor
-                && dst.kind != "dock"
-                && let Some(&a1) = node_anchors.get(&ex.to)
-            {
-                let p1 = (a1[0].floor() as isize, a1[1].floor() as isize);
-                let dist2 = (p1.0 - p0.0).pow(2) + (p1.1 - p0.1).pow(2);
-                if dist2 <= 900 {
-                    draw_road_segment(p0, p1, cell_owner, terrain, road, bldg);
-                }
             }
         }
     }

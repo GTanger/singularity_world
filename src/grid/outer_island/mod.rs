@@ -27,6 +27,7 @@ pub mod harbor_lineage;
 pub mod household_economy;
 pub mod island_substrate;
 pub mod island_substrate_pack;
+pub mod island_substrate_paths;
 #[cfg(test)]
 mod island_substrate_tests;
 pub mod island_substrate_towns;
@@ -39,6 +40,7 @@ mod live_commodities_tests;
 pub mod live_land;
 #[cfg(test)]
 mod live_land_tests;
+pub mod live_land_tiles;
 pub mod live_lifecycle;
 pub mod live_shifts;
 pub mod live_tide;
@@ -61,6 +63,8 @@ pub mod map_memory;
 pub mod map_memory_pack;
 #[cfg(test)]
 mod map_memory_tests;
+pub mod map_walk;
+pub mod map_walk_plan;
 pub mod mesh_expedition;
 pub mod mind;
 pub mod movement;

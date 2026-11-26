@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use super::types::{
     ContractRecord, CustomForgeOrder, DockCargoOrder, DroppedLootBag, IslandWorldDelta,
-    LedgerEntry, PickupRecord, TransitVehicleState,
+    LedgerEntry, PickupRecord, TileDiffEntry, TransitVehicleState,
 };
 
 pub const CREATE_NORMALIZED_ISLAND_SCHEMA: &str = "
@@ -111,6 +111,8 @@ pub(crate) struct WorldExtrasBlob {
     pub(crate) dock_cargo_piles: BTreeMap<String, Vec<DockCargoOrder>>,
     pub(crate) forge_orders: BTreeMap<String, Vec<CustomForgeOrder>>,
     pub(crate) survivor_letters_delivered: std::collections::BTreeSet<String>,
+    #[serde(default)]
+    pub(crate) tile_diffs: BTreeMap<u32, TileDiffEntry>,
     pub(crate) live_land: super::live_land::LiveLandState,
     pub(crate) live_commodities: super::live_commodities::LiveCommoditiesState,
     pub(crate) goblin_hoard_copper: i64,

@@ -444,6 +444,15 @@ fn farmland_reclaim_fallow_regression_vacant_ruin_and_commit_roundtrip() {
     let aid = delta.resolve_controller("settler_qa").unwrap();
     let target_cell = 4432u32;
     delta.relocate_actor(&aid, "oi:cell4432:0", target_cell, true);
+    if let Some(&[ax, ay]) = super::island_substrate::compiled_island_substrate(&doc)
+        .node_anchors
+        .get("oi:cell4432:0")
+        && let Some(a) = delta.actors.get_mut(&aid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+        a.map_pos_seeded = true;
+    }
     {
         let a = delta.actors.get_mut(&aid).unwrap();
         a.mind.ltm.known_cells.insert(target_cell);
@@ -495,6 +504,10 @@ fn farmland_reclaim_fallow_regression_vacant_ruin_and_commit_roundtrip() {
         after_reclaim_farms > base_farms,
         "reclaimed_plots must render visible TERRAIN_FARM blocks ({after_reclaim_farms} > {base_farms})"
     );
+    assert!(
+        delta.tile_diffs.values().any(|e| e.terrain == TERRAIN_FARM),
+        "reclaim_farmland must persist real TERRAIN_FARM entries in delta.tile_diffs"
+    );
 
     // 連續 26 天不耕作：田壟逐步退化，且白鷗港繩索巷 9 號空屋逐漸破敗傾頹成斷牆
     let rope_h9 = "oi:white_gull_harbor:rope_ln:h9";
@@ -526,6 +539,12 @@ fn farmland_reclaim_fallow_regression_vacant_ruin_and_commit_roundtrip() {
 
     // 親赴繩索巷現場見證：個人輿圖隨即呈現 BLDG_RUIN_WALL！
     delta.relocate_actor(&aid, "oi:white_gull_harbor:rope_ln", 4616, true);
+    if let Some(&[ax, ay]) = sub_ref.node_anchors.get("oi:white_gull_harbor:rope_ln")
+        && let Some(a) = delta.actors.get_mut(&aid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+    }
     let ruin_pack =
         build_viewer_substrate_json(&doc, &delta, delta.actors.get(&aid).unwrap(), &clk_end);
     let ruin_ov = decode_rle_b64(ruin_pack["overlay_rle_b64"].as_str().unwrap());
@@ -539,6 +558,12 @@ fn farmland_reclaim_fallow_regression_vacant_ruin_and_commit_roundtrip() {
     // 砍伐原木並修繕空屋：立即恢復 BLDG_VACANT_ROOF！
     delta.actors.get_mut(&aid).unwrap().fatigue = 0;
     delta.relocate_actor(&aid, "oi:cell4432:0", target_cell, true);
+    if let Some(&[ax, ay]) = sub_ref.node_anchors.get("oi:cell4432:0")
+        && let Some(a) = delta.actors.get_mut(&aid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+    }
     apply_world_action(
         &doc,
         &mut delta,
@@ -549,6 +574,12 @@ fn farmland_reclaim_fallow_regression_vacant_ruin_and_commit_roundtrip() {
     )
     .expect("fell timber for repair");
     delta.relocate_actor(&aid, rope_h9, 4616, true);
+    if let Some(&[ax, ay]) = sub_ref.node_anchors.get(rope_h9)
+        && let Some(a) = delta.actors.get_mut(&aid)
+    {
+        a.map_gx = ax;
+        a.map_gy = ay;
+    }
     apply_world_action(
         &doc,
         &mut delta,

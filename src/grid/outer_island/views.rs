@@ -645,6 +645,25 @@ pub fn build_filtered_map_json(
         max_y = 712.0;
     }
 
+    let mut full_min_x = f64::INFINITY;
+    let mut full_min_y = f64::INFINITY;
+    let mut full_max_x = f64::NEG_INFINITY;
+    let mut full_max_y = f64::NEG_INFINITY;
+    for cell in doc.cells.values() {
+        for &[x, y] in &cell.polygon {
+            full_min_x = full_min_x.min(x);
+            full_min_y = full_min_y.min(y);
+            full_max_x = full_max_x.max(x);
+            full_max_y = full_max_y.max(y);
+        }
+    }
+    if !full_min_x.is_finite() {
+        full_min_x = min_x;
+        full_min_y = min_y;
+        full_max_x = max_x;
+        full_max_y = max_y;
+    }
+
     let substrate = super::island_substrate::build_viewer_substrate_json(doc, delta, viewer, clock);
 
     json!({
@@ -656,7 +675,7 @@ pub fn build_filtered_map_json(
         "current_node_id": cur_node.id,
         "current_node_name": cur_node.name,
         "in_dungeon": cur_node.dungeon,
-        "camera_bounds": [min_x - 6.0, min_y - 6.0, max_x + 6.0, max_y + 6.0],
+        "camera_bounds": [full_min_x - 3.0, full_min_y - 3.0, full_max_x + 3.0, full_max_y + 3.0],
         "visited_cells": visited_cells_out,
         "outline_cells": outline_polygons,
         "highways": visible_highways,

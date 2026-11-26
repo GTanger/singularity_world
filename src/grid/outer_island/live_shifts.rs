@@ -195,6 +195,8 @@ pub fn wake_player_on_explicit_input(delta: &mut IslandWorldDelta, pid: &str, no
             .is_some_and(|it| matches!(it.kind.as_str(), "shelter_hearth" | "go_home_sleep"))
         {
             a.mind.stm.intentions.pop_back();
+            a.walk_waypoints.clear();
+            a.walk_goal_enter_node = None;
             a.mark_mutated();
         }
     }
@@ -208,7 +210,7 @@ pub fn assign_offline_shelter_route_if_needed(
     abs_bell: i64,
 ) {
     let resolved = delta.actors.get(aid).and_then(|a| {
-        if a.route_plan.is_empty() {
+        if a.route_plan.is_empty() && a.walk_waypoints.is_empty() {
             resolve_offline_player_night_target(doc, delta, a).and_then(|(k, dst, r)| {
                 plan_safe_offline_shelter_path(doc, delta, a, &dst).map(|p| (k, dst, r, p))
             })

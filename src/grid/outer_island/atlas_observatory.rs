@@ -79,7 +79,8 @@ fn classify_resident_activity(doc: &WorldStaticDoc, a: &UnifiedMindBody) -> &'st
     let in_dng = doc.nodes.get(&a.node_id).is_some_and(|n| n.dungeon);
     if in_dng || a.active_skirmish.is_some() {
         "pit_or_combat"
-    } else if !a.route_plan.is_empty() || a.active_transit.is_some() {
+    } else if !a.route_plan.is_empty() || !a.walk_waypoints.is_empty() || a.active_transit.is_some()
+    {
         "moving"
     } else if doc
         .nodes

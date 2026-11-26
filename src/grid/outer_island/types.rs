@@ -366,6 +366,16 @@ pub struct UnifiedMindBody {
     pub active_transit: Option<TransitState>,
     #[serde(default)]
     pub ongoing_activity: Option<OngoingActivityState>,
+    #[serde(default)]
+    pub map_pos_seeded: bool,
+    #[serde(default)]
+    pub map_gx: f32,
+    #[serde(default)]
+    pub map_gy: f32,
+    #[serde(default)]
+    pub walk_waypoints: VecDeque<[u16; 2]>,
+    #[serde(default)]
+    pub walk_goal_enter_node: Option<String>,
     pub last_step_unix_ms: u64,
     pub last_talk_unix_ms: u64,
     pub last_active_unix: i64,
@@ -435,6 +445,11 @@ impl Default for UnifiedMindBody {
             active_skirmish: None,
             active_transit: None,
             ongoing_activity: None,
+            map_pos_seeded: false,
+            map_gx: 0.0,
+            map_gy: 0.0,
+            walk_waypoints: VecDeque::new(),
+            walk_goal_enter_node: None,
             last_step_unix_ms: 0,
             last_talk_unix_ms: 0,
             last_active_unix: 0,
@@ -534,6 +549,15 @@ pub struct LedgerEntry {
     pub summary_zh: String,
 }
 
+/// 單一地格（`pos = gy * 860 + gx`）之動態地貌覆寫紀錄，持久化於世界快照並隨時間再生或荒廢。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TileDiffEntry {
+    pub terrain: u8,
+    pub road: u8,
+    pub bldg: u8,
+    pub changed_day: i64,
+}
+
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct IslandWorldDelta {
@@ -541,6 +565,8 @@ pub struct IslandWorldDelta {
     pub last_settled_bell: i64,
     #[serde(skip)]
     pub last_stagger_minute: i64,
+    #[serde(skip)]
+    pub last_walk_tick_ms: u64,
     pub genesis_seeded: bool,
     pub genesis_total_copper: i64,
     pub municipal_treasury_copper: i64,
@@ -568,6 +594,8 @@ pub struct IslandWorldDelta {
     pub dock_cargo_piles: BTreeMap<String, Vec<DockCargoOrder>>,
     pub forge_orders: BTreeMap<String, Vec<CustomForgeOrder>>,
     pub survivor_letters_delivered: BTreeSet<String>,
+    #[serde(default)]
+    pub tile_diffs: BTreeMap<u32, TileDiffEntry>,
     pub live_land: super::live_land::LiveLandState,
     pub live_commodities: super::live_commodities::LiveCommoditiesState,
     pub live_wilds: super::live_wilds::LiveWildsState,
@@ -813,6 +841,7 @@ impl IslandWorldDelta {
         }
         if let Some(a) = self.actors.get_mut(&aid) {
             a.node_id = new_node_id.to_string();
+            a.map_pos_seeded = false;
             a.record_step_visit(new_node_id, new_cell_id, knows_state);
             a.mark_mutated();
         }

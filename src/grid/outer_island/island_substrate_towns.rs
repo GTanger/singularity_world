@@ -359,6 +359,12 @@ fn place_town_landmarks_and_alleys(
                         .entry(nid.to_string())
                         .or_default()
                         .push(pos);
+                    if lidx == 2 {
+                        house_footprint_cells
+                            .entry(format!("oi:{slug}:inn_upstairs"))
+                            .or_default()
+                            .push(pos);
+                    }
                 }
             }
         }

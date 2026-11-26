@@ -371,6 +371,7 @@ pub fn apply_setup_origin(
     push_breath(entry, arrival_line);
     push_breath(entry, intro.clone());
     super::map_memory::seed_actor_initial_map_witness(doc, delta, &canonical_aid, clock.game_days);
+    super::map_walk::seed_missing_actor_grid_positions_once(doc, delta);
     Ok(intro)
 }
 

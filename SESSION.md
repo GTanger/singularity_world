@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-26
-- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖；「讓世界自己運轉」第一刀四季水文活地景、第二刀糧煤木鐵真存量供需報價、第三刀撤除櫃台保母鎖與自主轉行救災決策、第四刀荒野部族劫掠屯贓／破屋舊巢佔據異變／居民生死繼承已全數上線並通過 `69/69` 單元測試與雙端真機視覺驗收）
+- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖，前端版號 `v=20261126r6`；廢除黑霧遮罩與 859 節點跳棋瞬移、玩家與全島居民同構 `860×930` 逐格連續步行、持久化逐格 `tile_diffs` 與靠近顯現名牌防壓字已全數上線，通過 `74/74` `outer_island` 單元測試、規格審查與桌機＋`Pixel 9 Pro XL` 真機手操驗收）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -77,6 +77,9 @@
 25. **2026-11-26 地圖與世界機制合一第一刀「旅人親見記憶輿圖與點圖導航」落地（`v=20261126r3`）**：
     - 新增 `src/grid/outer_island/{map_memory,map_memory_pack,map_memory_tests}.rs` 與接線 `mind.rs`/`views.rs`/`movement.rs`/`engine.rs`/`actions.rs`/`live_tide.rs`/`desire_effects.rs`：廢除玩家端衛星雷達與整塊地塊擦邊秒開，改以個人緊湊親見記憶快照（`ActorMapMemory`）與節點 Chamfer 局部視距揭霧（擦邊 `:skirt_*`／`:approach_*` 遮罩未入核心村舍）、獨立 `？傳聞` 問號批註（親臨現場自動消解、不偷改底圖），並於 `movement.rs` 拆除同城 5 步繞閘捷徑，改由 `apply_memory_map_travel` 沿本人 `known_nodes` 逐跳過閘並在遭遇戰／斷橋／疫氣變化當場停步；`/world_atlas` 維持 100% 無迷霧即時實況。
     - 前端 `web/island-parchment-map.js`、`web/island-ui.js` 與快取升版 `v=20261126r3`：全縮放層級（含 `z >= 6.4`）保留鄰接未知虛線輪廓 `outline_cells`、繪製赭黃虛線 `？傳聞` 籤條、全已知地標與 2.5D 屋頂範圍直點導航，以及支巷各戶門牌直落屋頂小徽章消除 8 戶重疊吃字；後續第二至四刀依審辯室 `3853189a` 定案順序銜接。
+26. **2026-11-26 第一階段「廢除黑霧遮罩與 860×930 全員同構逐格連續行走」落地驗收（`v=20261126r6`，`74/74` 測試通過）**：
+    - **零黑霧底圖與真實 `delta.tile_diffs` 覆寫**：全面拔除 `TERRAIN_FOG`、`115/560` Chamfer 圓洞、前端 `0.62 fogFill` 灰黑罩與雜湊地形模板；新增 `live_land_tiles.rs` 與持久化 `delta.tile_diffs`（現場伐木／開墾就實地站立座標改寫真實樹格／田格、再生休耕即刪），`ActorMapMemory` 嚴守 `<= 18` 格實地親見才同步斷橋、漫水與 `witnessed_tile_diffs`。
+    - **全員 `860×930` 逐格連續步行與靠近顯現名牌**：新增 `island_substrate_paths.rs` 連通全島 `462` 個戶外節點陸橋與 `391` 處可達門前踏階；新增 `map_walk.rs`＋`map_walk_plan.rs` 統一玩家與 `994` 名居民之 `(map_gx, map_gy)`、加權 A\* 防斜切尋路與 `60fps` 前端插值同步；`nearby_actors` 僅回傳 `<= 14` 格戶外人物、`proximity_capsules` 嚴守 `<= 9.5` 格並依近鄰距離排序防民宅洗版，`island-parchment-map.js` 以 `placed` 淨空保護消除壓字並打通城市名牌就地直行；下一步緊接第二階段：全面拔除 `live_agency.rs` 免費發工具（`:601`）與各檔職業／地城硬鎖、重編 29 座鄉野聚落格局與沿路動態註冊 `place_registry`。
 
 ## 二、 關鍵檔案與正典錨點
 

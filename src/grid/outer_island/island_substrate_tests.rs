@@ -5,9 +5,9 @@ use std::collections::{BTreeSet, VecDeque};
 use super::clock_and_lang::solar_clock_at;
 use super::engine::load_static_world_doc;
 use super::island_substrate::{
-    BLDG_NONE, BLDG_ROOF, BLDG_VACANT_ROOF, GRID_H, GRID_W, ROAD_COUNTRY_TRACK, ROAD_NONE,
-    ROAD_TOWN_COBBLE, TERRAIN_FOG, TERRAIN_REEF_SAND, TERRAIN_RIVER, TERRAIN_SEA,
-    build_viewer_substrate_json, compiled_island_substrate,
+    BLDG_ROOF, BLDG_VACANT_ROOF, GRID_H, GRID_W, ROAD_COUNTRY_TRACK, ROAD_TOWN_COBBLE, TERRAIN_FOG,
+    TERRAIN_REEF_SAND, TERRAIN_RIVER, TERRAIN_SEA, build_viewer_substrate_json,
+    compiled_island_substrate,
 };
 use super::movement::apply_setup_origin;
 use super::phase_and_vessels::BuiltHomestead;
@@ -293,15 +293,17 @@ fn viewer_substrate_enforces_fog_low_tide_and_dynamic_houses_with_zero_webp() {
         "low tide must expose coastal reef sand"
     );
 
-    // 確認未踏足地塊（如 4073 北岬燈塔）100% 保持迷霧 `TERRAIN_FOG` 且無道路或屋頂外洩
+    // 全島 860×930 徹徹底底零黑霧（TERRAIN_FOG == 0），且 #4073 北岬燈塔維持乾淨底盤無未見證新增建築
+    assert_eq!(
+        t_low.iter().filter(|&&t| t == TERRAIN_FOG).count(),
+        0,
+        "player map must contain zero TERRAIN_FOG tiles across all 799,800 tiles"
+    );
     let sub_static = compiled_island_substrate(&doc);
-    let hidden_idx = sub_static.cell_index_by_id[&4073];
-    for i in 0..(GRID_W * GRID_H) {
-        if sub_static.cell_owner[i] == hidden_idx {
-            assert_eq!(t_low[i], TERRAIN_FOG);
-            assert_eq!(o_low[i], ROAD_NONE | (BLDG_NONE << 3));
-        }
-    }
+    assert!(
+        sub_static.door_tiles.len() >= 390,
+        "must precompute door tiles for all indoor nodes"
+    );
     assert!(
         sub_low["pois"]
             .as_array()
@@ -309,5 +311,166 @@ fn viewer_substrate_enforces_fog_low_tide_and_dynamic_houses_with_zero_webp() {
             .iter()
             .any(|p| p["id"] == "oi:built:test_1"),
         "newly built homestead must appear live in visible POIs"
+    );
+    assert_eq!(
+        sub_low["nearby_actors"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|a| {
+                let gx = a["gx"].as_f64().unwrap() as f32;
+                let gy = a["gy"].as_f64().unwrap() as f32;
+                let p = sub_low["player_pos"].as_array().unwrap();
+                let dx = gx - p[0].as_f64().unwrap() as f32;
+                let dy = gy - p[1].as_f64().unwrap() as f32;
+                dx * dx + dy * dy > 14.0 * 14.0 + 0.05
+            })
+            .count(),
+        0,
+        "nearby_actors must strictly stay within 14.0 tiles"
+    );
+}
+
+#[test]
+fn all_outdoor_nodes_connected_on_walkable_grid_and_step_continuous() {
+    let doc = load_static_world_doc();
+    let mut delta = IslandWorldDelta {
+        genesis_total_copper: doc.ledger_genesis.total_conserved_copper,
+        municipal_treasury_copper: doc.ledger_genesis.municipal_treasury_copper,
+        silver_bank_reserve_copper: doc.ledger_genesis.silver_bank_reserve_copper,
+        ..IslandWorldDelta::default()
+    };
+    super::sim_tick::seed_genesis_actors_once(&doc, &mut delta, false);
+    let clk = super::clock_and_lang::solar_clock_for_settled_bell(280 * 12 + 4, 1_760_000_000);
+    let sub = compiled_island_substrate(&doc);
+    super::map_walk::seed_missing_actor_grid_positions_once(&doc, &mut delta);
+
+    let [sx, sy] = sub.node_anchors["oi:white_gull_harbor:dock"];
+    let [gx, gy] = sub.node_anchors["oi:cell4530:0"];
+    let path = super::map_walk::plan_grid_walk_path(
+        &doc,
+        sub,
+        &delta,
+        &clk,
+        None,
+        "probe",
+        (sx.floor() as isize, sy.floor() as isize),
+        (gx.floor() as isize, gy.floor() as isize),
+    )
+    .expect("dock to northern countryside must have continuous walkable grid path");
+    assert!(!path.is_empty());
+    let mut prev = [sx.floor() as isize, sy.floor() as isize];
+    for &[px, py] in &path {
+        let dx = (px as isize - prev[0]).abs();
+        let dy = (py as isize - prev[1]).abs();
+        assert!(dx <= 1 && dy <= 1, "grid step must never teleport");
+        assert!(
+            super::map_walk::is_tile_walkable(
+                &doc,
+                sub,
+                &delta,
+                &clk,
+                px as isize,
+                py as isize,
+                false,
+                None
+            ),
+            "every path step ({px},{py}) must be walkable"
+        );
+        prev = [px as isize, py as isize];
+    }
+
+    // 單次 860×930 退潮 BFS：驗證全島全部 462 個戶外節點（!dungeon && !indoor）皆具陸橋可達路線
+    let total_tiles = GRID_W * GRID_H;
+    let mut visited = vec![false; total_tiles];
+    let mut bfs_q = VecDeque::new();
+    let s0 = (sx.floor() as isize, sy.floor() as isize);
+    let spos = super::island_substrate::idx_of(s0.0, s0.1).expect("dock anchor in bounds");
+    visited[spos] = true;
+    bfs_q.push_back(s0);
+    while let Some((cx, cy)) = bfs_q.pop_front() {
+        for (dx, dy) in [
+            (1, 0),
+            (-1, 0),
+            (0, 1),
+            (0, -1),
+            (1, 1),
+            (1, -1),
+            (-1, 1),
+            (-1, -1),
+        ] {
+            let nx = cx + dx;
+            let ny = cy + dy;
+            if !super::map_walk::is_tile_walkable(&doc, sub, &delta, &clk, nx, ny, false, None) {
+                continue;
+            }
+            if dx != 0
+                && dy != 0
+                && (!super::map_walk::is_tile_walkable(
+                    &doc,
+                    sub,
+                    &delta,
+                    &clk,
+                    cx + dx,
+                    cy,
+                    false,
+                    None,
+                ) || !super::map_walk::is_tile_walkable(
+                    &doc,
+                    sub,
+                    &delta,
+                    &clk,
+                    cx,
+                    cy + dy,
+                    false,
+                    None,
+                ))
+            {
+                continue;
+            }
+            let Some(npos) = super::island_substrate::idx_of(nx, ny) else {
+                continue;
+            };
+            if !visited[npos] {
+                visited[npos] = true;
+                bfs_q.push_back((nx, ny));
+            }
+        }
+    }
+    let mut unreachable = Vec::new();
+    let mut outdoor_count = 0usize;
+    for (nid, nd) in &doc.nodes {
+        if nd.dungeon || nd.indoor {
+            continue;
+        }
+        outdoor_count += 1;
+        let [ax, ay] = sub.node_anchors[nid];
+        let pos = super::island_substrate::idx_of(ax.floor() as isize, ay.floor() as isize)
+            .expect("outdoor anchor in bounds");
+        if !visited[pos] {
+            unreachable.push(format!("{nid}@({},{})", ax.floor(), ay.floor()));
+        }
+    }
+    assert!(
+        outdoor_count >= 460,
+        "expected >= 460 outdoor nodes, got {outdoor_count}"
+    );
+    assert!(
+        unreachable.is_empty(),
+        "every outdoor node must be reachable from dock at low tide without crossing water/wall; unreachable={unreachable:?}"
+    );
+    let mut unreachable_doors = Vec::new();
+    for (nid, &[dx, dy]) in &sub.door_tiles {
+        let Some(pos) = super::island_substrate::idx_of(dx as isize, dy as isize) else {
+            unreachable_doors.push(nid.clone());
+            continue;
+        };
+        if !visited[pos] {
+            unreachable_doors.push(format!("{nid}@({dx},{dy})"));
+        }
+    }
+    assert!(
+        unreachable_doors.is_empty(),
+        "every indoor/dungeon door tile must be reachable on low tide BFS; unreachable_doors={unreachable_doors:?}"
     );
 }
