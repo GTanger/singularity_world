@@ -40,6 +40,7 @@
 *   **雙路驗證**：第一假設（Bug 原因）確立後，必須主動驗證「第二路徑」存在的可能性。
 *   **大檔監控**：主動監控單檔體積（Rust >800, Web >500），超標即主動提出拆分。
 *   **手機版視覺驗收必須使用實體手機（`tra-phone-web-qa`）**：2026-11-05 使用者定案：「奇點視覺驗收，手機版必須使用手機驗收。」凡驗收《奇點世界》手機版畫面（含主畫面 `#app-grid`、底部三欄 `#sw-dock-triptych`、浮動框、行旅足跡輿圖與 `/world_atlas`），只要電視後木架備用手機（`Pixel 9 Pro XL` `46051FDAS00CD5` / `46141FDAS001C8` 或 `vivo X80`）在線，必須透過 `~/.local/bin/tra-phone-web-qa`（或 `tra-sw-gate --phone-qa`）驅動實體手機上的 Android Chrome 渲染、實際登入點擊並讀取真機截圖（`/dev/shm/sw-phone-qa-*.png`）親自目視檢驗，嚴禁以桌面或筆電瀏覽器縮放視口（如 `390×844` / `480×1050` emulate）替代真機驗收。
+*   **里程碑驗收後主動執行 `checkpoint`**：每完成一刀或階段里程碑並通過單元測試、`tra-sw-gate --deploy` 與雙端真機視覺驗收後，代理必須主動更新 `SESSION.md`（嚴守 `<= 200` 行預算）並執行 `/home/tanger/.local/bin/tra-sw-gate --checkpoint '<訊息>'` 完成 Git 提交與 PostgreSQL／Bundle 雙重熱備份，嚴禁留置髒工作樹或停下反問使用者是否要存檔。
 
 ### 5. 交互元協議 (Meta-Protocol)
 *   **文字非權威**：對待既有文件與指令的姿態是「反問」與「質疑」，而非盲目吸收（拒絕「吃屎」現象）。

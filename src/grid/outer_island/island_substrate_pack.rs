@@ -5,9 +5,10 @@ use serde_json::{Value, json};
 use super::cell_resources::is_low_tide_window;
 use super::clock_and_lang::SolarClockSnapshot;
 use super::island_substrate::{
-    BLDG_NONE, BLDG_ROOF, BLDG_RUIN_WALL, GRID_H, GRID_SCALE, GRID_W, ROAD_NONE, TERRAIN_FARM,
-    TERRAIN_FOG, TERRAIN_LAND, TERRAIN_REEF_SAND, TERRAIN_TREE, WX0, WY0,
-    compiled_island_substrate, idx_of, noise01, world_to_grid_f32,
+    BLDG_NONE, BLDG_ROOF, BLDG_RUIN_WALL, GRID_H, GRID_SCALE, GRID_W, ROAD_BRIDGE_OR_PIER,
+    ROAD_NONE, ROAD_STONE_WALL, ROAD_TOWN_COBBLE, TERRAIN_FARM, TERRAIN_FOG, TERRAIN_LAND,
+    TERRAIN_REEF_SAND, TERRAIN_RIVER, TERRAIN_TREE, WX0, WY0, compiled_island_substrate, idx_of,
+    noise01, world_to_grid_f32,
 };
 use super::types::{IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
 
@@ -73,6 +74,11 @@ pub fn build_viewer_substrate_json(
     let mut cell_reef = vec![false; sub.cell_ids.len()];
     let mut cell_stock_pct = vec![100u8; sub.cell_ids.len()];
     let mut cell_plague = vec![false; sub.cell_ids.len()];
+    let mut cell_flood = vec![0u8; sub.cell_ids.len()];
+    let mut cell_bridge_down = vec![false; sub.cell_ids.len()];
+    let mut cell_forest_pct = vec![100u8; sub.cell_ids.len()];
+    let mut cell_reclaimed = vec![0u8; sub.cell_ids.len()];
+    let mut cell_fallow = vec![0u16; sub.cell_ids.len()];
 
     for (idx, &cid) in sub.cell_ids.iter().enumerate() {
         cell_known[idx] = known_cells.contains(&cid);
@@ -83,6 +89,23 @@ pub fn build_viewer_substrate_json(
                 let cur = delta.cell_stocks.get(&cid).copied().unwrap_or(c.stock_cap);
                 cell_stock_pct[idx] =
                     ((u32::from(cur) * 100) / u32::from(c.stock_cap)).min(100) as u8;
+            }
+        }
+        if let Some(cl) = delta.live_land.cells.get(&cid) {
+            cell_flood[idx] = cl.flood_level;
+            cell_bridge_down[idx] = cl.has_river_crossing && cl.bridge_integrity == 0;
+            cell_forest_pct[idx] = ((u32::from(cl.forest_density) * 100) / 85).min(100) as u8;
+            cell_reclaimed[idx] = cl.reclaimed_plots;
+            cell_fallow[idx] = cl.fallow_days;
+            if cl.plague_miasmas >= 30
+                && doc
+                    .cells
+                    .get(&cid.to_string())
+                    .is_some_and(|c| c.kind == "plague_ruin")
+            {
+                cell_plague[idx] = true;
+            } else if cl.plague_miasmas < 30 && delta.live_land.seeded {
+                cell_plague[idx] = false;
             }
         }
     }
@@ -168,8 +191,35 @@ pub fn build_viewer_substrate_json(
                 continue;
             }
             let mut t = sub.base_terrain[pos];
-            let r = sub.base_road[pos];
+            let mut r = sub.base_road[pos];
             let mut b = sub.base_bldg[pos];
+
+            if cell_flood[oidx] >= 1
+                && t == TERRAIN_LAND
+                && b == BLDG_NONE
+                && r != ROAD_STONE_WALL
+                && r != ROAD_TOWN_COBBLE
+            {
+                let rad = isize::from(cell_flood[oidx]).min(2);
+                let mut near_riv = false;
+                'flood_chk: for dy in -rad..=rad {
+                    for dx in -rad..=rad {
+                        if dx * dx + dy * dy <= rad * rad
+                            && let Some(npos) = idx_of(x as isize + dx, y as isize + dy)
+                            && sub.base_terrain[npos] == TERRAIN_RIVER
+                        {
+                            near_riv = true;
+                            break 'flood_chk;
+                        }
+                    }
+                }
+                if near_riv {
+                    t = TERRAIN_RIVER;
+                }
+            }
+            if cell_bridge_down[oidx] && t == TERRAIN_RIVER && r == ROAD_BRIDGE_OR_PIER {
+                r = ROAD_NONE;
+            }
 
             if low_tide
                 && t == TERRAIN_LAND
@@ -180,10 +230,31 @@ pub fn build_viewer_substrate_json(
             {
                 t = TERRAIN_REEF_SAND;
             }
-            let pct = cell_stock_pct[oidx];
+            let pct = if t == TERRAIN_TREE {
+                (u32::from(cell_stock_pct[oidx]) * u32::from(cell_forest_pct[oidx])) / 100
+            } else {
+                u32::from(cell_stock_pct[oidx])
+            };
             if (t == TERRAIN_TREE || t == TERRAIN_FARM) && pct < 95 {
                 let h = ((x as u32).wrapping_mul(73) ^ (y as u32).wrapping_mul(179)) % 100;
-                if h >= u32::from(pct) {
+                if h >= pct {
+                    t = TERRAIN_LAND;
+                }
+            }
+            if t == TERRAIN_LAND
+                && cell_reclaimed[oidx] > 0
+                && b == BLDG_NONE
+                && r == ROAD_NONE
+                && sub.sea_dist_by_cell_edge[pos] >= 2
+            {
+                let patch_slot = ((x / 5).wrapping_mul(31) ^ (y / 5).wrapping_mul(97)) % 12;
+                if patch_slot < usize::from(cell_reclaimed[oidx]) {
+                    t = TERRAIN_FARM;
+                }
+            } else if t == TERRAIN_FARM && cell_fallow[oidx] >= 18 {
+                let reg_pct = ((cell_fallow[oidx] - 15) * 8).min(80) as usize;
+                let rh = ((x as usize).wrapping_mul(53) ^ (y as usize).wrapping_mul(131)) % 100;
+                if rh < reg_pct {
                     t = TERRAIN_LAND;
                 }
             }
@@ -196,6 +267,18 @@ pub fn build_viewer_substrate_json(
 
             terrain[pos] = t;
             overlay[pos] = r | (b << 3);
+        }
+    }
+
+    for (hnid, cells) in &sub.house_footprint_cells {
+        if super::live_land::house_is_ruined(delta, hnid) {
+            for &pos in cells {
+                let owner = sub.cell_owner[pos];
+                if owner != u16::MAX && cell_known[owner as usize] {
+                    let r = overlay[pos] & 0x07;
+                    overlay[pos] = r | (BLDG_RUIN_WALL << 3);
+                }
+            }
         }
     }
 

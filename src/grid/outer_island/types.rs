@@ -567,6 +567,8 @@ pub struct IslandWorldDelta {
     pub dock_cargo_piles: BTreeMap<String, Vec<DockCargoOrder>>,
     pub forge_orders: BTreeMap<String, Vec<CustomForgeOrder>>,
     pub survivor_letters_delivered: BTreeSet<String>,
+    pub live_land: super::live_land::LiveLandState,
+    pub live_commodities: super::live_commodities::LiveCommoditiesState,
     #[serde(skip)]
     pub controller_to_actor: BTreeMap<String, String>,
     #[serde(skip)]

@@ -170,8 +170,16 @@ pub fn apply_world_action(
             let Some(ref sid) = smith_id else {
                 return Err("石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊。".to_string());
             };
+            if super::live_commodities::is_smithy_forge_cold(delta, &node_id) {
+                return Err(
+                    "鍛爐裡的精煤與木炭已燒盡熄火，師傅正高價收購北林精煤、木炭或乾木重開爐火！"
+                        .to_string(),
+                );
+            }
             check_quote(5)?;
             super::live_tide::check_forge_shift_eligible(delta, clock, &aid)?;
+            let used_fuel =
+                super::live_commodities::consume_smithy_fuel_one(delta, Some(sid), &node_id);
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
@@ -181,6 +189,9 @@ pub fn apply_world_action(
                 5,
                 "鐵匠鋪拉風箱工錢".to_string(),
             ) {
+                if let Some((holder, item)) = used_fuel {
+                    super::live_commodities::restore_shop_stock_one(delta, &holder, &node_id, item);
+                }
                 return Err("鐵匠鋪手頭零錢暫時周轉不開。".to_string());
             }
             super::live_tide::record_forge_shift_claimed(delta, clock, &aid);
@@ -211,25 +222,57 @@ pub fn apply_world_action(
                     "石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊，暫無法開爐修刃。".to_string()
                 );
             };
-            check_quote(4)?;
+            if super::live_commodities::is_smithy_forge_cold(delta, &node_id) {
+                return Err(
+                    "鍛爐裡的精煤與木炭已燒盡熄火，師傅正高價收購北林精煤、木炭或乾木重開爐火！"
+                        .to_string(),
+                );
+            }
+            let price = super::live_commodities::quote_weapon_repair_copper(delta, &node_id);
+            check_quote(price)?;
+            let need_iron = delta
+                .actors
+                .get(&aid)
+                .is_some_and(|a| a.bound_weapon.wear_stage >= 2);
+            let used_fuel =
+                super::live_commodities::consume_smithy_fuel_one(delta, Some(sid), &node_id);
+            let used_iron = if need_iron {
+                super::live_commodities::consume_shop_stock_one(
+                    delta,
+                    Some(sid),
+                    &node_id,
+                    &["iron_ore"],
+                )
+            } else {
+                None
+            };
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "repair_weapon",
                 &aid,
                 sid,
-                4,
+                price,
                 "鐵匠鋪修補兵刃工資".to_string(),
             ) {
-                return Err("修補隨身器物需要 4 枚銅幣，你懷裡銅板還不夠。".to_string());
+                if let Some((holder, item)) = used_fuel {
+                    super::live_commodities::restore_shop_stock_one(delta, &holder, &node_id, item);
+                }
+                if let Some((holder, item)) = used_iron {
+                    super::live_commodities::restore_shop_stock_one(delta, &holder, &node_id, item);
+                }
+                return Err(format!(
+                    "修補隨身器物需要 {} 枚銅幣，你懷裡銅板還不夠。",
+                    price
+                ));
             }
             record_mutual_trade_evidence(delta, clock.game_days, &aid, sid, "鐵匠鋪修補兵刃工資");
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             a.bound_weapon.wear_stage = 0;
             a.mark_mutated();
             let msg = format!(
-                "匠師接過你的【{}】燒紅校直、重新加固木柄，收下 4 枚銅幣，錘刃恢復完好如初。",
-                a.bound_weapon.name
+                "匠師添炭開爐接過你的【{}】燒紅校直、重新加固木柄，收下 {} 枚銅幣，錘刃恢復完好如初。",
+                a.bound_weapon.name, price
             );
             push_breath(a, msg.clone());
             Ok(msg)
@@ -246,7 +289,14 @@ pub fn apply_world_action(
                     "石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊，暫無法鑲刻原石。".to_string()
                 );
             };
-            check_quote(6)?;
+            if super::live_commodities::is_smithy_forge_cold(delta, &node_id) {
+                return Err(
+                    "鍛爐裡的精煤與木炭已燒盡熄火，師傅正高價收購北林精煤、木炭或乾木重開爐火！"
+                        .to_string(),
+                );
+            }
+            let price = super::live_commodities::quote_engrave_rune_copper(delta, &node_id);
+            check_quote(price)?;
             let (has_stone, already_runed, pname, wname) = {
                 let a = delta.actors.get(&aid).ok_or("找不到旅人行蹤")?;
                 (
@@ -264,16 +314,21 @@ pub fn apply_world_action(
             if !has_stone {
                 return Err("背囊裡沒有【古符文原石】，無法鑲刻鐵紋。".to_string());
             }
+            let used_fuel =
+                super::live_commodities::consume_smithy_fuel_one(delta, Some(sid), &node_id);
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "engrave_rune",
                 &aid,
                 sid,
-                6,
+                price,
                 "鑲刻古符文原石鐵紋".to_string(),
             ) {
-                return Err("鑲刻工資需要 6 枚銅幣。".to_string());
+                if let Some((holder, item)) = used_fuel {
+                    super::live_commodities::restore_shop_stock_one(delta, &holder, &node_id, item);
+                }
+                return Err(format!("鑲刻工資需要 {} 枚銅幣。", price));
             }
             record_mutual_trade_evidence(delta, clock.game_days, &aid, sid, "鑲刻古符文原石鐵紋");
             {
@@ -404,7 +459,13 @@ pub fn apply_world_action(
             if node.kind != "shop" || !node.name.contains("酒館") {
                 return Err("需在一樓酒館才能購買黑麥乾糧。".to_string());
             }
-            check_quote(2)?;
+            let price = super::live_commodities::quote_tavern_ration_copper(
+                doc,
+                delta,
+                node.cell_id,
+                &node_id,
+            );
+            check_quote(price)?;
             let is_self_basket = explicit_cp_tok == Some("self_basket");
             let any_tavern_staff_present = find_same_node_counterparty(
                 delta,
@@ -441,7 +502,7 @@ pub fn apply_world_action(
                 "buy_ration",
                 &aid,
                 payee,
-                2,
+                price,
                 if is_self_basket {
                     "酒館竹簍投幣自取黑麥乾糧".to_string()
                 } else {
@@ -449,7 +510,7 @@ pub fn apply_world_action(
                 },
             ) {
                 super::household_economy::restore_tavern_stock_one(delta, kid, &node_id);
-                return Err("一份黑麥乾糧需要 2 枚銅幣。".to_string());
+                return Err(format!("一份黑麥乾糧現價需要 {} 枚銅幣。", price));
             }
             if let Some(ref ik) = innkeeper_id {
                 record_mutual_trade_evidence(delta, clock.game_days, &aid, ik, "購買酒館黑麥乾糧");
@@ -467,11 +528,15 @@ pub fn apply_world_action(
             );
             a.mark_mutated();
             let msg = if is_self_basket {
-                "你往櫃頭誠實木筒裡投入 2 枚銅幣，從竹簍取走一包烘得紮實的【黑麥乾糧】。"
-                    .to_string()
+                format!(
+                    "你往櫃頭誠實木筒裡投入 {} 枚銅幣，從竹簍取走一包烘得紮實的【黑麥乾糧】。",
+                    price
+                )
             } else {
-                "你花 2 枚銅幣向櫃台買下一包烘得紮實的【黑麥乾糧】，遠行充飢或遇上灰耳斥候都派得上用場。"
-                    .to_string()
+                format!(
+                    "你花 {} 枚銅幣向櫃台買下一包烘得紮實的【黑麥乾糧】，遠行充飢或遇上灰耳斥候都派得上用場。",
+                    price
+                )
             };
             push_breath(a, msg.clone());
             Ok(msg)
@@ -612,7 +677,6 @@ pub fn apply_world_action(
             let Some(ref hid) = herb_id else {
                 return Err("藥臼旁暫無人看顧，草藥師與學徒此刻不在堂內。".to_string());
             };
-            check_quote(3)?;
             if delta
                 .actors
                 .get(&aid)
@@ -620,16 +684,28 @@ pub fn apply_world_action(
             {
                 return Ok("草藥師端詳了你的氣色：「筋骨完好無損，不用白花這筆藥錢。」".to_string());
             }
+            if super::live_commodities::is_apothecary_out_of_herbs(delta, &node_id) {
+                return Err(
+                    "藥堂陶罐裡的苦艾與止血草已用罄，草藥師正急收山林草藥入臼熬膏！".to_string(),
+                );
+            }
+            let price = super::live_commodities::quote_bandage_copper(delta, &node_id);
+            check_quote(price)?;
+            let used_herb =
+                super::live_commodities::consume_apothecary_herb_one(delta, Some(hid), &node_id);
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
                 "bandage_wound",
                 &aid,
                 hid,
-                3,
+                price,
                 "草藥堂敷藥包紮傷處".to_string(),
             ) {
-                return Err("敷藥包紮需要 3 枚銅幣。".to_string());
+                if let Some((holder, item)) = used_herb {
+                    super::live_commodities::restore_shop_stock_one(delta, &holder, &node_id, item);
+                }
+                return Err(format!("敷藥包紮需要 {} 枚銅幣。", price));
             }
             record_mutual_trade_evidence(delta, clock.game_days, &aid, hid, "草藥堂敷藥包紮傷處");
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
@@ -637,13 +713,14 @@ pub fn apply_world_action(
             a.severe_wrist_warning = false;
             a.mark_mutated();
             let msg = format!(
-                "堂內醫者以溫熱苦艾膏替你敷妥【{}】並纏緊亞麻繃帶，瘀痛頓時消減大半。",
-                old_w
+                "堂內醫者取來苦艾煎膏替你敷妥【{}】並纏緊亞麻繃帶，收下 {} 枚銅幣，瘀痛頓時消減大半。",
+                old_w, price
             );
             push_breath(a, msg.clone());
             Ok(msg)
         }
         "sell_specialty" => super::cell_resources::settle_sell_specialty_action(
+            doc,
             delta,
             clock,
             &aid,
@@ -829,11 +906,16 @@ pub fn apply_world_action(
             if delta.sold_houses.contains_key(&node_id) {
                 return Err("這棟石木屋舍已有人買下房契了。".to_string());
             }
-            let price = doc
+            let base_price = doc
                 .households
                 .iter()
                 .find(|h| h.node_id == node_id && h.vacant_for_sale)
                 .map_or(360, |h| h.price_copper);
+            let price = if super::live_land::house_is_ruined(delta, &node_id) {
+                (base_price * 65) / 100
+            } else {
+                base_price
+            };
             if !delta.transfer_copper(
                 clock.game_days,
                 clock.bell_index,
@@ -849,6 +931,7 @@ pub fn apply_world_action(
                 ));
             }
             delta.sold_houses.insert(node_id.clone(), aid.clone());
+            delta.live_land.house_integrity.remove(&node_id);
             let pname = {
                 let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
                 a.owned_house_node = Some(node_id.clone());
@@ -903,6 +986,11 @@ pub fn apply_world_action(
         _ => {
             if let Some(res) = super::mesh_expedition::apply_expedition_action(
                 doc, delta, clock, &aid, node, action,
+            ) {
+                return res;
+            }
+            if let Some(res) = super::live_land::try_apply_live_land_action(
+                doc, delta, clock, &aid, node, action, param,
             ) {
                 return res;
             }

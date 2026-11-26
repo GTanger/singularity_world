@@ -753,8 +753,12 @@ pub fn apply_move_step(
         .get(&aid)
         .map(|a| a.node_id.clone())
         .unwrap_or_default();
+    let src_cell_id = doc
+        .nodes
+        .get(&from_nid)
+        .map_or(dst_node.cell_id, |n| n.cell_id);
     if let (Some(actor_ro), Some(src_nd)) = (delta.actors.get(&aid), doc.nodes.get(&from_nid)) {
-        super::transit_and_cargo::check_bulk_overland_move(actor_ro, src_nd, dst_node)?;
+        super::transit_and_cargo::check_bulk_overland_move(doc, delta, actor_ro, src_nd, dst_node)?;
     }
     let knows_dst_state = doc
         .cells
@@ -785,6 +789,8 @@ pub fn apply_move_step(
         let _ = super::ongoing_activity::settle_dock_haul_delivery(doc, delta, clock, &aid);
     }
 
+    let flood_crossing = src_cell_id != dst_node.cell_id
+        && super::live_land::is_river_crossing_impassable_for_wheels(delta, dst_node.cell_id);
     let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
     a.last_step_unix_ms = now_ms;
     if now_ms > 0 && a.controller_id.is_some() {
@@ -811,6 +817,10 @@ pub fn apply_move_step(
         a.fatigue = a.fatigue.saturating_add(step_cost).min(95);
     } else if a.fatigue > 0 && dst_node.kind == "plaza" {
         a.fatigue = a.fatigue.saturating_sub(1);
+    }
+    if flood_crossing {
+        a.fatigue = a.fatigue.saturating_add(6).min(95);
+        env_flavor_suffix.push_str(" 前方木橋受汛沖斷，你踩著齊膝濁水艱難涉過淺灘。");
     }
 
     let clean_dir = dir_label.split('（').next().unwrap_or(&dir_label);

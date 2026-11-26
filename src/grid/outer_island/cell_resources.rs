@@ -682,6 +682,7 @@ pub fn is_specialty_buyer_role(role: &str) -> bool {
     reason = "atomic same-node counterparty, item slug, and quote verification"
 )]
 pub fn settle_sell_specialty_action(
+    doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
     clock: &SolarClockSnapshot,
     aid: &str,
@@ -786,8 +787,14 @@ pub fn settle_sell_specialty_action(
                 .iter()
                 .find(|i| i.slug == target_slug && i.count > 0 && i.bound_owner.is_none())
                 .and_then(|i| {
-                    specialty_sell_unit_price(i)
-                        .map(|fp| (i.slug.clone(), i.name.clone(), fp, i.stolen_from.is_some()))
+                    super::live_commodities::quote_specialty_buyback_copper(
+                        doc,
+                        delta,
+                        node,
+                        Some(&buyer_aid),
+                        i,
+                    )
+                    .map(|fp| (i.slug.clone(), i.name.clone(), fp, i.stolen_from.is_some()))
                 })
         } else {
             SPECIALTY_SELL_TABLE
@@ -797,9 +804,14 @@ pub fn settle_sell_specialty_action(
                         .iter()
                         .find(|i| i.slug == *s && i.count > 0 && i.bound_owner.is_none())
                         .and_then(|i| {
-                            specialty_sell_unit_price(i).map(|fp| {
-                                (i.slug.clone(), i.name.clone(), fp, i.stolen_from.is_some())
-                            })
+                            super::live_commodities::quote_specialty_buyback_copper(
+                                doc,
+                                delta,
+                                node,
+                                Some(&buyer_aid),
+                                i,
+                            )
+                            .map(|fp| (i.slug.clone(), i.name.clone(), fp, i.stolen_from.is_some()))
                         })
                 })
                 .or_else(|| {
@@ -807,9 +819,14 @@ pub fn settle_sell_specialty_action(
                         .iter()
                         .find(|i| i.vessel_meta.is_some() && i.count > 0 && i.bound_owner.is_none())
                         .and_then(|i| {
-                            specialty_sell_unit_price(i).map(|fp| {
-                                (i.slug.clone(), i.name.clone(), fp, i.stolen_from.is_some())
-                            })
+                            super::live_commodities::quote_specialty_buyback_copper(
+                                doc,
+                                delta,
+                                node,
+                                Some(&buyer_aid),
+                                i,
+                            )
+                            .map(|fp| (i.slug.clone(), i.name.clone(), fp, i.stolen_from.is_some()))
                         })
                 })
         }
@@ -877,17 +894,14 @@ pub fn settle_sell_specialty_action(
         a.mark_mutated();
         t
     };
-    if let Some(mut item) = taken
-        && let Some(ba) = delta.actors.get_mut(&buyer_aid)
-    {
-        item.stolen_from = None;
-        if item.vessel_meta.is_some() && ba.backpack.len() < 6 {
-            add_carry_item(&mut ba.backpack, item);
-        } else {
-            let wbox = ba.work_node.clone();
-            add_carry_item(ba.inn_lockers.entry(wbox).or_default(), item);
-        }
-        ba.mark_mutated();
+    if let Some(item) = taken {
+        super::live_commodities::store_purchased_specialty_in_town(
+            doc,
+            delta,
+            &buyer_aid,
+            node.cell_id,
+            item,
+        );
     }
     let buyer_name = delta
         .actors

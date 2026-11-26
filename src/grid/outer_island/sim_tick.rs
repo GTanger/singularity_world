@@ -89,6 +89,9 @@ pub fn seed_genesis_actors_once(
             delta.rebuild_indexes();
         }
         super::live_tide::ensure_porter_indoor_homes(doc, delta);
+        if super::live_commodities::ensure_shop_material_stocks_seeded(doc, delta) {
+            delta.extras_dirty = true;
+        }
         return;
     }
 
@@ -188,6 +191,10 @@ pub fn seed_genesis_actors_once(
     super::causal_arcs::apply_gazetteer_v3_upgrade(doc, delta);
     ensure_household_larders_seeded_once(delta);
     super::rural_migrate::apply_rural_v5_weave_and_init(doc, delta, 0);
+    super::live_land::ensure_live_land_seeded(doc, delta, 0);
+    if super::live_commodities::ensure_shop_material_stocks_seeded(doc, delta) {
+        delta.extras_dirty = true;
+    }
     delta.genesis_seeded = true;
 }
 
@@ -383,6 +390,9 @@ pub fn tick_outer_island_world(
 ) {
     seed_genesis_actors_once(doc, delta, clock.is_night);
     ensure_household_larders_seeded_once(delta);
+    if super::live_commodities::ensure_shop_material_stocks_seeded(doc, delta) {
+        delta.extras_dirty = true;
+    }
     super::rural_migrate::ensure_rural_runtime_initialized(doc, delta, clock.game_days);
     super::transit_and_cargo::tick_embodied_transit_vehicles(doc, delta, clock);
     super::ongoing_activity::tick_ongoing_activities(doc, delta, clock);
@@ -457,8 +467,10 @@ pub fn tick_outer_island_world(
                 } else {
                     if let (Some(actor_ro), Some(src_nd)) =
                         (delta.actors.get(&aid), doc.nodes.get(&cur_nid))
-                        && super::transit_and_cargo::check_bulk_overland_move(actor_ro, src_nd, nd)
-                            .is_err()
+                        && super::transit_and_cargo::check_bulk_overland_move(
+                            doc, delta, actor_ro, src_nd, nd,
+                        )
+                        .is_err()
                     {
                         if let Some(a) = delta.actors.get_mut(&aid) {
                             a.route_plan.clear();
@@ -504,6 +516,7 @@ pub fn tick_outer_island_world(
         let missed_clk =
             super::clock_and_lang::solar_clock_for_settled_bell(missed_bell, clock.real_unix);
         settle_daily_town_livelihood_and_levy(doc, delta, &missed_clk, &cell_tavern_cache);
+        super::live_land::tick_daily_live_land(doc, delta, &missed_clk);
         settle_due_contracts(doc, delta, &missed_clk);
     }
     delta.last_settled_bell = abs_bell;
@@ -608,6 +621,27 @@ pub fn tick_outer_island_world(
                 abs_bell,
             ))
         });
+
+        let home_meal_price = if desired_opt.as_ref().is_some_and(|d| d.kind == "buy_meal") {
+            delta
+                .actors
+                .get(aid)
+                .and_then(|a| {
+                    let sleep_home = a
+                        .owned_house_node
+                        .as_deref()
+                        .unwrap_or(a.home_node.as_str());
+                    let hc = doc.nodes.get(sleep_home).map_or(4616, |n| n.cell_id);
+                    cell_tavern_cache.get(&hc).and_then(|(tav_opt, _)| {
+                        tav_opt.as_deref().map(|tn| {
+                            super::live_commodities::quote_tavern_ration_copper(doc, delta, hc, tn)
+                        })
+                    })
+                })
+                .unwrap_or(2)
+        } else {
+            2
+        };
 
         let mut need_offline_shelter = false;
         if let Some(a) = delta.actors.get_mut(aid) {
@@ -723,9 +757,13 @@ pub fn tick_outer_island_world(
                     if let (Some(tn), Some(ik_id)) = (tav_opt.as_ref(), ik_opt.as_ref())
                         && ik_id != aid
                     {
-                        if a.copper >= 2 {
-                            pay_innkeeper =
-                                Some((ik_id.clone(), tn.clone(), 2, a.display_name.clone()));
+                        if a.copper >= home_meal_price {
+                            pay_innkeeper = Some((
+                                ik_id.clone(),
+                                tn.clone(),
+                                home_meal_price,
+                                a.display_name.clone(),
+                            ));
                         } else if !has_unpaid_debt {
                             let sit = Situation16D::new(
                                 5, 0, 25, 0, -20, 45, 35, 30, 15, 0, 0, 0, 50, 15, 10, 10,
@@ -737,8 +775,12 @@ pub fn tick_outer_island_world(
                                     | ResponseTendency::SeekAlly
                                     | ResponseTendency::ComplyOrder
                             ) {
-                                open_meal_tab =
-                                    Some((ik_id.clone(), tn.clone(), 2, a.display_name.clone()));
+                                open_meal_tab = Some((
+                                    ik_id.clone(),
+                                    tn.clone(),
+                                    home_meal_price,
+                                    a.display_name.clone(),
+                                ));
                             } else {
                                 let _ = a.mind.appraise_event(
                                     &innate,
@@ -917,6 +959,7 @@ pub fn tick_outer_island_world(
     }
 
     settle_daily_town_livelihood_and_levy(doc, delta, clock, &cell_tavern_cache);
+    super::live_land::tick_daily_live_land(doc, delta, clock);
     settle_due_contracts(doc, delta, clock);
     propagate_gossip_o1(delta, clock);
 }

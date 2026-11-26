@@ -29,6 +29,12 @@ pub mod island_substrate_pack;
 #[cfg(test)]
 mod island_substrate_tests;
 pub mod island_substrate_towns;
+pub mod live_commodities;
+#[cfg(test)]
+mod live_commodities_tests;
+pub mod live_land;
+#[cfg(test)]
+mod live_land_tests;
 pub mod live_shifts;
 pub mod live_tide;
 pub mod living_chronicler;

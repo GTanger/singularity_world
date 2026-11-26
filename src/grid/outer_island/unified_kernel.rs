@@ -518,16 +518,17 @@ fn evaluate_autonomous_player_verb(
                 ));
             }
         }
-        if a.copper >= 3 {
+        if let Some((herb_nid, _)) = doc.nodes.iter().find(|(_, n)| n.name.contains("草藥"))
+            && !super::live_commodities::is_apothecary_out_of_herbs(delta, herb_nid)
+            && a.copper >= super::live_commodities::quote_bandage_copper(delta, herb_nid)
+        {
             if node.name.contains("草藥") {
                 return Some(AutoPlayerVerb::WorldAct("bandage_wound", String::new()));
             }
-            if let Some((herb_nid, _)) = doc.nodes.iter().find(|(_, n)| n.name.contains("草藥")) {
-                return Some(AutoPlayerVerb::WalkToAndLearnNode(
-                    herb_nid.clone(),
-                    "手腕帶傷趕往苦艾草藥堂敷藥包紮".to_string(),
-                ));
-            }
+            return Some(AutoPlayerVerb::WalkToAndLearnNode(
+                herb_nid.clone(),
+                "手腕帶傷趕往苦艾草藥堂敷藥包紮".to_string(),
+            ));
         }
     }
 
@@ -761,17 +762,17 @@ fn evaluate_autonomous_player_verb(
         .iter()
         .any(|i| i.slug == "rune_stone" && i.count > 0)
         && a.bound_weapon.rune_mark.is_none()
-        && a.copper >= 8
+        && let Some((smith_nid, _)) = doc.nodes.iter().find(|(_, n)| n.name.contains("鍛鐵"))
+        && !super::live_commodities::is_smithy_forge_cold(delta, smith_nid)
+        && a.copper >= super::live_commodities::quote_engrave_rune_copper(delta, smith_nid)
     {
         if node.name.contains("鍛鐵") || node.name.contains("鐵匠") {
             return Some(AutoPlayerVerb::WorldAct("engrave_rune", String::new()));
         }
-        if let Some((smith_nid, _)) = doc.nodes.iter().find(|(_, n)| n.name.contains("鍛鐵")) {
-            return Some(AutoPlayerVerb::WalkToAndLearnNode(
-                smith_nid.clone(),
-                "懷揣古符文原石赴鍛鐵鋪請師傅鑲刻鐵紋".to_string(),
-            ));
-        }
+        return Some(AutoPlayerVerb::WalkToAndLearnNode(
+            smith_nid.clone(),
+            "懷揣古符文原石赴鍛鐵鋪請師傅鑲刻鐵紋".to_string(),
+        ));
     }
 
     // 8. 成年非屋主「正向人生奔頭」：攢夠銅幣買下本鎮待售空屋（既有店鋪掌櫃／當家屋主不跨鎮搶屋），或備齊木鐵料起屋自立門戶！

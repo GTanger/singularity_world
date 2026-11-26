@@ -75,7 +75,13 @@ pub fn ensure_dock_cargo_piles_initialized(
         let need_refill = delta
             .dock_cargo_piles
             .get(&dock_nid)
-            .is_none_or(Vec::is_empty);
+            .is_none_or(Vec::is_empty)
+            && delta
+                .live_commodities
+                .last_port_barge_day
+                .get(&dock_nid)
+                .copied()
+                .is_none_or(|d| d < game_day);
         if !need_refill {
             continue;
         }
@@ -108,6 +114,10 @@ pub fn ensure_dock_cargo_piles_initialized(
             }
         }
         if !orders.is_empty() {
+            delta
+                .live_commodities
+                .last_port_barge_day
+                .insert(dock_nid.clone(), game_day);
             delta.dock_cargo_piles.insert(dock_nid, orders);
             delta.extras_dirty = true;
         }
@@ -202,6 +212,9 @@ pub fn tick_ongoing_activities(
 
 /// 產生 100% 源自當下世界真實狀態之活情報（供 4 處官道茶棚與酒館短歇旁聽使用，零假罐頭！）
 pub fn compose_live_world_signal_zh(doc: &WorldStaticDoc, delta: &IslandWorldDelta) -> String {
+    if let Some(urgent) = super::live_commodities::find_urgent_commodity_rumor_zh(doc, delta) {
+        return urgent;
+    }
     // 1) 找最近一輛載有鄉間貨箱的在途車船
     if let Some(v) = delta
         .transit_vehicles
@@ -267,6 +280,10 @@ pub fn start_claim_dock_haul(
     }
 
     ensure_dock_cargo_piles_initialized(doc, delta, clock.game_days);
+    delta
+        .live_commodities
+        .last_port_barge_day
+        .insert(node.id.clone(), clock.game_days);
     let Some(order) = delta.dock_cargo_piles.get_mut(&node.id).and_then(|v| {
         if v.is_empty() {
             None
@@ -362,8 +379,22 @@ pub fn settle_dock_haul_delivery(
     if let Some(real_goods) = st.cargo_item
         && let Some(sk) = delta.actors.get_mut(&st.payer_id)
     {
+        let deliver_iron = real_goods.slug == "iron_ore";
+        let cnt = real_goods.count;
         let sk_box = sk.inn_lockers.entry(st.target_node.clone()).or_default();
         add_carry_item(sk_box, real_goods);
+        if deliver_iron {
+            add_carry_item(
+                sk_box,
+                CarryItem {
+                    slug: "black_coal".to_string(),
+                    name: "北林精煤塊".to_string(),
+                    count: cnt,
+                    weight_units: 3,
+                    ..CarryItem::default()
+                },
+            );
+        }
         sk.mark_mutated();
     }
 
@@ -703,6 +734,13 @@ pub fn handle_custom_forge_commission(
     let Some(payee) = smith_id else {
         return Err("石爐壓著微溫灰炭，師傅與學徒此刻不在爐邊，暫無法下訂精鍛委託。".to_string());
     };
+    if super::live_commodities::is_smithy_forge_cold(delta, &node.id) {
+        return Err(
+            "鍛爐裡的精煤與木炭已燒盡熄火，師傅正高價收購北林精煤、木炭或乾木重開爐火！"
+                .to_string(),
+        );
+    }
+    let forge_price = super::live_commodities::quote_custom_forge_copper(delta, &node.id);
     let (quartz_cnt, iron_cnt) = delta.actors.get(aid).map_or((0u32, 0u32), |a| {
         let q: u32 = a
             .backpack
@@ -721,21 +759,25 @@ pub fn handle_custom_forge_commission(
         (q, ir)
     });
     if quartz_cnt < 2 && iron_cnt < 2 {
-        return Err(
-            "委託精鍛一柄落款良器需自備 2 份清白【粗鐵礦石】或【晶瑩石英白沙袋】與 6 枚銅幣工資。"
-                .to_string(),
-        );
+        return Err(format!(
+            "委託精鍛一柄落款良器需自備 2 份清白【粗鐵礦石】或【晶瑩石英白沙袋】與 {} 枚銅幣工資。",
+            forge_price
+        ));
     }
+    let used_fuel = super::live_commodities::consume_smithy_fuel_one(delta, Some(payee), &node.id);
     if !delta.transfer_copper(
         clock.game_days,
         clock.bell_index,
         "custom_forge_order",
         aid,
         payee,
-        6,
+        forge_price,
         format!("於{}下訂一鐘精鍛器物委託", node.name),
     ) {
-        return Err("委託精鍛需要 6 枚銅幣工資。".to_string());
+        if let Some((holder, item)) = used_fuel {
+            super::live_commodities::restore_shop_stock_one(delta, &holder, &node.id, item);
+        }
+        return Err(format!("委託精鍛需要 {} 枚銅幣工資。", forge_price));
     }
     let smith_name = delta
         .actors

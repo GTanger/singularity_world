@@ -396,27 +396,49 @@ fn place_town_landmarks_and_alleys(
 
     let row_cnt = alleys.len().div_ceil(2).max(1) as isize;
     let mut wall_bounds = (cgx - 6, cgx + 6, top_y, bot_y);
+    let mut used_west_ays: Vec<isize> = Vec::new();
+    let mut used_east_ays: Vec<isize> = Vec::new();
 
     for (aidx, al) in alleys.iter().enumerate() {
         let side_east = al.get("side").and_then(|v| v.as_str()) == Some("east");
         let r_row = (aidx / 2) as isize;
         let avail_top = top_y + 2;
         let avail_bot = bot_y - 2;
-        let ay = if row_cnt <= 1 {
+        let raw_y = if row_cnt <= 1 {
             cgy - 5
         } else {
             let t = r_row as f64 / (row_cnt - 1) as f64;
-            let raw_y = (avail_top as f64 + t * (avail_bot - avail_top) as f64).round() as isize;
-            if (raw_y - (cgy - 3)).abs() <= 1 {
-                cgy - 6
-            } else if raw_y >= cgy + 1 && raw_y <= cgy + 5 {
-                (cgy + 6).min(avail_bot)
-            } else if (raw_y - cgy).abs() <= 1 {
-                cgy - 5
-            } else {
-                raw_y
-            }
+            (avail_top as f64 + t * (avail_bot - avail_top) as f64).round() as isize
         };
+        let mut ay = if row_cnt <= 1 {
+            cgy - 5
+        } else if (raw_y - (cgy - 3)).abs() <= 1 {
+            cgy - 6
+        } else if raw_y >= cgy + 1 && raw_y <= cgy + 5 {
+            (cgy + 6).min(avail_bot)
+        } else if (raw_y - cgy).abs() <= 1 {
+            cgy - 5
+        } else {
+            raw_y
+        };
+        let used_list = if side_east {
+            &mut used_east_ays
+        } else {
+            &mut used_west_ays
+        };
+        if used_list.iter().any(|&py| (ay - py).abs() < 3) {
+            let mut cands: Vec<isize> = (avail_top..=avail_bot)
+                .filter(|&cand| {
+                    !(cand >= cgy - 4 && cand <= cgy + 5)
+                        && used_list.iter().all(|&py| (cand - py).abs() >= 3)
+                })
+                .collect();
+            cands.sort_by_key(|&cand| (cand - raw_y).abs());
+            if let Some(&best_ay) = cands.first() {
+                ay = best_ay;
+            }
+        }
+        used_list.push(ay);
 
         let my_roofs: Vec<&Value> = roofs
             .iter()
@@ -471,6 +493,7 @@ fn place_town_landmarks_and_alleys(
                 && cell_owner[pos] == cidx
                 && terrain[pos] != TERRAIN_SEA
                 && road[pos] == ROAD_NONE
+                && bldg[pos] == BLDG_NONE
             {
                 bldg[pos] = roof_val;
                 if let Some(rnid) = rf.get("node_id").and_then(|v| v.as_str()) {
@@ -587,6 +610,7 @@ fn compile_rural_settlement(
         if let Some(pos) = idx_of(hx, hy)
             && cell_owner[pos] == cidx
             && terrain[pos] != TERRAIN_SEA
+            && bldg[pos] == BLDG_NONE
         {
             terrain[pos] = TERRAIN_LAND;
             bldg[pos] = if vacant { BLDG_VACANT_ROOF } else { BLDG_ROOF };

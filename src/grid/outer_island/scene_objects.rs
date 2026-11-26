@@ -236,23 +236,31 @@ pub fn build_scene_presence_sockets(
         if !staff_here
             && super::live_tide::tavern_has_ration_stock(doc, delta, node.cell_id, &node.id)
         {
+            let basket_price = super::live_commodities::quote_tavern_ration_copper(
+                doc,
+                delta,
+                node.cell_id,
+                &node.id,
+            );
+            let basket_param = format!("self_basket|{basket_price}");
+            let basket_lbl = format!("投 {basket_price} 枚銅幣自取黑麥乾糧");
             objects.push(json!({
                 "object_id": "obj:ration_basket",
                 "name": "櫃頭黑麥乾糧竹簍",
-                "cue": "旁設誠實投幣木筒・每包 2 枚銅幣",
+                "cue": format!("旁設誠實投幣木筒・每包 {} 枚銅幣", basket_price),
                 "desc": "掌櫃與學徒暫離櫃台片刻，竹簍裡擺著包好的黑麥乾糧，旁邊立著一隻帶鎖縫的投幣木筒。",
                 "direct_action": Value::Null,
                 "options": [{
                     "id": "buy_ration",
-                    "param": "self_basket|2",
-                    "label": "投 2 枚銅幣自取黑麥乾糧",
-                    "sub": "誠實投幣取走一包口糧",
+                    "param": basket_param,
+                    "label": basket_lbl,
+                    "sub": if basket_price > 2 { "存糧吃緊・隨行市調價" } else { "誠實投幣取走一包口糧" },
                 }],
             }));
             push_audit(
                 "buy_ration",
-                "self_basket|2",
-                "投 2 枚銅幣自取黑麥乾糧",
+                &basket_param,
+                &basket_lbl,
                 "櫃頭竹簍自助取糧",
                 "object",
                 "obj:ration_basket",
@@ -324,27 +332,46 @@ pub fn build_scene_presence_sockets(
                 || (n_rune >= 1 && n_iron >= 1)
                 || (n_beast >= 1 && (n_iron >= 1 || n_wood >= 1))
             {
-                objects.push(json!({
-                    "object_id": "obj:forge_hearth",
-                    "name": "石砌鍛爐與鐵砧",
-                    "cue": "紅炭正熾，可就著鐵砧親手鍛打器物",
-                    "desc": "沉重的黑鐵砧座立在紅炭石爐旁，手頭備有礦石、硬木或甲殼時可親手借爐鍛打落款器物。",
-                    "direct_action": Value::Null,
-                    "options": [{
-                        "id": "forge_vessel",
-                        "param": "",
-                        "label": "親手開爐鍛打落款器物",
-                        "sub": "消耗隨身礦木甲殼鍛出新器",
-                    }],
-                }));
-                push_audit(
-                    "forge_vessel",
-                    "",
-                    "親手開爐鍛打落款器物",
-                    "借爐自鍛新器",
-                    "object",
-                    "obj:forge_hearth",
-                );
+                let shop_cold =
+                    !in_owned && super::live_commodities::is_smithy_forge_cold(delta, &node.id);
+                let has_own_coal = viewer.backpack.iter().any(|i| {
+                    matches!(i.slug.as_str(), "black_coal" | "charcoal_sack")
+                        && i.count > 0
+                        && i.bound_owner.is_none()
+                        && i.stolen_from.is_none()
+                });
+                if !shop_cold || has_own_coal {
+                    objects.push(json!({
+                        "object_id": "obj:forge_hearth",
+                        "name": "石砌鍛爐與鐵砧",
+                        "cue": if shop_cold { "爐炭熄火，可添入隨身精煤木炭開爐鍛打" } else { "紅炭正熾，可就著鐵砧親手鍛打器物" },
+                        "desc": "沉重的黑鐵砧座立在石爐旁，手頭備有礦石、硬木或甲殼且爐內有炭時可親手開爐鍛打落款器物。",
+                        "direct_action": Value::Null,
+                        "options": [{
+                            "id": "forge_vessel",
+                            "param": "",
+                            "label": "親手開爐鍛打落款器物",
+                            "sub": "消耗隨身礦木甲殼鍛出新器",
+                        }],
+                    }));
+                    push_audit(
+                        "forge_vessel",
+                        "",
+                        "親手開爐鍛打落款器物",
+                        "借爐自鍛新器",
+                        "object",
+                        "obj:forge_hearth",
+                    );
+                } else {
+                    objects.push(json!({
+                        "object_id": "obj:forge_hearth",
+                        "name": "石砌鍛爐與鐵砧",
+                        "cue": "爐火已熄・精煤木炭用罄（須先補炭方能開爐）",
+                        "desc": "鐵砧旁炭筐見底、石爐只餘冷灰；不論掌錘師傅或旅人自鍛，皆須先備妥精煤或木炭生火。",
+                        "direct_action": Value::Null,
+                        "options": [],
+                    }));
+                }
             }
         }
     }
@@ -848,6 +875,14 @@ pub fn build_scene_presence_sockets(
     super::mesh_expedition::append_expedition_scene_objects(
         node,
         clock,
+        &mut objects,
+        &mut push_audit,
+    );
+    super::live_land::append_live_land_scene_objects(
+        doc,
+        delta,
+        viewer,
+        node,
         &mut objects,
         &mut push_audit,
     );

@@ -485,21 +485,24 @@ pub fn try_restock_household_larder(
             c.debtor_id == buyer_id
                 && (c.status == "open" || c.status == "defaulted" || c.status == "written_off")
         });
-    if cur_copper < 2 && !can_open_credit {
-        return false;
-    }
-
-    let seller_pair: Option<(String, String)> = tav_node_opt
+    let tav_price = tav_node_opt.map_or(2, |tn| {
+        super::live_commodities::quote_tavern_ration_copper(doc, delta, cell_id, tn)
+    });
+    let seller_pair: Option<(String, String, i64)> = tav_node_opt
         .zip(keeper_opt)
         .filter(|(tn, kid)| {
             *kid != buyer_id
+                && (cur_copper >= tav_price || can_open_credit)
                 && delta
                     .actors
                     .get(*kid)
                     .is_some_and(|k| count_box_home_rations_only(k, tn) >= 3)
         })
-        .map(|(tn, kid)| (kid.to_string(), tn.to_string()))
+        .map(|(tn, kid)| (kid.to_string(), tn.to_string(), tav_price))
         .or_else(|| {
+            if cur_copper < 2 && !can_open_credit {
+                return None;
+            }
             delta.actors.iter().find_map(|(oid, o)| {
                 let ohk = effective_home_node(o);
                 (oid != buyer_id
@@ -509,10 +512,10 @@ pub fn try_restock_household_larder(
                     && is_food_producer_role(&o.role)
                     && doc.nodes.get(ohk).is_some_and(|n| n.cell_id == cell_id)
                     && count_box_home_rations_only(o, ohk) >= 6)
-                    .then(|| (oid.clone(), ohk.to_string()))
+                    .then(|| (oid.clone(), ohk.to_string(), 2))
             })
         });
-    let Some((sid, sbk)) = seller_pair else {
+    let Some((sid, sbk, unit_copper)) = seller_pair else {
         return false;
     };
 
@@ -525,17 +528,18 @@ pub fn try_restock_household_larder(
         return false;
     }
 
-    let settled = if cur_copper >= 2 {
+    let settled = if cur_copper >= unit_copper {
         delta.transfer_copper(
             clock.game_days,
             clock.bell_index,
             "larder_restock",
             buyer_id,
             &sid,
-            2,
+            unit_copper,
             format!("{dname}採買三份家常魚麥口糧補入家門"),
         )
-    } else if !sid.starts_with("pl:")
+    } else if can_open_credit
+        && !sid.starts_with("pl:")
         && delta
             .actors
             .get(&sid)
@@ -550,7 +554,7 @@ pub fn try_restock_household_larder(
                 kind: "larder_tab".to_string(),
                 creditor_id: sid.clone(),
                 debtor_id: buyer_id.to_string(),
-                amount_copper: 2,
+                amount_copper: unit_copper,
                 due_day: clock.game_days + 3,
                 status: "open".to_string(),
                 note_zh: format!("{dname}家裡斷糧，賒購三份家常魚麥口糧"),
@@ -597,7 +601,7 @@ pub fn settle_daily_town_livelihood_and_levy(
         let mut cell_masters: BTreeMap<u32, Vec<String>> = BTreeMap::new();
         let mut cell_helpers: BTreeMap<u32, Vec<String>> = BTreeMap::new();
         let mut cell_low_workers: BTreeMap<u32, Vec<(String, String)>> = BTreeMap::new();
-        let mut producers: Vec<(String, u32, String, String)> = Vec::new();
+        let mut producers: Vec<(String, u32, u32, String, String)> = Vec::new();
         let mut public_workers: Vec<(String, String)> = Vec::new();
 
         for (aid, a) in &delta.actors {
@@ -614,7 +618,7 @@ pub fn settle_daily_town_livelihood_and_levy(
                     .push((aid.clone(), a.display_name.clone()));
             }
             if is_food_producer_role(&a.role) {
-                producers.push((aid.clone(), cid, hk, a.display_name.clone()));
+                producers.push((aid.clone(), raw_cid, cid, hk, a.display_name.clone()));
             } else if is_public_works_role(&a.role)
                 || (a.household_id.starts_with("hh:burg_") && a.copper < 72)
             {
@@ -626,12 +630,14 @@ pub fn settle_daily_town_livelihood_and_levy(
             }
         }
 
-        // 1. 農漁獵戶每日產出 7 份口糧（支撐全島 994 人食用與酒館熱食），餘糧售予區域酒館回流銅幣
-        for (pid, cid, home_node, pname) in producers {
+        // 1. 農漁獵戶依水患、墾田與地塊實存產出當日真實口糧；未斷橋未封鎖者餘糧方可運售區域酒館
+        for (pid, raw_cid, cid, home_node, pname) in producers {
+            let daily_yield =
+                super::live_commodities::harvest_daily_producer_rations(doc, delta, raw_cid);
             if let Some(p) = delta.actors.get_mut(&pid) {
                 let cur = count_box_home_rations_only(p, &home_node);
                 if cur < MAX_HOUSEHOLD_LARDER {
-                    let add_n = (MAX_HOUSEHOLD_LARDER - cur).min(7);
+                    let add_n = (MAX_HOUSEHOLD_LARDER - cur).min(daily_yield);
                     let bv = p.inn_lockers.entry(home_node.clone()).or_default();
                     add_carry_item(bv, make_home_ration(add_n));
                     p.mind.stm.today_goal_progressed = true;
@@ -639,6 +645,9 @@ pub fn settle_daily_town_livelihood_and_levy(
                 }
             }
 
+            if !super::live_commodities::can_deliver_surplus_to_town(doc, delta, raw_cid, cid) {
+                continue;
+            }
             if let Some((Some(tav_nid), Some(ik_id))) = cell_tavern_cache.get(&cid)
                 && ik_id != &pid
             {
@@ -647,9 +656,13 @@ pub fn settle_daily_town_livelihood_and_levy(
                         .actors
                         .get(&pid)
                         .is_some_and(|p| count_box_home_rations_only(p, &home_node) >= 6);
+                    let tav_stk = delta
+                        .actors
+                        .get(ik_id)
+                        .map_or(0, |ik| count_box_home_rations_only(ik, tav_nid));
+                    let wholesale_copper = if tav_stk < 15 { 3 } else { 2 };
                     let ik_ok = delta.actors.get(ik_id).is_some_and(|ik| {
-                        ik.copper >= 14
-                            && count_box_home_rations_only(ik, tav_nid) < MAX_TAVERN_LARDER
+                        ik.copper >= wholesale_copper + 12 && tav_stk < MAX_TAVERN_LARDER
                     });
                     if !can_sell || !ik_ok {
                         break;
@@ -667,7 +680,7 @@ pub fn settle_daily_town_livelihood_and_levy(
                         "tavern_provision_buy",
                         ik_id,
                         &pid,
-                        2,
+                        wholesale_copper,
                         format!("酒館向{}收購新鮮魚麥食材", pname),
                     ) {
                         if let Some(p) = delta.actors.get_mut(&pid) {
@@ -820,22 +833,25 @@ pub fn settle_daily_town_livelihood_and_levy(
                     ]
                     .into_iter()
                     .find_map(|(sl, pay, prod_zh)| {
-                        wv.iter()
-                            .any(|i| {
+                        let clean_sum: u32 = wv
+                            .iter()
+                            .filter(|i| {
                                 i.slug == sl
                                     && i.bound_owner.is_none()
                                     && i.stolen_from.is_none()
                                     && i.count > 0
                             })
-                            .then(|| {
-                                (
-                                    a.work_node.clone(),
-                                    sl,
-                                    pay,
-                                    prod_zh,
-                                    a.display_name.clone(),
-                                )
-                            })
+                            .map(|i| i.count)
+                            .sum();
+                        (clean_sum > 6).then(|| {
+                            (
+                                a.work_node.clone(),
+                                sl,
+                                pay,
+                                prod_zh,
+                                a.display_name.clone(),
+                            )
+                        })
                     })
                 });
                 let Some((wnode, sl, pay, prod_zh, cname)) = raw_hit else {

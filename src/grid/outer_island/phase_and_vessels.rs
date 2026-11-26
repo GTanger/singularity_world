@@ -508,6 +508,25 @@ pub fn forge_living_vessel(
         return Err("雙臂酸沉力乏，先歇口氣再握錘開爐才不會廢了胚料。".to_string());
     }
 
+    let (in_owned_house, actor_has_coal) = delta.actors.get(&aid).map_or((false, false), |a| {
+        let owned = a.owned_house_node.as_deref() == Some(node_id.as_str());
+        let has_coal = a.backpack.iter().any(|i| {
+            matches!(i.slug.as_str(), "black_coal" | "charcoal_sack")
+                && i.count > 0
+                && i.bound_owner.is_none()
+                && i.stolen_from.is_none()
+        });
+        (owned, has_coal)
+    });
+    let shop_cold =
+        !in_owned_house && super::live_commodities::is_smithy_forge_cold(delta, &node_id);
+    if shop_cold && !actor_has_coal {
+        return Err(
+            "鍛爐裡的精煤與木炭已燒盡熄火，需先補煤生火（或隨身自備精煤／木炭）才能開爐鍛器！"
+                .to_string(),
+        );
+    }
+
     let yr = solar_year_and_season_of_day(clock.game_days)
         .0
         .max(CURRENT_SOLAR_YEAR);
@@ -632,6 +651,13 @@ pub fn forge_living_vessel(
             );
         };
 
+        if shop_cold {
+            if super::movement::take_clean_carry_items(&mut a.backpack, "black_coal", 1).is_none() {
+                let _taken_charcoal =
+                    super::movement::take_clean_carry_items(&mut a.backpack, "charcoal_sack", 1);
+            }
+        }
+
         a.mind.ltm.mastery.vessel_serial = a.mind.ltm.mastery.vessel_serial.saturating_add(1);
         let serial = a.mind.ltm.mastery.vessel_serial;
         let uid = format!("vsl:{}:{}:{}", a.soul_seed % 100_000, yr, serial);
@@ -706,9 +732,21 @@ pub fn forge_living_vessel(
             ),
         );
     }
+    let consumed_shop_fuel = if !in_owned_house && !shop_cold {
+        super::live_commodities::consume_smithy_fuel_one(delta, None, &node_id).is_some()
+    } else {
+        false
+    };
+    let fuel_note = if shop_cold {
+        "（投入隨身炭薪重開爐火）"
+    } else if consumed_shop_fuel {
+        "（添入鋪爐炭薪開鍛）"
+    } else {
+        ""
+    };
     let msg = format!(
-        "爐火淬水白霧騰起，你親手鍛成落款活器物【{}】並收入背囊（可隨時換握上手，或當面議價讓渡予街坊旅人）！",
-        vessel_name
+        "爐火淬水白霧騰起{}，你親手鍛成落款活器物【{}】並收入背囊（可隨時換握上手，或當面議價讓渡予街坊旅人）！",
+        fuel_note, vessel_name
     );
     if let Some(a) = delta.actors.get_mut(&aid) {
         push_breath(a, msg.clone());

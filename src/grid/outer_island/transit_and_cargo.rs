@@ -23,17 +23,17 @@ pub fn count_backpack_bulk_units(backpack: &[CarryItem]) -> u32 {
         .sum()
 }
 
-const SOUTH_PLAGUE_CIDS: [u32; 7] = [4775, 4776, 4777, 4780, 4847, 4849, 4698];
-
-/// 檢驗單步步行是否違反「二階直覺負重（防螞蟻搬家）」與「風語橋（#4695）南岸船疫檢疫禁運」
+/// 檢驗單步步行是否違反「二階直覺負重（防螞蟻搬家）」與動態疫氣邊界檢疫禁運、春汛斷橋重載阻隔
 pub fn check_bulk_overland_move(
+    doc: &WorldStaticDoc,
+    delta: &IslandWorldDelta,
     actor: &UnifiedMindBody,
     src_node: &SpatialNodeDef,
     dst_node: &SpatialNodeDef,
 ) -> Result<(), String> {
-    let crossing_quarantine = (src_node.cell_id == 4695
-        && SOUTH_PLAGUE_CIDS.contains(&dst_node.cell_id))
-        || (SOUTH_PLAGUE_CIDS.contains(&src_node.cell_id) && dst_node.cell_id == 4695);
+    let src_restricted = super::live_land::is_quarantine_restricted(doc, delta, src_node.cell_id);
+    let dst_restricted = super::live_land::is_quarantine_restricted(doc, delta, dst_node.cell_id);
+    let crossing_quarantine = src_restricted != dst_restricted;
     if crossing_quarantine
         && actor.backpack.iter().any(|i| {
             i.count > 0
@@ -49,13 +49,19 @@ pub fn check_bulk_overland_move(
         })
     {
         return Err(
-            "風語橋檢疫衛兵橫戟攔下：「南岸封鎖區嚴禁私帶生鮮口糧與魚乳進出疫線！請先食畢或寄存北岸，僅苦艾藥束與書信可經煙燻放行。」"
+            "檢疫衛兵橫戟攔下：「南岸封鎖區嚴禁私帶生鮮口糧與魚乳進出疫線！請先食畢或寄存北岸，僅苦艾藥束與書信可經煙燻放行。」"
                 .to_string(),
         );
     }
 
     if src_node.cell_id == dst_node.cell_id && (src_node.dungeon || !dst_node.dungeon) {
         return Ok(());
+    }
+    let bulk_total = count_backpack_bulk_units(&actor.backpack);
+    if bulk_total > 0
+        && super::live_land::is_river_crossing_impassable_for_wheels(delta, dst_node.cell_id)
+    {
+        return Err("前方河谷木橋沖毀、春水湍急，背負重貨無法涉水強渡！".to_string());
     }
     let has_dock_crate = actor
         .backpack
@@ -272,10 +278,24 @@ pub fn build_node_transit_signboards(
                     .and_then(|id| doc.nodes.get(id))
                     .map_or("起點", |n| n.name.split('・').next().unwrap_or(&n.name))
             };
-            let eta_zh = if dist == 0 {
-                format!("現正停靠本站（往{}方向）", dir_zh)
+            let route_blocked = line.mode == "carriage"
+                && line.route_nodes.iter().any(|rn| {
+                    doc.nodes
+                        .get(rn)
+                        .is_some_and(|nd| super::live_land::is_bridge_washed_out(delta, nd.cell_id))
+                });
+            let blocked_suffix = if route_blocked {
+                "（沿途橋斷受阻）"
             } else {
-                format!("行至【{}】，距此 {} 步（往{}）", cur_name, dist, dir_zh)
+                ""
+            };
+            let eta_zh = if dist == 0 {
+                format!("現正停靠本站（往{}方向）{}", dir_zh, blocked_suffix)
+            } else {
+                format!(
+                    "行至【{}】，距此 {} 步（往{}）{}",
+                    cur_name, dist, dir_zh, blocked_suffix
+                )
             };
             out.push(json!({
                 "line_id": line.line_id,
@@ -330,6 +350,47 @@ pub fn tick_embodied_transit_vehicles(
         } else {
             cur_idx.saturating_sub(1)
         };
+        let prev_node_id = delta.transit_vehicles[v_idx].route_nodes[cur_idx].clone();
+        let prev_cell = doc.nodes.get(&prev_node_id).map_or(4616, |n| n.cell_id);
+        let next_node_id = delta.transit_vehicles[v_idx].route_nodes[next_idx].clone();
+        let next_cell = doc.nodes.get(&next_node_id).map_or(4616, |n| n.cell_id);
+        let next_is_rural_bridge = prev_cell != next_cell
+            || doc.nodes.get(&next_node_id).is_some_and(|nd| {
+                matches!(
+                    nd.kind.as_str(),
+                    "road" | "village_gate" | "quarantine_post"
+                )
+            });
+        if is_land
+            && next_is_rural_bridge
+            && super::live_land::is_river_crossing_impassable_for_wheels(delta, next_cell)
+        {
+            delta.transit_vehicles[v_idx].forward = !forward;
+            delta.extras_dirty = true;
+            let blk_name = doc
+                .nodes
+                .get(&next_node_id)
+                .map_or("前方河谷", |n| n.name.as_str())
+                .to_string();
+            let riders: Vec<String> = delta.transit_vehicles[v_idx]
+                .passengers
+                .iter()
+                .cloned()
+                .collect();
+            for rid in riders {
+                if let Some(a) = delta.actors.get_mut(&rid) {
+                    push_breath(
+                        a,
+                        format!(
+                            "〔{:02}:{:02}〕前方【{}】河水暴漲木橋中斷，重載車馬無法通行，車夫勒馬折返前站！",
+                            td.hour, td.minute, blk_name
+                        ),
+                    );
+                    a.mark_mutated();
+                }
+            }
+            continue;
+        }
         delta.transit_vehicles[v_idx].forward = forward;
         delta.transit_vehicles[v_idx].route_idx = next_idx;
         delta.extras_dirty = true;
@@ -393,9 +454,13 @@ pub fn tick_embodied_transit_vehicles(
         // 2. 城鄉雙向自動實物貨箱循環（煤鐵木魚乳酪入城 ↔ 乾糧鹽布農具下鄉；4695 風語橋哨嚴禁糧食南運入疫區！）
         let cell_opt = doc.cells.get(&cur_cell.to_string());
         let cell_kind = cell_opt.map_or("", |c| c.kind.as_str());
+        let cur_is_quarantine_post = doc
+            .nodes
+            .get(&cur_node)
+            .is_some_and(|n| n.kind == "quarantine_post");
         if cell_kind == "rural_settlement"
-            && cur_cell != 4695
-            && !cell_opt.is_some_and(|c| c.plague_sealed)
+            && !cur_is_quarantine_post
+            && !super::live_land::is_quarantine_restricted(doc, delta, cur_cell)
         {
             // 卸下城鎮運來之日用補給入本莊戶長木箱
             let mut remaining = Vec::new();
@@ -459,48 +524,38 @@ pub fn tick_embodied_transit_vehicles(
             }
             delta.transit_vehicles[v_idx].cargo_hold = kept;
             if !unloaded.is_empty() {
-                let shopkeeper_opt = doc
-                    .households
-                    .iter()
-                    .find(|h| h.cell_id == cur_cell && h.id.contains(":shop_0"))
-                    .and_then(|h| h.members.first())
-                    .cloned();
-                if let Some(sk_id) = shopkeeper_opt
-                    && let Some(sk) = delta.actors.get_mut(&sk_id)
-                {
-                    let sk_home = sk.home_node.clone();
-                    let sbox = sk.inn_lockers.entry(sk_home).or_default();
-                    for (slug, name_zh, cnt) in unloaded {
-                        let w = lookup_resource_spec(&slug).map_or(3, |r| r.weight_units);
-                        add_carry_item(
-                            sbox,
-                            CarryItem {
-                                slug,
-                                name: name_zh,
-                                count: cnt,
-                                weight_units: w,
-                                ..CarryItem::default()
-                            },
-                        );
-                    }
-                    sk.mark_mutated();
-                }
+                super::live_commodities::route_unloaded_freight_to_town_shops(
+                    doc, delta, cur_cell, unloaded,
+                );
             }
-            // 回程裝載下鄉農具口糧箱（嚴守風語橋檢疫禁令：南北貨車自鷗尾港 4613 南下開往 4695 檢疫哨時絕不裝載糧食南運！）
-            let heading_south_to_quarantine = delta.transit_vehicles[v_idx].line_id
-                == "land_ns_freight"
-                && !delta.transit_vehicles[v_idx].forward
-                && cur_cell == 4613;
-            if !heading_south_to_quarantine && delta.transit_vehicles[v_idx].cargo_hold.len() < 2 {
-                delta.transit_vehicles[v_idx]
-                    .cargo_hold
-                    .push(VehicleCargoCrate {
-                        slug: super::household_economy::HOME_RATION_SLUG.to_string(),
-                        name_zh: "城鎮鹽布魚麥補給箱".to_string(),
-                        count: 2,
-                        dest_node: "rural_any".to_string(),
-                        owner_id: format!("town:{cur_cell}"),
-                    });
+            // 回程裝載下鄉農具口糧箱（須從本鎮酒館實扣餘糧，且前方若屬封鎖區絕不裝糧南運！）
+            let ahead_idx = if forward {
+                (next_idx + 1).min(rlen - 1)
+            } else {
+                next_idx.saturating_sub(1)
+            };
+            let ahead_cell = delta.transit_vehicles[v_idx]
+                .route_nodes
+                .get(ahead_idx)
+                .and_then(|nid| doc.nodes.get(nid))
+                .map_or(cur_cell, |n| n.cell_id);
+            let heading_to_quarantine =
+                super::live_land::is_quarantine_restricted(doc, delta, ahead_cell);
+            if !heading_to_quarantine && delta.transit_vehicles[v_idx].cargo_hold.len() < 2 {
+                let loaded_rural = super::live_commodities::try_load_town_surplus_rations_for_rural(
+                    doc, delta, cur_cell,
+                );
+                if loaded_rural > 0 {
+                    delta.transit_vehicles[v_idx]
+                        .cargo_hold
+                        .push(VehicleCargoCrate {
+                            slug: super::household_economy::HOME_RATION_SLUG.to_string(),
+                            name_zh: "城鎮鹽布魚麥補給箱".to_string(),
+                            count: loaded_rural,
+                            dest_node: "rural_any".to_string(),
+                            owner_id: format!("town:{cur_cell}"),
+                        });
+                }
             }
         }
         delta.extras_dirty = true;

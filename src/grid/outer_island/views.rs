@@ -252,6 +252,11 @@ pub fn build_view_json(
             homestead_labels.join("】、【")
         ));
     }
+    scene_desc.push_str(&super::live_land::live_land_scene_prose_suffix(
+        doc, delta, node,
+    ));
+    scene_desc
+        .push_str(&super::live_commodities::live_commodities_scene_prose_suffix(doc, delta, node));
 
     let live_desc = super::live_tide::compose_live_scene_desc(doc, delta, node, clock, &scene_desc);
     let td = super::live_tide::derive_tide_clock_details(clock);

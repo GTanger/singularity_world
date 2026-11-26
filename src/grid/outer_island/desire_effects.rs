@@ -94,22 +94,27 @@ pub fn execute_arrived_desire_effect(
         }
         "sell_foraged" => {
             let item_opt = delta.actors.get(actor_id).and_then(|a| {
+                let cur_nd = doc.nodes.get(&a.node_id)?;
                 [
                     ("iron_ore", 5_i64),
                     ("driftwood", 4_i64),
                     ("herb_bundle", 4_i64),
                 ]
                 .into_iter()
-                .find_map(|(s, p)| {
+                .find_map(|(s, base_p)| {
                     a.backpack
                         .iter()
                         .find(|i| i.slug == s && i.count > 0)
                         .map(|i| {
+                            let dyn_p = super::live_commodities::quote_specialty_buyback_copper(
+                                doc, delta, cur_nd, None, i,
+                            )
+                            .unwrap_or(base_p);
                             (
                                 s.to_string(),
                                 i.name.clone(),
                                 i.weight_units,
-                                p,
+                                dyn_p,
                                 a.display_name.clone(),
                                 a.copper,
                                 super::rural_migrate::nearest_core_town_cell_id(
@@ -143,7 +148,15 @@ pub fn execute_arrived_desire_effect(
                     }
                     let role_match = match slug.as_str() {
                         "iron_ore" => ba.role.contains("鍛鐵") || ba.role.contains("石工"),
-                        "driftwood" => ba.role.contains("木匠") || ba.role.contains("車行"),
+                        "driftwood" => {
+                            ba.role.contains("木匠")
+                                || ba.role.contains("車行")
+                                || (ba.role.contains("鍛鐵")
+                                    && super::live_commodities::count_smithy_fuel(
+                                        delta,
+                                        &ba.work_node,
+                                    ) < 6)
+                        }
                         _ => ba.role.contains("草藥") || ba.role == "酒館掌櫃",
                     };
                     if !role_match {

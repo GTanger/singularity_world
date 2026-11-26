@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-26
-- **當前狀態**：`active`（《銀鷗海領》於既有 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民基礎上，正式以 `860×930` 連續全島水彩古卷無切圖 Canvas2D 輿圖替換首頁 `/` 靜態 `.webp` 切圖，達成 0 外部圖檔、嚴格伺服器端迷霧與 48 候晝暮夜燈火連動；現將推進「讓世界自己運轉」三刀規劃，首刀為四季水文漲退與橋樑、林田、屋舍、疫氣活狀態）
+- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖；「讓世界自己運轉」第一刀四季水文活地景與第二刀糧煤木鐵真存量供需報價已完成實作並通過 `59/59` 測試與雙端真機驗收，接續推進第三刀）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -68,6 +68,8 @@
     - 依操作者指定調整 [index.html](file:///home/tanger/Projects/singularity_world/web/index.html)、[grid-map.js](file:///home/tanger/Projects/singularity_world/web/grid-map.js)、[game-grid.css](file:///home/tanger/Projects/singularity_world/web/game-grid.css) 與 [sw.js](file:///home/tanger/Projects/singularity_world/web/sw.js)：移除視覺九宮格（保留隱藏鍵盤相容節點供 WASD 與 `SwMoveDirection`），將可拖曳符號大地圖直接置於第一層主舞台（手機上半 ~56%、桌機左欄 63% 滿寬），點擊任一可通行鄰格或已探足跡即直接送步移動並自動置中跟隨、附即時 `泉涼↑` 角標與在場人跡紅點，底欄收為 `32px` 單行（含 `[全圖]` 全螢幕展開切換）；通過 `tra-sw-gate` 6/6 全綠、桌機 1280×800 與 `Pixel 9 Pro XL` 真機驗收（`Zero-CLS = 0px`、`0px` 水平溢位、`0` 錯誤）。
 21. **2026-11-26 銀鷗海領全島無縫水彩古卷程序活輿圖正式上線（`v=20261126r1`）**：
     - 完成 `src/grid/outer_island/{island_substrate,island_substrate_towns,island_substrate_pack,island_substrate_tests}.rs`（`860×930` 連續格網、雙趟 Chamfer 圓弧海岸迷霧、34 座城鎮城牆圓塔回字中庭酒館與 859 節點精準錨點、退潮露礁／儲量／動態宅院疊加與 RLE Base64 壓縮）及純 Canvas2D 手繪水彩渲染器 `web/island-parchment-map.js`（首頁 `/` `0` `.webp` 請求、`0` console 錯誤）；通過 `52/52` `outer_island` 單元測試、`code_guard_rs`（`hard=0`）、`tra-sw-gate --deploy`、桌機 Chrome 與 `Pixel 9 Pro XL` 真機視覺驗收。
+22. **2026-11-26 讓世界自己運轉第一、二刀上線驗收（`live_land.rs` ＋ `live_commodities.rs`）**：
+    - 完成第一刀四季水文漲退、沖橋攔車、公庫購木修橋、伐木再生、墾田休耕退化、空屋傾頹與動態疫氣解封，以及第二刀鋪倉煤鐵草藥口糧真存量、耗盡熄火停診、動態供需報價、城鄉貨車按物資分流入鋪、斷橋阻糧與海駁每日限一班；通過 `59/59` `outer_island` 單元測試、桌面與 `Pixel 9 Pro XL` 雙端真機視覺驗收。
 
 ## 二、 關鍵檔案與正典錨點
 

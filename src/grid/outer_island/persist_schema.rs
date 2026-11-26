@@ -111,6 +111,8 @@ pub(crate) struct WorldExtrasBlob {
     pub(crate) dock_cargo_piles: BTreeMap<String, Vec<DockCargoOrder>>,
     pub(crate) forge_orders: BTreeMap<String, Vec<CustomForgeOrder>>,
     pub(crate) survivor_letters_delivered: std::collections::BTreeSet<String>,
+    pub(crate) live_land: super::live_land::LiveLandState,
+    pub(crate) live_commodities: super::live_commodities::LiveCommoditiesState,
 }
 
 pub enum NormalizedLoadOutcome {

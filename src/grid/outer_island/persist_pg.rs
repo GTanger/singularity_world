@@ -114,6 +114,8 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         dock_cargo_piles: extras.dock_cargo_piles,
         forge_orders: extras.forge_orders,
         survivor_letters_delivered: extras.survivor_letters_delivered,
+        live_land: extras.live_land,
+        live_commodities: extras.live_commodities,
         ..IslandWorldDelta::default()
     };
 
@@ -329,15 +331,17 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         }
     }
 
-    {
+    let seeded_commodities = {
         let clk = super::clock_and_lang::current_solar_clock();
         super::rural_migrate::ensure_rural_runtime_initialized(doc, &mut delta, clk.game_days);
-    }
+        super::live_commodities::ensure_shop_material_stocks_seeded(doc, &mut delta)
+    };
 
-    if purge_test_actors_and_sanitize_breaths(&mut delta)
+    let cleaned_test = purge_test_actors_and_sanitize_breaths(&mut delta);
+    if (seeded_commodities || cleaned_test)
         && let Err(err) = commit_delta_atomic(doc, pool, &mut delta, false)
     {
-        tracing::error!("[outer_island] test-actor cleanup commit failed: {err}");
+        tracing::error!("[outer_island] runtime init/cleanup commit failed: {err}");
     }
 
     NormalizedLoadOutcome::Loaded(delta)
@@ -385,6 +389,8 @@ pub fn prepare_commit_batch(
         dock_cargo_piles: delta.dock_cargo_piles.clone(),
         forge_orders: delta.forge_orders.clone(),
         survivor_letters_delivered: delta.survivor_letters_delivered.clone(),
+        live_land: delta.live_land.clone(),
+        live_commodities: delta.live_commodities.clone(),
     };
     let extras_json = serde_json::to_string(&extras).map_err(|e| e.to_string())?;
     let next_seq = delta.persist_seq.saturating_add(1);

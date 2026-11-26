@@ -174,8 +174,10 @@ pub fn build_actor_deeds_for_viewer(
         }
     }
 
-    // 2. 鍛鐵鋪／百工集坊：師傅或當值學徒（須在爐邊且日間開爐）
+    // 2. 鍛鐵鋪／百工集坊：師傅或當值學徒（須在爐邊且日間開爐；熄火停擺時改僅收炭重燃）
+    let forge_cold = super::live_commodities::is_smithy_forge_cold(delta, &node.id);
     if !clock.is_night
+        && !forge_cold
         && (node.name.contains("鍛鐵") || node.name.contains("鐵匠") || node.name.contains("集坊"))
         && is_first_of_roles_at_node(
             delta,
@@ -185,6 +187,9 @@ pub fn build_actor_deeds_for_viewer(
             &["鍛鐵匠", "鍛鐵匠學徒", "木匠"],
         )
     {
+        let rep_p = super::live_commodities::quote_weapon_repair_copper(delta, &node.id);
+        let eng_p = super::live_commodities::quote_engrave_rune_copper(delta, &node.id);
+        let cfg_p = super::live_commodities::quote_custom_forge_copper(delta, &node.id);
         if node.name.contains("鍛鐵") || node.name.contains("鐵匠") {
             if !viewer
                 .explored_windows
@@ -203,9 +208,9 @@ pub fn build_actor_deeds_for_viewer(
             if viewer.bound_weapon.wear_stage > 0 {
                 deeds.push(json!({
                     "id": "repair_weapon",
-                    "param": format!("{tok}|4"),
-                    "label": format!("修補【{}】 · 4 枚銅幣", viewer.bound_weapon.name),
-                    "sub": "燒紅校直加固木柄",
+                    "param": format!("{tok}|{rep_p}"),
+                    "label": format!("修補【{}】 · {} 枚銅幣", viewer.bound_weapon.name, rep_p),
+                    "sub": if rep_p > 4 { "精煤吃緊・隨行市加價" } else { "燒紅校直加固木柄" },
                 }));
             }
             if viewer.bound_weapon.rune_mark.is_none()
@@ -216,9 +221,9 @@ pub fn build_actor_deeds_for_viewer(
             {
                 deeds.push(json!({
                     "id": "engrave_rune",
-                    "param": format!("{tok}|6"),
-                    "label": "將古符文原石鍛入兵刃 · 6 枚銅幣",
-                    "sub": "鏨刻沉穩鐵紋",
+                    "param": format!("{tok}|{eng_p}"),
+                    "label": format!("將古符文原石鍛入兵刃 · {} 枚銅幣", eng_p),
+                    "sub": if eng_p > 6 { "精煤吃緊・鏨刻鐵紋" } else { "鏨刻沉穩鐵紋" },
                 }));
             }
         }
@@ -235,8 +240,8 @@ pub fn build_actor_deeds_for_viewer(
         {
             deeds.push(json!({
                 "id": "commission_custom_vessel",
-                "param": format!("{tok}|6"),
-                "label": "下訂一鐘精鍛銘器 · 6 枚銅幣",
+                "param": format!("{tok}|{cfg_p}"),
+                "label": format!("下訂一鐘精鍛銘器 · {} 枚銅幣", cfg_p),
                 "sub": "交礦沙 2 份・一記鐘響後於取件架領器",
             }));
         }
@@ -272,17 +277,24 @@ pub fn build_actor_deeds_for_viewer(
             "sub": "領客房木牌與床頭木箱銅鎖",
         }));
         if super::live_tide::tavern_has_ration_stock(doc, delta, node.cell_id, &node.id) {
+            let rat_p = super::live_commodities::quote_tavern_ration_copper(
+                doc,
+                delta,
+                node.cell_id,
+                &node.id,
+            );
             deeds.push(json!({
                 "id": "buy_ration",
-                "param": format!("{tok}|2"),
-                "label": "購買黑麥乾糧 · 2 枚銅幣",
-                "sub": "現烘紮實遠行口糧",
+                "param": format!("{tok}|{rat_p}"),
+                "label": format!("購買黑麥乾糧 · {} 枚銅幣", rat_p),
+                "sub": if rat_p > 2 { "存糧吃緊・隨行市調漲" } else { "現烘紮實遠行口糧" },
             }));
         }
     }
 
-    // 4. 苦艾草藥堂：醫者或當值學徒包紮傷勢
+    // 4. 苦艾草藥堂：醫者或當值學徒包紮傷勢（缺草藥時停業待料）
     if !clock.is_night
+        && !super::live_commodities::is_apothecary_out_of_herbs(delta, &node.id)
         && node.name.contains("草藥")
         && viewer.wound_part.is_some()
         && is_first_of_roles_at_node(
@@ -293,12 +305,13 @@ pub fn build_actor_deeds_for_viewer(
             &["草藥師", "草藥師學徒"],
         )
     {
+        let bnd_p = super::live_commodities::quote_bandage_copper(delta, &node.id);
         let wpart = viewer.wound_part.as_deref().unwrap_or("傷處");
         deeds.push(json!({
             "id": "bandage_wound",
-            "param": format!("{tok}|3"),
-            "label": format!("敷苦艾膏包紮【{}】 · 3 枚銅幣", wpart),
-            "sub": "溫膏纏帶消腫",
+            "param": format!("{tok}|{bnd_p}"),
+            "label": format!("敷苦艾膏包紮【{}】 · {} 枚銅幣", wpart, bnd_p),
+            "sub": if bnd_p > 3 { "草藥吃緊・溫膏纏帶消腫" } else { "溫膏纏帶消腫" },
         }));
     }
 
@@ -332,11 +345,19 @@ pub fn build_actor_deeds_for_viewer(
             if seen_slugs.len() >= 4 {
                 break;
             }
-            if let Some(unit_price) = specialty_sell_unit_price(it)
-                && seen_slugs.insert(it.slug.clone())
+            if let Some(unit_price) = super::live_commodities::quote_specialty_buyback_copper(
+                doc,
+                delta,
+                node,
+                Some(&other.actor_id),
+                it,
+            ) && seen_slugs.insert(it.slug.clone())
             {
+                let base_p = specialty_sell_unit_price(it).unwrap_or(unit_price);
                 let note = if it.stolen_from.is_some() {
                     "未報備拾遺折半計價"
+                } else if unit_price > base_p {
+                    "鋪內急缺・加價收購"
                 } else if lookup_resource_spec(&it.slug).is_some() {
                     "當面過秤點銅"
                 } else {
