@@ -465,6 +465,14 @@ pub fn resolve_skirmish_turn(
                     &sk.foe_slug,
                     &sk.foe_name,
                 ) {
+                    if wilds_res.is_ok() {
+                        super::map_memory::record_local_witness_at_cur_node(
+                            doc,
+                            delta,
+                            &aid,
+                            clock.game_days,
+                        );
+                    }
                     return wilds_res;
                 }
 

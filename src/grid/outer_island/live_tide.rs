@@ -629,6 +629,7 @@ pub fn relocate_actor_with_local_witness(
     }
 
     delta.relocate_actor(actor_id, to_nid, to_cell, knows_state);
+    super::map_memory::record_local_witness_at_cur_node(doc, delta, actor_id, clock.game_days);
 
     // 2. 終點在場觀察者：唯讀篩出真人玩家後方呼叫 `get_mut`，杜絕同場 NPC 被無故觸發 CoW 深拷貝！
     if let Some(arrivers) = delta.node_occupants.get(to_nid).cloned() {

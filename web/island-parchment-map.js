@@ -473,6 +473,28 @@
   }
 
   /* ═══ 全島巨觀水彩快取圖層（縮放平移零重算） ═══ */
+  function renderOutlineCells(ctx, m, pal, tileScale) {
+    var outlines = (m && m.outline_cells) || [];
+    if (!outlines.length || !m.substrate) return;
+    var wx0 = m.substrate.wx0, wy0 = m.substrate.wy0, gs = m.substrate.scale;
+    ctx.save();
+    ctx.strokeStyle = pal.fogStroke;
+    ctx.lineWidth = tileScale > 1.0 ? Math.max(1.0, Math.min(2.2, tileScale * 0.14)) : 0.8;
+    ctx.setLineDash(tileScale > 1.0 ? [5, 4] : [3, 3]);
+    ctx.beginPath();
+    for (var oi = 0; oi < outlines.length; oi++) {
+      var poly = outlines[oi].polygon;
+      if (!poly || !poly.length) continue;
+      ctx.moveTo((poly[0][0] - wx0) * gs * tileScale, (poly[0][1] - wy0) * gs * tileScale);
+      for (var pi = 1; pi < poly.length; pi++) {
+        ctx.lineTo((poly[pi][0] - wx0) * gs * tileScale, (poly[pi][1] - wy0) * gs * tileScale);
+      }
+      ctx.closePath();
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function ensureMacroCanvas(dec, m, pal, light, timeMode) {
     var key = fnvHash(dec.terrainKey) + ':' + fnvHash(dec.overlayKey) + ':' + timeMode + ':' + (m.is_night ? 'N' : 'D');
     if (macroCache.key === key && macroCache.canvas) return macroCache.canvas;
@@ -534,26 +556,7 @@
     mctx.fill(landPath, 'evenodd');
 
     // 鄰接一環未踏足 Voronoi 虛線邊界
-    var outlines = (m && m.outline_cells) || [];
-    if (outlines.length && m.substrate) {
-      var wx0 = m.substrate.wx0, wy0 = m.substrate.wy0, gs = m.substrate.scale;
-      mctx.save();
-      mctx.strokeStyle = pal.fogStroke;
-      mctx.lineWidth = 0.8;
-      mctx.setLineDash([3, 3]);
-      mctx.beginPath();
-      for (var oi = 0; oi < outlines.length; oi++) {
-        var poly = outlines[oi].polygon;
-        if (!poly || !poly.length) continue;
-        mctx.moveTo((poly[0][0] - wx0) * gs, (poly[0][1] - wy0) * gs);
-        for (var pi = 1; pi < poly.length; pi++) {
-          mctx.lineTo((poly[pi][0] - wx0) * gs, (poly[pi][1] - wy0) * gs);
-        }
-        mctx.closePath();
-      }
-      mctx.stroke();
-      mctx.restore();
-    }
+    renderOutlineCells(mctx, m, pal, 1.0);
 
     // 農田與退潮沙洲（先於水系繪製）
     for (var y = 0; y < H; y += 2) {
@@ -1708,6 +1711,9 @@
       ctx.fill(); ctx.stroke();
       ctx.fillStyle = pal.labelInk;
       ctx.fillText(p.label, spt[0], by2 + th2 * 0.5 + 0.5);
+      if (p.nav_id) {
+        hitTargets.push({ nid: p.nav_id, x0: bx2, y0: by2, x1: bx2 + tw2, y1: by2 + th2 });
+      }
       if (poiTargets) {
         poiTargets.push({
           id: p.id,
@@ -1721,6 +1727,75 @@
           x1: bx2 + tw2,
           y1: by2 + th2
         });
+      }
+    }
+
+    // 獨立 ？傳聞 問號批註（赭黃羊皮虛線籤條：不更動底圖地貌，親臨現場後自動消解）
+    var rumors = sub.rumor_pins || [];
+    for (var ri = 0; ri < rumors.length; ri++) {
+      var rp = rumors[ri];
+      if (!rp || !rp.label) continue;
+      var rpt = toScreen(rp.gx, rp.gy);
+      if (rpt[0] < 10 || rpt[0] > viewW - 10 || rpt[1] < 12 || rpt[1] > viewH - 12) continue;
+      ctx.font = '700 11px "Noto Serif TC", serif';
+      var twR = ctx.measureText(rp.label).width + 14;
+      var thR = 20;
+      var bxR = rpt[0] - twR * 0.5;
+      var byR = rpt[1] - (isClose ? 24 : 20);
+      var tries = 0;
+      while (overlaps(bxR, byR, twR, thR) && tries < 3) {
+        byR -= 22;
+        tries++;
+      }
+      if (overlaps(bxR, byR, twR, thR)) continue;
+      placed.push([bxR, byR, twR, thR]);
+      ctx.save();
+      ctx.fillStyle = pal.lantern > 0 ? 'rgba(66, 48, 28, 0.92)' : 'rgba(252, 238, 202, 0.94)';
+      ctx.strokeStyle = '#b84a24';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 2]);
+      roundRectPath(ctx, bxR, byR, twR, thR, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = pal.lantern > 0 ? '#f6dfb2' : '#7b2a14';
+      ctx.fillText(rp.label, rpt[0], byR + thR * 0.5 + 0.5);
+      ctx.restore();
+    }
+
+    // 2.5D 店鋪／民居屋頂直點熱區 ＋ 支巷精簡門號小徽章（徹底消除 8 戶鄰接浮標互相吃字）
+    var bHits = sub.building_hits || [];
+    if (z >= 6.0 && bHits.length) {
+      for (var bhi = 0; bhi < bHits.length; bhi++) {
+        var bh = bHits[bhi];
+        var bp0 = toScreen(bh.gx0, bh.gy0);
+        var bp1 = toScreen(bh.gx1, bh.gy1);
+        var bxMin = Math.min(bp0[0], bp1[0]), bxMax = Math.max(bp0[0], bp1[0]);
+        var byMin = Math.min(bp0[1], bp1[1]), byMax = Math.max(bp0[1], bp1[1]);
+        if (bxMax < 0 || bxMin > viewW || byMax < 0 || byMin > viewH) continue;
+        var pad = Math.max(2, Math.min(8, (22 - (bxMax - bxMin)) * 0.5));
+        var hPadY = Math.max(2, Math.min(8, (22 - (byMax - byMin)) * 0.5));
+        hitTargets.push({
+          nid: bh.nid,
+          x0: bxMin - pad,
+          y0: byMin - hPadY,
+          x1: bxMax + pad,
+          y1: byMax + hPadY
+        });
+        if (z >= 9.0 && bh.door_badge) {
+          var dcx = (bxMin + bxMax) * 0.5, dcy = (byMin + byMax) * 0.5;
+          ctx.font = '700 9.5px "Noto Serif TC", serif';
+          var dtw = ctx.measureText(bh.door_badge).width + 6;
+          var dth = 13;
+          ctx.fillStyle = pal.labelBg;
+          ctx.strokeStyle = pal.labelBorder;
+          ctx.lineWidth = 0.85;
+          roundRectPath(ctx, dcx - dtw * 0.5, dcy - dth * 0.5, dtw, dth, 3);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = pal.labelInk;
+          ctx.fillText(bh.door_badge, dcx, dcy + 0.5);
+        }
       }
     }
 
@@ -1897,12 +1972,13 @@
       ctx.restore();
     }
 
-    // 3. 放大近看時無縫切入視窗裁剪精雕微觀圖層
+    // 3. 放大近看時無縫切入視窗裁剪精雕微觀圖層，並全縮放保留鄰接未知虛線輪廓
     if (detailAlpha > 0.02) {
       ctx.save();
       if (detailAlpha < 0.99) ctx.globalAlpha = detailAlpha;
       ctx.translate(viewW * 0.5 - cam.cx * z, viewH * 0.5 - cam.cy * z);
       renderLocalCraftLayer(ctx, dec, cam, viewW, viewH, dpr, pal, light, timeMode);
+      renderOutlineCells(ctx, m, pal, z);
       ctx.restore();
     }
 

@@ -1534,7 +1534,7 @@
             if (lx >= h.x0 && lx <= h.x1 && ly >= h.y0 && ly <= h.y1) {
               apiJson('/api/island/move', 'POST', { to: h.nid }).then(function (res) {
                 if (res && res.view) applyServerView(res.view);
-                if (res && !res.ok && res.msg) showToast(res.msg);
+                if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭/.test(res.msg))) showToast(res.msg);
                 refreshMapData(true);
               });
               break;
@@ -1562,7 +1562,7 @@
         if (lx >= h.x0 && lx <= h.x1 && ly >= h.y0 && ly <= h.y1) {
           apiJson('/api/island/move', 'POST', { to: h.nid }).then(function (res) {
             if (res && res.view) applyServerView(res.view);
-            if (res && !res.ok && res.msg) showToast(res.msg);
+            if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭/.test(res.msg))) showToast(res.msg);
             refreshMapData(true);
           });
           return;

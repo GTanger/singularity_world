@@ -958,7 +958,11 @@ pub fn settle_due_contracts(
 }
 
 /// M3 修正：傳聞擴散嚴格排除玩家角色（`pl:` / `controller_id`）代發言與玩家相關私密情節外流！
-pub fn propagate_gossip_o1(delta: &mut IslandWorldDelta, clock: &SolarClockSnapshot) {
+pub fn propagate_gossip_o1(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+) {
     let crowded_nodes: Vec<(String, Vec<String>)> = delta
         .node_occupants
         .iter()
@@ -1030,42 +1034,63 @@ pub fn propagate_gossip_o1(delta: &mut IslandWorldDelta, clock: &SolarClockSnaps
             if listener_id == speaker_id {
                 continue;
             }
-            if let Some(listener) = delta.actors.get_mut(listener_id) {
+            let ingested_hearsay = if let Some(listener) = delta.actors.get_mut(listener_id) {
                 if !listener.alive || !listener.setup_done {
-                    continue;
+                    false
+                } else {
+                    let langs = listener.languages.clone();
+                    if listener.mind.ingest_sensory_event(
+                        &langs,
+                        EventPublicity::TableWhisper,
+                        Some(sp_lang),
+                        false,
+                        &best_ep.event_id,
+                        clock.game_days,
+                        clock.bell_index,
+                        &nid,
+                        &best_ep.subject_actor_id,
+                        &best_ep.subject_name,
+                        EvidenceTier::TavernHearsay,
+                        best_ep.salience.saturating_sub(8),
+                        35,
+                        ValueAxis::PactIntegrity,
+                        &hearsay_text,
+                    ) {
+                        // 雙向秘境風聲傳播（聽懂語言者方能獲悉斷橋秘徑、坑空與傷退消息，零全知作弊！）
+                        if sp_has_pit {
+                            listener.known_rumors.insert("pit_rumor".to_string());
+                        }
+                        if sp_has_cleared {
+                            listener.known_rumors.insert("pit_cleared".to_string());
+                        } else if sp_has_pit {
+                            listener.known_rumors.remove("pit_cleared");
+                        }
+                        if sp_has_casualty {
+                            listener.known_rumors.insert("pit_casualty".to_string());
+                        }
+                        listener.mark_mutated();
+                        true
+                    } else {
+                        false
+                    }
                 }
-                let langs = listener.languages.clone();
-                if listener.mind.ingest_sensory_event(
-                    &langs,
-                    EventPublicity::TableWhisper,
-                    Some(sp_lang),
-                    false,
-                    &best_ep.event_id,
-                    clock.game_days,
-                    clock.bell_index,
-                    &nid,
-                    &best_ep.subject_actor_id,
-                    &best_ep.subject_name,
-                    EvidenceTier::TavernHearsay,
-                    best_ep.salience.saturating_sub(8),
-                    35,
-                    ValueAxis::PactIntegrity,
+            } else {
+                false
+            };
+            if ingested_hearsay {
+                let rumor_key = if sp_has_pit {
+                    "pit_rumor"
+                } else {
+                    best_ep.event_id.as_str()
+                };
+                super::map_memory::ingest_hearsay_rumor_pin(
+                    doc,
+                    delta,
+                    listener_id,
+                    rumor_key,
                     &hearsay_text,
-                ) {
-                    // 雙向秘境風聲傳播（聽懂語言者方能獲悉斷橋秘徑、坑空與傷退消息，零全知作弊！）
-                    if sp_has_pit {
-                        listener.known_rumors.insert("pit_rumor".to_string());
-                    }
-                    if sp_has_cleared {
-                        listener.known_rumors.insert("pit_cleared".to_string());
-                    } else if sp_has_pit {
-                        listener.known_rumors.remove("pit_cleared");
-                    }
-                    if sp_has_casualty {
-                        listener.known_rumors.insert("pit_casualty".to_string());
-                    }
-                    listener.mark_mutated();
-                }
+                    clock.game_days,
+                );
             }
         }
     }

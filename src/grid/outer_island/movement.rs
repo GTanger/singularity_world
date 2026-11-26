@@ -370,6 +370,7 @@ pub fn apply_setup_origin(
     entry.recent_breaths.clear();
     push_breath(entry, arrival_line);
     push_breath(entry, intro.clone());
+    super::map_memory::seed_actor_initial_map_witness(doc, delta, &canonical_aid, clock.game_days);
     Ok(intro)
 }
 
@@ -633,57 +634,6 @@ pub fn apply_move_step(
         return Err("前方雲霧深鎖，無路可通。".to_string());
     };
 
-    let is_town_fabric = |k: &str| {
-        !matches!(
-            k,
-            "wild" | "road" | "campfire_nook" | "summit_outlook" | "plague_ruin" | "ruin"
-        )
-    };
-    let mut town_shortcut_nodes: Vec<String> = Vec::new();
-    if valid_exit_dir.is_none()
-        && cur_node.cell_id == dst_node.cell_id
-        && !cur_node.dungeon
-        && !dst_node.dungeon
-        && is_town_fabric(&cur_node.kind)
-        && is_town_fabric(&dst_node.kind)
-    {
-        let mut q = VecDeque::new();
-        let mut prev: BTreeMap<String, String> = BTreeMap::new();
-        q.push_back((cur_node_id.clone(), 0usize));
-        prev.insert(cur_node_id.clone(), String::new());
-        while let Some((u, depth)) = q.pop_front() {
-            if u == target_node {
-                let mut cur = u;
-                while let Some(p_id) = prev.get(&cur) {
-                    if p_id.is_empty() {
-                        break;
-                    }
-                    town_shortcut_nodes.push(cur.clone());
-                    cur = p_id.clone();
-                }
-                town_shortcut_nodes.reverse();
-                valid_exit_dir = Some("穿過街坊".to_string());
-                break;
-            }
-            if depth >= 5 {
-                continue;
-            }
-            if let Some(unode) = doc.nodes.get(&u) {
-                for ex in &unode.exits {
-                    if !prev.contains_key(&ex.to)
-                        && let Some(nx) = doc.nodes.get(&ex.to)
-                        && nx.cell_id == cur_node.cell_id
-                        && !nx.dungeon
-                        && is_town_fabric(&nx.kind)
-                    {
-                        prev.insert(ex.to.clone(), u.clone());
-                        q.push_back((ex.to.clone(), depth + 1));
-                    }
-                }
-            }
-        }
-    }
-
     let Some(dir_label) = valid_exit_dir else {
         return Err("那個方向沒有可直接通行的道路或門戶。".to_string());
     };
@@ -737,15 +687,6 @@ pub fn apply_move_step(
             "open_bridge_secret",
             &format!("{}搬開灰松斷橋下的矮人鬆動楔石鑽入暗門", pname),
         );
-    }
-
-    for mid in &town_shortcut_nodes {
-        if let Some(mnd) = doc.nodes.get(mid)
-            && let Some(a) = delta.actors.get_mut(&aid)
-        {
-            let knows = mnd.kind == "plaza" || mnd.kind == "gate";
-            a.record_step_visit(mid, mnd.cell_id, knows);
-        }
     }
 
     let from_nid = delta

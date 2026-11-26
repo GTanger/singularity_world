@@ -272,6 +272,8 @@ pub struct LongTermMemory {
     pub emergent_phase_name: Option<String>,
     #[serde(default)]
     pub mastery: super::phase_and_vessels::ProceduralMastery,
+    #[serde(default)]
+    pub map_memory: super::map_memory::ActorMapMemory,
 }
 
 /// 玩家與全體居民 100% 共用之認知大腦結構

@@ -964,6 +964,7 @@ pub fn apply_world_action(
                 "buy_house",
                 &format!("{}交納銅幣買下【{}】正式落戶成為街坊鄰居", pname, node.name),
             );
+            super::map_memory::record_local_witness_at_cur_node(doc, delta, &aid, clock.game_days);
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
             let msg = format!(
                 "你交納 {} 枚銅幣領下市政廳房契，【{}】從此成為你在島上的安身居所，隨時可回屋安睡與儲物！",
@@ -998,11 +999,27 @@ pub fn apply_world_action(
             if let Some(res) = super::live_land::try_apply_live_land_action(
                 doc, delta, clock, &aid, node, action, param,
             ) {
+                if res.is_ok() {
+                    super::map_memory::record_local_witness_at_cur_node(
+                        doc,
+                        delta,
+                        &aid,
+                        clock.game_days,
+                    );
+                }
                 return res;
             }
             if let Some(res) = super::live_wilds::try_apply_live_wilds_action(
                 doc, delta, clock, &aid, node, action, param,
             ) {
+                if res.is_ok() {
+                    super::map_memory::record_local_witness_at_cur_node(
+                        doc,
+                        delta,
+                        &aid,
+                        clock.game_days,
+                    );
+                }
                 return res;
             }
             if let Some(res) =
@@ -1021,9 +1038,18 @@ pub fn apply_world_action(
             ) {
                 return res;
             }
-            super::unified_kernel::dispatch_extended_shared_verb(
+            let ext_res = super::unified_kernel::dispatch_extended_shared_verb(
                 doc, delta, clock, &aid, action, param,
-            )
+            );
+            if ext_res.is_ok() {
+                super::map_memory::record_local_witness_at_cur_node(
+                    doc,
+                    delta,
+                    &aid,
+                    clock.game_days,
+                );
+            }
+            ext_res
         }
     }
 }

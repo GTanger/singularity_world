@@ -13,8 +13,7 @@ use super::clock_and_lang::current_solar_clock;
 use super::dialogue_llm::{DialoguePartnerProfile, NpcDialogueInput, NpcDialogueOutcome};
 use super::explore_and_combat::apply_explore;
 use super::movement::{
-    add_language_exposure, apply_move_step, apply_setup_origin, new_uninitialized_actor,
-    push_breath,
+    add_language_exposure, apply_setup_origin, new_uninitialized_actor, push_breath,
 };
 use super::persist_pg::{
     NormalizedLoadOutcome, ack_commit_batch, commit_delta_atomic, execute_commit_batch_pg,
@@ -396,7 +395,14 @@ impl IslandEngine {
             let aid = working
                 .resolve_controller(pid)
                 .ok_or("請先向港務官核對通行身分。")?;
-            apply_move_step(doc, working, &clock, &aid, target_node, now_ms)
+            super::map_memory::apply_memory_map_travel(
+                doc,
+                working,
+                &clock,
+                &aid,
+                target_node,
+                now_ms,
+            )
         })
     }
 
@@ -869,6 +875,16 @@ impl IslandEngine {
             };
             push_breath(sp, breath_line);
             sp.mark_mutated();
+            if let Some(ref rkey) = out.unlocked_rumor {
+                super::map_memory::ingest_hearsay_rumor_pin(
+                    doc,
+                    working,
+                    &speaker_aid,
+                    rkey,
+                    &out.npc_reply,
+                    clock.game_days,
+                );
+            }
             Ok((lang_msg, boast_callout))
         })
     }

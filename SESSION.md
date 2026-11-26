@@ -74,6 +74,9 @@
     - 實裝 5 座內陸哥布林營寨口糧短缺與礦竭劫車屯贓（`goblin_hoard` 複式簿記守恆、清剿營寨與部族交涉）、傾頹空屋／淨化疫廳流寇佔據（驅逐解鎖修屋買屋）與試煉深坑巢穴輪替、落敗符石吸收異變首領（全島符石總量守恆），以及 NPC 歲數老去與重傷孤立身故（玩家 100% 免疫）、雙重記帳遺產與鋪倉繼承、學徒接班、無嗣符石歸池、市集追思名錄牌、史官終章與富足家戶新丁成年（並修復 `living_chronicler_gate.rs` OpenCC 專名誤轉）；通過 `69/69` `outer_island` 單元測試、`code_guard_rs`（`hard=0`）、`tra-sw-gate --deploy`、桌面 `1440×900` 與 `Pixel 9 Pro XL` 真機視覺驗收。
 24. **2026-11-26 全開大地圖 `/world_atlas` 升級為無迷霧水彩活輿圖並接通一至四刀實況（`v=20261126r2`）**：
     - 新增 `island_substrate_pack.rs::build_full_revealed_substrate_json`（`860×930` 100% 零迷霧動態底盤，遮罩旅人個資）與 `atlas_live_pulse.rs`，將 `/world_atlas`（`web/world_atlas.html`、`web/world-atlas.js`、`web/world-atlas-panels.js`）由舊版 Voronoi SVG 與切圖全面切換為無縫水彩 Canvas2D 活輿圖（支援地標右上角停靠人數徽記、11 具即時車船、屋宅顏色區分與一至四刀水文斷橋／冷爐缺藥／營寨屯贓／流寇佔屋／異變首領／生死名錄面板及 `goblin_hoard` 守恆對帳）；通過 `69/69` `outer_island` 測試、`tra-sw-gate --deploy`、桌面 `1440×900` 與 `Pixel 9 Pro XL` 真機視覺驗收。
+25. **2026-11-26 地圖與世界機制合一第一刀「旅人親見記憶輿圖與點圖導航」落地（`v=20261126r3`）**：
+    - 新增 `src/grid/outer_island/{map_memory,map_memory_pack,map_memory_tests}.rs` 與接線 `mind.rs`/`views.rs`/`movement.rs`/`engine.rs`/`actions.rs`/`live_tide.rs`/`desire_effects.rs`：廢除玩家端衛星雷達與整塊地塊擦邊秒開，改以個人緊湊親見記憶快照（`ActorMapMemory`）與節點 Chamfer 局部視距揭霧（擦邊 `:skirt_*`／`:approach_*` 遮罩未入核心村舍）、獨立 `？傳聞` 問號批註（親臨現場自動消解、不偷改底圖），並於 `movement.rs` 拆除同城 5 步繞閘捷徑，改由 `apply_memory_map_travel` 沿本人 `known_nodes` 逐跳過閘並在遭遇戰／斷橋／疫氣變化當場停步；`/world_atlas` 維持 100% 無迷霧即時實況。
+    - 前端 `web/island-parchment-map.js`、`web/island-ui.js` 與快取升版 `v=20261126r3`：全縮放層級（含 `z >= 6.4`）保留鄰接未知虛線輪廓 `outline_cells`、繪製赭黃虛線 `？傳聞` 籤條、全已知地標與 2.5D 屋頂範圍直點導航，以及支巷各戶門牌直落屋頂小徽章消除 8 戶重疊吃字；後續第二至四刀依審辯室 `3853189a` 定案順序銜接。
 
 ## 二、 關鍵檔案與正典錨點
 

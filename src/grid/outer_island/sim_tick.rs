@@ -195,6 +195,10 @@ pub fn seed_genesis_actors_once(
     if super::live_commodities::ensure_shop_material_stocks_seeded(doc, delta) {
         delta.extras_dirty = true;
     }
+    let all_ids: Vec<String> = delta.actors.keys().cloned().collect();
+    for aid in all_ids {
+        super::map_memory::seed_actor_initial_map_witness(doc, delta, &aid, 0);
+    }
     delta.genesis_seeded = true;
 }
 
@@ -284,6 +288,9 @@ pub fn spawn_dynamic_actors(
             );
         }
         created_ids.push(aid);
+    }
+    for aid in &created_ids {
+        super::map_memory::seed_actor_initial_map_witness(doc, delta, aid, game_day);
     }
     created_ids
 }
@@ -969,5 +976,5 @@ pub fn tick_outer_island_world(
     super::live_wilds::tick_daily_live_wilds(doc, delta, clock);
     super::live_lifecycle::tick_daily_lifecycle(doc, delta, clock);
     settle_due_contracts(doc, delta, clock);
-    propagate_gossip_o1(delta, clock);
+    propagate_gossip_o1(doc, delta, clock);
 }

@@ -219,6 +219,7 @@ fn tick_single_vehicle_by_id(
                 );
                 a.mark_mutated();
             }
+            super::map_memory::record_local_witness_at_cur_node(doc, delta, &rid, clock.game_days);
             alighted_ids.push(rid);
         }
     }
@@ -444,6 +445,12 @@ pub fn tick_embodied_transit_vehicles(
                     );
                     a.mark_mutated();
                 }
+                super::map_memory::record_local_witness_at_cur_node(
+                    doc,
+                    delta,
+                    &rid,
+                    clock.game_days,
+                );
                 alighted_ids.push(rid);
             }
         }

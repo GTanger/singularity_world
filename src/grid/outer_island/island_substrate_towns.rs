@@ -354,6 +354,12 @@ fn place_town_landmarks_and_alleys(
                 && terrain[pos] != TERRAIN_SEA
             {
                 bldg[pos] = BLDG_ROOF;
+                if !nid.is_empty() {
+                    house_footprint_cells
+                        .entry(nid.to_string())
+                        .or_default()
+                        .push(pos);
+                }
             }
         }
         if use_courtyard

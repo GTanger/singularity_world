@@ -1,11 +1,11 @@
-// PWA Service Worker（v20261126r2：全島無縫水彩活輿圖與設計者實況台同步）
-const CACHE = 'sw-shell-v20261126r2';
+// PWA Service Worker（v20261126r3：旅人親見記憶輿圖、傳聞問號批註與支巷屋頂直點）
+const CACHE = 'sw-shell-v20261126r3';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261126r2',
-  '/island-parchment-map.js?v=20261126r2',
-  '/island-ui.js?v=20261126r2',
+  '/island-ui.css?v=20261126r3',
+  '/island-parchment-map.js?v=20261126r3',
+  '/island-ui.js?v=20261126r3',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

@@ -57,6 +57,10 @@ mod living_player_audit_tests;
 mod living_player_tests;
 #[cfg(test)]
 mod living_water_tests;
+pub mod map_memory;
+pub mod map_memory_pack;
+#[cfg(test)]
+mod map_memory_tests;
 pub mod mesh_expedition;
 pub mod mind;
 pub mod movement;

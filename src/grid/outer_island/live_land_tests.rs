@@ -9,7 +9,9 @@ use super::engine::load_static_world_doc;
 use super::island_substrate::{
     BLDG_RUIN_WALL, BLDG_VACANT_ROOF, ROAD_BRIDGE_OR_PIER, TERRAIN_FARM,
 };
-use super::island_substrate_pack::build_viewer_substrate_json;
+use super::island_substrate_pack::{
+    build_full_revealed_substrate_json, build_viewer_substrate_json,
+};
 use super::live_land::{
     ensure_live_land_seeded, house_is_ruined, is_bridge_washed_out, is_quarantine_restricted,
     tick_daily_live_land,
@@ -221,23 +223,13 @@ fn spring_flood_washes_out_bridge_blocks_carriage_and_paid_timber_repair_restore
         "bridge must remain down when treasury has 0 copper (no magic repair)"
     );
 
-    // 驗證連續底盤疊加中，#4850 被沖斷橋樑之河流網格已無橋樑覆蓋物，且淹水範圍擴張
-    {
-        let v = delta.actors.get_mut(&viewer_id).unwrap();
-        v.mind.ltm.known_cells.insert(4527);
-        v.mind.ltm.known_cells.insert(4529);
-        v.mind.ltm.known_cells.insert(4850);
-    }
-    let broken_sub = build_viewer_substrate_json(
-        &doc,
-        &delta,
-        delta.actors.get(&viewer_id).unwrap(),
-        &winter_clock_at_day(42, 4),
-    );
-    let broken_ov = decode_rle_b64(broken_sub["overlay_rle_b64"].as_str().unwrap());
-    let broken_tr = decode_rle_b64(broken_sub["terrain_rle_b64"].as_str().unwrap());
+    // 驗證 /world_atlas 全開即時底盤立刻反映 #4850 斷橋與淹水擴張；而仍在白鷗港的旅人若未曾踏足 #4850 則保持迷霧（不隔空衛星偷看）
     let sub_ref = super::island_substrate::compiled_island_substrate(&doc);
-    let broken_bridge_tiles = sub_ref
+    let atlas_broken =
+        build_full_revealed_substrate_json(&doc, &delta, &winter_clock_at_day(42, 4));
+    let atlas_broken_ov = decode_rle_b64(atlas_broken["overlay_rle_b64"].as_str().unwrap());
+    let atlas_broken_tr = decode_rle_b64(atlas_broken["terrain_rle_b64"].as_str().unwrap());
+    let atlas_broken_bridge_tiles = sub_ref
         .cell_owner
         .iter()
         .enumerate()
@@ -245,21 +237,21 @@ fn spring_flood_washes_out_bridge_blocks_carriage_and_paid_timber_repair_restore
             own != u16::MAX
                 && sub_ref.cell_ids[own as usize] == 4850
                 && sub_ref.base_terrain[pos] == super::island_substrate::TERRAIN_RIVER
-                && (broken_ov[pos] & 0x07) == ROAD_BRIDGE_OR_PIER
+                && (atlas_broken_ov[pos] & 0x07) == ROAD_BRIDGE_OR_PIER
         })
         .count();
     assert_eq!(
-        broken_bridge_tiles, 0,
-        "washed-out river bridge on #4850 must vanish from live map overlay"
+        atlas_broken_bridge_tiles, 0,
+        "washed-out river bridge on #4850 must vanish on full world atlas"
     );
-    let river_tiles_4850 = sub_ref
+    let atlas_river_4850 = sub_ref
         .cell_owner
         .iter()
         .enumerate()
         .filter(|&(pos, &own)| {
             own != u16::MAX
                 && sub_ref.cell_ids[own as usize] == 4850
-                && broken_tr[pos] == super::island_substrate::TERRAIN_RIVER
+                && atlas_broken_tr[pos] == super::island_substrate::TERRAIN_RIVER
         })
         .count();
     let base_river_tiles_4850 = sub_ref
@@ -273,8 +265,48 @@ fn spring_flood_washes_out_bridge_blocks_carriage_and_paid_timber_repair_restore
         })
         .count();
     assert!(
+        atlas_river_4850 > base_river_tiles_4850,
+        "flooded river tiles on #4850 must expand cleanly on full atlas ({atlas_river_4850} > {base_river_tiles_4850})"
+    );
+
+    // 旅人親臨 #4850 見證現場：個人輿圖立刻見證斷橋消失與淹水擴張！
+    delta.relocate_actor(&viewer_id, "oi:cell4850:0", 4850, true);
+    let broken_sub = build_viewer_substrate_json(
+        &doc,
+        &delta,
+        delta.actors.get(&viewer_id).unwrap(),
+        &winter_clock_at_day(42, 4),
+    );
+    let broken_ov = decode_rle_b64(broken_sub["overlay_rle_b64"].as_str().unwrap());
+    let broken_tr = decode_rle_b64(broken_sub["terrain_rle_b64"].as_str().unwrap());
+    let broken_bridge_tiles = sub_ref
+        .cell_owner
+        .iter()
+        .enumerate()
+        .filter(|&(pos, &own)| {
+            own != u16::MAX
+                && sub_ref.cell_ids[own as usize] == 4850
+                && sub_ref.base_terrain[pos] == super::island_substrate::TERRAIN_RIVER
+                && (broken_ov[pos] & 0x07) == ROAD_BRIDGE_OR_PIER
+        })
+        .count();
+    assert_eq!(
+        broken_bridge_tiles, 0,
+        "washed-out river bridge on #4850 must vanish after viewer arrives on site"
+    );
+    let river_tiles_4850 = sub_ref
+        .cell_owner
+        .iter()
+        .enumerate()
+        .filter(|&(pos, &own)| {
+            own != u16::MAX
+                && sub_ref.cell_ids[own as usize] == 4850
+                && broken_tr[pos] == super::island_substrate::TERRAIN_RIVER
+        })
+        .count();
+    assert!(
         river_tiles_4850 > base_river_tiles_4850,
-        "flooded river tiles on #4850 must expand cleanly over land ({river_tiles_4850} > {base_river_tiles_4850})"
+        "flooded river tiles on #4850 must expand cleanly when witnessed on site ({river_tiles_4850} > {base_river_tiles_4850})"
     );
 
     // 驗證東西幹線雙馬驛車行經 #4527 前（idx 4 -> 5）遭洪橋擋駕並原地折返，不穿斷橋！
@@ -481,15 +513,27 @@ fn farmland_reclaim_fallow_regression_vacant_ruin_and_commit_roundtrip() {
     );
 
     let clk_end = winter_clock_at_day(355, 4);
-    let ruin_pack =
-        build_viewer_substrate_json(&doc, &delta, delta.actors.get(&aid).unwrap(), &clk_end);
-    let ruin_ov = decode_rle_b64(ruin_pack["overlay_rle_b64"].as_str().unwrap());
+    // 開荒客仍在 #4432 未親臨 #4616 繩索巷：個人輿圖尚不知情，而 /world_atlas 全開底盤已可見斷牆！
+    let atlas_ruin = build_full_revealed_substrate_json(&doc, &delta, &clk_end);
+    let atlas_ruin_ov = decode_rle_b64(atlas_ruin["overlay_rle_b64"].as_str().unwrap());
     let h9_cells = &sub_ref.house_footprint_cells[rope_h9];
     assert!(
         h9_cells
             .iter()
+            .all(|&pos| (atlas_ruin_ov[pos] >> 3) == BLDG_RUIN_WALL),
+        "ruined vacant house footprint must render BLDG_RUIN_WALL on full atlas"
+    );
+
+    // 親赴繩索巷現場見證：個人輿圖隨即呈現 BLDG_RUIN_WALL！
+    delta.relocate_actor(&aid, "oi:white_gull_harbor:rope_ln", 4616, true);
+    let ruin_pack =
+        build_viewer_substrate_json(&doc, &delta, delta.actors.get(&aid).unwrap(), &clk_end);
+    let ruin_ov = decode_rle_b64(ruin_pack["overlay_rle_b64"].as_str().unwrap());
+    assert!(
+        h9_cells
+            .iter()
             .all(|&pos| (ruin_ov[pos] >> 3) == BLDG_RUIN_WALL),
-        "ruined vacant house footprint must render BLDG_RUIN_WALL on map"
+        "ruined vacant house footprint must render BLDG_RUIN_WALL when witnessed on site"
     );
 
     // 砍伐原木並修繕空屋：立即恢復 BLDG_VACANT_ROOF！

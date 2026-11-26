@@ -15,7 +15,7 @@ use super::island_substrate::{
 use super::slow_think::mask_player_names_in_text;
 use super::types::{IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
 
-fn rle_encode_bytes(raw: &[u8]) -> Vec<u8> {
+pub(crate) fn rle_encode_bytes(raw: &[u8]) -> Vec<u8> {
     let mut out = Vec::with_capacity(raw.len() / 16);
     let mut i = 0;
     while i < raw.len() {
@@ -31,7 +31,7 @@ fn rle_encode_bytes(raw: &[u8]) -> Vec<u8> {
     out
 }
 
-fn base64_encode(bytes: &[u8]) -> String {
+pub(crate) fn base64_encode(bytes: &[u8]) -> String {
     const TBL: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
     let mut i = 0;
@@ -353,124 +353,14 @@ fn synthesize_live_substrate_buffers(
     (terrain, overlay, built_pois, low_tide)
 }
 
-/// 依旅人目前視線迷霧、`delta` 活態變更與 `48 候` 潮汐，產生全島單一無縫底盤序列化 JSON。
+/// 依旅人目前親見記憶輿圖、傳聞問號批註與潮汐，產生全島單一無縫底盤序列化 JSON。
 pub fn build_viewer_substrate_json(
     doc: &WorldStaticDoc,
     delta: &IslandWorldDelta,
     viewer: &UnifiedMindBody,
     clock: &SolarClockSnapshot,
 ) -> Value {
-    let sub = compiled_island_substrate(doc);
-    let known_cells = &viewer.mind.ltm.known_cells;
-    let (terrain, overlay, built_pois_raw, low_tide) =
-        synthesize_live_substrate_buffers(doc, sub, delta, clock, Some(known_cells));
-
-    let terrain_b64 = base64_encode(&rle_encode_bytes(&terrain));
-    let overlay_b64 = base64_encode(&rle_encode_bytes(&overlay));
-
-    let mut pois: Vec<Value> = Vec::new();
-    for p in &sub.poi_base_entries {
-        if known_cells.contains(&p.cell_id) {
-            pois.push(json!({
-                "id": p.id,
-                "label": p.label,
-                "tier": p.tier,
-                "gx": p.gx,
-                "gy": p.gy,
-            }));
-        }
-    }
-    for (id, _, label, gx, gy) in built_pois_raw {
-        pois.push(json!({
-            "id": id,
-            "label": label,
-            "tier": "built",
-            "gx": gx,
-            "gy": gy,
-        }));
-    }
-    for band in delta.live_wilds.bands.values() {
-        if known_cells.contains(&band.cell_id)
-            && clock.game_days >= band.suppressed_until_day
-            && (band.raid_pressure >= 60 || band.hoard_copper >= 8)
-            && let Some(&[gx, gy]) = sub.node_anchors.get(&band.camp_node_id)
-        {
-            pois.push(json!({
-                "id": format!("band:{}", band.cell_id),
-                "label": band.band_name_zh,
-                "tier": "ruin",
-                "gx": gx,
-                "gy": gy,
-            }));
-        }
-    }
-
-    let cur_node = doc
-        .nodes
-        .get(&viewer.node_id)
-        .or_else(|| doc.nodes.get(&doc.spawn_node));
-    let cur_anchor = cur_node.and_then(|nd| {
-        if nd.dungeon {
-            doc.nodes
-                .get("oi:cell4529:0")
-                .and_then(|ent| sub.node_anchors.get(&ent.id))
-                .copied()
-        } else {
-            sub.node_anchors
-                .get(&nd.id)
-                .copied()
-                .or_else(|| {
-                    delta
-                        .built_houses
-                        .get(&nd.id)
-                        .and_then(|bh| sub.node_anchors.get(&bh.anchor_node_id))
-                        .copied()
-                })
-                .or_else(|| Some(world_to_grid_f32(nd.pos[0], nd.pos[1])))
-        }
-    });
-
-    let mut adj_exits: Vec<Value> = Vec::new();
-    if let Some(nd) = cur_node
-        && !nd.dungeon
-    {
-        for ex in &nd.exits {
-            if let Some(dst) = doc.nodes.get(&ex.to)
-                && !dst.dungeon
-                && (known_cells.contains(&dst.cell_id) || ex.kind != "secret")
-                && let Some(&[ax, ay]) = sub.node_anchors.get(&dst.id)
-            {
-                let short_lbl = dst
-                    .name
-                    .rsplit('・')
-                    .next()
-                    .unwrap_or(&dst.name)
-                    .split('（')
-                    .next()
-                    .unwrap_or(&dst.name);
-                adj_exits.push(json!({
-                    "id": dst.id,
-                    "label": short_lbl,
-                    "gx": ax,
-                    "gy": ay,
-                }));
-            }
-        }
-    }
-
-    json!({
-        "grid_w": GRID_W,
-        "grid_h": GRID_H,
-        "wx0": WX0,
-        "wy0": WY0,
-        "scale": GRID_SCALE,
-        "low_tide": low_tide,
-        "terrain_rle_b64": terrain_b64,
-        "overlay_rle_b64": overlay_b64,
-        "player_pos": cur_anchor,
-        "pois": pois,
-        "adjacent_exits": adj_exits,
-    })
+    super::map_memory::build_viewer_memory_substrate_json(doc, delta, viewer, clock)
 }
 
 /// 產生全島 100% 無迷霧（零 `TERRAIN_FOG`）即時水彩活態底盤封包（專供 `/world_atlas` 設計者全開大地圖）。

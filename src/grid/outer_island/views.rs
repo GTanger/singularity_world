@@ -483,7 +483,11 @@ pub fn build_filtered_map_json(
 
     for &cid in visited_cells {
         if let Some(cell) = doc.cells.get(&cid.to_string()) {
+            let core_access = super::map_memory::actor_has_core_cell_access(doc, viewer, cid);
             expand_bounds(&cell.polygon);
+            if !core_access {
+                outline_ids.insert(cid);
+            }
             for &nb in &cell.neighbors_f6 {
                 if !visited_cells.contains(&nb) {
                     outline_ids.insert(nb);
@@ -498,8 +502,8 @@ pub fn build_filtered_map_json(
                 "flux": cell.flux,
                 "is_coast": cell.is_coast,
                 "kind": cell.kind,
-                "title": cell.title,
-                "state_known": viewer.known_state_cells.contains(&cid),
+                "title": if core_access { cell.title.as_str() } else { "路廊外緣" },
+                "state_known": core_access && viewer.known_state_cells.contains(&cid),
             }));
         }
     }
@@ -594,7 +598,7 @@ pub fn build_filtered_map_json(
     let mut visited_towns = serde_json::Map::new();
     for (slug, tval) in &doc.town_micro_maps {
         if let Some(cid) = tval.get("cell_id").and_then(|v| v.as_u64())
-            && visited_cells.contains(&(cid as u32))
+            && super::map_memory::actor_has_core_cell_access(doc, viewer, cid as u32)
         {
             visited_towns.insert(slug.clone(), tval.clone());
         }
