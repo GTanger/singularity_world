@@ -596,6 +596,10 @@ pub struct IslandWorldDelta {
     pub survivor_letters_delivered: BTreeSet<String>,
     #[serde(default)]
     pub tile_diffs: BTreeMap<u32, TileDiffEntry>,
+    #[serde(default)]
+    pub shop_leases: BTreeMap<String, super::shop_leases::ShopLeaseRecord>,
+    #[serde(default)]
+    pub place_registry: BTreeMap<String, super::place_registry::DynamicPlaceRecord>,
     pub live_land: super::live_land::LiveLandState,
     pub live_commodities: super::live_commodities::LiveCommoditiesState,
     pub live_wilds: super::live_wilds::LiveWildsState,

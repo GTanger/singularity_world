@@ -440,6 +440,40 @@ impl IslandEngine {
         })
     }
 
+    #[expect(
+        clippy::too_many_arguments,
+        reason = "single-flight move + lightweight map_sync response"
+    )]
+    pub fn move_player_with_sync(
+        &self,
+        pid: &str,
+        target_node: &str,
+        gx: Option<f32>,
+        gy: Option<f32>,
+        mode: &str,
+        steps: Option<u8>,
+        prev_digest: Option<u64>,
+        now_ms: u64,
+    ) -> (Result<String, String>, Value, Value) {
+        let res = self.move_player_ext(pid, target_node, gx, gy, mode, steps, now_ms);
+        let clock = current_solar_clock();
+        let Ok(guard) = self.delta.read() else {
+            return (res, Value::Null, Value::Null);
+        };
+        let Some(viewer) = guard.actor_by_controller(pid) else {
+            return (res, Value::Null, Value::Null);
+        };
+        let view = build_view_json(&self.doc, &guard, viewer, &clock);
+        let map_sync = super::map_memory_pack::build_walk_map_sync_json(
+            &self.doc,
+            &guard,
+            viewer,
+            &clock,
+            prev_digest,
+        );
+        (res, view, map_sync)
+    }
+
     pub fn explore_here(&self, pid: &str) -> Result<String, String> {
         let clock = current_solar_clock();
         self.mutate_commit_before_publish(|doc, working| {

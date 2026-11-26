@@ -5,9 +5,9 @@ use std::collections::BTreeMap;
 use serde_json::Value;
 
 use super::island_substrate::{
-    BLDG_NONE, BLDG_ROOF, BLDG_TOWER, BLDG_VACANT_ROOF, ROAD_BRIDGE_OR_PIER, ROAD_COUNTRY_TRACK,
-    ROAD_NONE, ROAD_STONE_WALL, ROAD_TOWN_COBBLE, SubstratePoiSeed, TERRAIN_LAND, TERRAIN_SEA,
-    idx_of, world_to_grid,
+    BLDG_NONE, BLDG_ROOF, BLDG_TOWER, BLDG_VACANT_ROOF, ROAD_BRIDGE_OR_PIER, ROAD_NONE,
+    ROAD_STONE_WALL, ROAD_TOWN_COBBLE, SubstratePoiSeed, TERRAIN_LAND, TERRAIN_SEA, idx_of,
+    world_to_grid,
 };
 use super::types::WorldStaticDoc;
 
@@ -115,13 +115,17 @@ pub fn compile_settlements(
         };
 
         if !is_core {
-            compile_rural_settlement(
+            super::island_substrate_rural::compile_bespoke_rural_settlement(
+                doc,
                 slug,
+                cid,
                 cidx,
                 cgx,
                 cgy,
                 safe_l.min(7),
                 safe_r.min(7),
+                safe_u.min(7),
+                safe_d.min(7),
                 tval,
                 cell_owner,
                 terrain,
@@ -562,77 +566,6 @@ fn place_town_landmarks_and_alleys(
             (wx1, cgy + 2),
         ] {
             place_wall_tile(tx, ty, true);
-        }
-    }
-}
-
-#[expect(
-    clippy::too_many_arguments,
-    reason = "rural settlement layout placement"
-)]
-fn compile_rural_settlement(
-    slug: &str,
-    cidx: u16,
-    cgx: isize,
-    cgy: isize,
-    safe_l: isize,
-    safe_r: isize,
-    tval: &Value,
-    cell_owner: &[u16],
-    terrain: &mut [u8],
-    road: &mut [u8],
-    bldg: &mut [u8],
-    node_anchors: &mut BTreeMap<String, [f32; 2]>,
-    house_footprint_cells: &mut BTreeMap<String, Vec<usize>>,
-) {
-    let roofs = tval
-        .get("roofs")
-        .and_then(|v| v.as_array())
-        .map(Vec::as_slice)
-        .unwrap_or(&[]);
-    let tier = tval
-        .get("tier")
-        .and_then(|v| v.as_str())
-        .unwrap_or("micro_hub");
-
-    for dx in -2..=2 {
-        if let Some(pos) = idx_of(cgx + dx, cgy)
-            && cell_owner[pos] == cidx
-            && terrain[pos] != TERRAIN_SEA
-        {
-            terrain[pos] = TERRAIN_LAND;
-            road[pos] = if tier == "market_town" {
-                ROAD_TOWN_COBBLE
-            } else {
-                ROAD_COUNTRY_TRACK
-            };
-        }
-    }
-    node_anchors.insert(
-        format!("oi:{slug}:yard"),
-        [cgx as f32 + 0.5, cgy as f32 + 0.5],
-    );
-
-    for (idx, rf) in roofs.iter().enumerate() {
-        let side_y = if idx % 2 == 0 { -2 } else { 2 };
-        let col = (idx / 2) as isize;
-        let hx = (cgx - safe_l + 2 + col * 2).min(cgx + safe_r - 1);
-        let hy = cgy + side_y;
-        let vacant = rf.get("vacant").and_then(|v| v.as_bool()).unwrap_or(false);
-        if let Some(pos) = idx_of(hx, hy)
-            && cell_owner[pos] == cidx
-            && terrain[pos] != TERRAIN_SEA
-            && bldg[pos] == BLDG_NONE
-        {
-            terrain[pos] = TERRAIN_LAND;
-            bldg[pos] = if vacant { BLDG_VACANT_ROOF } else { BLDG_ROOF };
-            if let Some(rnid) = rf.get("node_id").and_then(|v| v.as_str()) {
-                node_anchors.insert(rnid.to_string(), [hx as f32 + 0.5, hy as f32 + 0.5]);
-                house_footprint_cells
-                    .entry(rnid.to_string())
-                    .or_default()
-                    .push(pos);
-            }
         }
     }
 }

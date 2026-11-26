@@ -50,7 +50,7 @@ fn infer_default_strategy_for_actor(
                 return (GoalStrategyKind::AvoidRift, top.target_id.clone());
             }
             ConcernCause::LivelihoodShortfall => {
-                if a.copper <= 2 && !a.role.contains("掌櫃") {
+                if a.copper <= 2 {
                     return (GoalStrategyKind::ShiftLivelihood, None);
                 }
                 if a.copper < 6 {
@@ -133,7 +133,8 @@ pub fn coerce_feasible_strategy(
                     .is_some_and(|cl| cl.reclaimed_plots < 4 && cl.flood_level == 0)
         })
     });
-    let can_shift = !a.role.contains("掌櫃") && a.copper <= 6;
+    let can_shift = super::shop_leases::actor_currently_operates_any_shop(doc, delta, a).is_none()
+        && a.copper <= 6;
 
     let is_ok = |k: GoalStrategyKind| -> bool {
         match k {

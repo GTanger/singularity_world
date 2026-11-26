@@ -500,11 +500,23 @@ pub fn step_npc_grid_walk_tick(
 fn find_clicked_building_goal(
     doc: &WorldStaticDoc,
     sub: &CompiledIslandSubstrate,
+    delta: &IslandWorldDelta,
     gx: f32,
     gy: f32,
 ) -> Option<(String, (isize, isize))> {
     let igx = gx.floor() as isize;
     let igy = gy.floor() as isize;
+    if igx >= 0 && igy >= 0 {
+        let uxy = [igx as u16, igy as u16];
+        for rec in delta.place_registry.values() {
+            if !rec.ruined && rec.footprint_tiles.contains(&uxy) {
+                return Some((
+                    rec.anchor_node_id.clone(),
+                    (rec.door_tile[0] as isize, rec.door_tile[1] as isize),
+                ));
+            }
+        }
+    }
     if let Some(pos) = idx_of(igx, igy) {
         for (nid, fp) in &sub.house_footprint_cells {
             if fp.contains(&pos)
@@ -643,7 +655,7 @@ pub fn handle_player_move_request(
             }
             return Ok("你收住腳步，停在原地。".to_string());
         }
-        let bldg_goal = find_clicked_building_goal(doc, sub, cgx, cgy);
+        let bldg_goal = find_clicked_building_goal(doc, sub, delta, cgx, cgy);
         if let Some((enter_nid, door_xy)) = bldg_goal {
             exit_indoor_to_door(doc, sub, delta, clock, &aid);
             if let Some(a) = delta.actors.get_mut(&aid) {

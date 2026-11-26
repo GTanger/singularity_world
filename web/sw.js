@@ -1,11 +1,11 @@
-// PWA Service Worker（v20261126r6：全島零黑霧與 860×930 連續步行＋名牌淨空＋城市名牌點擊直行）
-const CACHE = 'sw-shell-v20261126r6';
+// PWA Service Worker（v20261126r7：全島 60fps 局部步行同步＋店鋪封爐頂讓＋29 鄉村聚落專屬格局＋只增不減動態建築清冊）
+const CACHE = 'sw-shell-v20261126r7';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261126r6',
-  '/island-parchment-map.js?v=20261126r6',
-  '/island-ui.js?v=20261126r6',
+  '/island-ui.css?v=20261126r7',
+  '/island-parchment-map.js?v=20261126r7',
+  '/island-ui.js?v=20261126r7',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

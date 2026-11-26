@@ -193,7 +193,8 @@ fn find_available_bridge_artisan(delta: &IslandWorldDelta) -> Option<String> {
             a.alive
                 && a.controller_id.is_none()
                 && a.active_skirmish.is_none()
-                && (a.role.contains("木匠") || a.role.contains("石工") || a.role.contains("鍛鐵"))
+                && (super::shop_leases::has_forestry_or_bridge_tool(a)
+                    || super::shop_leases::has_mining_or_forging_tool(a))
         })
         .map(|(id, _)| id.clone())
 }

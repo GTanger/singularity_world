@@ -113,6 +113,10 @@ pub(crate) struct WorldExtrasBlob {
     pub(crate) survivor_letters_delivered: std::collections::BTreeSet<String>,
     #[serde(default)]
     pub(crate) tile_diffs: BTreeMap<u32, TileDiffEntry>,
+    #[serde(default)]
+    pub(crate) shop_leases: BTreeMap<String, super::shop_leases::ShopLeaseRecord>,
+    #[serde(default)]
+    pub(crate) place_registry: BTreeMap<String, super::place_registry::DynamicPlaceRecord>,
     pub(crate) live_land: super::live_land::LiveLandState,
     pub(crate) live_commodities: super::live_commodities::LiveCommoditiesState,
     pub(crate) goblin_hoard_copper: i64,

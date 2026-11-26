@@ -27,10 +27,11 @@ pub fn find_same_node_counterparty(
 ) -> Option<String> {
     let occ = delta.node_occupants.get(node_id)?;
     let can_transact = |a: &UnifiedMindBody| -> bool {
+        let is_shop_op = super::shop_leases::actor_operates_shop(delta, &a.actor_id, node_id);
         a.alive
             && a.setup_done
             && a.node_id == node_id
-            && accepted_roles.contains(&a.role.as_str())
+            && (accepted_roles.contains(&a.role.as_str()) || is_shop_op)
             && !super::live_tide::is_actor_online_protected(a, real_unix)
     };
     if let Some(tok) =
@@ -76,7 +77,8 @@ pub(super) fn has_role_at_node(
                         && o.setup_done
                         && o.controller_id.is_none()
                         && o.node_id == node_id
-                        && o.role == role
+                        && (o.role == role
+                            || super::shop_leases::actor_operates_shop(delta, oid, node_id))
                 })
         })
     })
@@ -89,6 +91,12 @@ fn is_first_of_roles_at_node(
     target_id: &str,
     roles: &[&str],
 ) -> bool {
+    if delta.shop_leases.get(node_id).is_some_and(|l| {
+        l.state == super::shop_leases::ShopLeaseState::Active
+            && l.operator_actor_id.as_deref() == Some(target_id)
+    }) {
+        return target_id != viewer_id;
+    }
     for role in roles {
         if let Some(occ) = delta.node_occupants.get(node_id) {
             let mut matching: Vec<&str> = occ

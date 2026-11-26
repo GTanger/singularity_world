@@ -778,3 +778,97 @@ fn local_tile_diffs_write_at_actor_xy_persist_and_isolate_distant_viewer() {
         );
     }
 }
+
+#[test]
+fn walking_along_street_keeps_terrain_digest_stable_until_real_tile_change() {
+    use super::island_substrate::{GRID_W, TERRAIN_LAND};
+    use super::map_memory_pack::{build_walk_map_sync_json, compute_viewer_terrain_digest};
+    use super::types::TileDiffEntry;
+
+    let (doc, mut delta, clk) = setup_test_world(280, 4);
+    apply_setup_origin(
+        &doc,
+        &mut delta,
+        &clk,
+        "walk_digest_qa",
+        "穩步旅人",
+        "人類",
+        "",
+        "smith_apprentice",
+    )
+    .expect("setup ok");
+    let pid = delta.resolve_actor_id("walk_digest_qa").unwrap();
+    let dock = compiled_island_substrate(&doc).node_anchors["oi:white_gull_harbor:dock"];
+    let plaza = compiled_island_substrate(&doc).node_anchors["oi:white_gull_harbor:plaza"];
+    let mut prev_digest = compute_viewer_terrain_digest(&doc, &delta, &delta.actors[&pid], &clk);
+
+    super::map_walk::handle_player_move_request(
+        &doc,
+        &mut delta,
+        &clk,
+        "walk_digest_qa",
+        "",
+        Some(plaza[0]),
+        Some(plaza[1]),
+        "plan",
+        None,
+        1_000,
+    )
+    .expect("plan walk toward plaza");
+
+    let mut step_dirty_count = 0usize;
+    let mut steps_taken = 0usize;
+    for i in 0..8 {
+        super::map_walk::handle_player_move_request(
+            &doc,
+            &mut delta,
+            &clk,
+            "walk_digest_qa",
+            "",
+            None,
+            None,
+            "step",
+            Some(3),
+            1_500 + (i + 1) * 500,
+        )
+        .expect("step walk ok");
+        let sync =
+            build_walk_map_sync_json(&doc, &delta, &delta.actors[&pid], &clk, Some(prev_digest));
+        if sync["terrain_dirty"].as_bool().unwrap_or(false) {
+            step_dirty_count += 1;
+        }
+        prev_digest = sync["terrain_digest"]
+            .as_str()
+            .and_then(|s| s.parse::<u64>().ok())
+            .unwrap();
+        steps_taken += 1;
+        if delta.actors[&pid].walk_waypoints.is_empty() {
+            break;
+        }
+    }
+    assert!(steps_taken >= 3, "must complete >= 3 multi-step walk ticks");
+    assert_eq!(
+        step_dirty_count, 0,
+        "walking past intact harbor houses must not false-trigger terrain_dirty (dock={dock:?})"
+    );
+
+    let ax = delta.actors[&pid].map_gx.floor() as usize;
+    let ay = delta.actors[&pid].map_gy.floor() as usize;
+    let nearby_pos = (ay * GRID_W + ax.saturating_add(2)) as u32;
+    delta.tile_diffs.insert(
+        nearby_pos,
+        TileDiffEntry {
+            terrain: TERRAIN_LAND,
+            road: 1,
+            bldg: 0,
+            changed_day: clk.game_days,
+        },
+    );
+    let after_change =
+        build_walk_map_sync_json(&doc, &delta, &delta.actors[&pid], &clk, Some(prev_digest));
+    assert_eq!(
+        after_change["terrain_dirty"].as_bool(),
+        Some(true),
+        "real tile_diffs change within 18 tiles must flip terrain_dirty = true"
+    );
+}

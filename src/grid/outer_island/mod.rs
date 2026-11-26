@@ -28,6 +28,7 @@ pub mod household_economy;
 pub mod island_substrate;
 pub mod island_substrate_pack;
 pub mod island_substrate_paths;
+pub mod island_substrate_rural;
 #[cfg(test)]
 mod island_substrate_tests;
 pub mod island_substrate_towns;
@@ -76,11 +77,13 @@ pub mod persist_schema;
 pub mod persist_v1_migrate;
 pub mod persona;
 pub mod phase_and_vessels;
+pub mod place_registry;
 #[cfg(test)]
 mod rural_ecosystem_tests;
 pub mod rural_migrate;
 pub mod scene_objects;
 pub mod scene_sockets;
+pub mod shop_leases;
 pub mod sim_tick;
 pub mod slow_think;
 pub mod surface_cues;

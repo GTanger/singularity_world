@@ -33,12 +33,15 @@
     walkAnim: {
       active: false,
       inFlight: false,
+      walkSeq: 0,
       displayPos: null,
       waypoints: [],
       lastFrameTs: 0,
       lastSyncTs: 0,
       rafId: 0
-    }
+    },
+    terrainDigest: '',
+    terrainRefreshInFlight: false
   };
 
   function byId(id) {
@@ -383,7 +386,7 @@
   }
 
   function pollIslandPulse() {
-    if (!appState.authed || document.visibilityState === 'hidden' || appState.pulseInFlight) {
+    if (!appState.authed || document.visibilityState === 'hidden' || appState.pulseInFlight || appState.walkAnim.active) {
       return;
     }
     if (!appState.view || !appState.view.setup_done) {
@@ -555,9 +558,108 @@
     };
   }
 
+  function trimPassedWaypoints(dispPos, rawWps) {
+    var mapped = (rawWps || []).map(function (pt) {
+      return [pt[0] + 0.5, pt[1] + 0.5];
+    });
+    if (!dispPos || mapped.length <= 1) return mapped;
+    var bestIdx = 0;
+    var bestD2 = Infinity;
+    for (var i = 0; i < mapped.length; i++) {
+      var d2 = Math.pow(mapped[i][0] - dispPos[0], 2) + Math.pow(mapped[i][1] - dispPos[1], 2);
+      if (d2 < bestD2) {
+        bestD2 = d2;
+        bestIdx = i;
+      }
+    }
+    if (bestD2 <= 2.25 && bestIdx + 1 < mapped.length) {
+      var cur = mapped[bestIdx];
+      var nxt = mapped[bestIdx + 1];
+      var vx = nxt[0] - cur[0], vy = nxt[1] - cur[1];
+      var dx = dispPos[0] - cur[0], dy = dispPos[1] - cur[1];
+      if (dx * vx + dy * vy > 0) {
+        return mapped.slice(bestIdx + 1);
+      }
+    }
+    return bestD2 <= 2.25 ? mapped.slice(bestIdx) : mapped;
+  }
+
+  function applyWalkMapSync(sync, expectedSeq, isStepResponse) {
+    if (!sync || !appState.mapData || !appState.mapData.substrate) return;
+    var wa = appState.walkAnim;
+    if (typeof expectedSeq === 'number' && expectedSeq !== wa.walkSeq) return;
+    var m = appState.mapData;
+    var sub = m.substrate;
+    var prevInDungeon = !!m.in_dungeon;
+    if (typeof sync.current_cell_id === 'number') m.current_cell_id = sync.current_cell_id;
+    if (sync.current_node_id) m.current_node_id = sync.current_node_id;
+    if (sync.current_node_name != null) m.current_node_name = sync.current_node_name;
+    m.in_dungeon = !!sync.in_dungeon;
+    sub.in_indoor = !!sync.in_indoor;
+    sub.indoor_node_id = sync.indoor_node_id || null;
+    sub.indoor_label = sync.indoor_label || null;
+    if (Array.isArray(sync.nearby_actors)) sub.nearby_actors = sync.nearby_actors;
+    if (Array.isArray(sync.proximity_capsules)) sub.proximity_capsules = sync.proximity_capsules;
+    if (Array.isArray(sync.pois)) sub.pois = sync.pois;
+    if (Array.isArray(sync.rumor_pins)) sub.rumor_pins = sync.rumor_pins;
+    if (Array.isArray(sync.building_hits)) sub.building_hits = sync.building_hits;
+    if (sync.terrain_digest) appState.terrainDigest = sync.terrain_digest;
+
+    var rawWps = sync.walk_waypoints || [];
+    sub.walk_waypoints = rawWps;
+    var srvPos = sync.player_pos;
+    if (!wa.displayPos && srvPos) {
+      wa.displayPos = [srvPos[0], srvPos[1]];
+    }
+    if (rawWps.length > 0 && !m.in_dungeon) {
+      if (isStepResponse && wa.displayPos && Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) <= 4.5) {
+        wa.waypoints = trimPassedWaypoints(wa.displayPos, rawWps);
+        sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
+      } else {
+        if (srvPos && (!wa.displayPos || Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) > 5.0)) {
+          wa.displayPos = [srvPos[0], srvPos[1]];
+        }
+        wa.waypoints = trimPassedWaypoints(wa.displayPos, rawWps);
+        sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
+      }
+      wa.active = wa.waypoints.length > 0;
+      if (wa.active) ensureWalkAnimationLoop();
+    } else if (srvPos && !m.in_dungeon && wa.displayPos && isStepResponse) {
+      var tailDist = Math.hypot(srvPos[0] - wa.displayPos[0], srvPos[1] - wa.displayPos[1]);
+      if (tailDist > 0.15 && tailDist <= 3.5) {
+        wa.waypoints = [[srvPos[0], srvPos[1]]];
+        wa.active = true;
+        ensureWalkAnimationLoop();
+      } else {
+        wa.displayPos = [srvPos[0], srvPos[1]];
+        sub.player_pos = [srvPos[0], srvPos[1]];
+        wa.waypoints = [];
+        wa.active = false;
+      }
+    } else {
+      if (srvPos) {
+        wa.displayPos = [srvPos[0], srvPos[1]];
+        sub.player_pos = [srvPos[0], srvPos[1]];
+      }
+      wa.waypoints = [];
+      wa.active = false;
+    }
+
+    if (m.in_dungeon !== prevInDungeon || sync.terrain_dirty) {
+      if (!appState.terrainRefreshInFlight) {
+        refreshMapData(false);
+      }
+    }
+    renderDesktopMiniMap();
+    if (appState.mapOpen) renderFullscreenMap();
+  }
+
   function syncWalkStateFromMap(m, centerCamera) {
     var sub = m && m.substrate;
     var wa = appState.walkAnim;
+    if (sub && sub.terrain_digest) {
+      appState.terrainDigest = sub.terrain_digest;
+    }
     if (!sub || !sub.player_pos) {
       wa.active = false;
       wa.waypoints = [];
@@ -565,18 +667,19 @@
     }
     var srvPos = sub.player_pos;
     var rawWps = sub.walk_waypoints || [];
-    wa.waypoints = rawWps.map(function (pt) {
-      return [pt[0] + 0.5, pt[1] + 0.5];
-    });
     if (
       !wa.displayPos ||
       centerCamera ||
-      rawWps.length === 0 ||
       Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) > 5.0
     ) {
       wa.displayPos = [srvPos[0], srvPos[1]];
-    } else {
+      wa.waypoints = rawWps.map(function (pt) { return [pt[0] + 0.5, pt[1] + 0.5]; });
+    } else if (rawWps.length > 0) {
+      wa.waypoints = trimPassedWaypoints(wa.displayPos, rawWps);
       sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
+    } else {
+      wa.displayPos = [srvPos[0], srvPos[1]];
+      wa.waypoints = [];
     }
     if (wa.waypoints.length > 0 && !m.in_dungeon) {
       wa.active = true;
@@ -594,7 +697,7 @@
     wa.lastFrameTs = now;
 
     if (wa.displayPos && wa.waypoints.length > 0) {
-      var remain = 5.5 * dt;
+      var remain = 6.0 * dt;
       while (remain > 0 && wa.waypoints.length > 0) {
         var target = wa.waypoints[0];
         var dx = target[0] - wa.displayPos[0];
@@ -620,20 +723,40 @@
       if (appState.mapOpen) renderFullscreenMap();
     }
 
-    if (!wa.inFlight && now - wa.lastSyncTs >= 360) {
-      wa.inFlight = true;
-      wa.lastSyncTs = now;
-      apiJson('/api/island/move', 'POST', { to: '', mode: 'step', steps: 2 }).then(function (res) {
-        wa.inFlight = false;
-        if (res && res.view) applyServerView(res.view, true);
-        if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|阻/.test(res.msg))) {
-          showToast(res.msg);
-        }
-        refreshMapData(false);
-      });
+    if (wa.waypoints.length === 0) {
+      wa.active = false;
     }
 
-    if (wa.active) {
+    if (!wa.inFlight && now - wa.lastSyncTs >= 480) {
+      var syncWps = appState.mapData.substrate.walk_waypoints || [];
+      if (syncWps.length > 0 || wa.active) {
+        var mySeq = wa.walkSeq;
+        wa.inFlight = true;
+        wa.lastSyncTs = now;
+        apiJson('/api/island/move', 'POST', {
+          to: '',
+          mode: 'step',
+          steps: 3,
+          prev_digest: appState.terrainDigest || undefined
+        }).then(function (res) {
+          wa.inFlight = false;
+          if (mySeq !== wa.walkSeq) return;
+          if (res && res.view) applyServerView(res.view, true);
+          if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|阻/.test(res.msg))) {
+            showToast(res.msg);
+          }
+          if (res && res.map_sync) {
+            applyWalkMapSync(res.map_sync, mySeq, true);
+          } else {
+            refreshMapData(false);
+          }
+        }).catch(function () {
+          wa.inFlight = false;
+        });
+      }
+    }
+
+    if (wa.active || wa.inFlight) {
       wa.rafId = requestAnimationFrame(stepWalkAnimation);
     }
   }
@@ -647,25 +770,37 @@
   }
 
   function startGridWalk(opts) {
+    var wa = appState.walkAnim;
+    var mySeq = ++wa.walkSeq;
+    wa.lastSyncTs = performance.now();
     var payload = {
       to: (opts && opts.to) || '',
-      mode: (opts && opts.mode) || 'plan'
+      mode: (opts && opts.mode) || 'plan',
+      prev_digest: appState.terrainDigest || undefined
     };
     if (opts && typeof opts.gx === 'number' && typeof opts.gy === 'number') {
       payload.gx = opts.gx;
       payload.gy = opts.gy;
     }
     apiJson('/api/island/move', 'POST', payload).then(function (res) {
+      if (mySeq !== wa.walkSeq) return;
       if (res && res.view) applyServerView(res.view, false);
       if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|海浪|無法|隔開/.test(res.msg))) {
         showToast(res.msg);
       }
-      refreshMapData(false);
+      if (res && res.map_sync) {
+        applyWalkMapSync(res.map_sync, mySeq, false);
+      } else {
+        refreshMapData(false);
+      }
     });
   }
 
   function refreshMapData(centerCamera) {
+    if (appState.terrainRefreshInFlight) return;
+    appState.terrainRefreshInFlight = true;
     apiJson('/api/island/map', 'GET').then(function (m) {
+      appState.terrainRefreshInFlight = false;
       if (!m || !m.ok) return;
       var prevMapNodeId = appState.lastMapNodeId;
       appState.lastCellId = m.current_cell_id;
@@ -696,6 +831,8 @@
       if (appState.mapOpen) {
         renderFullscreenMap();
       }
+    }).catch(function () {
+      appState.terrainRefreshInFlight = false;
     });
   }
 
@@ -1306,6 +1443,7 @@
   }
 
   function renderDesktopMiniMap() {
+    if (appState.mapOpen) return;
     var wrap = byId('oi-mini-map-frame');
     var m = appState.mapData;
     if (!wrap || !m || !window.IslandParchmentMap) return;
@@ -1522,6 +1660,7 @@
     byId('oi-map-close').addEventListener('click', function () {
       appState.mapOpen = false;
       byId('oi-map-modal').hidden = true;
+      renderDesktopMiniMap();
     });
 
     // 輿圖尺度預設切換、無縫縮放（按鈕＋滾輪＋雙指捏合）、平移與鄰近節點點擊移動

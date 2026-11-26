@@ -60,6 +60,44 @@ pub fn dispatch_extended_shared_verb(
         }
         "peer_assist" => apply_peer_assist_skirmish(doc, delta, clock, actor_key, p),
         "peer_spar" => apply_peer_consensual_spar(doc, delta, clock, actor_key, p),
+        "seal_shop_venture" => {
+            let aid = delta
+                .resolve_actor_id(actor_key)
+                .ok_or("請先向港務官核對通行身分。")?;
+            let target_shop = if p.is_empty() {
+                delta
+                    .actors
+                    .get(&aid)
+                    .map(|a| a.node_id.clone())
+                    .unwrap_or_default()
+            } else {
+                p.to_string()
+            };
+            super::shop_leases::seal_shop_for_venture(
+                doc,
+                delta,
+                clock,
+                &target_shop,
+                &aid,
+                "煤盡盤整・暫封出外尋活路",
+                16,
+            )
+        }
+        "lease_vacant_shop" => {
+            let aid = delta
+                .resolve_actor_id(actor_key)
+                .ok_or("請先向港務官核對通行身分。")?;
+            let target_shop = if p.is_empty() {
+                delta
+                    .actors
+                    .get(&aid)
+                    .map(|a| a.node_id.clone())
+                    .unwrap_or_default()
+            } else {
+                p.to_string()
+            };
+            super::shop_leases::lease_vacant_shop(doc, delta, clock, &aid, &target_shop)
+        }
         _ => Err("此處暫無這項舉動。".to_string()),
     }
 }
@@ -80,8 +118,14 @@ pub fn build_new_homestead(
     }
     let (node_id, pname, a_seed) = (a0.node_id.clone(), a0.display_name.clone(), a0.soul_seed);
     let node = doc.nodes.get(&node_id).ok_or("方位不明")?;
-    if !matches!(node.kind.as_str(), "plaza" | "alley") || node.dungeon {
-        return Err("需在聚落廣場或街巷空地旁才能請木石工匠立柱起屋。".to_string());
+    if node.indoor
+        || node.dungeon
+        || !matches!(
+            node.kind.as_str(),
+            "plaza" | "alley" | "street" | "gate" | "village_gate" | "yard" | "road"
+        )
+    {
+        return Err("需在聚落廣場、街巷或鄉村路旁空地才能請木石工匠立柱起屋。".to_string());
     }
 
     let mat_err = "營造新屋需備齊來歷乾淨的【異國刻紋漂流木 × 2】與【粗鐵礦石 × 1】作樑柱門樞。";
@@ -175,12 +219,21 @@ pub fn build_new_homestead(
     delta.built_houses.insert(
         house_id.clone(),
         BuiltHomestead {
-            house_id,
+            house_id: house_id.clone(),
             owner_id: aid.clone(),
             anchor_node_id: lot_node_id.clone(),
             label_zh: label_zh.clone(),
             built_day: clock.game_days,
         },
+    );
+    let _ = super::place_registry::allocate_and_register_roadside_homestead(
+        doc,
+        delta,
+        clock.game_days,
+        &aid,
+        &house_id,
+        &lot_node_id,
+        &label_zh,
     );
     super::living_chronicler::record_homestead_built(
         doc,
@@ -324,6 +377,11 @@ pub fn execute_player_parity_bell_actions(
         let urgent = delta.actors.get(aid).is_some_and(|a| {
             doc.nodes.get(&a.node_id).is_some_and(|n| n.dungeon)
                 || bridge_nid_opt == Some(a.node_id.as_str())
+                || (doc
+                    .nodes
+                    .get(&a.work_node)
+                    .is_some_and(|n| n.kind == "shop")
+                    && super::live_commodities::is_smithy_forge_cold(delta, &a.work_node))
                 || a.backpack
                     .iter()
                     .any(|i| i.slug == "sealed_errand_pkg" && i.count > 0)
@@ -479,9 +537,11 @@ fn evaluate_autonomous_player_verb(
         }
     }
 
-    // 3. 受傷求醫與傷假替班託付：帶傷且有 3 銅則赴草藥堂包紮；掌櫃／匠師帶傷則發起 `shop_cover` 請人替班
+    // 3. 受傷求醫與傷假替班託付：帶傷且有 3 銅則赴草藥堂包紮；當家營運鋪主帶傷則發起 `shop_cover` 請人替班
     if a.wound_part.is_some() {
-        if a.copper >= 10 && (a.role.contains("掌櫃") || a.role.contains("鐵匠")) {
+        if a.copper >= 10
+            && super::shop_leases::actor_currently_operates_any_shop(doc, delta, a).is_some()
+        {
             let has_cover = delta.contracts.values().any(|c| {
                 c.creditor_id == aid
                     && c.kind == "shop_cover"
@@ -616,8 +676,22 @@ fn evaluate_autonomous_player_verb(
             .map(|i| i.count)
             .sum()
     };
-    let is_artisan = a.role.contains("鍛鐵") || a.role.contains("鐵匠") || a.role.contains("木匠");
-    if is_artisan && a.node_id == a.work_node && a.fatigue < 65 {
+    let is_artisan = (super::shop_leases::actor_operates_shop(delta, aid, &a.work_node)
+        && doc.nodes.get(&a.work_node).is_some_and(|n| {
+            matches!(
+                super::shop_leases::infer_shop_kind(n),
+                "smithy" | "carpentry"
+            )
+        }))
+        || super::shop_leases::has_mining_or_forging_tool(a);
+    if is_artisan
+        && a.node_id == a.work_node
+        && doc
+            .nodes
+            .get(&a.work_node)
+            .is_some_and(|n| n.kind == "shop")
+        && a.fatigue < 65
+    {
         fn is_mat(s: &str) -> bool {
             matches!(
                 s,
@@ -633,7 +707,9 @@ fn evaluate_autonomous_player_verb(
             .iter()
             .filter(|i| i.vessel_meta.is_some())
             .count();
-        if raw_cnt >= 2 && vessel_spares < 2 {
+        let smithy_hot = !super::live_commodities::is_smithy_forge_cold(delta, &a.work_node)
+            || clean_cnt(&a.backpack, |s| matches!(s, "black_coal" | "charcoal_sack")) > 0;
+        if smithy_hot && raw_cnt >= 2 && vessel_spares < 2 {
             return Some(AutoPlayerVerb::Extended("forge_vessel", String::new()));
         }
         if raw_cnt == 0
@@ -789,13 +865,29 @@ fn evaluate_autonomous_player_verb(
         if a.copper >= 135
             && clean_cnt(&a.backpack, |s| s == "driftwood") >= 2
             && clean_cnt(&a.backpack, |s| s == "iron_ore") >= 1
-            && matches!(node.kind.as_str(), "plaza" | "alley")
+            && matches!(
+                node.kind.as_str(),
+                "plaza" | "alley" | "village_gate" | "yard" | "road"
+            )
         {
             return Some(AutoPlayerVerb::Extended("build_homestead", String::new()));
         }
     }
 
-    // 9. 第三刀依缺口多向轉行與自主救災／修橋／伐木／墾荒
+    // 9. 第三刀依缺口多向轉行、店鋪封爐頂讓／承租與自主救災／修橋／伐木／墾荒
+    if let Some((shop_verb, shop_nid)) =
+        super::shop_leases::evaluate_autonomous_shop_venture_or_lease(doc, delta, clock, aid)
+    {
+        if a.node_id == shop_nid {
+            return Some(AutoPlayerVerb::Extended(shop_verb, shop_nid));
+        }
+        let reason = if shop_verb == "seal_shop_venture" {
+            "見鋪內原料告罄帳面吃緊，趕回鋪前封爐掛牌另尋活路".to_string()
+        } else {
+            "聽聞街口有掛牌頂讓鋪位，前去盤下店面重開門面".to_string()
+        };
+        return Some(AutoPlayerVerb::WalkToAndLearnNode(shop_nid, reason));
+    }
     if super::live_agency::should_trigger_livelihood_shift(delta, a) {
         return Some(AutoPlayerVerb::ShiftLivelihood);
     }
@@ -810,19 +902,27 @@ fn evaluate_autonomous_player_verb(
         });
     }
 
-    // 10. 100% 知情對等之秘境探窟與同場武友切磋（無百分比配額！僅親耳聽聞 `pit_rumor` 且不知 `pit_cleared` 之敢闖者成行）
+    // 10. 100% 知情對等之秘境探窟與同場武友切磋（無職業鎖：任何解除鋪務羈絆且具敢闖心性／手中握有武器鍛錘者皆可親自下坑）
     let knows_pit = a.known_rumors.contains("pit_rumor") && !a.known_rumors.contains("pit_cleared");
     let heard_casualty = a.known_rumors.contains("pit_casualty");
-    let bold_enough = if heard_casualty {
-        innate.temperament.approach_avoid >= 18 || top_val == ValueAxis::CuriosityVenture
-    } else {
-        innate.temperament.approach_avoid >= 18
-            || (innate.temperament.approach_avoid >= 8
-                && matches!(
-                    top_val,
-                    ValueAxis::CuriosityVenture | ValueAxis::TangibleGain | ValueAxis::CraftPride
-                ))
-    };
+    let free_to_delve =
+        super::shop_leases::actor_currently_operates_any_shop(doc, delta, a).is_none();
+    let equipped_for_pit = super::shop_leases::has_combat_or_guard_arm(a)
+        || super::shop_leases::has_mining_or_forging_tool(a);
+    let bold_enough = free_to_delve
+        && equipped_for_pit
+        && if heard_casualty {
+            innate.temperament.approach_avoid >= 18 || top_val == ValueAxis::CuriosityVenture
+        } else {
+            innate.temperament.approach_avoid >= 18
+                || (innate.temperament.approach_avoid >= 8
+                    && matches!(
+                        top_val,
+                        ValueAxis::CuriosityVenture
+                            | ValueAxis::TangibleGain
+                            | ValueAxis::CraftPride
+                    ))
+        };
     if let Some((bridge_nid, hid)) = find_hidden_entrance_for_rumor(doc, "pit_rumor") {
         if node.dungeon || (a.node_id == bridge_nid && knows_pit && bold_enough) {
             if a.wound_part.is_some() || a.fatigue >= 80 {

@@ -109,12 +109,23 @@ pub fn ensure_shop_material_stocks_seeded(
     true
 }
 
-/// 檢查指定店鋪節點是否派駐有對應工匠／店員（用於區分無人合成測試與真實開張店鋪）。
+/// 檢查指定店鋪節點是否派駐／承租有經營者（優先以 `delta.shop_leases` 封爐與頂讓實況為準）。
 pub fn has_npc_shop_staff_assigned(
     delta: &IslandWorldDelta,
     shop_node: &str,
     role_keywords: &[&str],
 ) -> bool {
+    if let Some(lease) = delta.shop_leases.get(shop_node) {
+        if lease.state == super::shop_leases::ShopLeaseState::SealedForLease {
+            return false;
+        }
+        return lease.operator_actor_id.as_ref().is_some_and(|op_id| {
+            delta
+                .actors
+                .get(op_id)
+                .is_some_and(|a| a.alive && !op_id.starts_with("pl:"))
+        });
+    }
     delta.actors.iter().any(|(aid, a)| {
         a.alive
             && a.controller_id.is_none()
@@ -328,9 +339,48 @@ fn find_town_shop_node_and_staff(
     town_cid: u32,
     role_exact: &str,
 ) -> Option<(String, String)> {
+    let want_kind = if role_exact.contains("鍛鐵") {
+        "smithy"
+    } else if role_exact.contains("草藥") {
+        "apothecary"
+    } else if role_exact.contains("木匠") {
+        "carpentry"
+    } else if role_exact.contains("酒館") {
+        "tavern"
+    } else {
+        ""
+    };
+    if !want_kind.is_empty() {
+        for (sid, lease) in &delta.shop_leases {
+            if lease.shop_kind != want_kind {
+                continue;
+            }
+            let Some(wnd) = doc.nodes.get(sid) else {
+                continue;
+            };
+            if nearest_core_town_cell_id(doc, wnd.cell_id) != town_cid {
+                continue;
+            }
+            if lease.state == super::shop_leases::ShopLeaseState::SealedForLease {
+                return None;
+            }
+            if let Some(op_id) = &lease.operator_actor_id
+                && delta
+                    .actors
+                    .get(op_id)
+                    .is_some_and(|a| a.alive && !op_id.starts_with("pl:"))
+            {
+                return Some((op_id.clone(), sid.clone()));
+            }
+            return None;
+        }
+    }
     let mut best: Option<(bool, String, String)> = None;
     for (aid, a) in &delta.actors {
         if !a.alive || a.controller_id.is_some() || aid.starts_with("pl:") || a.role != role_exact {
+            continue;
+        }
+        if delta.shop_leases.contains_key(&a.work_node) {
             continue;
         }
         let Some(wnd) = doc.nodes.get(&a.work_node) else {
@@ -472,10 +522,13 @@ pub fn store_purchased_specialty_in_town(
     item.stolen_from = None;
     let town_cid = nearest_core_town_cell_id(doc, node_cell_id);
     if is_bulk_food_slug(&item.slug) {
-        let buyer_is_tavern = delta
-            .actors
-            .get(buyer_id)
-            .is_some_and(|b| b.role.contains("酒館"));
+        let buyer_is_tavern = delta.actors.get(buyer_id).is_some_and(|b| {
+            super::shop_leases::actor_operates_shop(delta, buyer_id, &b.work_node)
+                && doc
+                    .nodes
+                    .get(&b.work_node)
+                    .is_some_and(|n| super::shop_leases::infer_shop_kind(n) == "tavern")
+        });
         let (tav_opt, keeper_opt) = find_town_tavern_and_keeper(doc, delta, town_cid);
         if let (Some(tn), Some(kid)) = (tav_opt, keeper_opt)
             && (buyer_is_tavern || count_tavern_ration_stock(doc, delta, town_cid, &tn) < 12)
@@ -497,10 +550,13 @@ pub fn store_purchased_specialty_in_town(
         item.slug.as_str(),
         "black_coal" | "charcoal_sack" | "iron_ore"
     ) {
-        let buyer_is_smith = delta
-            .actors
-            .get(buyer_id)
-            .is_some_and(|b| b.role.contains("鍛鐵"));
+        let buyer_is_smith = delta.actors.get(buyer_id).is_some_and(|b| {
+            super::shop_leases::actor_operates_shop(delta, buyer_id, &b.work_node)
+                && doc
+                    .nodes
+                    .get(&b.work_node)
+                    .is_some_and(|n| super::shop_leases::infer_shop_kind(n) == "smithy")
+        });
         if !buyer_is_smith
             && let Some((sid, swork)) =
                 find_town_shop_node_and_staff(doc, delta, town_cid, "鍛鐵匠")
@@ -518,10 +574,13 @@ pub fn store_purchased_specialty_in_town(
             }
         }
     } else if APOTHECARY_HERB_SLUGS.contains(&item.slug.as_str()) {
-        let buyer_is_herb = delta
-            .actors
-            .get(buyer_id)
-            .is_some_and(|b| b.role.contains("草藥"));
+        let buyer_is_herb = delta.actors.get(buyer_id).is_some_and(|b| {
+            super::shop_leases::actor_operates_shop(delta, buyer_id, &b.work_node)
+                && doc
+                    .nodes
+                    .get(&b.work_node)
+                    .is_some_and(|n| super::shop_leases::infer_shop_kind(n) == "apothecary")
+        });
         if !buyer_is_herb
             && let Some((hid, hwork)) =
                 find_town_shop_node_and_staff(doc, delta, town_cid, "草藥師")

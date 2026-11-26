@@ -97,44 +97,56 @@ pub fn execute_arrived_desire_effect(
             let self_restock_slug: Option<(String, String)> =
                 delta.actors.get(actor_id).and_then(|a| {
                     let wnd = doc.nodes.get(&a.work_node)?;
-                    if wnd.kind != "shop" || a.node_id != a.work_node {
+                    if wnd.kind != "shop"
+                        || a.node_id != a.work_node
+                        || !super::shop_leases::actor_operates_shop(delta, actor_id, &a.work_node)
+                    {
                         return None;
                     }
-                    let wanted: &[&str] = if a.role.contains("鍛鐵") || a.role.contains("鐵匠")
-                    {
-                        if super::live_commodities::count_smithy_fuel(delta, &a.work_node) < 8 {
-                            &[
-                                "black_coal",
-                                "charcoal_sack",
-                                "driftwood",
-                                "timber_log",
-                                "iron_ore",
-                            ]
-                        } else if super::live_commodities::count_shop_stock_by_slugs(
-                            delta,
-                            &a.work_node,
-                            &["iron_ore"],
-                        ) < 6
-                        {
-                            &["iron_ore"]
-                        } else {
-                            &[]
+                    let wanted: &[&str] = match super::shop_leases::infer_shop_kind(wnd) {
+                        "smithy" => {
+                            if super::live_commodities::count_smithy_fuel(delta, &a.work_node) < 8 {
+                                &[
+                                    "black_coal",
+                                    "charcoal_sack",
+                                    "driftwood",
+                                    "timber_log",
+                                    "iron_ore",
+                                ]
+                            } else if super::live_commodities::count_shop_stock_by_slugs(
+                                delta,
+                                &a.work_node,
+                                &["iron_ore"],
+                            ) < 6
+                            {
+                                &["iron_ore"]
+                            } else {
+                                &[]
+                            }
                         }
-                    } else if a.role.contains("草藥")
-                        && super::live_commodities::count_apothecary_herbs(delta, &a.work_node) < 6
-                    {
-                        &["herb_bundle", "quarantine_wormwood"]
-                    } else if a.role.contains("酒館")
-                        && super::live_commodities::count_tavern_ration_stock(
-                            doc,
-                            delta,
-                            wnd.cell_id,
-                            &a.work_node,
-                        ) < 20
-                    {
-                        &["wheat_grain"]
-                    } else {
-                        &[]
+                        "apothecary" => {
+                            if super::live_commodities::count_apothecary_herbs(delta, &a.work_node)
+                                < 6
+                            {
+                                &["herb_bundle", "quarantine_wormwood"]
+                            } else {
+                                &[]
+                            }
+                        }
+                        "tavern" => {
+                            if super::live_commodities::count_tavern_ration_stock(
+                                doc,
+                                delta,
+                                wnd.cell_id,
+                                &a.work_node,
+                            ) < 20
+                            {
+                                &["wheat_grain"]
+                            } else {
+                                &[]
+                            }
+                        }
+                        _ => &[],
                     };
                     wanted.iter().find_map(|s| {
                         a.backpack
@@ -250,20 +262,30 @@ pub fn execute_arrived_desire_effect(
                     {
                         return None;
                     }
+                    let skind = doc
+                        .nodes
+                        .get(&ba.work_node)
+                        .filter(|n| {
+                            n.kind == "shop"
+                                && super::shop_leases::actor_operates_shop(
+                                    delta,
+                                    bid,
+                                    &ba.work_node,
+                                )
+                        })
+                        .map(super::shop_leases::infer_shop_kind);
                     let role_match = match slug.as_str() {
-                        "iron_ore" | "black_coal" | "charcoal_sack" => {
-                            ba.role.contains("鍛鐵") || ba.role.contains("石工")
-                        }
+                        "iron_ore" | "black_coal" | "charcoal_sack" => skind == Some("smithy"),
                         "driftwood" | "timber_log" => {
-                            ba.role.contains("木匠")
-                                || ba.role.contains("車行")
-                                || (ba.role.contains("鍛鐵")
+                            skind == Some("carpentry")
+                                || skind == Some("carriage")
+                                || (skind == Some("smithy")
                                     && super::live_commodities::count_smithy_fuel(
                                         delta,
                                         &ba.work_node,
                                     ) < 6)
                         }
-                        _ => ba.role.contains("草藥") || ba.role == "酒館掌櫃",
+                        _ => skind == Some("apothecary") || skind == Some("tavern"),
                     };
                     if !role_match {
                         return None;

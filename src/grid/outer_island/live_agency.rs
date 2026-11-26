@@ -9,7 +9,10 @@ use super::live_commodities::{
 };
 use super::persona::{ValueAxis, derive_innate_persona};
 use super::rural_migrate::nearest_core_town_cell_id;
-use super::sim_tick::default_tool_for_role;
+use super::shop_leases::{
+    actor_currently_operates_any_shop, actor_operates_shop, has_combat_or_guard_arm,
+    has_forestry_or_bridge_tool, has_wild_forage_capability, infer_shop_kind,
+};
 use super::types::{IslandWorldDelta, SpatialNodeDef, UnifiedMindBody, WorldStaticDoc};
 
 pub enum AgencyActionPlan {
@@ -42,30 +45,32 @@ pub fn compute_post_duty_and_shortage_adjustment(
     bell_index: u8,
     tavern_stock: u32,
 ) -> (i32, i32) {
-    let at_shop = doc
+    let operating_shop = doc
         .nodes
         .get(&a.work_node)
-        .is_some_and(|n| n.kind == "shop");
+        .filter(|n| n.kind == "shop")
+        .filter(|_| actor_operates_shop(delta, &a.actor_id, &a.work_node));
     let is_day = (3..=9).contains(&bell_index);
-    if at_shop {
-        if (a.role.contains("鍛鐵") || a.role.contains("鐵匠"))
-            && is_smithy_forge_cold(delta, &a.work_node)
-        {
-            return (-32, 36);
-        }
-        if a.role.contains("草藥") && is_apothecary_out_of_herbs(delta, &a.work_node) {
-            return (-32, 36);
-        }
-        if a.role.contains("酒館掌櫃") && is_day && tavern_stock == 0 {
-            return (-28, 34);
+    if let Some(shop_nd) = operating_shop {
+        match infer_shop_kind(shop_nd) {
+            "smithy" if is_smithy_forge_cold(delta, &a.work_node) => return (-32, 36),
+            "apothecary" if is_apothecary_out_of_herbs(delta, &a.work_node) => return (-32, 36),
+            "tavern" if is_day && tavern_stock == 0 => return (-28, 34),
+            _ => {}
         }
     }
 
-    let is_tavern_staff = a.role.contains("酒館掌櫃");
-    let is_day_counter = matches!(
-        a.role.as_str(),
-        "鍛鐵匠" | "鍛鐵匠學徒" | "草藥師" | "草藥師學徒" | "港務記籌手"
-    ) && is_day;
+    let is_unsealed_apprentice = operating_shop.is_none()
+        && doc
+            .nodes
+            .get(&a.work_node)
+            .is_some_and(|n| n.kind == "shop")
+        && !super::shop_leases::is_shop_sealed(delta, &a.work_node)
+        && a.role.ends_with("學徒");
+    let is_tavern_staff = operating_shop.is_some_and(|n| infer_shop_kind(n) == "tavern")
+        || (is_unsealed_apprentice && a.role.contains("酒館"));
+    let is_day_counter =
+        (operating_shop.is_some() || is_unsealed_apprentice || a.role == "港務記籌手") && is_day;
     if !(is_tavern_staff || is_day_counter) || a.node_id != a.work_node {
         return (0, 0);
     }
@@ -107,25 +112,32 @@ pub fn evaluate_shop_shortage_supply_pact(
         return None;
     }
     let wnode = doc.nodes.get(&a.work_node)?;
-    if wnode.kind != "shop" {
+    if wnode.kind != "shop" || !actor_operates_shop(delta, aid, &a.work_node) {
         return None;
     }
-    if a.role == "鍛鐵匠" {
-        if is_smithy_forge_cold(delta, &a.work_node) && a.copper >= 16 {
-            return Some("black_coal");
+    match infer_shop_kind(wnode) {
+        "smithy" => {
+            if is_smithy_forge_cold(delta, &a.work_node) && a.copper >= 16 {
+                return Some("black_coal");
+            }
+            if count_shop_stock_by_slugs(delta, &a.work_node, &["iron_ore"]) == 0 && a.copper >= 22
+            {
+                return Some("iron_ore");
+            }
         }
-        if count_shop_stock_by_slugs(delta, &a.work_node, &["iron_ore"]) == 0 && a.copper >= 22 {
-            return Some("iron_ore");
+        "apothecary" => {
+            if is_apothecary_out_of_herbs(delta, &a.work_node) && a.copper >= 16 {
+                return Some("herb_bundle");
+            }
         }
-    } else if a.role == "草藥師" {
-        if is_apothecary_out_of_herbs(delta, &a.work_node) && a.copper >= 16 {
-            return Some("herb_bundle");
+        "tavern" => {
+            if count_tavern_ration_stock(doc, delta, wnode.cell_id, &a.work_node) < 6
+                && a.copper >= 20
+            {
+                return Some("wheat_grain");
+            }
         }
-    } else if a.role == "酒館掌櫃"
-        && count_tavern_ration_stock(doc, delta, wnode.cell_id, &a.work_node) < 6
-        && a.copper >= 20
-    {
-        return Some("wheat_grain");
+        _ => {}
     }
     None
 }
@@ -281,9 +293,6 @@ pub fn evaluate_civic_and_land_agency(
         return None;
     }
     let cur_node = doc.nodes.get(&a.node_id)?;
-    if cur_node.dungeon {
-        return None;
-    }
     let innate = derive_innate_persona(a.soul_seed.max(1));
     let top_val = innate.top_value_axis(&a.drift);
     let strat_kind = a.mind.stm.goal_strategy.as_ref().map(|g| g.kind);
@@ -303,9 +312,13 @@ pub fn evaluate_civic_and_land_agency(
         ));
     }
 
-    // 2. 巡防清除本鎮被野獸拾荒賊佔據之破屋，或鄰近高壓／蓄贓灰耳部族營寨
-    if a.fatigue < 48
-        && (a.role.contains("衛兵") || a.role.contains("獵"))
+    // 2. 持械武備或秉持秩序者巡防清除破屋拾荒賊，或清剿高壓灰耳部族營寨（以武備＋高膽識秩序為準，避免過度發兵領賞）
+    let martial_defender = has_combat_or_guard_arm(a)
+        && (a.role.contains("衛兵")
+            || a.role.contains("獵")
+            || (top_val == ValueAxis::OrderHierarchy && innate.temperament.approach_avoid >= 18));
+    let can_police_or_raid = !cur_node.dungeon && a.fatigue < 48 && martial_defender;
+    if can_police_or_raid
         && let Some((sq_nid, _)) = delta.live_wilds.squatters_by_node.iter().find(|(snid, _)| {
             doc.nodes
                 .get(*snid)
@@ -321,8 +334,9 @@ pub fn evaluate_civic_and_land_agency(
         ));
     }
 
-    if a.fatigue < 42
-        && (a.role.contains("衛兵") || a.role.contains("獵"))
+    if !cur_node.dungeon
+        && a.fatigue < 42
+        && martial_defender
         && let Some(band) = delta.live_wilds.bands.values().find(|b| {
             clock.game_days >= b.suppressed_until_day
                 && (b.raid_pressure >= 72 || b.hoard_copper >= 12)
@@ -345,13 +359,11 @@ pub fn evaluate_civic_and_land_agency(
         ));
     }
 
-    // 3. 斷橋／損橋搶修與先伐木備料
-    let civic_minded = strat_kind == Some(GoalStrategyKind::RepairCivicWorks)
-        || a.role.contains("石工")
-        || a.role.contains("木匠")
-        || a.role.contains("車行")
-        || a.role.contains("苦力")
-        || top_val == ValueAxis::OrderHierarchy;
+    // 3. 斷橋／損橋搶修與先伐木備料（看木石橋工器具＋公共心，不再誤派鍛鐵／礦工領工錢）
+    let civic_minded = !cur_node.dungeon
+        && (strat_kind == Some(GoalStrategyKind::RepairCivicWorks)
+            || has_forestry_or_bridge_tool(a)
+            || top_val == ValueAxis::OrderHierarchy);
     if civic_minded
         && delta.municipal_treasury_copper >= 6
         && let Some(br_cid) = find_best_damaged_bridge_cell(doc, delta, a, cur_node)
@@ -394,19 +406,17 @@ pub fn evaluate_civic_and_land_agency(
         super::household_economy::find_town_tavern_and_keeper(doc, delta, town_cid)
             .0
             .is_some_and(|tn| count_tavern_ration_stock(doc, delta, town_cid, &tn) < 15);
-    let agri_minded = strat_kind == Some(GoalStrategyKind::ReclaimLand)
-        || a.role.contains("農")
-        || a.role.contains("牧")
-        || a.role.contains("獵")
-        || (town_food_tight
-            && !doc
-                .nodes
-                .get(&a.work_node)
-                .is_some_and(|n| n.kind == "shop"));
+    let not_operating_shop = actor_currently_operates_any_shop(doc, delta, a).is_none();
+    let agri_minded = !cur_node.dungeon
+        && not_operating_shop
+        && has_wild_forage_capability(a)
+        && (strat_kind == Some(GoalStrategyKind::ReclaimLand)
+            || (town_food_tight
+                && matches!(top_val, ValueAxis::KinshipLoyalty | ValueAxis::TangibleGain)));
     if agri_minded
         && a.fatigue < 55
         && (strat_kind == Some(GoalStrategyKind::ReclaimLand)
-            || (a.soul_seed.wrapping_add(clock.game_days.unsigned_abs())) % 4 == 0)
+            || innate.temperament.approach_avoid >= 6)
         && let Some((land_cid, land_nid)) =
             find_nearby_reclaimable_land(doc, delta, a, cur_node.cell_id)
     {
@@ -426,13 +436,16 @@ pub fn evaluate_civic_and_land_agency(
     None
 }
 
-/// 檢查居民是否處於破產滯銷、斷糧極困或主動謀變狀態，該轉行貼補或承接城鎮緊缺營生。
+/// 檢查居民是否處於破產滯銷、斷糧極困或主動謀變狀態，該轉行貼補或承接城鎮緊缺營生（當鋪位已封爐讓出即解除綁定）。
 pub fn should_trigger_livelihood_shift(delta: &IslandWorldDelta, a: &UnifiedMindBody) -> bool {
-    if a.controller_id.is_some()
-        || a.actor_id.starts_with("pl:")
-        || !a.alive
-        || a.role.contains("掌櫃")
-    {
+    if a.controller_id.is_some() || a.actor_id.starts_with("pl:") || !a.alive {
+        return false;
+    }
+    let actively_running_leased_shop = delta.shop_leases.values().any(|l| {
+        l.state == super::shop_leases::ShopLeaseState::Active
+            && l.operator_actor_id.as_deref() == Some(&a.actor_id)
+    });
+    if actively_running_leased_shop {
         return false;
     }
     let strat_shift = a
@@ -597,9 +610,7 @@ pub fn apply_autonomous_livelihood_shift(
         if !a.mind.ltm.known_nodes.contains(&new_work) {
             a.mind.ltm.known_nodes.insert(new_work.clone());
         }
-        if a.bound_weapon.rune_mark.is_none() && a.bound_weapon.provenance.contains("慣用") {
-            a.bound_weapon = default_tool_for_role(new_role, &a.display_name);
-        }
+        // 轉行絕不憑空配發免費工具，保留原本手持之 `bound_weapon` 與歷練熟練度。
         if a.mind
             .stm
             .goal_strategy

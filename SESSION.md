@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
 - **更新日期**：2026-11-26
-- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖，前端版號 `v=20261126r6`；廢除黑霧遮罩與 859 節點跳棋瞬移、玩家與全島居民同構 `860×930` 逐格連續步行、持久化逐格 `tile_diffs` 與靠近顯現名牌防壓字已全數上線，通過 `74/74` `outer_island` 單元測試、規格審查與桌機＋`Pixel 9 Pro XL` 真機手操驗收）
+- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖，前端版號 `v=20261126r7`；廢除黑霧遮罩、完成 `60fps` 輕量 `map_sync`＋離屏局部工藝快取防頓卡、拔除 `:601` 免費發工具與角色硬鎖、實裝 `shop_leases` 鋪戶封爐出走與頂讓、29 座鄉野聚落五類地景格局與沿路動態註冊 `place_registry`，通過 `76/76` `outer_island` 單元測試、規格審查與桌機＋`Pixel 9 Pro XL` 真機手操驗收）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -80,6 +80,10 @@
 26. **2026-11-26 第一階段「廢除黑霧遮罩與 860×930 全員同構逐格連續行走」落地驗收（`v=20261126r6`，`74/74` 測試通過）**：
     - **零黑霧底圖與真實 `delta.tile_diffs` 覆寫**：全面拔除 `TERRAIN_FOG`、`115/560` Chamfer 圓洞、前端 `0.62 fogFill` 灰黑罩與雜湊地形模板；新增 `live_land_tiles.rs` 與持久化 `delta.tile_diffs`（現場伐木／開墾就實地站立座標改寫真實樹格／田格、再生休耕即刪），`ActorMapMemory` 嚴守 `<= 18` 格實地親見才同步斷橋、漫水與 `witnessed_tile_diffs`。
     - **全員 `860×930` 逐格連續步行與靠近顯現名牌**：新增 `island_substrate_paths.rs` 連通全島 `462` 個戶外節點陸橋與 `391` 處可達門前踏階；新增 `map_walk.rs`＋`map_walk_plan.rs` 統一玩家與 `994` 名居民之 `(map_gx, map_gy)`、加權 A\* 防斜切尋路與 `60fps` 前端插值同步；`nearby_actors` 僅回傳 `<= 14` 格戶外人物、`proximity_capsules` 嚴守 `<= 9.5` 格並依近鄰距離排序防民宅洗版，`island-parchment-map.js` 以 `placed` 淨空保護消除壓字並打通城市名牌就地直行；下一步緊接第二階段：全面拔除 `live_agency.rs` 免費發工具（`:601`）與各檔職業／地城硬鎖、重編 29 座鄉野聚落格局與沿路動態註冊 `place_registry`。
+27. **2026-11-26 第二階段「去硬鎖活世界＋離屏 `60fps` 步行同步」落地驗收（`v=20261126r7`，`76/76` 測試通過）**：
+    - **移動頓卡徹底根治（`map_memory_pack.rs` ＋ `island-parchment-map.js` ＋ `island-ui.js`）**：`POST /api/island/move` 直回 `<3KB` `map_sync`（含精確追蹤覆寫變化之 `terrain_digest`/`terrain_dirty`，修正距離圈進出假陽性），結合單調 `walkSeq`、`trimPassedWaypoints`（尾段平滑 `<= 3.5` 格）、暫停行進期 `pollIslandPulse` 與 `localCraftCaches` 離屏雙緩衝；桌機實測連續 `8` 步（`18.25` 格）達成 `mapRequestsDuringSteps=0`、`reversals=0`、`avgRenderMs=0.73ms`、`avgRafMs=16.73ms`。
+    - **拔除 `:601` 免費發工具與硬鎖 ＋ 鋪戶封爐頂讓（`shop_leases.rs` ＋ `live_agency.rs` 等）**：移除 `live_agency.rs:601` 免費 `default_tool_for_role` 與職業字串／掌櫃／地城／`% 4` 假門檻，改依實體手持背囊工具與營業契約判定；新增 `delta.shop_leases` 支援鋪戶熄爐／停診懸掛 `obj:shop_lease_board`、原店主轉投礦坑探索並由玩家或有產居民付費守恆頂讓接管。
+    - **29 座鄉野五類聚落格局 ＋ 只增不刪 `place_registry`（`island_substrate_rural.rs` ＋ `place_registry.rs` ＋ 30 日探針）**：取代一字橫條村落為五類地理原型並維持 `100%` BFS 可達；沿路拓寬自動延伸 `3..=5` 格支巷註冊屋宅且傾頹不刪 ID，通過 30 日熄爐頂讓增巷測試、桌機／`Pixel 9 Pro XL` 真機輿圖驗收與線上總銅幣 `120,805` 守恆（`conservation_diff=0`）。
 
 ## 二、 關鍵檔案與正典錨點
 

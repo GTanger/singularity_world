@@ -42,6 +42,7 @@
   var paperCache = { key: '', canvas: null };
   var foliageCache = { key: '', canvas: null };
   var macroCache = { key: '', canvas: null };
+  var localCraftCaches = new Map();
   var roofTexCache = new Map();
 
   function hash2(x, y) {
@@ -998,17 +999,9 @@
     }
   }
 
-  function renderLocalCraftLayer(ctx, dec, cam, viewW, viewH, dpr, pal, light, timeMode) {
+  function renderLocalCraftRegion(ctx, dec, z, gx0, gy0, gx1, gy1, dpr, pal, light, timeMode) {
     var W = dec.W, H = dec.H;
     var terrain = dec.terrain, road = dec.road, bldg = dec.bldg;
-    var z = cam.pxPerTile;
-    var pad = 6;
-    var halfCols = (viewW * 0.5) / z;
-    var halfRows = (viewH * 0.5) / z;
-    var gx0 = Math.max(0, Math.floor(cam.cx - halfCols) - pad);
-    var gx1 = Math.min(W - 1, Math.ceil(cam.cx + halfCols) + pad);
-    var gy0 = Math.max(0, Math.floor(cam.cy - halfRows) - pad);
-    var gy1 = Math.min(H - 1, Math.ceil(cam.cy + halfRows) + pad);
     var vw = gx1 - gx0 + 1, vh = gy1 - gy0 + 1;
     if (vw < 2 || vh < 2) return;
 
@@ -1570,6 +1563,66 @@
     }
   }
 
+  function renderLocalCraftCached(ctx, canvasKey, dec, cam, viewW, viewH, dpr, pal, light, timeMode) {
+    var z = cam.pxPerTile;
+    var halfCols = (viewW * 0.5) / z;
+    var halfRows = (viewH * 0.5) / z;
+    var visGx0 = Math.max(0, Math.floor(cam.cx - halfCols) - 2);
+    var visGx1 = Math.min(dec.W - 1, Math.ceil(cam.cx + halfCols) + 2);
+    var visGy0 = Math.max(0, Math.floor(cam.cy - halfRows) - 2);
+    var visGy1 = Math.min(dec.H - 1, Math.ceil(cam.cy + halfRows) + 2);
+    var zQuant = Math.round(z * 100) / 100;
+    var cacheKey = fnvHash(dec.terrainKey) + ':' + fnvHash(dec.overlayKey) + ':' + timeMode + ':' + zQuant + ':' + dpr;
+    var lc = localCraftCaches.get(canvasKey);
+    if (
+      !lc ||
+      lc.key !== cacheKey ||
+      visGx0 < lc.gx0 + (lc.gx0 > 0 ? 4 : 0) ||
+      visGx1 > lc.gx1 - (lc.gx1 < dec.W - 1 ? 4 : 0) ||
+      visGy0 < lc.gy0 + (lc.gy0 > 0 ? 4 : 0) ||
+      visGy1 > lc.gy1 - (lc.gy1 < dec.H - 1 ? 4 : 0)
+    ) {
+      var margin = z >= 16 ? 12 : 22;
+      var cGx0 = Math.max(0, Math.floor(cam.cx - halfCols) - margin);
+      var cGx1 = Math.min(dec.W - 1, Math.ceil(cam.cx + halfCols) + margin);
+      var cGy0 = Math.max(0, Math.floor(cam.cy - halfRows) - margin);
+      var cGy1 = Math.min(dec.H - 1, Math.ceil(cam.cy + halfRows) + margin);
+      var cCols = Math.max(2, cGx1 - cGx0 + 1);
+      var cRows = Math.max(2, cGy1 - cGy0 + 1);
+      var bufScale = Math.min(dpr, 3840 / Math.max(1, cCols * z, cRows * z));
+      var offCanvas = (lc && lc.canvas) || document.createElement('canvas');
+      var pxW = Math.max(2, Math.round(cCols * z * bufScale));
+      var pxH = Math.max(2, Math.round(cRows * z * bufScale));
+      if (offCanvas.width !== pxW || offCanvas.height !== pxH) {
+        offCanvas.width = pxW;
+        offCanvas.height = pxH;
+      }
+      var octx = offCanvas.getContext('2d');
+      octx.clearRect(0, 0, pxW, pxH);
+      octx.save();
+      octx.scale(bufScale, bufScale);
+      octx.translate(-cGx0 * z, -cGy0 * z);
+      renderLocalCraftRegion(octx, dec, z, cGx0, cGy0, cGx1, cGy1, bufScale, pal, light, timeMode);
+      octx.restore();
+      lc = {
+        key: cacheKey,
+        gx0: cGx0,
+        gy0: cGy0,
+        gx1: cGx1,
+        gy1: cGy1,
+        canvas: offCanvas
+      };
+      localCraftCaches.set(canvasKey, lc);
+    }
+    ctx.drawImage(
+      lc.canvas,
+      lc.gx0 * z,
+      lc.gy0 * z,
+      (lc.gx1 - lc.gx0 + 1) * z,
+      (lc.gy1 - lc.gy0 + 1) * z
+    );
+  }
+
   /* ═══ 螢幕空間：書法名牌（碰撞防壓字）、直通出口標記、當前火漆印與八芒羅盤 ═══ */
   function roundRectPath(ctx, x, y, w, h, r) {
     ctx.beginPath();
@@ -2020,12 +2073,12 @@
       ctx.restore();
     }
 
-    // 3. 放大近看時無縫切入視窗裁剪精雕微觀圖層
+    // 3. 放大近看時無縫切入帶緩衝區之離屏精雕微觀圖層快取（移動拖曳毫秒級貼圖穩鎖 60fps）
     if (detailAlpha > 0.02) {
       ctx.save();
       if (detailAlpha < 0.99) ctx.globalAlpha = detailAlpha;
       ctx.translate(viewW * 0.5 - cam.cx * z, viewH * 0.5 - cam.cy * z);
-      renderLocalCraftLayer(ctx, dec, cam, viewW, viewH, dpr, pal, light, timeMode);
+      renderLocalCraftCached(ctx, canvas.id || 'default', dec, cam, viewW, viewH, dpr, pal, light, timeMode);
       if (viewOpts && viewOpts.showAllSettlements) {
         renderOutlineCells(ctx, m, pal, z);
       }

@@ -415,3 +415,231 @@ fn nine_strategies_parse_and_herbalist_self_foraged_herb_reopens_apothecary() {
     );
     assert_eq!(delta.conservation_diff(&doc), 0);
 }
+
+#[test]
+fn thirty_day_coal_drain_triggers_forge_seal_venture_lease_and_roadside_alley_homestead() {
+    use super::island_substrate::ROAD_COUNTRY_TRACK;
+    use super::place_registry::{allocate_and_register_roadside_homestead, ruin_dynamic_homestead};
+    use super::shop_leases::{ShopLeaseState, actor_operates_shop};
+    use super::sim_tick::tick_outer_island_world;
+
+    let (epoch, _) = crate::game::game_time_cfg();
+    let (doc, mut delta) = fresh_world();
+    ensure_live_land_seeded(&doc, &mut delta, 0);
+    // 先跑一次起始世界初始化，再模擬後續煤礦耗盡之真實現況
+    tick_outer_island_world(
+        &doc,
+        &mut delta,
+        &solar_clock_at(epoch),
+        (epoch as u64) * 1000,
+    );
+
+    let forge_node = "oi:white_gull_harbor:bal_forge";
+    let smith_id = "res:white_gull_harbor:shop_0_0".to_string();
+    let app_id = "res:white_gull_harbor:shop_0_1".to_string();
+    let orig_weapon = delta.actors[&smith_id].bound_weapon.clone();
+
+    // 抽乾鍛爐精煤木炭並令學徒離鋪，鐵匠知曉秘境傳聞且手頭吃緊無法單靠懸賞無限續煤
+    while consume_shop_stock_one(&mut delta, None, forge_node, &SMITHY_FUEL_SLUGS).is_some() {}
+    assert!(is_smithy_forge_cold(&delta, forge_node));
+    delta.relocate_actor(&app_id, "oi:white_gull_harbor:plaza", 4616, true);
+    let excess = (delta.actors[&smith_id].copper - 14).max(0);
+    if excess > 0 {
+        assert!(delta.transfer_copper(
+            0,
+            2,
+            "probe_drain",
+            &smith_id,
+            "municipal_treasury",
+            excess,
+            "30 日探針模擬盤虧".to_string(),
+        ));
+    }
+    if let Some(s) = delta.actors.get_mut(&smith_id) {
+        s.known_rumors.insert("pit_rumor".to_string());
+        s.mind.stm.affect.anger = 60;
+        s.mark_mutated();
+    }
+
+    let mut sealed_seen = false;
+    let mut smith_ventured_out = false;
+    let mut smith_delved_pit = false;
+    for step in 1..=360i64 {
+        let now_unix = epoch + step * 600;
+        let clk = solar_clock_at(now_unix);
+        tick_outer_island_world(&doc, &mut delta, &clk, (now_unix as u64) * 1000);
+
+        if delta
+            .shop_leases
+            .get(forge_node)
+            .is_some_and(|l| l.state == ShopLeaseState::SealedForLease)
+        {
+            sealed_seen = true;
+        }
+        if sealed_seen && let Some(s) = delta.actors.get(&smith_id) {
+            if s.node_id != forge_node {
+                smith_ventured_out = true;
+            }
+            if s.node_id.starts_with("oi:dng_pit:") || s.node_id == "oi:cell4529:0" {
+                smith_delved_pit = true;
+            }
+        }
+        if sealed_seen && smith_ventured_out && smith_delved_pit {
+            break;
+        }
+    }
+
+    assert!(
+        sealed_seen,
+        "empty-coal smith must seal forge for lease within 30 days"
+    );
+    assert!(
+        smith_ventured_out,
+        "sealed smith must step outdoors rather than stay glued to counter"
+    );
+    let lease = delta
+        .shop_leases
+        .get(forge_node)
+        .expect("forge lease created");
+    assert_eq!(lease.owner_actor_id, smith_id);
+
+    // 確認全程從未免費發過工具：原鐵匠依然緊握原有鍛錘
+    let smith_after = &delta.actors[&smith_id];
+    assert_eq!(smith_after.bound_weapon.uid, orig_weapon.uid);
+    assert_eq!(smith_after.bound_weapon.name, orig_weapon.name);
+    assert!(
+        smith_ventured_out
+            && (smith_delved_pit || !actor_operates_shop(&delta, &smith_id, forge_node)),
+        "sealed former shopkeeper unlocks counter lock and can pursue outdoor venture/delve"
+    );
+
+    // 2. 驗證店鋪承租頂讓（若 30 日內已有自由居民自主頂下，核對其主事權與原鐵匠不變；否則以有資歷居民手動付費頂下並檢查 100% 銅幣守恆）
+    let lessee_id = "res:white_gull_harbor:artisan_1_0".to_string();
+    let mut taker_id = if delta.actors.contains_key(&lessee_id) {
+        lessee_id
+    } else {
+        app_id.clone()
+    };
+    let clk_take = solar_clock_at(epoch + 30 * 7200 + 2400);
+    if let Some(op_id) = delta.shop_leases[forge_node].operator_actor_id.clone() {
+        assert_eq!(delta.shop_leases[forge_node].state, ShopLeaseState::Active);
+        assert_ne!(
+            op_id, smith_id,
+            "auto-lessee must not silently become old smith"
+        );
+        assert!(actor_operates_shop(&delta, &op_id, forge_node));
+        assert_eq!(delta.conservation_diff(&doc), 0);
+        taker_id = op_id;
+    } else {
+        let need_topup = (32 - delta.actors[&taker_id].copper).max(0);
+        if need_topup > 0 {
+            assert!(delta.transfer_copper(
+                30,
+                4,
+                "probe_fund",
+                "municipal_treasury",
+                &taker_id,
+                need_topup,
+                "承租資金測試撥備".to_string(),
+            ));
+        }
+        let fee = delta.shop_leases[forge_node].transfer_fee_copper;
+        let owner_before = delta.actors[&smith_id].copper;
+        dispatch_extended_shared_verb(
+            &doc,
+            &mut delta,
+            &clk_take,
+            &taker_id,
+            "lease_vacant_shop",
+            forge_node,
+        )
+        .expect("qualified resident pays transfer fee to lease vacant shop");
+        assert_eq!(delta.actors[&smith_id].copper, owner_before + fee);
+        assert!(actor_operates_shop(&delta, &taker_id, forge_node));
+        assert_eq!(delta.conservation_diff(&doc), 0);
+    }
+
+    // 顯式封爐與過戶雙向檢查：草藥堂當家封爐不領新工具 -> 他人付費承租過戶且銅幣零誤差
+    let herb_node = "oi:white_gull_harbor:herb_hall";
+    let herb_keeper = "res:white_gull_harbor:shop_3_0";
+    let herb_app = "res:white_gull_harbor:shop_3_1";
+    let herb_weapon_uid = delta.actors[herb_keeper].bound_weapon.uid.clone();
+    if actor_operates_shop(&delta, herb_keeper, herb_node) {
+        dispatch_extended_shared_verb(
+            &doc,
+            &mut delta,
+            &clk_take,
+            herb_keeper,
+            "seal_shop_venture",
+            herb_node,
+        )
+        .expect("apothecary operator can seal shop for lease");
+        assert_eq!(delta.actors[herb_keeper].bound_weapon.uid, herb_weapon_uid);
+        assert!(!actor_operates_shop(&delta, herb_keeper, herb_node));
+        let herb_need = (24 - delta.actors[herb_app].copper).max(0);
+        if herb_need > 0 {
+            assert!(delta.transfer_copper(
+                30,
+                4,
+                "probe_herb_fund",
+                "municipal_treasury",
+                herb_app,
+                herb_need,
+                "藥堂頂讓測試撥備".to_string(),
+            ));
+        }
+        let owner_copper_before = delta.actors[herb_keeper].copper;
+        let hfee = delta.shop_leases[herb_node].transfer_fee_copper;
+        dispatch_extended_shared_verb(
+            &doc,
+            &mut delta,
+            &clk_take,
+            herb_app,
+            "lease_vacant_shop",
+            herb_node,
+        )
+        .expect("apprentice/buyer pays transfer fee to lease apothecary");
+        assert_eq!(delta.actors[herb_keeper].copper, owner_copper_before + hfee);
+        assert!(actor_operates_shop(&delta, herb_app, herb_node));
+        assert_eq!(delta.conservation_diff(&doc), 0);
+    }
+
+    // 3. 驗證路邊雙格融合屋基與滿額自動延伸 3..=5 格支巷，以及只增不減廢墟標記
+    let mut saw_extended_alley = false;
+    let mut created_ids = Vec::new();
+    for idx in 0..16u32 {
+        let pid = format!("homestead:probe:{idx}");
+        let rec = allocate_and_register_roadside_homestead(
+            &doc,
+            &mut delta,
+            31,
+            &taker_id,
+            &pid,
+            "oi:white_gull_harbor:iron_anvil_ln",
+            &format!("巷側工坊新宅第{idx}"),
+        )
+        .expect("roadside or extended-alley homestead must allocate cleanly");
+        assert!(!rec.footprint_tiles.is_empty());
+        if !rec.extended_road_tiles.is_empty() {
+            assert!((3..=5).contains(&rec.extended_road_tiles.len()));
+            for &[rx, ry] in &rec.extended_road_tiles {
+                let pos = usize::from(ry) * super::island_substrate::GRID_W + usize::from(rx);
+                assert_eq!(delta.tile_diffs[&(pos as u32)].road, ROAD_COUNTRY_TRACK);
+            }
+            saw_extended_alley = true;
+        }
+        created_ids.push(pid);
+    }
+    assert!(
+        saw_extended_alley,
+        "crowded roadside must auto-extend 3..=5 tile country alley"
+    );
+    let first_id = created_ids[0].clone();
+    assert!(ruin_dynamic_homestead(&mut delta, &first_id, 32));
+    assert!(
+        delta.place_registry.contains_key(&first_id),
+        "append-only registry never deletes ID"
+    );
+    assert!(delta.place_registry[&first_id].ruined);
+    assert_eq!(delta.conservation_diff(&doc), 0);
+}

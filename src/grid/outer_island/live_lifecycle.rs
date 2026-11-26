@@ -611,6 +611,11 @@ pub fn execute_npc_passing_and_inheritance(
             if let Some(bh) = delta.built_houses.get_mut(&owned_nid) {
                 bh.owner_id = hid.clone();
             }
+            for rec in delta.place_registry.values_mut() {
+                if rec.owner_actor_id == deceased_id {
+                    rec.owner_actor_id = hid.clone();
+                }
+            }
             let hname = doc
                 .nodes
                 .get(&owned_nid)
@@ -630,6 +635,16 @@ pub fn execute_npc_passing_and_inheritance(
                 .get(&owned_nid)
                 .map_or("巷內石屋", |n| n.name.as_str());
             house_note_zh = Some(format!("【{hname}】已無親繼領，釋回市政掛牌待售"));
+        } else {
+            let owned_places: Vec<String> = delta
+                .place_registry
+                .iter()
+                .filter(|(_, r)| !r.ruined && r.owner_actor_id == deceased_id)
+                .map(|(pid, _)| pid.clone())
+                .collect();
+            for pid in owned_places {
+                super::place_registry::ruin_dynamic_homestead(delta, &pid, clock.game_days);
+            }
         }
     }
 

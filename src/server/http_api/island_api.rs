@@ -38,6 +38,8 @@ pub struct IslandMoveBody {
     pub mode: String,
     #[serde(default)]
     pub steps: Option<u8>,
+    #[serde(default)]
+    pub prev_digest: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -180,26 +182,34 @@ pub async fn island_move_post(headers: HeaderMap, Json(body): Json<IslandMoveBod
         return unauth_resp();
     };
     let ms = now_unix_ms();
+    let prev_digest = body
+        .prev_digest
+        .as_deref()
+        .and_then(|s| s.trim().parse::<u64>().ok());
     let payload = tokio::task::spawn_blocking(move || {
         let eng = global_island();
-        match eng.move_player_ext(
+        let (res, view, map_sync) = eng.move_player_with_sync(
             &pid,
             body.to.trim(),
             body.gx,
             body.gy,
             body.mode.trim(),
             body.steps,
+            prev_digest,
             ms,
-        ) {
+        );
+        match res {
             Ok(msg) => json!({
                 "ok": true,
                 "msg": msg,
-                "view": eng.build_player_view(&pid, &pid),
+                "view": view,
+                "map_sync": map_sync,
             }),
             Err(err) => json!({
                 "ok": false,
                 "msg": err,
-                "view": eng.build_player_view(&pid, &pid),
+                "view": view,
+                "map_sync": map_sync,
             }),
         }
     })

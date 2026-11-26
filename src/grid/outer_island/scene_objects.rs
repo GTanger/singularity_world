@@ -686,7 +686,13 @@ pub fn build_scene_presence_sockets(
             "obj:vacant_deed",
         );
     }
-    if matches!(node.kind.as_str(), "plaza" | "alley") && viewer.owned_house_node.is_none() {
+    if matches!(
+        node.kind.as_str(),
+        "plaza" | "alley" | "village_gate" | "yard" | "road"
+    ) && !node.indoor
+        && !node.dungeon
+        && viewer.owned_house_node.is_none()
+    {
         let wood_n: u32 = viewer
             .backpack
             .iter()
@@ -720,6 +726,60 @@ pub fn build_scene_presence_sockets(
                 "立柱造屋",
                 "object",
                 "obj:homestead_plot",
+            );
+        }
+    }
+
+    // C8b. 店鋪門前封爐頂讓木牌（待頂讓時任何人可付費承租；現任經營者亦可主動封爐離鋪）
+    if node.kind == "shop" {
+        if let Some(lease) = delta.shop_leases.get(&node.id)
+            && lease.state == super::shop_leases::ShopLeaseState::SealedForLease
+            && lease.operator_actor_id.is_none()
+        {
+            let fee = lease.transfer_fee_copper.max(0);
+            let lbl = format!("付 {fee} 枚銅幣頂下【{}】經營權", node.name);
+            objects.push(json!({
+                "object_id": "obj:shop_lease_board",
+                "name": "鋪門封條與待價頂讓木牌",
+                "cue": format!("原主事因「{}」封鋪出走・頂讓金 {} 枚銅幣", lease.seal_reason_zh, fee),
+                "desc": "門板封著麻繩與木籤牌，寫明鋪面現貨箱、門牌契據與轉讓金數額；凡未另掌鋪面者皆可出資頂下開張營業。",
+                "direct_action": Value::Null,
+                "options": [{
+                    "id": "lease_vacant_shop",
+                    "param": node.id.clone(),
+                    "label": lbl,
+                    "sub": "成為新任鋪主並把頂讓金匯交原東家",
+                }],
+            }));
+            push_audit(
+                "lease_vacant_shop",
+                &node.id,
+                &lbl,
+                "承租掛牌店鋪",
+                "object",
+                "obj:shop_lease_board",
+            );
+        } else if super::shop_leases::actor_operates_shop(delta, &viewer.actor_id, &node.id) {
+            objects.push(json!({
+                "object_id": "obj:shop_lease_board",
+                "name": "掌鋪木牌與封爐門栓",
+                "cue": "你現為本鋪當家主事，可隨時暫封鋪門掛牌頂讓、提原有傢伙離鋪闖路",
+                "desc": "將鐵牌翻向「暫封待頂讓」，屋契所有權仍歸原東家名下，待有緣旅人或居民出資承租接手。",
+                "direct_action": Value::Null,
+                "options": [{
+                    "id": "seal_shop_venture",
+                    "param": node.id.clone(),
+                    "label": "暫封鋪門掛牌頂讓（16 銅）",
+                    "sub": "保住手頭傢伙卸下櫃檯離鋪闖路",
+                }],
+            }));
+            push_audit(
+                "seal_shop_venture",
+                &node.id,
+                "暫封鋪門掛牌頂讓（16 銅）",
+                "封爐掛牌離鋪",
+                "object",
+                "obj:shop_lease_board",
             );
         }
     }

@@ -807,10 +807,18 @@ pub fn awaken_lived_concerns_and_intentions_once(
             && !a.actor_id.starts_with("pl:")
             && !a.explored_windows.contains(PIT_RUMOR_SEEDED_MARKER)
         {
-            if a.role.contains("酒館")
-                || a.role.contains("獵")
-                || (a.race == "矮人" && a.role.contains("鐵"))
-            {
+            let at_tavern = doc
+                .nodes
+                .get(&a.work_node)
+                .is_some_and(|n| super::shop_leases::infer_shop_kind(n) == "tavern");
+            let bold_scout = super::shop_leases::has_combat_or_guard_arm(a)
+                && derive_innate_persona(a.soul_seed.max(1))
+                    .temperament
+                    .approach_avoid
+                    >= 18;
+            let dwarven_miner = a.languages.get("dwarven").copied().unwrap_or(0) >= 60
+                && super::shop_leases::has_mining_or_forging_tool(a);
+            if at_tavern || bold_scout || dwarven_miner {
                 a.known_rumors.insert("pit_rumor".to_string());
             }
             a.explored_windows

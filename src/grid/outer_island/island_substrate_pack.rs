@@ -243,6 +243,19 @@ fn synthesize_live_substrate_buffers(
 
     let mut built_pois = Vec::new();
     for bh in delta.built_houses.values() {
+        if let Some(rec) = delta.place_registry.get(&bh.house_id) {
+            if !rec.ruined {
+                let [px, py] = super::place_registry::footprint_center_xy(rec);
+                let pub_id = if rec.place_id.contains("pl:") {
+                    format!("homestead:traveler:{}", rec.built_day)
+                } else {
+                    rec.place_id.clone()
+                };
+                let label = mask_player_names_in_text(delta, &rec.label_zh);
+                built_pois.push((pub_id, rec.cell_id, label, px, py));
+            }
+            continue;
+        }
         let Some(anchor_nd) = doc.nodes.get(&bh.anchor_node_id) else {
             continue;
         };
@@ -257,6 +270,19 @@ fn synthesize_live_substrate_buffers(
             let label = mask_player_names_in_text(delta, &bh.label_zh);
             built_pois.push((pub_id, anchor_nd.cell_id, label, px, py));
         }
+    }
+    for rec in delta.place_registry.values() {
+        if delta.built_houses.contains_key(&rec.place_id) || rec.ruined {
+            continue;
+        }
+        let [px, py] = super::place_registry::footprint_center_xy(rec);
+        let pub_id = if rec.place_id.contains("pl:") {
+            format!("homestead:traveler:{}", rec.built_day)
+        } else {
+            rec.place_id.clone()
+        };
+        let label = mask_player_names_in_text(delta, &rec.label_zh);
+        built_pois.push((pub_id, rec.cell_id, label, px, py));
     }
 
     (terrain, overlay, built_pois, low_tide)

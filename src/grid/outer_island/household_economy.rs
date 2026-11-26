@@ -51,31 +51,46 @@ pub fn find_town_tavern_and_keeper(
             })
             .map(|n| n.id.clone());
 
-        let is_tavern_keeper = |a: &UnifiedMindBody| -> bool {
-            a.alive && a.controller_id.is_none() && a.role == "酒館掌櫃"
+        let keeper_id = if let Some(tn) = tav_node.as_deref()
+            && let Some(lease) = delta.shop_leases.get(tn)
+        {
+            if lease.state == super::shop_leases::ShopLeaseState::SealedForLease {
+                None
+            } else {
+                lease.operator_actor_id.as_ref().and_then(|op_id| {
+                    delta
+                        .actors
+                        .get(op_id)
+                        .is_some_and(|a| a.alive && !op_id.starts_with("pl:"))
+                        .then(|| op_id.clone())
+                })
+            }
+        } else {
+            let is_tavern_keeper = |a: &UnifiedMindBody| -> bool {
+                a.alive && a.controller_id.is_none() && a.role == "酒館掌櫃"
+            };
+            tav_node
+                .as_ref()
+                .and_then(|tn| delta.node_occupants.get(tn))
+                .and_then(|occ| {
+                    occ.iter()
+                        .find(|&aid| delta.actors.get(aid).is_some_and(is_tavern_keeper))
+                        .cloned()
+                })
+                .or_else(|| {
+                    delta
+                        .actors
+                        .values()
+                        .find(|a| {
+                            is_tavern_keeper(a)
+                                && doc
+                                    .nodes
+                                    .get(&a.work_node)
+                                    .is_some_and(|n| n.cell_id == cell_id)
+                        })
+                        .map(|a| a.actor_id.clone())
+                })
         };
-
-        let keeper_id = tav_node
-            .as_ref()
-            .and_then(|tn| delta.node_occupants.get(tn))
-            .and_then(|occ| {
-                occ.iter()
-                    .find(|&aid| delta.actors.get(aid).is_some_and(is_tavern_keeper))
-                    .cloned()
-            })
-            .or_else(|| {
-                delta
-                    .actors
-                    .values()
-                    .find(|a| {
-                        is_tavern_keeper(a)
-                            && doc
-                                .nodes
-                                .get(&a.work_node)
-                                .is_some_and(|n| n.cell_id == cell_id)
-                    })
-                    .map(|a| a.actor_id.clone())
-            });
 
         (tav_node, keeper_id)
     };
@@ -833,6 +848,11 @@ pub fn settle_daily_town_livelihood_and_levy(
                     ]
                     .into_iter()
                     .find_map(|(sl, pay, prod_zh)| {
+                        if sl == "iron_ore"
+                            && super::live_commodities::is_smithy_forge_cold(delta, &a.work_node)
+                        {
+                            return None;
+                        }
                         let clean_sum: u32 = wv
                             .iter()
                             .filter(|i| {
@@ -940,7 +960,10 @@ pub fn settle_daily_town_livelihood_and_levy(
                 {
                     return None;
                 }
-                if is_craft_or_shop_master_role(&a.role) && a.copper >= 75 {
+                let operates_active_shop =
+                    super::shop_leases::actor_currently_operates_any_shop(doc, delta, a).is_some()
+                        || is_craft_or_shop_master_role(&a.role);
+                if operates_active_shop && a.copper >= 75 {
                     let levy = if a.copper > 320 {
                         10 + (a.copper - 320) / 10
                     } else {
