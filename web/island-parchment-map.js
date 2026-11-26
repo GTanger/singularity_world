@@ -1627,7 +1627,7 @@
     ctx.closePath();
   }
 
-  function renderLabelsAndCompass(ctx, sub, cam, viewW, viewH, pal, hitTargets) {
+  function renderLabelsAndCompass(ctx, sub, cam, viewW, viewH, pal, hitTargets, poiTargets, viewOpts) {
     var z = cam.pxPerTile;
     var toScreen = function (gx, gy) {
       return [
@@ -1646,12 +1646,16 @@
     }
 
     var isClose = z >= 4.2;
-    var pois = sub.pois || [];
+    var showAllSettlements = !!(viewOpts && viewOpts.showAllSettlements);
+    var tierRank = { core_town: 0, band: 1, ruin: 1, built: 1, rural_town: 2, gate: 3, shop: 3, alley: 4 };
+    var pois = (sub.pois || []).slice().sort(function (a, b) {
+      return (tierRank[a.tier] || 5) - (tierRank[b.tier] || 5);
+    });
     ctx.save();
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
 
-    // 優先序：直通鄰接出口 -> 地標／城門／屋宅 -> 全島主鎮名
+    // 優先序：直通鄰接出口 -> 主鎮／部族營寨／遺址／鄉鎮 -> 地標／城門／屋宅
     var adj = sub.adjacent_exits || [];
     if (isClose) {
       for (var ai = 0; ai < adj.length; ai++) {
@@ -1680,14 +1684,14 @@
       var p = pois[pi];
       var show = false;
       if (!isClose) {
-        show = p.tier === 'core_town' || p.tier === 'ruin' || (z >= 1.8 && p.tier === 'rural_town');
+        show = p.tier === 'core_town' || p.tier === 'ruin' || p.tier === 'band' || ((showAllSettlements || z >= 1.8) && p.tier === 'rural_town');
       } else {
-        show = p.tier === 'gate' || p.tier === 'shop' || p.tier === 'built' || (z >= 7.0 && p.tier === 'alley') || p.tier === 'rural_town' || p.tier === 'ruin';
+        show = p.tier === 'gate' || p.tier === 'shop' || p.tier === 'built' || (z >= 7.0 && p.tier === 'alley') || p.tier === 'rural_town' || p.tier === 'ruin' || p.tier === 'band';
       }
       if (!show || !p.label) continue;
       var spt = toScreen(p.gx, p.gy);
       if (spt[0] < 10 || spt[0] > viewW - 10 || spt[1] < 12 || spt[1] > viewH - 12) continue;
-      var fSize = p.tier === 'core_town' ? 12.5 : (p.tier === 'alley' ? 10.5 : 11.5);
+      var fSize = p.tier === 'core_town' ? 12.5 : (p.tier === 'alley' ? 10.5 : (p.tier === 'band' ? 11.0 : 11.5));
       ctx.font = '700 ' + fSize + 'px "Noto Serif TC", serif';
       var tw2 = ctx.measureText(p.label).width + 12;
       var th2 = fSize + 8;
@@ -1698,12 +1702,26 @@
       if (overlaps(bx2, by2, tw2, th2)) continue;
       placed.push([bx2, by2, tw2, th2]);
       ctx.fillStyle = pal.labelBg;
-      ctx.strokeStyle = pal.labelBorder;
-      ctx.lineWidth = 1.0;
+      ctx.strokeStyle = p.tier === 'band' ? '#b34125' : pal.labelBorder;
+      ctx.lineWidth = p.tier === 'band' ? 1.35 : 1.0;
       roundRectPath(ctx, bx2, by2, tw2, th2, 4);
       ctx.fill(); ctx.stroke();
       ctx.fillStyle = pal.labelInk;
       ctx.fillText(p.label, spt[0], by2 + th2 * 0.5 + 0.5);
+      if (poiTargets) {
+        poiTargets.push({
+          id: p.id,
+          cell_id: p.cell_id || 0,
+          tier: p.tier,
+          label: p.label,
+          gx: p.gx,
+          gy: p.gy,
+          x0: bx2,
+          y0: by2,
+          x1: bx2 + tw2,
+          y1: by2 + th2
+        });
+      }
     }
 
     // 旅人當前位置朱紅火漆雙環印記
@@ -1890,11 +1908,13 @@
 
     // 4. 書法名牌、直通鄰近出口按鈕、朱紅火漆當前位置、羅盤玫瑰
     var hitTargets = [];
-    renderLabelsAndCompass(ctx, m.substrate, cam, viewW, viewH, pal, hitTargets);
+    var poiTargets = [];
+    renderLabelsAndCompass(ctx, m.substrate, cam, viewW, viewH, pal, hitTargets, poiTargets, viewOpts);
     ctx.restore();
 
     return {
       hitTargets: hitTargets,
+      poiTargets: poiTargets,
       renderMs: performance.now() - t0
     };
   }

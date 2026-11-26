@@ -72,6 +72,8 @@
     - 第一刀：四季水文漲退、沖橋攔車、公庫購木修橋、伐木再生、墾田休耕退化、空屋傾頹與動態疫氣解封；第二刀：鋪倉煤鐵草藥口糧真存量、耗盡熄火停診、動態供需報價、城鄉貨車按物資分流入鋪、斷橋阻糧與海駁每日限一班；第三刀：撤除 `desire_sim.rs` 櫃台保母硬鎖、擴充 9 種人生轉折方針、打通店鋪斷料自採與託付購煤草復工、自主伐木修橋／墾荒／驅疫與依城鎮缺口轉行（並固化里程碑後主動 `checkpoint` 規則）；通過 `63/63` `outer_island` 單元測試、`code_guard_rs`（`hard=0`）、桌面與 `Pixel 9 Pro XL` 雙端真機視覺驗收。
 23. **2026-11-26 讓世界自己運轉第四刀「荒野風浪與生死更替」上線驗收（`live_wilds.rs` ＋ `live_lifecycle.rs`）**：
     - 實裝 5 座內陸哥布林營寨口糧短缺與礦竭劫車屯贓（`goblin_hoard` 複式簿記守恆、清剿營寨與部族交涉）、傾頹空屋／淨化疫廳流寇佔據（驅逐解鎖修屋買屋）與試煉深坑巢穴輪替、落敗符石吸收異變首領（全島符石總量守恆），以及 NPC 歲數老去與重傷孤立身故（玩家 100% 免疫）、雙重記帳遺產與鋪倉繼承、學徒接班、無嗣符石歸池、市集追思名錄牌、史官終章與富足家戶新丁成年（並修復 `living_chronicler_gate.rs` OpenCC 專名誤轉）；通過 `69/69` `outer_island` 單元測試、`code_guard_rs`（`hard=0`）、`tra-sw-gate --deploy`、桌面 `1440×900` 與 `Pixel 9 Pro XL` 真機視覺驗收。
+24. **2026-11-26 全開大地圖 `/world_atlas` 升級為無迷霧水彩活輿圖並接通一至四刀實況（`v=20261126r2`）**：
+    - 新增 `island_substrate_pack.rs::build_full_revealed_substrate_json`（`860×930` 100% 零迷霧動態底盤，遮罩旅人個資）與 `atlas_live_pulse.rs`，將 `/world_atlas`（`web/world_atlas.html`、`web/world-atlas.js`、`web/world-atlas-panels.js`）由舊版 Voronoi SVG 與切圖全面切換為無縫水彩 Canvas2D 活輿圖（支援地標右上角停靠人數徽記、11 具即時車船、屋宅顏色區分與一至四刀水文斷橋／冷爐缺藥／營寨屯贓／流寇佔屋／異變首領／生死名錄面板及 `goblin_hoard` 守恆對帳）；通過 `69/69` `outer_island` 測試、`tra-sw-gate --deploy`、桌面 `1440×900` 與 `Pixel 9 Pro XL` 真機視覺驗收。
 
 ## 二、 關鍵檔案與正典錨點
 

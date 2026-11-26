@@ -1,15 +1,18 @@
 //! 全島單一無縫底盤之即時迷霧濾鏡、動態狀態疊加（潮汐／新屋／採伐／售屋）與 RLE Base64 壓縮封包。
 
+use std::collections::BTreeSet;
+
 use serde_json::{Value, json};
 
 use super::cell_resources::is_low_tide_window;
 use super::clock_and_lang::SolarClockSnapshot;
 use super::island_substrate::{
-    BLDG_NONE, BLDG_ROOF, BLDG_RUIN_WALL, GRID_H, GRID_SCALE, GRID_W, ROAD_BRIDGE_OR_PIER,
-    ROAD_NONE, ROAD_STONE_WALL, ROAD_TOWN_COBBLE, TERRAIN_FARM, TERRAIN_FOG, TERRAIN_LAND,
-    TERRAIN_REEF_SAND, TERRAIN_RIVER, TERRAIN_TREE, WX0, WY0, compiled_island_substrate, idx_of,
-    noise01, world_to_grid_f32,
+    BLDG_NONE, BLDG_ROOF, BLDG_RUIN_WALL, CompiledIslandSubstrate, GRID_H, GRID_SCALE, GRID_W,
+    ROAD_BRIDGE_OR_PIER, ROAD_NONE, ROAD_STONE_WALL, ROAD_TOWN_COBBLE, TERRAIN_FARM, TERRAIN_FOG,
+    TERRAIN_LAND, TERRAIN_REEF_SAND, TERRAIN_RIVER, TERRAIN_TREE, WX0, WY0,
+    compiled_island_substrate, idx_of, noise01, world_to_grid_f32,
 };
+use super::slow_think::mask_player_names_in_text;
 use super::types::{IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
 
 fn rle_encode_bytes(raw: &[u8]) -> Vec<u8> {
@@ -58,19 +61,17 @@ fn base64_encode(bytes: &[u8]) -> String {
     out
 }
 
-/// 依旅人目前視線迷霧、`delta` 活態變更與 `48 候` 潮汐，產生全島單一無縫底盤序列化 JSON。
-pub fn build_viewer_substrate_json(
+fn synthesize_live_substrate_buffers(
     doc: &WorldStaticDoc,
+    sub: &CompiledIslandSubstrate,
     delta: &IslandWorldDelta,
-    viewer: &UnifiedMindBody,
     clock: &SolarClockSnapshot,
-) -> Value {
-    let sub = compiled_island_substrate(doc);
+    known_cells_filter: Option<&BTreeSet<u32>>,
+) -> (Vec<u8>, Vec<u8>, Vec<(String, u32, String, f32, f32)>, bool) {
     let total = GRID_W * GRID_H;
-    let known_cells = &viewer.mind.ltm.known_cells;
     let low_tide = is_low_tide_window(clock);
 
-    let mut cell_known = vec![false; sub.cell_ids.len()];
+    let mut cell_known = vec![known_cells_filter.is_none(); sub.cell_ids.len()];
     let mut cell_reef = vec![false; sub.cell_ids.len()];
     let mut cell_stock_pct = vec![100u8; sub.cell_ids.len()];
     let mut cell_plague = vec![false; sub.cell_ids.len()];
@@ -81,7 +82,9 @@ pub fn build_viewer_substrate_json(
     let mut cell_fallow = vec![0u16; sub.cell_ids.len()];
 
     for (idx, &cid) in sub.cell_ids.iter().enumerate() {
-        cell_known[idx] = known_cells.contains(&cid);
+        if let Some(known) = known_cells_filter {
+            cell_known[idx] = known.contains(&cid);
+        }
         if let Some(c) = doc.cells.get(&cid.to_string()) {
             cell_reef[idx] = c.is_coast && c.resource_slug == "shellfish_meat";
             cell_plague[idx] = c.kind == "plague_ruin";
@@ -110,66 +113,71 @@ pub fn build_viewer_substrate_json(
         }
     }
 
-    let mut sea_dist = vec![u16::MAX / 2; total];
-    for y in 0..GRID_H {
-        let row = y * GRID_W;
-        for x in 0..GRID_W {
-            let pos = row + x;
-            let owner = sub.cell_owner[pos];
-            if owner != u16::MAX && cell_known[owner as usize] {
-                sea_dist[pos] = 0;
-            }
-        }
-    }
-    // Rosenfeld-Pfaltz 雙趟 Chamfer 距離場（正交 10、對角 14）：確保外海與迷霧沿海岸自然圓弧暈開，絕非直角矩形
-    for y in 0..GRID_H {
-        let row = y * GRID_W;
-        for x in 0..GRID_W {
-            let pos = row + x;
-            let mut d = sea_dist[pos];
-            if d == 0 {
-                continue;
-            }
-            if x > 0 {
-                d = d.min(sea_dist[pos - 1] + 10);
-            }
-            if y > 0 {
-                let up = pos - GRID_W;
-                d = d.min(sea_dist[up] + 10);
-                if x > 0 {
-                    d = d.min(sea_dist[up - 1] + 14);
-                }
-                if x + 1 < GRID_W {
-                    d = d.min(sea_dist[up + 1] + 14);
+    let sea_dist = if known_cells_filter.is_some() {
+        let mut sd = vec![u16::MAX / 2; total];
+        for y in 0..GRID_H {
+            let row = y * GRID_W;
+            for x in 0..GRID_W {
+                let pos = row + x;
+                let owner = sub.cell_owner[pos];
+                if owner != u16::MAX && cell_known[owner as usize] {
+                    sd[pos] = 0;
                 }
             }
-            sea_dist[pos] = d;
         }
-    }
-    for y in (0..GRID_H).rev() {
-        let row = y * GRID_W;
-        for x in (0..GRID_W).rev() {
-            let pos = row + x;
-            let mut d = sea_dist[pos];
-            if d == 0 {
-                continue;
-            }
-            if x + 1 < GRID_W {
-                d = d.min(sea_dist[pos + 1] + 10);
-            }
-            if y + 1 < GRID_H {
-                let dn = pos + GRID_W;
-                d = d.min(sea_dist[dn] + 10);
-                if x + 1 < GRID_W {
-                    d = d.min(sea_dist[dn + 1] + 14);
+        // Rosenfeld-Pfaltz 雙趟 Chamfer 距離場（正交 10、對角 14）：確保外海與迷霧沿海岸自然圓弧暈開，絕非直角矩形
+        for y in 0..GRID_H {
+            let row = y * GRID_W;
+            for x in 0..GRID_W {
+                let pos = row + x;
+                let mut d = sd[pos];
+                if d == 0 {
+                    continue;
                 }
                 if x > 0 {
-                    d = d.min(sea_dist[dn - 1] + 14);
+                    d = d.min(sd[pos - 1] + 10);
                 }
+                if y > 0 {
+                    let up = pos - GRID_W;
+                    d = d.min(sd[up] + 10);
+                    if x > 0 {
+                        d = d.min(sd[up - 1] + 14);
+                    }
+                    if x + 1 < GRID_W {
+                        d = d.min(sd[up + 1] + 14);
+                    }
+                }
+                sd[pos] = d;
             }
-            sea_dist[pos] = d;
         }
-    }
+        for y in (0..GRID_H).rev() {
+            let row = y * GRID_W;
+            for x in (0..GRID_W).rev() {
+                let pos = row + x;
+                let mut d = sd[pos];
+                if d == 0 {
+                    continue;
+                }
+                if x + 1 < GRID_W {
+                    d = d.min(sd[pos + 1] + 10);
+                }
+                if y + 1 < GRID_H {
+                    let dn = pos + GRID_W;
+                    d = d.min(sd[dn] + 10);
+                    if x + 1 < GRID_W {
+                        d = d.min(sd[dn + 1] + 14);
+                    }
+                    if x > 0 {
+                        d = d.min(sd[dn - 1] + 14);
+                    }
+                }
+                sd[pos] = d;
+            }
+        }
+        sd
+    } else {
+        vec![0u16; total]
+    };
 
     let mut terrain = vec![TERRAIN_FOG; total];
     let mut overlay = vec![0u8; total];
@@ -180,7 +188,7 @@ pub fn build_viewer_substrate_json(
             let pos = row + x;
             let owner = sub.cell_owner[pos];
             if owner == u16::MAX {
-                if sea_dist[pos] <= 290 {
+                if known_cells_filter.is_none() || sea_dist[pos] <= 290 {
                     terrain[pos] = sub.base_terrain[pos];
                     overlay[pos] = sub.base_road[pos] | (sub.base_bldg[pos] << 3);
                 }
@@ -294,12 +302,12 @@ pub fn build_viewer_substrate_json(
         }
     }
 
-    let mut built_pois: Vec<Value> = Vec::new();
+    let mut built_pois = Vec::new();
     for bh in delta.built_houses.values() {
         let Some(anchor_nd) = doc.nodes.get(&bh.anchor_node_id) else {
             continue;
         };
-        if !known_cells.contains(&anchor_nd.cell_id) {
+        if known_cells_filter.is_some_and(|known| !known.contains(&anchor_nd.cell_id)) {
             continue;
         }
         let Some(&[ax, ay]) = sub.node_anchors.get(&bh.anchor_node_id) else {
@@ -328,15 +336,34 @@ pub fn build_viewer_substrate_json(
             }
         }
         if let Some([px, py]) = placed_xy {
-            built_pois.push(json!({
-                "id": bh.house_id,
-                "label": bh.label_zh,
-                "tier": "built",
-                "gx": px,
-                "gy": py,
-            }));
+            let pub_id = if known_cells_filter.is_none() && bh.house_id.contains("pl:") {
+                format!("homestead:traveler:{}", bh.built_day)
+            } else {
+                bh.house_id.clone()
+            };
+            let label = if known_cells_filter.is_none() {
+                mask_player_names_in_text(delta, &bh.label_zh)
+            } else {
+                bh.label_zh.clone()
+            };
+            built_pois.push((pub_id, anchor_nd.cell_id, label, px, py));
         }
     }
+
+    (terrain, overlay, built_pois, low_tide)
+}
+
+/// 依旅人目前視線迷霧、`delta` 活態變更與 `48 候` 潮汐，產生全島單一無縫底盤序列化 JSON。
+pub fn build_viewer_substrate_json(
+    doc: &WorldStaticDoc,
+    delta: &IslandWorldDelta,
+    viewer: &UnifiedMindBody,
+    clock: &SolarClockSnapshot,
+) -> Value {
+    let sub = compiled_island_substrate(doc);
+    let known_cells = &viewer.mind.ltm.known_cells;
+    let (terrain, overlay, built_pois_raw, low_tide) =
+        synthesize_live_substrate_buffers(doc, sub, delta, clock, Some(known_cells));
 
     let terrain_b64 = base64_encode(&rle_encode_bytes(&terrain));
     let overlay_b64 = base64_encode(&rle_encode_bytes(&overlay));
@@ -353,7 +380,15 @@ pub fn build_viewer_substrate_json(
             }));
         }
     }
-    pois.extend(built_pois);
+    for (id, _, label, gx, gy) in built_pois_raw {
+        pois.push(json!({
+            "id": id,
+            "label": label,
+            "tier": "built",
+            "gx": gx,
+            "gy": gy,
+        }));
+    }
     for band in delta.live_wilds.bands.values() {
         if known_cells.contains(&band.cell_id)
             && clock.game_days >= band.suppressed_until_day
@@ -435,5 +470,97 @@ pub fn build_viewer_substrate_json(
         "player_pos": cur_anchor,
         "pois": pois,
         "adjacent_exits": adj_exits,
+    })
+}
+
+/// 產生全島 100% 無迷霧（零 `TERRAIN_FOG`）即時水彩活態底盤封包（專供 `/world_atlas` 設計者全開大地圖）。
+pub fn build_full_revealed_substrate_json(
+    doc: &WorldStaticDoc,
+    delta: &IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+) -> Value {
+    let sub = compiled_island_substrate(doc);
+    let (terrain, overlay, built_pois_raw, low_tide) =
+        synthesize_live_substrate_buffers(doc, sub, delta, clock, None);
+
+    let terrain_b64 = base64_encode(&rle_encode_bytes(&terrain));
+    let overlay_b64 = base64_encode(&rle_encode_bytes(&overlay));
+
+    let mut pois: Vec<Value> = Vec::with_capacity(
+        sub.poi_base_entries.len() + built_pois_raw.len() + delta.live_wilds.bands.len(),
+    );
+    for p in &sub.poi_base_entries {
+        pois.push(json!({
+            "id": p.id,
+            "cell_id": p.cell_id,
+            "label": p.label,
+            "tier": p.tier,
+            "gx": p.gx,
+            "gy": p.gy,
+        }));
+    }
+
+    let mut node_anchors =
+        serde_json::Map::with_capacity(sub.node_anchors.len() + built_pois_raw.len());
+    for (nid, &[gx, gy]) in &sub.node_anchors {
+        node_anchors.insert(nid.clone(), json!([gx, gy]));
+    }
+    for (pub_id, cell_id, label, gx, gy) in built_pois_raw {
+        pois.push(json!({
+            "id": pub_id,
+            "cell_id": cell_id,
+            "label": label,
+            "tier": "built",
+            "gx": gx,
+            "gy": gy,
+        }));
+        node_anchors.insert(pub_id, json!([gx, gy]));
+    }
+
+    for band in delta.live_wilds.bands.values() {
+        let [gx, gy] = sub
+            .node_anchors
+            .get(&band.camp_node_id)
+            .copied()
+            .or_else(|| {
+                doc.cells
+                    .get(&band.cell_id.to_string())
+                    .map(|c| world_to_grid_f32(c.center[0], c.center[1]))
+            })
+            .unwrap_or([370.0, 410.0]);
+        pois.push(json!({
+            "id": band.camp_node_id,
+            "cell_id": band.cell_id,
+            "label": band.band_name_zh,
+            "tier": "band",
+            "gx": gx,
+            "gy": gy,
+        }));
+        node_anchors
+            .entry(band.camp_node_id.clone())
+            .or_insert_with(|| json!([gx, gy]));
+    }
+
+    let mut cell_grid_centers = serde_json::Map::with_capacity(doc.cells.len());
+    for c in doc.cells.values() {
+        let [gx, gy] = world_to_grid_f32(c.center[0], c.center[1]);
+        cell_grid_centers.insert(c.cell_id.to_string(), json!([gx, gy]));
+    }
+
+    json!({
+        "grid_w": GRID_W,
+        "grid_h": GRID_H,
+        "wx0": WX0,
+        "wy0": WY0,
+        "scale": GRID_SCALE,
+        "low_tide": low_tide,
+        "camera_bounds": [1360.0, 628.0, 1506.0, 792.0],
+        "terrain_rle_b64": terrain_b64,
+        "overlay_rle_b64": overlay_b64,
+        "player_pos": Value::Null,
+        "pois": pois,
+        "adjacent_exits": [],
+        "node_anchors": node_anchors,
+        "cell_grid_centers": cell_grid_centers,
     })
 }

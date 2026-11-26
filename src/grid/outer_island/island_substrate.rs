@@ -10,7 +10,9 @@ use crate::combat::wordplate::splitmix64;
 use super::island_substrate_towns::compile_settlements;
 use super::types::{VoronoiCellDef, WorldStaticDoc};
 
-pub use super::island_substrate_pack::build_viewer_substrate_json;
+pub use super::island_substrate_pack::{
+    build_full_revealed_substrate_json, build_viewer_substrate_json,
+};
 
 /// 全島連續底盤世界座標原點 X（島嶼單位）。
 pub const WX0: f64 = 1346.0;

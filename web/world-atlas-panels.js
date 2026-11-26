@@ -107,6 +107,62 @@
         html += '</div>';
       }
 
+      var lw = p.live_world || {};
+      var hy = lw.hydrology || {};
+      var cm = lw.commodities || {};
+      var wd = lw.wilds || {};
+      var lc = lw.lifecycle || {};
+
+      html += '<div class="wa-card accent-jade"><div class="wa-card-title"><span>🌊 第一刀｜水文漲退與地貌演變（水位 ' + (hy.water_stage_pct || 0) + '%）</span></div>';
+      html += '<div class="wa-kv-row">斷橋阻路 <b>' + (hy.washed_out_bridges || []).length + '</b> 處｜漫水 <b>' + (hy.flooded_cells || []).length + '</b> 格｜墾田 <b>' + (hy.reclaimed_cells || []).length + '</b> 格｜傾頹空屋 <b>' + (hy.ruined_houses || []).length + '</b> 棟｜已解封疫區 <b>' + (hy.detoxified_ruins || []).length + '</b> 處</div>';
+      (hy.washed_out_bridges || []).forEach(function (b) {
+        html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-focus-cell="' + b.cell_id + '">🌊 斷橋：' + esc(b.title) + '</button>（已斷 ' + b.down_days + ' 日）</div>';
+      });
+      (hy.ruined_houses || []).slice(0, 8).forEach(function (rh) {
+        html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-node-id="' + esc(rh.node_id) + '">🏚 傾頹：' + esc(rh.name) + '</button>（屋況 ' + rh.integrity + '）</div>';
+      });
+      html += '</div>';
+
+      var colds = cm.cold_forges || [];
+      var herbOuts = cm.herb_out_apothecaries || [];
+      html += '<div class="wa-card' + ((colds.length || herbOuts.length) ? ' accent-gold' : '') + '"><div class="wa-card-title"><span>⚒️ 第二刀｜鋪倉料況與停工告警</span></div>';
+      if (!colds.length && !herbOuts.length) {
+        html += '<div class="wa-kv-row">全島鐵鋪爐火與藥堂藥材皆正常運作</div>';
+      } else {
+        colds.forEach(function (cf) {
+          html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-node-id="' + esc(cf.node_id) + '">🔥 冷爐：' + esc(cf.name) + '</button>（存煤/炭 0）</div>';
+        });
+        herbOuts.forEach(function (ha) {
+          html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-node-id="' + esc(ha.node_id) + '">🌿 缺藥：' + esc(ha.name) + '</button>（草藥 0）</div>';
+        });
+      }
+      html += '</div>';
+
+      html += '<div class="wa-card accent-main"><div class="wa-card-title"><span>⛺ 第四刀上｜荒野部族營寨與異變佔據</span></div>';
+      (wd.bands || []).forEach(function (bd) {
+        html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-node-id="' + esc(bd.camp_node_id) + '">' + esc(bd.band_name_zh) + '</button> ' + bd.headcount + '丁｜糧' + bd.food_stores + '・壓' + bd.raid_pressure + '・贓' + bd.hoard_copper + '銅/' + bd.hoard_item_count + '件' + (bd.active ? '' : '（休整至第' + bd.suppressed_until_day + '日）') + '</div>';
+      });
+      (wd.squatters || []).forEach(function (sq) {
+        html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-node-id="' + esc(sq.node_id) + '">⚠️ 佔屋：' + esc(sq.node_name) + '</button>（' + esc(sq.foe_name_zh) + '）</div>';
+      });
+      (wd.mutated_bosses || []).forEach(function (mb) {
+        html += '<div class="wa-kv-row">・<button type="button" class="wa-mini-btn" data-node-id="' + esc(mb.node_id) + '">🔮 異變：' + esc(mb.boss_name_zh) + '</button>（吞石×' + mb.absorbed_runes + '｜原主：' + esc(mb.victim_label_zh) + '）</div>';
+      });
+      if (!(wd.squatters || []).length && !(wd.mutated_bosses || []).length) {
+        html += '<div class="wa-kv-row" style="color:var(--ink-muted);">此刻全島尚無流寇佔屋與異變頭目</div>';
+      }
+      html += '</div>';
+
+      html += '<div class="wa-card"><div class="wa-card-title"><span>🕯️ 第四刀下｜太陽曆 ' + (lc.solar_year || 329) + ' 年生死更替與新丁（成年 ' + (lc.spawned_youth_seq || 0) + ' 人）</span></div>';
+      if (!(lc.obituaries || []).length) {
+        html += '<div class="wa-kv-row" style="color:var(--ink-muted);">近期無居民往生名錄紀錄</div>';
+      } else {
+        lc.obituaries.slice(0, 12).forEach(function (ob) {
+          html += '<div class="wa-kv-row">・<b>' + esc(ob.deceased_name) + '</b>（' + esc(ob.race) + '・' + esc(ob.role) + '・' + ob.age_at_death + '歲｜' + ob.solar_year + '年' + esc(ob.season_zh) + '）' + esc(ob.cause_zh) + (ob.heir_name ? (' → 嗣：' + esc(ob.heir_name)) : '（無嗣）') + '</div>';
+        });
+      }
+      html += '</div>';
+
       byId('pulseBody').innerHTML = html;
     },
 
@@ -136,6 +192,7 @@
         '<div class="wa-kv-row">銀號契約託管池：<b>' + lg.contract_escrow_copper.toLocaleString() + '</b> 銅</div>' +
         '<div class="wa-kv-row">跨海清算池：<b>' + lg.mainland_clearing_copper.toLocaleString() + '</b> 銅</div>' +
         '<div class="wa-kv-row">地面遺落包：<b>' + lg.dropped_loot_copper.toLocaleString() + '</b> 銅</div>' +
+        '<div class="wa-kv-row">哥布林營寨屯贓：<b>' + (lg.goblin_hoard_copper || 0).toLocaleString() + '</b> 銅</div>' +
         '<div class="wa-kv-row"><strong>即時守恆差額：' + lg.conservation_diff + ' 銅</strong></div>' +
         '</div>';
 
@@ -208,12 +265,9 @@
           if (r.id === d.node_id && r.tile && r.tile.room_url) hasDngRoomMap = true;
         });
       }
-      var isCoreIllTown = !!(tSlug && window.TOWN_ILLUSTRATED_MAPS && window.TOWN_ILLUSTRATED_MAPS[tSlug]);
-      if (isCoreIllTown && state.scale === 'island') {
-        html += '<div style="margin-bottom:8px;"><button type="button" class="active" data-town-jump="' + esc(tSlug) + '">🔍 進入【' + esc(d.cell_title) + '】街廓微觀輿圖</button></div>';
-      }
-      if (!d.dungeon && hasCellMap && state.scale !== ('cell:' + d.cell_id) && state.scale !== ('town:burg_' + d.cell_id)) {
-        html += '<div style="margin-bottom:8px;"><button type="button" class="active" data-cell-map-jump="' + d.cell_id + '">🖼️ 查看【' + esc(d.cell_title) + '】單格手繪地景圖</button></div>';
+      var isMicroZoom = state.gridCam && state.gridCam.pxPerTile >= 6.0;
+      if (tSlug && !d.dungeon && !isMicroZoom) {
+        html += '<div style="margin-bottom:8px;"><button type="button" class="active" data-town-jump="' + esc(tSlug) + '">🔍 拉近【' + esc(d.cell_title) + '】街廓水彩近景</button></div>';
       }
       if (d.dungeon && hasDngRoomMap) {
         if (state.scale !== ('dngroom:' + d.node_id)) {
@@ -232,6 +286,39 @@
       }
 
       html += '<div class="wa-desc">' + esc(d.live_desc) + '</div>';
+
+      var ls = d.live_status || {};
+      var liveLines = [];
+      if (ls.house_integrity != null || ls.is_ruined_house) {
+        liveLines.push('屋況完整度：<b>' + (ls.house_integrity != null ? ls.house_integrity : 100) + '</b>' + (ls.is_ruined_house ? ' <span class="wa-tag danger">已傾頹</span>' : ''));
+      }
+      if (ls.squatter) {
+        liveLines.push('<span class="wa-tag danger">流寇佔據</span> <b>' + esc(ls.squatter.foe_name_zh) + '</b>（第 ' + ls.squatter.occupied_since_day + ' 日起盤踞）');
+      }
+      if (ls.mutated_boss) {
+        liveLines.push('<span class="wa-tag danger">符石異變首領</span> <b>' + esc(ls.mutated_boss.boss_name_zh) + '</b>（吸收 ' + ls.mutated_boss.absorbed_runes + ' 枚｜原主：' + esc(ls.mutated_boss.victim_label_zh) + '）');
+      }
+      if (ls.goblin_band) {
+        var gb = ls.goblin_band;
+        liveLines.push('⛺ 部族營寨：<b>' + esc(gb.band_name_zh) + '</b>（' + gb.headcount + '丁｜糧' + gb.food_stores + '・壓' + gb.raid_pressure + '・贓' + gb.hoard_copper + '銅/' + gb.hoard_item_count + '件' + (gb.active ? '' : '・休整中') + '）');
+      }
+      if (ls.shop_supply) {
+        var spParts = [];
+        if (ls.shop_supply.smithy_fuel != null) spParts.push('燃料 ' + ls.shop_supply.smithy_fuel);
+        if (ls.shop_supply.apothecary_herbs != null) spParts.push('草藥 ' + ls.shop_supply.apothecary_herbs);
+        if (spParts.length) liveLines.push('📦 鋪倉專料實存：<b>' + spParts.join('｜') + '</b>');
+      }
+      if (ls.cell_land) {
+        var cl = ls.cell_land;
+        liveLines.push('🌾 地塊演變：林密 ' + cl.forest_density + '｜墾田 ' + cl.reclaimed_plots + '（休耕' + cl.fallow_days + '日）｜漫水 ' + cl.flood_level + (cl.bridge_down ? '｜<b>斷橋</b>' : '') + '｜疫氣 ' + cl.plague_miasmas);
+      }
+      if (liveLines.length) {
+        html += '<div class="wa-card accent-main" style="margin-top:6px;"><div class="wa-card-title"><span>⚙️ 實況物理與危機動態</span></div>';
+        liveLines.forEach(function (ln) {
+          html += '<div class="wa-kv-row">' + ln + '</div>';
+        });
+        html += '</div>';
+      }
 
       if (d.vacant_backstory) {
         var vb = d.vacant_backstory;

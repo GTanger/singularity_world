@@ -3,6 +3,7 @@
 pub mod actions;
 pub mod actor_map;
 pub mod appraisal;
+mod atlas_live_pulse;
 pub mod atlas_observatory;
 pub mod causal_arc_catalog;
 pub mod causal_arcs;

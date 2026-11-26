@@ -9,11 +9,14 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde_json::{Value, json};
 
-use super::clock_and_lang::{current_solar_clock, solar_year_and_season_of_day};
-use super::harbor_lineage::{CURRENT_SOLAR_YEAR, WHITE_GULL_VACANT_HOUSES};
+use super::clock_and_lang::current_solar_clock;
+use super::harbor_lineage::WHITE_GULL_VACANT_HOUSES;
 use super::household_economy::{count_household_larder_rations, effective_home_node};
+use super::island_substrate::{compiled_island_substrate, world_to_grid_f32};
+use super::live_lifecycle::actor_lived_years;
 use super::live_shifts::compose_live_scene_desc;
 use super::live_tide::{derive_tide_clock_details, node_exposure_kind};
+use super::phase_and_vessels::count_world_active_runes;
 use super::slow_think::mask_player_names_in_text;
 use super::surface_cues::{build_chronicle_mind_json, render_concern_inner_thought_zh};
 use super::types::{CarryItem, IslandWorldDelta, SpatialNodeDef, UnifiedMindBody, WorldStaticDoc};
@@ -103,9 +106,7 @@ fn classify_resident_activity(doc: &WorldStaticDoc, a: &UnifiedMindBody) -> &'st
 pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta) -> Value {
     let clock = current_solar_clock();
     let td = derive_tide_clock_details(&clock);
-    let live_year = solar_year_and_season_of_day(clock.game_days)
-        .0
-        .max(CURRENT_SOLAR_YEAR);
+    let sub = compiled_island_substrate(doc);
 
     let mut min_x = f64::INFINITY;
     let mut min_y = f64::INFINITY;
@@ -140,7 +141,6 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
     let mut stat_home = 0_usize;
     let mut stat_social = 0_usize;
     let mut stat_concerned = 0_usize;
-    let mut active_runes_held = 0_u32;
 
     let mut residents_out = Vec::new();
     let mut notable_vessels = Vec::new();
@@ -152,20 +152,6 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
         }
         if a.controller_id.is_some() || a.actor_id.starts_with("pl:") {
             player_copper_sum += a.copper;
-            if a.bound_weapon.rune_mark.is_some() {
-                active_runes_held += 1;
-            }
-            active_runes_held += a
-                .backpack
-                .iter()
-                .filter(|i| {
-                    i.slug == "rune_stone"
-                        || i.vessel_meta
-                            .as_ref()
-                            .is_some_and(|v| v.rune_mark.is_some())
-                })
-                .map(|i| i.count)
-                .sum::<u32>();
             continue;
         }
         if !a.setup_done {
@@ -173,9 +159,6 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
         }
 
         npc_copper_sum += a.copper;
-        if a.bound_weapon.rune_mark.is_some() {
-            active_runes_held += 1;
-        }
         for (bk, items) in &a.inn_lockers {
             let cnt: u32 = items.iter().map(|i| i.count).sum();
             if cnt > 0 {
@@ -276,7 +259,7 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
             "name": a.display_name,
             "race": a.race,
             "role": a.role,
-            "age": (live_year - a.birth_year).max(1),
+            "age": actor_lived_years(a, clock.game_days),
             "bond": a.household_bond,
             "town_slug": settlement_slug_of(&a.household_id),
             "town_zh": settlement_name_zh(doc, a),
@@ -384,6 +367,15 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
         let has_hidden = c_nodes
             .iter()
             .any(|nid| doc.hidden_entrances.contains_key(nid));
+        let live_land_val = delta.live_land.cells.get(&c.cell_id).map(|cl| {
+            json!({
+                "flood_level": cl.flood_level,
+                "bridge_down": cl.has_river_crossing && cl.bridge_integrity == 0,
+                "forest_density": cl.forest_density,
+                "reclaimed_plots": cl.reclaimed_plots,
+                "plague_miasmas": cl.plague_miasmas,
+            })
+        });
         cells_out.push(json!({
             "cell_id": c.cell_id,
             "center": c.center,
@@ -407,6 +399,7 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
             "node_ids": c_nodes,
             "has_hidden_entrance": has_hidden,
             "canon_unbuilt_burg": unbuilt,
+            "live_land": live_land_val,
             "cell_map": super::views::cell_illustrated_map_spec(c.cell_id).map(|sp| json!({
                 "url": sp.url,
                 "bg_day": sp.bg_day,
@@ -487,6 +480,9 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
                 "loot_bag_count": loot_n,
                 "vacant_for_sale": is_vacant,
                 "sold_house": is_sold,
+                "ruined_house": super::live_land::house_is_ruined(delta, nid),
+                "has_squatter": delta.live_wilds.squatters_by_node.contains_key(nid),
+                "has_mutated_boss": delta.live_wilds.mutated_boss_by_node.contains_key(nid),
             }),
         );
     }
@@ -514,10 +510,14 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
                 "loot_bag_count": 0,
                 "vacant_for_sale": false,
                 "built_homestead": true,
+                "ruined_house": super::live_land::house_is_ruined(delta, nid),
+                "has_squatter": delta.live_wilds.squatters_by_node.contains_key(nid),
+                "has_mutated_boss": false,
             }),
         );
     }
 
+    let active_runes_held = count_world_active_runes(delta);
     let loot_copper_sum: i64 = delta
         .dropped_loot_by_node
         .values()
@@ -564,14 +564,15 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
             "contract_escrow_copper": delta.contract_escrow_copper,
             "mainland_clearing_copper": delta.mainland_clearing_copper,
             "dropped_loot_copper": loot_copper_sum,
+            "goblin_hoard_copper": delta.goblin_hoard_copper,
             "conservation_diff": delta.conservation_diff(doc),
         },
         "audit_honesty": {
             "implemented_summary": [
-                format!("銀鷗島 93 地塊 100% 去罐頭實裝：5 座核心城鎮＋29 座基層市集鎮／農礦漁村／檢疫橋哨／病癒孤莊＋5 處南岸三二六年封村遺址（0 刷怪）＋黑煤鎮塌陷坑舊址＋53 處專屬山海資源走廊與 4 處避雨茶棚，共 {} 個空間節點", doc.nodes.len() + delta.built_houses.len()),
-                format!("全島常住具名居民共 {} 人（五鎮 674 人＋四港記籌手 4 人＋鄉野聚落 {} 人，全數織入血親／師承／契作供貨網並通過文學守門員）", residents_out.len(), residents_out.len().saturating_sub(678)),
-                format!("海陸 4 條實體逐拍車船班線共 {} 具載具（雙馬驛車／重載篷車／北岸帆駁／南灣貨駁）即時運行並自動雙向運載城鄉實物貨箱；二階直覺負重封死跨城螞蟻搬家", delta.transit_vehicles.len()),
-                format!("碼頭記籌手實物扛箱入鋪（中途可落地為行囊）、五鎮酒館二樓 1～6 號獨立客房、百工快修與一鐘精鍛委託全面運作｜試煉坑：{}｜符文池餘 {} 枚（場上持有 {} 枚）", spider_status, delta.chaos_rune_pool, active_runes_held),
+                format!("銀鷗島 93 地塊 100% 無縫水彩古卷活輿圖（860×930 連續底盤）與 40 聚落舊址全面上線：5 座核心城鎮＋29 座鄉野聚落＋5 處南岸封村遺址＋黑煤鎮塌陷坑舊址＋53 處山海資源走廊，共 {} 個空間節點", doc.nodes.len() + delta.built_houses.len()),
+                format!("讓世界自己運轉第一～三刀全面運作：四季水文漲退／沖橋攔車／公庫購木修橋／墾田退化與解封疫區、鋪倉煤鐵草藥口糧真存量／冷爐停診與動態供需報價，以及居民自主斷料自採／救災與轉行（共 {} 名具名居民）", residents_out.len()),
+                format!("第四刀荒野風浪與生死更替已上線：5 座內陸灰耳部族營寨劫車屯贓（goblin_hoard {} 銅）、傾頹空屋流寇佔據、試煉坑異變頭目、太陽曆歲數老化與往生遺產／鋪位扶正／新丁成年（試煉坑：{}｜符文池餘 {} 枚・場上持有 {} 枚）", delta.goblin_hoard_copper, spider_status, delta.chaos_rune_pool, active_runes_held),
+                format!("海陸 4 條實體逐拍車船班線共 {} 具載具即時運行並雙向運載貨箱；碼頭記籌手實物扛箱入鋪、酒館客房、百工精鍛全面運作", delta.transit_vehicles.len()),
             ],
             "unimplemented_gaps": [
                 {
@@ -595,11 +596,14 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
             "contracts": contracts_out,
             "notable_vessels": notable_vessels,
             "recent_feed": recent_feed,
+            "live_world": super::atlas_live_pulse::build_live_world_pulse_json(doc, delta, clock.game_days),
         },
         "map": {
             "world_name": doc.world_name,
             "state_name": doc.state_name,
             "bounds": [min_x - 8.0, min_y - 8.0, max_x + 8.0, max_y + 8.0],
+            "camera_bounds": [1360.0, 628.0, 1506.0, 792.0],
+            "substrate": super::island_substrate_pack::build_full_revealed_substrate_json(doc, delta, &clock),
             "cells": cells_out,
             "ring_polygons": ring_out,
             "highways": doc.highways,
@@ -609,6 +613,11 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
                 let nd_opt = doc.nodes.get(cur_nid);
                 let cid = nd_opt.map_or(4616, |n| n.cell_id);
                 let pos = doc.cells.get(&cid.to_string()).map_or([1420.0, 700.0], |c| c.center);
+                let [gx, gy] = sub
+                    .node_anchors
+                    .get(cur_nid)
+                    .copied()
+                    .unwrap_or_else(|| world_to_grid_f32(pos[0], pos[1]));
                 json!({
                     "vehicle_id": v.vehicle_id,
                     "name_zh": v.name_zh,
@@ -617,6 +626,8 @@ pub fn build_atlas_snapshot_json(doc: &WorldStaticDoc, delta: &IslandWorldDelta)
                     "node_name": nd_opt.map_or("", |n| n.name.as_str()),
                     "cell_id": cid,
                     "pos": pos,
+                    "gx": gx,
+                    "gy": gy,
                     "passenger_count": v.passengers.len(),
                     "cargo_crates": v.cargo_hold.len(),
                 })
@@ -636,19 +647,43 @@ pub fn build_atlas_node_detail_json(
     raw_query: &str,
 ) -> Option<Value> {
     let clock = current_solar_clock();
-    let live_year = solar_year_and_season_of_day(clock.game_days)
-        .0
-        .max(CURRENT_SOLAR_YEAR);
+    let trimmed = raw_query.trim();
 
-    let resolved_nid = if let Some(cid_str) = raw_query.strip_prefix("cell:") {
+    let resolved_nid = if let Some(cid_str) = trimmed.strip_prefix("cell:") {
         let cid: u32 = cid_str.trim().parse().ok()?;
         doc.nodes
             .values()
             .find(|n| n.cell_id == cid && n.kind == "plaza")
             .or_else(|| doc.nodes.values().find(|n| n.cell_id == cid && !n.dungeon))
             .map(|n| n.id.clone())?
+    } else if let Some(slug) = trimmed.strip_prefix("town:") {
+        let plaza = format!("oi:{slug}:plaza");
+        let yard = format!("oi:{slug}:yard");
+        if doc.nodes.contains_key(&plaza) {
+            plaza
+        } else if doc.nodes.contains_key(&yard) {
+            yard
+        } else {
+            let cid = doc
+                .town_micro_maps
+                .get(slug)
+                .and_then(|v| v.get("cell_id"))
+                .and_then(|v| v.as_u64())
+                .map(|v| v as u32)?;
+            doc.nodes
+                .values()
+                .find(|n| n.cell_id == cid && !n.dungeon)
+                .map(|n| n.id.clone())?
+        }
+    } else if let Some(day_str) = trimmed.strip_prefix("homestead:traveler:") {
+        let day: i64 = day_str.trim().parse().ok()?;
+        delta
+            .built_houses
+            .values()
+            .find(|bh| bh.house_id.contains("pl:") && bh.built_day == day)
+            .map(|bh| bh.house_id.clone())?
     } else {
-        raw_query.trim().to_string()
+        trimmed.to_string()
     };
 
     // 支援查詢動態自立起屋 `built_houses`
@@ -793,7 +828,7 @@ pub fn build_atlas_node_detail_json(
                 "name": a.display_name,
                 "race": a.race,
                 "role": a.role,
-                "age": (live_year - a.birth_year).max(1),
+                "age": actor_lived_years(a, clock.game_days),
                 "bond": a.household_bond,
                 "appearance": a.appearance,
                 "copper": a.copper,
@@ -856,6 +891,7 @@ pub fn build_atlas_node_detail_json(
         "dropped_loot": dropped_loot,
         "occupants": occupants,
         "cell_sibling_nodes": sibling_nodes,
+        "live_status": super::atlas_live_pulse::build_node_live_status_json(doc, delta, nd, clock.game_days),
     }))
 }
 
@@ -892,6 +928,10 @@ mod tests {
         let snap = build_atlas_snapshot_json(&doc, &delta);
         assert_eq!(snap["ok"], true);
         assert_eq!(snap["ledger"]["conservation_diff"], 0);
+        assert_eq!(snap["ledger"]["goblin_hoard_copper"], 0);
+        assert_eq!(snap["map"]["substrate"]["grid_w"], 860);
+        assert_eq!(snap["map"]["substrate"]["grid_h"], 930);
+        assert!(snap["autonomy_pulse"]["live_world"].is_object());
         let cells = snap["map"]["cells"].as_array().expect("cells array");
         assert_eq!(cells.len(), 93);
         let rural_cnt = cells

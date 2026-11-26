@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>奇點世界｜銀鷗島實況全開大地圖・設計者審閱台</title>
-<link rel="stylesheet" href="/world-atlas.css?v=20261123r2" />
+<link rel="stylesheet" href="/world-atlas.css?v=20261126r2" />
 </head>
 <body>
 <header class="wa-header">
@@ -80,14 +80,14 @@
 
   <main class="wa-center" id="waCenter">
     <div class="wa-scale-bar" id="scaleBar">
-      <button type="button" class="active" data-scale="island">全島山海 (93格)</button>
+      <button type="button" class="active" data-scale="island">全島無縫水彩 (93格)</button>
       <button type="button" data-scale="town:white_gull_harbor">白鷗港</button>
       <button type="button" data-scale="town:gull_tail_port">鷗尾漁港</button>
       <button type="button" data-scale="town:west_strait_ferry">西峽渡口</button>
       <button type="button" data-scale="town:greypine_post">灰松林驛</button>
       <button type="button" data-scale="town:north_cape_beacon">北岬燈塔</button>
-      <select id="waCellMapSelect" class="wa-cell-select" aria-label="單格手繪地景輿圖快選">
-        <option value="">🖼️ 村塢／封村手繪地景（36 格）…</option>
+      <select id="waCellMapSelect" class="wa-cell-select" aria-label="鄉野聚落／封村／營寨快選">
+        <option value="">🏘️ 鄉野聚落／封村／營寨快選…</option>
       </select>
       <button type="button" data-scale="dungeon">試煉坑總覽</button>
       <button type="button" data-scale="dngroom:oi:dng_pit:entry">①塌陷洞口</button>
@@ -99,7 +99,8 @@
     </div>
 
     <div class="wa-map-viewport" id="mapViewport">
-      <div class="wa-svg-host" id="svgHost"></div>
+      <canvas id="waCanvas" class="wa-map-canvas" role="img" aria-label="銀鷗島無迷霧全開水彩活態輿圖"></canvas>
+      <div class="wa-svg-host hidden" id="svgHost"></div>
 
       <div class="wa-map-zoom">
         <button type="button" id="btnZoomIn" aria-label="放大">＋</button>
@@ -119,8 +120,8 @@
   </aside>
 </div>
 
-<script src="/town-basemaps.js?v=20261123r4"></script>
-<script src="/world-atlas-panels.js?v=20261123r4"></script>
-<script src="/world-atlas.js?v=20261123r4"></script>
+<script src="/island-parchment-map.js?v=20261126r2"></script>
+<script src="/world-atlas-panels.js?v=20261126r2"></script>
+<script src="/world-atlas.js?v=20261126r2"></script>
 </body>
 </html>
