@@ -99,11 +99,15 @@
   - `/home/tanger/Projects/singularity_world/docs/design/people_and_relations_plugin_socket_spec.md`（v2.3 定案版）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/10-正典與ADR/星球暴脹橫斷面與人際關係插件插座正典.md`
 - **活躍 2D 世界實作與單檔 `< 950` 行模組群**：
+  - **銀鷗海領現行主線（`src/grid/outer_island/`，`截至 2026-11-26 @ 8bfe1e93`）**：底盤與鄉野 `island_substrate{,_towns,_rural,_paths,_pack,_tests}.rs`；連續步行與記憶同步 `map_walk{,_plan}.rs`、`map_memory{,_pack,_tests}.rs`；活土地與四刀生態 `live_land{,_tiles}.rs`、`live_commodities.rs`、`live_agency{,_tests}.rs`、`live_wilds.rs`、`live_lifecycle.rs`；鋪契與場所註冊 `shop_leases.rs`、`place_registry.rs`；前端 `web/{island-parchment-map,island-ui,world-atlas,world-atlas-panels}.js`。
   - **2D 底板與先鋒聚落生命迴圈**：`src/grid/substrate/{l0_cell,coords,moi_dem,slots,render_synth,runtime,facade}.rs`、`src/grid/substrate/{rim_world,rim_town,rim_shops,rim_sim,rim_ai,rim_life,rim_seed,rim_physics,rim_phase,rim_cmd,rim_shelter,rim_ecology,rim_economy,rim_market,rim_portrait_gen}.rs`
   - **持久化與 HTTP 端點**：`src/pg/{cell_overlay,rim_persist}.rs`、`src/server/http_api/{substrate_atlas,rim_api,rim_auth,rim_portrait_api,rim_talk_api}.rs`、`web/{index.html,cdda-tiles.js,rim-world.js,rim-world.css,rim-portrait.js,rim-sky-time.js,sw.js}`、`scripts/build_cdda_atlas.py`、`web/assets/cdda/{atlas.png,atlas.json,CREDITS.md}`
 
 ## 三、 下一步接續提示 (Next Cue)
 
+- **截至 `2026-11-26`（`singularity_world@8bfe1e93`，`v=20261126r7`）銀鷗海領基線與接續守則**：
+  - **現行實況錨點**：線上運行 `93` 地塊、`859` 靜態節點＋只增不刪 `delta.place_registry`（`994` 名對等居民，總銅幣 `120,805`、`conservation_diff == 0`，`76/76` `outer_island` 單元測試通過）。
+  - **後續演進不可退讓守則**：維持無黑霧連續 `860×930` 水彩活底盤（禁止重引入 `TERRAIN_FOG`、`.webp` 切圖或節點瞬移跳棋）、維持 `move_player_with_sync` 輕量 `map_sync` 與 `compute_viewer_terrain_digest` 無假陽性、`T > 0` 嚴禁恢復 `default_tool_for_role` 免費配裝或職業字串硬鎖、`place_registry` 屋宅 ID 只增不刪（傾頹僅翻 `ruined = true`），且任何視覺互動驗收一律從登入首頁真實點擊檢查，不打後台跳關 API 充數。
 - **已定案紀錄｜「真活世界」最小五件共用骨架與前四步落地順序（2026-11-19，審辯室 Room `e8f2c2d2-d9da-4279-b91f-174e40d9f6d6`，忠實對齊 `DESIGN_KEYWORDS.md` 與兩份正典）**：
   - **凍結與隔離邊界**：凍結 `rim_*`（留存於 `/rim` 不再擴張、嚴禁照搬其固定店鋪／職稱狀態機回主線）並將舊世 `wt_*` 具名角色隔離於 legacy（守 `DESIGN_KEYWORDS.md:143` 暫存不刪，退出新世界 tick）；「單格即物件」於 307 萬格 20m 底板採「虛擬房間／觀測時經 `CellFacade` 合成」，玩家與 NPC 100% 共用管線、LLM 永不裁決世界狀態。
   1. **第一步｜收斂單一空間讀寫權威（`微步 3a′`＋`3c`，已完工，2026-11-19）**：落地 `src/grid/substrate/{arcade_street,cache,fog}.rs` 與 `facade.rs` 統一 CAS 寫入＋`32×32` 分片正負雙快取＋`pave_heat` 合併落盤＋個人迷霧 `player_exploration_fog`；主線大地圖、八向移動（含 `進/出/上/下` 與 `arcade_mask` 背牆防穿牆）、`entities.grid_z (0..=3)` 三段房號與三維人數／廣播隔離全面切入 20m 底板，徹底廢除 `IN_PRIVATE_ROOM` 與舊 `wt_*` 屋契，前端 `floor` 四鈕固定佔位 `CLS=0px`。
