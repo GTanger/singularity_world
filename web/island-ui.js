@@ -27,15 +27,20 @@
     lastAppliedSlot: -1,
     lastAppliedIsDark: null,
     lastAppliedExposure: '',
-    cam: { cx: 634, cy: 413, pxPerTile: 13.0, dragging: false, lastX: 0, lastY: 0, downX: 0, downY: 0, hitTargets: [] },
+    cam: { cx: 634, cy: 413, pxPerTile: 13.0, followPlayer: true, dragging: false, lastX: 0, lastY: 0, downX: 0, downY: 0, hitTargets: [] },
     asideHitTargets: [],
     dngCam: { cx: null, cy: null, zoom: 1.0 },
     walkAnim: {
       active: false,
       inFlight: false,
+      planInFlight: false,
       walkSeq: 0,
       displayPos: null,
-      waypoints: [],
+      fullPath: [],
+      segIdx: 0,
+      srvIndex: 0,
+      srvDone: true,
+      pendingIndoor: null,
       lastFrameTs: 0,
       lastSyncTs: 0,
       rafId: 0
@@ -386,12 +391,14 @@
   }
 
   function pollIslandPulse() {
-    if (!appState.authed || document.visibilityState === 'hidden' || appState.pulseInFlight || appState.walkAnim.active) {
+    var wa = appState.walkAnim;
+    if (!appState.authed || document.visibilityState === 'hidden' || appState.pulseInFlight || wa.active || wa.inFlight || wa.planInFlight) {
       return;
     }
     if (!appState.view || !appState.view.setup_done) {
       return;
     }
+    var pulseSeq = wa.walkSeq;
     appState.pulseInFlight = true;
     apiJson('/api/island/pulse', 'GET').then(function (res) {
       if (!res || !res.ok) {
@@ -403,7 +410,12 @@
       var seqAdvanced = typeof res.persist_seq === 'number' && res.persist_seq > appState.persistSeq;
       if (epochChanged || seqAdvanced) {
         return apiJson('/api/island/state', 'GET').then(function (st) {
-          if (st && st.ok) {
+          var waNow = appState.walkAnim;
+          if (
+            st && st.ok &&
+            pulseSeq === waNow.walkSeq &&
+            !waNow.active && !waNow.inFlight && !waNow.planInFlight
+          ) {
             applyServerView(st, true);
           }
           appState.pulseInFlight = false;
@@ -558,30 +570,25 @@
     };
   }
 
-  function trimPassedWaypoints(dispPos, rawWps) {
-    var mapped = (rawWps || []).map(function (pt) {
-      return [pt[0] + 0.5, pt[1] + 0.5];
-    });
-    if (!dispPos || mapped.length <= 1) return mapped;
-    var bestIdx = 0;
-    var bestD2 = Infinity;
-    for (var i = 0; i < mapped.length; i++) {
-      var d2 = Math.pow(mapped[i][0] - dispPos[0], 2) + Math.pow(mapped[i][1] - dispPos[1], 2);
-      if (d2 < bestD2) {
-        bestD2 = d2;
-        bestIdx = i;
-      }
+  function pushUniquePathPt(pts, pt) {
+    if (!pt) return;
+    var last = pts.length ? pts[pts.length - 1] : null;
+    if (!last || Math.hypot(pt[0] - last[0], pt[1] - last[1]) > 0.04) {
+      pts.push([pt[0], pt[1]]);
     }
-    if (bestD2 <= 2.25 && bestIdx + 1 < mapped.length) {
-      var cur = mapped[bestIdx];
-      var nxt = mapped[bestIdx + 1];
-      var vx = nxt[0] - cur[0], vy = nxt[1] - cur[1];
-      var dx = dispPos[0] - cur[0], dy = dispPos[1] - cur[1];
-      if (dx * vx + dy * vy > 0) {
-        return mapped.slice(bestIdx + 1);
-      }
+  }
+
+  function currentWalkProgress(wa) {
+    if (!wa.displayPos || !wa.fullPath || wa.segIdx + 1 >= wa.fullPath.length) {
+      return wa.segIdx;
     }
-    return bestD2 <= 2.25 ? mapped.slice(bestIdx) : mapped;
+    var p0 = wa.fullPath[wa.segIdx];
+    var p1 = wa.fullPath[wa.segIdx + 1];
+    var segLen = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
+    var frac = segLen > 1e-4
+      ? Math.min(1.0, Math.hypot(wa.displayPos[0] - p0[0], wa.displayPos[1] - p0[1]) / segLen)
+      : 0.0;
+    return wa.segIdx + frac;
   }
 
   function applyWalkMapSync(sync, expectedSeq, isStepResponse) {
@@ -595,9 +602,6 @@
     if (sync.current_node_id) m.current_node_id = sync.current_node_id;
     if (sync.current_node_name != null) m.current_node_name = sync.current_node_name;
     m.in_dungeon = !!sync.in_dungeon;
-    sub.in_indoor = !!sync.in_indoor;
-    sub.indoor_node_id = sync.indoor_node_id || null;
-    sub.indoor_label = sync.indoor_label || null;
     if (Array.isArray(sync.nearby_actors)) sub.nearby_actors = sync.nearby_actors;
     if (Array.isArray(sync.proximity_capsules)) sub.proximity_capsules = sync.proximity_capsules;
     if (Array.isArray(sync.pois)) sub.pois = sync.pois;
@@ -607,43 +611,87 @@
 
     var rawWps = sync.walk_waypoints || [];
     sub.walk_waypoints = rawWps;
+    var mappedWps = rawWps.map(function (pt) { return [pt[0] + 0.5, pt[1] + 0.5]; });
     var srvPos = sync.player_pos;
-    if (!wa.displayPos && srvPos) {
-      wa.displayPos = [srvPos[0], srvPos[1]];
-    }
-    if (rawWps.length > 0 && !m.in_dungeon) {
-      if (isStepResponse && wa.displayPos && Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) <= 4.5) {
-        wa.waypoints = trimPassedWaypoints(wa.displayPos, rawWps);
-        sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
-      } else {
-        if (srvPos && (!wa.displayPos || Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) > 5.0)) {
-          wa.displayPos = [srvPos[0], srvPos[1]];
-        }
-        wa.waypoints = trimPassedWaypoints(wa.displayPos, rawWps);
-        sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
-      }
-      wa.active = wa.waypoints.length > 0;
-      if (wa.active) ensureWalkAnimationLoop();
-    } else if (srvPos && !m.in_dungeon && wa.displayPos && isStepResponse) {
-      var tailDist = Math.hypot(srvPos[0] - wa.displayPos[0], srvPos[1] - wa.displayPos[1]);
-      if (tailDist > 0.15 && tailDist <= 3.5) {
-        wa.waypoints = [[srvPos[0], srvPos[1]]];
-        wa.active = true;
-        ensureWalkAnimationLoop();
-      } else {
-        wa.displayPos = [srvPos[0], srvPos[1]];
-        sub.player_pos = [srvPos[0], srvPos[1]];
-        wa.waypoints = [];
-        wa.active = false;
-      }
-    } else {
-      if (srvPos) {
-        wa.displayPos = [srvPos[0], srvPos[1]];
-        sub.player_pos = [srvPos[0], srvPos[1]];
-      }
-      wa.waypoints = [];
+    var largeNonStepJump = !isStepResponse && mappedWps.length === 0 && srvPos && wa.displayPos &&
+      Math.hypot(srvPos[0] - wa.displayPos[0], srvPos[1] - wa.displayPos[1]) > 12.0;
+
+    if (!wa.displayPos || m.in_dungeon !== prevInDungeon || largeNonStepJump) {
+      if (srvPos) wa.displayPos = [srvPos[0], srvPos[1]];
+      wa.fullPath = [];
+      wa.segIdx = 0;
+      wa.srvIndex = 0;
+      wa.srvDone = true;
+      wa.pendingIndoor = null;
       wa.active = false;
+    } else if (!isStepResponse) {
+      var startPt = [wa.displayPos[0], wa.displayPos[1]];
+      var pts = [startPt];
+      var skipSrvHook = false;
+      if (srvPos && mappedWps.length > 0 && Math.hypot(srvPos[0] - startPt[0], srvPos[1] - startPt[1]) <= 2.2) {
+        var v1x = srvPos[0] - startPt[0], v1y = srvPos[1] - startPt[1];
+        var v2x = mappedWps[0][0] - srvPos[0], v2y = mappedWps[0][1] - srvPos[1];
+        if (v1x * v2x + v1y * v2y < -0.01) {
+          skipSrvHook = true;
+        }
+      }
+      if (!skipSrvHook && srvPos) pushUniquePathPt(pts, srvPos);
+      wa.srvIndex = pts.length - 1;
+      for (var mi = 0; mi < mappedWps.length; mi++) {
+        pushUniquePathPt(pts, mappedWps[mi]);
+      }
+      wa.fullPath = pts;
+      wa.segIdx = 0;
+      wa.srvDone = mappedWps.length === 0;
+    } else {
+      var matchIdx = -1;
+      if (srvPos) {
+        for (var k = Math.max(0, wa.srvIndex); k < wa.fullPath.length; k++) {
+          if (Math.hypot(wa.fullPath[k][0] - srvPos[0], wa.fullPath[k][1] - srvPos[1]) < 0.15) {
+            matchIdx = k;
+            break;
+          }
+        }
+      }
+      var ptsStep;
+      if (matchIdx >= 0) {
+        ptsStep = wa.fullPath.slice(0, matchIdx + 1);
+        wa.srvIndex = matchIdx;
+      } else {
+        var keepEnd = Math.max(wa.segIdx + 1, wa.srvIndex);
+        ptsStep = wa.fullPath.slice(0, Math.min(wa.fullPath.length, keepEnd + 1));
+        if (!ptsStep.length && wa.displayPos) ptsStep = [[wa.displayPos[0], wa.displayPos[1]]];
+        if (srvPos) pushUniquePathPt(ptsStep, srvPos);
+        wa.srvIndex = Math.max(0, ptsStep.length - 1);
+      }
+      for (var mj = 0; mj < mappedWps.length; mj++) {
+        pushUniquePathPt(ptsStep, mappedWps[mj]);
+      }
+      wa.fullPath = ptsStep;
+      wa.srvDone = mappedWps.length === 0;
     }
+
+    var hasRemainPath = wa.segIdx + 1 < wa.fullPath.length && !m.in_dungeon;
+    if (sync.in_indoor && !m.in_dungeon && hasRemainPath) {
+      wa.pendingIndoor = {
+        in_indoor: true,
+        indoor_node_id: sync.indoor_node_id || null,
+        indoor_label: sync.indoor_label || null
+      };
+      sub.in_indoor = false;
+      sub.indoor_node_id = null;
+      sub.indoor_label = null;
+    } else {
+      wa.pendingIndoor = null;
+      sub.in_indoor = !!sync.in_indoor;
+      sub.indoor_node_id = sync.indoor_node_id || null;
+      sub.indoor_label = sync.indoor_label || null;
+    }
+
+    sub.player_pos = wa.displayPos ? [wa.displayPos[0], wa.displayPos[1]] : srvPos;
+    sub.render_waypoints = hasRemainPath ? wa.fullPath.slice(wa.segIdx + 1) : [];
+    wa.active = sub.render_waypoints.length > 0;
+    if (wa.active) ensureWalkAnimationLoop();
 
     if (m.in_dungeon !== prevInDungeon || sync.terrain_dirty) {
       if (!appState.terrainRefreshInFlight) {
@@ -662,51 +710,76 @@
     }
     if (!sub || !sub.player_pos) {
       wa.active = false;
-      wa.waypoints = [];
+      wa.fullPath = [];
+      wa.segIdx = 0;
+      wa.srvIndex = 0;
+      wa.srvDone = true;
+      wa.pendingIndoor = null;
       return;
     }
     var srvPos = sub.player_pos;
-    var rawWps = sub.walk_waypoints || [];
+    var mappedWps = (sub.walk_waypoints || []).map(function (pt) { return [pt[0] + 0.5, pt[1] + 0.5]; });
     if (
       !wa.displayPos ||
       centerCamera ||
-      Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) > 5.0
+      m.in_dungeon ||
+      (mappedWps.length === 0 && Math.hypot(wa.displayPos[0] - srvPos[0], wa.displayPos[1] - srvPos[1]) > 12.0)
     ) {
       wa.displayPos = [srvPos[0], srvPos[1]];
-      wa.waypoints = rawWps.map(function (pt) { return [pt[0] + 0.5, pt[1] + 0.5]; });
-    } else if (rawWps.length > 0) {
-      wa.waypoints = trimPassedWaypoints(wa.displayPos, rawWps);
+      if (centerCamera) appState.cam.followPlayer = true;
+      var pts = [[wa.displayPos[0], wa.displayPos[1]]];
+      wa.srvIndex = 0;
+      for (var i = 0; i < mappedWps.length; i++) pushUniquePathPt(pts, mappedWps[i]);
+      wa.fullPath = pts;
+      wa.segIdx = 0;
+      wa.srvDone = mappedWps.length === 0;
+    } else {
+      var pts2 = [[wa.displayPos[0], wa.displayPos[1]]];
+      pushUniquePathPt(pts2, srvPos);
+      wa.srvIndex = pts2.length - 1;
+      for (var j = 0; j < mappedWps.length; j++) pushUniquePathPt(pts2, mappedWps[j]);
+      wa.fullPath = pts2;
+      wa.segIdx = 0;
+      wa.srvDone = mappedWps.length === 0;
       sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
-    } else {
-      wa.displayPos = [srvPos[0], srvPos[1]];
-      wa.waypoints = [];
     }
-    if (wa.waypoints.length > 0 && !m.in_dungeon) {
-      wa.active = true;
-      ensureWalkAnimationLoop();
-    } else {
-      wa.active = false;
-    }
+    wa.pendingIndoor = null;
+    sub.render_waypoints = (wa.segIdx + 1 < wa.fullPath.length && !m.in_dungeon)
+      ? wa.fullPath.slice(wa.segIdx + 1)
+      : [];
+    wa.active = sub.render_waypoints.length > 0;
+    if (wa.active) ensureWalkAnimationLoop();
   }
 
   function stepWalkAnimation(now) {
     var wa = appState.walkAnim;
     wa.rafId = 0;
-    if (!wa.active || !appState.mapData || !appState.mapData.substrate) return;
-    var dt = wa.lastFrameTs > 0 ? Math.min(0.08, Math.max(0.008, (now - wa.lastFrameTs) / 1000)) : 0.016;
+    if ((!wa.active && !wa.inFlight && !wa.planInFlight) || !appState.mapData || !appState.mapData.substrate) return;
+    var sub = appState.mapData.substrate;
+    var dt = wa.lastFrameTs > 0 ? Math.min(0.050, Math.max(0.004, (now - wa.lastFrameTs) / 1000)) : 0.016;
     wa.lastFrameTs = now;
 
-    if (wa.displayPos && wa.waypoints.length > 0) {
-      var remain = 6.0 * dt;
-      while (remain > 0 && wa.waypoints.length > 0) {
-        var target = wa.waypoints[0];
+    if (wa.active && wa.displayPos && wa.segIdx + 1 < wa.fullPath.length) {
+      var feProg = currentWalkProgress(wa);
+      var lead = feProg - wa.srvIndex;
+      var baseSpeed = 6.0;
+      var speed = baseSpeed;
+      if (!wa.srvDone && lead > 1.6) {
+        speed = baseSpeed * Math.max(0.0, (2.6 - lead) / 1.0);
+      } else if (lead < -1.2) {
+        speed = baseSpeed + Math.min(5.0, (-lead - 1.2) * 2.2);
+      }
+
+      var remain = speed * dt;
+      while (remain > 0 && wa.segIdx + 1 < wa.fullPath.length) {
+        var target = wa.fullPath[wa.segIdx + 1];
         var dx = target[0] - wa.displayPos[0];
         var dy = target[1] - wa.displayPos[1];
         var dist = Math.hypot(dx, dy);
         if (dist <= remain) {
           wa.displayPos[0] = target[0];
           wa.displayPos[1] = target[1];
-          wa.waypoints.shift();
+          wa.segIdx++;
           remain -= dist;
         } else {
           wa.displayPos[0] += (dx / dist) * remain;
@@ -714,33 +787,77 @@
           remain = 0;
         }
       }
-      appState.mapData.substrate.player_pos = [wa.displayPos[0], wa.displayPos[1]];
+      sub.player_pos = [wa.displayPos[0], wa.displayPos[1]];
+      sub.render_waypoints = wa.fullPath.slice(wa.segIdx + 1);
+
       if (appState.mapOpen && appState.mapScaleMode !== 'island' && !appState.cam.dragging) {
-        appState.cam.cx += (wa.displayPos[0] - appState.cam.cx) * 0.28;
-        appState.cam.cy += (wa.displayPos[1] - appState.cam.cy) * 0.28;
+        if (appState.cam.followPlayer) {
+          var camAlpha = 1 - Math.exp(-10.0 * dt);
+          appState.cam.cx += (wa.displayPos[0] - appState.cam.cx) * camAlpha;
+          appState.cam.cy += (wa.displayPos[1] - appState.cam.cy) * camAlpha;
+        } else {
+          var mapWrap = byId('oi-map-canvas');
+          if (mapWrap) {
+            var z = appState.cam.pxPerTile || 13.0;
+            var halfW = (mapWrap.clientWidth * 0.36) / z;
+            var halfH = (mapWrap.clientHeight * 0.36) / z;
+            var offX = wa.displayPos[0] - appState.cam.cx;
+            var offY = wa.displayPos[1] - appState.cam.cy;
+            var edgeAlpha = 1 - Math.exp(-6.0 * dt);
+            if (Math.abs(offX) > halfW) {
+              var tgtCx = wa.displayPos[0] - Math.sign(offX) * halfW;
+              appState.cam.cx += (tgtCx - appState.cam.cx) * edgeAlpha;
+            }
+            if (Math.abs(offY) > halfH) {
+              var tgtCy = wa.displayPos[1] - Math.sign(offY) * halfH;
+              appState.cam.cy += (tgtCy - appState.cam.cy) * edgeAlpha;
+            }
+          }
+        }
       }
+
+      if (wa.segIdx + 1 >= wa.fullPath.length && wa.srvDone) {
+        if (wa.pendingIndoor) {
+          sub.in_indoor = !!wa.pendingIndoor.in_indoor;
+          sub.indoor_node_id = wa.pendingIndoor.indoor_node_id;
+          sub.indoor_label = wa.pendingIndoor.indoor_label;
+          wa.pendingIndoor = null;
+        }
+        sub.render_waypoints = [];
+        wa.active = false;
+      }
+
+      renderDesktopMiniMap();
+      if (appState.mapOpen) renderFullscreenMap();
+    } else if (wa.segIdx + 1 >= wa.fullPath.length && wa.srvDone) {
+      if (wa.pendingIndoor) {
+        sub.in_indoor = !!wa.pendingIndoor.in_indoor;
+        sub.indoor_node_id = wa.pendingIndoor.indoor_node_id;
+        sub.indoor_label = wa.pendingIndoor.indoor_label;
+        wa.pendingIndoor = null;
+      }
+      sub.render_waypoints = [];
+      wa.active = false;
       renderDesktopMiniMap();
       if (appState.mapOpen) renderFullscreenMap();
     }
 
-    if (wa.waypoints.length === 0) {
-      wa.active = false;
-    }
-
-    if (!wa.inFlight && now - wa.lastSyncTs >= 480) {
-      var syncWps = appState.mapData.substrate.walk_waypoints || [];
-      if (syncWps.length > 0 || wa.active) {
+    if (!wa.srvDone && !wa.inFlight && !wa.planInFlight && now - wa.lastSyncTs >= 220) {
+      var postProg = currentWalkProgress(wa);
+      var need = Math.ceil(postProg + 1.0) - wa.srvIndex;
+      if (need >= 1) {
+        var reqSteps = Math.max(1, Math.min(4, need));
         var mySeq = wa.walkSeq;
         wa.inFlight = true;
         wa.lastSyncTs = now;
         apiJson('/api/island/move', 'POST', {
           to: '',
           mode: 'step',
-          steps: 3,
+          steps: reqSteps,
           prev_digest: appState.terrainDigest || undefined
         }).then(function (res) {
-          wa.inFlight = false;
           if (mySeq !== wa.walkSeq) return;
+          wa.inFlight = false;
           if (res && res.view) applyServerView(res.view, true);
           if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|阻/.test(res.msg))) {
             showToast(res.msg);
@@ -751,19 +868,19 @@
             refreshMapData(false);
           }
         }).catch(function () {
-          wa.inFlight = false;
+          if (mySeq === wa.walkSeq) wa.inFlight = false;
         });
       }
     }
 
-    if (wa.active || wa.inFlight) {
+    if (wa.active || wa.inFlight || wa.planInFlight) {
       wa.rafId = requestAnimationFrame(stepWalkAnimation);
     }
   }
 
   function ensureWalkAnimationLoop() {
     var wa = appState.walkAnim;
-    if (wa.active && !wa.rafId) {
+    if ((wa.active || wa.inFlight || wa.planInFlight) && !wa.rafId) {
       wa.lastFrameTs = performance.now();
       wa.rafId = requestAnimationFrame(stepWalkAnimation);
     }
@@ -772,6 +889,8 @@
   function startGridWalk(opts) {
     var wa = appState.walkAnim;
     var mySeq = ++wa.walkSeq;
+    wa.inFlight = false;
+    wa.planInFlight = true;
     wa.lastSyncTs = performance.now();
     var payload = {
       to: (opts && opts.to) || '',
@@ -784,6 +903,7 @@
     }
     apiJson('/api/island/move', 'POST', payload).then(function (res) {
       if (mySeq !== wa.walkSeq) return;
+      wa.planInFlight = false;
       if (res && res.view) applyServerView(res.view, false);
       if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|海浪|無法|隔開/.test(res.msg))) {
         showToast(res.msg);
@@ -793,6 +913,8 @@
       } else {
         refreshMapData(false);
       }
+    }).catch(function () {
+      if (mySeq === wa.walkSeq) wa.planInFlight = false;
     });
   }
 
@@ -802,6 +924,26 @@
     apiJson('/api/island/map', 'GET').then(function (m) {
       appState.terrainRefreshInFlight = false;
       if (!m || !m.ok) return;
+      var wa = appState.walkAnim;
+      var walkingNow = !centerCamera && (wa.active || wa.inFlight || wa.planInFlight);
+      if (walkingNow && appState.mapData && appState.mapData.substrate && m.substrate) {
+        var curSub = appState.mapData.substrate;
+        var nextSub = m.substrate;
+        curSub.terrain_rle_b64 = nextSub.terrain_rle_b64;
+        curSub.overlay_rle_b64 = nextSub.overlay_rle_b64;
+        curSub.low_tide = nextSub.low_tide;
+        if (nextSub.terrain_digest) {
+          curSub.terrain_digest = nextSub.terrain_digest;
+          appState.terrainDigest = nextSub.terrain_digest;
+        }
+        if (Array.isArray(m.outline_cells)) appState.mapData.outline_cells = m.outline_cells;
+        if (Array.isArray(m.camera_bounds)) appState.mapData.camera_bounds = m.camera_bounds;
+        if (m.town_micro_maps) appState.mapData.town_micro_maps = m.town_micro_maps;
+        if (m.dungeon_local) appState.mapData.dungeon_local = m.dungeon_local;
+        renderDesktopMiniMap();
+        if (appState.mapOpen) renderFullscreenMap();
+        return;
+      }
       var prevMapNodeId = appState.lastMapNodeId;
       appState.lastCellId = m.current_cell_id;
       appState.lastMapNodeId = m.current_node_id;
@@ -810,6 +952,7 @@
       if (centerCamera && sub && sub.player_pos) {
         appState.cam.cx = sub.player_pos[0];
         appState.cam.cy = sub.player_pos[1];
+        appState.cam.followPlayer = true;
         if (!appState.cam.pxPerTile || appState.cam.pxPerTile < 4.5) {
           appState.cam.pxPerTile = 13.0;
         }
@@ -1621,11 +1764,7 @@
       if (mapNode) {
         var targetNid = mapNode.getAttribute('data-map-node');
         if (targetNid && targetNid !== (appState.view && appState.view.scene && appState.view.scene.node_id)) {
-          apiJson('/api/island/move', 'POST', { to: targetNid }).then(function (res) {
-            if (res && res.view) applyServerView(res.view);
-            if (res && !res.ok && res.msg) showToast(res.msg);
-            refreshMapData(false);
-          });
+          startGridWalk({ to: targetNid, mode: 'plan' });
         }
         return;
       }
@@ -1652,6 +1791,16 @@
 
     function openMapModal() {
       appState.mapOpen = true;
+      var m = appState.mapData;
+      var sub = m && m.substrate;
+      if (!(m && m.in_dungeon) && appState.mapScaleMode !== 'island') {
+        var curPos = appState.walkAnim.displayPos || (sub && sub.player_pos);
+        if (curPos) {
+          appState.cam.cx = curPos[0];
+          appState.cam.cy = curPos[1];
+          appState.cam.followPlayer = true;
+        }
+      }
       byId('oi-map-modal').hidden = false;
       renderFullscreenMap();
     }
@@ -1678,10 +1827,12 @@
           appState.cam.pxPerTile = fit.pxPerTile;
         } else if (nextMode === 'town') {
           appState.mapScaleMode = 'town';
-          if (sub && sub.player_pos) {
-            appState.cam.cx = sub.player_pos[0];
-            appState.cam.cy = sub.player_pos[1];
+          var townPos = appState.walkAnim.displayPos || (sub && sub.player_pos);
+          if (townPos) {
+            appState.cam.cx = townPos[0];
+            appState.cam.cy = townPos[1];
           }
+          appState.cam.followPlayer = true;
           appState.cam.pxPerTile = Math.max(11.5, appState.cam.pxPerTile);
         } else if (nextMode === 'dungeon') {
           appState.mapScaleMode = 'dungeon';
@@ -1711,6 +1862,7 @@
       appState.dngCam.cx = null;
       appState.dngCam.cy = null;
       appState.dngCam.zoom = 1.0;
+      appState.cam.followPlayer = true;
       if (appState.mapData && appState.mapData.in_dungeon) {
         appState.mapScaleMode = 'dungeon';
       } else {
@@ -1752,6 +1904,9 @@
         return;
       }
       if (!appState.cam.dragging) return;
+      if (Math.hypot(ev.clientX - appState.cam.downX, ev.clientY - appState.cam.downY) >= 8) {
+        appState.cam.followPlayer = false;
+      }
       var dx = ev.clientX - appState.cam.lastX;
       var dy = ev.clientY - appState.cam.lastY;
       appState.cam.lastX = ev.clientX;
@@ -1784,7 +1939,7 @@
           var ly = ev.clientY - rect.top;
           var hits = appState.cam.hitTargets || [];
           var curNid = appState.mapData && appState.mapData.current_node_id;
-          var pPos = appState.mapData && appState.mapData.substrate && appState.mapData.substrate.player_pos;
+          var pPos = appState.walkAnim.displayPos || (appState.mapData && appState.mapData.substrate && appState.mapData.substrate.player_pos);
           for (var hi = 0; hi < hits.length; hi++) {
             var h = hits[hi];
             if (lx >= h.x0 && lx <= h.x1 && ly >= h.y0 && ly <= h.y1) {
@@ -1820,7 +1975,7 @@
       var ly = ev.clientY - rect.top;
       var hits = appState.asideHitTargets || [];
       var curNidA = appState.mapData && appState.mapData.current_node_id;
-      var pPosA = appState.mapData && appState.mapData.substrate && appState.mapData.substrate.player_pos;
+      var pPosA = appState.walkAnim.displayPos || (appState.mapData && appState.mapData.substrate && appState.mapData.substrate.player_pos);
       for (var hi = 0; hi < hits.length; hi++) {
         var h = hits[hi];
         if (lx >= h.x0 && lx <= h.x1 && ly >= h.y0 && ly <= h.y1) {

@@ -872,3 +872,214 @@ fn walking_along_street_keeps_terrain_digest_stable_until_real_tile_change() {
         "real tile_diffs change within 18 tiles must flip terrain_dirty = true"
     );
 }
+
+#[test]
+fn walking_past_sold_and_ruined_houses_never_flips_terrain_dirty_on_exit() {
+    use super::map_memory_pack::{build_walk_map_sync_json, compute_viewer_terrain_digest};
+
+    let (doc, mut delta, clk) = setup_test_world(280, 4);
+    apply_setup_origin(
+        &doc,
+        &mut delta,
+        &clk,
+        "house_digest_qa",
+        "察屋旅人",
+        "人類",
+        "",
+        "smith_apprentice",
+    )
+    .expect("setup ok");
+    let pid = delta.resolve_actor_id("house_digest_qa").unwrap();
+    let sub = compiled_island_substrate(&doc);
+    let mid_xy = sub.node_anchors["oi:white_gull_harbor:south_gate"];
+    let approach_xy = sub.node_anchors["oi:cell4617:approach_a"];
+    let far_xy = sub.node_anchors["oi:cell4617:0"];
+    // Pick a point just south of south_gate where nearest outdoor node is non-core approach_a,
+    // ensuring record_local_witness_at_tile handles the 18-tile house witness without entering harbor core.
+    let skirt_peek_xy = [mid_xy[0], mid_xy[1] + 4.0];
+
+    let mut candidates: Vec<String> = sub
+        .house_footprint_cells
+        .keys()
+        .filter(|hnid| {
+            sub.node_anchors.get(*hnid).is_some_and(|&[ax, ay]| {
+                let d_peek = (ax - skirt_peek_xy[0]).hypot(ay - skirt_peek_xy[1]);
+                let d_far = (ax - far_xy[0]).hypot(ay - far_xy[1]);
+                d_peek <= 16.5 && d_far > 19.5
+            })
+        })
+        .cloned()
+        .collect();
+    candidates.sort();
+    assert!(
+        candidates.len() >= 2,
+        "expected >= 2 houses within 16.5 tiles of south_gate skirt outside cell4617:0 sight (approach={approach_xy:?}), got {}",
+        candidates.len()
+    );
+    let sold_hnid = candidates[0].clone();
+    let ruined_hnid = candidates[1].clone();
+    delta.sold_houses.remove(&ruined_hnid);
+    delta.live_land.house_integrity.insert(ruined_hnid.clone(), 10);
+    delta
+        .sold_houses
+        .insert(sold_hnid.clone(), "npc:house_digest_buyer".to_string());
+
+    let sold_xy = sub.node_anchors[&sold_hnid];
+    let ruined_xy = sub.node_anchors[&ruined_hnid];
+
+    // Walk first to far_xy (outside 19.5 tiles), clear any initial memory of the 2 houses, then walk into skirt_peek_xy and back out.
+    super::map_walk::handle_player_move_request(
+        &doc,
+        &mut delta,
+        &clk,
+        "house_digest_qa",
+        "",
+        Some(far_xy[0]),
+        Some(far_xy[1]),
+        "plan",
+        None,
+        500,
+    )
+    .expect("plan to far_xy ok");
+    for i in 0..40 {
+        if delta.actors[&pid].walk_waypoints.is_empty() {
+            break;
+        }
+        super::map_walk::handle_player_move_request(
+            &doc,
+            &mut delta,
+            &clk,
+            "house_digest_qa",
+            "",
+            None,
+            None,
+            "step",
+            Some(3),
+            800 + i * 500,
+        )
+        .expect("step to far_xy ok");
+    }
+    if let Some(a) = delta.actors.get_mut(&pid) {
+        a.mind.ltm.map_memory.witnessed_sold_houses.remove(&sold_hnid);
+        a.mind
+            .ltm
+            .map_memory
+            .witnessed_ruined_houses
+            .remove(&ruined_hnid);
+    }
+
+    // Step 1: Walk from cell4617:0 into skirt_peek_xy (entering <= 18 sight of both houses via non-core approach path)
+    super::map_walk::handle_player_move_request(
+        &doc,
+        &mut delta,
+        &clk,
+        "house_digest_qa",
+        "",
+        Some(skirt_peek_xy[0]),
+        Some(skirt_peek_xy[1]),
+        "plan",
+        None,
+        25_000,
+    )
+    .expect("plan to skirt_peek_xy ok");
+    for i in 0..40 {
+        if delta.actors[&pid].walk_waypoints.is_empty() {
+            break;
+        }
+        super::map_walk::handle_player_move_request(
+            &doc,
+            &mut delta,
+            &clk,
+            "house_digest_qa",
+            "",
+            None,
+            None,
+            "step",
+            Some(3),
+            25_500 + i * 500,
+        )
+        .expect("step to skirt_peek_xy ok");
+    }
+    let cur_xy = [delta.actors[&pid].map_gx, delta.actors[&pid].map_gy];
+    assert!(
+        (cur_xy[0] - sold_xy[0]).hypot(cur_xy[1] - sold_xy[1]) <= 18.0
+            && (cur_xy[0] - ruined_xy[0]).hypot(cur_xy[1] - ruined_xy[1]) <= 18.0,
+        "player must have entered 18-tile sight of both test houses at skirt_peek_xy (cur={cur_xy:?})"
+    );
+    assert!(
+        delta.actors[&pid]
+            .mind
+            .ltm
+            .map_memory
+            .witnessed_sold_houses
+            .contains(&sold_hnid),
+        "witnessed_sold_houses must sync on tile walk"
+    );
+    assert!(
+        delta.actors[&pid]
+            .mind
+            .ltm
+            .map_memory
+            .witnessed_ruined_houses
+            .contains(&ruined_hnid),
+        "witnessed_ruined_houses must sync on tile walk"
+    );
+
+    // Step 2: Walk outward beyond 18 tiles to cell4617:0 and verify no false terrain_dirty flip upon leaving sight
+    let mut prev_digest = compute_viewer_terrain_digest(&doc, &delta, &delta.actors[&pid], &clk);
+    super::map_walk::handle_player_move_request(
+        &doc,
+        &mut delta,
+        &clk,
+        "house_digest_qa",
+        "",
+        Some(far_xy[0]),
+        Some(far_xy[1]),
+        "plan",
+        None,
+        50_000,
+    )
+    .expect("plan back to cell4617:0 ok");
+
+    let mut left_sight = false;
+    let mut dirty_after_leaving = 0usize;
+    for i in 0..40 {
+        if delta.actors[&pid].walk_waypoints.is_empty() {
+            break;
+        }
+        super::map_walk::handle_player_move_request(
+            &doc,
+            &mut delta,
+            &clk,
+            "house_digest_qa",
+            "",
+            None,
+            None,
+            "step",
+            Some(3),
+            50_500 + i * 500,
+        )
+        .expect("step outward ok");
+        let sync =
+            build_walk_map_sync_json(&doc, &delta, &delta.actors[&pid], &clk, Some(prev_digest));
+        let px = delta.actors[&pid].map_gx;
+        let py = delta.actors[&pid].map_gy;
+        let dist_sold = (px - sold_xy[0]).hypot(py - sold_xy[1]);
+        let dist_ruined = (px - ruined_xy[0]).hypot(py - ruined_xy[1]);
+        if dist_sold > 18.5 && dist_ruined > 18.5 {
+            if sync["terrain_dirty"].as_bool().unwrap_or(false) {
+                dirty_after_leaving += 1;
+            }
+            left_sight = true;
+        }
+        prev_digest = sync["terrain_digest"]
+            .as_str()
+            .and_then(|s| s.parse::<u64>().ok())
+            .unwrap();
+    }
+    assert!(left_sight, "must walk out beyond 18.5 tiles of test houses");
+    assert_eq!(
+        dirty_after_leaving, 0,
+        "leaving sight of witnessed sold/ruined houses must not trigger false terrain_dirty"
+    );
+}

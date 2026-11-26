@@ -36,7 +36,15 @@
     H: 930,
     terrain: null,
     road: null,
-    bldg: null
+    bldg: null,
+    compGridRoof: null,
+    roofComps: null,
+    compGridVacant: null,
+    vacantComps: null,
+    towerComps: null,
+    courtyardComps: null,
+    mergedTreeMask: null,
+    farmHaystacks: null
   };
 
   var paperCache = { key: '', canvas: null };
@@ -65,6 +73,108 @@
     return out;
   }
 
+  function buildGlobalComponents(W, H, arr, targetVal, withGrid) {
+    var total = W * H;
+    var compGrid = withGrid ? new Int32Array(total).fill(-1) : null;
+    var seen = withGrid ? null : new Uint8Array(total);
+    var comps = [];
+    var queue = new Int32Array(total);
+    for (var pos = 0; pos < total; pos++) {
+      if (arr[pos] !== targetVal) continue;
+      if (compGrid ? compGrid[pos] !== -1 : seen[pos]) continue;
+      var cid = comps.length;
+      var qh = 0, qt = 0;
+      queue[qt++] = pos;
+      if (compGrid) compGrid[pos] = cid;
+      else seen[pos] = 1;
+      var cells = [];
+      var minX = W, maxX = -1, minY = H, maxY = -1;
+      var sumX = 0, sumY = 0;
+      while (qh < qt) {
+        var p = queue[qh++];
+        var gx = p % W, gy = (p / W) | 0;
+        cells.push([gx, gy]);
+        if (gx < minX) minX = gx;
+        if (gx > maxX) maxX = gx;
+        if (gy < minY) minY = gy;
+        if (gy > maxY) maxY = gy;
+        sumX += gx + 0.5;
+        sumY += gy + 0.5;
+        if (gx + 1 < W) {
+          var npR = p + 1;
+          if (arr[npR] === targetVal && (compGrid ? compGrid[npR] === -1 : !seen[npR])) {
+            if (compGrid) compGrid[npR] = cid; else seen[npR] = 1;
+            queue[qt++] = npR;
+          }
+        }
+        if (gx > 0) {
+          var npL = p - 1;
+          if (arr[npL] === targetVal && (compGrid ? compGrid[npL] === -1 : !seen[npL])) {
+            if (compGrid) compGrid[npL] = cid; else seen[npL] = 1;
+            queue[qt++] = npL;
+          }
+        }
+        if (gy + 1 < H) {
+          var npD = p + W;
+          if (arr[npD] === targetVal && (compGrid ? compGrid[npD] === -1 : !seen[npD])) {
+            if (compGrid) compGrid[npD] = cid; else seen[npD] = 1;
+            queue[qt++] = npD;
+          }
+        }
+        if (gy > 0) {
+          var npU = p - W;
+          if (arr[npU] === targetVal && (compGrid ? compGrid[npU] === -1 : !seen[npU])) {
+            if (compGrid) compGrid[npU] = cid; else seen[npU] = 1;
+            queue[qt++] = npU;
+          }
+        }
+      }
+      comps.push({
+        cid: cid,
+        cells: cells,
+        minX: minX,
+        minY: minY,
+        maxX: maxX,
+        maxY: maxY,
+        sumX: sumX,
+        sumY: sumY,
+        avgX: sumX / cells.length,
+        avgY: sumY / cells.length
+      });
+    }
+    return { compGrid: compGrid, comps: comps };
+  }
+
+  function buildGlobalCourtyards(W, H, bldg) {
+    var total = W * H;
+    var yardMask = new Uint8Array(total);
+    var queue = new Int32Array(total);
+    var qh = 0, qt = 0;
+    for (var x = 0; x < W; x++) {
+      var topP = x, botP = (H - 1) * W + x;
+      if (bldg[topP] === BLDG.NONE && !yardMask[topP]) { yardMask[topP] = 1; queue[qt++] = topP; }
+      if (bldg[botP] === BLDG.NONE && !yardMask[botP]) { yardMask[botP] = 1; queue[qt++] = botP; }
+    }
+    for (var y = 0; y < H; y++) {
+      var leftP = y * W, rightP = y * W + (W - 1);
+      if (bldg[leftP] === BLDG.NONE && !yardMask[leftP]) { yardMask[leftP] = 1; queue[qt++] = leftP; }
+      if (bldg[rightP] === BLDG.NONE && !yardMask[rightP]) { yardMask[rightP] = 1; queue[qt++] = rightP; }
+    }
+    while (qh < qt) {
+      var p = queue[qh++];
+      var gx = p % W, gy = (p / W) | 0;
+      if (gx + 1 < W && bldg[p + 1] === BLDG.NONE && !yardMask[p + 1]) { yardMask[p + 1] = 1; queue[qt++] = p + 1; }
+      if (gx > 0 && bldg[p - 1] === BLDG.NONE && !yardMask[p - 1]) { yardMask[p - 1] = 1; queue[qt++] = p - 1; }
+      if (gy + 1 < H && bldg[p + W] === BLDG.NONE && !yardMask[p + W]) { yardMask[p + W] = 1; queue[qt++] = p + W; }
+      if (gy > 0 && bldg[p - W] === BLDG.NONE && !yardMask[p - W]) { yardMask[p - W] = 1; queue[qt++] = p - W; }
+    }
+    var closedMask = new Uint8Array(total);
+    for (var i = 0; i < total; i++) {
+      if (bldg[i] === BLDG.NONE && !yardMask[i]) closedMask[i] = 1;
+    }
+    return buildGlobalComponents(W, H, closedMask, 1, false).comps;
+  }
+
   function ensureDecodedSubstrate(sub) {
     if (!sub || !sub.terrain_rle_b64 || !sub.overlay_rle_b64) return null;
     var W = sub.grid_w || 860;
@@ -85,6 +195,28 @@
       road[i] = ov[i] & 0x07;
       bldg[i] = (ov[i] >> 3) & 0x07;
     }
+    var roofRes = buildGlobalComponents(W, H, bldg, BLDG.ROOF, true);
+    var vacRes = buildGlobalComponents(W, H, bldg, BLDG.VACANT, true);
+    var towerRes = buildGlobalComponents(W, H, bldg, BLDG.TOWER, false);
+    var courtyardComps = buildGlobalCourtyards(W, H, bldg);
+    var treeRes = buildGlobalComponents(W, H, terrain, CELL.TREE, false);
+    var mergedTreeMask = new Uint8Array(expected);
+    for (var ti = 0; ti < treeRes.comps.length; ti++) {
+      var tc = treeRes.comps[ti];
+      if (tc.cells.length >= 4) {
+        for (var tci = 0; tci < tc.cells.length; tci++) {
+          mergedTreeMask[tc.cells[tci][1] * W + tc.cells[tci][0]] = 1;
+        }
+      }
+    }
+    var farmRes = buildGlobalComponents(W, H, terrain, CELL.FARM, false);
+    var farmHaystacks = [];
+    for (var fi = 0; fi < farmRes.comps.length; fi++) {
+      var fc = farmRes.comps[fi].cells;
+      if (fc.length >= 6) {
+        farmHaystacks.push(fc[Math.floor(fc.length * 0.4)]);
+      }
+    }
     decodeCache.terrainKey = sub.terrain_rle_b64;
     decodeCache.overlayKey = sub.overlay_rle_b64;
     decodeCache.W = W;
@@ -92,7 +224,14 @@
     decodeCache.terrain = terrain;
     decodeCache.road = road;
     decodeCache.bldg = bldg;
-    roofTexCache.clear();
+    decodeCache.compGridRoof = roofRes.compGrid;
+    decodeCache.roofComps = roofRes.comps;
+    decodeCache.compGridVacant = vacRes.compGrid;
+    decodeCache.vacantComps = vacRes.comps;
+    decodeCache.towerComps = towerRes.comps;
+    decodeCache.courtyardComps = courtyardComps;
+    decodeCache.mergedTreeMask = mergedTreeMask;
+    decodeCache.farmHaystacks = farmHaystacks;
     return decodeCache;
   }
 
@@ -648,43 +787,7 @@
     return c;
   }
 
-  /* ═══ 微觀精雕渲染（僅計算可見格窗 [gx0..gx1, gy0..gy1]，完全移植精雕古卷工藝） ═══ */
-  function analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, predIdx) {
-    var vw = gx1 - gx0 + 1;
-    var vh = gy1 - gy0 + 1;
-    var compId = new Int32Array(vw * vh).fill(-1);
-    var comps = [];
-    var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-    for (var ly = 0; ly < vh; ly++) {
-      var gy = gy0 + ly;
-      for (var lx = 0; lx < vw; lx++) {
-        var gx = gx0 + lx;
-        var li = ly * vw + lx;
-        if (!predIdx(gy * W + gx) || compId[li] !== -1) continue;
-        var cid = comps.length;
-        var cells = [[gx, gy]];
-        compId[li] = cid;
-        var head = 0;
-        while (head < cells.length) {
-          var cx = cells[head][0], cy = cells[head][1];
-          head++;
-          for (var d = 0; d < 4; d++) {
-            var nx = cx + dirs[d][0], ny = cy + dirs[d][1];
-            if (nx >= gx0 && nx <= gx1 && ny >= gy0 && ny <= gy1) {
-              var nli = (ny - gy0) * vw + (nx - gx0);
-              if (predIdx(ny * W + nx) && compId[nli] === -1) {
-                compId[nli] = cid;
-                cells.push([nx, ny]);
-              }
-            }
-          }
-        }
-        comps.push(cells);
-      }
-    }
-    return { compId: compId, comps: comps, vw: vw, vh: vh };
-  }
-
+  /* ═══ 微觀精雕渲染（僅計算可見格窗 [gx0..gx1, gy0..gy1]，屋頂／天井／樹海取自全島預計算拓撲） ═══ */
   function buildTileComponentPath(inSetFn, gx0, gy0, gx1, gy1, cw, ch) {
     var segs = [];
     for (var y = gy0; y <= gy1; y++) {
@@ -732,20 +835,12 @@
     return path;
   }
 
-  function renderMergedRoof(ctx, cells, compId, cid, gx0, gy0, vw, vh, pxTile, dpr, pal, light, timeMode, buildingLights, isVacant) {
-    var minX = 1e9, maxX = -1, minY = 1e9, maxY = -1;
-    var sumX = 0, sumY = 0;
-    for (var i = 0; i < cells.length; i++) {
-      var x = cells[i][0], y = cells[i][1];
-      sumX += x + 0.5; sumY += y + 0.5;
-      if (x < minX) minX = x;
-      if (x > maxX) maxX = x;
-      if (y < minY) minY = y;
-      if (y > maxY) maxY = y;
-    }
+  function renderMergedRoof(ctx, comp, compGrid, W, H, pxTile, dpr, pal, light, timeMode, buildingLights, isVacant) {
+    var cells = comp.cells, cid = comp.cid;
+    var minX = comp.minX, maxX = comp.maxX, minY = comp.minY, maxY = comp.maxY;
+    var sumX = comp.sumX, sumY = comp.sumY;
     var inComp = function (gx, gy) {
-      var lx = gx - gx0, ly = gy - gy0;
-      return lx >= 0 && lx < vw && ly >= 0 && ly < vh && compId[ly * vw + lx] === cid;
+      return gx >= 0 && gx < W && gy >= 0 && gy < H && compGrid[gy * W + gx] === cid;
     };
     var bldgPath = buildTileComponentPath(inComp, minX, minY, maxX, maxY, pxTile, pxTile);
     var wallH = Math.max(2.6, pxTile * 0.44);
@@ -1026,20 +1121,18 @@
       }
     }
 
-    // 農田灌木田埂與麥草垛
-    var farmComps = analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, function (idx) { return terrain[idx] === CELL.FARM; });
-    for (var fi = 0; fi < farmComps.comps.length; fi++) {
-      var fc = farmComps.comps[fi];
-      if (fc.length >= 6) {
-        var sample = fc[Math.floor(fc.length * 0.4)];
-        var hx = (sample[0] + 0.5) * z, hy = (sample[1] + 0.5) * z;
-        var hr = Math.max(2.2, z * 0.36);
-        ctx.fillStyle = pal.shadow;
-        ctx.beginPath(); ctx.ellipse(hx + 1, hy + 1, hr, hr * 0.65, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = timeMode === 'night' ? '#705e3a' : '#e0b85c';
-        ctx.strokeStyle = pal.ink; ctx.lineWidth = 0.7;
-        ctx.beginPath(); ctx.arc(hx, hy, hr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      }
+    // 農田灌木田埂與麥草垛（取自全島連通農田固定錨點）
+    var haystacks = dec.farmHaystacks || [];
+    for (var fi = 0; fi < haystacks.length; fi++) {
+      var hsPt = haystacks[fi];
+      if (hsPt[0] < gx0 - 1 || hsPt[0] > gx1 + 1 || hsPt[1] < gy0 - 1 || hsPt[1] > gy1 + 1) continue;
+      var hx = (hsPt[0] + 0.5) * z, hy = (hsPt[1] + 0.5) * z;
+      var hr = Math.max(2.2, z * 0.36);
+      ctx.fillStyle = pal.shadow;
+      ctx.beginPath(); ctx.ellipse(hx + 1, hy + 1, hr, hr * 0.65, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = timeMode === 'night' ? '#705e3a' : '#e0b85c';
+      ctx.strokeStyle = pal.ink; ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.arc(hx, hy, hr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     }
 
     // 2. 合併海水與河流＋潮間沙灘＋河口安全斷開水紋
@@ -1264,16 +1357,17 @@
     }
     ctx.restore();
 
-    // 4. 森林連片書法樹海 ＋ 獨立闊葉／針葉樹
-    var fAna = analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, function (idx) { return terrain[idx] === CELL.TREE; });
+    // 4. 森林連片書法樹海 ＋ 獨立闊葉／針葉樹（取自全島預計算 mergedTreeMask）
+    var mergedTreeMask = dec.mergedTreeMask;
     var mergedMask = new Uint8Array(vw * vh);
     var singles = [];
     for (var ly3 = 0; ly3 < vh; ly3++) {
+      var r3 = (gy0 + ly3) * W;
       for (var lx3 = 0; lx3 < vw; lx3++) {
         var li3 = ly3 * vw + lx3;
-        var fcid = fAna.compId[li3];
-        if (fcid !== -1) {
-          if (fAna.comps[fcid].length >= 4) mergedMask[li3] = 1;
+        var gpos3 = r3 + (gx0 + lx3);
+        if (terrain[gpos3] === CELL.TREE) {
+          if (mergedTreeMask[gpos3]) mergedMask[li3] = 1;
           else singles.push([gx0 + lx3, gy0 + ly3]);
         }
       }
@@ -1400,51 +1494,18 @@
       }
     }
 
-    // 6. 四合院石板天井與青石古井 ＋ 2.5D 屋舍（占住屋 + 待售屋）與圓柱石砌塔樓 ＋ 入夜燈火
-    var outsideBldg = new Uint8Array(vw * vh);
-    var bq = [];
-    for (var bx0 = 0; bx0 < vw; bx0++) {
-      var topI = bx0, botI = (vh - 1) * vw + bx0;
-      if (bldg[gy0 * W + (gx0 + bx0)] === BLDG.NONE) { outsideBldg[topI] = 1; bq.push(topI); }
-      if (bldg[gy1 * W + (gx0 + bx0)] === BLDG.NONE && !outsideBldg[botI]) { outsideBldg[botI] = 1; bq.push(botI); }
-    }
-    for (var by0 = 0; by0 < vh; by0++) {
-      var lI = by0 * vw, rI = by0 * vw + (vw - 1);
-      if (bldg[(gy0 + by0) * W + gx0] === BLDG.NONE && !outsideBldg[lI]) { outsideBldg[lI] = 1; bq.push(lI); }
-      if (bldg[(gy0 + by0) * W + gx1] === BLDG.NONE && !outsideBldg[rI]) { outsideBldg[rI] = 1; bq.push(rI); }
-    }
-    var bqh = 0;
-    while (bqh < bq.length) {
-      var curB = bq[bqh++];
-      var cxB = curB % vw, cyB = (curB / vw) | 0;
-      var nbsB = [
-        cxB > 0 ? curB - 1 : -1,
-        cxB + 1 < vw ? curB + 1 : -1,
-        cyB > 0 ? curB - vw : -1,
-        cyB + 1 < vh ? curB + vw : -1
-      ];
-      for (var nbk = 0; nbk < 4; nbk++) {
-        var niB = nbsB[nbk];
-        if (niB >= 0 && !outsideBldg[niB] && bldg[(gy0 + ((niB / vw) | 0)) * W + (gx0 + (niB % vw))] === BLDG.NONE) {
-          outsideBldg[niB] = 1;
-          bq.push(niB);
-        }
-      }
-    }
-    var yardAna = analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, function (idx) {
-      var gxY = idx % W, gyY = (idx / W) | 0;
-      var liY = (gyY - gy0) * vw + (gxY - gx0);
-      return bldg[idx] === BLDG.NONE && outsideBldg[liY] === 0;
-    });
-    if (yardAna.comps.length > 0) {
+    // 6. 四合院石板天井與青石古井 ＋ 2.5D 屋舍（占住屋 + 待售屋）與圓柱石砌塔樓 ＋ 入夜燈火（全島預計算無邊界閃變）
+    var yardComps = dec.courtyardComps || [];
+    if (yardComps.length > 0) {
       ctx.save();
       ctx.lineWidth = 0.6;
-      for (var yci = 0; yci < yardAna.comps.length; yci++) {
-        var yc = yardAna.comps[yci];
-        var sxY = 0, syY = 0;
+      for (var yci = 0; yci < yardComps.length; yci++) {
+        var yObj = yardComps[yci];
+        if (yObj.maxX < gx0 - 2 || yObj.minX > gx1 + 2 || yObj.maxY < gy0 - 2 || yObj.minY > gy1 + 2) continue;
+        var yc = yObj.cells;
         for (var yii = 0; yii < yc.length; yii++) {
           var ugx = yc[yii][0], ugy = yc[yii][1];
-          sxY += ugx + 0.5; syY += ugy + 0.5;
+          if (ugx < gx0 - 1 || ugx > gx1 + 1 || ugy < gy0 - 1 || ugy > gy1 + 1) continue;
           var ux = ugx * z, uy = ugy * z;
           ctx.fillStyle = pal.courtyard;
           ctx.fillRect(ux - 0.3, uy - 0.3, z + 0.6, z + 0.6);
@@ -1455,7 +1516,7 @@
             ctx.fillRect(ux - 0.2, uy - 0.2, z + 0.4, z + 0.4);
           }
         }
-        var wcx = (sxY / yc.length) * z, wcy = (syY / yc.length) * z + z * 0.1;
+        var wcx = yObj.avgX * z, wcy = yObj.avgY * z + z * 0.1;
         var wr = Math.max(2.0, z * 0.34);
         ctx.fillStyle = pal.shadow;
         ctx.beginPath(); ctx.arc(wcx + 0.8, wcy + 0.9, wr, 0, Math.PI * 2); ctx.fill();
@@ -1469,22 +1530,26 @@
     }
 
     var buildingLights = [];
-    var roofAna = analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, function (idx) { return bldg[idx] === BLDG.ROOF; });
-    for (var rci = 0; rci < roofAna.comps.length; rci++) {
-      renderMergedRoof(ctx, roofAna.comps[rci], roofAna.compId, rci, gx0, gy0, vw, vh, z, dpr, pal, light, timeMode, buildingLights, false);
+    var roofComps = dec.roofComps || [];
+    for (var rci = 0; rci < roofComps.length; rci++) {
+      var rComp = roofComps[rci];
+      if (rComp.maxX < gx0 - 3 || rComp.minX > gx1 + 3 || rComp.maxY < gy0 - 3 || rComp.minY > gy1 + 3) continue;
+      renderMergedRoof(ctx, rComp, dec.compGridRoof, W, H, z, dpr, pal, light, timeMode, buildingLights, false);
     }
-    var vacAna = analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, function (idx) { return bldg[idx] === BLDG.VACANT; });
-    for (var vci = 0; vci < vacAna.comps.length; vci++) {
-      renderMergedRoof(ctx, vacAna.comps[vci], vacAna.compId, vci, gx0, gy0, vw, vh, z, dpr, pal, light, timeMode, buildingLights, true);
+    var vacantComps = dec.vacantComps || [];
+    for (var vci = 0; vci < vacantComps.length; vci++) {
+      var vComp = vacantComps[vci];
+      if (vComp.maxX < gx0 - 3 || vComp.minX > gx1 + 3 || vComp.maxY < gy0 - 3 || vComp.minY > gy1 + 3) continue;
+      renderMergedRoof(ctx, vComp, dec.compGridVacant, W, H, z, dpr, pal, light, timeMode, buildingLights, true);
     }
 
-    var towerAna = analyzeLocalComponents(W, H, gx0, gy0, gx1, gy1, function (idx) { return bldg[idx] === BLDG.TOWER; });
+    var towerComps = dec.towerComps || [];
     var towerCenters = [];
-    for (var twi = 0; twi < towerAna.comps.length; twi++) {
-      var tcells = towerAna.comps[twi];
-      var sx3 = 0, sy3 = 0;
-      for (var ti = 0; ti < tcells.length; ti++) { sx3 += tcells[ti][0] + 0.5; sy3 += tcells[ti][1] + 0.5; }
-      var tcx = (sx3 / tcells.length) * z, tcy = (sy3 / tcells.length) * z;
+    for (var twi = 0; twi < towerComps.length; twi++) {
+      var tObj = towerComps[twi];
+      if (tObj.maxX < gx0 - 3 || tObj.minX > gx1 + 3 || tObj.maxY < gy0 - 3 || tObj.minY > gy1 + 3) continue;
+      var tcells = tObj.cells;
+      var tcx = tObj.avgX * z, tcy = tObj.avgY * z;
       var rad = z * (tcells.length === 1 ? 0.50 : (0.50 * Math.sqrt(tcells.length) + 0.08));
       var twH = Math.max(3.0, rad * 0.46);
       ctx.fillStyle = pal.shadow;
@@ -1597,12 +1662,14 @@
         offCanvas.width = pxW;
         offCanvas.height = pxH;
       }
+      var scaleX = pxW / (cCols * z);
+      var scaleY = pxH / (cRows * z);
       var octx = offCanvas.getContext('2d');
       octx.clearRect(0, 0, pxW, pxH);
       octx.save();
-      octx.scale(bufScale, bufScale);
+      octx.scale(scaleX, scaleY);
       octx.translate(-cGx0 * z, -cGy0 * z);
-      renderLocalCraftRegion(octx, dec, z, cGx0, cGy0, cGx1, cGy1, bufScale, pal, light, timeMode);
+      renderLocalCraftRegion(octx, dec, z, cGx0, cGy0, cGx1, cGy1, Math.min(scaleX, scaleY), pal, light, timeMode);
       octx.restore();
       lc = {
         key: cacheKey,
@@ -1667,8 +1734,9 @@
     ctx.textAlign = 'center';
 
     // 1. 地面軌跡、人物圓點、旅人火漆印記（保留 placed 淨空免壓字）與屋頂熱區／門牌
-    var wps = sub.walk_waypoints || [];
-    if (sub.player_pos && wps.length) {
+    var renderPts = (sub.render_waypoints && sub.render_waypoints.length) ? sub.render_waypoints : null;
+    var wps = renderPts ? null : (sub.walk_waypoints || []);
+    if (sub.player_pos && ((renderPts && renderPts.length) || (wps && wps.length))) {
       ctx.save();
       ctx.strokeStyle = pal.lantern > 0 ? 'rgba(240, 182, 92, 0.72)' : 'rgba(138, 62, 26, 0.72)';
       ctx.lineWidth = Math.max(1.5, Math.min(2.6, z * 0.22));
@@ -1676,13 +1744,22 @@
       ctx.beginPath();
       var pStart = toScreen(sub.player_pos[0], sub.player_pos[1]);
       ctx.moveTo(pStart[0], pStart[1]);
-      for (var wi = 0; wi < wps.length; wi++) {
-        var wpPt = toScreen(wps[wi][0] + 0.5, wps[wi][1] + 0.5);
-        ctx.lineTo(wpPt[0], wpPt[1]);
+      var wpLast = pStart;
+      if (renderPts) {
+        for (var rwi = 0; rwi < renderPts.length; rwi++) {
+          var rPt = toScreen(renderPts[rwi][0], renderPts[rwi][1]);
+          ctx.lineTo(rPt[0], rPt[1]);
+          wpLast = rPt;
+        }
+      } else {
+        for (var wi = 0; wi < wps.length; wi++) {
+          var wpPt = toScreen(wps[wi][0] + 0.5, wps[wi][1] + 0.5);
+          ctx.lineTo(wpPt[0], wpPt[1]);
+          wpLast = wpPt;
+        }
       }
       ctx.stroke();
       ctx.setLineDash([]);
-      var wpLast = toScreen(wps[wps.length - 1][0] + 0.5, wps[wps.length - 1][1] + 0.5);
       ctx.strokeStyle = '#c94c2c';
       ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.arc(wpLast[0], wpLast[1], 5, 0, Math.PI * 2); ctx.stroke();
@@ -2055,16 +2132,11 @@
     var z = cam.pxPerTile;
     var panX = viewW * 0.5 - cam.cx * z;
     var panY = viewH * 0.5 - cam.cy * z;
-    ctx.save();
-    ctx.translate(panX, panY);
-    ctx.scale(z, z);
 
-    // 全島巨觀水彩層（始終襯底，平滑連接遠近鏡頭）
-    var macro = ensureMacroCanvas(dec, m, pal, light, timeMode, viewOpts);
-    ctx.restore();
-
+    // 全島巨觀水彩層（僅在遠中景混合過渡或全覽縮放時繪製，近景免無謂重算阻塞主執行緒）
     var detailAlpha = Math.max(0, Math.min(1, (z - 4.2) / 2.2));
     if (detailAlpha < 0.99) {
+      var macro = ensureMacroCanvas(dec, m, pal, light, timeMode, viewOpts);
       ctx.save();
       ctx.translate(panX, panY);
       ctx.scale(z, z);

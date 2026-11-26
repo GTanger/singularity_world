@@ -1,7 +1,7 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
-- **更新日期**：2026-11-26
-- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖，前端版號 `v=20261126r7`；廢除黑霧遮罩、完成 `60fps` 輕量 `map_sync`＋離屏局部工藝快取防頓卡、拔除 `:601` 免費發工具與角色硬鎖、實裝 `shop_leases` 鋪戶封爐出走與頂讓、29 座鄉野聚落五類地景格局與沿路動態註冊 `place_registry`，通過 `76/76` `outer_island` 單元測試、規格審查與桌機＋`Pixel 9 Pro XL` 真機手操驗收）
+- **更新日期**：2026-11-27
+- **當前狀態**：`active`（《銀鷗海領》於 `93` 地塊、`859` 節點與 `994` 名 `UnifiedMindBody` 對等居民上線，首頁 `/` 為 `860×930` 連續全島水彩古卷 Canvas2D 輿圖，前端版號 `v=20261126r8`；實裝弧長同步步行狀態機、全島拓撲預計算離屏快取與近身屋舍親見同步，徹底根治連續步行閃跳與跨快取邊界屋頂／樹海跳變，通過 `77/77` `outer_island` 單元測試、`tra-sw-gate --deploy` 與桌機逐幀＋`Pixel 9 Pro XL` 真機驗收）
 
 ## 一、 近期完成里程碑摘要（2026-10-27 ～ 2026-11-12）
 
@@ -84,6 +84,10 @@
     - **移動頓卡徹底根治（`map_memory_pack.rs` ＋ `island-parchment-map.js` ＋ `island-ui.js`）**：`POST /api/island/move` 直回 `<3KB` `map_sync`（含精確追蹤覆寫變化之 `terrain_digest`/`terrain_dirty`，修正距離圈進出假陽性），結合單調 `walkSeq`、`trimPassedWaypoints`（尾段平滑 `<= 3.5` 格）、暫停行進期 `pollIslandPulse` 與 `localCraftCaches` 離屏雙緩衝；桌機實測連續 `8` 步（`18.25` 格）達成 `mapRequestsDuringSteps=0`、`reversals=0`、`avgRenderMs=0.73ms`、`avgRafMs=16.73ms`。
     - **拔除 `:601` 免費發工具與硬鎖 ＋ 鋪戶封爐頂讓（`shop_leases.rs` ＋ `live_agency.rs` 等）**：移除 `live_agency.rs:601` 免費 `default_tool_for_role` 與職業字串／掌櫃／地城／`% 4` 假門檻，改依實體手持背囊工具與營業契約判定；新增 `delta.shop_leases` 支援鋪戶熄爐／停診懸掛 `obj:shop_lease_board`、原店主轉投礦坑探索並由玩家或有產居民付費守恆頂讓接管。
     - **29 座鄉野五類聚落格局 ＋ 只增不刪 `place_registry`（`island_substrate_rural.rs` ＋ `place_registry.rs` ＋ 30 日探針）**：取代一字橫條村落為五類地理原型並維持 `100%` BFS 可達；沿路拓寬自動延伸 `3..=5` 格支巷註冊屋宅且傾頹不刪 ID，通過 30 日熄爐頂讓增巷測試、桌機／`Pixel 9 Pro XL` 真機輿圖驗收與線上總銅幣 `120,805` 守恆（`conservation_diff=0`）。
+28. **2026-11-27 弧長同步步行零閃跳與全島拓撲預計算修復（`v=20261126r8`）**：
+    - **根治前後端速率失配與 `5.0` 格懸崖瞬移（`island-ui.js`）**：淘汰 `trimPassedWaypoints` 丟拐點與 `>4.5/5.0/3.5` 格強制瞬移，改以完整折線 `fullPath` 搭配 `srvIndex` 弧長進度自適應調速（領先柔剎、落後補速）與 `steps=clamp(ceil(feProg+1)-srvIndex,1,4)` 精準步數節拍；補齊途中反向改道防鉤子跳過邏輯、推門延遲 `pendingIndoor`（防最後幾格直跳屋頂）、全幅輿圖拖曳平移不扯回（`cam.followPlayer`＋`openMapModal` 開窗對齊）與 `pollIslandPulse`／步行期間 `refreshMapData` 競態隔離。
+    - **全島拓撲預計算與近身屋舍親見同步（`island-parchment-map.js` ＋ `map_memory.rs`）**：於 `ensureDecodedSubstrate` 一次性預計算全島屋頂、待售屋、石塔、封閉天井、樹海與農田麥草垛並移除 `roofTexCache.clear()`，對齊離屏 `scaleX/scaleY`、近景免重算巨觀層並改用 `sub.render_waypoints` 繪製 60fps 即時前導虛線；於 `map_memory.rs::record_local_witness_at_tile` 抽出 `scan_sight_cells_and_hydro` 與 `apply_house_state_delta` 同步 `<= 18` 格內 `witnessed_sold_houses`／`witnessed_ruined_houses` 消除進出視距 `terrain_dirty` 假陽性。
+    - **雙端實機逐幀驗收**：`map_memory_tests`（含新回歸測試 `walking_past_sold_and_ruined_houses_never_flips_terrain_dirty_on_exit`）`6/6` 通過；桌機實操連續 `42.16` 格步行＋改道測得 `maxPlayerDelta=0.1292` 格、`bigReversals=0`、`avgRenderMs=0.33ms`，全幅拖曳點擊 `57.7` 格遠處測得 `initialCamSnap=0`、`maxPlayerDelta=0.1283` 格、`avgRenderMs=0.53ms`；`Pixel 9 Pro XL` 真機 `tra-phone-web-qa` 判 `PASS`（`0px` 水平溢位）。
 
 ## 二、 關鍵檔案與正典錨點
 
@@ -105,8 +109,8 @@
 
 ## 三、 下一步接續提示 (Next Cue)
 
-- **截至 `2026-11-26`（`singularity_world@8bfe1e93`，`v=20261126r7`）銀鷗海領基線與接續守則**：
-  - **現行實況錨點**：線上運行 `93` 地塊、`859` 靜態節點＋只增不刪 `delta.place_registry`（`994` 名對等居民，總銅幣 `120,805`、`conservation_diff == 0`，`76/76` `outer_island` 單元測試通過）。
+- **截至 `2026-11-27`（`v=20261126r8`）銀鷗海領基線與接續守則**：
+  - **現行實況錨點**：線上運行 `93` 地塊、`859` 靜態節點＋只增不刪 `delta.place_registry`（`994` 名對等居民，總銅幣 `120,805`、`conservation_diff == 0`，新增弧長同步步行與近身屋舍親見同步通過雙端逐幀驗收與 `map_memory_tests` `6/6` 全綠）。
   - **後續演進不可退讓守則**：維持無黑霧連續 `860×930` 水彩活底盤（禁止重引入 `TERRAIN_FOG`、`.webp` 切圖或節點瞬移跳棋）、維持 `move_player_with_sync` 輕量 `map_sync` 與 `compute_viewer_terrain_digest` 無假陽性、`T > 0` 嚴禁恢復 `default_tool_for_role` 免費配裝或職業字串硬鎖、`place_registry` 屋宅 ID 只增不刪（傾頹僅翻 `ruined = true`），且任何視覺互動驗收一律從登入首頁真實點擊檢查，不打後台跳關 API 充數。
 - **已定案紀錄｜「真活世界」最小五件共用骨架與前四步落地順序（2026-11-19，審辯室 Room `e8f2c2d2-d9da-4279-b91f-174e40d9f6d6`，忠實對齊 `DESIGN_KEYWORDS.md` 與兩份正典）**：
   - **凍結與隔離邊界**：凍結 `rim_*`（留存於 `/rim` 不再擴張、嚴禁照搬其固定店鋪／職稱狀態機回主線）並將舊世 `wt_*` 具名角色隔離於 legacy（守 `DESIGN_KEYWORDS.md:143` 暫存不刪，退出新世界 tick）；「單格即物件」於 307 萬格 20m 底板採「虛擬房間／觀測時經 `CellFacade` 合成」，玩家與 NPC 100% 共用管線、LLM 永不裁決世界狀態。

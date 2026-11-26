@@ -194,6 +194,88 @@ impl WitnessedCellSnap {
     }
 }
 
+#[derive(Default)]
+struct HouseStateDelta {
+    ruined_add: Vec<String>,
+    ruined_rem: Vec<String>,
+    sold_add: Vec<String>,
+    sold_rem: Vec<String>,
+}
+
+fn collect_house_state_delta<F: Fn(&str) -> bool>(
+    sub: &CompiledIslandSubstrate,
+    delta: &IslandWorldDelta,
+    pred: F,
+) -> HouseStateDelta {
+    let mut out = HouseStateDelta::default();
+    for hnid in sub.house_footprint_cells.keys() {
+        if !pred(hnid) {
+            continue;
+        }
+        if house_is_ruined(delta, hnid) {
+            out.ruined_add.push(hnid.clone());
+        } else {
+            out.ruined_rem.push(hnid.clone());
+        }
+        if delta.sold_houses.contains_key(hnid) {
+            out.sold_add.push(hnid.clone());
+        } else {
+            out.sold_rem.push(hnid.clone());
+        }
+    }
+    out
+}
+
+fn apply_house_state_delta(mem: &mut ActorMapMemory, d: HouseStateDelta) -> bool {
+    let mut changed = false;
+    for h in d.ruined_add {
+        changed |= mem.witnessed_ruined_houses.insert(h);
+    }
+    for h in d.ruined_rem {
+        changed |= mem.witnessed_ruined_houses.remove(&h);
+    }
+    for h in d.sold_add {
+        changed |= mem.witnessed_sold_houses.insert(h);
+    }
+    for h in d.sold_rem {
+        changed |= mem.witnessed_sold_houses.remove(&h);
+    }
+    changed
+}
+
+fn scan_sight_cells_and_hydro(
+    sub: &CompiledIslandSubstrate,
+    gx: f32,
+    gy: f32,
+) -> (BTreeSet<u32>, BTreeSet<u32>, BTreeSet<u32>) {
+    let cx = gx.floor() as isize;
+    let cy = gy.floor() as isize;
+    let mut touched_cids = BTreeSet::new();
+    let mut saw_bridge_cids = BTreeSet::new();
+    let mut saw_river_cids = BTreeSet::new();
+    for dy in -18isize..=18 {
+        for dx in -18isize..=18 {
+            if dx * dx + dy * dy > 324 {
+                continue;
+            }
+            if let Some(pos) = idx_of(cx + dx, cy + dy) {
+                let owner = sub.cell_owner[pos];
+                if owner != u16::MAX {
+                    let cid = sub.cell_ids[owner as usize];
+                    touched_cids.insert(cid);
+                    if sub.base_terrain[pos] == TERRAIN_RIVER {
+                        saw_river_cids.insert(cid);
+                        if sub.base_road[pos] == ROAD_BRIDGE_OR_PIER {
+                            saw_bridge_cids.insert(cid);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    (touched_cids, saw_bridge_cids, saw_river_cids)
+}
+
 /// 在場親見寫入：僅於踏入非地城核心節點時更新該地塊核況；若為外圍擦邊節點則僅依實地視距 `18` 格局部見證。
 pub fn record_local_witness_at_cur_node(
     doc: &WorldStaticDoc,
@@ -202,42 +284,24 @@ pub fn record_local_witness_at_cur_node(
     game_day: i64,
 ) {
     let (cur_nid, is_player, prev_snap, has_cid_rumor, has_band_snap, sight_xy, pos_seeded) = {
-        let Some(a) = delta.actors.get(actor_id) else {
-            return;
-        };
-        let Some(cur_nd) = doc.nodes.get(&a.node_id) else {
-            return;
-        };
-        if cur_nd.dungeon {
-            return;
-        }
+        let Some(a) = delta.actors.get(actor_id) else { return; };
+        let Some(cur_nd) = doc.nodes.get(&a.node_id) else { return; };
+        if cur_nd.dungeon { return; }
         let cid = cur_nd.cell_id;
         let prev = a.mind.ltm.map_memory.witnessed_cells.get(&cid).cloned();
-        let has_r = a
-            .mind
-            .ltm
-            .map_memory
-            .rumor_pins
-            .values()
-            .any(|p| p.cell_id == cid);
+        let has_r = a.mind.ltm.map_memory.rumor_pins.values().any(|p| p.cell_id == cid);
         let has_b = a.mind.ltm.map_memory.witnessed_bands.contains_key(&cid);
         let sub = compiled_island_substrate(doc);
         let sxy = if a.map_pos_seeded {
             [a.map_gx, a.map_gy]
         } else {
-            sub.node_anchors
-                .get(&a.node_id)
-                .copied()
+            sub.node_anchors.get(&a.node_id).copied()
                 .unwrap_or_else(|| world_to_grid_f32(cur_nd.pos[0], cur_nd.pos[1]))
         };
         (
             a.node_id.clone(),
             a.controller_id.is_some() || actor_id.starts_with("pl:"),
-            prev,
-            has_r,
-            has_b,
-            sxy,
-            a.map_pos_seeded,
+            prev, has_r, has_b, sxy, a.map_pos_seeded,
         )
     };
     let Some(cur_nd) = doc.nodes.get(&cur_nid) else {
@@ -255,28 +319,10 @@ pub fn record_local_witness_at_cur_node(
         record_local_witness_at_tile(doc, delta, actor_id, sight_xy[0], sight_xy[1], game_day);
         return;
     }
-    let mut saw_bridge_near = false;
-    let mut saw_river_near = false;
-    let cx = sight_xy[0].floor() as isize;
-    let cy = sight_xy[1].floor() as isize;
-    for dy in -18isize..=18 {
-        for dx in -18isize..=18 {
-            if dx * dx + dy * dy > 324 {
-                continue;
-            }
-            if let Some(pos) = idx_of(cx + dx, cy + dy) {
-                let owner = sub.cell_owner[pos];
-                if owner != u16::MAX && sub.cell_ids[owner as usize] == cid {
-                    if sub.base_terrain[pos] == TERRAIN_RIVER {
-                        saw_river_near = true;
-                        if sub.base_road[pos] == ROAD_BRIDGE_OR_PIER {
-                            saw_bridge_near = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    let (_, saw_bridge_cids, saw_river_cids) =
+        scan_sight_cells_and_hydro(sub, sight_xy[0], sight_xy[1]);
+    let saw_bridge_near = saw_bridge_cids.contains(&cid);
+    let saw_river_near = saw_river_cids.contains(&cid);
     let mut snap = live_cell_snap(doc, delta, cid, core_visited, game_day);
     if !saw_bridge_near {
         snap.bridge_down = prev_snap.as_ref().is_some_and(|p| p.bridge_down);
@@ -300,10 +346,7 @@ pub fn record_local_witness_at_cur_node(
         return;
     }
 
-    let mut ruined_in_cell = Vec::new();
-    let mut clear_ruined_in_cell = Vec::new();
-    let mut sold_in_cell = Vec::new();
-    let mut clear_sold_in_cell = Vec::new();
+    let mut house_delta = HouseStateDelta::default();
     let mut built_in_cell = Vec::new();
     let mut active_band: Option<WitnessedBandSnap> = None;
 
@@ -315,20 +358,9 @@ pub fn record_local_witness_at_cur_node(
                 .get(&cid.to_string())
                 .is_some_and(|c| matches!(c.kind.as_str(), "settlement" | "rural_settlement"))
         {
-            for hnid in sub.house_footprint_cells.keys() {
-                if doc.nodes.get(hnid).is_some_and(|h| h.cell_id == cid) {
-                    if house_is_ruined(delta, hnid) {
-                        ruined_in_cell.push(hnid.clone());
-                    } else {
-                        clear_ruined_in_cell.push(hnid.clone());
-                    }
-                    if delta.sold_houses.contains_key(hnid) {
-                        sold_in_cell.push(hnid.clone());
-                    } else {
-                        clear_sold_in_cell.push(hnid.clone());
-                    }
-                }
-            }
+            house_delta = collect_house_state_delta(sub, delta, |hnid| {
+                doc.nodes.get(hnid).is_some_and(|h| h.cell_id == cid)
+            });
             for bh in delta.built_houses.values() {
                 if doc
                     .nodes
@@ -364,18 +396,7 @@ pub fn record_local_witness_at_cur_node(
     let mem = &mut a.mind.ltm.map_memory;
     mem.witnessed_cells.insert(cid, snap);
     if update_houses {
-        for h in ruined_in_cell {
-            mem.witnessed_ruined_houses.insert(h);
-        }
-        for h in clear_ruined_in_cell {
-            mem.witnessed_ruined_houses.remove(&h);
-        }
-        for h in sold_in_cell {
-            mem.witnessed_sold_houses.insert(h);
-        }
-        for h in clear_sold_in_cell {
-            mem.witnessed_sold_houses.remove(&h);
-        }
+        apply_house_state_delta(mem, house_delta);
         mem.witnessed_built_houses.retain(|_, v| v.cell_id != cid);
         for bh in built_in_cell {
             mem.witnessed_built_houses.insert(bh.house_id.clone(), bh);
@@ -426,29 +447,7 @@ pub fn record_local_witness_at_tile(
     let sub = compiled_island_substrate(doc);
     let cx = gx.floor() as isize;
     let cy = gy.floor() as isize;
-    let mut touched_cids = BTreeSet::new();
-    let mut saw_bridge_cids = BTreeSet::new();
-    let mut saw_river_cids = BTreeSet::new();
-    for dy in -18isize..=18 {
-        for dx in -18isize..=18 {
-            if dx * dx + dy * dy > 324 {
-                continue;
-            }
-            if let Some(pos) = idx_of(cx + dx, cy + dy) {
-                let owner = sub.cell_owner[pos];
-                if owner != u16::MAX {
-                    let cid = sub.cell_ids[owner as usize];
-                    touched_cids.insert(cid);
-                    if sub.base_terrain[pos] == TERRAIN_RIVER {
-                        saw_river_cids.insert(cid);
-                        if sub.base_road[pos] == ROAD_BRIDGE_OR_PIER {
-                            saw_bridge_cids.insert(cid);
-                        }
-                    }
-                }
-            }
-        }
-    }
+    let (touched_cids, saw_bridge_cids, saw_river_cids) = scan_sight_cells_and_hydro(sub, gx, gy);
 
     let cur_cid = doc.nodes.get(&cur_nid).map(|n| n.cell_id);
     let at_core = is_core_cell_node(doc, &cur_nid);
@@ -527,6 +526,11 @@ pub fn record_local_witness_at_tile(
             add_diffs.push((pos_u32, entry));
         }
     }
+    let house_delta = collect_house_state_delta(sub, delta, |hnid| {
+        sub.node_anchors
+            .get(hnid)
+            .is_some_and(|&[ax, ay]| (ax - gx).powi(2) + (ay - gy).powi(2) <= 324.0)
+    });
 
     let mut changed = false;
     let Some(a) = delta.actors.get_mut(actor_id) else {
@@ -543,6 +547,7 @@ pub fn record_local_witness_at_tile(
             changed = true;
         }
     }
+    changed |= apply_house_state_delta(mem, house_delta);
     for (cid, wb_opt) in band_updates {
         if let Some(wb) = wb_opt {
             if mem.witnessed_bands.get(&cid) != Some(&wb) {
@@ -635,17 +640,11 @@ fn infer_rumor_target(
         ));
     }
 
-    let is_disaster_or_wild = raw_text.contains("斷橋")
-        || raw_text.contains("橋毀")
-        || raw_text.contains("淹水")
-        || raw_text.contains("春汛")
-        || raw_text.contains("洪水")
-        || raw_text.contains("疫")
-        || raw_text.contains("灰耳")
-        || raw_text.contains("營寨")
-        || raw_text.contains("劫")
-        || raw_text.contains("流寇")
-        || raw_text.contains("坍塌");
+    let is_disaster_or_wild = [
+        "斷橋", "橋毀", "淹水", "春汛", "洪水", "疫", "灰耳", "營寨", "劫", "流寇", "坍塌",
+    ]
+    .iter()
+    .any(|kw| raw_text.contains(kw));
     if !is_disaster_or_wild {
         return None;
     }
