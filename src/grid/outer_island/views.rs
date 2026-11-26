@@ -255,6 +255,9 @@ pub fn build_view_json(
     scene_desc.push_str(&super::live_land::live_land_scene_prose_suffix(
         doc, delta, node,
     ));
+    scene_desc.push_str(&super::live_wilds::live_wilds_scene_prose_suffix(
+        doc, delta, node, clock,
+    ));
     scene_desc
         .push_str(&super::live_commodities::live_commodities_scene_prose_suffix(doc, delta, node));
 

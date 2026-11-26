@@ -764,6 +764,20 @@ pub fn settle_due_contracts(
         let Some(c) = delta.contracts.get(&ckey).cloned() else {
             continue;
         };
+        let both_alive = delta
+            .actor_by_id_or_controller(&c.debtor_id)
+            .is_some_and(|a| a.alive)
+            && delta
+                .actor_by_id_or_controller(&c.creditor_id)
+                .is_some_and(|a| a.alive);
+        if !both_alive {
+            if let Some(cmut) = delta.contracts.get_mut(&ckey) {
+                cmut.status = "written_off".to_string();
+                cmut.note_zh.push_str("〔當事人已故結案〕");
+                delta.dirty_contracts.insert(ckey);
+            }
+            continue;
+        }
         let (d_real_name, d_pub_name) = delta.actor_by_id_or_controller(&c.debtor_id).map_or(
             ("欠債人".to_string(), "欠債人".to_string()),
             |a| {

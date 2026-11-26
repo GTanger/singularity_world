@@ -547,6 +547,7 @@ pub struct IslandWorldDelta {
     pub silver_bank_reserve_copper: i64,
     pub mainland_clearing_copper: i64,
     pub contract_escrow_copper: i64,
+    pub goblin_hoard_copper: i64,
     pub chaos_rune_seeded: bool,
     pub chaos_rune_pool: u16,
     pub first_spider_slain: Option<(String, String, i64)>,
@@ -569,6 +570,8 @@ pub struct IslandWorldDelta {
     pub survivor_letters_delivered: BTreeSet<String>,
     pub live_land: super::live_land::LiveLandState,
     pub live_commodities: super::live_commodities::LiveCommoditiesState,
+    pub live_wilds: super::live_wilds::LiveWildsState,
+    pub live_lifecycle: super::live_lifecycle::LiveLifecycleState,
     #[serde(skip)]
     pub controller_to_actor: BTreeMap<String, String>,
     #[serde(skip)]
@@ -611,6 +614,7 @@ impl IslandWorldDelta {
             + self.silver_bank_reserve_copper
             + self.mainland_clearing_copper
             + self.contract_escrow_copper
+            + self.goblin_hoard_copper
             + actor_total
             + unseeded_genesis
             + loot_total;
@@ -818,7 +822,11 @@ impl IslandWorldDelta {
     fn resolve_ledger_party(&self, raw_key: &str) -> String {
         if matches!(
             raw_key,
-            "municipal_treasury" | "silver_bank" | "mainland_clearing" | "contract_escrow"
+            "municipal_treasury"
+                | "silver_bank"
+                | "mainland_clearing"
+                | "contract_escrow"
+                | "goblin_hoard"
         ) {
             return raw_key.to_string();
         }
@@ -864,6 +872,11 @@ impl IslandWorldDelta {
                     return false;
                 }
             }
+            "goblin_hoard" => {
+                if self.goblin_hoard_copper < amount {
+                    return false;
+                }
+            }
             "mainland_clearing" => {}
             other => {
                 let Some(src) = self.actors.get(other) else {
@@ -877,7 +890,11 @@ impl IslandWorldDelta {
         // 檢查入帳方存在
         if !matches!(
             credit_resolved.as_str(),
-            "municipal_treasury" | "silver_bank" | "mainland_clearing" | "contract_escrow"
+            "municipal_treasury"
+                | "silver_bank"
+                | "mainland_clearing"
+                | "contract_escrow"
+                | "goblin_hoard"
         ) && !self.actors.contains_key(&credit_resolved)
         {
             return false;
@@ -888,6 +905,7 @@ impl IslandWorldDelta {
             "municipal_treasury" => self.municipal_treasury_copper -= amount,
             "silver_bank" => self.silver_bank_reserve_copper -= amount,
             "contract_escrow" => self.contract_escrow_copper -= amount,
+            "goblin_hoard" => self.goblin_hoard_copper -= amount,
             "mainland_clearing" => self.mainland_clearing_copper -= amount,
             other => {
                 if let Some(src) = self.actors.get_mut(other) {
@@ -900,6 +918,7 @@ impl IslandWorldDelta {
             "municipal_treasury" => self.municipal_treasury_copper += amount,
             "silver_bank" => self.silver_bank_reserve_copper += amount,
             "contract_escrow" => self.contract_escrow_copper += amount,
+            "goblin_hoard" => self.goblin_hoard_copper += amount,
             "mainland_clearing" => self.mainland_clearing_copper += amount,
             other => {
                 if let Some(dst) = self.actors.get_mut(other) {

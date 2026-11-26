@@ -116,6 +116,9 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         survivor_letters_delivered: extras.survivor_letters_delivered,
         live_land: extras.live_land,
         live_commodities: extras.live_commodities,
+        goblin_hoard_copper: extras.goblin_hoard_copper,
+        live_wilds: extras.live_wilds,
+        live_lifecycle: extras.live_lifecycle,
         ..IslandWorldDelta::default()
     };
 
@@ -274,10 +277,15 @@ pub fn load_or_migrate_from_pg(doc: &WorldStaticDoc, pool: &DbPool) -> Normalize
         })
         .map(|c| c.amount_copper)
         .sum();
-    if load_diff != 0 || active_escrow_sum != delta.contract_escrow_copper {
+    if load_diff != 0
+        || active_escrow_sum != delta.contract_escrow_copper
+        || delta.live_wilds.total_band_hoard_copper() != delta.goblin_hoard_copper
+    {
         tracing::error!(
-            "[outer_island] conservation_diff={load_diff} escrow_sum={active_escrow_sum} vs {} after PG load, freezing as Corrupt",
-            delta.contract_escrow_copper
+            "[outer_island] conservation_diff={load_diff} escrow_sum={active_escrow_sum} vs {} hoard={} vs {} after PG load, freezing as Corrupt",
+            delta.contract_escrow_copper,
+            delta.live_wilds.total_band_hoard_copper(),
+            delta.goblin_hoard_copper
         );
         return NormalizedLoadOutcome::Corrupt;
     }
@@ -363,10 +371,15 @@ pub fn prepare_commit_batch(
         })
         .map(|c| c.amount_copper)
         .sum();
-    if diff != 0 || active_escrow_sum != delta.contract_escrow_copper {
+    if diff != 0
+        || active_escrow_sum != delta.contract_escrow_copper
+        || delta.live_wilds.total_band_hoard_copper() != delta.goblin_hoard_copper
+    {
         tracing::error!(
-            "[outer_island] copper/escrow conservation failed before commit: diff={diff}, escrow={active_escrow_sum} vs {}",
-            delta.contract_escrow_copper
+            "[outer_island] copper/escrow/hoard conservation failed before commit: diff={diff}, escrow={active_escrow_sum} vs {}, hoard={} vs {}",
+            delta.contract_escrow_copper,
+            delta.live_wilds.total_band_hoard_copper(),
+            delta.goblin_hoard_copper
         );
         return Err("港務銀冊帳目核對未過，請稍候片刻再試。".to_string());
     }
@@ -391,6 +404,9 @@ pub fn prepare_commit_batch(
         survivor_letters_delivered: delta.survivor_letters_delivered.clone(),
         live_land: delta.live_land.clone(),
         live_commodities: delta.live_commodities.clone(),
+        goblin_hoard_copper: delta.goblin_hoard_copper,
+        live_wilds: delta.live_wilds.clone(),
+        live_lifecycle: delta.live_lifecycle.clone(),
     };
     let extras_json = serde_json::to_string(&extras).map_err(|e| e.to_string())?;
     let next_seq = delta.persist_seq.saturating_add(1);

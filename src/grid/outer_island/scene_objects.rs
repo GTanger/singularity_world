@@ -886,6 +886,20 @@ pub fn build_scene_presence_sockets(
         &mut objects,
         &mut push_audit,
     );
+    super::live_wilds::append_live_wilds_scene_objects(
+        delta,
+        viewer,
+        node,
+        clock,
+        &mut objects,
+        &mut push_audit,
+    );
+    super::live_lifecycle::append_live_lifecycle_scene_objects(
+        delta,
+        node,
+        &mut objects,
+        &mut push_audit,
+    );
 
     (objects, body_cues, audit_actions)
 }

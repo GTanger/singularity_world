@@ -658,11 +658,13 @@ pub fn settle_expired_escrow_pacts_as_world_events(
                 .actors
                 .get(&c.creditor_id)
                 .is_none_or(|iss| !iss.alive);
+            let deb_dead = !c.debtor_id.is_empty()
+                && delta.actors.get(&c.debtor_id).is_none_or(|deb| !deb.alive);
             let rec_dead = c.kind == "courier_errand" && {
                 let (rec_id, _) = parse_pact_note(&c.note_zh);
                 delta.actors.get(rec_id).is_none_or(|r| !r.alive)
             };
-            clock.game_days > c.due_day || cred_dead || rec_dead
+            clock.game_days > c.due_day || cred_dead || deb_dead || rec_dead
         })
         .map(|(k, _)| k.clone())
         .collect();
@@ -679,12 +681,17 @@ pub fn settle_expired_escrow_pacts_as_world_events(
             .actors
             .get(&c_snap.creditor_id)
             .is_some_and(|iss| iss.alive);
+        let deb_alive = c_snap.debtor_id.is_empty()
+            || delta
+                .actors
+                .get(&c_snap.debtor_id)
+                .is_some_and(|deb| deb.alive);
         let rec_alive = if c_snap.kind == "courier_errand" {
             delta.actors.get(&meta_owned).is_some_and(|r| r.alive)
         } else {
             true
         };
-        let force_majeure = !cred_alive || !rec_alive;
+        let force_majeure = !cred_alive || !deb_alive || !rec_alive;
 
         let refund_to = if cred_alive {
             c_snap.creditor_id.clone()

@@ -765,7 +765,21 @@ pub fn validate_polished_deed_prose(
     draft: &str,
     candidate_raw: &str,
 ) -> Result<String, &'static str> {
-    let normalized = normalize_chronicler_output(candidate_raw);
+    let mut normalized = normalize_chronicler_output(candidate_raw);
+    for exact_label in [
+        fact.agent_public_label.as_str(),
+        fact.patient_public_label.as_str(),
+        fact.town_zh.as_str(),
+        fact.place_zh.as_str(),
+        fact.vessel_zh.as_str(),
+    ] {
+        if !exact_label.is_empty() && validate_clean_in_world_reply(exact_label).is_some() {
+            let mangled = normalize_chronicler_output(exact_label);
+            if mangled != exact_label && normalized.contains(&mangled) {
+                normalized = normalized.replace(&mangled, exact_label);
+            }
+        }
+    }
     let Some(clean) = validate_clean_in_world_reply(&normalized) else {
         return Err("failed_clean_in_world_reply");
     };

@@ -113,6 +113,9 @@ pub(crate) struct WorldExtrasBlob {
     pub(crate) survivor_letters_delivered: std::collections::BTreeSet<String>,
     pub(crate) live_land: super::live_land::LiveLandState,
     pub(crate) live_commodities: super::live_commodities::LiveCommoditiesState,
+    pub(crate) goblin_hoard_copper: i64,
+    pub(crate) live_wilds: super::live_wilds::LiveWildsState,
+    pub(crate) live_lifecycle: super::live_lifecycle::LiveLifecycleState,
 }
 
 pub enum NormalizedLoadOutcome {

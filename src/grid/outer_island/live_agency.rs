@@ -303,7 +303,49 @@ pub fn evaluate_civic_and_land_agency(
         ));
     }
 
-    // 2. 斷橋／損橋搶修與先伐木備料
+    // 2. 巡防清除本鎮被野獸拾荒賊佔據之破屋，或鄰近高壓／蓄贓灰耳部族營寨
+    if a.fatigue < 48
+        && (a.role.contains("衛兵") || a.role.contains("獵"))
+        && let Some((sq_nid, _)) = delta.live_wilds.squatters_by_node.iter().find(|(snid, _)| {
+            doc.nodes
+                .get(*snid)
+                .is_some_and(|n| n.cell_id == cur_node.cell_id)
+        })
+    {
+        if a.node_id == *sq_nid {
+            return Some(AgencyActionPlan::WorldAct("evict_squatter", sq_nid.clone()));
+        }
+        return Some(AgencyActionPlan::WalkTo(
+            sq_nid.clone(),
+            "聞訊破屋有賊獸作窩，趕赴門前驅逐清場".to_string(),
+        ));
+    }
+
+    if a.fatigue < 42
+        && (a.role.contains("衛兵") || a.role.contains("獵"))
+        && let Some(band) = delta.live_wilds.bands.values().find(|b| {
+            clock.game_days >= b.suppressed_until_day
+                && (b.raid_pressure >= 72 || b.hoard_copper >= 12)
+                && (b.cell_id == cur_node.cell_id
+                    || doc
+                        .cells
+                        .get(&cur_node.cell_id.to_string())
+                        .is_some_and(|c| c.neighbors_f6.contains(&b.cell_id)))
+        })
+    {
+        if a.node_id == band.camp_node_id {
+            return Some(AgencyActionPlan::WorldAct(
+                "raid_goblin_camp",
+                band.cell_id.to_string(),
+            ));
+        }
+        return Some(AgencyActionPlan::WalkTo(
+            band.camp_node_id.clone(),
+            "見灰耳部族蠢蠢欲動搶掠官道，持械前往營寨清剿追贓".to_string(),
+        ));
+    }
+
+    // 3. 斷橋／損橋搶修與先伐木備料
     let civic_minded = strat_kind == Some(GoalStrategyKind::RepairCivicWorks)
         || a.role.contains("石工")
         || a.role.contains("木匠")

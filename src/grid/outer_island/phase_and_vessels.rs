@@ -76,8 +76,11 @@ pub fn ensure_chaos_rune_pool_seeded(delta: &mut IslandWorldDelta) {
 
 /// 統計全島當前存世流通之古符文原石與已鑲「穩固鐵紋」之兵刃／活器物總數（與 `chaos_rune_pool` 合併守恆 `<= 12`）
 pub fn count_world_active_runes(delta: &IslandWorldDelta) -> u8 {
-    let mut total: u32 = 0;
+    let mut total: u32 = delta.live_wilds.count_active_runes();
     for a in delta.actors.values() {
+        if !a.alive {
+            continue;
+        }
         if a.bound_weapon.rune_mark.as_deref() == Some("穩固鐵紋") {
             total = total.saturating_add(1);
         }

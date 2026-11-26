@@ -6,7 +6,6 @@ use super::actions::apply_world_action;
 use super::appraisal::ConcernCause;
 use super::clock_and_lang::SolarClockSnapshot;
 use super::explore_and_combat::{apply_explore, resolve_skirmish_turn};
-use super::harbor_lineage::CURRENT_SOLAR_YEAR;
 use super::mind::EventPublicity;
 use super::movement::{
     add_carry_item, find_hidden_entrance_for_rumor, push_breath, shortest_expedition_path,
@@ -760,7 +759,7 @@ fn evaluate_autonomous_player_verb(
     }
 
     // 8. 成年非屋主「正向人生奔頭」：攢夠銅幣買下本鎮待售空屋（既有店鋪掌櫃／當家屋主不跨鎮搶屋），或備齊木鐵料起屋自立門戶！
-    let lived = CURRENT_SOLAR_YEAR - a.birth_year;
+    let lived = super::live_lifecycle::actor_lived_years(a, clock.game_days);
     let is_adult = lived >= racial_adult_age(&a.race);
     let already_heads_shop_or_home = a.household_bond.contains("當家")
         || a.household_bond.contains("屋主")

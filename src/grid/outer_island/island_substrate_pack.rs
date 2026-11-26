@@ -354,6 +354,21 @@ pub fn build_viewer_substrate_json(
         }
     }
     pois.extend(built_pois);
+    for band in delta.live_wilds.bands.values() {
+        if known_cells.contains(&band.cell_id)
+            && clock.game_days >= band.suppressed_until_day
+            && (band.raid_pressure >= 60 || band.hoard_copper >= 8)
+            && let Some(&[gx, gy]) = sub.node_anchors.get(&band.camp_node_id)
+        {
+            pois.push(json!({
+                "id": format!("band:{}", band.cell_id),
+                "label": band.band_name_zh,
+                "tier": "ruin",
+                "gx": gx,
+                "gy": gy,
+            }));
+        }
+    }
 
     let cur_node = doc
         .nodes

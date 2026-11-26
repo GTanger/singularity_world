@@ -794,6 +794,12 @@ pub fn try_apply_live_land_action(
                     "這棟屋舍尚未達到破損修繕程度或已有住戶承買。".to_string()
                 ));
             }
+            if let Some(sq) = super::live_wilds::has_squatter_at_node(delta, &target_nid) {
+                return Some(Err(format!(
+                    "這棟破屋裡正蹲踞著【{}】，得先持械驅逐清場才沒法被咬傷動工！",
+                    sq.foe_name_zh
+                )));
+            }
             let mat = {
                 let Some(a) = delta.actors.get_mut(aid) else {
                     return Some(Err("找不到旅人行蹤。".to_string()));

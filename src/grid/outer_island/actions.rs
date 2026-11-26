@@ -906,6 +906,12 @@ pub fn apply_world_action(
             if delta.sold_houses.contains_key(&node_id) {
                 return Err("這棟石木屋舍已有人買下房契了。".to_string());
             }
+            if let Some(sq) = super::live_wilds::has_squatter_at_node(delta, &node_id) {
+                return Err(format!(
+                    "屋內斷牆正被【{}】盤踞作窩，先將牠們趕出清場再來辦理房契吧！",
+                    sq.foe_name_zh
+                ));
+            }
             let base_price = doc
                 .households
                 .iter()
@@ -992,6 +998,16 @@ pub fn apply_world_action(
             if let Some(res) = super::live_land::try_apply_live_land_action(
                 doc, delta, clock, &aid, node, action, param,
             ) {
+                return res;
+            }
+            if let Some(res) = super::live_wilds::try_apply_live_wilds_action(
+                doc, delta, clock, &aid, node, action, param,
+            ) {
+                return res;
+            }
+            if let Some(res) =
+                super::live_lifecycle::try_apply_live_lifecycle_action(delta, &aid, node, action)
+            {
                 return res;
             }
             if let Some(res) = super::ongoing_activity::try_dispatch_embodied_action(

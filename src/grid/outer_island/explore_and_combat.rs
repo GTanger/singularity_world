@@ -72,6 +72,28 @@ pub fn apply_explore(
         return Ok(hid.clue_text.clone());
     }
 
+    if let Some(mb) = delta.live_wilds.mutated_boss_by_node.get(&node_id).cloned() {
+        let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        super::live_tide::prune_stale_day_window_keys(&mut a.explored_windows, clock.game_days);
+        a.explored_windows.insert(win_key);
+        a.last_active_unix = clock.real_unix;
+        a.active_skirmish = Some(SkirmishState {
+            foe_slug: format!("mutated_boss:{node_id}"),
+            foe_name: mb.boss_name_zh.clone(),
+            can_speak_goblin: false,
+            foe_stagger: 0,
+            player_guard: false,
+            round_idx: 1,
+        });
+        a.mark_mutated();
+        let msg = format!(
+            "碎石陡然震顫，剛吞下古符文原石而體軀膨脹的【{}】伏低重心朝你猛撲過來！",
+            mb.boss_name_zh
+        );
+        push_breath(a, msg.clone());
+        return Ok(msg);
+    }
+
     if delta
         .dropped_loot_by_node
         .get(&node_id)
@@ -160,7 +182,7 @@ pub fn apply_explore(
                 a.known_rumors.insert("pit_cleared".to_string());
             }
             let msg = if primordial_gone {
-                "元祖吞石巨蛛早已伏誅，空曠石巢裡只剩碎裂甲片，目前尚無其他荒野異獸遷入。"
+                "昔年盤踞於此的吞石巨蛛早已伏誅，空曠石巢裡只剩碎裂甲片，目前尚無其他荒野異獸遷入。"
                     .to_string()
             } else {
                 "巨蛛巢穴裡只剩斷裂的灰白蛛網，裡頭已被前人清掃一空。".to_string()
@@ -169,30 +191,29 @@ pub fn apply_explore(
             return Ok(msg);
         }
         a.known_rumors.remove("pit_cleared");
-        let (f_slug, f_name, intro_msg) = if !primordial_gone {
+        let (f_slug, f_name, can_gob, intro_msg) = if !primordial_gone {
             (
                 "stone_spider",
-                "背嵌原石的吞石巨蛛",
-                "灰白蛛網劇烈震顫，盤踞多年的吞石巨蛛嘶鳴著撲出，前螯直取你的手腕！",
+                "背嵌原石的吞石巨蛛".to_string(),
+                false,
+                "灰白蛛網劇烈震顫，盤踞多年的吞石巨蛛嘶鳴著撲出，前螯直取你的手腕！".to_string(),
             )
         } else {
-            (
-                "cave_lizard",
-                "循荒氣佔巢的嗜石岩蜥",
-                "舊蛛巢已被山林異獸空巢易主——一頭鱗甲粗硬的嗜石岩蜥自暗處猛撲而出！",
-            )
+            super::live_wilds::pick_dynamic_pit_lair_occupant(delta, clock.game_days)
         };
-        a.active_skirmish = Some(SkirmishState {
-            foe_slug: f_slug.to_string(),
-            foe_name: f_name.to_string(),
-            can_speak_goblin: false,
-            foe_stagger: 0,
-            player_guard: false,
-            round_idx: 1,
-        });
-        let msg = intro_msg.to_string();
-        push_breath(a, msg.clone());
-        return Ok(msg);
+        if let Some(a) = delta.actors.get_mut(&aid) {
+            let can_speak = can_gob && a.languages.get("goblin").copied().unwrap_or(0) >= 25;
+            a.active_skirmish = Some(SkirmishState {
+                foe_slug: f_slug.to_string(),
+                foe_name: f_name,
+                can_speak_goblin: can_speak,
+                foe_stagger: 0,
+                player_guard: false,
+                round_idx: 1,
+            });
+            push_breath(a, intro_msg.clone());
+        }
+        return Ok(intro_msg);
     }
 
     if node_id == "oi:dng_pit:altar" {
@@ -310,7 +331,7 @@ pub fn resolve_skirmish_turn(
             Ok(msg)
         }
         "skirmish_parley" => {
-            if sk.foe_slug != "grey_ear_goblin" {
+            if !sk.foe_slug.contains("goblin") {
                 return Err("眼前異獸不通言語，無法喝止交涉！".to_string());
             }
             if gob_prof < 25 {
@@ -352,26 +373,39 @@ pub fn resolve_skirmish_turn(
         "skirmish_wrist" | "skirmish_heavy" => {
             let is_apex = super::cell_resources::is_apex_beast_slug(&sk.foe_slug);
             let is_spider = matches!(sk.foe_slug.as_str(), "stone_spider" | "cave_lizard");
+            let is_heavy_boss = sk.foe_slug.starts_with("goblin_camp_chief:")
+                || sk.foe_slug.starts_with("mutated_boss:");
             let is_primordial_spider =
                 sk.foe_slug == "stone_spider" && delta.first_spider_slain.is_none();
             let reckless_defeat = action == "skirmish_heavy"
                 && !sk.player_guard
-                && (((is_spider || is_apex) && !has_rune && (fatigue >= 65 || wound_exists))
+                && (((is_spider || is_apex || is_heavy_boss)
+                    && !has_rune
+                    && (fatigue >= 65 || wound_exists))
                     || (fatigue >= 85 && wound_exists));
 
             if reckless_defeat {
-                return trigger_non_lethal_defeat(delta, clock, &aid, &node_id, &sk.foe_name);
+                return trigger_non_lethal_defeat(
+                    doc,
+                    delta,
+                    clock,
+                    &aid,
+                    &node_id,
+                    &sk.foe_slug,
+                    &sk.foe_name,
+                );
             }
 
             let has_priv_phase = delta
                 .actors
                 .get(&aid)
                 .is_some_and(|a| a.mind.ltm.mastery.private_martial_phase.is_some());
-            let win_threshold = if (is_spider || is_apex) && !has_rune && !has_priv_phase {
-                2
-            } else {
-                1
-            };
+            let win_threshold =
+                if (is_spider || is_apex || is_heavy_boss) && !has_rune && !has_priv_phase {
+                    2
+                } else {
+                    1
+                };
             let next_stagger = if action == "skirmish_wrist" {
                 sk.foe_stagger + 1
             } else if has_rune || fam >= 14 || sk.player_guard || has_priv_phase {
@@ -421,6 +455,18 @@ pub fn resolve_skirmish_turn(
                     &node_id,
                     is_primordial_spider,
                 );
+
+                if let Some(wilds_res) = super::live_wilds::try_settle_wilds_skirmish_victory(
+                    doc,
+                    delta,
+                    clock,
+                    &aid,
+                    &node_id,
+                    &sk.foe_slug,
+                    &sk.foe_name,
+                ) {
+                    return wilds_res;
+                }
 
                 if is_apex
                     && let Some(apex_msg) = super::cell_resources::record_apex_beast_slain(
@@ -572,15 +618,28 @@ pub fn resolve_skirmish_turn(
 }
 
 pub fn trigger_non_lethal_defeat(
+    doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
     clock: &SolarClockSnapshot,
     actor_key: &str,
     node_id: &str,
+    foe_slug: &str,
     foe_name: &str,
 ) -> Result<String, String> {
     let aid = delta.resolve_actor_id(actor_key).ok_or("找不到旅人行蹤")?;
+    if super::live_lifecycle::should_trigger_npc_mortal_peril(delta, clock, &aid, node_id) {
+        let cause = format!("重傷在身仍孤身死戰，力竭倒在【{foe_name}】手下失救殞命");
+        if super::live_lifecycle::execute_npc_passing_and_inheritance(
+            doc, delta, clock, &aid, &cause,
+        )
+        .is_some()
+        {
+            delta.extras_dirty = true;
+        }
+        return Ok(cause);
+    }
 
-    let (wake_node, dropped_copper, dropped_items, wname) = {
+    let (wake_node, dropped_copper, mut dropped_items, wname, victim_label_zh) = {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
         a.active_skirmish = None;
         let dc = a.copper;
@@ -630,8 +689,13 @@ pub fn trigger_non_lethal_defeat(
             ValueAxis::SurvivalSafety,
             &format!("於{}力竭落敗於{}之手，左腕重挫昏厥", node_id, foe_name),
         );
+        let victim_lbl = if a.controller_id.is_some() || aid.starts_with("pl:") {
+            "外來旅人".to_string()
+        } else {
+            a.display_name.clone()
+        };
         a.mark_mutated();
-        (wake, dc, dropped, a.bound_weapon.name.clone())
+        (wake, dc, dropped, a.bound_weapon.name.clone(), victim_lbl)
     };
 
     // 同場袖手旁觀留痕：若現場有氣力尚健之熟人卻未拔刀相助，落敗者心頭記下寒意（見死不救）
@@ -670,6 +734,16 @@ pub fn trigger_non_lethal_defeat(
         );
     }
 
+    let mutated_boss = super::live_wilds::try_absorb_dropped_rune_into_mutated_boss(
+        delta,
+        node_id,
+        foe_slug,
+        foe_name,
+        &mut dropped_items,
+        &victim_label_zh,
+        clock.game_days,
+    );
+
     if dropped_copper > 0 || !dropped_items.is_empty() {
         let bags = delta
             .dropped_loot_by_node
@@ -685,14 +759,21 @@ pub fn trigger_non_lethal_defeat(
                 owner_id: aid.clone(),
                 copper: dropped_copper,
                 items: dropped_items,
-                promoted_boss_name: Some(format!("奪囊的{}", foe_name)),
+                promoted_boss_name: Some(
+                    mutated_boss
+                        .clone()
+                        .unwrap_or_else(|| format!("奪囊的{}", foe_name)),
+                ),
             });
         }
     }
 
+    let rune_clause = mutated_boss.map_or(String::new(), |bn| {
+        format!("更糟的是，懷裡未鎖定的古符文原石被當場吞走，對方已異變成【{bn}】盤踞原地！")
+    });
     let msg = format!(
-        "你在力竭之下被【{}】震開架勢昏厥倒地！幸得過路獵戶將你拖回城裡甦醒——手裡仍死死攥著【{}】，二樓宿房木箱裡的存貨也安然無恙，但懷中 {} 枚銅幣與隨身散貨遺落在了原處，左腕留下一道重挫瘀腫，敷藥前切莫再逞強硬撼。",
-        foe_name, wname, dropped_copper
+        "你在力竭之下被【{}】震開架勢昏厥倒地！幸得過路獵戶將你拖回城裡甦醒——手裡仍死死攥著【{}】，二樓宿房木箱裡的存貨也安然無恙，但懷中 {} 枚銅幣與隨身散貨遺落在了原處，左腕留下一道重挫瘀腫，敷藥前切莫再逞強硬撼。{}",
+        foe_name, wname, dropped_copper, rune_clause
     );
     if let Some(a) = delta.actors.get_mut(&aid) {
         push_breath(a, msg.clone());

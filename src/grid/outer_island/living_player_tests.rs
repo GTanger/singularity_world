@@ -526,10 +526,12 @@ fn living_vessel_forging_peer_trade_homestead_building_and_escrow_pact_conserve_
         .get("pl:runner_p")
         .map_or(0, |s| s.warmth);
     trigger_non_lethal_defeat(
+        &doc,
         &mut delta,
         &clock_late,
         "pl:smith_p",
         &built_node,
+        "cave_lizard",
         "嗜石岩蜥",
     )
     .expect("defeat ok");

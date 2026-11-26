@@ -38,8 +38,12 @@ mod live_commodities_tests;
 pub mod live_land;
 #[cfg(test)]
 mod live_land_tests;
+pub mod live_lifecycle;
 pub mod live_shifts;
 pub mod live_tide;
+#[cfg(test)]
+mod live_waves_tests;
+pub mod live_wilds;
 pub mod living_chronicler;
 pub mod living_chronicler_deeds;
 pub mod living_chronicler_gate;
@@ -275,10 +279,12 @@ mod tests {
         assert_eq!(delta.conservation_diff(&doc), 0);
 
         trigger_non_lethal_defeat(
+            &doc,
             &mut delta,
             &clock,
             "tester_a",
             "oi:cell4529:0",
+            "grey_ear_goblin",
             "灰耳哥布林斥候",
         )
         .expect("defeat ok");

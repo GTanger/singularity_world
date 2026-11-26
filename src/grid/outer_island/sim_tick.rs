@@ -267,7 +267,11 @@ pub fn spawn_dynamic_actors(
             super::world_weave_bio::refresh_actor_biography_if_needed(doc, &mut actor, game_day);
         let aid = actor.actor_id.clone();
         delta.upsert_actor(actor);
-        super::living_chronicler::record_cross_sea_arrival(doc, delta, game_day, bell_idx, &aid);
+        if !aid.starts_with("res:gen_youth:") {
+            super::living_chronicler::record_cross_sea_arrival(
+                doc, delta, game_day, bell_idx, &aid,
+            );
+        }
         if spec.initial_copper_from_mainland > 0 {
             let _ = delta.transfer_copper(
                 game_day,
@@ -517,6 +521,8 @@ pub fn tick_outer_island_world(
             super::clock_and_lang::solar_clock_for_settled_bell(missed_bell, clock.real_unix);
         settle_daily_town_livelihood_and_levy(doc, delta, &missed_clk, &cell_tavern_cache);
         super::live_land::tick_daily_live_land(doc, delta, &missed_clk);
+        super::live_wilds::tick_daily_live_wilds(doc, delta, &missed_clk);
+        super::live_lifecycle::tick_daily_lifecycle(doc, delta, &missed_clk);
         settle_due_contracts(doc, delta, &missed_clk);
     }
     delta.last_settled_bell = abs_bell;
@@ -960,6 +966,8 @@ pub fn tick_outer_island_world(
 
     settle_daily_town_livelihood_and_levy(doc, delta, clock, &cell_tavern_cache);
     super::live_land::tick_daily_live_land(doc, delta, clock);
+    super::live_wilds::tick_daily_live_wilds(doc, delta, clock);
+    super::live_lifecycle::tick_daily_lifecycle(doc, delta, clock);
     settle_due_contracts(doc, delta, clock);
     propagate_gossip_o1(delta, clock);
 }
