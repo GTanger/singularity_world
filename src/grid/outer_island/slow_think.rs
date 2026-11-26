@@ -50,6 +50,9 @@ fn infer_default_strategy_for_actor(
                 return (GoalStrategyKind::AvoidRift, top.target_id.clone());
             }
             ConcernCause::LivelihoodShortfall => {
+                if a.copper <= 2 && !a.role.contains("掌櫃") {
+                    return (GoalStrategyKind::ShiftLivelihood, None);
+                }
                 if a.copper < 6 {
                     return (GoalStrategyKind::ForageSupplement, None);
                 }
@@ -109,6 +112,28 @@ pub fn coerce_feasible_strategy(
         });
     let can_hone = a.bound_weapon.wear_stage > 0;
     let has_rift = a.mind.ltm.social.values().any(|s| s.warmth <= -22);
+    let has_broken_bridge = a.mind.ltm.known_nodes.iter().any(|nid| {
+        doc.nodes.get(nid).is_some_and(|n| {
+            delta
+                .live_land
+                .cells
+                .get(&n.cell_id)
+                .is_some_and(|cl| cl.has_river_crossing && cl.bridge_integrity < 100)
+        })
+    });
+    let has_reclaimable = a.mind.ltm.known_nodes.iter().any(|nid| {
+        doc.nodes.get(nid).is_some_and(|n| {
+            doc.cells
+                .get(&n.cell_id.to_string())
+                .is_some_and(|c| c.kind != "settlement" && !n.dungeon)
+                && delta
+                    .live_land
+                    .cells
+                    .get(&n.cell_id)
+                    .is_some_and(|cl| cl.reclaimed_plots < 4 && cl.flood_level == 0)
+        })
+    });
+    let can_shift = !a.role.contains("掌櫃") && a.copper <= 6;
 
     let is_ok = |k: GoalStrategyKind| -> bool {
         match k {
@@ -118,6 +143,9 @@ pub fn coerce_feasible_strategy(
             GoalStrategyKind::ForageSupplement => can_forage,
             GoalStrategyKind::SeekCrossTownNews => can_tavern,
             GoalStrategyKind::AvoidRift => has_rift,
+            GoalStrategyKind::ReclaimLand => has_reclaimable,
+            GoalStrategyKind::RepairCivicWorks => has_broken_bridge,
+            GoalStrategyKind::ShiftLivelihood => can_shift,
         }
     };
     if is_ok(preferred) {
@@ -125,6 +153,9 @@ pub fn coerce_feasible_strategy(
     }
     [
         GoalStrategyKind::ClearDebt,
+        GoalStrategyKind::ShiftLivelihood,
+        GoalStrategyKind::RepairCivicWorks,
+        GoalStrategyKind::ReclaimLand,
         GoalStrategyKind::HoneCraft,
         GoalStrategyKind::ForageSupplement,
         GoalStrategyKind::KinMutualAid,
@@ -280,7 +311,7 @@ pub fn pop_top_slow_think_candidate(
         "你是銀鷗島{}的{}{}（手頭{}枚銅幣，平生最重「{}」，最忌諱「{}」受損）。\
          當下心事：{}。近期經歷：{}。\
          請嚴格以單行輸出台灣正體中文（絕對禁止任何英文字母或現代系統詞彙），\
-         格式固定為『定見：一句簡短內心打算｜方針：清償舊欠、親故互助、採集貼補、避開嫌隙、精研手藝、打聽音訊』：",
+         格式固定為『定見：一句簡短內心打算｜方針：清償舊欠、親故互助、採集貼補、避開嫌隙、精研手藝、打聽音訊、墾荒種糧、修橋繕屋、改換營生』：",
         home_label, a.race, a.role, a.copper, top_val, taboo_val, concern_line, masked_recent_mem
     );
 

@@ -433,38 +433,15 @@ pub fn evaluate_personalized_desire(
     let anger = i32::from(a.mind.stm.affect.anger);
     let grief = i32::from(a.mind.stm.affect.grief);
 
-    // 師徒與櫃位錯班留守：當鋪面／碼頭僅剩最後一名當值人員且無飢荒急難時，留守櫃台待搭檔回鋪再換班外出
-    let is_tavern_staff = a.role.contains("酒館掌櫃");
-    let is_day_counter_staff = matches!(
-        a.role.as_str(),
-        "鍛鐵匠" | "鍛鐵匠學徒" | "草藥師" | "草藥師學徒" | "港務記籌手"
-    ) && (3..=9).contains(&bell_index);
-    if (is_tavern_staff || is_day_counter_staff)
-        && a.node_id == a.work_node
-        && hunger < 62
-        && fear < 55
-    {
-        let coworker_present = delta.node_occupants.get(&a.work_node).is_some_and(|occ| {
-            occ.iter().any(|oid| {
-                oid != &a.actor_id
-                    && delta.actors.get(oid).is_some_and(|o| {
-                        o.alive
-                            && o.setup_done
-                            && o.controller_id.is_none()
-                            && o.node_id == a.work_node
-                            && o.work_node == a.work_node
-                    })
-            })
-        });
-        if !coworker_present {
-            return DesireDecision {
-                kind: "walk_work",
-                target_node: a.work_node.clone(),
-                focus_actor: None,
-                reason_zh: "搭檔暫時外出，留在鋪內看顧櫃台與爐火".to_string(),
-            };
-        }
-    }
+    // 師徒與櫃位自然錯班彈性權重 ＋ 店鋪斷料主動外出尋料（撤除強制死鎖櫃台保母鎖）
+    let (work_duty_adj, forage_shortage_adj) =
+        super::live_agency::compute_post_duty_and_shortage_adjustment(
+            doc,
+            delta,
+            a,
+            bell_index,
+            tavern_stock,
+        );
 
     let bed_node = a
         .owned_house_node
@@ -510,6 +487,7 @@ pub fn evaluate_personalized_desire(
             0
         }
         + hysteresis("walk_work")
+        + work_duty_adj
         + jitter(1);
     if a.role == "酒館掌櫃" || a.role == "車行掌櫃" {
         work_sc += 22;
@@ -756,37 +734,65 @@ pub fn evaluate_personalized_desire(
         ));
     }
 
-    // 9. 赴林緣或海灘採集特產變賣貼補 (`forage_wild` / `sell_foraged`)
+    // 9. 赴林緣或海灘採集特產變賣或補自家鋪倉 (`forage_wild` / `sell_foraged`)
     let cur_forage_win = (abs_bell.div_euclid(12)) * 4 + i64::from(bell_index / 3);
     let has_foraged_goods = a.backpack.iter().any(|i| {
-        matches!(i.slug.as_str(), "driftwood" | "herb_bundle" | "iron_ore") && i.count > 0
+        matches!(
+            i.slug.as_str(),
+            "driftwood"
+                | "herb_bundle"
+                | "iron_ore"
+                | "black_coal"
+                | "charcoal_sack"
+                | "timber_log"
+                | "quarantine_wormwood"
+                | "wheat_grain"
+        ) && i.count > 0
+            && i.bound_owner.is_none()
+            && i.stolen_from.is_none()
     });
+    let shop_work_nid = doc
+        .nodes
+        .get(&a.work_node)
+        .is_some_and(|n| n.kind == "shop")
+        .then_some(a.work_node.as_str());
     if has_foraged_goods {
         if a.mind.stm.last_forage_window <= cur_forage_win
-            && let Some(sell_nid) = rural_yard_opt
-                .as_deref()
-                .or(tav_opt)
-                .filter(|tn| a.mind.ltm.known_nodes.contains(*tn))
-                .or_else(|| {
-                    a.mind
-                        .ltm
-                        .known_nodes
-                        .iter()
-                        .find(|nid| {
-                            doc.nodes
-                                .get(*nid)
-                                .is_some_and(|n| n.kind == "plaza" || n.kind == "dock")
-                        })
-                        .map(String::as_str)
-                })
+            && let Some(sell_nid) = if forage_shortage_adj > 0 {
+                shop_work_nid
+            } else {
+                None
+            }
+            .or_else(|| {
+                rural_yard_opt
+                    .as_deref()
+                    .or(tav_opt)
+                    .filter(|tn| a.mind.ltm.known_nodes.contains(*tn))
+            })
+            .or_else(|| {
+                a.mind
+                    .ltm
+                    .known_nodes
+                    .iter()
+                    .find(|nid| {
+                        doc.nodes
+                            .get(*nid)
+                            .is_some_and(|n| n.kind == "plaza" || n.kind == "dock")
+                    })
+                    .map(String::as_str)
+            })
         {
             candidates.push((
-                74 + jitter(10),
+                74 + (forage_shortage_adj / 2) + jitter(10),
                 DesireDecision {
                     kind: "sell_foraged",
                     target_node: sell_nid.to_string(),
                     focus_actor: None,
-                    reason_zh: "揹著剛採得的山海物料回鎮變賣貼補家用".to_string(),
+                    reason_zh: if forage_shortage_adj > 0 && shop_work_nid == Some(sell_nid) {
+                        "趕回鋪內將採得物料補入貨倉重開爐火或藥臼".to_string()
+                    } else {
+                        "揹著剛採得的山海物料回鎮變賣貼補家用".to_string()
+                    },
                 },
             ));
         }
@@ -794,6 +800,7 @@ pub fn evaluate_personalized_desire(
         && super::transit_and_cargo::count_backpack_bulk_units(&a.backpack) < 2
         && (a.copper < 10
             || larder_count < 3
+            || forage_shortage_adj > 0
             || top_val == ValueAxis::CuriosityVenture
             || strat_kind == Some(GoalStrategyKind::ForageSupplement)
             || tend == ResponseTendency::Circumvent)
@@ -813,6 +820,7 @@ pub fn evaluate_personalized_desire(
                 0
             }
             + i32::from(innate.temperament.approach_avoid).max(0) / 4
+            + forage_shortage_adj
             + hysteresis("forage_wild")
             + jitter(11);
         candidates.push((

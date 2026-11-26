@@ -93,18 +93,122 @@ pub fn execute_arrived_desire_effect(
             true
         }
         "sell_foraged" => {
+            // 鋪主／工匠若親自採得自家鋪倉緊缺物料（炭、鐵、藥草、麥穀）且正站在自己鋪內，優先直接補入自家貨倉復工！
+            let self_restock_slug: Option<(String, String)> =
+                delta.actors.get(actor_id).and_then(|a| {
+                    let wnd = doc.nodes.get(&a.work_node)?;
+                    if wnd.kind != "shop" || a.node_id != a.work_node {
+                        return None;
+                    }
+                    let wanted: &[&str] = if a.role.contains("鍛鐵") || a.role.contains("鐵匠")
+                    {
+                        if super::live_commodities::count_smithy_fuel(delta, &a.work_node) < 8 {
+                            &[
+                                "black_coal",
+                                "charcoal_sack",
+                                "driftwood",
+                                "timber_log",
+                                "iron_ore",
+                            ]
+                        } else if super::live_commodities::count_shop_stock_by_slugs(
+                            delta,
+                            &a.work_node,
+                            &["iron_ore"],
+                        ) < 6
+                        {
+                            &["iron_ore"]
+                        } else {
+                            &[]
+                        }
+                    } else if a.role.contains("草藥")
+                        && super::live_commodities::count_apothecary_herbs(delta, &a.work_node) < 6
+                    {
+                        &["herb_bundle", "quarantine_wormwood"]
+                    } else if a.role.contains("酒館")
+                        && super::live_commodities::count_tavern_ration_stock(
+                            doc,
+                            delta,
+                            wnd.cell_id,
+                            &a.work_node,
+                        ) < 20
+                    {
+                        &["wheat_grain"]
+                    } else {
+                        &[]
+                    };
+                    wanted.iter().find_map(|s| {
+                        a.backpack
+                            .iter()
+                            .any(|i| {
+                                i.slug == *s
+                                    && i.count > 0
+                                    && i.bound_owner.is_none()
+                                    && i.stolen_from.is_none()
+                            })
+                            .then(|| ((*s).to_string(), a.work_node.clone()))
+                    })
+                });
+            if let Some((r_slug, wnode)) = self_restock_slug {
+                let popped_item = delta.actors.get_mut(actor_id).and_then(|a| {
+                    let mut item = take_carry_item(&mut a.backpack, &r_slug, 1)?;
+                    item.count = 1;
+                    Some((a.display_name.clone(), item))
+                });
+                if let Some((dname_self, item)) = popped_item {
+                    let rn = item.name.clone();
+                    let cur_cell = doc.nodes.get(&wnode).map_or(4616, |n| n.cell_id);
+                    super::live_commodities::store_purchased_specialty_in_town(
+                        doc, delta, actor_id, cur_cell, item,
+                    );
+                    if let Some(a_after) = delta.actors.get_mut(actor_id) {
+                        a_after.mind.resolve_concerns_matching(
+                            ConcernCause::LivelihoodShortfall,
+                            None,
+                            28,
+                        );
+                        a_after.mind.stm.today_goal_progressed = true;
+                        a_after.mark_mutated();
+                    }
+                    super::sim_tick::broadcast_scene_event(
+                        doc,
+                        delta,
+                        clock,
+                        &wnode,
+                        actor_id,
+                        &dname_self,
+                        EventPublicity::PublicLoud,
+                        Some("harbor_trade"),
+                        30,
+                        10,
+                        ValueAxis::CraftPride,
+                        "npc_self_restock",
+                        &format!("{dname_self}親手將採回的【{rn}】添入鋪內貨倉備料"),
+                    );
+                    return true;
+                }
+            }
+
             let item_opt = delta.actors.get(actor_id).and_then(|a| {
                 let cur_nd = doc.nodes.get(&a.node_id)?;
                 [
                     ("iron_ore", 5_i64),
+                    ("black_coal", 4_i64),
+                    ("charcoal_sack", 4_i64),
+                    ("timber_log", 4_i64),
                     ("driftwood", 4_i64),
                     ("herb_bundle", 4_i64),
+                    ("quarantine_wormwood", 4_i64),
                 ]
                 .into_iter()
                 .find_map(|(s, base_p)| {
                     a.backpack
                         .iter()
-                        .find(|i| i.slug == s && i.count > 0)
+                        .find(|i| {
+                            i.slug == s
+                                && i.count > 0
+                                && i.bound_owner.is_none()
+                                && i.stolen_from.is_none()
+                        })
                         .map(|i| {
                             let dyn_p = super::live_commodities::quote_specialty_buyback_copper(
                                 doc, delta, cur_nd, None, i,
@@ -147,8 +251,10 @@ pub fn execute_arrived_desire_effect(
                         return None;
                     }
                     let role_match = match slug.as_str() {
-                        "iron_ore" => ba.role.contains("鍛鐵") || ba.role.contains("石工"),
-                        "driftwood" => {
+                        "iron_ore" | "black_coal" | "charcoal_sack" => {
+                            ba.role.contains("鍛鐵") || ba.role.contains("石工")
+                        }
+                        "driftwood" | "timber_log" => {
                             ba.role.contains("木匠")
                                 || ba.role.contains("車行")
                                 || (ba.role.contains("鍛鐵")

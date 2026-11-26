@@ -149,11 +149,24 @@ pub fn propose_escrow_pact(
             }
             "supply_commission" => {
                 let slug = match target_meta {
-                    "rune_stone" | "spider_carapace" | "lizard_scale" | "iron_ore"
-                    | "driftwood" | "herb_bundle" => target_meta,
+                    "rune_stone"
+                    | "spider_carapace"
+                    | "lizard_scale"
+                    | "iron_ore"
+                    | "driftwood"
+                    | "herb_bundle"
+                    | "black_coal"
+                    | "charcoal_sack"
+                    | "timber_log"
+                    | "quarantine_wormwood"
+                    | "wheat_grain" => target_meta,
                     _ => {
                         if a.role.contains("藥") {
                             "herb_bundle"
+                        } else if a.role.contains("酒館") {
+                            "wheat_grain"
+                        } else if a.role.contains("鍛鐵") || a.role.contains("鐵匠") {
+                            "black_coal"
                         } else if a.role.contains("木") {
                             "driftwood"
                         } else {
@@ -167,6 +180,11 @@ pub fn propose_escrow_pact(
                     "lizard_scale" => "嗜石岩蜥厚鱗皮",
                     "driftwood" => "異國刻紋漂流木",
                     "herb_bundle" => "山林止血草束",
+                    "black_coal" => "北林精煤塊",
+                    "charcoal_sack" => "耐燒硬木炭袋",
+                    "timber_log" => "灰松厚原木",
+                    "quarantine_wormwood" => "南岸清冽苦艾束",
+                    "wheat_grain" => "飽滿黑麥穀袋",
                     _ => "粗鐵礦石",
                 };
                 let desc = format!(
@@ -490,7 +508,24 @@ pub fn fulfill_escrow_pact(
                 }
                 return Err("銀號託管帳目核對未過。".to_string());
             }
-            if let Some(iss) = delta.actors.get_mut(&c_snap.creditor_id) {
+            let creditor_is_npc = delta
+                .actors
+                .get(&c_snap.creditor_id)
+                .is_some_and(|iss| iss.controller_id.is_none());
+            if creditor_is_npc {
+                let cur_cell = doc.nodes.get(&cur_node).map_or(4616, |n| n.cell_id);
+                super::live_commodities::store_purchased_specialty_in_town(
+                    doc,
+                    delta,
+                    &c_snap.creditor_id,
+                    cur_cell,
+                    delivered_item,
+                );
+                if let Some(iss) = delta.actors.get_mut(&c_snap.creditor_id) {
+                    iss.mind.stm.today_goal_progressed = true;
+                    iss.mark_mutated();
+                }
+            } else if let Some(iss) = delta.actors.get_mut(&c_snap.creditor_id) {
                 add_carry_item(&mut iss.backpack, delivered_item);
                 iss.mind.stm.today_goal_progressed = true;
                 iss.mark_mutated();

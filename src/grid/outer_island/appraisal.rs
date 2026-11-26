@@ -114,6 +114,9 @@ pub enum GoalStrategyKind {
     AvoidRift,         // 避開嫌隙
     HoneCraft,         // 精研手藝
     SeekCrossTownNews, // 打聽音訊
+    ReclaimLand,       // 墾荒種糧
+    RepairCivicWorks,  // 修橋繕屋
+    ShiftLivelihood,   // 改換營生
 }
 
 impl GoalStrategyKind {
@@ -125,6 +128,9 @@ impl GoalStrategyKind {
             Self::AvoidRift => "避開嫌隙",
             Self::HoneCraft => "精研手藝",
             Self::SeekCrossTownNews => "打聽音訊",
+            Self::ReclaimLand => "墾荒種糧",
+            Self::RepairCivicWorks => "修橋繕屋",
+            Self::ShiftLivelihood => "改換營生",
         }
     }
 
@@ -136,6 +142,9 @@ impl GoalStrategyKind {
             Self::AvoidRift => "avoid_rift",
             Self::HoneCraft => "hone_craft",
             Self::SeekCrossTownNews => "seek_crosstown_news",
+            Self::ReclaimLand => "reclaim_land",
+            Self::RepairCivicWorks => "repair_civic",
+            Self::ShiftLivelihood => "shift_livelihood",
         }
     }
 
@@ -173,6 +182,27 @@ impl GoalStrategyKind {
             || s.contains("消息")
         {
             Some(Self::SeekCrossTownNews)
+        } else if s.contains("墾荒")
+            || s.contains("開墾")
+            || s.contains("種糧")
+            || s.contains("拓荒")
+            || s.contains("農墾")
+        {
+            Some(Self::ReclaimLand)
+        } else if s.contains("修橋")
+            || s.contains("繕屋")
+            || s.contains("修路")
+            || s.contains("防疫")
+            || s.contains("公工")
+        {
+            Some(Self::RepairCivicWorks)
+        } else if s.contains("改行")
+            || s.contains("轉行")
+            || s.contains("改換")
+            || s.contains("另謀")
+            || s.contains("換營生")
+        {
+            Some(Self::ShiftLivelihood)
         } else {
             None
         }
@@ -553,7 +583,11 @@ impl CognitiveMind {
                 GoalStrategyKind::AvoidRift => {
                     game_day >= strat.set_day + 2 && self.stm.affect.anger < 25
                 }
-                GoalStrategyKind::KinMutualAid | GoalStrategyKind::SeekCrossTownNews => false,
+                GoalStrategyKind::ReclaimLand => larder_rations >= 6 && copper >= 6,
+                GoalStrategyKind::RepairCivicWorks => game_day > strat.set_day && copper >= 10,
+                GoalStrategyKind::KinMutualAid
+                | GoalStrategyKind::SeekCrossTownNews
+                | GoalStrategyKind::ShiftLivelihood => false,
             };
             (
                 ok,
@@ -596,7 +630,7 @@ impl CognitiveMind {
                         abs_bell,
                     );
                 }
-                GoalStrategyKind::HoneCraft => {
+                GoalStrategyKind::HoneCraft | GoalStrategyKind::ReclaimLand => {
                     let _ = self.appraise_event(
                         innate,
                         ConcernCause::CraftBreakthrough,
@@ -606,7 +640,19 @@ impl CognitiveMind {
                         abs_bell,
                     );
                 }
-                GoalStrategyKind::AvoidRift | GoalStrategyKind::SeekCrossTownNews => {
+                GoalStrategyKind::RepairCivicWorks => {
+                    let _ = self.appraise_event(
+                        innate,
+                        ConcernCause::PactHonored,
+                        None,
+                        Some(ValueAxis::OrderHierarchy),
+                        40,
+                        abs_bell,
+                    );
+                }
+                GoalStrategyKind::AvoidRift
+                | GoalStrategyKind::SeekCrossTownNews
+                | GoalStrategyKind::ShiftLivelihood => {
                     // R4-L5 修正：避開嫌隙平息怒氣直接紓解嫌隙心事，絕不誤寫為「打磨器物」！
                     self.resolve_concerns_matching(
                         ConcernCause::RivalEncounter,

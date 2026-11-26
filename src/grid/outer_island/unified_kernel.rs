@@ -384,32 +384,8 @@ pub fn execute_player_parity_bell_actions(
                 hold_only = true;
                 false
             }
-            AutoPlayerVerb::CareerShiftToDock => {
-                let shifted_dock = if let Some(a) = delta.actors.get_mut(aid)
-                    && let my_cell = doc.nodes.get(&a.home_node).map_or(4616, |n| n.cell_id)
-                    && let Some((dock_id, _)) = doc.nodes.iter().find(|(_, n)| {
-                        n.cell_id == my_cell && matches!(n.kind.as_str(), "dock" | "plaza")
-                    }) {
-                    let d_id = dock_id.clone();
-                    a.role = "碼頭苦力".to_string();
-                    a.work_node = d_id.clone();
-                    a.mind.push_turning_point(
-                        &format!("career:dock:{}:{}", aid, clock.game_days),
-                        clock.game_days,
-                        "舊業虧空難支，索性捲起衣袖改赴碼頭扛重活重頭攢起",
-                        "clear_debt",
-                    );
-                    a.mark_mutated();
-                    Some(d_id)
-                } else {
-                    None
-                };
-                if let Some(ref d_id) = shifted_dock {
-                    super::living_chronicler::record_career_shift_dock(
-                        doc, delta, clock, aid, d_id,
-                    );
-                }
-                shifted_dock.is_some()
+            AutoPlayerVerb::ShiftLivelihood => {
+                super::live_agency::apply_autonomous_livelihood_shift(doc, delta, clock, aid)
             }
         };
         if executed || hold_only {
@@ -426,7 +402,7 @@ enum AutoPlayerVerb {
     Explore,
     WalkToAndLearnNode(String, String),
     HoldAtGoal,
-    CareerShiftToDock,
+    ShiftLivelihood,
 }
 
 fn evaluate_autonomous_player_verb(
@@ -625,6 +601,14 @@ fn evaluate_autonomous_player_verb(
         }
     }
 
+    if let Some(pact_slug) = super::live_agency::evaluate_shop_shortage_supply_pact(doc, delta, aid)
+    {
+        return Some(AutoPlayerVerb::Extended(
+            "propose_supply_pact",
+            pact_slug.to_string(),
+        ));
+    }
+
     let clean_cnt = |items: &[super::types::CarryItem], pred: fn(&str) -> bool| -> u32 {
         items
             .iter()
@@ -811,16 +795,19 @@ fn evaluate_autonomous_player_verb(
         }
     }
 
-    // 9. 連番呆帳破產者真實轉行赴碼頭扛活（拒絕鎖死原身分）
-    if a.copper == 0
-        && !a.role.contains("苦力")
-        && !a.role.contains("掌櫃")
-        && delta
-            .contracts
-            .values()
-            .any(|c| c.debtor_id == aid && c.status == "written_off")
-    {
-        return Some(AutoPlayerVerb::CareerShiftToDock);
+    // 9. 第三刀依缺口多向轉行與自主救災／修橋／伐木／墾荒
+    if super::live_agency::should_trigger_livelihood_shift(delta, a) {
+        return Some(AutoPlayerVerb::ShiftLivelihood);
+    }
+    if let Some(plan) = super::live_agency::evaluate_civic_and_land_agency(doc, delta, clock, aid) {
+        return Some(match plan {
+            super::live_agency::AgencyActionPlan::WorldAct(act, param) => {
+                AutoPlayerVerb::WorldAct(act, param)
+            }
+            super::live_agency::AgencyActionPlan::WalkTo(dst, reason) => {
+                AutoPlayerVerb::WalkToAndLearnNode(dst, reason)
+            }
+        });
     }
 
     // 10. 100% 知情對等之秘境探窟與同場武友切磋（無百分比配額！僅親耳聽聞 `pit_rumor` 且不知 `pit_cleared` 之敢闖者成行）
