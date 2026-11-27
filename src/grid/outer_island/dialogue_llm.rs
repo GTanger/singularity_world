@@ -272,10 +272,11 @@ pub fn generate_npc_dialogue(input: &NpcDialogueInput) -> NpcDialogueOutcome {
 
     let fallback = deterministic_in_world_reply(input);
     if input.topic == "greet" && msg.is_empty() {
+        let opening = super::dialogue_consequence::build_grounded_opening_reply(input);
         return NpcDialogueOutcome {
             player_said: "上前點頭招呼".to_string(),
             used_pressure_tactic: input.used_pressure_tactic,
-            npc_reply: fallback,
+            npc_reply: opening,
             side_overheard,
             learned_lang,
             unlocked_rumor,

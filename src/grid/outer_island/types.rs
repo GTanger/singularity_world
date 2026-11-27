@@ -367,6 +367,12 @@ pub struct UnifiedMindBody {
     #[serde(default)]
     pub ongoing_activity: Option<OngoingActivityState>,
     #[serde(default)]
+    pub offline_policy: String,
+    #[serde(default, skip_serializing_if = "VecDeque::is_empty")]
+    pub offline_diary: VecDeque<String>,
+    #[serde(default)]
+    pub offline_recap_unread: bool,
+    #[serde(default)]
     pub map_pos_seeded: bool,
     #[serde(default)]
     pub map_gx: f32,
@@ -445,6 +451,9 @@ impl Default for UnifiedMindBody {
             active_skirmish: None,
             active_transit: None,
             ongoing_activity: None,
+            offline_policy: String::new(),
+            offline_diary: VecDeque::new(),
+            offline_recap_unread: false,
             map_pos_seeded: false,
             map_gx: 0.0,
             map_gy: 0.0,

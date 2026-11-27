@@ -40,8 +40,9 @@ pub fn build_view_json(
             };
 
             let innate = derive_innate_persona(other.soul_seed.max(1));
-            let live_cue =
-                super::surface_cues::build_observable_npc_cue(doc, delta, clock, other, &innate);
+            let live_cue = super::living_presence::build_living_npc_cue(
+                doc, delta, clock, viewer, other, &innate,
+            );
 
             let peer_meta = build_peer_interaction_meta_json(delta, viewer, other);
             let deeds = super::scene_sockets::build_actor_deeds_for_viewer(
@@ -336,6 +337,7 @@ pub fn build_view_json(
             "dungeon": node.dungeon,
             "pos": node.pos,
             "desc": live_desc,
+            "happenings": super::living_presence::build_live_scene_happenings(doc, delta, viewer, node, clock),
             "npcs": visible_npcs,
             "crowd_overflow": crowd_overflow,
             "objects": scene_objects,
@@ -371,6 +373,7 @@ pub fn build_view_json(
             "ongoing_activity": viewer.ongoing_activity,
             "rescue_pact": viewer.rescue_pact_active,
             "owned_house_node": viewer.owned_house_node,
+            "offline": super::offline_autonomy::build_offline_policy_view_json(viewer),
             "mastery": super::phase_and_vessels::format_mastery_status_zh(viewer),
             "weapon": {
                 "name": viewer.bound_weapon.name,

@@ -1027,6 +1027,19 @@ pub fn apply_world_action(
             {
                 return res;
             }
+            if action == "intervene_vignette" {
+                return super::living_presence::apply_vignette_intervene(
+                    doc, delta, clock, &aid, param,
+                );
+            }
+            if action == "set_offline_policy" {
+                return super::offline_autonomy::set_player_offline_policy(
+                    delta, clock, &aid, param,
+                );
+            }
+            if action == "dismiss_offline_recap" {
+                return super::offline_autonomy::dismiss_player_offline_recap(delta, &aid);
+            }
             if let Some(res) = super::ongoing_activity::try_dispatch_embodied_action(
                 doc,
                 delta,

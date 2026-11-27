@@ -907,6 +907,22 @@ impl IslandEngine {
                 "harbor_trade",
                 &out.player_said,
             );
+            let world_consequence =
+                super::dialogue_consequence::apply_dialogue_world_consequence(
+                    doc,
+                    working,
+                    &clock,
+                    &speaker_aid,
+                    &target_aid,
+                    &p_node_id,
+                    &out.player_said,
+                );
+            let merged_callout = match (boast_callout, world_consequence.clone()) {
+                (Some(a), Some(b)) => Some(format!("{a}\n{b}")),
+                (Some(a), None) => Some(a),
+                (None, Some(b)) => Some(b),
+                (None, None) => None,
+            };
 
             let mut lang_msg = None;
             let sp = working
@@ -942,6 +958,9 @@ impl IslandEngine {
                 )
             };
             push_breath(sp, breath_line);
+            if let Some(ref cons) = world_consequence {
+                push_breath(sp, cons.clone());
+            }
             sp.mark_mutated();
             if let Some(ref rkey) = out.unlocked_rumor {
                 super::map_memory::ingest_hearsay_rumor_pin(
@@ -953,7 +972,7 @@ impl IslandEngine {
                     clock.game_days,
                 );
             }
-            Ok((lang_msg, boast_callout))
+            Ok((lang_msg, merged_callout))
         })
     }
 

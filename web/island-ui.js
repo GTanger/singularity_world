@@ -1021,6 +1021,58 @@
 
     setTextIfChanged(byId('oi-scene-desc'), sc.desc || '');
 
+    // 離線期間自主經歷回顧（去數值化敘事，上線即見）
+    var recapEl = byId('oi-offline-recap');
+    if (recapEl) {
+      var offInfo = p.offline || {};
+      var offDiary = offInfo.diary || [];
+      if (offInfo.unread_recap && offDiary.length > 0 && !view.skirmish && !view.transit) {
+        recapEl.hidden = false;
+        setHtmlIfChanged(
+          recapEl,
+          '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;">' +
+          '<strong style="font-size:0.9rem;color:var(--accent-jade);">你暫離期間的經歷回顧（' + esc(offInfo.current_label || '') + '）</strong>' +
+          '<button type="button" class="oi-happening-btn" data-act="dismiss_offline_recap" data-param="">收妥見聞</button>' +
+          '</div>' +
+          offDiary.slice(-3).map(function (ln) {
+            return '<div style="font-size:0.88rem;line-height:1.58;color:var(--ink-main);margin-top:4px;">' + esc(ln) + '</div>';
+          }).join('')
+        );
+      } else {
+        recapEl.hidden = true;
+        setHtmlIfChanged(recapEl, '');
+      }
+    }
+
+    // 現場活群戲與人物主動搭話（100% 來自真實世界狀態，可直接插話或應聲）
+    var liveStageEl = byId('oi-live-stage');
+    if (liveStageEl) {
+      var haps = sc.happenings || [];
+      if (haps.length > 0 && !view.skirmish && !view.transit) {
+        liveStageEl.hidden = false;
+        setHtmlIfChanged(
+          liveStageEl,
+          haps.map(function (hp) {
+            var cardCls = 'oi-happening-card' + (hp.kind === 'npc_duo_tension' ? ' is-tension' : '');
+            var optsHtml = (hp.options || []).map(function (op) {
+              if (op.act === 'open_talk') {
+                return '<button type="button" class="oi-happening-btn" data-open-talk-token="' + esc(op.param || '') + '">' + esc(op.label) + '</button>';
+              }
+              return '<button type="button" class="oi-happening-btn" data-act="' + esc(op.act || '') + '" data-param="' + esc(op.param || '') + '">' + esc(op.label) + '</button>';
+            }).join('');
+            return '<article class="' + cardCls + '">' +
+              '<div class="oi-happening-head">' + esc(hp.speaker || '眼前動靜') + '</div>' +
+              '<p class="oi-happening-text">' + esc(hp.text || '') + '</p>' +
+              (optsHtml ? ('<div class="oi-happening-actions">' + optsHtml + '</div>') : '') +
+              '</article>';
+          }).join('')
+        );
+      } else {
+        liveStageEl.hidden = true;
+        setHtmlIfChanged(liveStageEl, '');
+      }
+    }
+
     // 短兵相接或車船行進狀態卡（零回合編號、零量化進度條、零連點催行勞作）
     var skWrap = byId('oi-skirmish-wrap');
     if (view.skirmish) {
@@ -1132,7 +1184,7 @@
         cleanBreaths.push(bl);
       }
     }
-    var maxMainBreaths = (window.innerWidth < 700 || window.innerHeight < 920) ? 2 : 3;
+    var maxMainBreaths = (window.innerWidth < 700 || window.innerHeight < 920) ? 5 : 6;
     var recent = cleanBreaths.slice(-maxMainBreaths);
     setHtmlIfChanged(byId('oi-breaths-box'), recent.map(function (line, idx) {
       var cls = idx === recent.length - 1 ? 'oi-breath-item latest' : 'oi-breath-item';
@@ -1405,6 +1457,18 @@
         '<div class="oi-kv-card"><strong>住宿與契約</strong><div style="margin-top:4px;font-size:0.88rem;color:var(--ink-sub);">' +
         '二樓宿房剩餘：' + esc(p.inn_nights_left || 0) + ' 宿 ｜ 逾時搜救契：' + (p.rescue_pact ? '已登記生效' : '未登記') +
         (p.owned_house_node ? ' ｜ 已置辦自有屋舍' : '') + '</div></div>' +
+        (function () {
+          var off = p.offline || {};
+          var opts = off.options || [];
+          if (!opts.length) return '';
+          return '<div class="oi-kv-card"><strong>暫離／離線自主行事方針（目前：' + esc(off.current_label || '客房歇息養傷') + '）</strong>' +
+            '<div class="oi-policy-grid">' +
+            opts.map(function (o) {
+              return '<button type="button" class="oi-policy-btn' + (o.active ? ' active' : '') + '" data-sheet-act="set_offline_policy" data-sheet-param="' + esc(o.id) + '">' +
+                '<strong>' + esc(o.label) + '</strong><small>' + esc(o.desc) + '</small></button>';
+            }).join('') +
+            '</div></div>';
+        })() +
         '<div class="oi-kv-card"><strong>略通的各族言語</strong>' + langsHtml + '</div>' +
         '<button type="button" class="oi-btn" id="oi-btn-logout" style="width:100%;margin-top:4px;">暫別海港（登出帳號）</button>' +
         '</div>';
@@ -1464,8 +1528,16 @@
             return '<p style="margin-top:8px;line-height:1.85;text-indent:2em;color:var(--ink-main);">' + esc(para) + '</p>';
           }).join('') + '</div>')
         : '';
+      var offDiaryList = (p.offline && p.offline.diary) || [];
+      var offDiaryHtml = offDiaryList.length
+        ? ('<div class="oi-kv-card" style="margin-bottom:12px;border-left:3px solid var(--accent-jade);">' +
+          '<strong>暫離期間自主經歷錄</strong>' +
+          offDiaryList.slice().reverse().map(function (dline) {
+            return '<div style="margin-top:6px;line-height:1.65;color:var(--ink-main);">' + esc(dline) + '</div>';
+          }).join('') + '</div>')
+        : '';
       var lines = ((view.scene && view.scene.breaths) || []).slice().reverse();
-      bodyEl.innerHTML = selfBioHtml + lines.map(function (l) {
+      bodyEl.innerHTML = selfBioHtml + offDiaryHtml + lines.map(function (l) {
         return '<div class="oi-kv-card" style="margin-bottom:8px;line-height:1.6;">' + esc(l) + '</div>';
       }).join('');
       return;
@@ -1678,6 +1750,21 @@
         return;
       }
 
+      var openTalkBtn = ev.target.closest('[data-open-talk-token]');
+      if (openTalkBtn) {
+        var tk = openTalkBtn.getAttribute('data-open-talk-token');
+        var allP = ((appState.view && appState.view.scene && appState.view.scene.npcs) || [])
+          .concat((appState.view && appState.view.scene && appState.view.scene.crowd_overflow) || []);
+        var foundP = null;
+        for (var pti = 0; pti < allP.length; pti++) {
+          if (allP[pti].id === tk) { foundP = allP[pti]; break; }
+        }
+        if (foundP) {
+          openTalkSheet(foundP.id, foundP.name, foundP.race + '・' + foundP.role, !!foundP.is_player);
+        }
+        return;
+      }
+
       var personBtn = ev.target.closest('[data-npc-id]');
       if (personBtn) {
         openTalkSheet(
@@ -1736,7 +1823,9 @@
         var actParam = actBtn.getAttribute('data-param') || '';
         apiJson('/api/island/act', 'POST', { action: act, param: actParam }).then(function (res) {
           if (res && res.view) applyServerView(res.view);
-          if (res && !res.ok && res.msg) showToast(res.msg);
+          if (res && res.msg && (!res.ok || act === 'intervene_vignette' || act === 'dismiss_offline_recap')) {
+            showToast(res.msg);
+          }
           refreshMapData(false);
         });
         return;

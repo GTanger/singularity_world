@@ -13,6 +13,7 @@ pub mod chronicle_export;
 pub mod clock_and_lang;
 pub mod desire_effects;
 pub mod desire_sim;
+pub mod dialogue_consequence;
 pub mod dialogue_llm;
 #[cfg(test)]
 mod diegetic_surface_tests;
@@ -54,6 +55,9 @@ pub mod living_chronicler_gate;
 #[cfg(test)]
 mod living_chronicler_tests;
 pub mod living_chronicler_worker;
+pub mod living_presence;
+#[cfg(test)]
+mod living_presence_tests;
 #[cfg(test)]
 mod living_player_audit_tests;
 #[cfg(test)]
@@ -69,6 +73,7 @@ pub mod map_walk_plan;
 pub mod mesh_expedition;
 pub mod mind;
 pub mod movement;
+pub mod offline_autonomy;
 pub mod ongoing_activity;
 pub mod pacts_and_peers;
 pub mod peer_interactions;

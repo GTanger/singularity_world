@@ -850,6 +850,10 @@ pub fn tick_outer_island_world(
 
         if need_offline_shelter {
             super::live_tide::assign_offline_shelter_route_if_needed(doc, delta, aid, abs_bell);
+        } else if !clock.is_night {
+            super::offline_autonomy::tick_offline_player_day_autonomy(
+                doc, delta, clock, aid, abs_bell,
+            );
         }
 
         if night_eat_home {

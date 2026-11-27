@@ -10,8 +10,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23efe8d8' rx='6' width='32' height='32'/><circle cx='16' cy='16' r='13' fill='%23f8f3e7' stroke='%23261d14' stroke-width='1.5'/><text x='16' y='22' font-size='17' font-weight='700' fill='%23261d14' text-anchor='middle' font-family='serif'>奇</text></svg>">
   <link rel="apple-touch-icon" href="/icon.svg">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=20261127r8" disabled>
-  <link rel="stylesheet" href="island-ui.css?v=20261127r8">
+  <link rel="stylesheet" href="style.css?v=20261128r1" disabled>
+  <link rel="stylesheet" href="island-ui.css?v=20261128r1">
 </head>
 <body>
   <!-- 輕量提示條 -->
@@ -123,9 +123,11 @@
           </div>
 
           <div id="oi-body-cues" class="oi-body-cues" hidden></div>
+          <div id="oi-offline-recap" class="oi-offline-recap" hidden></div>
           <div id="oi-skirmish-wrap" hidden></div>
 
           <p id="oi-scene-desc" class="oi-scene-desc"></p>
+          <div id="oi-live-stage" class="oi-live-stage" hidden></div>
 
           <div id="oi-presence-people" class="oi-presence-people" hidden></div>
           <div id="oi-presence-objects" class="oi-presence-objects" hidden></div>
@@ -182,22 +184,22 @@
     </div>
   </div>
 
-  <script src="town-basemaps.js?v=20261127r8"></script>
-  <script src="static-node-map.js?v=20261127r8"></script>
-  <script src="island-ui.js?v=20261127r8"></script>
+  <script src="town-basemaps.js?v=20261128r1"></script>
+  <script src="static-node-map.js?v=20261128r1"></script>
+  <script src="island-ui.js?v=20261128r1"></script>
   <script>
     if ('serviceWorker' in navigator) {
       var hadCtrl = !!navigator.serviceWorker.controller;
       var reloadingSw = false;
       navigator.serviceWorker.addEventListener('controllerchange', function () {
         if (!hadCtrl || reloadingSw) return;
-        if (sessionStorage.getItem('sw_reloaded_v20261127r8')) return;
-        sessionStorage.setItem('sw_reloaded_v20261127r8', '1');
+        if (sessionStorage.getItem('sw_reloaded_v20261128r1')) return;
+        sessionStorage.setItem('sw_reloaded_v20261128r1', '1');
         reloadingSw = true;
         window.location.reload();
       });
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js?v=20261127r8', { updateViaCache: 'none' }).catch(function () {});
+        navigator.serviceWorker.register('/sw.js?v=20261128r1', { updateViaCache: 'none' }).catch(function () {});
       });
     }
   </script>

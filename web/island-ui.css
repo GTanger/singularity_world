@@ -525,6 +525,110 @@ button, input, select {
   color: var(--accent-jade);
 }
 
+/* 現場活群戲與主動搭話卡（文字即現場鏡頭） */
+.oi-live-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+
+.oi-happening-card {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  border-left: 3px solid var(--accent-main);
+  background: var(--bg-elevated);
+}
+
+.oi-happening-card.is-tension {
+  border-left-color: var(--danger-ink);
+}
+
+.oi-happening-head {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-main);
+  margin-bottom: 4px;
+}
+
+.oi-happening-card.is-tension .oi-happening-head {
+  color: var(--danger-ink);
+}
+
+.oi-happening-text {
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.62;
+  color: var(--ink-main);
+}
+
+.oi-happening-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.oi-happening-btn {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  color: var(--ink-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.oi-happening-btn:hover {
+  border-color: var(--accent-main);
+}
+
+.oi-offline-recap {
+  margin: 8px 0 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  border-left: 3px solid var(--accent-jade);
+  background: var(--bg-elevated);
+}
+
+.oi-policy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.oi-policy-btn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-surface);
+  color: var(--ink-main);
+  text-align: left;
+  cursor: pointer;
+}
+
+.oi-policy-btn.active {
+  border-color: var(--accent-main);
+  background: var(--bg-chip);
+}
+
+.oi-policy-btn strong {
+  display: block;
+  font-size: 0.88rem;
+}
+
+.oi-policy-btn small {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--ink-sub);
+}
+
 /* 當下呼吸敘事流 */
 .oi-breaths-box {
   margin-top: 16px;
