@@ -1,14 +1,13 @@
-/* 《奇點世界・銀鷗外島》三層靜態手繪水彩圖點點點渲染器
- * - 無連線、無格線、無室內走圖、點空白處不移動
+/* 《奇點世界・銀鷗外島》三層靜態手繪水彩圖點點點渲染器（v20261127r2）
+ * - 持久化 DOM（同張底圖不重建 <img>，支援 0.28s 平滑鏡頭跟隨＋拖曳偷看地圖）
+ * - 無連線、無格線、無室內走圖、點空白處完全不移動
+ * - 真實像素空間防重疊排布（8 出口大路口零疊壓、零截斷）
  * - 當前所在按鈕發亮、與當前相連的可走出口淡化／變暗、其餘無相連點完全隱藏
- * - 第 1 層：5 大核心城鎮手繪詳圖（TOWN_ILLUSTRATED_MAPS）
- * - 第 2 層：88 張鄉野／村莊／山林單張地塊手繪圖（/maps/cells/cell_XXXX.webp）＋ 試煉坑室圖
- * - 第 3 層：全島總覽手繪大輿圖（/maps/seam_lab/master_island_2k.webp）
  */
 (function () {
   'use strict';
 
-  var ISLAND_MASTER_FALLBACK = '/maps/seam_lab/master_island_2k.webp?v=20261127r1';
+  var ISLAND_MASTER_FALLBACK = '/maps/seam_lab/master_island_2k.webp?v=20261127r2';
   var ISLAND_BOUNDS = { minX: 1357.71, maxX: 1507.06, minY: 627.98, maxY: 793.21 };
   var MAJOR_TOWNS_OVERVIEW = [
     { slug: 'white_gull_harbor', cellId: 4616, name: '白鷗港', pos: [1472.82, 700.58] },
@@ -87,7 +86,6 @@
         return { x: alleys[i].lx, y: alleys[i].ly, label: alleys[i].name, kind: 'alley_sub', exact: false };
       }
     }
-    // 客棧二樓客房歸屬酒館位置（不切室內圖，直接在酒館按鈕上發亮）
     if (nid.indexOf(':inn_room_') >= 0 || nid.indexOf(':inn_upstairs') >= 0) {
       var prefix = nid.split(':').slice(0, 2).join(':');
       var tav = lookupTownAnchor(townSpec, prefix + ':rusty_anchor_tavern');
@@ -95,36 +93,14 @@
         return { x: tav.x, y: tav.y, label: tav.label, kind: 'inn_sub', exact: false };
       }
     }
-    return null;
-  }
-
-  function resolveCollisions(nodes, minDxPct, minDyPct, minPadX, maxPadX, minPadY, maxPadY) {
-    var iter, i, j;
-    for (iter = 0; iter < 10; iter++) {
-      for (i = 0; i < nodes.length; i++) {
-        for (j = i + 1; j < nodes.length; j++) {
-          var a = nodes[i], b = nodes[j];
-          var dx = b.xp - a.xp;
-          var dy = b.yp - a.yp;
-          if (Math.abs(dx) < minDxPct && Math.abs(dy) < minDyPct) {
-            var pushY = (dy >= 0 ? 1 : -1) * ((minDyPct - Math.abs(dy)) * 0.52 + 0.6);
-            var pushX = (dx === 0 && dy === 0 ? 1 : (dx >= 0 ? 1 : -1)) * ((minDxPct - Math.abs(dx)) * 0.22);
-            if (a.isCurrent) {
-              b.yp = clamp(b.yp + pushY * 1.7, minPadY, maxPadY);
-              b.xp = clamp(b.xp + pushX * 1.4, minPadX, maxPadX);
-            } else if (b.isCurrent) {
-              a.yp = clamp(a.yp - pushY * 1.7, minPadY, maxPadY);
-              a.xp = clamp(a.xp - pushX * 1.4, minPadX, maxPadX);
-            } else {
-              a.yp = clamp(a.yp - pushY, minPadY, maxPadY);
-              b.yp = clamp(b.yp + pushY, minPadY, maxPadY);
-              a.xp = clamp(a.xp - pushX, minPadX, maxPadX);
-              b.xp = clamp(b.xp + pushX, minPadX, maxPadX);
-            }
-          }
-        }
+    if (nid.indexOf(':tally_house') >= 0) {
+      var p2 = nid.split(':').slice(0, 2).join(':');
+      var ts = lookupTownAnchor(townSpec, p2 + ':tavern_st');
+      if (ts) {
+        return { x: ts.x, y: ts.y, label: '港務記籌寮屋', kind: 'house_sub', exact: false };
       }
     }
+    return null;
   }
 
   function buildTownButtons(scene, townSpec) {
@@ -132,6 +108,7 @@
     var curCellId = scene.cell_id;
     var curAnchor = lookupTownAnchor(townSpec, curNid) || { x: 450, y: 600, label: shortPlaceName(scene.name), kind: 'main', exact: false };
     var buttons = [];
+    var mappedExitIds = {};
 
     var curLabel = curAnchor.exact
       ? curAnchor.label
@@ -153,7 +130,7 @@
     for (var i = 0; i < exits.length; i++) {
       var ex = exits[i];
       if (!ex || !ex.to || usedNids[ex.to]) continue;
-      // 巷內多戶民宅／客棧個別客房收於多文字區點選，避免 10 顆民宅鈕疊壓地圖
+      // 巷內民宅／記籌寮屋／客棧分房收斂於多文字區「此處門戶」
       if (ex.to_kind === 'house' || ex.to_kind === 'house_vacant') {
         continue;
       }
@@ -167,7 +144,6 @@
       var dWord = cleanDirWord(ex.dir);
 
       if (anc && anc.exact) {
-        // 若剛好跟當前位置重合（例如酒館一樓 <-> 二樓），微微錯開以免蓋住發亮主按鈕
         xp = (anc.x / 900) * 100;
         yp = (anc.y / 1200) * 100;
         if (Math.hypot(xp - buttons[0].xp, yp - buttons[0].yp) < 4.5) {
@@ -177,7 +153,6 @@
         }
         label = anc.label || shortDest;
       } else if (ex.to_cell_id && ex.to_cell_id !== curCellId) {
-        // 城門外／跨地塊出口：依方位擺在城門外側
         var vOut = dirToVector(ex.dir);
         if (!vOut && Array.isArray(scene.pos) && Array.isArray(ex.to_pos)) {
           var dxW = ex.to_pos[0] - scene.pos[0];
@@ -190,7 +165,6 @@
         yp = clamp(buttons[0].yp + vOut[1] * 10.5, 6.5, 93.5);
         label = (dWord ? (dWord + ' · ') : '') + shortDest;
       } else {
-        // 其他同城相連出口（如回酒館一樓／回巷口）
         var vLoc = dirToVector(ex.dir) || [0, 1];
         xp = clamp(buttons[0].xp + vLoc[0] * 16, 12, 88);
         yp = clamp(buttons[0].yp + vLoc[1] * 9.5, 8, 92);
@@ -198,6 +172,7 @@
       }
 
       usedNids[ex.to] = true;
+      mappedExitIds[ex.to] = true;
       buttons.push({
         nid: ex.to,
         label: label,
@@ -211,19 +186,20 @@
       });
     }
 
-    resolveCollisions(buttons, 19, 7.2, 10, 90, 6.5, 93.5);
-    return buttons;
+    return { buttons: buttons, mappedExitIds: mappedExitIds };
   }
 
   function buildCellButtons(scene) {
     var curNid = scene.node_id;
     var curCellId = scene.cell_id;
     var curLabel = shortPlaceName(scene.name) || '此處';
+    var mappedExitIds = {};
+    // 當前點略微下偏至 55%，避免正中央壓死地塊手繪主角（如斷橋／坑口／營地）
     var buttons = [{
       nid: curNid,
       label: curLabel,
       xp: 50,
-      yp: 50,
+      yp: 55,
       isCurrent: true,
       kind: scene.kind || 'wild',
       title: scene.name || curLabel
@@ -241,6 +217,7 @@
         continue;
       }
       used[ex.to] = true;
+      mappedExitIds[ex.to] = true;
 
       var vec = dirToVector(ex.dir);
       if (!vec && Array.isArray(scene.pos) && Array.isArray(ex.to_pos)) {
@@ -256,8 +233,8 @@
 
       var isCross = !!(ex.to_cell_id && ex.to_cell_id !== curCellId);
       var dist = isCross ? 34 : 25;
-      var xp = clamp(50 + vec[0] * dist, 15, 85);
-      var yp = clamp(50 + vec[1] * dist, 13, 87);
+      var xp = clamp(50 + vec[0] * dist, 16, 84);
+      var yp = clamp(52 + vec[1] * dist, 14, 86);
       var shortDest = shortPlaceName(ex.to_name);
       var dWord = cleanDirWord(ex.dir);
       var label = (dWord && dWord !== shortDest) ? (dWord + ' · ' + shortDest) : shortDest;
@@ -275,28 +252,53 @@
       });
     }
 
-    resolveCollisions(buttons, 24, 12.5, 14, 86, 12, 88);
-    return buttons;
+    return { buttons: buttons, mappedExitIds: mappedExitIds };
   }
 
-  function computeStageFrame(wrapW, wrapH, stageW, stageH, buttons, isOverview) {
+  function estimatePillPx(b, compact) {
+    var fontPx = compact ? 11 : 12;
+    var txt = String(b.label || '');
+    var units = 0;
+    for (var i = 0; i < txt.length; i++) {
+      units += txt.charCodeAt(i) > 127 ? 1.04 : 0.62;
+    }
+    var padX = (b.isCurrent ? 28 : 18);
+    var w = Math.ceil(units * fontPx + padX);
+    var h = b.isCurrent ? (compact ? 26 : 30) : (compact ? 25 : 28);
+    return { w: Math.min(w, compact ? 138 : 168), h: h };
+  }
+
+  function computeStageFrame(wrapW, wrapH, stageW, stageH, buttons, mode) {
     if (!wrapW || !wrapH) return { width: 320, height: 320, tx: 0, ty: 0 };
     var fitScale = Math.min(wrapW / stageW, wrapH / stageH);
-    if (isOverview || !buttons || !buttons.length) {
+    if (mode === 'overview') {
       var ow = Math.round(stageW * fitScale);
       var oh = Math.round(stageH * fitScale);
       return { width: ow, height: oh, tx: Math.round((wrapW - ow) * 0.5), ty: Math.round((wrapH - oh) * 0.5) };
     }
 
-    // 行動端矮寬窗格（例如 390×250）遇到直長城鎮圖（3:4）時，自動框住「當前發亮點＋所有相連按鈕」以利拇指點按
-    var aspectDiff = (wrapW / Math.max(1, wrapH)) / (stageW / stageH);
     var scale = fitScale;
     var focusX = 0.5;
     var focusY = 0.5;
 
-    if (aspectDiff > 1.28) {
-      var minX = 1, maxX = 0, minY = 1, maxY = 0;
-      for (var i = 0; i < buttons.length; i++) {
+    if (mode === 'cell') {
+      // 方形地塊圖在直長桌機欄或矮寬手機欄適度放大補滿，消除粗死黑邊
+      var coverScale = Math.max(wrapW / stageW, wrapH / stageH);
+      scale = clamp(coverScale * 0.92, fitScale, fitScale * 1.38);
+      if (wrapW > wrapH * 1.15) {
+        scale = Math.max(scale, wrapW / stageW);
+      }
+      if (buttons && buttons.length) {
+        focusX = buttons[0].xp / 100;
+        focusY = buttons[0].yp / 100;
+      }
+    } else if (mode === 'town' && buttons && buttons.length) {
+      var coverW = wrapW / stageW;
+      // 行動端絕不縮得比視窗窄（徹底消除左右黑邊與按鈕擠爆！）
+      var isWideFrame = (wrapW / Math.max(1, wrapH)) > (stageW / stageH) * 1.05;
+      var curB = buttons[0];
+      var minX = curB.xp / 100, maxX = minX, minY = curB.yp / 100, maxY = minY;
+      for (var i = 1; i < buttons.length; i++) {
         var bx = buttons[i].xp / 100;
         var by = buttons[i].yp / 100;
         if (bx < minX) minX = bx;
@@ -304,15 +306,20 @@
         if (by < minY) minY = by;
         if (by > maxY) maxY = by;
       }
-      var padX = 0.17;
-      var padY = 0.16;
-      var boxW = Math.max(0.42, (maxX - minX) + padX * 2);
-      var boxH = Math.max(0.36, (maxY - minY) + padY * 2);
-      var focusScale = Math.min(wrapW / (stageW * boxW), wrapH / (stageH * boxH));
-      var coverWScale = wrapW / stageW;
-      scale = clamp(Math.min(focusScale, coverWScale * 1.18), fitScale, fitScale * 1.95);
-      focusX = (minX + maxX) * 0.5;
-      focusY = (minY + maxY) * 0.5;
+      if (isWideFrame) {
+        // 寬度永遠填滿視窗，依出口分布微調縮放（8 出口時穩守 coverW 滿寬，2～3 出口時微微放大聚焦）
+        var spanY = Math.max(0.24, maxY - minY + 0.14);
+        var desiredYScale = wrapH / (stageH * spanY);
+        var targetScale = buttons.length >= 6 ? coverW : Math.min(desiredYScale, coverW * 1.14);
+        scale = clamp(targetScale, coverW, coverW * 1.16);
+        focusX = (minX + maxX) * 0.5;
+        // 稍微偏重當前發亮點，同時把全體出口包進可視窗格內
+        focusY = (minY + maxY) * 0.55 + (curB.yp / 100) * 0.45;
+      } else {
+        scale = fitScale;
+        focusX = 0.5;
+        focusY = 0.5;
+      }
     }
 
     var w = Math.round(stageW * scale);
@@ -332,16 +339,103 @@
     return { width: w, height: h, tx: tx, ty: ty };
   }
 
-  function renderButtonsHtml(buttons, isBlocked) {
-    return buttons.map(function (b) {
+  // 真實像素空間碰撞解算：保證多出口大路口在手機與桌機皆 0 重疊、0 裁出視口
+  function layoutButtonsInPixels(buttons, frame, wrapW, wrapH, compact) {
+    if (!buttons || !buttons.length) return [];
+    var padEdgeX = 6;
+    var padEdgeY = 6;
+    var gapX = compact ? 5 : 7;
+    var gapY = compact ? 4 : 6;
+
+    // 算出相對於 stage 的可見視窗矩形，確保所有按鈕 100% 落在看得到且點得到的區域內
+    var visX0 = Math.max(0, -frame.tx) + padEdgeX;
+    var visX1 = Math.min(frame.width, wrapW - frame.tx) - padEdgeX;
+    var visY0 = Math.max(0, -frame.ty) + padEdgeY;
+    var visY1 = Math.min(frame.height, wrapH - frame.ty) - padEdgeY;
+
+    var items = buttons.map(function (b) {
+      var sz = estimatePillPx(b, compact);
+      var px = clamp((b.xp / 100) * frame.width, visX0 + sz.w * 0.5, Math.max(visX0 + sz.w * 0.5, visX1 - sz.w * 0.5));
+      var py = clamp((b.yp / 100) * frame.height, visY0 + sz.h * 0.5, Math.max(visY0 + sz.h * 0.5, visY1 - sz.h * 0.5));
+      return {
+        b: b,
+        px: px,
+        py: py,
+        origX: px,
+        origY: py,
+        w: sz.w,
+        h: sz.h
+      };
+    });
+
+    for (var iter = 0; iter < 28; iter++) {
+      var moved = false;
+      for (var i = 0; i < items.length; i++) {
+        for (var j = i + 1; j < items.length; j++) {
+          var a = items[i], c = items[j];
+          var needX = (a.w + c.w) * 0.5 + gapX;
+          var needY = (a.h + c.h) * 0.5 + gapY;
+          var dx = c.px - a.px;
+          var dy = c.py - a.py;
+          var ox = needX - Math.abs(dx);
+          var oy = needY - Math.abs(dy);
+          if (ox > 0 && oy > 0) {
+            moved = true;
+            // 優先沿重疊較小的一軸推開（保持原本方位感！）
+            var pushAlongY = oy <= ox * 0.85;
+            var sgnX = dx === 0 ? (j % 2 ? 1 : -1) : (dx > 0 ? 1 : -1);
+            var sgnY = dy === 0 ? (j % 2 ? 1 : -1) : (dy > 0 ? 1 : -1);
+            var wA = a.b.isCurrent ? 0.14 : 0.5;
+            var wC = c.b.isCurrent ? 0.14 : 0.5;
+            if (pushAlongY) {
+              var shiftY = oy + 1.2;
+              a.py -= sgnY * shiftY * wA;
+              c.py += sgnY * shiftY * wC;
+              a.px -= sgnX * Math.min(4, ox * 0.12) * wA;
+              c.px += sgnX * Math.min(4, ox * 0.12) * wC;
+            } else {
+              var shiftX = ox + 1.2;
+              a.px -= sgnX * shiftX * wA;
+              c.px += sgnX * shiftX * wC;
+              a.py -= sgnY * Math.min(3, oy * 0.12) * wA;
+              c.py += sgnY * Math.min(3, oy * 0.12) * wC;
+            }
+          }
+        }
+      }
+      for (var k = 0; k < items.length; k++) {
+        var it = items[k];
+        var minPx = visX0 + it.w * 0.5;
+        var maxPx = Math.max(minPx, visX1 - it.w * 0.5);
+        var minPy = visY0 + it.h * 0.5;
+        var maxPy = Math.max(minPy, visY1 - it.h * 0.5);
+        it.px = clamp(it.px, minPx, maxPx);
+        it.py = clamp(it.py, minPy, maxPy);
+      }
+      if (!moved) break;
+    }
+
+    return items.map(function (it) {
+      return {
+        b: it.b,
+        px: Math.round(it.px),
+        py: Math.round(it.py)
+      };
+    });
+  }
+
+  function renderNodesHtml(laidOut, isBlocked) {
+    return laidOut.map(function (it) {
+      var b = it.b;
       var cls = 'oi-snm-node ' + (b.isCurrent ? 'is-current' : 'is-reachable');
       if (b.isSecret) cls += ' is-secret';
       if (b.isLeaveCell) cls += ' is-leave';
+      var posStyle = 'left:' + it.px + 'px;top:' + it.py + 'px;';
       if (b.isCurrent) {
-        return '<div class="' + cls + '" style="left:' + b.xp.toFixed(2) + '%;top:' + b.yp.toFixed(2) + '%;" aria-current="location" title="' + esc(b.title) + '">' +
+        return '<div class="' + cls + '" style="' + posStyle + '" aria-current="location" title="' + esc(b.title) + '">' +
           '<span class="oi-snm-dot"></span><span class="oi-snm-lbl">' + esc(b.label) + '</span></div>';
       }
-      return '<button type="button" class="' + cls + '" style="left:' + b.xp.toFixed(2) + '%;top:' + b.yp.toFixed(2) + '%;" data-node-hop="' + esc(b.nid) + '"' +
+      return '<button type="button" class="' + cls + '" style="' + posStyle + '" data-node-hop="' + esc(b.nid) + '"' +
         (isBlocked ? ' disabled' : '') + ' title="' + esc(b.title) + '">' +
         '<span class="oi-snm-lbl">' + esc(b.label) + '</span></button>';
     }).join('');
@@ -358,8 +452,83 @@
     }).join('');
   }
 
+  // 持久化舞台與單指拖曳偷看（拖曳只平移鏡頭，點擊空白處絕不觸發移動）
+  function ensureStageDom(container) {
+    if (container._snmDom && container.contains(container._snmDom.viewport)) {
+      return container._snmDom;
+    }
+    container.innerHTML =
+      '<div class="oi-snm-viewport">' +
+        '<div class="oi-snm-stage">' +
+          '<img class="oi-snm-img" alt="" draggable="false">' +
+          '<div class="oi-snm-night-shade" hidden></div>' +
+          '<div class="oi-snm-glows-layer"></div>' +
+          '<div class="oi-snm-nodes-layer"></div>' +
+        '</div>' +
+      '</div>';
+
+    var viewport = container.querySelector('.oi-snm-viewport');
+    var stage = container.querySelector('.oi-snm-stage');
+    var dom = {
+      viewport: viewport,
+      stage: stage,
+      img: container.querySelector('.oi-snm-img'),
+      nightShade: container.querySelector('.oi-snm-night-shade'),
+      glowsLayer: container.querySelector('.oi-snm-glows-layer'),
+      nodesLayer: container.querySelector('.oi-snm-nodes-layer'),
+      imgUrl: '',
+      lastNodeId: '',
+      mode: '',
+      frame: { width: 320, height: 320, tx: 0, ty: 0 },
+      drag: null
+    };
+
+    viewport.addEventListener('pointerdown', function (ev) {
+      if (ev.target.closest('[data-node-hop]')) return;
+      var wrapW = container.clientWidth || 360;
+      var wrapH = container.clientHeight || 240;
+      if (dom.frame.width <= wrapW + 2 && dom.frame.height <= wrapH + 2) return;
+      dom.drag = {
+        pid: ev.pointerId,
+        sx: ev.clientX,
+        sy: ev.clientY,
+        tx0: dom.frame.tx,
+        ty0: dom.frame.ty,
+        moved: false
+      };
+      stage.classList.add('is-dragging');
+      try { viewport.setPointerCapture(ev.pointerId); } catch (_) {}
+    });
+
+    viewport.addEventListener('pointermove', function (ev) {
+      if (!dom.drag || dom.drag.pid !== ev.pointerId) return;
+      var dx = ev.clientX - dom.drag.sx;
+      var dy = ev.clientY - dom.drag.sy;
+      if (Math.hypot(dx, dy) > 4) dom.drag.moved = true;
+      var wrapW = container.clientWidth || 360;
+      var wrapH = container.clientHeight || 240;
+      var ntx = dom.frame.width <= wrapW ? Math.round((wrapW - dom.frame.width) * 0.5) : clamp(dom.drag.tx0 + dx, wrapW - dom.frame.width, 0);
+      var nty = dom.frame.height <= wrapH ? Math.round((wrapH - dom.frame.height) * 0.5) : clamp(dom.drag.ty0 + dy, wrapH - dom.frame.height, 0);
+      dom.frame.tx = Math.round(ntx);
+      dom.frame.ty = Math.round(nty);
+      stage.style.left = dom.frame.tx + 'px';
+      stage.style.top = dom.frame.ty + 'px';
+    });
+
+    function endDrag(ev) {
+      if (!dom.drag || dom.drag.pid !== ev.pointerId) return;
+      dom.drag = null;
+      stage.classList.remove('is-dragging');
+    }
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+
+    container._snmDom = dom;
+    return dom;
+  }
+
   function renderLocal(container, view, opts) {
-    if (!container || !view || !view.scene) return;
+    if (!container || !view || !view.scene) return { layerBadge: '', mappedExitIds: {} };
     var scene = view.scene;
     var sm = scene.static_map || {};
     var isNight = !!(opts && opts.isNight);
@@ -370,18 +539,20 @@
     var stageW = 1024;
     var stageH = 1024;
     var stageCls = 'oi-snm-stage full-bleed';
-    var bgCol = isNight ? '#141815' : '#dfd5be';
+    var bgCol = isNight ? '#1b201d' : '#dfd5be';
     var glows = [];
-    var buttons = [];
+    var built = { buttons: [], mappedExitIds: {} };
     var layerBadge = '';
+    var frameMode = 'cell';
 
     if (scene.dungeon && sm.dungeon_room && sm.dungeon_room.room_url) {
       imgUrl = sm.dungeon_room.room_url;
       stageW = 1024;
       stageH = 1024;
       bgCol = '#12100e';
-      buttons = buildCellButtons(scene);
+      built = buildCellButtons(scene);
       layerBadge = '地底石室';
+      frameMode = 'cell';
     } else if (townMap) {
       imgUrl = townMap.imgUrl;
       stageW = 900;
@@ -389,43 +560,75 @@
       stageCls = townMap.cropMode === 'wg_legacy' ? 'oi-snm-stage wg-legacy' : 'oi-snm-stage full-bleed';
       bgCol = isNight ? (townMap.bgNight || '#14191e') : (townMap.bgDay || '#dfd5be');
       glows = townMap.glows || [];
-      buttons = buildTownButtons(scene, townMap);
+      built = buildTownButtons(scene, townMap);
       layerBadge = townMap.title ? townMap.title.split('・')[0].replace(/手繪水彩海港輿圖$/, '') : (sm.cell_title || '城鎮');
+      frameMode = 'town';
     } else if (sm.cell_map && sm.cell_map.url) {
       imgUrl = sm.cell_map.url;
       stageW = 1024;
       stageH = 1024;
-      bgCol = isNight ? (sm.cell_map.bg_night || '#141815') : (sm.cell_map.bg_day || '#d8cfba');
+      bgCol = isNight ? '#1d2420' : (sm.cell_map.bg_day || '#d8cfba');
       glows = sm.cell_map.glows || [];
-      buttons = buildCellButtons(scene);
+      built = buildCellButtons(scene);
       layerBadge = sm.cell_title || shortPlaceName(scene.name);
+      frameMode = 'cell';
     } else {
       imgUrl = sm.island_master_url || ISLAND_MASTER_FALLBACK;
       stageW = 1024;
       stageH = 1024;
-      bgCol = isNight ? '#10181f' : '#35505e';
-      buttons = buildCellButtons(scene);
+      bgCol = isNight ? '#16242d' : '#35505e';
+      built = buildCellButtons(scene);
       layerBadge = sm.cell_title || '銀鷗外島';
+      frameMode = 'cell';
     }
 
     var wrapW = container.clientWidth || 360;
-    var wrapH = container.clientHeight || 260;
-    var frame = computeStageFrame(wrapW, wrapH, stageW, stageH, buttons, false);
+    var wrapH = container.clientHeight || 240;
+    var compact = wrapW < 440 || wrapH < 320;
+    var frame = computeStageFrame(wrapW, wrapH, stageW, stageH, built.buttons, frameMode);
+    var laidOut = layoutButtonsInPixels(built.buttons, frame, wrapW, wrapH, compact);
 
-    var html =
-      '<div class="oi-snm-viewport' + (isNight ? ' is-night' : '') + '" style="background:' + esc(bgCol) + ';">' +
-        '<div class="' + stageCls + '" style="width:' + frame.width + 'px;height:' + frame.height + 'px;left:' + frame.tx + 'px;top:' + frame.ty + 'px;">' +
-          '<img class="oi-snm-img" src="' + esc(imgUrl) + '" alt="' + esc(layerBadge) + '" draggable="false">' +
-          (isNight ? '<div class="oi-snm-night-shade"></div>' : '') +
-          renderGlowsHtml(glows, isNight, stageW, stageH) +
-          renderButtonsHtml(buttons, isBlocked) +
-        '</div>' +
-      '</div>';
+    var dom = ensureStageDom(container);
+    var imgChanged = dom.imgUrl !== imgUrl || dom.mode !== 'local';
 
-    if (container.innerHTML !== html) {
-      container.innerHTML = html;
+    dom.viewport.className = 'oi-snm-viewport' + (isNight ? ' is-night' : '') + (frameMode === 'cell' ? ' is-cell' : '');
+    dom.viewport.style.background = bgCol;
+    if (imgChanged) {
+      dom.stage.classList.add('no-anim');
+      dom.img.src = imgUrl;
+      dom.img.alt = layerBadge;
+      dom.imgUrl = imgUrl;
+      dom.mode = 'local';
     }
-    return { layerBadge: layerBadge, buttonCount: buttons.length };
+    dom.stage.className = stageCls + (imgChanged ? ' no-anim' : '');
+    dom.stage.style.width = frame.width + 'px';
+    dom.stage.style.height = frame.height + 'px';
+    dom.stage.style.left = frame.tx + 'px';
+    dom.stage.style.top = frame.ty + 'px';
+    dom.frame = { width: frame.width, height: frame.height, tx: frame.tx, ty: frame.ty };
+    dom.lastNodeId = scene.node_id;
+
+    if (imgChanged) {
+      // 下一幀恢復平滑鏡頭轉場（切同城相鄰點時自動絲滑滑動！）
+      requestAnimationFrame(function () {
+        dom.stage.classList.remove('no-anim');
+      });
+    }
+
+    dom.nightShade.hidden = !isNight;
+    dom.nightShade.className = 'oi-snm-night-shade';
+
+    var glowsHtml = renderGlowsHtml(glows, isNight, stageW, stageH);
+    if (dom.glowsLayer.innerHTML !== glowsHtml) dom.glowsLayer.innerHTML = glowsHtml;
+
+    var nodesHtml = renderNodesHtml(laidOut, isBlocked);
+    if (dom.nodesLayer.innerHTML !== nodesHtml) dom.nodesLayer.innerHTML = nodesHtml;
+
+    return {
+      layerBadge: layerBadge,
+      buttonCount: laidOut.length,
+      mappedExitIds: built.mappedExitIds
+    };
   }
 
   function renderIslandOverview(container, view, mapData, opts) {
@@ -462,21 +665,31 @@
 
     var wrapW = container.clientWidth || 360;
     var wrapH = container.clientHeight || 360;
-    var frame = computeStageFrame(wrapW, wrapH, 1024, 1024, null, true);
+    var frame = computeStageFrame(wrapW, wrapH, 1024, 1024, null, 'overview');
 
-    var html =
-      '<div class="oi-snm-viewport is-overview' + (isNight ? ' is-night' : '') + '" style="background:#263d4a;">' +
-        '<div class="oi-snm-stage full-bleed" style="width:' + frame.width + 'px;height:' + frame.height + 'px;left:' + frame.tx + 'px;top:' + frame.ty + 'px;">' +
-          '<img class="oi-snm-img" src="' + esc(imgUrl) + '" alt="銀鷗外島全島手繪總覽" draggable="false">' +
-          (isNight ? '<div class="oi-snm-night-shade is-soft"></div>' : '') +
-          townPinsHtml +
-          curPinHtml +
-        '</div>' +
-      '</div>';
-
-    if (container.innerHTML !== html) {
-      container.innerHTML = html;
+    var dom = ensureStageDom(container);
+    var imgChanged = dom.imgUrl !== imgUrl || dom.mode !== 'overview';
+    dom.viewport.className = 'oi-snm-viewport is-overview' + (isNight ? ' is-night' : '');
+    dom.viewport.style.background = '#263d4a';
+    if (imgChanged) {
+      dom.img.src = imgUrl;
+      dom.img.alt = '銀鷗外島全島手繪總覽';
+      dom.imgUrl = imgUrl;
+      dom.mode = 'overview';
     }
+    dom.stage.className = 'oi-snm-stage full-bleed no-anim';
+    dom.stage.style.width = frame.width + 'px';
+    dom.stage.style.height = frame.height + 'px';
+    dom.stage.style.left = frame.tx + 'px';
+    dom.stage.style.top = frame.ty + 'px';
+    dom.frame = { width: frame.width, height: frame.height, tx: frame.tx, ty: frame.ty };
+
+    dom.nightShade.hidden = !isNight;
+    dom.nightShade.className = 'oi-snm-night-shade is-soft';
+    if (dom.glowsLayer.innerHTML !== '') dom.glowsLayer.innerHTML = '';
+
+    var ovHtml = townPinsHtml + curPinHtml;
+    if (dom.nodesLayer.innerHTML !== ovHtml) dom.nodesLayer.innerHTML = ovHtml;
   }
 
   window.StaticNodeMap = {

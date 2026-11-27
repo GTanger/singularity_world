@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261127r1：三層靜態手繪水彩圖點點點＋發亮／淡化相連點＋多文字活世界）
-const CACHE = 'sw-shell-v20261127r1';
+// PWA Service Worker（v20261127r2：像素零疊壓靜態手繪圖＋拖曳偷看＋此處門戶多文字整合）
+const CACHE = 'sw-shell-v20261127r2';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261127r1',
-  '/town-basemaps.js?v=20261127r1',
-  '/static-node-map.js?v=20261127r1',
-  '/island-ui.js?v=20261127r1',
+  '/island-ui.css?v=20261127r2',
+  '/town-basemaps.js?v=20261127r2',
+  '/static-node-map.js?v=20261127r2',
+  '/island-ui.js?v=20261127r2',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

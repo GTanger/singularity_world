@@ -372,10 +372,10 @@
       }
     }
 
-    setTextIfChanged(
-      byId('oi-clock-text'),
-      cal + ' ｜ ' + bell + ' ' + pad2(hh) + ':' + pad2(mm)
-    );
+    var clockLine = (window.innerWidth < 460)
+      ? (cal.replace(/^太陽曆\s*/, '').replace(/\s+/g, '') + ' ｜ ' + bell.slice(0, 2) + ' ' + pad2(hh) + ':' + pad2(mm))
+      : (cal + ' ｜ ' + bell + ' ' + pad2(hh) + ':' + pad2(mm));
+    setTextIfChanged(byId('oi-clock-text'), clockLine);
     var badgeEl = byId('oi-tide-weather');
     if (badgeEl) {
       var exp = clk.exposure || 'outdoor';
@@ -978,8 +978,9 @@
 
     renderTopbar(view);
     renderSceneStage(view);
-    renderExitsStrip(view);
     renderDesktopMiniMap();
+    renderPresenceDoors(view);
+    renderExitsStrip(view);
     if (appState.mapOpen) {
       renderFullscreenMap();
     }
@@ -1140,22 +1141,77 @@
     }).join(''));
   }
 
+  function cleanExitPillLabel(ex) {
+    var shortDest = String(ex.to_name || '').split('・').pop() || ex.to_name || '';
+    var cleanDir = String(ex.dir || '').replace(/（[^）]*）/g, '').trim();
+    // 消除「訪赤爐莉亞家 · 赤爐莉亞家」「進一號房 · 一號客房」這類重覆前綴
+    if (!cleanDir || cleanDir === shortDest || cleanDir.indexOf(shortDest) >= 0 || shortDest.indexOf(cleanDir) >= 0) {
+      return shortDest;
+    }
+    if (/^(訪|進)/.test(cleanDir) && (ex.to_kind === 'house' || ex.to_kind === 'house_vacant' || ex.to_kind === 'inn_room')) {
+      return shortDest;
+    }
+    return cleanDir + ' · ' + shortDest;
+  }
+
+  function renderPresenceDoors(view) {
+    var doorsEl = byId('oi-presence-doors');
+    if (!doorsEl) return;
+    if (!view || !view.scene || view.skirmish || view.transit) {
+      doorsEl.hidden = true;
+      setHtmlIfChanged(doorsEl, '');
+      return;
+    }
+    var mapped = appState.mappedExitIds || {};
+    var exits = view.scene.exits || [];
+    var unmapped = exits.filter(function (ex) {
+      return ex && ex.to && !mapped[ex.to];
+    });
+    if (!unmapped.length) {
+      doorsEl.hidden = true;
+      setHtmlIfChanged(doorsEl, '');
+      return;
+    }
+    doorsEl.hidden = false;
+    var headLabel = unmapped.some(function (e) { return e.to_kind === 'inn_room'; }) ? '樓上客房' : '此處門戶';
+    setHtmlIfChanged(
+      doorsEl,
+      '<div class="oi-doors-head">' + headLabel + '</div>' +
+      '<div class="oi-doors-grid">' +
+      unmapped.map(function (ex) {
+        var lbl = cleanExitPillLabel(ex);
+        return '<button type="button" class="oi-door-chip" data-move-to="' + esc(ex.to) + '" title="' + esc(ex.ambient_cue || ex.to_name) + '">' +
+          esc(lbl) + '</button>';
+      }).join('') +
+      '</div>'
+    );
+  }
+
   function renderExitsStrip(view) {
     var strip = byId('oi-exits-strip');
+    if (!strip) return;
     if (view.skirmish) {
-      setHtmlIfChanged(strip, '<span style="font-size:0.86rem;color:var(--accent-main);padding:6px 4px;">短兵相接中，請於上方選擇招式或虛晃退回</span>');
+      strip.hidden = false;
+      setHtmlIfChanged(strip, '<span style="font-size:0.86rem;color:var(--accent-main);padding:4px 4px;">短兵相接中，請於上方選擇招式或虛晃退回</span>');
       return;
     }
     if (view.transit) {
+      strip.hidden = false;
       var tName = (view.transit && view.transit.line_name) ? ('【' + esc(view.transit.line_name) + '】') : '車船';
-      setHtmlIfChanged(strip, '<span style="font-size:0.86rem;color:var(--ink-sub);padding:6px 4px;">正在' + tName + '座艙內，抵達或下一站下車後即可自由邁步</span>');
+      setHtmlIfChanged(strip, '<span style="font-size:0.86rem;color:var(--ink-sub);padding:4px 4px;">正在' + tName + '座艙內，抵達或下一站下車後即可自由邁步</span>');
       return;
     }
+    // 靜態手繪圖展開時，不重複顯示底部出口列（把高度讓給多文字區）；僅手機收合地圖或看全島總覽時才顯示備用出口列
+    var mapHiddenOrOverview = (appState.mobileMapCollapsed && window.innerWidth < 960) || appState.asideMode === 'island';
+    if (!mapHiddenOrOverview) {
+      strip.hidden = true;
+      setHtmlIfChanged(strip, '');
+      return;
+    }
+    strip.hidden = false;
     var exits = (view.scene && view.scene.exits) || [];
     setHtmlIfChanged(strip, exits.map(function (ex) {
-      var shortDest = (ex.to_name || '').split('・').pop() || ex.to_name;
-      var cleanDir = String(ex.dir || '').replace(/（[^）]*）/g, '').trim();
-      var label = cleanDir && cleanDir !== shortDest ? (cleanDir + ' · ' + shortDest) : shortDest;
+      var label = cleanExitPillLabel(ex);
       if (ex.milestone_zh) {
         label += '〔' + ex.milestone_zh + '〕';
       }
@@ -1564,8 +1620,10 @@
     var opts = { isNight: document.body.classList.contains('sw-night') };
     if (appState.asideMode === 'island') {
       window.StaticNodeMap.renderIslandOverview(wrap, v, appState.mapData, opts);
+      appState.mappedExitIds = {};
     } else {
       var res = window.StaticNodeMap.renderLocal(wrap, v, opts);
+      appState.mappedExitIds = (res && res.mappedExitIds) || {};
       var localTab = document.querySelector('[data-aside-mode="local"]');
       if (localTab && res && res.layerBadge) {
         setTextIfChanged(localTab, res.layerBadge);
@@ -1688,6 +1746,10 @@
         appState.asideMode = asideTab.getAttribute('data-aside-mode');
         if (appState.mobileMapCollapsed) appState.mobileMapCollapsed = false;
         renderDesktopMiniMap();
+        if (appState.view) {
+          renderPresenceDoors(appState.view);
+          renderExitsStrip(appState.view);
+        }
         return;
       }
 
@@ -1718,10 +1780,14 @@
       toggleMapBtn.addEventListener('click', function () {
         appState.mobileMapCollapsed = !appState.mobileMapCollapsed;
         renderDesktopMiniMap();
+        if (appState.view) {
+          renderPresenceDoors(appState.view);
+          renderExitsStrip(appState.view);
+        }
       });
     }
 
-    // 底欄五鍵與展開全幅靜態輿圖
+    // 底欄四鍵與展開全幅靜態輿圖
     byId('oi-nav-self').addEventListener('click', function () { openInfoSheet('self'); });
     byId('oi-nav-bag').addEventListener('click', function () { openInfoSheet('bag'); });
     byId('oi-nav-recap').addEventListener('click', function () { openInfoSheet('recap'); });
@@ -1738,7 +1804,10 @@
       byId('oi-map-modal').hidden = false;
       renderFullscreenMap();
     }
-    byId('oi-nav-map').addEventListener('click', function () { openMapModal('island'); });
+    var navMapBtn = byId('oi-nav-map');
+    if (navMapBtn) {
+      navMapBtn.addEventListener('click', function () { openMapModal('island'); });
+    }
     byId('oi-btn-expand-map').addEventListener('click', function () { openMapModal(appState.asideMode || 'local'); });
     byId('oi-map-close').addEventListener('click', function () {
       appState.mapOpen = false;
