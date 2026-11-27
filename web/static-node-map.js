@@ -313,8 +313,8 @@
         var targetScale = buttons.length >= 6 ? coverW : Math.min(desiredYScale, coverW * 1.14);
         scale = clamp(targetScale, coverW, coverW * 1.16);
         focusX = (minX + maxX) * 0.5;
-        // 稍微偏重當前發亮點，同時把全體出口包進可視窗格內
-        focusY = (minY + maxY) * 0.55 + (curB.yp / 100) * 0.45;
+        // 稍微偏重當前發亮點，同時把全體出口包進可視窗格內（權重總和嚴守 1.00！）
+        focusY = ((minY + maxY) * 0.5) * 0.55 + (curB.yp / 100) * 0.45;
       } else {
         scale = fitScale;
         focusX = 0.5;
