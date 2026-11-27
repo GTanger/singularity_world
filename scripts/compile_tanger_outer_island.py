@@ -428,33 +428,90 @@ def main() -> None:
         gate_word_n = "北城門" if sdef["walled"] else "北哨柵口"
         gate_word_s = "南城門" if sdef["walled"] else "南哨柵口"
 
-        add_node(n_plaza, cid, f"{tname}・市集廣場", "plaza", f"{tname}正中央的石板廣場，車馬與挑擔鎮民在此交會，井台邊人聲熱絡。", [cx, cy])
-        add_node(n_north, cid, f"{tname}・{gate_word_n}", "gate", f"通往北面山林幹道的{gate_word_n}，衛兵正倚著石牆打量往來旅人。", [cx, cy - 2.2])
-        add_node(n_south, cid, f"{tname}・{gate_word_s}", "gate", f"連接南向海岸道路的{gate_word_s}，地面留著深淺車轍。", [cx, cy + 2.2])
-        add_node(n_smithy, cid, f"{tname}・鐵匠街", "street", "石爐炭火日夜不熄的百工街段，空氣裡迴盪著沉穩的鐵錘敲擊聲，街口釘著車行時刻木牌。", [cx - 1.4, cy - 0.8])
-        add_node(n_tavern_st, cid, f"{tname}・驛站街", "street", "旅店招牌與馬廄草料味交織的熱鬧街段，歇腳商旅常在此打聽各路風聲。", [cx - 1.4, cy + 0.8])
+        if cid == 4616:
+            # 白鷗港（銀鷗海領首府）五區七步四迴路正典動線：
+            # 1) 保留既有全部節點 ID、95 戶、262 居民、10 條支巷與 206 年家史零破壞
+            # 2) 補回 Azgaar 原設：澤昂河三橋（箍桶便橋／白鷗大橋／臨津石拱橋）、深水雙棧港池＋燈塔、內城要塞與市政廳
+            # 3) 店鋪全數歸位，10 條支巷各有獨立街口零同向重疊
+            n_craft_south = f"oi:{slug}:craft_south_st"
+            n_citadel = f"oi:{slug}:citadel_gate"
+            n_civic = f"oi:{slug}:civic_hall"
+            n_market = f"oi:{slug}:market_avenue"
+            n_lighthouse = f"oi:{slug}:north_lighthouse"
+            n_linjin = f"oi:{slug}:linjin_bridge"
+            n_south_dock = f"oi:{slug}:south_dock"
+            n_wg_bridge = f"oi:{slug}:white_gull_bridge"
+            n_west_bridge = f"oi:{slug}:west_watergate_bridge"
+            n_river_tavern = f"oi:{slug}:river_tavern_st"
 
-        link_bi(n_north, n_smithy, "南", "北", "street")
-        link_bi(n_smithy, n_plaza, "南", "北", "street")
-        link_bi(n_plaza, n_tavern_st, "南", "北", "street")
-        link_bi(n_tavern_st, n_south, "南", "北", "street")
+            add_node(n_north, cid, f"{tname}・北城門", "gate", "通往北面山林幹道的雙塔石城北門，衛兵倚牆盤查往來貨車與旅人。", [cx, cy - 2.35])
+            add_node(n_smithy, cid, f"{tname}・鐵匠街", "street", "北城石爐炭火日夜不熄的百工街段，空氣裡迴盪著沉穩的鐵錘敲擊聲與煤煙氣息。", [cx, cy - 1.55])
+            add_node(n_craft_south, cid, f"{tname}・百工南街", "street", "銜接北城工坊與市集廣場的熱鬧石板街段，苦艾藥香與鹹魚貨擔在此交會。", [cx, cy - 0.8])
+            add_node(n_plaza, cid, f"{tname}・市集廣場", "plaza", "白鷗港正中央的圓形石板大廣場，海鷗古井與開埠石碑聳立其中，四周攤棚人聲鼎沸。", [cx, cy])
+            add_node(n_citadel, cid, f"{tname}・內城要塞軍堡", "citadel", "高台石牆環護的內城要塞門前，藍銀雙色海領軍旗隨風獵獵，銀鷗第一軍團衛哨在此值守。", [cx - 1.15, cy - 0.45])
+            add_node(n_civic, cid, f"{tname}・市政廳與公庫銀號", "civic", "石砌高堂內陳列著全島海圖、幹道路權標契、待售空屋名冊與銀鷗海領公庫帳簿。", [cx - 1.4, cy - 0.55], indoor=True)
+            add_node(n_market, cid, f"{tname}・白鷗市集館", "market", "木樑斜頂的常設大市集館跨立於港務大道側畔，魚鮮、布匹、木桶與百工器物琳瑯滿目。", [cx + 1.15, cy])
+            add_node(n_dock, cid, f"{tname}・港務北棧", "dock", "寬闊木石深水長棧橋延伸入碧綠港池，遠洋雙桅商船靠泊卸貨，北灣沙灘可見修船斜坡與港務舊貨庫。", [cx + 2.35, cy - 0.15])
+            add_node(n_lighthouse, cid, f"{tname}・北防波堤燈塔", "landmark", "沿北彎月防波石堤走到盡頭的高聳花崗岩燈塔，塔頂長明燈火俯瞰外海暗礁與入港水道。", [cx + 3.45, cy - 0.55])
+            add_node(n_linjin, cid, f"{tname}・臨津石拱橋", "bridge", "橫跨澤昂河入海口的石階單孔拱橋，橋下清碧河水匯入港池，串連南北兩座深水棧橋。", [cx + 2.1, cy + 0.55])
+            add_node(n_south_dock, cid, f"{tname}・港務南棧", "dock", "沿岸環島帆駁與近海漁舟雲集的南岸木石漁鹽埠，碼頭成排鹽桶與曬網架迎著海風。", [cx + 2.35, cy + 1.3])
+            add_node(n_wg_bridge, cid, f"{tname}・白鷗大橋", "bridge", "中軸大道橫跨澤昂河的寬闊雙孔青石拱橋，橋面留著深淺馬車轍，憑欄可望河畔垂柳與往來小舟。", [cx, cy + 0.55])
+            add_node(n_west_bridge, cid, f"{tname}・箍桶便橋與西水門", "bridge", "城西鐵柵水門旁轟隆轉動著大木水車，厚木石基的箍桶便橋跨越澤昂河，接通南北兩岸民宅巷弄。", [cx - 1.85, cy + 0.55])
+            add_node(n_river_tavern, cid, f"{tname}・臨河酒館街", "street", "剛過白鷗大橋的南岸石板街段，臨河酒館暖黃燈火映在澤昂河面上，夜裡滿是麥酒香與行商談笑。", [cx, cy + 1.05])
+            add_node(n_tavern_st, cid, f"{tname}・車馬驛站街", "street", "南城寬闊的驛車主街，雙馬篷車輪聲與草料氣息交織，東連港務南棧、南通甕城大門。", [cx, cy + 1.65])
+            add_node(n_south, cid, f"{tname}・南城門", "gate", "厚實甕城箭樓鎮守的南城大門，出門即是蜿蜒南下的望海海岸驛道。", [cx, cy + 2.35])
 
-        if sdef["has_port"]:
-            dock_dir = "西" if cid == 4321 else "東"
-            back_dir = "東" if cid == 4321 else "西"
-            dx_dock = -2.4 if cid == 4321 else 2.4
-            add_node(
-                n_dock,
-                cid,
-                f"{tname}・港務碼頭",
-                "dock",
-                f"木石棧橋延伸入海，雙桅帆船與漁舟隨浪起伏，港務舊貨庫與搬運苦力聚集於此。",
-                [cx + dx_dock, cy],
-            )
-            link_bi(n_plaza, n_dock, dock_dir, back_dir, "street")
+            # 1) 中軸七步貫通
+            link_bi(n_north, n_smithy, "南", "北", "street")
+            link_bi(n_smithy, n_craft_south, "南", "北", "street")
+            link_bi(n_craft_south, n_plaza, "南", "北", "street")
+            link_bi(n_plaza, n_wg_bridge, "南", "北", "street")
+            link_bi(n_wg_bridge, n_river_tavern, "南", "北", "street")
+            link_bi(n_river_tavern, n_tavern_st, "南", "北", "street")
+            link_bi(n_tavern_st, n_south, "南", "北", "street")
+            # 2) 東港雙棧大迴路＋沿河直連
+            link_bi(n_plaza, n_market, "東", "西", "street")
+            link_bi(n_market, n_dock, "東", "西", "street")
+            link_bi(n_dock, n_lighthouse, "東", "西", "street")
+            link_bi(n_dock, n_linjin, "南", "北", "street")
+            link_bi(n_linjin, n_south_dock, "南", "北", "street")
+            link_bi(n_linjin, n_wg_bridge, "西", "東", "street")
+            link_bi(n_south_dock, n_tavern_st, "西", "東", "street")
+            # 3) 內城要塞迴路＋西河水門跨河直連
+            link_bi(n_plaza, n_citadel, "西北", "東南", "street")
+            link_bi(n_citadel, n_craft_south, "東北", "西南", "street")
+            link_bi(n_citadel, n_civic, "進門", "出門", "door")
+            link_bi(n_west_bridge, n_wg_bridge, "東", "西", "street")
+
             cell_default_node[cid] = n_dock
         else:
-            cell_default_node[cid] = n_plaza
+            add_node(n_plaza, cid, f"{tname}・市集廣場", "plaza", f"{tname}正中央的石板廣場，車馬與挑擔鎮民在此交會，井台邊人聲熱絡。", [cx, cy])
+            add_node(n_north, cid, f"{tname}・{gate_word_n}", "gate", f"通往北面山林幹道的{gate_word_n}，衛兵正倚著石牆打量往來旅人。", [cx, cy - 2.2])
+            add_node(n_south, cid, f"{tname}・{gate_word_s}", "gate", f"連接南向海岸道路的{gate_word_s}，地面留著深淺車轍。", [cx, cy + 2.2])
+            add_node(n_smithy, cid, f"{tname}・鐵匠街", "street", "石爐炭火日夜不熄的百工街段，空氣裡迴盪著沉穩的鐵錘敲擊聲，街口釘著車行時刻木牌。", [cx - 1.4, cy - 0.8])
+            add_node(n_tavern_st, cid, f"{tname}・驛站街", "street", "旅店招牌與馬廄草料味交織的熱鬧街段，歇腳商旅常在此打聽各路風聲。", [cx - 1.4, cy + 0.8])
+
+            link_bi(n_north, n_smithy, "南", "北", "street")
+            link_bi(n_smithy, n_plaza, "南", "北", "street")
+            link_bi(n_plaza, n_tavern_st, "南", "北", "street")
+            link_bi(n_tavern_st, n_south, "南", "北", "street")
+
+            if sdef["has_port"]:
+                dock_dir = "西" if cid == 4321 else "東"
+                back_dir = "東" if cid == 4321 else "西"
+                dx_dock = -2.4 if cid == 4321 else 2.4
+                add_node(
+                    n_dock,
+                    cid,
+                    f"{tname}・港務碼頭",
+                    "dock",
+                    f"木石棧橋延伸入海，雙桅帆船與漁舟隨浪起伏，港務舊貨庫與搬運苦力聚集於此。",
+                    [cx + dx_dock, cy],
+                )
+                link_bi(n_plaza, n_dock, dock_dir, back_dir, "street")
+                cell_default_node[cid] = n_dock
+            else:
+                cell_default_node[cid] = n_plaza
 
         # Major Indoor Shops on Main Spine (Tavern + Upstairs Inn Room, Smithy, Carriage Co, Silver Bank / Herbalist)
         n_tavern = f"oi:{slug}:rusty_anchor_tavern"
@@ -464,21 +521,24 @@ def main() -> None:
         n_herb = f"oi:{slug}:herb_hall"
 
         tavern_title = "鏽錨酒館" if cid == 4616 else f"{tname}木桶酒館"
-        add_node(n_tavern, cid, f"{tname}・{tavern_title}", "shop", "橡木長桌擦得發亮，麥酒香與水手低語交織，掌櫃在吧台後擦拭酒杯。", [cx - 1.9, cy + 0.9], indoor=True)
-        add_node(n_inn_up, cid, f"{tavern_title}・二樓宿房", "inn_room", "乾淨乾燥的木板閣樓宿房，床頭擺著一隻帶銅鎖的厚木箱，躺在床上即可安心歇息養傷。", [cx - 2.0, cy + 0.9], indoor=True)
-        link_bi(n_tavern_st, n_tavern, "進門", "出門", "door")
+        tavern_anchor = f"oi:{slug}:river_tavern_st" if cid == 4616 else n_tavern_st
+        add_node(n_tavern, cid, f"{tname}・{tavern_title}", "shop", "橡木長桌擦得發亮，麥酒香與水手低語交織，掌櫃在吧台後擦拭酒杯。", [cx - 0.85 if cid == 4616 else cx - 1.9, cy + 1.05 if cid == 4616 else cy + 0.9], indoor=True)
+        add_node(n_inn_up, cid, f"{tavern_title}・二樓宿房", "inn_room", "乾淨乾燥的木板閣樓宿房，床頭擺著一隻帶銅鎖的厚木箱，躺在床上即可安心歇息養傷。", [cx - 0.95 if cid == 4616 else cx - 2.0, cy + 1.05 if cid == 4616 else cy + 0.9], indoor=True)
+        link_bi(tavern_anchor, n_tavern, "進門", "出門", "door")
         link_bi(n_tavern, n_inn_up, "上樓", "下樓", "stairs")
 
         forge_title = "巴爾鍛鐵鋪" if cid == 4616 else f"{tname}鐵匠鋪"
-        add_node(n_forge, cid, f"{tname}・{forge_title}", "shop", "炙熱石爐旁掛滿厚鐵鍛錘、獵刀與馬車軸配件，鐵砧表面留著千百次敲打的亮痕。", [cx - 1.9, cy - 0.9], indoor=True)
+        add_node(n_forge, cid, f"{tname}・{forge_title}", "shop", "炙熱石爐旁掛滿厚鐵鍛錘、獵刀與馬車軸配件，鐵砧表面留著千百次敲打的亮痕。", [cx - 0.95 if cid == 4616 else cx - 1.9, cy - 1.55 if cid == 4616 else cy - 0.9], indoor=True)
         link_bi(n_smithy, n_forge, "進門", "出門", "door")
 
         carriage_title = "疾風驛馬行" if cid == 4616 else f"{tname}車馬站"
-        add_node(n_carriage, cid, f"{tname}・{carriage_title}", "shop", "寬敞車棚內停著軸刻穩固紋路的雙馬篷車，木牌清楚標著發車鐘響與託運價目。", [cx + 0.9, cy + 0.8], indoor=True)
-        link_bi(n_plaza, n_carriage, "進門", "出門", "door")
+        carriage_anchor = n_tavern_st if cid == 4616 else n_plaza
+        add_node(n_carriage, cid, f"{tname}・{carriage_title}", "shop", "寬敞車棚內停著軸刻穩固紋路的雙馬篷車，木牌清楚標著發車鐘響與託運價目。", [cx + 0.9, cy + 1.65 if cid == 4616 else cy + 0.8], indoor=True)
+        link_bi(carriage_anchor, n_carriage, "進門", "出門", "door")
 
+        herb_anchor = f"oi:{slug}:craft_south_st" if cid == 4616 else n_plaza
         add_node(n_herb, cid, f"{tname}・苦艾草藥堂", "shop", "簷下晾著成束止血草與風乾苔蘚，石臼旁瀰漫著清苦藥香，可包紮筋骨挫傷。", [cx + 0.9, cy - 0.8], indoor=True)
-        link_bi(n_plaza, n_herb, "進門", "出門", "door")
+        link_bi(herb_anchor, n_herb, "進門", "出門", "door")
 
         # Key shopkeeper households
         shop_keepers = [
@@ -577,29 +637,44 @@ def main() -> None:
 
         # Fishbone Residential Alleys & Real Individual Households (1 roof = 1 household, ~15% vacant purchasable!)
         total_alley_rows = max(1, (len(sdef["alleys"]) + 1) // 2)
+        wgh_alley_map = {
+            "iron_anvil_ln": (n_smithy, "東", "西", cx + 1.5, cy - 1.55),
+            "sail_ln": (n_smithy, "西", "東", cx - 1.8, cy - 1.55),
+            "copper_ln": (f"oi:{slug}:craft_south_st", "東", "西", cx + 1.5, cy - 0.8),
+            "salted_fish_ln": (f"oi:{slug}:craft_south_st", "西", "東", cx - 1.8, cy - 0.8),
+            "cooper_ln": (f"oi:{slug}:market_avenue", "北", "南", cx + 1.35, cy - 0.45),
+            "rope_ln": (n_plaza, "西", "東", cx - 1.75, cy + 0.08),
+            "lantern_ln": (f"oi:{slug}:river_tavern_st", "東", "西", cx + 1.45, cy + 1.05),
+            "seabreeze_ln": (f"oi:{slug}:river_tavern_st", "西", "東", cx - 1.75, cy + 1.05),
+            "old_well_ln": (n_tavern_st, "東", "西", cx + 1.45, cy + 1.85),
+            "south_wall_ln": (n_tavern_st, "西", "東", cx - 1.75, cy + 1.85),
+        }
         for a_idx, (a_slug, a_name, h_count, race_pool, job_pool) in enumerate(sdef["alleys"]):
             row_idx = a_idx // 2
-            if total_alley_rows >= 5:
-                if row_idx <= 1:
-                    anchor = n_smithy
-                elif row_idx == 2:
-                    anchor = n_plaza
-                else:
-                    anchor = n_tavern_st
-            elif total_alley_rows >= 3:
-                if row_idx == 0:
-                    anchor = n_smithy
-                elif row_idx == 1:
-                    anchor = n_plaza
-                else:
-                    anchor = n_tavern_st
-            else:
-                anchor = n_plaza if row_idx == 0 else n_tavern_st
             side_east = (a_idx % 2 == 0)
-            dir_out = "東" if side_east else "西"
-            dir_in = "西" if side_east else "東"
-            ax = cx + (1.6 if side_east else -2.2)
-            ay = cy - 1.6 + (a_idx * 0.36)
+            if cid == 4616 and a_slug in wgh_alley_map:
+                anchor, dir_out, dir_in, ax, ay = wgh_alley_map[a_slug]
+            else:
+                if total_alley_rows >= 5:
+                    if row_idx <= 1:
+                        anchor = n_smithy
+                    elif row_idx == 2:
+                        anchor = n_plaza
+                    else:
+                        anchor = n_tavern_st
+                elif total_alley_rows >= 3:
+                    if row_idx == 0:
+                        anchor = n_smithy
+                    elif row_idx == 1:
+                        anchor = n_plaza
+                    else:
+                        anchor = n_tavern_st
+                else:
+                    anchor = n_plaza if row_idx == 0 else n_tavern_st
+                dir_out = "東" if side_east else "西"
+                dir_in = "西" if side_east else "東"
+                ax = cx + (1.6 if side_east else -2.2)
+                ay = cy - 1.6 + (a_idx * 0.36)
             alley_nid = f"oi:{slug}:{a_slug}"
             add_node(
                 alley_nid,
@@ -607,9 +682,13 @@ def main() -> None:
                 f"{tname}・{a_name}",
                 "alley",
                 f"由主街分出的靜謐石板巷弄，兩側排著{h_count}棟石木民宅屋舍，門縫飄出炊煙與日常交談聲。",
-                [ax, ay],
+                [round(ax, 2), round(ay, 2)],
             )
             link_bi(anchor, alley_nid, dir_out, dir_in, "alley")
+            if cid == 4616 and a_slug == "rope_ln":
+                link_bi(alley_nid, f"oi:{slug}:west_watergate_bridge", "南", "北", "street")
+            elif cid == 4616 and a_slug == "seabreeze_ln":
+                link_bi(alley_nid, f"oi:{slug}:west_watergate_bridge", "北", "南", "street")
             alley_lines.append({
                 "name": a_name,
                 "node_id": alley_nid,

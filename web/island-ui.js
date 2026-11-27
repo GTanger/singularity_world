@@ -1600,6 +1600,8 @@
 
   function renderDesktopMiniMap() {
     if (appState.mapOpen) return;
+    var shell = byId('oi-shell');
+    if (shell && shell.hidden) return;
     var wrap = byId('oi-mini-map-frame');
     var v = appState.view;
     if (!wrap || !v || !v.scene || !window.StaticNodeMap) return;

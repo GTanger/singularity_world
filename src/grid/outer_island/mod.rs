@@ -221,33 +221,26 @@ mod tests {
         );
         assert_eq!(delta.conservation_diff(&doc), 0);
 
-        apply_move_step(
-            &doc,
-            &mut delta,
-            &clock,
-            "tester_a",
+        for (idx, dst) in [
+            "oi:white_gull_harbor:market_avenue",
             "oi:white_gull_harbor:plaza",
-            1000,
-        )
-        .expect("step plaza");
-        apply_move_step(
-            &doc,
-            &mut delta,
-            &clock,
-            "tester_a",
-            "oi:white_gull_harbor:tavern_st",
-            2000,
-        )
-        .expect("step tavern st");
-        apply_move_step(
-            &doc,
-            &mut delta,
-            &clock,
-            "tester_a",
+            "oi:white_gull_harbor:white_gull_bridge",
+            "oi:white_gull_harbor:river_tavern_st",
             "oi:white_gull_harbor:rusty_anchor_tavern",
-            3000,
-        )
-        .expect("enter tavern");
+        ]
+        .iter()
+        .enumerate()
+        {
+            apply_move_step(
+                &doc,
+                &mut delta,
+                &clock,
+                "tester_a",
+                dst,
+                1000 + (idx as u64) * 500,
+            )
+            .expect("step to tavern");
+        }
 
         // 未付宿費前上二樓不得白用木箱
         apply_move_step(

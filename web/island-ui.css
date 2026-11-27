@@ -1130,7 +1130,7 @@ button, input, select {
 
 .oi-snm-stage {
   position: absolute;
-  transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.28s cubic-bezier(0.22, 1, 0.36, 1), width 0.24s ease, height 0.24s ease;
+  transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1), top 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .oi-snm-stage.no-anim,

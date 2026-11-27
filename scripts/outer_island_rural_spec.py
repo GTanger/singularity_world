@@ -217,24 +217,31 @@ def enrich_five_core_towns(
 
         if sdef["has_port"]:
             n_dock = f"oi:{slug}:dock"
+            n_south_dock = f"oi:{slug}:south_dock"
             n_tav_st = f"oi:{slug}:tavern_st"
-            dock_pos = nodes[n_dock]["pos"]
+            tally_anchor = n_south_dock if (cid == 4616 and n_south_dock in nodes) else n_tav_st
+            dock_pos = nodes[tally_anchor]["pos"]
             clerk_home = f"oi:{slug}:tally_house"
             tc_seed = det_u64_fn(f"tally_clerk:{cid}")
             tc_race = "矮人" if cid == 4616 else "人類"
             tc_name = pick_name_fn(tc_race, "銀號帳房", tc_seed, True)
             tc_id = f"res:{slug}:tally_clerk"
             hh_id = f"hh:{slug}:tally_clerk"
+            tally_desc = (
+                f"緊鄰港務南棧與臨津石拱橋轉角的石砌小屋，牆上掛著成串竹籌與潮汐靠船板，是港務記籌手{tc_name}夜間落鎖歇息的居所。"
+                if cid == 4616
+                else f"緊鄰驛站街與棧橋轉角的石砌小屋，牆上掛著成串竹籌與潮汐靠船板，是港務記籌手{tc_name}夜間落鎖歇息的居所。"
+            )
             add_node_fn(
                 clerk_home,
                 cid,
                 f"{tname}・港務記籌寮屋",
                 "house",
-                f"緊鄰驛站街與棧橋轉角的石砌小屋，牆上掛著成串竹籌與潮汐靠船板，是港務記籌手{tc_name}夜間落鎖歇息的居所。",
-                [round(dock_pos[0] - 0.6, 2), round(dock_pos[1] + 0.5, 2)],
+                tally_desc,
+                [round(dock_pos[0] - 0.6, 2), round(dock_pos[1] + 0.15, 2)],
                 indoor=True,
             )
-            link_bi_fn(n_tav_st, clerk_home, "訪記籌寮", "出門", "door")
+            link_bi_fn(tally_anchor, clerk_home, "訪記籌寮", "出門", "door")
             langs = {"harbor_trade": 98}
             if tc_race == "矮人":
                 langs["dwarven"] = 100

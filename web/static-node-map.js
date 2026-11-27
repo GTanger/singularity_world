@@ -68,6 +68,26 @@
     return [clamp(px, 6, 94), clamp(py, 6, 94)];
   }
 
+  function resolveTownDistrict(townSpec, nid) {
+    if (!townSpec || !Array.isArray(townSpec.districts) || !townSpec.districts.length || !nid) {
+      return null;
+    }
+    var i, j;
+    for (i = 0; i < townSpec.districts.length; i++) {
+      var d = townSpec.districts[i];
+      var mems = d.members || [];
+      for (j = 0; j < mems.length; j++) {
+        if (nid === mems[j] || nid.indexOf(mems[j] + ':') === 0) {
+          return d;
+        }
+      }
+      if (nid.indexOf(':inn_room_') >= 0 && mems.indexOf(nid.split(':').slice(0, 2).join(':') + ':inn_upstairs') >= 0) {
+        return d;
+      }
+    }
+    return townSpec.districts[0];
+  }
+
   function lookupTownAnchor(townSpec, nid) {
     if (!townSpec || !nid) return null;
     var i;
@@ -75,6 +95,9 @@
     for (i = 0; i < pills.length; i++) {
       if (pills[i].nid === nid) {
         return { x: pills[i].x, y: pills[i].y, label: pills[i].label, kind: pills[i].kind || 'main', exact: true };
+      }
+      if (nid.indexOf(pills[i].nid + ':') === 0) {
+        return { x: pills[i].x, y: pills[i].y, label: pills[i].label, kind: 'alley_sub', exact: false };
       }
     }
     var alleys = townSpec.alleys || [];
@@ -88,6 +111,10 @@
     }
     if (nid.indexOf(':inn_room_') >= 0 || nid.indexOf(':inn_upstairs') >= 0) {
       var prefix = nid.split(':').slice(0, 2).join(':');
+      var up = lookupTownAnchor(townSpec, prefix + ':inn_upstairs');
+      if (up) {
+        return { x: up.x, y: up.y, label: up.label, kind: 'inn_sub', exact: false };
+      }
       var tav = lookupTownAnchor(townSpec, prefix + ':rusty_anchor_tavern');
       if (tav) {
         return { x: tav.x, y: tav.y, label: tav.label, kind: 'inn_sub', exact: false };
@@ -95,7 +122,7 @@
     }
     if (nid.indexOf(':tally_house') >= 0) {
       var p2 = nid.split(':').slice(0, 2).join(':');
-      var ts = lookupTownAnchor(townSpec, p2 + ':tavern_st');
+      var ts = lookupTownAnchor(townSpec, p2 + ':south_dock') || lookupTownAnchor(townSpec, p2 + ':tavern_st');
       if (ts) {
         return { x: ts.x, y: ts.y, label: '港務記籌寮屋', kind: 'house_sub', exact: false };
       }
@@ -106,7 +133,9 @@
   function buildTownButtons(scene, townSpec) {
     var curNid = scene.node_id;
     var curCellId = scene.cell_id;
-    var curAnchor = lookupTownAnchor(townSpec, curNid) || { x: 450, y: 600, label: shortPlaceName(scene.name), kind: 'main', exact: false };
+    var refW = townSpec.width || 900;
+    var refH = townSpec.height || 1200;
+    var curAnchor = lookupTownAnchor(townSpec, curNid) || { x: refW * 0.5, y: refH * 0.5, label: shortPlaceName(scene.name), kind: 'main', exact: false };
     var buttons = [];
     var mappedExitIds = {};
 
@@ -116,8 +145,8 @@
     buttons.push({
       nid: curNid,
       label: curLabel,
-      xp: clamp((curAnchor.x / 900) * 100, 10, 90),
-      yp: clamp((curAnchor.y / 1200) * 100, 7, 93),
+      xp: clamp((curAnchor.x / refW) * 100, 8, 92),
+      yp: clamp((curAnchor.y / refH) * 100, 7, 93),
       isCurrent: true,
       kind: curAnchor.kind || 'main',
       title: scene.name || curLabel
@@ -130,22 +159,22 @@
     for (var i = 0; i < exits.length; i++) {
       var ex = exits[i];
       if (!ex || !ex.to || usedNids[ex.to]) continue;
-      // 巷內民宅／記籌寮屋／客棧分房收斂於多文字區「此處門戶」
-      if (ex.to_kind === 'house' || ex.to_kind === 'house_vacant') {
+      var anc = lookupTownAnchor(townSpec, ex.to);
+      // 巷內民宅／客棧分房收斂於多文字區「此處門戶」（若地圖有專屬精準地標如港務記籌寮屋則直接顯示於圖上）
+      if ((ex.to_kind === 'house' || ex.to_kind === 'house_vacant') && !(anc && anc.exact)) {
         continue;
       }
       if (ex.to.indexOf(':inn_room_') >= 0 && curNid.indexOf(':inn_upstairs') >= 0) {
         continue;
       }
 
-      var anc = lookupTownAnchor(townSpec, ex.to);
       var xp, yp, label;
       var shortDest = shortPlaceName(ex.to_name);
       var dWord = cleanDirWord(ex.dir);
 
       if (anc && anc.exact) {
-        xp = (anc.x / 900) * 100;
-        yp = (anc.y / 1200) * 100;
+        xp = (anc.x / refW) * 100;
+        yp = (anc.y / refH) * 100;
         if (Math.hypot(xp - buttons[0].xp, yp - buttons[0].yp) < 4.5) {
           var vSub = dirToVector(ex.dir) || [0, -1];
           xp = clamp(buttons[0].xp + vSub[0] * 14, 12, 88);
@@ -161,13 +190,13 @@
           vOut = [dxW / lnW, dyW / lnW];
         }
         vOut = vOut || [0, -1];
-        xp = clamp(buttons[0].xp + vOut[0] * 18, 12, 88);
-        yp = clamp(buttons[0].yp + vOut[1] * 10.5, 6.5, 93.5);
+        xp = clamp(buttons[0].xp + vOut[0] * 18, 10, 90);
+        yp = clamp(buttons[0].yp + vOut[1] * 13, 6.5, 93.5);
         label = (dWord ? (dWord + ' · ') : '') + shortDest;
       } else {
         var vLoc = dirToVector(ex.dir) || [0, 1];
-        xp = clamp(buttons[0].xp + vLoc[0] * 16, 12, 88);
-        yp = clamp(buttons[0].yp + vLoc[1] * 9.5, 8, 92);
+        xp = clamp(buttons[0].xp + vLoc[0] * 16, 10, 90);
+        yp = clamp(buttons[0].yp + vLoc[1] * 12, 8, 92);
         label = (dWord && dWord !== shortDest ? (dWord + ' · ') : '') + shortDest;
       }
 
@@ -176,7 +205,7 @@
       buttons.push({
         nid: ex.to,
         label: label,
-        xp: clamp(xp, 10, 90),
+        xp: clamp(xp, 8, 92),
         yp: clamp(yp, 6.5, 93.5),
         isCurrent: false,
         isSecret: ex.kind === 'secret',
@@ -281,7 +310,29 @@
     var focusX = 0.5;
     var focusY = 0.5;
 
-    if (mode === 'cell') {
+    if (mode === 'district') {
+      // 4:3 滿版獨立街區圖（白鷗港五區）：手機寬框嚴格覆滿寬高零留邊，桌機高框完整顯示全幅
+      var dCoverW = wrapW / stageW;
+      var dCoverH = wrapH / stageH;
+      if (wrapW >= wrapH) {
+        scale = Math.max(dCoverW, dCoverH);
+      } else {
+        scale = clamp(Math.max(fitScale, dCoverH * 0.62), fitScale, dCoverH);
+      }
+      if (buttons && buttons.length) {
+        var dCur = buttons[0];
+        var dMinX = dCur.xp / 100, dMaxX = dMinX, dMinY = dCur.yp / 100, dMaxY = dMinY;
+        for (var di = 1; di < buttons.length; di++) {
+          var dbx = buttons[di].xp / 100, dby = buttons[di].yp / 100;
+          if (dbx < dMinX) dMinX = dbx;
+          if (dbx > dMaxX) dMaxX = dbx;
+          if (dby < dMinY) dMinY = dby;
+          if (dby > dMaxY) dMaxY = dby;
+        }
+        focusX = ((dMinX + dMaxX) * 0.5) * 0.55 + (dCur.xp / 100) * 0.45;
+        focusY = ((dMinY + dMaxY) * 0.5) * 0.55 + (dCur.yp / 100) * 0.45;
+      }
+    } else if (mode === 'cell') {
       // 方形地塊圖在直長桌機欄或矮寬手機欄適度放大補滿，消除粗死黑邊
       var coverScale = Math.max(wrapW / stageW, wrapH / stageH);
       scale = clamp(coverScale * 0.92, fitScale, fitScale * 1.38);
@@ -524,6 +575,21 @@
     viewport.addEventListener('pointercancel', endDrag);
 
     container._snmDom = dom;
+    if (typeof ResizeObserver !== 'undefined' && !container._snmResizeObs) {
+      var ro = new ResizeObserver(function () {
+        var rw = container.clientWidth || 0;
+        var rh = container.clientHeight || 0;
+        if (rw < 40 || rh < 40) return;
+        if (dom.lastWrapW === rw && dom.lastWrapH === rh) return;
+        if (dom.lastCall && dom.lastCall.mode === 'local') {
+          renderLocal(container, dom.lastCall.view, dom.lastCall.opts);
+        } else if (dom.lastCall && dom.lastCall.mode === 'overview') {
+          renderIslandOverview(container, dom.lastCall.view, dom.lastCall.mapData, dom.lastCall.opts);
+        }
+      });
+      ro.observe(container);
+      container._snmResizeObs = ro;
+    }
     return dom;
   }
 
@@ -554,15 +620,28 @@
       layerBadge = '地底石室';
       frameMode = 'cell';
     } else if (townMap) {
-      imgUrl = townMap.imgUrl;
-      stageW = 900;
-      stageH = 1200;
-      stageCls = townMap.cropMode === 'wg_legacy' ? 'oi-snm-stage wg-legacy' : 'oi-snm-stage full-bleed';
-      bgCol = isNight ? (townMap.bgNight || '#14191e') : (townMap.bgDay || '#dfd5be');
-      glows = townMap.glows || [];
-      built = buildTownButtons(scene, townMap);
-      layerBadge = townMap.title ? townMap.title.split('・')[0].replace(/手繪水彩海港輿圖$/, '') : (sm.cell_title || '城鎮');
-      frameMode = 'town';
+      var district = resolveTownDistrict(townMap, scene.node_id);
+      if (district) {
+        imgUrl = district.imgUrl;
+        stageW = district.width || 1024;
+        stageH = district.height || 768;
+        stageCls = 'oi-snm-stage full-bleed';
+        bgCol = isNight ? (district.bgNight || townMap.bgNight || '#14191e') : (district.bgDay || townMap.bgDay || '#dfd5be');
+        glows = district.glows || [];
+        built = buildTownButtons(scene, district);
+        layerBadge = district.title || '白鷗港';
+        frameMode = 'district';
+      } else {
+        imgUrl = townMap.imgUrl;
+        stageW = townMap.width || 900;
+        stageH = townMap.height || 1200;
+        stageCls = townMap.cropMode === 'wg_legacy' ? 'oi-snm-stage wg-legacy' : 'oi-snm-stage full-bleed';
+        bgCol = isNight ? (townMap.bgNight || '#14191e') : (townMap.bgDay || '#dfd5be');
+        glows = townMap.glows || [];
+        built = buildTownButtons(scene, townMap);
+        layerBadge = townMap.title ? townMap.title.split('・')[0].replace(/手繪水彩海港輿圖$/, '') : (sm.cell_title || '城鎮');
+        frameMode = 'town';
+      }
     } else if (sm.cell_map && sm.cell_map.url) {
       imgUrl = sm.cell_map.url;
       stageW = 1024;
@@ -582,14 +661,21 @@
       frameMode = 'cell';
     }
 
-    var wrapW = container.clientWidth || 360;
-    var wrapH = container.clientHeight || 240;
+    var curWrapW = container.clientWidth || 0;
+    var curWrapH = container.clientHeight || 0;
+    var wrapW = curWrapW || 360;
+    var wrapH = curWrapH || 240;
     var compact = wrapW < 440 || wrapH < 320;
     var frame = computeStageFrame(wrapW, wrapH, stageW, stageH, built.buttons, frameMode);
     var laidOut = layoutButtonsInPixels(built.buttons, frame, wrapW, wrapH, compact);
 
     var dom = ensureStageDom(container);
+    var sizeChanged = !dom.lastWrapW || !dom.lastWrapH || dom.lastWrapW !== curWrapW || dom.lastWrapH !== curWrapH;
+    dom.lastWrapW = curWrapW;
+    dom.lastWrapH = curWrapH;
+    dom.lastCall = { mode: 'local', view: view, opts: opts };
     var imgChanged = dom.imgUrl !== imgUrl || dom.mode !== 'local';
+    var snapAnim = imgChanged || sizeChanged;
 
     dom.viewport.className = 'oi-snm-viewport' + (isNight ? ' is-night' : '') + (frameMode === 'cell' ? ' is-cell' : '');
     dom.viewport.style.background = bgCol;
@@ -600,7 +686,7 @@
       dom.imgUrl = imgUrl;
       dom.mode = 'local';
     }
-    dom.stage.className = stageCls + (imgChanged ? ' no-anim' : '');
+    dom.stage.className = stageCls + (snapAnim ? ' no-anim' : '');
     dom.stage.style.width = frame.width + 'px';
     dom.stage.style.height = frame.height + 'px';
     dom.stage.style.left = frame.tx + 'px';
@@ -608,8 +694,8 @@
     dom.frame = { width: frame.width, height: frame.height, tx: frame.tx, ty: frame.ty };
     dom.lastNodeId = scene.node_id;
 
-    if (imgChanged) {
-      // 下一幀恢復平滑鏡頭轉場（切同城相鄰點時自動絲滑滑動！）
+    if (snapAnim) {
+      // 下一幀恢復平滑鏡頭轉場（切同城相鄰點時自動絲滑滑動；首次顯露與視口縮放即時貼齊不拖影）
       requestAnimationFrame(function () {
         dom.stage.classList.remove('no-anim');
       });

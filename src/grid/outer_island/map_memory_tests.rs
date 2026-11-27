@@ -367,9 +367,11 @@ fn memory_map_travel_follows_known_nodes_and_stops_on_surprise_or_tide() {
         "unknown target node must be rejected"
     );
 
-    // 先步行踏足：dock -> plaza -> smithy_st -> north_gate（全數寫入 known_nodes）
+    // 先步行踏足：dock -> market_avenue -> plaza -> craft_south_st -> smithy_st -> north_gate（全數寫入 known_nodes）
     for (idx, step) in [
+        "oi:white_gull_harbor:market_avenue",
         "oi:white_gull_harbor:plaza",
+        "oi:white_gull_harbor:craft_south_st",
         "oi:white_gull_harbor:smithy_st",
         "oi:white_gull_harbor:north_gate",
     ]
@@ -394,7 +396,7 @@ fn memory_map_travel_follows_known_nodes_and_stops_on_surprise_or_tide() {
         &clk,
         "nav_qa",
         "oi:white_gull_harbor:dock",
-        5_000,
+        6_000,
     )
     .expect("memory travel back to dock");
     assert!(ret.contains("抵達") && delta.actors[&pid].node_id == "oi:white_gull_harbor:dock");
@@ -430,7 +432,7 @@ fn memory_map_travel_follows_known_nodes_and_stops_on_surprise_or_tide() {
         &clk,
         "nav_qa",
         "oi:white_gull_harbor:rope_ln",
-        6_000,
+        7_000,
     )
     .expect("walk to alley");
     let alley_sub = build_viewer_substrate_json(&doc, &delta, &delta.actors[&pid], &clk);

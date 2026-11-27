@@ -368,7 +368,7 @@ fn r3_tick_loop_npc_pit_altar_pry_and_escort_watch_hold_at_goal() {
     accept_escrow_pact(&doc, &mut delta, &c0, "pl:guard_p", &esc_cid).unwrap();
 
     let mut ever_npc_pried_rune = false;
-    for day in 5..=7 {
+    for day in 5..=8 {
         for bell in 3..=9 {
             let clk = test_clock_for(day, bell);
             for sub in 0..3u64 {

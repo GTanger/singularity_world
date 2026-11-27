@@ -2,17 +2,168 @@
 (function () {
   'use strict';
 
-  var VER = '20261123r4';
+  var VER = '20261127r8';
 
   window.TOWN_ILLUSTRATED_MAPS = {
-    // 1. 白鷗港：東岸八角高石城牆大港都、北翼防波堤燈塔、中央圓井廣場與十巷百戶
+    // 1. 白鷗港：五區滿版 Qwen-Image-2512 20B 簡約暖陽水彩繪本街區圖（跨區換圖、零拼接，對齊七步四迴路正典動線）
     white_gull_harbor: {
       slug: 'white_gull_harbor',
       title: '白鷗港手繪水彩海港輿圖',
       imgUrl: '/maps/white_gull_harbor.webp?v=' + VER,
       cropMode: 'wg_legacy',
-      bgDay: '#dfd5be',
+      bgDay: '#ede2ca',
       bgNight: '#14191e',
+      districts: [
+        {
+          id: 'wgh_d1_harbor',
+          title: '白鷗港・深水港池',
+          imgUrl: '/maps/wgh_d1_harbor.webp?v=' + VER,
+          width: 1024,
+          height: 768,
+          bgDay: '#cfe3e6',
+          bgNight: '#101b22',
+          glows: [[878, 128, 76], [356, 224, 82], [156, 612, 68], [458, 616, 75]],
+          members: [
+            'oi:white_gull_harbor:dock',
+            'oi:white_gull_harbor:north_lighthouse',
+            'oi:white_gull_harbor:linjin_bridge',
+            'oi:white_gull_harbor:south_dock',
+            'oi:white_gull_harbor:tally_house'
+          ],
+          pills: [
+            { nid: 'oi:white_gull_harbor:dock', label: '港務北棧', x: 356, y: 224, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:north_lighthouse', label: '北防波堤燈塔', x: 878, y: 178, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:linjin_bridge', label: '臨津石拱橋', x: 132, y: 345, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:south_dock', label: '港務南棧', x: 458, y: 616, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:tally_house', label: '港務記籌寮屋', x: 156, y: 612, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:market_avenue', label: '白鷗市集館', x: 168, y: 128, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:white_gull_bridge', label: '白鷗大橋', x: 64, y: 376, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:tavern_st', label: '車馬驛站街', x: 198, y: 704, kind: 'street' }
+          ]
+        },
+        {
+          id: 'wgh_d2_plaza',
+          title: '白鷗港・市集廣場',
+          imgUrl: '/maps/wgh_d2_plaza.webp?v=' + VER,
+          width: 1024,
+          height: 768,
+          bgDay: '#ede2ca',
+          bgNight: '#161b1f',
+          glows: [[472, 412, 110], [248, 224, 85], [762, 390, 95]],
+          members: [
+            'oi:white_gull_harbor:plaza',
+            'oi:white_gull_harbor:market_avenue',
+            'oi:white_gull_harbor:citadel_gate',
+            'oi:white_gull_harbor:civic_hall',
+            'oi:white_gull_harbor:cooper_ln',
+            'oi:white_gull_harbor:rope_ln'
+          ],
+          pills: [
+            { nid: 'oi:white_gull_harbor:plaza', label: '市集廣場', x: 472, y: 412, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:citadel_gate', label: '內城要塞軍堡', x: 248, y: 224, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:civic_hall', label: '市政廳銀號', x: 198, y: 108, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:market_avenue', label: '白鷗市集館', x: 762, y: 390, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:cooper_ln', label: '桶匠巷', x: 846, y: 176, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:rope_ln', label: '繩索巷', x: 136, y: 548, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:craft_south_st', label: '百工南街', x: 466, y: 70, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:dock', label: '港務北棧', x: 916, y: 636, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:white_gull_bridge', label: '白鷗大橋', x: 474, y: 704, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:west_watergate_bridge', label: '箍桶便橋', x: 92, y: 698, kind: 'street' }
+          ]
+        },
+        {
+          id: 'wgh_d3_north',
+          title: '白鷗港・北城百工',
+          imgUrl: '/maps/wgh_d3_north.webp?v=' + VER,
+          width: 1024,
+          height: 768,
+          bgDay: '#ebe0c6',
+          bgNight: '#161a19',
+          glows: [[284, 326, 95], [710, 562, 85], [480, 184, 65]],
+          members: [
+            'oi:white_gull_harbor:north_gate',
+            'oi:white_gull_harbor:smithy_st',
+            'oi:white_gull_harbor:bal_forge',
+            'oi:white_gull_harbor:craft_south_st',
+            'oi:white_gull_harbor:herb_hall',
+            'oi:white_gull_harbor:iron_anvil_ln',
+            'oi:white_gull_harbor:sail_ln',
+            'oi:white_gull_harbor:copper_ln',
+            'oi:white_gull_harbor:salted_fish_ln'
+          ],
+          pills: [
+            { nid: 'oi:white_gull_harbor:north_gate', label: '北城門', x: 480, y: 184, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:smithy_st', label: '鐵匠街', x: 474, y: 346, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:bal_forge', label: '巴爾鍛鐵鋪', x: 284, y: 326, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:sail_ln', label: '船帆巷', x: 118, y: 328, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:iron_anvil_ln', label: '鐵砧巷', x: 812, y: 304, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:craft_south_st', label: '百工南街', x: 466, y: 566, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:herb_hall', label: '苦艾草藥堂', x: 710, y: 562, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:salted_fish_ln', label: '鹹魚巷', x: 138, y: 608, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:copper_ln', label: '銅幣巷', x: 912, y: 578, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:citadel_gate', label: '內城要塞軍堡', x: 282, y: 704, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:plaza', label: '市集廣場', x: 466, y: 712, kind: 'main' }
+          ]
+        },
+        {
+          id: 'wgh_d4_river',
+          title: '白鷗港・澤昂河畔',
+          imgUrl: '/maps/wgh_d4_river.webp?v=' + VER,
+          width: 1024,
+          height: 768,
+          bgDay: '#d7e6e1',
+          bgNight: '#121b20',
+          glows: [[302, 578, 95], [532, 348, 80], [758, 574, 65]],
+          members: [
+            'oi:white_gull_harbor:west_watergate_bridge',
+            'oi:white_gull_harbor:white_gull_bridge',
+            'oi:white_gull_harbor:river_tavern_st',
+            'oi:white_gull_harbor:rusty_anchor_tavern',
+            'oi:white_gull_harbor:inn_upstairs',
+            'oi:white_gull_harbor:lantern_ln',
+            'oi:white_gull_harbor:seabreeze_ln'
+          ],
+          pills: [
+            { nid: 'oi:white_gull_harbor:west_watergate_bridge', label: '箍桶便橋', x: 228, y: 414, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:white_gull_bridge', label: '白鷗大橋', x: 532, y: 348, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:river_tavern_st', label: '臨河酒館街', x: 522, y: 574, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:rusty_anchor_tavern', label: '鏽錨酒館', x: 302, y: 578, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:inn_upstairs', label: '酒館二樓宿房', x: 168, y: 636, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:seabreeze_ln', label: '海風巷', x: 138, y: 704, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:lantern_ln', label: '石燈巷', x: 758, y: 574, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:plaza', label: '市集廣場', x: 554, y: 78, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:rope_ln', label: '繩索巷', x: 256, y: 94, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:linjin_bridge', label: '臨津石拱橋', x: 902, y: 232, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:tavern_st', label: '車馬驛站街', x: 516, y: 712, kind: 'street' }
+          ]
+        },
+        {
+          id: 'wgh_d5_south',
+          title: '白鷗港・南城驛站',
+          imgUrl: '/maps/wgh_d5_south.webp?v=' + VER,
+          width: 1024,
+          height: 768,
+          bgDay: '#ede2ca',
+          bgNight: '#161a1c',
+          glows: [[648, 242, 95], [392, 466, 75], [786, 536, 70]],
+          members: [
+            'oi:white_gull_harbor:tavern_st',
+            'oi:white_gull_harbor:gale_carriage',
+            'oi:white_gull_harbor:old_well_ln',
+            'oi:white_gull_harbor:south_wall_ln',
+            'oi:white_gull_harbor:south_gate'
+          ],
+          pills: [
+            { nid: 'oi:white_gull_harbor:tavern_st', label: '車馬驛站街', x: 408, y: 302, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:gale_carriage', label: '疾風驛馬行', x: 648, y: 242, kind: 'shop' },
+            { nid: 'oi:white_gull_harbor:old_well_ln', label: '老井巷', x: 786, y: 536, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:south_wall_ln', label: '南牆根巷', x: 194, y: 346, kind: 'alley' },
+            { nid: 'oi:white_gull_harbor:south_gate', label: '南城門', x: 392, y: 466, kind: 'main' },
+            { nid: 'oi:white_gull_harbor:river_tavern_st', label: '臨河酒館街', x: 406, y: 74, kind: 'street' },
+            { nid: 'oi:white_gull_harbor:south_dock', label: '港務南棧', x: 846, y: 266, kind: 'street' }
+          ]
+        }
+      ],
       glows: [
         [246, 306, 85], [340, 598, 105], [252, 885, 95],
         [645, 598, 80], [816, 320, 68], [342, 202, 58], [340, 1068, 58]

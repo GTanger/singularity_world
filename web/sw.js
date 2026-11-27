@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261127r5：無頂列滿幅固定地圖框＋底欄五鍵含輿圖＋移除右上銅幣）
-const CACHE = 'sw-shell-v20261127r5';
+// PWA Service Worker（v20261127r8：白鷗港五區簡約暖陽水彩繪本圖＋首繪即時滿版零留邊）
+const CACHE = 'sw-shell-v20261127r8';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261127r5',
-  '/town-basemaps.js?v=20261127r5',
-  '/static-node-map.js?v=20261127r5',
-  '/island-ui.js?v=20261127r5',
+  '/island-ui.css?v=20261127r8',
+  '/town-basemaps.js?v=20261127r8',
+  '/static-node-map.js?v=20261127r8',
+  '/island-ui.js?v=20261127r8',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

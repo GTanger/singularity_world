@@ -263,8 +263,17 @@ fn bulk_anti_ant_carrying_embodied_vehicles_and_dock_haul_drop_conserve_copper()
         &mut delta,
         &clk,
         "haul_tester",
-        "oi:white_gull_harbor:plaza",
+        "oi:white_gull_harbor:market_avenue",
         1000,
+    )
+    .expect("intra-town walk to market_avenue with dock crate allowed");
+    apply_move_step(
+        &doc,
+        &mut delta,
+        &clk,
+        "haul_tester",
+        "oi:white_gull_harbor:plaza",
+        1600,
     )
     .expect("intra-town walk with dock crate allowed");
     apply_world_action(&doc, &mut delta, &clk, "haul_tester", "cancel_activity", "")

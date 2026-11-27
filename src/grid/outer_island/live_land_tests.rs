@@ -309,17 +309,28 @@ fn spring_flood_washes_out_bridge_blocks_carriage_and_paid_timber_repair_restore
         "flooded river tiles on #4850 must expand cleanly when witnessed on site ({river_tiles_4850} > {base_river_tiles_4850})"
     );
 
-    // 驗證東西幹線雙馬驛車行經 #4527 前（idx 4 -> 5）遭洪橋擋駕並原地折返，不穿斷橋！
+    // 驗證東西幹線雙馬驛車行經 #4527 前遭洪橋擋駕並原地折返，不穿斷橋！
     let ev_idx = delta
         .transit_vehicles
         .iter()
         .position(|v| v.line_id == "land_ew_express")
         .expect("ew express exists");
-    delta.transit_vehicles[ev_idx].route_idx = 4; // #4432
-    delta.transit_vehicles[ev_idx].forward = true; // next stop 5 = oi:cell4527:0
+    let ew_line = doc
+        .transit_lines
+        .iter()
+        .find(|l| l.line_id == "land_ew_express")
+        .expect("ew express def");
+    let before_4527_idx = ew_line
+        .route_nodes
+        .iter()
+        .position(|n| n == "oi:cell4527:0")
+        .expect("cell4527 on ew express")
+        - 1;
+    delta.transit_vehicles[ev_idx].route_idx = before_4527_idx;
+    delta.transit_vehicles[ev_idx].forward = true; // next stop = oi:cell4527:0
     tick_embodied_transit_vehicles(&doc, &mut delta, &winter_clock_at_day(42, 4));
     assert_eq!(
-        delta.transit_vehicles[ev_idx].route_idx, 4,
+        delta.transit_vehicles[ev_idx].route_idx, before_4527_idx,
         "carriage must NOT enter washed-out #4527"
     );
     assert!(
