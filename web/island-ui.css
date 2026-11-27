@@ -1350,7 +1350,7 @@ button, input, select {
   z-index: 6;
 }
 
-/* 手機與平板響應式：上半多文字獨立捲動 ＋ 下半固定框架靜態手繪圖（緊鄰自身／行囊上方，拇指單手直點） */
+/* 手機與平板響應式：上半多文字獨立捲動 ＋ 下半固定框架靜態手繪圖（緊鄰自身／行囊／搜巡／近事／輿圖上方，滿版吃回原標題列高度） */
 @media (max-width: 959px) {
   .oi-main-workspace {
     flex-direction: column;
@@ -1360,29 +1360,16 @@ button, input, select {
     width: 100%;
     flex: 0 0 auto;
     height: clamp(236px, 37dvh, 304px);
-    padding: 6px 8px 8px;
-    gap: 6px;
+    padding: 6px 8px 6px;
+    gap: 0;
     overflow: hidden;
     border-left: none;
     border-top: 1px solid var(--border-line);
     border-bottom: none;
   }
-  .oi-desktop-aside.is-collapsed {
-    height: auto;
-  }
-  .oi-desktop-aside.is-collapsed .oi-mini-map-frame {
-    display: none;
-  }
-  .oi-aside-head {
-    padding: 0 2px;
-  }
-  .oi-aside-head .oi-icon-btn {
-    min-height: 29px;
-    padding: 3px 9px;
-    font-size: 0.78rem;
-  }
   .oi-mini-map-frame {
     min-height: 0;
+    height: 100%;
     margin: 0;
   }
   .oi-mobile-only {

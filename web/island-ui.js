@@ -999,7 +999,6 @@
     var sc = view.scene || {};
     var p = view.player || {};
     setTextIfChanged(byId('oi-scene-title'), sc.name || '');
-    setTextIfChanged(byId('oi-copper-pill'), (p.copper || 0) + ' 枚銅幣');
 
     var cuesEl = byId('oi-body-cues');
     var cues = p.body_cues || [];
@@ -1640,7 +1639,7 @@
     });
     var opts = { isNight: document.body.classList.contains('sw-night') };
     if (appState.mapScaleMode === 'island') {
-      setTextIfChanged(byId('oi-map-banner'), '銀鷗外島・全島總覽');
+      setTextIfChanged(byId('oi-map-banner'), '銀鷗外島・輿圖');
       window.StaticNodeMap.renderIslandOverview(wrap, v, appState.mapData, opts);
     } else {
       var res = window.StaticNodeMap.renderLocal(wrap, v, opts);
@@ -1808,7 +1807,10 @@
     if (navMapBtn) {
       navMapBtn.addEventListener('click', function () { openMapModal('island'); });
     }
-    byId('oi-btn-expand-map').addEventListener('click', function () { openMapModal(appState.asideMode || 'local'); });
+    var expandMapBtn = byId('oi-btn-expand-map');
+    if (expandMapBtn) {
+      expandMapBtn.addEventListener('click', function () { openMapModal(appState.asideMode || 'local'); });
+    }
     byId('oi-map-close').addEventListener('click', function () {
       appState.mapOpen = false;
       byId('oi-map-modal').hidden = true;

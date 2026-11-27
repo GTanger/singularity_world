@@ -10,8 +10,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23efe8d8' rx='6' width='32' height='32'/><circle cx='16' cy='16' r='13' fill='%23f8f3e7' stroke='%23261d14' stroke-width='1.5'/><text x='16' y='22' font-size='17' font-weight='700' fill='%23261d14' text-anchor='middle' font-family='serif'>奇</text></svg>">
   <link rel="apple-touch-icon" href="/icon.svg">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=20261127r4" disabled>
-  <link rel="stylesheet" href="island-ui.css?v=20261127r4">
+  <link rel="stylesheet" href="style.css?v=20261127r5" disabled>
+  <link rel="stylesheet" href="island-ui.css?v=20261127r5">
 </head>
 <body>
   <!-- 輕量提示條 -->
@@ -120,7 +120,6 @@
         <div class="oi-scene-inner">
           <div class="oi-scene-header">
             <h1 id="oi-scene-title" class="oi-scene-title">白鷗港・港務碼頭</h1>
-            <span id="oi-copper-pill" class="oi-copper-pill">0 枚銅幣</span>
           </div>
 
           <div id="oi-body-cues" class="oi-body-cues" hidden></div>
@@ -136,30 +135,21 @@
         </div>
       </main>
 
-      <!-- 常駐手繪靜態輿圖（手機上半可收折／桌機右側常駐，只顯示相連可走按鈕） -->
-      <aside id="oi-map-aside" class="oi-desktop-aside" aria-label="手繪靜態輿圖">
-        <div class="oi-aside-head">
-          <div class="oi-aside-tabs">
-            <button type="button" class="oi-icon-btn active" data-aside-mode="local">本區手繪圖</button>
-            <button type="button" class="oi-icon-btn" data-aside-mode="island">全島總覽</button>
-          </div>
-          <div class="oi-aside-actions">
-            <button type="button" id="oi-btn-toggle-map" class="oi-icon-btn oi-mobile-only">收合</button>
-            <button type="button" id="oi-btn-expand-map" class="oi-icon-btn">全幅</button>
-          </div>
-        </div>
+      <!-- 常駐固定框架手繪靜態地圖（緊貼自身／行囊／搜巡／近事／輿圖上方，只顯示相連可走按鈕） -->
+      <aside id="oi-map-aside" class="oi-desktop-aside" aria-label="手繪靜態地圖">
         <div id="oi-mini-map-frame" class="oi-mini-map-frame"></div>
       </aside>
     </div>
 
-    <!-- 3. 鎖定底欄：僅地圖收合時顯示出口列 ＋ 精簡四鍵導覽（不與地圖重複） -->
+    <!-- 3. 鎖定底欄：五鍵導覽（自身／行囊／搜巡／近事／輿圖） -->
     <footer class="oi-bottom-dock">
       <nav id="oi-exits-strip" class="oi-exits-strip" aria-label="可通行方向" hidden></nav>
-      <div class="oi-nav-five oi-nav-four">
+      <div class="oi-nav-five">
         <button type="button" id="oi-nav-self" class="oi-nav-btn">自身</button>
         <button type="button" id="oi-nav-bag" class="oi-nav-btn">行囊</button>
         <button type="button" id="oi-nav-explore" class="oi-nav-btn">搜巡</button>
         <button type="button" id="oi-nav-recap" class="oi-nav-btn">近事</button>
+        <button type="button" id="oi-nav-map" class="oi-nav-btn">輿圖</button>
       </div>
     </footer>
   </div>
@@ -175,7 +165,7 @@
     </section>
   </div>
 
-  <!-- 全螢幕手繪靜態輿圖（本區手繪圖 ↔ 全島總覽） -->
+  <!-- 全螢幕手繪靜態輿圖（全島輿圖 ↔ 本區手繪圖） -->
   <div id="oi-map-modal" class="oi-map-modal" hidden role="dialog" aria-modal="true" aria-label="全幅手繪輿圖">
     <div id="oi-map-canvas" class="oi-map-canvas-wrap"></div>
     <div class="oi-map-top">
@@ -183,8 +173,8 @@
     </div>
     <div class="oi-map-bottom-bar">
       <div class="oi-map-tabs">
-        <button type="button" class="oi-icon-btn active" data-map-scale="local">本區手繪圖</button>
-        <button type="button" class="oi-icon-btn" data-map-scale="island">全島總覽</button>
+        <button type="button" class="oi-icon-btn" data-map-scale="local">本區手繪圖</button>
+        <button type="button" class="oi-icon-btn active" data-map-scale="island">全島輿圖</button>
       </div>
       <div class="oi-map-zoom-btns">
         <button type="button" id="oi-map-close" class="oi-close-x oi-close-x-primary" aria-label="關閉">×</button>
@@ -192,22 +182,22 @@
     </div>
   </div>
 
-  <script src="town-basemaps.js?v=20261127r4"></script>
-  <script src="static-node-map.js?v=20261127r4"></script>
-  <script src="island-ui.js?v=20261127r4"></script>
+  <script src="town-basemaps.js?v=20261127r5"></script>
+  <script src="static-node-map.js?v=20261127r5"></script>
+  <script src="island-ui.js?v=20261127r5"></script>
   <script>
     if ('serviceWorker' in navigator) {
       var hadCtrl = !!navigator.serviceWorker.controller;
       var reloadingSw = false;
       navigator.serviceWorker.addEventListener('controllerchange', function () {
         if (!hadCtrl || reloadingSw) return;
-        if (sessionStorage.getItem('sw_reloaded_v20261127r4')) return;
-        sessionStorage.setItem('sw_reloaded_v20261127r4', '1');
+        if (sessionStorage.getItem('sw_reloaded_v20261127r5')) return;
+        sessionStorage.setItem('sw_reloaded_v20261127r5', '1');
         reloadingSw = true;
         window.location.reload();
       });
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js?v=20261127r4', { updateViaCache: 'none' }).catch(function () {});
+        navigator.serviceWorker.register('/sw.js?v=20261127r5', { updateViaCache: 'none' }).catch(function () {});
       });
     }
   </script>
