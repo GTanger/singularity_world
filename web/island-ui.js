@@ -15,8 +15,10 @@
     talkNpc: null,
     talkHistory: {}, // npcId -> [{ kind: 'npc'|'me'|'overheard', text }]
     mapOpen: false,
-    mapScaleMode: 'town', // 'island' | 'town' | 'dungeon'
-    asideMode: 'town', // 'town' | 'island'
+    mapScaleMode: 'local', // 'local' | 'island'
+    asideMode: 'local', // 'local' | 'island'
+    mobileMapCollapsed: false,
+    moveInFlight: false,
     lastCellId: null,
     lastNodeId: null,
     crowdExpanded: false,
@@ -886,90 +888,42 @@
     }
   }
 
-  function startGridWalk(opts) {
-    var wa = appState.walkAnim;
-    var mySeq = ++wa.walkSeq;
-    wa.inFlight = false;
-    wa.planInFlight = true;
-    wa.lastSyncTs = performance.now();
-    var payload = {
-      to: (opts && opts.to) || '',
-      mode: (opts && opts.mode) || 'plan',
-      prev_digest: appState.terrainDigest || undefined
-    };
-    if (opts && typeof opts.gx === 'number' && typeof opts.gy === 'number') {
-      payload.gx = opts.gx;
-      payload.gy = opts.gy;
-    }
-    apiJson('/api/island/move', 'POST', payload).then(function (res) {
-      if (mySeq !== wa.walkSeq) return;
-      wa.planInFlight = false;
-      if (res && res.view) applyServerView(res.view, false);
-      if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|海浪|無法|隔開/.test(res.msg))) {
+  function moveNodeTo(targetNid) {
+    if (!targetNid || appState.moveInFlight) return;
+    if (appState.view && appState.view.scene && appState.view.scene.node_id === targetNid) return;
+    appState.moveInFlight = true;
+    apiJson('/api/island/move', 'POST', {
+      to: targetNid,
+      mode: 'node'
+    }).then(function (res) {
+      appState.moveInFlight = false;
+      if (res && res.view) {
+        applyServerView(res.view, false);
+      }
+      if (res && res.msg && (!res.ok || /停步|沖斷|疫氣|變故|力竭|攔住|阻|海浪|無法|隔開|對峙/.test(res.msg))) {
         showToast(res.msg);
       }
-      if (res && res.map_sync) {
-        applyWalkMapSync(res.map_sync, mySeq, false);
-      } else {
-        refreshMapData(false);
-      }
     }).catch(function () {
-      if (mySeq === wa.walkSeq) wa.planInFlight = false;
+      appState.moveInFlight = false;
+      showToast('腳步略頓，請再點一次。');
     });
   }
 
-  function refreshMapData(centerCamera) {
+  function startGridWalk(opts) {
+    if (opts && opts.to) {
+      moveNodeTo(opts.to);
+    }
+  }
+
+  function refreshMapData() {
     if (appState.terrainRefreshInFlight) return;
     appState.terrainRefreshInFlight = true;
     apiJson('/api/island/map', 'GET').then(function (m) {
       appState.terrainRefreshInFlight = false;
       if (!m || !m.ok) return;
-      var wa = appState.walkAnim;
-      var walkingNow = !centerCamera && (wa.active || wa.inFlight || wa.planInFlight);
-      if (walkingNow && appState.mapData && appState.mapData.substrate && m.substrate) {
-        var curSub = appState.mapData.substrate;
-        var nextSub = m.substrate;
-        curSub.terrain_rle_b64 = nextSub.terrain_rle_b64;
-        curSub.overlay_rle_b64 = nextSub.overlay_rle_b64;
-        curSub.low_tide = nextSub.low_tide;
-        if (nextSub.terrain_digest) {
-          curSub.terrain_digest = nextSub.terrain_digest;
-          appState.terrainDigest = nextSub.terrain_digest;
-        }
-        if (Array.isArray(m.outline_cells)) appState.mapData.outline_cells = m.outline_cells;
-        if (Array.isArray(m.camera_bounds)) appState.mapData.camera_bounds = m.camera_bounds;
-        if (m.town_micro_maps) appState.mapData.town_micro_maps = m.town_micro_maps;
-        if (m.dungeon_local) appState.mapData.dungeon_local = m.dungeon_local;
-        renderDesktopMiniMap();
-        if (appState.mapOpen) renderFullscreenMap();
-        return;
-      }
-      var prevMapNodeId = appState.lastMapNodeId;
       appState.lastCellId = m.current_cell_id;
       appState.lastMapNodeId = m.current_node_id;
       appState.mapData = m;
-      var sub = m.substrate;
-      if (centerCamera && sub && sub.player_pos) {
-        appState.cam.cx = sub.player_pos[0];
-        appState.cam.cy = sub.player_pos[1];
-        appState.cam.followPlayer = true;
-        if (!appState.cam.pxPerTile || appState.cam.pxPerTile < 4.5) {
-          appState.cam.pxPerTile = 13.0;
-        }
-      }
-      if (m.in_dungeon) {
-        if (prevMapNodeId !== m.current_node_id || centerCamera) {
-          appState.mapScaleMode = 'dungeon';
-          appState.asideMode = 'dungeon';
-          appState.dngCam.cx = null;
-          appState.dngCam.cy = null;
-          appState.dngCam.zoom = 1.0;
-        }
-      } else {
-        if (appState.asideMode === 'dungeon') appState.asideMode = 'town';
-        if (appState.mapScaleMode === 'dungeon') appState.mapScaleMode = 'town';
-      }
-      syncWalkStateFromMap(m, centerCamera);
       renderDesktopMiniMap();
       if (appState.mapOpen) {
         renderFullscreenMap();
@@ -1025,6 +979,10 @@
     renderTopbar(view);
     renderSceneStage(view);
     renderExitsStrip(view);
+    renderDesktopMiniMap();
+    if (appState.mapOpen) {
+      renderFullscreenMap();
+    }
     if (!isBackgroundSync && appState.activeSheet && appState.activeSheet !== 'talk') {
       renderActiveSheet();
     }
@@ -1588,80 +1546,52 @@
   function renderDesktopMiniMap() {
     if (appState.mapOpen) return;
     var wrap = byId('oi-mini-map-frame');
-    var m = appState.mapData;
-    if (!wrap || !m || !window.IslandParchmentMap) return;
-    var inTown = isCurrentCellInTown(m);
-    var asideTownTab = document.querySelector('[data-aside-mode="town"]');
-    if (asideTownTab) {
-      asideTownTab.hidden = false;
-      setTextIfChanged(asideTownTab, inTown ? '街坊近景' : '近處風物');
+    var v = appState.view;
+    if (!wrap || !v || !v.scene || !window.StaticNodeMap) return;
+    var aside = byId('oi-map-aside');
+    if (aside) {
+      aside.classList.toggle('is-collapsed', !!appState.mobileMapCollapsed);
     }
-    var asideDngTab = byId('oi-aside-tab-dungeon');
-    if (asideDngTab) asideDngTab.hidden = !m.in_dungeon;
+    var toggleBtn = byId('oi-btn-toggle-map');
+    if (toggleBtn) {
+      setTextIfChanged(toggleBtn, appState.mobileMapCollapsed ? '展開地圖' : '收合');
+    }
     Array.prototype.forEach.call(document.querySelectorAll('[data-aside-mode]'), function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-aside-mode') === appState.asideMode);
     });
+    if (appState.mobileMapCollapsed && window.innerWidth < 960) return;
 
-    var canvas = ensureCanvasElement(wrap, 'oi-mini-canvas');
-    var opts = {
-      isNight: document.body.classList.contains('sw-night'),
-      slotIdx: appState.lastAppliedSlot
-    };
-    if (m.in_dungeon && appState.asideMode === 'dungeon') {
-      window.IslandParchmentMap.renderDungeon(canvas, m, { cx: null, cy: null, zoom: 1.0 }, opts);
-      appState.asideHitTargets = [];
-      return;
-    }
-    var sub = m.substrate;
-    var cam;
+    var opts = { isNight: document.body.classList.contains('sw-night') };
     if (appState.asideMode === 'island') {
-      cam = fitIslandCameraBounds(m, wrap.clientWidth, wrap.clientHeight);
+      window.StaticNodeMap.renderIslandOverview(wrap, v, appState.mapData, opts);
     } else {
-      var pos = (sub && sub.player_pos) || [634, 413];
-      cam = { cx: pos[0], cy: pos[1], pxPerTile: 10.5 };
+      var res = window.StaticNodeMap.renderLocal(wrap, v, opts);
+      var localTab = document.querySelector('[data-aside-mode="local"]');
+      if (localTab && res && res.layerBadge) {
+        setTextIfChanged(localTab, res.layerBadge);
+      }
     }
-    var res = window.IslandParchmentMap.renderIsland(canvas, m, cam, opts);
-    appState.asideHitTargets = (res && res.hitTargets) || [];
   }
 
   function renderFullscreenMap() {
-    var m = appState.mapData;
     var wrap = byId('oi-map-canvas');
-    if (!m || !wrap || !window.IslandParchmentMap) return;
-
-    var inTown = isCurrentCellInTown(m);
-    var townTab = document.querySelector('[data-map-scale="town"]');
-    if (townTab) {
-      townTab.hidden = false;
-      setTextIfChanged(townTab, inTown ? '街坊屋舍' : '近處風物');
-    }
-    var dngTab = byId('oi-map-tab-dungeon');
-    if (dngTab) dngTab.hidden = !m.in_dungeon;
-
-    if (appState.mapScaleMode !== 'dungeon') {
-      appState.mapScaleMode = appState.cam.pxPerTile >= 4.2 ? 'town' : 'island';
-    }
+    var v = appState.view;
+    if (!wrap || !v || !v.scene || !window.StaticNodeMap) return;
     Array.prototype.forEach.call(document.querySelectorAll('[data-map-scale]'), function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-map-scale') === appState.mapScaleMode);
     });
-
-    var canvas = ensureCanvasElement(wrap, 'oi-full-canvas');
-    var opts = {
-      isNight: document.body.classList.contains('sw-night'),
-      slotIdx: appState.lastAppliedSlot
-    };
-    if (appState.mapScaleMode === 'dungeon' && m.in_dungeon) {
-      byId('oi-map-banner').textContent = m.current_node_name || '地底石室';
-      window.IslandParchmentMap.renderDungeon(canvas, m, appState.dngCam, opts);
-      appState.cam.hitTargets = [];
-      return;
+    var opts = { isNight: document.body.classList.contains('sw-night') };
+    if (appState.mapScaleMode === 'island') {
+      setTextIfChanged(byId('oi-map-banner'), '銀鷗外島・全島總覽');
+      window.StaticNodeMap.renderIslandOverview(wrap, v, appState.mapData, opts);
+    } else {
+      var res = window.StaticNodeMap.renderLocal(wrap, v, opts);
+      var localBtn = document.querySelector('[data-map-scale="local"]');
+      if (localBtn && res && res.layerBadge) {
+        setTextIfChanged(localBtn, res.layerBadge);
+      }
+      setTextIfChanged(byId('oi-map-banner'), (v.scene && v.scene.name) || '手繪輿圖');
     }
-
-    byId('oi-map-banner').textContent = appState.cam.pxPerTile >= 4.2
-      ? (m.current_node_name || m.world_name)
-      : (m.state_name || m.world_name);
-    var res = window.IslandParchmentMap.renderIsland(canvas, m, appState.cam, opts);
-    appState.cam.hitTargets = (res && res.hitTargets) || [];
   }
 
   /* ═══ 全域事件委派與手機虛擬鍵盤貼齊 ═══ */
@@ -1756,28 +1686,42 @@
       var asideTab = ev.target.closest('[data-aside-mode]');
       if (asideTab) {
         appState.asideMode = asideTab.getAttribute('data-aside-mode');
+        if (appState.mobileMapCollapsed) appState.mobileMapCollapsed = false;
         renderDesktopMiniMap();
+        return;
+      }
+
+      var nodeHopBtn = ev.target.closest('[data-node-hop]');
+      if (nodeHopBtn) {
+        var hopNid = nodeHopBtn.getAttribute('data-node-hop');
+        moveNodeTo(hopNid);
         return;
       }
 
       var mapNode = ev.target.closest('[data-map-node]');
       if (mapNode) {
         var targetNid = mapNode.getAttribute('data-map-node');
-        if (targetNid && targetNid !== (appState.view && appState.view.scene && appState.view.scene.node_id)) {
-          startGridWalk({ to: targetNid, mode: 'plan' });
-        }
+        moveNodeTo(targetNid);
         return;
       }
 
       var moveBtn = ev.target.closest('[data-move-to]');
       if (moveBtn) {
         var dst = moveBtn.getAttribute('data-move-to');
-        startGridWalk({ to: dst, mode: 'plan' });
+        moveNodeTo(dst);
         return;
       }
     });
 
-    // 底欄五鍵與桌機展開輿圖
+    var toggleMapBtn = byId('oi-btn-toggle-map');
+    if (toggleMapBtn) {
+      toggleMapBtn.addEventListener('click', function () {
+        appState.mobileMapCollapsed = !appState.mobileMapCollapsed;
+        renderDesktopMiniMap();
+      });
+    }
+
+    // 底欄五鍵與展開全幅靜態輿圖
     byId('oi-nav-self').addEventListener('click', function () { openInfoSheet('self'); });
     byId('oi-nav-bag').addEventListener('click', function () { openInfoSheet('bag'); });
     byId('oi-nav-recap').addEventListener('click', function () { openInfoSheet('recap'); });
@@ -1785,221 +1729,36 @@
       apiJson('/api/island/act', 'POST', { action: 'explore', param: '' }).then(function (res) {
         if (res && res.view) applyServerView(res.view);
         if (res && (!res.ok || !res.view) && res.msg) showToast(res.msg);
-        refreshMapData(false);
       });
     });
 
-    function openMapModal() {
+    function openMapModal(preferredMode) {
       appState.mapOpen = true;
-      var m = appState.mapData;
-      var sub = m && m.substrate;
-      if (!(m && m.in_dungeon) && appState.mapScaleMode !== 'island') {
-        var curPos = appState.walkAnim.displayPos || (sub && sub.player_pos);
-        if (curPos) {
-          appState.cam.cx = curPos[0];
-          appState.cam.cy = curPos[1];
-          appState.cam.followPlayer = true;
-        }
-      }
+      appState.mapScaleMode = preferredMode || appState.asideMode || 'local';
       byId('oi-map-modal').hidden = false;
       renderFullscreenMap();
     }
-    byId('oi-nav-map').addEventListener('click', openMapModal);
-    byId('oi-btn-expand-map').addEventListener('click', openMapModal);
+    byId('oi-nav-map').addEventListener('click', function () { openMapModal('island'); });
+    byId('oi-btn-expand-map').addEventListener('click', function () { openMapModal(appState.asideMode || 'local'); });
     byId('oi-map-close').addEventListener('click', function () {
       appState.mapOpen = false;
       byId('oi-map-modal').hidden = true;
       renderDesktopMiniMap();
     });
 
-    // 輿圖尺度預設切換、無縫縮放（按鈕＋滾輪＋雙指捏合）、平移與鄰近節點點擊移動
+    // 全螢幕靜態手繪圖：僅相連節點按鈕可點，點地圖空白處完全不移動
     byId('oi-map-modal').addEventListener('click', function (ev) {
       var scaleBtn = ev.target.closest('[data-map-scale]');
       if (scaleBtn) {
-        var nextMode = scaleBtn.getAttribute('data-map-scale');
-        var mapWrap = byId('oi-map-canvas');
-        var sub = appState.mapData && appState.mapData.substrate;
-        if (nextMode === 'island') {
-          appState.mapScaleMode = 'island';
-          var fit = fitIslandCameraBounds(appState.mapData, mapWrap.clientWidth, mapWrap.clientHeight);
-          appState.cam.cx = fit.cx;
-          appState.cam.cy = fit.cy;
-          appState.cam.pxPerTile = fit.pxPerTile;
-        } else if (nextMode === 'town') {
-          appState.mapScaleMode = 'town';
-          var townPos = appState.walkAnim.displayPos || (sub && sub.player_pos);
-          if (townPos) {
-            appState.cam.cx = townPos[0];
-            appState.cam.cy = townPos[1];
-          }
-          appState.cam.followPlayer = true;
-          appState.cam.pxPerTile = Math.max(11.5, appState.cam.pxPerTile);
-        } else if (nextMode === 'dungeon') {
-          appState.mapScaleMode = 'dungeon';
-          appState.dngCam.cx = null;
-          appState.dngCam.cy = null;
-          appState.dngCam.zoom = 1.0;
-        }
+        appState.mapScaleMode = scaleBtn.getAttribute('data-map-scale') || 'local';
         renderFullscreenMap();
         return;
       }
-    });
-
-    function zoomMapByFactor(factor) {
-      if (appState.mapScaleMode === 'dungeon') {
-        appState.dngCam.zoom = Math.max(0.65, Math.min(2.8, (appState.dngCam.zoom || 1.0) * factor));
-      } else {
-        appState.cam.pxPerTile = Math.max(0.38, Math.min(24.0, appState.cam.pxPerTile * factor));
-        appState.mapScaleMode = appState.cam.pxPerTile >= 4.2 ? 'town' : 'island';
-      }
-      renderFullscreenMap();
-    }
-
-    byId('oi-map-zoom-in').addEventListener('click', function () { zoomMapByFactor(1.42); });
-    byId('oi-map-zoom-out').addEventListener('click', function () { zoomMapByFactor(1 / 1.42); });
-
-    byId('oi-map-locate').addEventListener('click', function () {
-      appState.dngCam.cx = null;
-      appState.dngCam.cy = null;
-      appState.dngCam.zoom = 1.0;
-      appState.cam.followPlayer = true;
-      if (appState.mapData && appState.mapData.in_dungeon) {
-        appState.mapScaleMode = 'dungeon';
-      } else {
-        appState.mapScaleMode = 'town';
-        appState.cam.pxPerTile = 13.0;
-      }
-      refreshMapData(true);
-    });
-
-    var mapCanvas = byId('oi-map-canvas');
-    var activePointers = new Map();
-    var lastPinchDist = 0;
-
-    mapCanvas.addEventListener('pointerdown', function (ev) {
-      activePointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-      if (activePointers.size === 1) {
-        appState.cam.dragging = true;
-        appState.cam.lastX = ev.clientX;
-        appState.cam.lastY = ev.clientY;
-        appState.cam.downX = ev.clientX;
-        appState.cam.downY = ev.clientY;
-      } else if (activePointers.size === 2) {
-        var pts = Array.from(activePointers.values());
-        lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
-      }
-      try { mapCanvas.setPointerCapture(ev.pointerId); } catch (_) {}
-    });
-
-    mapCanvas.addEventListener('pointermove', function (ev) {
-      if (!activePointers.has(ev.pointerId)) return;
-      activePointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-      if (activePointers.size === 2) {
-        var pts = Array.from(activePointers.values());
-        var dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
-        if (lastPinchDist > 10 && dist > 10) {
-          zoomMapByFactor(dist / lastPinchDist);
-        }
-        lastPinchDist = dist;
+      var hopBtn = ev.target.closest('[data-node-hop]');
+      if (hopBtn) {
+        moveNodeTo(hopBtn.getAttribute('data-node-hop'));
         return;
       }
-      if (!appState.cam.dragging) return;
-      if (Math.hypot(ev.clientX - appState.cam.downX, ev.clientY - appState.cam.downY) >= 8) {
-        appState.cam.followPlayer = false;
-      }
-      var dx = ev.clientX - appState.cam.lastX;
-      var dy = ev.clientY - appState.cam.lastY;
-      appState.cam.lastX = ev.clientX;
-      appState.cam.lastY = ev.clientY;
-      if (appState.mapScaleMode === 'dungeon') {
-        var stPx = Math.max(80, Math.min(mapCanvas.clientWidth, mapCanvas.clientHeight) * 0.28 * (appState.dngCam.zoom || 1.0));
-        if (appState.dngCam.cx == null) appState.dngCam.cx = 0;
-        if (appState.dngCam.cy == null) appState.dngCam.cy = 0;
-        appState.dngCam.cx -= dx / stPx;
-        appState.dngCam.cy -= dy / stPx;
-      } else {
-        var sub = appState.mapData && appState.mapData.substrate;
-        var maxW = (sub && sub.grid_w) || 860;
-        var maxH = (sub && sub.grid_h) || 930;
-        appState.cam.cx = Math.max(0, Math.min(maxW, appState.cam.cx - dx / appState.cam.pxPerTile));
-        appState.cam.cy = Math.max(0, Math.min(maxH, appState.cam.cy - dy / appState.cam.pxPerTile));
-      }
-      renderFullscreenMap();
-    });
-
-    function endPointer(ev) {
-      var wasSingle = activePointers.size === 1;
-      activePointers.delete(ev.pointerId);
-      if (activePointers.size < 2) lastPinchDist = 0;
-      if (wasSingle && appState.cam.dragging) {
-        appState.cam.dragging = false;
-        if (Math.hypot(ev.clientX - appState.cam.downX, ev.clientY - appState.cam.downY) < 6) {
-          var rect = mapCanvas.getBoundingClientRect();
-          var lx = ev.clientX - rect.left;
-          var ly = ev.clientY - rect.top;
-          var hits = appState.cam.hitTargets || [];
-          var curNid = appState.mapData && appState.mapData.current_node_id;
-          var pPos = appState.walkAnim.displayPos || (appState.mapData && appState.mapData.substrate && appState.mapData.substrate.player_pos);
-          for (var hi = 0; hi < hits.length; hi++) {
-            var h = hits[hi];
-            if (lx >= h.x0 && lx <= h.x1 && ly >= h.y0 && ly <= h.y1) {
-              if (h.nid === curNid && typeof h.gx === 'number' && typeof h.gy === 'number' && pPos && Math.hypot(h.gx - pPos[0], h.gy - pPos[1]) > 2.0) {
-                startGridWalk({ gx: h.gx, gy: h.gy, mode: 'plan' });
-              } else {
-                startGridWalk({ to: h.nid, mode: 'plan' });
-              }
-              return;
-            }
-          }
-          if (!(appState.mapScaleMode === 'dungeon' && appState.mapData && appState.mapData.in_dungeon)) {
-            var gx = appState.cam.cx + (lx - rect.width * 0.5) / appState.cam.pxPerTile;
-            var gy = appState.cam.cy + (ly - rect.height * 0.5) / appState.cam.pxPerTile;
-            startGridWalk({ gx: gx, gy: gy, mode: 'plan' });
-          }
-        }
-      }
-    }
-    mapCanvas.addEventListener('pointerup', endPointer);
-    mapCanvas.addEventListener('pointercancel', endPointer);
-
-    mapCanvas.addEventListener('wheel', function (ev) {
-      ev.preventDefault();
-      var f = ev.deltaY < 0 ? 1.18 : (1 / 1.18);
-      zoomMapByFactor(f);
-    }, { passive: false });
-
-    byId('oi-mini-map-frame').addEventListener('click', function (ev) {
-      var wrap = byId('oi-mini-map-frame');
-      var rect = wrap.getBoundingClientRect();
-      var lx = ev.clientX - rect.left;
-      var ly = ev.clientY - rect.top;
-      var hits = appState.asideHitTargets || [];
-      var curNidA = appState.mapData && appState.mapData.current_node_id;
-      var pPosA = appState.walkAnim.displayPos || (appState.mapData && appState.mapData.substrate && appState.mapData.substrate.player_pos);
-      for (var hi = 0; hi < hits.length; hi++) {
-        var h = hits[hi];
-        if (lx >= h.x0 && lx <= h.x1 && ly >= h.y0 && ly <= h.y1) {
-          if (h.nid === curNidA && typeof h.gx === 'number' && typeof h.gy === 'number' && pPosA && Math.hypot(h.gx - pPosA[0], h.gy - pPosA[1]) > 2.0) {
-            startGridWalk({ gx: h.gx, gy: h.gy, mode: 'plan' });
-          } else {
-            startGridWalk({ to: h.nid, mode: 'plan' });
-          }
-          return;
-        }
-      }
-      var m = appState.mapData;
-      var sub = m && m.substrate;
-      if (!sub || (m.in_dungeon && appState.asideMode === 'dungeon')) return;
-      var cam;
-      if (appState.asideMode === 'island') {
-        cam = fitIslandCameraBounds(m, wrap.clientWidth, wrap.clientHeight);
-      } else {
-        var pos = sub.player_pos || [634, 413];
-        cam = { cx: pos[0], cy: pos[1], pxPerTile: 10.5 };
-      }
-      var gx = cam.cx + (lx - rect.width * 0.5) / cam.pxPerTile;
-      var gy = cam.cy + (ly - rect.height * 0.5) / cam.pxPerTile;
-      startGridWalk({ gx: gx, gy: gy, mode: 'plan' });
     });
 
     window.addEventListener('resize', function () {

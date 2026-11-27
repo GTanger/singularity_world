@@ -113,6 +113,10 @@ pub fn build_view_json(
                 "kind": ex.kind,
                 "milestone_zh": ex.milestone_zh,
                 "ambient_cue": ambient_cue,
+                "to_pos": dst_opt.map(|d| d.pos),
+                "to_cell_id": dst_opt.map(|d| d.cell_id),
+                "to_indoor": dst_opt.is_some_and(|d| d.indoor),
+                "to_kind": dst_opt.map(|d| d.kind.as_str()),
             })
         })
         .collect();
@@ -120,12 +124,17 @@ pub fn build_view_json(
     if let Some(hid) = doc.hidden_entrances.get(&node.id)
         && viewer.unlocked_secrets.contains(&node.id)
     {
+        let h_dst = doc.nodes.get(&hid.target);
         exits_out.push(json!({
             "dir": hid.dir,
             "to": hid.target,
             "to_name": hid.to_name,
             "kind": "secret",
             "ambient_cue": "石縫深處湧出微涼氣流",
+            "to_pos": h_dst.map(|d| d.pos),
+            "to_cell_id": h_dst.map(|d| d.cell_id),
+            "to_indoor": h_dst.is_some_and(|d| d.indoor),
+            "to_kind": h_dst.map(|d| d.kind.as_str()),
         }));
     }
 
@@ -264,6 +273,36 @@ pub fn build_view_json(
     let live_desc = super::live_tide::compose_live_scene_desc(doc, delta, node, clock, &scene_desc);
     let td = super::live_tide::derive_tide_clock_details(clock);
 
+    let major_town_slug: Option<&str> = match node.cell_id {
+        4616 => Some("white_gull_harbor"),
+        4613 => Some("gull_tail_port"),
+        4321 => Some("west_strait_ferry"),
+        4525 => Some("greypine_post"),
+        4073 => Some("north_cape_beacon"),
+        _ => None,
+    };
+    let cell_opt = doc.cells.get(&node.cell_id.to_string());
+    let cell_map_json = cell_illustrated_map_spec(node.cell_id).map(|sp| {
+        json!({
+            "url": sp.url,
+            "bg_day": sp.bg_day,
+            "bg_night": sp.bg_night,
+            "glows": sp.glows,
+        })
+    });
+    let dungeon_room_json = if node.dungeon {
+        dungeon_room_tile_spec(&node.id).map(|sp| {
+            json!({
+                "room_url": sp.room_url,
+                "tile_url": sp.tile_url,
+                "anchor": sp.anchor,
+                "label_pos": sp.label_pos,
+            })
+        })
+    } else {
+        None
+    };
+
     json!({
         "ok": true,
         "setup_done": viewer.setup_done,
@@ -295,6 +334,7 @@ pub fn build_view_json(
             "kind": node.kind,
             "indoor": node.indoor,
             "dungeon": node.dungeon,
+            "pos": node.pos,
             "desc": live_desc,
             "npcs": visible_npcs,
             "crowd_overflow": crowd_overflow,
@@ -303,6 +343,15 @@ pub fn build_view_json(
             "actions": scene_actions,
             "transit_signboards": super::transit_and_cargo::build_node_transit_signboards(doc, delta, &node.id),
             "breaths": super::surface_cues::filter_clean_scene_breaths(&viewer.recent_breaths, &clock.bell_label),
+            "static_map": {
+                "cell_id": node.cell_id,
+                "cell_title": cell_opt.map(|c| c.title.as_str()).unwrap_or(""),
+                "cell_center": cell_opt.map(|c| c.center),
+                "town_slug": major_town_slug,
+                "cell_map": cell_map_json,
+                "dungeon_room": dungeon_room_json,
+                "island_master_url": "/maps/seam_lab/master_island_2k.webp?v=20261127r1",
+            },
         },
         "player": {
             "id": public_id,
@@ -666,6 +715,15 @@ pub fn build_filtered_map_json(
 
     let substrate = super::island_substrate::build_viewer_substrate_json(doc, delta, viewer, clock);
 
+    let cur_cell_map_json = cell_illustrated_map_spec(cur_node.cell_id).map(|sp| {
+        json!({
+            "url": sp.url,
+            "bg_day": sp.bg_day,
+            "bg_night": sp.bg_night,
+            "glows": sp.glows,
+        })
+    });
+
     json!({
         "ok": true,
         "world_name": doc.world_name,
@@ -681,7 +739,8 @@ pub fn build_filtered_map_json(
         "highways": visible_highways,
         "sea_corridors": visible_sea,
         "town_micro_maps": visited_towns,
-        "current_cell_map": Value::Null,
+        "current_cell_map": cur_cell_map_json,
+        "island_master_url": "/maps/seam_lab/master_island_2k.webp?v=20261127r1",
         "dungeon_local": dungeon_local,
         "substrate": substrate,
     })

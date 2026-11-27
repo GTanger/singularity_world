@@ -271,10 +271,17 @@ fn viewer_substrate_enforces_fog_low_tide_and_dynamic_houses_with_zero_webp() {
 
     let viewer = delta.actor_by_id_or_controller("sub_tester").unwrap();
     let map_pkt = build_filtered_map_json(&doc, &delta, viewer, &low_clk);
-    let pkt_str = map_pkt.to_string();
     assert!(
-        !pkt_str.contains(".webp"),
-        "map packet must contain 0 .webp references"
+        map_pkt["current_cell_map"]["url"]
+            .as_str()
+            .is_some_and(|u| u.starts_with("/maps/cells/cell_4617.webp")),
+        "rural/coastal cell 4617 must serve its static cell map webp"
+    );
+    assert!(
+        map_pkt["island_master_url"]
+            .as_str()
+            .is_some_and(|u| u.contains("master_island_2k.webp")),
+        "map packet must include master_island_2k overview url"
     );
 
     let sub_low = &map_pkt["substrate"];
@@ -329,6 +336,63 @@ fn viewer_substrate_enforces_fog_low_tide_and_dynamic_houses_with_zero_webp() {
         0,
         "nearby_actors must strictly stay within 14.0 tiles"
     );
+
+    // 驗證純節點單步跳動（mode="node"）：僅相連出口允許移動，未相連節點嚴格拒絕；並驗證 scene.static_map 三層對位
+    delta.relocate_actor("sub_tester", "oi:white_gull_harbor:smithy_st", 4616, true);
+    let v_smithy = super::views::build_view_json(
+        &doc,
+        &delta,
+        delta.actor_by_id_or_controller("sub_tester").unwrap(),
+        &low_clk,
+    );
+    assert_eq!(
+        v_smithy["scene"]["static_map"]["town_slug"],
+        "white_gull_harbor"
+    );
+    assert!(
+        super::map_walk::handle_player_move_request(
+            &doc,
+            &mut delta,
+            &low_clk,
+            "sub_tester",
+            "oi:white_gull_harbor:dock",
+            None,
+            None,
+            "node",
+            None,
+            1_760_000_000_000,
+        )
+        .is_err(),
+        "non-connected node must be strictly rejected in node mode"
+    );
+    super::map_walk::handle_player_move_request(
+        &doc,
+        &mut delta,
+        &low_clk,
+        "sub_tester",
+        "oi:white_gull_harbor:bal_forge",
+        None,
+        None,
+        "node",
+        None,
+        1_760_000_000_500,
+    )
+    .expect("connected shop exit bal_forge must succeed in node mode");
+    let v_forge = super::views::build_view_json(
+        &doc,
+        &delta,
+        delta.actor_by_id_or_controller("sub_tester").unwrap(),
+        &low_clk,
+    );
+    assert_eq!(v_forge["scene"]["node_id"], "oi:white_gull_harbor:bal_forge");
+    assert_eq!(
+        v_forge["scene"]["static_map"]["town_slug"],
+        "white_gull_harbor"
+    );
+    assert!(v_forge["scene"]["indoor"].as_bool().unwrap_or(false));
+    let forge_exits = v_forge["scene"]["exits"].as_array().unwrap();
+    assert_eq!(forge_exits.len(), 1);
+    assert_eq!(forge_exits[0]["to"], "oi:white_gull_harbor:smithy_st");
 }
 
 #[test]

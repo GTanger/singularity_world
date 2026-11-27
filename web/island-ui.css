@@ -1051,10 +1051,258 @@ button, input, select {
   pointer-events: none;
 }
 
-/* 手機與平板響應式：必須置於 .oi-desktop-aside 之後以確保隱藏雙欄 */
+.oi-aside-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.oi-mobile-only {
+  display: none;
+}
+
+/* ═══ 三層靜態手繪水彩圖（當前發亮 ＋ 相連出口淡化／變暗 ＋ 無連線 ＋ 點他處不動） ═══ */
+.oi-snm-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.oi-snm-stage {
+  position: absolute;
+  transition: left 0.24s ease, top 0.24s ease, width 0.24s ease, height 0.24s ease;
+}
+
+.oi-snm-img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+.oi-snm-stage.full-bleed .oi-snm-img,
+.oi-snm-stage.full-bleed .oi-snm-night-shade {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.oi-snm-stage.wg-legacy .oi-snm-img,
+.oi-snm-stage.wg-legacy .oi-snm-night-shade {
+  left: -22.2222%;
+  top: -26.6667%;
+  width: 144.4444%;
+  height: 153.3333%;
+}
+
+.oi-snm-night-shade {
+  position: absolute;
+  background: rgba(12, 16, 22, 0.44);
+  pointer-events: none;
+}
+
+.oi-snm-night-shade.is-soft {
+  background: rgba(12, 16, 22, 0.26);
+}
+
+.oi-snm-glow {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 186, 86, 0.44) 0%, rgba(255, 146, 48, 0.14) 55%, rgba(255, 146, 48, 0) 100%);
+  pointer-events: none;
+}
+
+.oi-snm-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  max-width: 44%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.16s ease, transform 0.12s ease, box-shadow 0.18s ease, background 0.16s ease;
+}
+
+.oi-snm-lbl {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 當前所在節點：明顯發亮 */
+.oi-snm-node.is-current {
+  z-index: 6;
+  background: linear-gradient(180deg, #fff7dd 0%, #f5cb6e 100%);
+  color: #4a2204;
+  border: 2px solid #fff3c4;
+  box-shadow:
+    0 0 0 3px rgba(244, 187, 68, 0.42),
+    0 0 18px rgba(255, 200, 74, 0.85),
+    0 3px 10px rgba(0, 0, 0, 0.34);
+  pointer-events: none;
+  animation: oi-snm-pulse 2.2s ease-in-out infinite;
+}
+
+.oi-snm-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c4361d;
+  box-shadow: 0 0 0 2px rgba(255, 250, 232, 0.9);
+  flex-shrink: 0;
+}
+
+@keyframes oi-snm-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(244, 187, 68, 0.42),
+      0 0 16px rgba(255, 200, 74, 0.78),
+      0 3px 10px rgba(0, 0, 0, 0.32);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(244, 187, 68, 0.56),
+      0 0 24px rgba(255, 212, 96, 0.95),
+      0 3px 10px rgba(0, 0, 0, 0.32);
+  }
+}
+
+/* 周圍相連可走出口：淡化／變暗（點擊即移動） */
+.oi-snm-node.is-reachable {
+  z-index: 4;
+  min-height: 32px;
+  background: rgba(34, 27, 21, 0.64);
+  color: rgba(245, 236, 218, 0.88);
+  border: 1px solid rgba(235, 216, 180, 0.42);
+  opacity: 0.78;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(2px);
+}
+
+.oi-snm-node.is-reachable:hover,
+.oi-snm-node.is-reachable:focus-visible {
+  opacity: 1;
+  background: rgba(44, 34, 24, 0.88);
+  color: #fff8e8;
+  border-color: rgba(245, 198, 96, 0.85);
+  box-shadow: 0 0 12px rgba(245, 198, 96, 0.45), 0 3px 9px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.oi-snm-node.is-reachable:active {
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.oi-snm-node.is-reachable:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.oi-snm-node.is-reachable.is-secret {
+  background: rgba(20, 48, 44, 0.74);
+  border-color: rgba(132, 224, 200, 0.65);
+  color: #d9fff4;
+}
+
+.oi-snm-node.is-reachable.is-leave {
+  border-style: dashed;
+}
+
+/* 全島總覽標記（純辨位、不觸發移動） */
+.oi-snm-ov-town {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: rgba(26, 22, 18, 0.56);
+  color: rgba(242, 232, 212, 0.76);
+  border: 1px solid rgba(226, 208, 174, 0.32);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.oi-snm-ov-town.is-visited {
+  background: rgba(34, 27, 21, 0.74);
+  color: #f6ebd5;
+  border-color: rgba(240, 214, 160, 0.55);
+}
+
+.oi-snm-ov-town.is-here {
+  display: none;
+}
+
+.oi-snm-ov-me {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #fff7dd 0%, #f5cb6e 100%);
+  color: #4a2204;
+  border: 2px solid #fff3c4;
+  box-shadow: 0 0 18px rgba(255, 200, 74, 0.88), 0 3px 9px rgba(0, 0, 0, 0.34);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* 手機與平板響應式：上半常駐靜態手繪圖（可收合）＋ 下半多文字主區 */
 @media (max-width: 959px) {
+  .oi-main-workspace {
+    flex-direction: column-reverse;
+  }
   .oi-desktop-aside {
+    display: flex;
+    width: 100%;
+    flex: 0 0 auto;
+    height: clamp(210px, 37dvh, 310px);
+    border-left: none;
+    border-bottom: 1px solid var(--border-line);
+  }
+  .oi-desktop-aside.is-collapsed {
+    height: auto;
+  }
+  .oi-desktop-aside.is-collapsed .oi-mini-map-frame {
     display: none;
+  }
+  .oi-aside-head {
+    padding: 5px 10px;
+  }
+  .oi-aside-head .oi-icon-btn {
+    min-height: 30px;
+    padding: 3px 9px;
+    font-size: 0.78rem;
+  }
+  .oi-mobile-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .oi-snm-node {
+    font-size: 11.5px;
+    padding: 4px 8px;
+  }
+  .oi-scene-scroll {
+    padding: 12px 14px 20px;
   }
   .oi-origin-grid {
     grid-template-columns: 1fr;

@@ -601,6 +601,24 @@ pub fn handle_player_move_request(
         return Ok("你收住腳步，就地停在路旁。".to_string());
     }
 
+    if mode == "node" {
+        let msg = apply_move_step(doc, delta, clock, &aid, target_node, now_ms)?;
+        let sub = compiled_island_substrate(doc);
+        if let Some(dst_nd) = doc.nodes.get(target_node) {
+            let (tx, ty) = node_target_xy(doc, sub, dst_nd);
+            if let Some(a) = delta.actors.get_mut(&aid) {
+                a.walk_waypoints.clear();
+                a.walk_goal_enter_node = None;
+                a.route_plan.clear();
+                a.map_gx = tx as f32 + 0.5;
+                a.map_gy = ty as f32 + 0.5;
+                a.mark_mutated();
+            }
+        }
+        record_local_witness_at_cur_node(doc, delta, &aid, clock.game_days);
+        return Ok(msg);
+    }
+
     let high_tide = is_high_tide_slot(derive_tide_clock_details(clock).tide_slot);
     let sub = compiled_island_substrate(doc);
     if mode == "step" {

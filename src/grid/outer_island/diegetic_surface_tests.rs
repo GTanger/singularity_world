@@ -341,15 +341,11 @@ fn trial_pit_sliced_map_tiles_are_zero_spoiler_and_verified_on_disk() {
     .expect("create pit_fog_tester");
     let pid = delta.resolve_actor_id("pit_fog_tester").unwrap();
 
-    // 初踏入塌陷洞口：地底坑道僅回傳洞口 1 室且絕無任何 `.webp` 圖片與未探石室洩漏！
+    // 初踏入塌陷洞口：地底坑道僅回傳洞口 1 室且絕無任何未探石室 ID 或未探石室圖洩漏！
     delta.relocate_actor(&pid, "oi:dng_pit:entry", 4529, true);
     let m1 =
         super::views::build_filtered_map_json(&doc, &delta, delta.actors.get(&pid).unwrap(), &clk);
     let raw1 = serde_json::to_string(&m1).unwrap();
-    assert!(
-        !raw1.contains(".webp"),
-        "home map packet must never reference .webp: {raw1}"
-    );
     assert!(raw1.contains("oi:dng_pit:entry"));
     for hidden_id in [
         "oi:dng_pit:hall",
@@ -358,7 +354,11 @@ fn trial_pit_sliced_map_tiles_are_zero_spoiler_and_verified_on_disk() {
         "oi:dng_pit:lair",
         "oi:dng_pit:altar",
         "seg_",
-        "rm_",
+        "rm_3d7c95f104e8.webp",
+        "rm_6f19b82a5d41.webp",
+        "rm_c450e73b91a6.webp",
+        "rm_52b8d094e7c2.webp",
+        "rm_9e36a418f0b7.webp",
     ] {
         assert!(
             !raw1.contains(hidden_id),
@@ -367,13 +367,12 @@ fn trial_pit_sliced_map_tiles_are_zero_spoiler_and_verified_on_disk() {
     }
     assert_eq!(m1["dungeon_local"]["rooms"].as_array().unwrap().len(), 1);
 
-    // 推進至斷柱前廳與古銘文石室：應解鎖 3 室程序草圖，偏室、蛛巢與凝石台依然 0 洩漏！
+    // 推進至斷柱前廳與古銘文石室：應解鎖 3 室，偏室、蛛巢與凝石台依然 0 洩漏！
     delta.relocate_actor(&pid, "oi:dng_pit:hall", 4529, true);
     delta.relocate_actor(&pid, "oi:dng_pit:stele", 4529, true);
     let m3 =
         super::views::build_filtered_map_json(&doc, &delta, delta.actors.get(&pid).unwrap(), &clk);
     let raw3 = serde_json::to_string(&m3).unwrap();
-    assert!(!raw3.contains(".webp"));
     assert_eq!(m3["dungeon_local"]["rooms"].as_array().unwrap().len(), 3);
     assert!(raw3.contains("oi:dng_pit:entry"));
     assert!(raw3.contains("oi:dng_pit:hall"));
@@ -398,7 +397,7 @@ fn trial_pit_sliced_map_tiles_are_zero_spoiler_and_verified_on_disk() {
         );
     }
 
-    // 驗證 `/world_atlas` 保留之 36 格靜態插畫設定仍存在於磁碟，但正式首頁 `/api/island/map` 已全面切為零圖檔無縫水彩底盤
+    // 驗證三層靜態手繪圖（2026-11-27 定案）：36 處鄉鎮聚落＋全部 88 塊城外地塊皆有真實磁碟 .webp 且由 current_cell_map 回傳
     let mut verified_cell_maps = 0usize;
     for c in doc.cells.values() {
         if matches!(c.kind.as_str(), "rural_settlement" | "plague_ruin")
@@ -436,15 +435,19 @@ fn trial_pit_sliced_map_tiles_are_zero_spoiler_and_verified_on_disk() {
             delta.actors.get(&pid).unwrap(),
             &clk,
         );
-        assert!(mc["current_cell_map"].is_null());
+        assert!(
+            mc["current_cell_map"]["url"]
+                .as_str()
+                .is_some_and(|u| u.starts_with(&format!("/maps/cells/cell_{cid}.webp"))),
+            "rural/wild cell {cid} must serve its static cell map webp"
+        );
         assert!(
             mc["substrate"]["terrain_rle_b64"]
                 .as_str()
                 .is_some_and(|s| !s.is_empty())
         );
-        assert!(!serde_json::to_string(&mc).unwrap().contains(".webp"));
     }
-    // 磁碟切片檔案檢核仍保留完整，且首頁 /api/island/map 在地底石室同樣 0 .webp 外洩
+    // 磁碟切片檔案檢核完整，且首頁只揭露當前所在石室、絕不洩漏深處未探石室圖
     let all_room_closeups = [
         ("oi:dng_pit:entry", "rm_8a41e207c9b3.webp"),
         ("oi:dng_pit:hall", "rm_3d7c95f104e8.webp"),
@@ -475,8 +478,7 @@ fn trial_pit_sliced_map_tiles_are_zero_spoiler_and_verified_on_disk() {
     let md =
         super::views::build_filtered_map_json(&doc, &delta, delta.actors.get(&pid).unwrap(), &clk);
     let md_raw = serde_json::to_string(&md).unwrap();
-    assert!(!md_raw.contains(".webp"));
-    assert!(!md_raw.contains("rm_8a41e207c9b3.webp"));
     assert!(!md_raw.contains("rm_52b8d094e7c2.webp"));
+    assert!(!md_raw.contains("rm_9e36a418f0b7.webp"));
     assert!(!md_raw.contains("rm_9e36a418f0b7.webp"));
 }
