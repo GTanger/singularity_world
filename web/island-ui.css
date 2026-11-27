@@ -1350,18 +1350,22 @@ button, input, select {
   z-index: 6;
 }
 
-/* 手機與平板響應式：上半常駐靜態手繪圖（可收合、滿寬零黑邊）＋ 下半多文字主區 */
+/* 手機與平板響應式：上半多文字獨立捲動 ＋ 下半固定框架靜態手繪圖（緊鄰自身／行囊上方，拇指單手直點） */
 @media (max-width: 959px) {
   .oi-main-workspace {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
   .oi-desktop-aside {
     display: flex;
     width: 100%;
     flex: 0 0 auto;
-    height: clamp(232px, 36dvh, 300px);
+    height: clamp(236px, 37dvh, 304px);
+    padding: 6px 8px 8px;
+    gap: 6px;
+    overflow: hidden;
     border-left: none;
-    border-bottom: 1px solid var(--border-line);
+    border-top: 1px solid var(--border-line);
+    border-bottom: none;
   }
   .oi-desktop-aside.is-collapsed {
     height: auto;
@@ -1370,7 +1374,7 @@ button, input, select {
     display: none;
   }
   .oi-aside-head {
-    padding: 5px 10px;
+    padding: 0 2px;
   }
   .oi-aside-head .oi-icon-btn {
     min-height: 29px;
@@ -1378,7 +1382,8 @@ button, input, select {
     font-size: 0.78rem;
   }
   .oi-mini-map-frame {
-    margin: 4px 8px 6px;
+    min-height: 0;
+    margin: 0;
   }
   .oi-mobile-only {
     display: inline-flex;
@@ -1394,7 +1399,10 @@ button, input, select {
     min-height: 24px;
   }
   .oi-scene-scroll {
-    padding: 12px 14px 18px;
+    padding: 12px 14px 16px;
+  }
+  .oi-toast {
+    bottom: calc(62px + clamp(236px, 37dvh, 304px) + env(safe-area-inset-bottom, 0px));
   }
   .oi-origin-grid {
     grid-template-columns: 1fr;

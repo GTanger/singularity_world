@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261127r3：修正行動端鏡頭焦點 focusY 精準對齊碼頭與廣場）
-const CACHE = 'sw-shell-v20261127r3';
+// PWA Service Worker（v20261127r4：地圖固定置於自身／行囊上方固定框架位置）
+const CACHE = 'sw-shell-v20261127r4';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261127r3',
-  '/town-basemaps.js?v=20261127r3',
-  '/static-node-map.js?v=20261127r3',
-  '/island-ui.js?v=20261127r3',
+  '/island-ui.css?v=20261127r4',
+  '/town-basemaps.js?v=20261127r4',
+  '/static-node-map.js?v=20261127r4',
+  '/island-ui.js?v=20261127r4',
   '/icon.svg',
   '/manifest.webmanifest'
 ];
