@@ -859,3 +859,178 @@ pub fn apply_vignette_intervene(
         _ => Err("尚未聽清你想如何介入現場。".to_string()),
     }
 }
+
+/// 人物實體碰觸推擠與屢次碰撞引發口角／衝突（`DESIGN_KEYWORDS.md` L132：實體不可穿透，輕則推擠、重則撞開，屢次觸發衝突）
+pub fn apply_physical_crowd_bump(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+    mover_id: &str,
+    dst_node: &SpatialNodeDef,
+    rushed_step: bool,
+) -> Option<String> {
+    // 僅在狹窄或人潮密集之街道／棧橋／店鋪／市集／拱橋觸發實體擦撞（寬闊廣場、荒野與私室不誤觸）
+    if !matches!(
+        dst_node.kind.as_str(),
+        "street" | "alley" | "dock" | "shop" | "bridge" | "market" | "civic"
+    ) {
+        return None;
+    }
+    let (is_player, mover_name, carry_weight, already_fighting) = {
+        let m = delta.actors.get(mover_id)?;
+        let w: u32 = m
+            .backpack
+            .iter()
+            .map(|i| u32::from(i.weight_units) * i.count)
+            .sum();
+        (
+            m.controller_id.is_some(),
+            m.display_name.clone(),
+            w,
+            m.active_skirmish.is_some(),
+        )
+    };
+    if already_fighting {
+        return None;
+    }
+    let others: Vec<String> = delta
+        .node_occupants
+        .get(&dst_node.id)
+        .map(|occ| {
+            occ.iter()
+                .filter(|&oid| {
+                    oid != mover_id
+                        && delta.actors.get(oid).is_some_and(|o| {
+                            o.alive && o.active_skirmish.is_none() && o.active_transit.is_none()
+                        })
+                })
+                .cloned()
+                .collect()
+        })
+        .unwrap_or_default();
+    let crowd_n = others.len();
+    // 擁擠門檻：真人急行或負重穿行 >= 2 人即可能擦撞；一般步履須 >= 4 人；背景 NPC 須 >= 6 人避免和平城鎮無故群毆
+    let triggers = if is_player {
+        (rushed_step && crowd_n >= 2) || (carry_weight >= 8 && crowd_n >= 3) || crowd_n >= 4
+    } else {
+        rushed_step && crowd_n >= 6
+    };
+    if !triggers {
+        return None;
+    }
+    let pick_idx = ((clock.real_unix.unsigned_abs() as usize)
+        .wrapping_add(mover_id.len() * 7)
+        .wrapping_add(crowd_n))
+        % crowd_n;
+    let target_id = others[pick_idx].clone();
+    let (target_name, prior_warmth, target_is_npc_staff) = {
+        let t = delta.actors.get(&target_id)?;
+        let w = t
+            .mind
+            .ltm
+            .social
+            .get(mover_id)
+            .map_or(0, |s| s.warmth);
+        let staff = t.controller_id.is_none()
+            && (t.role.contains("掌櫃") || t.role.contains("學徒") || t.role.contains("草藥師"));
+        (t.display_name.clone(), w, staff)
+    };
+
+    let key1 = format!("bump:d{}:{target_id}:1", clock.game_days);
+    let key2 = format!("bump:d{}:{target_id}:2", clock.game_days);
+    let prior_bumps: u8 = delta.actors.get(mover_id).map_or(0, |m| {
+        if m.explored_windows.contains(&key2) {
+            2
+        } else if m.explored_windows.contains(&key1) {
+            1
+        } else {
+            0
+        }
+    });
+
+    if let Some(m) = delta.actors.get_mut(mover_id) {
+        if prior_bumps == 0 {
+            m.explored_windows.insert(key1);
+        } else {
+            m.explored_windows.insert(key2);
+        }
+        let s = m.mind.ltm.social.entry(target_id.clone()).or_default();
+        s.warmth = (s.warmth - if prior_bumps == 0 { 4 } else { 10 }).clamp(-100, 100);
+        m.mark_mutated();
+    }
+    let new_target_warmth = if let Some(t) = delta.actors.get_mut(&target_id) {
+        let updated_warmth = {
+            let s = t.mind.ltm.social.entry(mover_id.to_string()).or_default();
+            s.warmth = (s.warmth - if prior_bumps == 0 { 4 } else { 10 }).clamp(-100, 100);
+            s.warmth
+        };
+        t.mind.stm.affect.anger = t
+            .mind
+            .stm
+            .affect
+            .anger
+            .saturating_add(if prior_bumps == 0 { 6 } else { 16 })
+            .min(100);
+        t.mark_mutated();
+        updated_warmth
+    } else {
+        prior_warmth - 4
+    };
+
+    if rushed_step && prior_bumps >= 2 && is_player && !target_is_npc_staff && new_target_warmth <= -18 {
+        if let Some(m) = delta.actors.get_mut(mover_id) {
+            m.active_skirmish = Some(super::types::SkirmishState {
+                foe_slug: target_id.clone(),
+                foe_name: target_name.clone(),
+                can_speak_goblin: false,
+                foe_stagger: 0,
+                player_guard: false,
+                round_idx: 1,
+            });
+            m.mark_mutated();
+        }
+        broadcast_scene_event(
+            doc,
+            delta,
+            clock,
+            &dst_node.id,
+            mover_id,
+            &mover_name,
+            EventPublicity::PublicLoud,
+            Some("harbor_trade"),
+            55,
+            28,
+            ValueAxis::PactIntegrity,
+            "crowd_scuffle",
+            &format!("{mover_name}屢次硬撞{target_name}，雙方當街推搡動了真火！"),
+        );
+        return Some(format!(
+            " 你再次迎面撞開【{target_name}】，對方忍無可忍反手推胸喝罵，街頭眾目睽睽下雙方當場進入短兵對峙！"
+        ));
+    }
+
+    if prior_bumps >= 1 || prior_warmth <= -20 {
+        broadcast_scene_event(
+            doc,
+            delta,
+            clock,
+            &dst_node.id,
+            mover_id,
+            &mover_name,
+            EventPublicity::PublicLoud,
+            Some("harbor_trade"),
+            36,
+            16,
+            ValueAxis::PactIntegrity,
+            "crowd_shove",
+            &format!("{mover_name}在擁擠通道裡重重撞開了{target_name}，惹來一陣怒瞪呵斥"),
+        );
+        return Some(format!(
+            " 巷道人潮擁擠，你步伐太急重重撞開了【{target_name}】，對方踉蹌半步回頭冷聲呵斥：「走路長點眼睛！」"
+        ));
+    }
+
+    Some(format!(
+        " 通道往來人密，你肩頭不小心擦撞到一旁的【{target_name}】，彼此側身讓過時對方面露微慍。"
+    ))
+}

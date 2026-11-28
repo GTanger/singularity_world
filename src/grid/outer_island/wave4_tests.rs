@@ -366,7 +366,24 @@ fn npc_unified_habits_and_true_manual_meta_same_method_different_phase() {
     let clock = solar_clock_at(1_764_300_000);
     let aid_a = delta.resolve_actor_id("w4_alpha").expect("aid_a");
 
-    // 1. 著譜寫入真實 manual_meta，交由不同骨相的乙徒研讀，驗證真同法不同相！
+    // 1. 著譜必耗實料紙墨並寫入真實 manual_meta，交由不同骨相的乙徒研讀，驗證真同法不同相與槽位專項引導！
+    assert!(
+        apply_world_action(&doc, &mut delta, &clock, "w4_alpha", "write_martial_manual", "opening")
+            .is_err(),
+        "writing manual without paper/ink material must fail"
+    );
+    if let Some(a) = delta.actors.get_mut(&aid_a) {
+        add_carry_item(
+            &mut a.backpack,
+            CarryItem {
+                slug: "tough_vine".to_string(),
+                name: "韌藤纖維".to_string(),
+                count: 1,
+                weight_units: 1,
+                ..CarryItem::default()
+            },
+        );
+    }
     apply_world_action(&doc, &mut delta, &clock, "w4_alpha", "write_martial_manual", "opening")
         .expect("write manual ok");
     let book = delta.actors[&aid_a]
@@ -396,6 +413,17 @@ fn npc_unified_habits_and_true_manual_meta_same_method_different_phase() {
             .expect("disciple study ok");
     assert!(study_msg.contains("甲師"));
     assert!(study_msg.contains("原譜載"));
+    assert_eq!(
+        delta.actors["npc:disciple"]
+            .mind
+            .ltm
+            .mastery
+            .studied_manual_slots
+            .get("opening")
+            .copied(),
+        Some(1),
+        "studying an opening manual must record opening slot specialization"
+    );
 
     // 2. NPC 主迴圈同構：持韌藤自動綁戴護腕＋同場交換真實背景記憶！
     spawn_npc_at(
@@ -423,6 +451,162 @@ fn npc_unified_habits_and_true_manual_meta_same_method_different_phase() {
     assert!(
         delta.actors["npc:disciple"].body_gear.arms.is_some(),
         "NPC should bind and equip vine bracers via unified habit tick"
+    );
+    assert_eq!(delta.conservation_diff(&doc), 0);
+}
+
+#[test]
+fn body_gear_wear_repair_craft_ordering_crowd_bump_and_legacy_inheritance_work_end_to_end() {
+    let doc = load_static_world_doc();
+    let mut delta = seeded_delta_with_player(&doc, "w4_deep", "阿實");
+    let mut clock = solar_clock_at(1_764_300_000);
+    clock.is_night = false;
+    let aid = delta.resolve_actor_id("w4_deep").expect("aid");
+
+    // 1. 驗證 CRAFT_MATERIALS 無幽靈料且高階巨蛛甲殼不會被低階硬石枯枝截斷！
+    assert!(
+        !super::body_gear_craft::CRAFT_MATERIALS
+            .iter()
+            .any(|m| matches!(m.slug, "animal_hide" | "spider_chitin")),
+        "phantom slugs must be absent from CRAFT_MATERIALS"
+    );
+    let smithy_nd = doc.nodes.get("oi:white_gull_harbor:bal_forge").expect("bal_forge");
+    delta.relocate_actor(&aid, &smithy_nd.id, smithy_nd.cell_id, true);
+    spawn_npc_at(&mut delta, "npc:bal_s", "鐵砧巴爾", "鍛鐵匠", &smithy_nd.id, 30);
+    if let Some(s) = delta.actors.get_mut("npc:bal_s") {
+        add_carry_item(
+            s.inn_lockers.entry(smithy_nd.id.clone()).or_default(),
+            CarryItem {
+                slug: "black_coal".to_string(),
+                name: "北林精煤塊".to_string(),
+                count: 3,
+                weight_units: 4,
+                ..CarryItem::default()
+            },
+        );
+    }
+    if let Some(a) = delta.actors.get_mut(&aid) {
+        for (sl, nm, cnt) in [
+            ("river_flint", "河灘硬石", 2),
+            ("dry_branch", "枯枝木桿", 2),
+            ("tough_vine", "韌藤纖維", 4),
+            ("spider_carapace", "吞石巨蛛厚甲殼", 1),
+        ] {
+            add_carry_item(
+                &mut a.backpack,
+                CarryItem {
+                    slug: sl.to_string(),
+                    name: nm.to_string(),
+                    count: cnt,
+                    weight_units: 1,
+                    ..CarryItem::default()
+                },
+            );
+        }
+    }
+    let mut objs = Vec::new();
+    super::body_gear_craft::append_gear_and_forage_scene_objects(
+        &doc,
+        &delta,
+        &delta.actors[&aid],
+        smithy_nd,
+        &clock,
+        &mut objs,
+        &mut |_, _, _, _, _, _| {},
+    );
+    let anvil = objs.iter().find(|o| o["object_id"] == "obj:craft_anvil_bench").expect("anvil");
+    let has_spider_opt = anvil["options"]
+        .as_array()
+        .is_some_and(|arr| arr.iter().any(|op| op["param"].as_str().unwrap_or("").contains("spider_carapace")));
+    assert!(has_spider_opt, "spider_carapace options must never be truncated by low-tier raw materials");
+
+    // 2. 護具真實磨損至 3 階失效 → 修補回復完好！
+    apply_world_action(&doc, &mut delta, &clock, "w4_deep", "field_bind_craft", "vine_bracers")
+        .expect("bind bracers");
+    apply_world_action(&doc, &mut delta, &clock, "w4_deep", "equip_body_gear", "gear_vine_bracers")
+        .expect("equip bracers");
+    assert!(super::body_gear_craft::arms_absorbs_wrist_recoil(&delta.actors[&aid]));
+    for _ in 0..3 {
+        let _ = super::body_gear_craft::degrade_body_gear_wear(
+            delta.actors.get_mut(&aid).expect("a"),
+            "arms",
+        );
+    }
+    assert!(
+        !super::body_gear_craft::arms_absorbs_wrist_recoil(&delta.actors[&aid]),
+        "broken wear_stage==3 bracers must lose recoil absorption"
+    );
+    let rep_msg = apply_world_action(&doc, &mut delta, &clock, "w4_deep", "repair_body_gear", "arms")
+        .expect("repair arms ok");
+    assert!(rep_msg.contains("完好貼合"));
+    assert!(super::body_gear_craft::arms_absorbs_wrist_recoil(&delta.actors[&aid]));
+
+    // 3. 人物實體擁擠推擠升級：微擦撞 → 重推 → 屢次急行硬撞觸發短兵對峙！
+    let dock_nd = doc
+        .nodes
+        .values()
+        .find(|n| n.kind == "dock")
+        .expect("dock");
+    delta.relocate_actor(&aid, &dock_nd.id, dock_nd.cell_id, true);
+    spawn_npc_at(&mut delta, "npc:crowd_1", "硬漢甲", "碼頭苦力", &dock_nd.id, 10);
+    spawn_npc_at(&mut delta, "npc:crowd_2", "硬漢乙", "碼頭苦力", &dock_nd.id, 10);
+    let b1 = super::living_presence::apply_physical_crowd_bump(&doc, &mut delta, &clock, &aid, dock_nd, true)
+        .expect("first crowded rushed bump");
+    assert!(b1.contains("擦撞") || b1.contains("撞開"));
+    // 連續對同一人硬撞 3 次必觸發口角與短兵對峙
+    for _ in 0..3 {
+        let _ = super::living_presence::apply_physical_crowd_bump(&doc, &mut delta, &clock, &aid, dock_nd, true);
+    }
+    assert!(
+        delta.actors[&aid].active_skirmish.is_some(),
+        "repeated physical bumping in crowded street must escalate to skirmish"
+    );
+
+    // 4. 身故遺澤完整承接：農田田壟＋護具＋居所傢俱＋成相遺稿手札全歸繼承人且銅幣守恆！
+    let farm_nd = doc.nodes.values().find(|n| is_farmable_node(&doc, n)).expect("farmable");
+    spawn_npc_at(&mut delta, "npc:elder_master", "老拳師", "巡防隊", &farm_nd.id, 25);
+    spawn_npc_at(&mut delta, "npc:heir_kin", "小門徒", "學徒", &farm_nd.id, 10);
+    let sample_arms = delta.actors[&aid].body_gear.arms.clone();
+    if let Some(m) = delta.actors.get_mut("npc:elder_master") {
+        m.mind.ltm.mastery.martial_bouts = 4;
+        m.lifestyle.home_furnishings.push("pine_desk".to_string());
+        m.body_gear.arms = sample_arms;
+        m.mind.ltm.social.entry("npc:heir_kin".to_string()).or_default().warmth = 90;
+        add_carry_item(
+            &mut m.backpack,
+            CarryItem {
+                slug: "herb_bundle".to_string(),
+                name: "山林止血草束".to_string(),
+                count: 1,
+                weight_units: 1,
+                ..CarryItem::default()
+            },
+        );
+    }
+    if let Some(h) = delta.actors.get_mut("npc:heir_kin") {
+        h.mind.ltm.social.entry("npc:elder_master".to_string()).or_default().warmth = 90;
+    }
+    super::farm_plots::apply_sow_farm_plot(&doc, &mut delta, &clock, "npc:elder_master", farm_nd, "herb_garden")
+        .expect("elder sows plot");
+    assert!(delta.farm_plots.contains_key(&format!("plot:{}:npc:elder_master", farm_nd.id)));
+    let _ob = super::live_lifecycle::execute_npc_passing_and_inheritance(
+        &doc,
+        &mut delta,
+        &clock,
+        "npc:elder_master",
+        "年邁壽終正寢",
+    )
+    .expect("passing ok");
+    assert!(
+        delta.farm_plots.contains_key(&format!("plot:{}:npc:heir_kin", farm_nd.id)),
+        "heir must inherit deceased's farm plot"
+    );
+    let heir = &delta.actors["npc:heir_kin"];
+    assert!(heir.lifestyle.home_furnishings.contains(&"pine_desk".to_string()));
+    assert!(heir.backpack.iter().any(|i| i.gear_meta.is_some()), "heir must inherit worn body gear");
+    assert!(
+        heir.backpack.iter().any(|i| i.manual_meta.is_some() && i.name.contains("遺稿手札")),
+        "heir must inherit posthumous martial manual"
     );
     assert_eq!(delta.conservation_diff(&doc), 0);
 }

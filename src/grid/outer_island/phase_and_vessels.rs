@@ -42,6 +42,8 @@ pub struct ProceduralMastery {
     pub past_aliases: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub studied_manuals: Vec<String>,
+    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    pub studied_manual_slots: std::collections::BTreeMap<String, u8>,
 }
 
 /// 耗費木石鐵料與木工錢整修／增建之自立門戶新屋契（破除固定 6 棟空屋上限，零玩家特權保留）

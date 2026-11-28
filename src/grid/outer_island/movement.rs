@@ -731,15 +731,21 @@ pub fn apply_move_step(
         let _ = super::ongoing_activity::settle_dock_haul_delivery(doc, delta, clock, &aid);
     }
 
+    let rushed_step = delta
+        .actors
+        .get(&aid)
+        .is_some_and(|a| now_ms > 0 && a.last_step_unix_ms > 0 && now_ms.saturating_sub(a.last_step_unix_ms) < 1200);
     let flood_crossing = src_cell_id != dst_node.cell_id
         && super::live_land::is_river_crossing_impassable_for_wheels(delta, dst_node.cell_id);
+    let crowd_bump_note =
+        super::living_presence::apply_physical_crowd_bump(doc, delta, clock, &aid, dst_node, rushed_step);
     let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
     a.last_step_unix_ms = now_ms;
     if now_ms > 0 && a.controller_id.is_some() {
         a.last_active_unix = clock.real_unix;
     }
 
-    let mut env_flavor_suffix = String::new();
+    let mut env_flavor_suffix = crowd_bump_note.unwrap_or_default();
     if let Some((gate_cost, note_opt)) = gate_step_cost_opt {
         if gate_cost > 0 {
             a.fatigue = a.fatigue.saturating_add(gate_cost).min(95);
@@ -766,11 +772,25 @@ pub fn apply_move_step(
         let flood_save = super::body_gear_craft::feet_fatigue_reduction(a, true);
         let flood_cost = 6u8.saturating_sub(flood_save).max(2);
         a.fatigue = a.fatigue.saturating_add(flood_cost).min(95);
-        if let Some(ref boots) = a.body_gear.feet {
-            env_flavor_suffix.push_str(&format!(
-                " 前方木橋受汛沖斷，腳下【{}】穩穩抓緊卵石河床，幫你省下不少涉水氣力。",
-                boots.name
-            ));
+        if a.body_gear.feet.is_some() {
+            let boots_name = a
+                .body_gear
+                .feet
+                .as_ref()
+                .map_or_else(String::new, |b| b.name.clone());
+            let wear_warn = super::body_gear_craft::degrade_body_gear_wear(a, "feet");
+            if flood_save > 0 {
+                env_flavor_suffix.push_str(&format!(
+                    " 前方木橋受汛沖斷，腳下【{boots_name}】穩穩抓緊卵石河床，幫你省下不少涉水氣力。"
+                ));
+            } else {
+                env_flavor_suffix.push_str(&format!(
+                    " 前方木橋受汛沖斷，腳下【{boots_name}】早已損裂進水，只能踩著齊膝濁水艱難涉過淺灘。"
+                ));
+            }
+            if let Some(wn) = wear_warn {
+                env_flavor_suffix.push_str(&format!(" {wn}"));
+            }
         } else {
             env_flavor_suffix.push_str(" 前方木橋受汛沖斷，你踩著齊膝濁水艱難涉過淺灘。");
         }

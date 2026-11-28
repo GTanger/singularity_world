@@ -1464,10 +1464,15 @@
             if (!pc) {
               return '<div style="margin-top:6px;font-size:0.85rem;color:var(--ink-muted);"><b>' + sd.label + '：</b>' + sd.empty + '</div>';
             }
+            var repairBtn = pc.needs_repair
+              ? '<button type="button" class="oi-icon-btn" data-sheet-act="repair_body_gear" data-sheet-param="' + sd.key + '" style="flex:0 0 auto;margin-right:4px;">修補</button>'
+              : '';
+            var wearLine = pc.wear_label ? (' ｜ 器況：' + esc(pc.wear_label)) : '';
             return '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border-line);display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
               '<div style="font-size:0.85rem;"><b>' + sd.label + '：</b>' + esc(pc.name) +
-              '<div style="font-size:0.79rem;color:var(--ink-sub);margin-top:2px;">' + esc(pc.sense) + '</div></div>' +
-              '<button type="button" class="oi-icon-btn" data-sheet-act="unequip_body_gear" data-sheet-param="' + sd.key + '" style="flex:0 0 auto;">卸下</button>' +
+              '<div style="font-size:0.79rem;color:var(--ink-sub);margin-top:2px;">' + esc(pc.sense) + wearLine + '</div></div>' +
+              '<span style="display:flex;flex:0 0 auto;">' + repairBtn +
+              '<button type="button" class="oi-icon-btn" data-sheet-act="unequip_body_gear" data-sheet-param="' + sd.key + '" style="flex:0 0 auto;">卸下</button></span>' +
               '</div>';
           }).join('') +
           (bg.bulk_sense ? '<div style="margin-top:6px;font-size:0.8rem;color:var(--ink-sub);">負重體感：' + esc(bg.bulk_sense) + '</div>' : '');

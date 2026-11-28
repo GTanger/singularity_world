@@ -400,7 +400,9 @@ pub fn apply_change_outfit(
     if in_bag {
         let actor_name = {
             let a = delta.actors.get_mut(aid).ok_or("找不到旅人行蹤")?;
-            let _ = take_clean_carry_items(&mut a.backpack, spec.item_slug, 1);
+            if take_clean_carry_items(&mut a.backpack, spec.item_slug, 1).is_none() {
+                return Err(format!("行囊裡的【{}】未能取出，無法換穿。", spec.name_zh));
+            }
             if !a.lifestyle.outfit_slug.is_empty()
                 && let Some(prev) = lookup_outfit(&a.lifestyle.outfit_slug)
             {
@@ -644,6 +646,116 @@ pub fn apply_buy_home_furnishing(
     Ok(msg)
 }
 
+/// 修補受損之全身多部位護具（開爐鍛鐵鋪 2 銅＋1 燃料，或在任意處消耗 1 份韌藤／粗鐵礦現場修補，絕不無中生有）
+pub fn apply_repair_body_gear(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+    actor_key: &str,
+    slot: &str,
+) -> Result<String, String> {
+    let aid = delta
+        .resolve_actor_id(actor_key)
+        .ok_or("請先向港務官核對通行身分。")?;
+    let slot_key = slot.trim();
+    let (node_id, gname, wear_now) = {
+        let a = delta.actors.get(&aid).ok_or("找不到旅人行蹤")?;
+        let piece = match slot_key {
+            "arms" => a.body_gear.arms.as_ref(),
+            "feet" => a.body_gear.feet.as_ref(),
+            "torso" => a.body_gear.torso.as_ref(),
+            _ => None,
+        }
+        .ok_or("該部位目前並未穿戴護具。")?;
+        (a.node_id.clone(), piece.name.clone(), piece.wear_stage)
+    };
+    if wear_now == 0 {
+        return Ok(format!("【{gname}】目前完好貼合，尚無需修補。"));
+    }
+    let node = doc.nodes.get(&node_id).ok_or("找不到所在處")?;
+    let at_open_smithy = !clock.is_night
+        && node.kind == "shop"
+        && (super::shop_leases::infer_shop_kind(node) == "smithy"
+            || node.name.contains("鍛鐵")
+            || node.name.contains("鐵匠")
+            || node.name.contains("集坊"))
+        && !super::live_commodities::is_smithy_forge_cold(delta, &node_id);
+
+    let self_operates = super::shop_leases::actor_operates_shop(delta, &aid, &node_id);
+    let smith_opt = if at_open_smithy {
+        find_present_staff(delta, &node_id, &aid, &["鍛鐵匠", "木匠"]).map(|(id, _)| id)
+    } else {
+        None
+    };
+
+    let used_note = if at_open_smithy && (self_operates || smith_opt.is_some()) {
+        let fee = if self_operates { 0i64 } else { 2i64 };
+        if fee > 0
+            && let Some(ref sid) = smith_opt
+            && !delta.transfer_copper(
+                clock.game_days,
+                clock.bell_index,
+                "repair_body_gear",
+                &aid,
+                sid,
+                fee,
+                format!("請工坊修補【{gname}】"),
+            )
+        {
+            return Err("手頭銅幣不足 2 枚，無法付工坊修補費；亦可自備韌藤或粗鐵礦就地修補。".to_string());
+        }
+        if super::live_commodities::consume_smithy_fuel_one(delta, smith_opt.as_deref(), &node_id)
+            .is_none()
+        {
+            if fee > 0
+                && let Some(ref sid) = smith_opt
+            {
+                delta.transfer_copper(
+                    clock.game_days,
+                    clock.bell_index,
+                    "repair_body_gear_refund",
+                    sid,
+                    &aid,
+                    fee,
+                    "鍛爐炭火不足，退還護具修補工錢".to_string(),
+                );
+            }
+            return Err("鍛爐炭火已盡，暫無法在爐邊修補護具。".to_string());
+        }
+        if fee > 0 {
+            format!("於工坊付妥 {fee} 枚銅幣借爐整修")
+        } else {
+            "在自家開爐工坊整修".to_string()
+        }
+    } else {
+        let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        if take_clean_carry_items(&mut a.backpack, "tough_vine", 1).is_some() {
+            "取行囊裡 1 份【韌藤纖維】重新纏緊加固".to_string()
+        } else if take_clean_carry_items(&mut a.backpack, "iron_ore", 1).is_some() {
+            "取行囊裡 1 份【粗鐵礦石】敲補鉚緊".to_string()
+        } else {
+            return Err("修補護具須回開爐鍛鐵鋪（2 枚銅幣），或自備 1 份【韌藤纖維】／【粗鐵礦石】現場修補。".to_string());
+        }
+    };
+
+    let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+    let piece = match slot_key {
+        "arms" => a.body_gear.arms.as_mut(),
+        "feet" => a.body_gear.feet.as_mut(),
+        "torso" => a.body_gear.torso.as_mut(),
+        _ => None,
+    }
+    .ok_or("找不到該部位護具")?;
+    piece.wear_stage = 0;
+    let (craft_prose, _) = invoke_craft_phase_effect(a, "forge");
+    a.fatigue = a.fatigue.saturating_add(4).min(95);
+    a.last_active_unix = clock.real_unix;
+    let msg = format!("你{used_note}（{craft_prose}），【{gname}】已重新回復完好貼合。");
+    push_breath(a, msg.clone());
+    a.mark_mutated();
+    Ok(msg)
+}
+
 pub fn try_apply_living_sim_farm_action(
     doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
@@ -661,6 +773,7 @@ pub fn try_apply_living_sim_farm_action(
         "sow_farm_plot" => Some(apply_sow_farm_plot(doc, delta, clock, aid, node, param)),
         "tend_farm_plot" => Some(apply_tend_farm_plot(delta, clock, aid, node, param)),
         "harvest_farm_plot" => Some(apply_harvest_farm_plot(doc, delta, clock, aid, node, param)),
+        "repair_body_gear" => Some(apply_repair_body_gear(doc, delta, clock, aid, param)),
         _ => None,
     }
 }
@@ -844,16 +957,25 @@ pub fn append_lifestyle_and_farm_scene_objects(
                 push_audit("buy_home_furnishing", f.slug, &lbl, "實料打造居所陳設", "object", "obj:tailor_carpenter");
             }
         }
-        if !style_opts.is_empty() {
-            objects.push(json!({
-                "object_id": "obj:tailor_carpenter",
-                "name": if in_owned { "自家針線木工案" } else { "來料裁衣與木作案台" },
-                "cue": "備妥行囊原材即可請在場匠人裁衣打傢俱",
-                "desc": "以實有草纖、獸脂、木料或鐵礦親手或委託匠人裁製成衣與屋內陳設。",
-                "direct_action": Value::Null,
-                "options": style_opts,
-            }));
-        }
+        let (cue, desc) = if style_opts.is_empty() {
+            (
+                "可來料裁衣與打造居所陳設（目前行囊缺料，點開查看所需實料）",
+                "裁製日常成衣須自備【韌藤纖維／草束／野獸脂塊／異獸鱗甲】其一；打造居所書案、銅燈、烘衣火盆、實木床榻或毛氈地毯須備【原木／漂流木／粗鐵礦／方石料／精煤／韌藤】其一並先有宿房或自家宅院。",
+            )
+        } else {
+            (
+                "行囊已備齊部分原材，可請在場匠人或親手裁衣與打造居所陳設",
+                "以實有草纖、獸脂、木料或鐵礦親手或委託匠人裁製成衣與屋內陳設。",
+            )
+        };
+        objects.push(json!({
+            "object_id": "obj:tailor_carpenter",
+            "name": if in_owned { "自家針線木工案" } else { "來料裁衣與木作案台" },
+            "cue": cue,
+            "desc": desc,
+            "direct_action": Value::Null,
+            "options": style_opts,
+        }));
     }
 
     append_farm_plot_scene_objects(doc, delta, viewer, node, clock, objects, push_audit);

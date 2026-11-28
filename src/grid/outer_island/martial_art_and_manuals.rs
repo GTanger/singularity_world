@@ -78,13 +78,33 @@ pub fn describe_bone_phase_zh(bone: &InnateBonePhase) -> String {
 pub fn actor_learned_bonus(a: &UnifiedMindBody) -> f64 {
     let prac = u32::from(a.mind.ltm.mastery.martial_bouts)
         + u32::from(a.bound_weapon.grip_familiarity / 2);
-    let manual_boost = (a.mind.ltm.mastery.studied_manuals.len() as f64) * 0.14;
-    let base = (f64::from(prac) * 0.04 + manual_boost).min(0.90);
+    let manual_boost = (a.mind.ltm.mastery.studied_manuals.len() as f64) * 0.08;
+    let base = (f64::from(prac) * 0.04 + manual_boost).min(0.85);
     if a.mind.ltm.mastery.private_martial_phase.is_some() {
         base.max(0.55)
     } else {
         base
     }
+}
+
+/// 依所研讀手札之具體招式槽位（起手／連攜／破綻／守勢）疊加專項動作引導加成
+pub fn actor_learned_bonus_for_slot(a: &UnifiedMindBody, slot: TacticalSlot) -> f64 {
+    let slot_key = match slot {
+        TacticalSlot::Opening => "opening",
+        TacticalSlot::Midgame => "midgame",
+        TacticalSlot::Finisher => "finisher",
+        TacticalSlot::Defense => "defense",
+    };
+    let slot_depth = f64::from(
+        a.mind
+            .ltm
+            .mastery
+            .studied_manual_slots
+            .get(slot_key)
+            .copied()
+            .unwrap_or(0),
+    );
+    (actor_learned_bonus(a) + slot_depth * 0.12).min(0.95)
 }
 
 /// 在真實採獵／鍛造／庖廚／行旅時自動施展角色專屬百工藝相，回傳 `(白話施展句, 實算省力減耗)`！
@@ -126,7 +146,6 @@ pub fn derive_actor_eight_phases(
     let bone = actor_bone_phase(a);
     let carrier = tool_carrier_of(&a.bound_weapon.slug, &a.bound_weapon.name);
     let vessel = a.bound_weapon.name.as_str();
-    let learned = actor_learned_bonus(a);
     let martial_fam = u32::from(a.mind.ltm.mastery.martial_bouts)
         + u32::from(a.bound_weapon.grip_familiarity / 2);
     let craft_fam = u32::from(a.mind.ltm.mastery.craft_works)
@@ -144,7 +163,16 @@ pub fn derive_actor_eight_phases(
     let martial: Vec<EmergentRoutine> = martial_slots
         .iter()
         .map(|&slot| {
-            derive_personal_martial_routine(&bone, slot, carrier, vessel, learned, martial_fam, reg)
+            let slot_learned = actor_learned_bonus_for_slot(a, slot);
+            derive_personal_martial_routine(
+                &bone,
+                slot,
+                carrier,
+                vessel,
+                slot_learned,
+                martial_fam,
+                reg,
+            )
         })
         .collect();
 
@@ -231,6 +259,21 @@ pub fn apply_write_martial_manual(
         if a.explored_windows.contains(&day_key) {
             return Err("今日已耗神撰寫過一冊功法手札，明日靜氣後再續寫新卷。".to_string());
         }
+        let has_ink_paper = a.backpack.iter().any(|i| {
+            i.count > 0
+                && i.bound_owner.is_none()
+                && i.stolen_from.is_none()
+                && matches!(
+                    i.slug.as_str(),
+                    "tough_vine" | "herb_bundle" | "charcoal_sack" | "black_coal"
+                )
+        });
+        if !has_ink_paper {
+            return Err(
+                "著譜成冊須備妥紙墨炭料（行囊內須有【韌藤纖維】／【草束】製藤紙，或【木炭】／【北林精煤】研墨 1 份），不可憑空變書。"
+                    .to_string(),
+            );
+        }
         let bone = actor_bone_phase(a);
         let carrier = tool_carrier_of(&a.bound_weapon.slug, &a.bound_weapon.name);
         let prac = u32::from(a.mind.ltm.mastery.martial_bouts)
@@ -240,7 +283,7 @@ pub fn apply_write_martial_manual(
             slot,
             carrier,
             &a.bound_weapon.name,
-            actor_learned_bonus(a),
+            actor_learned_bonus_for_slot(a, slot),
             prac,
             WordRegistry::global(),
         );
@@ -266,8 +309,23 @@ pub fn apply_write_martial_manual(
         ),
         origin_seed,
     };
-    {
+    let consumed_mat_zh = {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
+        let mut taken_label: Option<&'static str> = None;
+        for (mslug, mlabel) in [
+            ("tough_vine", "韌藤製紙"),
+            ("herb_bundle", "草纖壓紙"),
+            ("charcoal_sack", "硬木炭條"),
+            ("black_coal", "精煤研墨"),
+        ] {
+            if super::movement::take_clean_carry_items(&mut a.backpack, mslug, 1).is_some() {
+                taken_label = Some(mlabel);
+                break;
+            }
+        }
+        let Some(used_lbl) = taken_label else {
+            return Err("著譜所需的藤紙／草束／炭料已不在行囊內。".to_string());
+        };
         a.mind.ltm.mastery.vessel_serial = a.mind.ltm.mastery.vessel_serial.saturating_add(1);
         let s = format!("manual_{}_{}", slot_code.trim(), a.mind.ltm.mastery.vessel_serial);
         let day_key = format!("manual_write:d{}", clock.game_days);
@@ -286,14 +344,15 @@ pub fn apply_write_martial_manual(
         a.fatigue = (a.fatigue + 10).min(95);
         a.last_active_unix = clock.real_unix;
         let msg = format!(
-            "你靜心回味掌中發力與起承轉合，將【{}】（{}）寫成實體{}收入行囊，可留贈同道、傳徒或於市集議價流轉。",
+            "你耗去一份{used_lbl}，靜心回味掌中發力與起承轉合，將【{}】（{}）寫成實體{}收入行囊，可留贈同道、傳徒或於市集議價流轉。",
             routine.formal_name,
             routine.main_motions.join("→"),
             book_name
         );
         push_breath(a, msg);
         a.mark_mutated();
-    }
+        used_lbl
+    };
 
     broadcast_scene_event(
         doc,
@@ -311,7 +370,7 @@ pub fn apply_write_martial_manual(
         &format!("{author_name}凝神著成一冊{book_name}"),
     );
     Ok(format!(
-        "你已著成實體{}收入行囊（五常碎招：{}），他人研讀後亦會依自身骨相走出同法不同相的新路。",
+        "你已以{consumed_mat_zh}著成實體{}收入行囊（五常碎招：{}），他人研讀後亦會依自身骨相走出同法不同相的新路。",
         book_name,
         routine.main_motions.join(" → ")
     ))
@@ -347,16 +406,26 @@ pub fn apply_study_martial_manual(
     if a.mind.ltm.mastery.studied_manuals.len() < 8 {
         a.mind.ltm.mastery.studied_manuals.push(book_name.clone());
     }
+    let target_slot_code = meta_opt
+        .as_ref()
+        .map_or("midgame", |m| m.slot_code.as_str())
+        .to_string();
+    let target_slot = slot_from_code(&target_slot_code);
     if !is_self_authored {
         a.bound_weapon.grip_familiarity =
             a.bound_weapon.grip_familiarity.saturating_add(3).min(40);
+        let entry = a
+            .mind
+            .ltm
+            .mastery
+            .studied_manual_slots
+            .entry(target_slot_code)
+            .or_insert(0);
+        *entry = entry.saturating_add(1).min(4);
     }
     a.fatigue = (a.fatigue + 6).min(95);
     a.last_active_unix = clock.real_unix;
 
-    let target_slot = meta_opt
-        .as_ref()
-        .map_or(TacticalSlot::Midgame, |m| slot_from_code(&m.slot_code));
     let bone = actor_bone_phase(a);
     let carrier = tool_carrier_of(&a.bound_weapon.slug, &a.bound_weapon.name);
     let prac = u32::from(a.mind.ltm.mastery.martial_bouts)
@@ -366,7 +435,7 @@ pub fn apply_study_martial_manual(
         target_slot,
         carrier,
         &a.bound_weapon.name,
-        actor_learned_bonus(a),
+        actor_learned_bonus_for_slot(a, target_slot),
         prac,
         WordRegistry::global(),
     );
@@ -505,7 +574,7 @@ pub fn resolve_auto_tianji_clash(
                     s,
                     carrier,
                     &a.bound_weapon.name,
-                    learned,
+                    actor_learned_bonus_for_slot(a, s),
                     prac,
                     reg,
                 )

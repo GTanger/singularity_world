@@ -62,6 +62,83 @@ pub struct MaterialSpec {
 
 pub const CRAFT_MATERIALS: &[MaterialSpec] = &[
     MaterialSpec {
+        slug: "spider_carapace",
+        name_zh: "吞石巨蛛厚甲殼",
+        prefix_zh: "巨蛛甲",
+        physics: MaterialPhysics {
+            hardness: 88,
+            toughness: 82,
+            weight: 46,
+            conductivity: 68,
+        },
+    },
+    MaterialSpec {
+        slug: "lizard_scale",
+        name_zh: "嗜石岩蜥厚鱗皮",
+        prefix_zh: "岩鱗",
+        physics: MaterialPhysics {
+            hardness: 74,
+            toughness: 78,
+            weight: 38,
+            conductivity: 54,
+        },
+    },
+    MaterialSpec {
+        slug: "quartz_sand",
+        name_zh: "高純石英砂",
+        prefix_zh: "晶砂",
+        physics: MaterialPhysics {
+            hardness: 66,
+            toughness: 56,
+            weight: 38,
+            conductivity: 78,
+        },
+    },
+    MaterialSpec {
+        slug: "iron_ore",
+        name_zh: "粗鐵礦石",
+        prefix_zh: "鍛鐵",
+        physics: MaterialPhysics {
+            hardness: 78,
+            toughness: 68,
+            weight: 72,
+            conductivity: 48,
+        },
+    },
+    MaterialSpec {
+        slug: "black_coal",
+        name_zh: "北林精煤",
+        prefix_zh: "滲炭",
+        physics: MaterialPhysics {
+            hardness: 72,
+            toughness: 60,
+            weight: 54,
+            conductivity: 42,
+        },
+    },
+    MaterialSpec {
+        slug: "driftwood",
+        name_zh: "異國刻紋漂流木",
+        prefix_zh: "沉木",
+        physics: MaterialPhysics {
+            hardness: 46,
+            toughness: 68,
+            weight: 30,
+            conductivity: 44,
+        },
+    },
+    MaterialSpec {
+        slug: "timber_log",
+        name_zh: "山林原木",
+        prefix_zh: "松木",
+        physics: MaterialPhysics {
+            hardness: 48,
+            toughness: 62,
+            weight: 42,
+            conductivity: 30,
+        },
+    },
+    MaterialSpec {
         slug: "river_flint",
         name_zh: "河灘硬石",
         prefix_zh: "硬石",
@@ -92,105 +169,6 @@ pub const CRAFT_MATERIALS: &[MaterialSpec] = &[
             toughness: 64,
             weight: 14,
             conductivity: 26,
-        },
-    },
-    MaterialSpec {
-        slug: "driftwood",
-        name_zh: "異國刻紋漂流木",
-        prefix_zh: "沉木",
-        physics: MaterialPhysics {
-            hardness: 46,
-            toughness: 68,
-            weight: 30,
-            conductivity: 44,
-        },
-    },
-    MaterialSpec {
-        slug: "timber_log",
-        name_zh: "山林原木",
-        prefix_zh: "松木",
-        physics: MaterialPhysics {
-            hardness: 48,
-            toughness: 62,
-            weight: 42,
-            conductivity: 30,
-        },
-    },
-    MaterialSpec {
-        slug: "animal_hide",
-        name_zh: "熟鞣獸皮",
-        prefix_zh: "厚皮",
-        physics: MaterialPhysics {
-            hardness: 34,
-            toughness: 76,
-            weight: 24,
-            conductivity: 34,
-        },
-    },
-    MaterialSpec {
-        slug: "iron_ore",
-        name_zh: "粗鐵礦石",
-        prefix_zh: "鍛鐵",
-        physics: MaterialPhysics {
-            hardness: 78,
-            toughness: 68,
-            weight: 72,
-            conductivity: 48,
-        },
-    },
-    MaterialSpec {
-        slug: "quartz_sand",
-        name_zh: "高純石英砂",
-        prefix_zh: "晶砂",
-        physics: MaterialPhysics {
-            hardness: 66,
-            toughness: 56,
-            weight: 38,
-            conductivity: 78,
-        },
-    },
-    MaterialSpec {
-        slug: "spider_chitin",
-        name_zh: "吞石巨蛛甲片",
-        prefix_zh: "蛛甲",
-        physics: MaterialPhysics {
-            hardness: 86,
-            toughness: 80,
-            weight: 44,
-            conductivity: 66,
-        },
-    },
-    MaterialSpec {
-        slug: "spider_carapace",
-        name_zh: "吞石巨蛛厚甲殼",
-        prefix_zh: "巨蛛甲",
-        physics: MaterialPhysics {
-            hardness: 88,
-            toughness: 82,
-            weight: 46,
-            conductivity: 68,
-        },
-    },
-    MaterialSpec {
-        slug: "lizard_scale",
-        name_zh: "嗜石岩蜥厚鱗皮",
-        prefix_zh: "岩鱗",
-        physics: MaterialPhysics {
-            hardness: 74,
-            toughness: 78,
-            weight: 38,
-            conductivity: 54,
-        },
-    },
-    MaterialSpec {
-        slug: "black_coal",
-        name_zh: "北林精煤",
-        prefix_zh: "滲炭",
-        physics: MaterialPhysics {
-            hardness: 72,
-            toughness: 60,
-            weight: 54,
-            conductivity: 42,
         },
     },
 ];
@@ -238,26 +216,70 @@ pub fn describe_gear_physics_zh(phys: MaterialPhysics, slot: &str) -> String {
     format!("{hard}、{tough}、{weight}{cond}（{effect}）")
 }
 
-/// 計算角色穿戴軀幹採集背架後的跨格大宗重貨上限（預設 2 件，穿戴背架依材質物理擴至 3～4 件）
+/// 護具磨損度去數值體感敘述
+pub fn gear_wear_label_zh(wear_stage: u8) -> &'static str {
+    match wear_stage {
+        0 => "完好貼合",
+        1 => "略有磨痕",
+        2 => "邊緣起毛開線",
+        _ => "損裂鬆脫（亟待修補）",
+    }
+}
+
+/// 穿戴中護具承受撞擊／涉水／重壓時累積真實磨損（達 2～3 階會回傳體感警訊並衰減效能）
+pub fn degrade_body_gear_wear(actor: &mut UnifiedMindBody, slot: &str) -> Option<String> {
+    let (new_stage, pname) = {
+        let piece = match slot {
+            "arms" => actor.body_gear.arms.as_mut(),
+            "feet" => actor.body_gear.feet.as_mut(),
+            "torso" => actor.body_gear.torso.as_mut(),
+            _ => None,
+        }?;
+        if piece.wear_stage >= 3 {
+            return Some(format!("【{}】早已損裂鬆脫，須儘快修補或更換。", piece.name));
+        }
+        piece.wear_stage = piece.wear_stage.saturating_add(1).min(3);
+        (piece.wear_stage, piece.name.clone())
+    };
+    actor.mark_mutated();
+    match new_stage {
+        2 => Some(format!("【{pname}】受力處已明顯起毛磨薄。")),
+        3 => Some(format!(
+            "【{pname}】喀啦一聲裂開鬆脫，已難以繼續護身省力，須回工坊或取韌藤修補！"
+        )),
+        _ => None,
+    }
+}
+
+/// 計算角色穿戴軀幹採集背架後的跨格大宗重貨上限（預設 2 件，穿戴背架依材質物理擴至 3～4 件；損裂降階）
 pub fn effective_overland_bulk_cap(actor: &UnifiedMindBody) -> u32 {
     let Some(ref torso) = actor.body_gear.torso else {
         return 2;
     };
-    if torso.physics.toughness >= 70 || (torso.physics.hardness >= 65 && torso.physics.toughness >= 58)
+    let base: u32 = if torso.physics.toughness >= 70
+        || (torso.physics.hardness >= 65 && torso.physics.toughness >= 58)
     {
         4
     } else if torso.physics.toughness >= 45 {
         3
     } else {
         2
+    };
+    if torso.wear_stage >= 3 {
+        base.saturating_sub(1).max(2)
+    } else {
+        base
     }
 }
 
-/// 足腿靴履對野外步行／涉水疲勞之真實減免量
+/// 足腿靴履對野外步行／涉水疲勞之真實減免量（鞋底損裂時失效）
 pub fn feet_fatigue_reduction(actor: &UnifiedMindBody, is_flood: bool) -> u8 {
     let Some(ref feet) = actor.body_gear.feet else {
         return 0;
     };
+    if feet.wear_stage >= 3 {
+        return 0;
+    }
     if is_flood {
         if feet.physics.toughness >= 65 {
             3
@@ -271,13 +293,13 @@ pub fn feet_fatigue_reduction(actor: &UnifiedMindBody, is_flood: bool) -> u8 {
     }
 }
 
-/// 雙臂護具是否足以吸收重甲敵手反震（防手腕瘀腫並減輕交鋒疲勞）
+/// 雙臂護具是否足以吸收重甲敵手反震（防手腕瘀腫並減輕交鋒疲勞；損裂時無法卸震）
 pub fn arms_absorbs_wrist_recoil(actor: &UnifiedMindBody) -> bool {
     actor
         .body_gear
         .arms
         .as_ref()
-        .is_some_and(|a| a.physics.toughness >= 50 || a.physics.hardness >= 55)
+        .is_some_and(|a| a.wear_stage < 3 && (a.physics.toughness >= 50 || a.physics.hardness >= 55))
 }
 
 /// 零門檻野外徒手拾取天然原材（硬石、枯枝、韌藤——零工具門檻、每時段每處限一次防機械刷圖）
@@ -570,7 +592,7 @@ pub fn apply_craft_custom_gear(
         return Err("鍛爐裡的精煤與木炭已熄火，須先補炭重燃爐火方能開工打造。".to_string());
     }
 
-    let need_cnt: u32 = if matches!(mat.slug, "spider_chitin" | "spider_carapace" | "lizard_scale") {
+    let need_cnt: u32 = if matches!(mat.slug, "spider_carapace" | "lizard_scale") {
         1
     } else {
         2
@@ -625,7 +647,24 @@ pub fn apply_craft_custom_gear(
             return Err("手頭銅幣不足 4 枚，付不起開爐借砧的火炭工錢。".to_string());
         }
     }
-    let _ = super::live_commodities::consume_smithy_fuel_one(delta, smith_opt.as_deref(), &node_id);
+    if super::live_commodities::consume_smithy_fuel_one(delta, smith_opt.as_deref(), &node_id)
+        .is_none()
+    {
+        if fee > 0
+            && let Some(ref sid) = smith_opt
+        {
+            delta.transfer_copper(
+                clock.game_days,
+                clock.bell_index,
+                "craft_custom_gear_refund",
+                sid,
+                &aid,
+                fee,
+                "鍛爐燃料剛告罄，退還借砧火炭工錢".to_string(),
+            );
+        }
+        return Err("鍛爐炭火方才耗盡，無法開爐打造，請先補炭重燃爐火。".to_string());
+    }
 
     let full_name = format!("{}{}", mat.prefix_zh, form_name_zh);
     let item_slug = format!("craft_{}_{}", form, mat.slug);
@@ -633,7 +672,9 @@ pub fn apply_craft_custom_gear(
 
     let msg = {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-        let _ = take_carry_item(&mut a.backpack, mat.slug, need_cnt);
+        if take_carry_item(&mut a.backpack, mat.slug, need_cnt).is_none() {
+            return Err(format!("行囊裡的【{}】份量不足，無法開爐打造。", mat.name_zh));
+        }
         a.mind.ltm.mastery.vessel_serial = a.mind.ltm.mastery.vessel_serial.saturating_add(1);
         a.mind.ltm.mastery.craft_works = a.mind.ltm.mastery.craft_works.saturating_add(1);
         a.mind.ltm.mastery.distinct_recipes.insert(item_slug.clone());
@@ -851,6 +892,8 @@ pub fn build_body_gear_view_json(viewer: &UnifiedMindBody) -> Value {
                 "name": p.name,
                 "material": p.material_zh,
                 "provenance": p.provenance,
+                "wear_label": gear_wear_label_zh(p.wear_stage),
+                "needs_repair": p.wear_stage > 0,
                 "sense": describe_gear_physics_zh(p.physics, &p.slot),
             }),
             None => Value::Null,
@@ -947,8 +990,24 @@ pub fn append_gear_and_forage_scene_objects<F>(
             ("heavy_pick", "開山鍛鎬（雙手鈍器）"),
             ("carving_blade", "百工彎刀（雙手利刃）"),
         ];
+        for (slot_key, piece_opt) in [
+            ("arms", &viewer.body_gear.arms),
+            ("feet", &viewer.body_gear.feet),
+            ("torso", &viewer.body_gear.torso),
+        ] {
+            if let Some(p) = piece_opt
+                && p.wear_stage > 0
+            {
+                craft_opts.push(json!({
+                    "id": "repair_body_gear",
+                    "param": slot_key,
+                    "label": format!("修補受損【{}】· 2 枚銅幣", p.name),
+                    "sub": format!("現況：{}（借爐火整修，自家鋪免付）", gear_wear_label_zh(p.wear_stage)),
+                }));
+            }
+        }
         for mat in CRAFT_MATERIALS {
-            let need: u32 = if matches!(mat.slug, "spider_chitin" | "spider_carapace" | "lizard_scale") {
+            let need: u32 = if matches!(mat.slug, "spider_carapace" | "lizard_scale") {
                 1
             } else {
                 2
@@ -972,14 +1031,14 @@ pub fn append_gear_and_forage_scene_objects<F>(
                     "sub": format!("{}・耗料 {} 份（借爐火炭費 4 銅，自家鋪免付）", f_desc, need),
                 }));
             }
-            if craft_opts.len() >= 10 {
+            if craft_opts.len() >= 25 {
                 break;
             }
         }
         let cue = if craft_opts.is_empty() {
-            "備妥任意 2 份同類原材（粗鐵礦／原木／漂流木／石英砂／硬石／韌藤或 1 份巨蛛甲片）即可自由選材開爐打造"
+            "備妥任意 2 份同類原材（粗鐵礦／石英砂／精煤／原木／漂流木／硬石／韌藤，或 1 份巨蛛厚甲殼／岩蜥厚鱗）即可自由選材開爐打造"
         } else {
-            "行囊裡已有可用主材，點開可依形制 × 材質親手打造全身工具與護具"
+            "行囊裡已有可用主材或待修護具，點開可自由選材開爐打造與修補"
         };
         objects.push(json!({
             "object_id": "obj:craft_anvil_bench",

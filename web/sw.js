@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r6：二輪紅隊清創—修復韌藤slug斷鏈×拔除碼頭重複卡×行囊成衣換穿×屋內陳設投影×背景談話接入群戲）
-const CACHE = 'sw-shell-v20261128r6';
+// PWA Service Worker（v20261128r7：三輪清創與系統補完—護具磨損修補×鍛造高階排序×手札實料與槽位引導×真話題背景社交×實體推擠碰撞×完整遺澤繼承）
+const CACHE = 'sw-shell-v20261128r7';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r6',
-  '/town-basemaps.js?v=20261128r6',
-  '/static-node-map.js?v=20261128r6',
-  '/island-ui.js?v=20261128r6',
+  '/island-ui.css?v=20261128r7',
+  '/town-basemaps.js?v=20261128r7',
+  '/static-node-map.js?v=20261128r7',
+  '/island-ui.js?v=20261128r7',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

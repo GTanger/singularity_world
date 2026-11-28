@@ -201,8 +201,8 @@ fn workshop_custom_craft_scales_with_material_physics_and_conserves_copper() {
     add_carry_item(
         &mut delta.actors.get_mut("pl:p_smith").expect("p").backpack,
         CarryItem {
-            slug: "spider_chitin".to_string(),
-            name: "吞石巨蛛甲片".to_string(),
+            slug: "spider_carapace".to_string(),
+            name: "吞石巨蛛厚甲殼".to_string(),
             count: 1,
             weight_units: 2,
             ..CarryItem::default()
@@ -219,10 +219,10 @@ fn workshop_custom_craft_scales_with_material_physics_and_conserves_copper() {
         &day_clock,
         "p_smith",
         "craft_custom_gear",
-        "cargo_frame|spider_chitin",
+        "cargo_frame|spider_carapace",
     )
-    .expect("craft spider_chitin frame");
-    assert!(msg.contains("蛛甲模組採集背架"), "應依形制×主材生成專屬名號: {msg}");
+    .expect("craft spider_carapace frame");
+    assert!(msg.contains("巨蛛甲模組採集背架"), "應依形制×主材生成專屬名號: {msg}");
 
     let total_after: i64 = delta.municipal_treasury_copper
         + delta.silver_bank_reserve_copper
@@ -235,9 +235,9 @@ fn workshop_custom_craft_scales_with_material_physics_and_conserves_copper() {
         &day_clock,
         "p_smith",
         "equip_body_gear",
-        "craft_cargo_frame_spider_chitin",
+        "craft_cargo_frame_spider_carapace",
     )
-    .expect("equip chitin frame");
+    .expect("equip carapace frame");
     assert_eq!(
         effective_overland_bulk_cap(&delta.actors["pl:p_smith"]),
         4,

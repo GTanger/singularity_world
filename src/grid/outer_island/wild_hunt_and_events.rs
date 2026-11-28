@@ -685,8 +685,96 @@ pub fn tick_npc_unified_world_habits(
         return;
     }
 
+    // 1b. 受損護具自主修補（與玩家共用 `apply_repair_body_gear`，於開爐工坊或持韌藤時整修）
+    if let Some(worn_slot) = delta.actors.get(aid).and_then(|a| {
+        if a.body_gear.arms.as_ref().is_some_and(|g| g.wear_stage >= 2) {
+            Some("arms")
+        } else if a.body_gear.feet.as_ref().is_some_and(|g| g.wear_stage >= 2) {
+            Some("feet")
+        } else if a.body_gear.torso.as_ref().is_some_and(|g| g.wear_stage >= 2) {
+            Some("torso")
+        } else {
+            None
+        }
+    }) && super::living_sim_and_farm::apply_repair_body_gear(doc, delta, clock, aid, worn_slot)
+        .is_ok()
+    {
+        return;
+    }
+
     // 飢餓急迫者先顧覓食生計，不因閒聊或付費泡澡耽誤飯碗
     if hunger >= 55 {
+        return;
+    }
+
+    // 1c. NPC 自主研讀他人《功法手札》或著譜留世（玩家 ≡ NPC 全項同構，嚴守實料耗材）
+    if !clock.is_night && fatigue < 65 {
+        let unread_manual_slug = delta.actors.get(aid).and_then(|a| {
+            a.backpack
+                .iter()
+                .find(|i| {
+                    i.count > 0
+                        && i.slug.starts_with("manual_")
+                        && !a.mind.ltm.mastery.studied_manuals.contains(&i.name)
+                        && i.manual_meta
+                            .as_ref()
+                            .is_none_or(|m| m.origin_seed != a.soul_seed)
+                })
+                .map(|i| i.slug.clone())
+        });
+        if let Some(mslug) = unread_manual_slug
+            && super::martial_art_and_manuals::apply_study_martial_manual(
+                delta, clock, aid, &mslug,
+            )
+            .is_ok()
+        {
+            return;
+        }
+        let can_author_now = delta.actors.get(aid).is_some_and(|a| {
+            ((a.soul_seed ^ abs_bell.unsigned_abs()) % 32) == 0
+                && (a.mind.ltm.mastery.martial_bouts >= 2 || a.bound_weapon.grip_familiarity >= 14)
+                && a.backpack.iter().any(|i| {
+                    i.count >= 2
+                        && i.bound_owner.is_none()
+                        && i.stolen_from.is_none()
+                        && matches!(i.slug.as_str(), "tough_vine" | "charcoal_sack")
+                })
+        });
+        if can_author_now {
+            let slot_code = match (abs_bell.unsigned_abs() % 4) as u8 {
+                0 => "opening",
+                1 => "midgame",
+                2 => "finisher",
+                _ => "defense",
+            };
+            if super::martial_art_and_manuals::apply_write_martial_manual(
+                doc, delta, clock, aid, slot_code,
+            )
+            .is_ok()
+            {
+                return;
+            }
+        }
+    }
+
+    // 1d. 野外巡防／獵戶／冒險 NPC 自主辨識荒野巨獸蹤跡（同構呼叫 `apply_track_wild_beast`）
+    if !clock.is_night
+        && fatigue < 50
+        && !node.indoor
+        && !node.dungeon
+        && doc
+            .cells
+            .get(&node.cell_id.to_string())
+            .is_some_and(|c| c.kind != "settlement")
+        && delta.actors.get(aid).is_some_and(|a| {
+            ((a.soul_seed ^ abs_bell.unsigned_abs()) % 12) == 0
+                && (a.role.contains("獵")
+                    || a.role.contains("巡")
+                    || a.role.contains("兵")
+                    || a.role.contains("守"))
+        })
+        && apply_track_wild_beast(doc, delta, clock, aid, node).is_ok()
+    {
         return;
     }
 
@@ -760,8 +848,77 @@ pub fn tick_npc_unified_world_habits(
             .get(&peer_id)
             .map_or_else(|| "街坊".to_string(), |o| o.display_name.clone());
         let short_place = node.name.split('・').next_back().unwrap_or(&node.name);
-        let said_a = format!("最近{short_place}這邊的行情與路況如何？");
-        let reply_b = format!("一切還算平順，大夥兒各自顧緊手頭活計便是。");
+        // 依真實世界現況（冷爐／斷橋／本區田壟／巨獸風聞／角色自身記憶與天候）生成動態話題，嚴禁千篇一律罐頭！
+        let cold_smithy_name = doc.nodes.values().find_map(|nd| {
+            (nd.cell_id == node.cell_id
+                && nd.kind == "shop"
+                && infer_shop_kind(nd) == "smithy"
+                && is_smithy_forge_cold(delta, &nd.id))
+            .then(|| nd.name.split('・').next_back().unwrap_or(&nd.name).to_string())
+        });
+        let damaged_bridge_title = find_damaged_bridge_cell(delta).map(|cid| {
+            doc.cells
+                .get(&cid.to_string())
+                .map_or("官道渡口", |c| c.title.as_str())
+                .to_string()
+        });
+        let local_crop = delta
+            .farm_plots
+            .values()
+            .find(|p| p.cell_id == node.cell_id)
+            .map(|p| (p.crop_name_zh.clone(), clock.game_days >= p.mature_day));
+        let actor_recent_ep = delta.actors.get(aid).and_then(|a| {
+            a.mind
+                .ltm
+                .episodic
+                .iter()
+                .rev()
+                .map(|e| e.subjective_zh.trim_end_matches('。').to_string())
+                .find(|s| {
+                    let n = s.chars().count();
+                    (8..=38).contains(&n)
+                        && !s.contains('〔')
+                        && !s.contains("（暗記")
+                        && !s.contains("（牢記")
+                })
+        });
+        let (said_a, reply_b) = if let Some(sm) = cold_smithy_name {
+            (
+                format!("{sm}的鍛爐這會兒斷炭熄了，城裡急收北林精煤呢。"),
+                "難怪剛才鐵砧都沒響，誰手裡有煤送過去正好賺一筆。".to_string(),
+            )
+        } else if let Some(br) = damaged_bridge_title {
+            (
+                format!("聽說{br}那座木橋被急水沖鬆了，商隊大車都卡在河岸。"),
+                "得趕緊湊原木修牢，不然這兩日酒館乾糧跟鐵料都要緊俏。".to_string(),
+            )
+        } else if let Some((crop, ready)) = local_crop {
+            if ready {
+                (
+                    format!("城外那片{crop}田壟瞧著都熟透了，這兩日就能下鐮收成。"),
+                    "趁著天色好趕緊收進倉，省得海風轉大吹折了穗子。".to_string(),
+                )
+            } else {
+                (
+                    format!("城外剛翻的那片{crop}苗長得挺勻實，這季雨水算順。"),
+                    "多澆兩回水、把雜草清乾淨，過幾日便有好收成了。".to_string(),
+                )
+            }
+        } else if let Some(ep) = actor_recent_ep {
+            (
+                format!("剛在{short_place}忙完手邊事——說起來，{ep}。"),
+                format!("原來如此，這{short_place}每日起落變化都快，咱們多照應著點。"),
+            )
+        } else {
+            let role_hint = delta
+                .actors
+                .get(aid)
+                .map_or("街坊營生", |a| a.role.as_str());
+            (
+                format!("今兒{}這段鐘點，{}這頭的活計可還順手？", clock.bell_label, role_hint),
+                format!("託福還算穩當，趁著{short_place}人流正旺把份內事做妥要緊。"),
+            )
+        };
         if let Some(a) = delta.actors.get_mut(aid) {
             a.mind.record_talk_exchange(
                 &peer_id,

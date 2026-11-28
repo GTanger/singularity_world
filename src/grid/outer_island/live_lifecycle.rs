@@ -588,6 +588,16 @@ pub fn execute_npc_passing_and_inheritance(
             );
             heir.mark_mutated();
         }
+        let legacy_notes = super::farm_plots::transfer_wave4_legacy_estate_to_heir(
+            delta,
+            clock,
+            deceased_id,
+            &dec_name,
+            hid,
+        );
+        if heirloom_zh.is_none() && !legacy_notes.is_empty() {
+            heirloom_zh = Some(legacy_notes.join("；"));
+        }
     }
 
     // 5. 自有屋舍／待售房契移轉或釋回待售

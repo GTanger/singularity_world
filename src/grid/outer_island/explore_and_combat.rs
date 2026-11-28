@@ -637,19 +637,27 @@ pub fn resolve_skirmish_turn(
             if !sk.player_guard && is_spider && !arms_shielded {
                 a.wound_part = Some("左腕瘀腫".to_string());
             }
+            let arm_wear_note = if arms_shielded && (is_spider || sk.round_idx % 2 == 0) {
+                super::body_gear_craft::degrade_body_gear_wear(a, "arms")
+            } else {
+                None
+            };
             if let Some(ref mut s) = a.active_skirmish {
                 s.foe_stagger = next_stagger;
                 s.player_guard = false;
                 s.round_idx = s.round_idx.saturating_add(1);
             }
             a.mark_mutated();
-            let arm_note = if arms_shielded
+            let mut arm_note = if arms_shielded
                 && let Some(ref arm_g) = a.body_gear.arms
             {
                 format!("，雙臂【{}】穩穩卸去大半反震力道、護住手腕未傷", arm_g.name)
             } else {
                 "，震得虎口發麻".to_string()
             };
+            if let Some(wn) = arm_wear_note {
+                arm_note.push_str(&format!("（{wn}）"));
+            }
             let msg = format!(
                 "你的【{}】重重砸在【{}】甲殼上濺起火星{}，已逼得對方連退半步——再補一記精準打擊即可破敵！",
                 a.bound_weapon.name, sk.foe_name, arm_note
@@ -700,6 +708,12 @@ pub fn trigger_non_lethal_defeat(
         }
         a.backpack = kept;
         a.bound_weapon.wear_stage = (a.bound_weapon.wear_stage + 1).min(3);
+        if let Some(w_arm) = super::body_gear_craft::degrade_body_gear_wear(a, "arms") {
+            push_breath(a, w_arm);
+        }
+        if let Some(w_torso) = super::body_gear_craft::degrade_body_gear_wear(a, "torso") {
+            push_breath(a, w_torso);
+        }
         a.wound_part = Some("左腕重挫瘀腫".to_string());
         a.severe_wrist_warning = true;
         a.fatigue = 65;

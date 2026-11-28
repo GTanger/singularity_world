@@ -56,13 +56,37 @@ fn eight_phases_auto_generate_and_manuals_preserve_same_method_different_phase()
     assert_eq!(view_json["martial"].as_array().map(Vec::len), Some(4));
     assert_eq!(view_json["craft"].as_array().map(Vec::len), Some(4));
 
-    // 阿剛著譜寫出實體《功法手札》
+    // 阿剛著譜寫出實體《功法手札》（無紙墨材料必拒，備妥實料方能成冊）
     delta
         .actors
         .get_mut("pl:p_alpha")
         .expect("alpha")
         .bound_weapon
         .grip_familiarity = 14;
+    assert!(
+        apply_world_action(
+            &doc,
+            &mut delta,
+            &day_clock,
+            "p_alpha",
+            "write_martial_manual",
+            "midgame",
+        )
+        .is_err(),
+        "無紙墨草纖炭料時不可憑空印書"
+    );
+    delta
+        .actors
+        .get_mut("pl:p_alpha")
+        .expect("alpha")
+        .backpack
+        .push(crate::grid::outer_island::types::CarryItem {
+            slug: "tough_vine".to_string(),
+            name: "韌藤纖維".to_string(),
+            count: 1,
+            weight_units: 1,
+            ..crate::grid::outer_island::types::CarryItem::default()
+        });
     let w_msg = apply_world_action(
         &doc,
         &mut delta,

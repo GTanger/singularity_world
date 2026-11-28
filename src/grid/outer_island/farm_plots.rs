@@ -469,15 +469,198 @@ pub fn append_farm_plot_scene_objects(
             }));
             push_audit("sow_farm_plot", c.kind, &lbl, "開墾播種", "object", "obj:arable_slope");
         }
-        if !sow_opts.is_empty() {
-            objects.push(json!({
-                "object_id": "obj:arable_slope",
-                "name": "可開墾沃土坡地",
-                "cue": "行囊備有種苗，可就地起壟耕作",
-                "desc": "這片平緩坡地土層鬆軟，灑下隨身穀種或草苗即可就地起壟成田。",
-                "direct_action": Value::Null,
-                "options": sow_opts,
-            }));
+        let (cue, desc) = if sow_opts.is_empty() {
+            (
+                "可開墾平緩沃土坡地（須備穀種、草束、韌藤或避瘴艾草方能播種）",
+                "這片平緩坡地土層鬆軟；攜帶【白鷗麥種／草束／韌藤纖維／避瘴艾草】任一種苗前來，即可就地起壟開墾成旱田、水田或藥圃。",
+            )
+        } else {
+            (
+                "行囊備有種苗，可就地起壟耕作",
+                "這片平緩坡地土層鬆軟，灑下隨身穀種或草苗即可就地起壟成田。",
+            )
+        };
+        objects.push(json!({
+            "object_id": "obj:arable_slope",
+            "name": "可開墾沃土坡地",
+            "cue": cue,
+            "desc": desc,
+            "direct_action": Value::Null,
+            "options": sow_opts,
+        }));
+    }
+}
+
+/// 身故遺澤完整承接（`DESIGN_KEYWORDS.md` L209：農田田壟、店鋪租契、全身多部位護具、居所陳設與個人成相《遺稿手札》真實留存於世並交予繼承人）
+pub fn transfer_wave4_legacy_estate_to_heir(
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+    deceased_id: &str,
+    deceased_name: &str,
+    heir_id: &str,
+) -> Vec<String> {
+    let mut notes: Vec<String> = Vec::new();
+    let heir_name = delta
+        .actors
+        .get(heir_id)
+        .map_or_else(|| "至親".to_string(), |h| h.display_name.clone());
+
+    // 1. 農田與藥圃田壟繼承（重新歸戶至繼承人名下，不隨身故蒸發）
+    let dec_plot_keys: Vec<String> = delta
+        .farm_plots
+        .iter()
+        .filter(|(_, p)| p.owner_id == deceased_id)
+        .map(|(k, _)| k.clone())
+        .collect();
+    let mut transferred_plots = 0usize;
+    for old_key in dec_plot_keys {
+        if let Some(mut plot) = delta.farm_plots.remove(&old_key) {
+            let new_key = format!("plot:{}:{heir_id}", plot.node_id);
+            plot.plot_id = new_key.clone();
+            plot.owner_id = heir_id.to_string();
+            plot.owner_name = heir_name.clone();
+            if !delta.farm_plots.contains_key(&new_key) {
+                delta.farm_plots.insert(new_key, plot);
+                transferred_plots += 1;
+            } else {
+                // 若繼承人在同格已有田壟，保留該片已翻熟地留歸原地
+                delta.farm_plots.insert(old_key, plot);
+            }
         }
     }
+    if transferred_plots > 0 {
+        delta.extras_dirty = true;
+        notes.push(format!("{transferred_plots} 處熟地田壟歸戶予{heir_name}"));
+    }
+
+    // 2. 店鋪所有權與營運租契承接
+    let mut transferred_leases = 0usize;
+    for lease in delta.shop_leases.values_mut() {
+        let mut changed = false;
+        if lease.owner_actor_id == deceased_id {
+            lease.owner_actor_id = heir_id.to_string();
+            changed = true;
+        }
+        if lease.operator_actor_id.as_deref() == Some(deceased_id) {
+            lease.operator_actor_id = Some(heir_id.to_string());
+            changed = true;
+        }
+        if changed {
+            transferred_leases += 1;
+        }
+    }
+    if transferred_leases > 0 {
+        delta.extras_dirty = true;
+        notes.push(format!("{transferred_leases} 紙鋪面租契由{heir_name}接手經營"));
+    }
+
+    // 3. 穿戴中多部位護具、居所陳設與成相遺稿手札承接
+    let (legacy_gear, legacy_furnishings, posthumous_manual) = {
+        let Some(dec) = delta.actors.get_mut(deceased_id) else {
+            return notes;
+        };
+        let mut gear_items: Vec<CarryItem> = Vec::new();
+        for piece_opt in [
+            dec.body_gear.arms.take(),
+            dec.body_gear.feet.take(),
+            dec.body_gear.torso.take(),
+        ] {
+            if let Some(mut piece) = piece_opt {
+                piece.provenance = if piece.provenance.is_empty() {
+                    format!("{deceased_name}生前遺留護具")
+                } else {
+                    format!("{}・{deceased_name}遺留", piece.provenance)
+                };
+                gear_items.push(CarryItem {
+                    slug: piece.slug.clone(),
+                    name: piece.name.clone(),
+                    count: 1,
+                    weight_units: 1,
+                    gear_meta: Some(piece),
+                    ..CarryItem::default()
+                });
+            }
+        }
+        let furns = std::mem::take(&mut dec.lifestyle.home_furnishings);
+        let manual_opt = if dec.mind.ltm.mastery.martial_bouts >= 2
+            || dec.mind.ltm.mastery.private_martial_phase.is_some()
+        {
+            let bone = super::phase_and_vessels::actor_bone_phase(dec);
+            let carrier = super::phase_and_vessels::tool_carrier_of(
+                &dec.bound_weapon.slug,
+                &dec.bound_weapon.name,
+            );
+            let prac = u32::from(dec.mind.ltm.mastery.martial_bouts)
+                + u32::from(dec.bound_weapon.grip_familiarity / 2);
+            let r = crate::combat::human_phase::derive_personal_martial_routine(
+                &bone,
+                crate::combat::wordplate::TacticalSlot::Finisher,
+                carrier,
+                &dec.bound_weapon.name,
+                super::martial_art_and_manuals::actor_learned_bonus_for_slot(
+                    dec,
+                    crate::combat::wordplate::TacticalSlot::Finisher,
+                ),
+                prac,
+                crate::combat::wordplate::WordRegistry::global(),
+            );
+            let bname = format!("《{}・遺稿手札》", r.formal_name);
+            Some(CarryItem {
+                slug: format!("manual_legacy_{}_{}", deceased_id, clock.game_days),
+                name: bname,
+                count: 1,
+                weight_units: 1,
+                manual_meta: Some(super::martial_art_and_manuals::MartialManualMeta {
+                    author_name: deceased_name.to_string(),
+                    slot_code: "finisher".to_string(),
+                    carrier_zh: dec.bound_weapon.name.clone(),
+                    formal_name: r.formal_name,
+                    motions: r.main_motions.to_vec(),
+                    turn_branch_zh: format!(
+                        "遇{}則轉「{}」",
+                        r.turn_counter_target_zh, r.turn_branch_motion
+                    ),
+                    origin_seed: dec.soul_seed,
+                }),
+                ..CarryItem::default()
+            })
+        } else {
+            None
+        };
+        dec.mark_mutated();
+        (gear_items, furns, manual_opt)
+    };
+
+    if let Some(heir) = delta.actors.get_mut(heir_id) {
+        let gear_cnt = legacy_gear.len();
+        for g in legacy_gear {
+            add_carry_item(&mut heir.backpack, g);
+        }
+        if gear_cnt > 0 {
+            notes.push(format!("{gear_cnt} 件身披護具轉交{heir_name}"));
+        }
+        let mut furn_added = 0usize;
+        for f in legacy_furnishings {
+            if !heir.lifestyle.home_furnishings.contains(&f) {
+                heir.lifestyle.home_furnishings.push(f);
+                furn_added += 1;
+            }
+        }
+        if furn_added > 0 {
+            notes.push(format!("{furn_added} 件居所傢俱陳設移交{heir_name}"));
+        }
+        if let Some(m_item) = posthumous_manual {
+            let mname = m_item.name.clone();
+            add_carry_item(&mut heir.backpack, m_item);
+            notes.push(format!("生前絕學整理為{mname}留傳{heir_name}"));
+        }
+        if !notes.is_empty() {
+            push_breath(
+                heir,
+                format!("承接了{deceased_name}生前遺澤：{}。", notes.join("、")),
+            );
+            heir.mark_mutated();
+        }
+    }
+    notes
 }
