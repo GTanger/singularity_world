@@ -349,6 +349,8 @@ pub struct UnifiedMindBody {
     pub bound_weapon: BoundTool,
     #[serde(default)]
     pub body_gear: super::body_gear_craft::BodyGearRig,
+    #[serde(default)]
+    pub lifestyle: super::living_sim_and_farm::LivingSimState,
     pub backpack: Vec<CarryItem>,
     pub inn_locker: Vec<CarryItem>,
     pub inn_lockers: BTreeMap<String, Vec<CarryItem>>,
@@ -437,6 +439,7 @@ impl Default for UnifiedMindBody {
                 rune_mark: None,
             },
             body_gear: super::body_gear_craft::BodyGearRig::default(),
+            lifestyle: super::living_sim_and_farm::LivingSimState::default(),
             backpack: Vec::new(),
             inn_locker: Vec::new(),
             inn_lockers: BTreeMap::new(),
@@ -614,6 +617,8 @@ pub struct IslandWorldDelta {
     pub shop_leases: BTreeMap<String, super::shop_leases::ShopLeaseRecord>,
     #[serde(default)]
     pub place_registry: BTreeMap<String, super::place_registry::DynamicPlaceRecord>,
+    #[serde(default)]
+    pub farm_plots: BTreeMap<String, super::living_sim_and_farm::FarmPlotRecord>,
     pub live_land: super::live_land::LiveLandState,
     pub live_commodities: super::live_commodities::LiveCommoditiesState,
     pub live_wilds: super::live_wilds::LiveWildsState,

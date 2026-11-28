@@ -1510,6 +1510,27 @@
         '二樓宿房剩餘：' + esc(p.inn_nights_left || 0) + ' 宿 ｜ 逾時搜救契：' + (p.rescue_pact ? '已登記生效' : '未登記') +
         (p.owned_house_node ? ' ｜ 已置辦自有屋舍' : '') + '</div></div>' +
         (function () {
+          var ls = p.lifestyle || {};
+          var furn = ls.furnishings || [];
+          var plots = ls.my_plots || [];
+          var hc = p.hunt_clue || {};
+          var plotsHtml = plots.length
+            ? ('<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border-line);font-size:0.82rem;"><b>名下田壟與藥圃：</b>' +
+                plots.map(function (pl) {
+                  return '<div style="margin-top:3px;color:var(--ink-sub);">・【' + esc(pl.node_name) + '】' + esc(pl.stage_sense) + '</div>';
+                }).join('') + '</div>')
+            : '';
+          var huntHtml = hc.active
+            ? ('<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border-line);font-size:0.82rem;color:var(--accent-main);"><b>荒野巨獸追獵線索：</b>' + esc(hc.beast_title || '') + '【' + esc(hc.beast_name || '') + '】— ' + esc(hc.next_hint || '') + '</div>')
+            : '';
+          return '<div class="oi-kv-card"><strong>起居日常與居所佈置</strong>' +
+            '<div style="margin-top:4px;font-size:0.84rem;color:var(--ink-sub);"><b>身上穿搭：</b>' + esc(ls.outfit_name || '海風舊斗篷與粗麻行裝') + '</div>' +
+            '<div style="margin-top:3px;font-size:0.82rem;color:var(--ink-sub);"><b>身面清爽：</b>' + esc(ls.cleanliness_sense || '') + '</div>' +
+            '<div style="margin-top:3px;font-size:0.82rem;color:var(--ink-sub);"><b>今日飲食：</b>' + esc(ls.meal_sense || '') + '</div>' +
+            '<div style="margin-top:3px;font-size:0.82rem;color:var(--ink-sub);"><b>居所陳設：</b>' + (furn.length ? esc(furn.join('、')) : '尚無額外木作陳設（可於市集木作坊添置）') + '</div>' +
+            plotsHtml + huntHtml + '</div>';
+        })() +
+        (function () {
           var off = p.offline || {};
           var opts = off.options || [];
           if (!opts.length) return '';

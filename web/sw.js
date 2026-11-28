@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r3：第三刀個人之相 4 武相＋4 藝相×全自動田忌賽馬交鋒×功法手札著譜傳授）
-const CACHE = 'sw-shell-v20261128r3';
+// PWA Service Worker（v20261128r4：第四刀模擬人生生活感×農田藥圃開墾收成×野外巨獸追獵與城鎮活事件鏈）
+const CACHE = 'sw-shell-v20261128r4';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r3',
-  '/town-basemaps.js?v=20261128r3',
-  '/static-node-map.js?v=20261128r3',
-  '/island-ui.js?v=20261128r3',
+  '/island-ui.css?v=20261128r4',
+  '/town-basemaps.js?v=20261128r4',
+  '/static-node-map.js?v=20261128r4',
+  '/island-ui.js?v=20261128r4',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

@@ -1032,45 +1032,28 @@ pub fn apply_world_action(
             {
                 return res;
             }
-            if action == "intervene_vignette" {
-                return super::living_presence::apply_vignette_intervene(
-                    doc, delta, clock, &aid, param,
-                );
+            match action {
+                "intervene_vignette" => return super::living_presence::apply_vignette_intervene(doc, delta, clock, &aid, param),
+                "set_offline_policy" => return super::offline_autonomy::set_player_offline_policy(delta, clock, &aid, param),
+                "dismiss_offline_recap" => return super::offline_autonomy::dismiss_player_offline_recap(delta, &aid),
+                "gather_wild_raw" => return super::body_gear_craft::apply_gather_wild_raw(doc, delta, clock, &aid),
+                "field_bind_craft" => return super::body_gear_craft::apply_field_bind_craft(delta, clock, &aid, param),
+                "craft_custom_gear" => return super::body_gear_craft::apply_craft_custom_gear(doc, delta, clock, &aid, param),
+                "equip_body_gear" => return super::body_gear_craft::apply_equip_body_gear(delta, clock, &aid, param),
+                "unequip_body_gear" => return super::body_gear_craft::apply_unequip_body_gear(delta, clock, &aid, param),
+                "write_martial_manual" => return super::martial_art_and_manuals::apply_write_martial_manual(doc, delta, clock, &aid, param),
+                "study_martial_manual" => return super::martial_art_and_manuals::apply_study_martial_manual(delta, clock, &aid, param),
+                _ => {}
             }
-            if action == "set_offline_policy" {
-                return super::offline_autonomy::set_player_offline_policy(
-                    delta, clock, &aid, param,
-                );
+            if let Some(res) = super::living_sim_and_farm::try_apply_living_sim_farm_action(
+                doc, delta, clock, &aid, node, action, param,
+            ) {
+                return res;
             }
-            if action == "dismiss_offline_recap" {
-                return super::offline_autonomy::dismiss_player_offline_recap(delta, &aid);
-            }
-            if action == "gather_wild_raw" {
-                return super::body_gear_craft::apply_gather_wild_raw(doc, delta, clock, &aid);
-            }
-            if action == "field_bind_craft" {
-                return super::body_gear_craft::apply_field_bind_craft(delta, clock, &aid, param);
-            }
-            if action == "craft_custom_gear" {
-                return super::body_gear_craft::apply_craft_custom_gear(
-                    doc, delta, clock, &aid, param,
-                );
-            }
-            if action == "equip_body_gear" {
-                return super::body_gear_craft::apply_equip_body_gear(delta, clock, &aid, param);
-            }
-            if action == "unequip_body_gear" {
-                return super::body_gear_craft::apply_unequip_body_gear(delta, clock, &aid, param);
-            }
-            if action == "write_martial_manual" {
-                return super::martial_art_and_manuals::apply_write_martial_manual(
-                    doc, delta, clock, &aid, param,
-                );
-            }
-            if action == "study_martial_manual" {
-                return super::martial_art_and_manuals::apply_study_martial_manual(
-                    delta, clock, &aid, param,
-                );
+            if let Some(res) = super::wild_hunt_and_events::try_apply_wild_hunt_event_action(
+                doc, delta, clock, &aid, node, action, param,
+            ) {
+                return res;
             }
             if let Some(res) = super::ongoing_activity::try_dispatch_embodied_action(
                 doc,

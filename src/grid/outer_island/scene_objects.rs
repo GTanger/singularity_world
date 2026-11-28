@@ -969,6 +969,24 @@ pub fn build_scene_presence_sockets(
         &mut objects,
         &mut push_audit,
     );
+    super::living_sim_and_farm::append_lifestyle_and_farm_scene_objects(
+        doc,
+        delta,
+        viewer,
+        node,
+        clock,
+        &mut objects,
+        &mut push_audit,
+    );
+    super::wild_hunt_and_events::append_wild_hunt_and_town_event_objects(
+        doc,
+        delta,
+        viewer,
+        node,
+        clock,
+        &mut objects,
+        &mut push_audit,
+    );
 
     (objects, body_cues, audit_actions)
 }

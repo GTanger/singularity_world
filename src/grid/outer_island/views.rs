@@ -322,6 +322,73 @@ pub fn build_view_json(
         None
     };
 
+    let backpack_json: Vec<Value> = viewer
+        .backpack
+        .iter()
+        .map(|it| {
+            json!({
+                "slug": it.slug,
+                "name": it.name,
+                "count": it.count,
+                "fair_copper": super::phase_and_vessels::appraise_item_fair_copper(it),
+                "is_voucher": it.bound_owner.is_some(),
+                "is_unclaimed": it.stolen_from.is_some(),
+                "is_vessel": it.vessel_meta.is_some(),
+                "is_gear": it.gear_meta.is_some(),
+                "is_manual": it.slug.starts_with("manual_"),
+                "gear_slot": it.gear_meta.as_ref().map(|g| g.slot.as_str()),
+            })
+        })
+        .collect();
+    let locker_json: Vec<Value> = viewer
+        .inn_lockers
+        .get(&node.id)
+        .unwrap_or(&viewer.inn_locker)
+        .iter()
+        .map(|it| {
+            json!({
+                "slug": it.slug,
+                "name": it.name,
+                "count": it.count,
+            })
+        })
+        .collect();
+    let player_json = json!({
+        "id": public_id,
+        "name": viewer.display_name,
+        "race": viewer.race,
+        "appearance": viewer.appearance,
+        "copper": viewer.copper,
+        "vibe": vibe_text,
+        "body_cues": body_cues,
+        "temper_cue": v_motive_cue,
+        "self_bio": super::world_weave_bio::compose_player_biography_zh(doc, viewer, clock.game_days),
+        "memorable_notes": memorable_notes,
+        "wound": viewer.wound_part,
+        "severe_warning": viewer.severe_wrist_warning,
+        "inn_nights_left": viewer.inn_nights_left,
+        "assigned_inn_room": viewer.assigned_inn_room,
+        "ongoing_activity": viewer.ongoing_activity,
+        "rescue_pact": viewer.rescue_pact_active,
+        "owned_house_node": viewer.owned_house_node,
+        "offline": super::offline_autonomy::build_offline_policy_view_json(viewer),
+        "mastery": super::phase_and_vessels::format_mastery_status_zh(viewer),
+        "weapon": {
+            "name": viewer.bound_weapon.name,
+            "provenance": viewer.bound_weapon.provenance,
+            "wear": wear_text,
+            "grip": grip_text,
+            "rune": viewer.bound_weapon.rune_mark,
+        },
+        "body_gear": super::body_gear_craft::build_body_gear_view_json(viewer),
+        "eight_phases": super::martial_art_and_manuals::build_eight_phases_view_json(viewer),
+        "lifestyle": super::living_sim_and_farm::build_lifestyle_and_farm_view_json(delta, viewer, clock),
+        "hunt_clue": super::wild_hunt_and_events::build_hunt_clue_view_json(doc, delta, viewer),
+        "backpack": backpack_json,
+        "inn_locker": locker_json,
+        "languages": lang_summary,
+    });
+
     json!({
         "ok": true,
         "setup_done": viewer.setup_done,
@@ -373,54 +440,7 @@ pub fn build_view_json(
                 "island_master_url": "/maps/seam_lab/master_island_2k.webp?v=20261127r1",
             },
         },
-        "player": {
-            "id": public_id,
-            "name": viewer.display_name,
-            "race": viewer.race,
-            "appearance": viewer.appearance,
-            "copper": viewer.copper,
-            "vibe": vibe_text,
-            "body_cues": body_cues,
-            "temper_cue": v_motive_cue,
-            "self_bio": super::world_weave_bio::compose_player_biography_zh(doc, viewer, clock.game_days),
-            "memorable_notes": memorable_notes,
-            "wound": viewer.wound_part,
-            "severe_warning": viewer.severe_wrist_warning,
-            "inn_nights_left": viewer.inn_nights_left,
-            "assigned_inn_room": viewer.assigned_inn_room,
-            "ongoing_activity": viewer.ongoing_activity,
-            "rescue_pact": viewer.rescue_pact_active,
-            "owned_house_node": viewer.owned_house_node,
-            "offline": super::offline_autonomy::build_offline_policy_view_json(viewer),
-            "mastery": super::phase_and_vessels::format_mastery_status_zh(viewer),
-            "weapon": {
-                "name": viewer.bound_weapon.name,
-                "provenance": viewer.bound_weapon.provenance,
-                "wear": wear_text,
-                "grip": grip_text,
-                "rune": viewer.bound_weapon.rune_mark,
-            },
-            "body_gear": super::body_gear_craft::build_body_gear_view_json(viewer),
-            "eight_phases": super::martial_art_and_manuals::build_eight_phases_view_json(viewer),
-            "backpack": viewer.backpack.iter().map(|it| json!({
-                "slug": it.slug,
-                "name": it.name,
-                "count": it.count,
-                "fair_copper": super::phase_and_vessels::appraise_item_fair_copper(it),
-                "is_voucher": it.bound_owner.is_some(),
-                "is_unclaimed": it.stolen_from.is_some(),
-                "is_vessel": it.vessel_meta.is_some(),
-                "is_gear": it.gear_meta.is_some(),
-                "is_manual": it.slug.starts_with("manual_"),
-                "gear_slot": it.gear_meta.as_ref().map(|g| g.slot.as_str()),
-            })).collect::<Vec<_>>(),
-            "inn_locker": viewer.inn_lockers.get(&node.id).unwrap_or(&viewer.inn_locker).iter().map(|it| json!({
-                "slug": it.slug,
-                "name": it.name,
-                "count": it.count,
-            })).collect::<Vec<_>>(),
-            "languages": lang_summary,
-        },
+        "player": player_json,
         "skirmish": skirmish_json,
         "transit": transit_json,
     })

@@ -61,6 +61,7 @@ pub mod living_chronicler_worker;
 pub mod living_presence;
 #[cfg(test)]
 mod living_presence_tests;
+pub mod living_sim_and_farm;
 #[cfg(test)]
 mod living_player_audit_tests;
 #[cfg(test)]
@@ -102,6 +103,9 @@ pub mod transit_and_cargo;
 pub mod types;
 pub mod unified_kernel;
 pub mod views;
+#[cfg(test)]
+mod wave4_tests;
+pub mod wild_hunt_and_events;
 pub mod world_weave;
 pub mod world_weave_bio;
 

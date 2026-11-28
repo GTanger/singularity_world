@@ -226,6 +226,7 @@ pub(super) fn migrate_v1_player_json(
             ..BoundTool::default()
         }),
         body_gear: super::body_gear_craft::BodyGearRig::default(),
+        lifestyle: super::living_sim_and_farm::LivingSimState::default(),
         backpack: p.backpack,
         inn_locker: p.inn_locker,
         inn_lockers: p.inn_lockers,
@@ -361,6 +362,7 @@ pub(super) fn migrate_v1_resident_json(
             .bound_tool
             .unwrap_or_else(|| default_tool_for_role(&role, &name)),
         body_gear: super::body_gear_craft::BodyGearRig::default(),
+        lifestyle: super::living_sim_and_farm::LivingSimState::default(),
         backpack: er.carry_bag,
         inn_locker: Vec::new(),
         inn_lockers: BTreeMap::new(),
