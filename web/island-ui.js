@@ -1035,7 +1035,7 @@
 
     var cuesEl = byId('oi-body-cues');
     var cues = p.body_cues || [];
-    if (cues.length > 0 && !view.skirmish && !view.transit) {
+    if (cues.length > 0 && !view.skirmish && !view.transit && !view.overland_walk) {
       cuesEl.hidden = false;
       setHtmlIfChanged(
         cuesEl,
@@ -1077,15 +1077,15 @@
       }
     }
 
-    // 現場活群戲與人物主動搭話（100% 來自真實世界狀態，可直接插話或應聲）
+    // 現場活群戲與人物主動搭話（去雜亂：同時僅呈現最聚焦的 1 則眼前動靜，維持書頁呼吸感）
     var liveStageEl = byId('oi-live-stage');
     if (liveStageEl) {
       var haps = sc.happenings || [];
-      if (haps.length > 0 && !view.skirmish && !view.transit) {
+      if (haps.length > 0 && !view.skirmish && !view.transit && !view.overland_walk) {
         liveStageEl.hidden = false;
         setHtmlIfChanged(
           liveStageEl,
-          haps.map(function (hp) {
+          haps.slice(0, 1).map(function (hp) {
             var cardCls = 'oi-happening-card' + (hp.kind === 'npc_duo_tension' ? ' is-tension' : '');
             var optsHtml = (hp.options || []).map(function (op) {
               if (op.act === 'open_talk') {
@@ -1148,40 +1148,70 @@
         '<button type="button" class="oi-deed-btn" data-act="carriage_alight"><strong>招呼就地停靠</strong><small>當場改為步行</small></button>' +
         '</div></div>'
       );
+    } else if (view.overland_walk) {
+      var ow = view.overland_walk;
+      var destLabel = ow.target_cell_title || ow.target_name || '前方地界';
+      skWrap.hidden = false;
+      setHtmlIfChanged(
+        skWrap,
+        '<div class="oi-overland-bar">' +
+          '<div class="oi-overland-info">' +
+            '<div class="oi-overland-title">徒步行旅：' + (ow.dir ? ('往' + esc(ow.dir) + ' · ') : '') + esc(destLabel) + '</div>' +
+            '<div class="oi-overland-cue">' + esc(ow.pace_cue || '正沿山海路途穩步前行') + '</div>' +
+          '</div>' +
+          '<button type="button" class="oi-overland-cancel" data-act="cancel_activity">停步折返</button>' +
+        '</div>'
+      );
     } else {
       skWrap.hidden = true;
       setHtmlIfChanged(skWrap, '');
     }
 
-    // 眼前所見之人（無分類標題，當值對口獨立優先席，人群收合零數字）
+    // 眼前所見之人（精簡單行名牌膠囊 ＋ 自動收束重複職稱陌生人，拒絕洗版大方塊）
     var npcs = sc.npcs || [];
     var overflow = sc.crowd_overflow || [];
     var npcSec = byId('oi-presence-people');
-    function renderPersonCard(n) {
-      var phaseTag = (n.peer && n.peer.phase_badge) ? ('・成相【' + esc(n.peer.phase_badge) + '】') : '';
+    function renderPersonCard(n, extraTag) {
       var isStrangerLabel = String(n.name || '').indexOf('陌生的') === 0;
-      var rolePart = isStrangerLabel ? esc(n.race) : (esc(n.race) + '・' + esc(n.role));
-      return '<button type="button" class="oi-person-btn" data-npc-id="' + esc(n.id) + '" data-npc-name="' + esc(n.name) + '" data-npc-role="' + esc(n.race + '・' + n.role) + '" data-is-player="' + (n.is_player ? '1' : '0') + '">' +
+      var shortRole = isStrangerLabel
+        ? (extraTag || '')
+        : ((n.peer && n.peer.phase_badge) ? n.peer.phase_badge : (n.role || ''));
+      var subHtml = shortRole ? ('<span class="oi-person-tag">' + esc(shortRole) + '</span>') : '';
+      return '<button type="button" class="oi-person-btn' + (isStrangerLabel ? ' is-stranger' : '') + '" data-npc-id="' + esc(n.id) + '" data-npc-name="' + esc(n.name) + '" data-npc-role="' + esc(n.race + '・' + n.role) + '" data-is-player="' + (n.is_player ? '1' : '0') + '" title="' + esc(n.cue || '') + '">' +
+        '<span class="oi-person-dot"></span>' +
         '<span class="oi-person-top">' + esc(n.name) + '</span>' +
-        '<span class="oi-person-sub">' + rolePart + phaseTag + '・' + esc(n.cue) + '</span>' +
+        subHtml +
         '</button>';
     }
-    if ((npcs.length > 0 || overflow.length > 0) && !view.skirmish && !view.transit) {
+    if ((npcs.length > 0 || overflow.length > 0) && !view.skirmish && !view.transit && !view.overland_walk) {
       npcSec.hidden = false;
-      var htmlParts = npcs.map(renderPersonCard);
+      var htmlParts = [];
+      var strangerCounts = {};
+      var strangerFirst = {};
+      for (var ni = 0; ni < npcs.length; ni++) {
+        var nm = String(npcs[ni].name || '');
+        if (nm.indexOf('陌生的') === 0) {
+          strangerCounts[nm] = (strangerCounts[nm] || 0) + 1;
+          if (!strangerFirst[nm]) strangerFirst[nm] = npcs[ni];
+        } else {
+          htmlParts.push(renderPersonCard(npcs[ni], ''));
+        }
+      }
+      var sKeys = Object.keys(strangerFirst);
+      for (var ski = 0; ski < sKeys.length; ski++) {
+        var skName = sKeys[ski];
+        htmlParts.push(renderPersonCard(strangerFirst[skName], strangerCounts[skName] > 1 ? '數人' : ''));
+      }
       if (overflow.length > 0) {
         htmlParts.push(
-          '<button type="button" class="oi-person-btn" data-toggle-crowd="1" style="border-style:dashed;">' +
+          '<button type="button" class="oi-person-btn is-more" data-toggle-crowd="1">' +
           '<span class="oi-person-top">' +
-          (appState.crowdExpanded ? '將視線收回近處 ▴' : '人聲漸雜，後頭還有幾道身影 ▾') +
-          '</span>' +
-          '<span class="oi-person-sub">' +
-          (appState.crowdExpanded ? '專注眼前近處人物' : '走近打量後排身影') +
+          (appState.crowdExpanded ? '收起後排 ▴' : '尚有幾道身影 ▾') +
           '</span></button>'
         );
         if (appState.crowdExpanded) {
           for (var oi = 0; oi < overflow.length; oi++) {
-            htmlParts.push(renderPersonCard(overflow[oi]));
+            htmlParts.push(renderPersonCard(overflow[oi], ''));
           }
         }
       }
@@ -1191,15 +1221,15 @@
       setHtmlIfChanged(npcSec, '');
     }
 
-    // 眼前所見之具名實物與停靠車船（無分類標題、零動詞任務句）
+    // 眼前所見之具名實物與停靠車船（輕透單行標籤，點擊後於抽屜展開詳情，消除滿屏大黑磚）
     var objs = sc.objects || [];
     var objSec = byId('oi-presence-objects');
-    if (objs.length > 0 && !view.skirmish && !view.transit) {
+    if (objs.length > 0 && !view.skirmish && !view.transit && !view.overland_walk) {
       objSec.hidden = false;
       setHtmlIfChanged(objSec, objs.map(function (ob) {
-        return '<button type="button" class="oi-object-btn" data-object-id="' + esc(ob.object_id) + '">' +
-          '<span class="oi-person-top">' + esc(ob.name) + '</span>' +
-          '<span class="oi-person-sub">' + esc(ob.cue || '') + '</span>' +
+        var isNotice = /碑|木欄|站牌|告示|牌|急收/.test(ob.name || '');
+        return '<button type="button" class="oi-object-btn' + (isNotice ? ' is-notice' : '') + '" data-object-id="' + esc(ob.object_id) + '" title="' + esc(ob.cue || '') + '">' +
+          '<span class="oi-obj-lbl">' + esc(ob.name) + '</span>' +
           '</button>';
       }).join(''));
     } else {
@@ -1241,7 +1271,7 @@
   function renderPresenceDoors(view) {
     var doorsEl = byId('oi-presence-doors');
     if (!doorsEl) return;
-    if (!view || !view.scene || view.skirmish || view.transit) {
+    if (!view || !view.scene || view.skirmish || view.transit || view.overland_walk) {
       doorsEl.hidden = true;
       setHtmlIfChanged(doorsEl, '');
       return;
@@ -1890,8 +1920,9 @@
 
   /* ═══ 全域事件委派與手機虛擬鍵盤貼齊 ═══ */
   function bindMainEvents() {
+    // 跨地塊徒步期間加速脈動檢查，確保紅點平滑推進與抵達零延遲
     setInterval(tickLocalIslandClock, 500);
-    setInterval(pollIslandPulse, 3000);
+    setInterval(pollIslandPulse, 2000);
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') {
         tickLocalIslandClock();

@@ -200,6 +200,9 @@ pub fn tick_ongoing_activities(
                     a.mark_mutated();
                 }
             }
+            "overland_walk" => {
+                settle_overland_walk_arrival(doc, delta, clock, &aid, &act_state);
+            }
             _ => {
                 if let Some(a) = delta.actors.get_mut(&aid) {
                     a.ongoing_activity = None;
@@ -493,6 +496,15 @@ pub fn cancel_ongoing_activity(
         return Ok(msg);
     }
 
+    if st.kind == "overland_walk" {
+        let a = delta.actors.get_mut(aid).ok_or("找不到旅人行蹤")?;
+        a.ongoing_activity = None;
+        a.mark_mutated();
+        let msg = format!("你在半途勒住腳步，原路折返【{}】。", node_name);
+        push_breath(a, msg.clone());
+        return Ok(msg);
+    }
+
     let a = delta.actors.get_mut(aid).ok_or("找不到旅人行蹤")?;
     a.ongoing_activity = None;
     a.mark_mutated();
@@ -502,6 +514,158 @@ pub fn cancel_ongoing_activity(
     );
     push_breath(a, msg.clone());
     Ok(msg)
+}
+
+/// 依兩地塊真實歐氏距離、地形阻力、汛期涉水、穿靴減免與隨身負重，算出跨地塊徒步所需拍數（1 拍 = 2.5s）
+pub fn compute_overland_walk_ticks(
+    doc: &WorldStaticDoc,
+    actor: &super::types::UnifiedMindBody,
+    src_cell_id: u32,
+    dst_node: &SpatialNodeDef,
+    flood_crossing: bool,
+) -> u8 {
+    let dist = match (
+        doc.cells.get(&src_cell_id.to_string()),
+        doc.cells.get(&dst_node.cell_id.to_string()),
+    ) {
+        (Some(c1), Some(c2)) => (c2.center[0] - c1.center[0]).hypot(c2.center[1] - c1.center[1]),
+        _ => 10.0,
+    };
+    let dst_cell_kind = doc
+        .cells
+        .get(&dst_node.cell_id.to_string())
+        .map_or("wilderness", |c| c.kind.as_str());
+    let terrain_mul = match dst_cell_kind {
+        "settlement" | "rural_settlement" | "road_corridor" => 1.0,
+        _ => 1.32,
+    };
+    let mut ticks_f = (dist * 0.46 * terrain_mul).round();
+    if flood_crossing {
+        ticks_f += 3.0;
+    }
+    let carry_weight: u32 = actor
+        .backpack
+        .iter()
+        .map(|i| u32::from(i.weight_units) * i.count)
+        .sum();
+    if carry_weight >= 8 {
+        ticks_f += 2.0;
+    }
+    if super::body_gear_craft::feet_fatigue_reduction(actor, flood_crossing) > 0 {
+        ticks_f = (ticks_f * 0.76).round();
+    }
+    (ticks_f as i64).clamp(3, 14) as u8
+}
+
+/// 跨地塊徒步行旅抵達結算：正式寫入新地塊座標與親見見證、扣算旅途疲勞／涉水磨損並記錄抵達見聞
+fn settle_overland_walk_arrival(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+    aid: &str,
+    act_state: &OngoingActivityState,
+) {
+    let Some(dst_node) = doc.nodes.get(&act_state.target_node) else {
+        if let Some(a) = delta.actors.get_mut(aid) {
+            a.ongoing_activity = None;
+            a.mark_mutated();
+        }
+        return;
+    };
+    let from_nid = delta
+        .actors
+        .get(aid)
+        .map(|a| a.node_id.clone())
+        .unwrap_or_else(|| act_state.started_node.clone());
+    let src_cell_id = doc
+        .nodes
+        .get(&from_nid)
+        .map_or(dst_node.cell_id, |n| n.cell_id);
+    let flood_crossing = src_cell_id != dst_node.cell_id
+        && super::live_land::is_river_crossing_impassable_for_wheels(delta, dst_node.cell_id);
+    let knows_dst_state = doc
+        .cells
+        .get(&dst_node.cell_id.to_string())
+        .is_some_and(|c| {
+            c.kind == "settlement"
+                || c.kind == "rural_settlement"
+                || dst_node.kind == "gate"
+                || dst_node.kind == "plaza"
+                || dst_node.kind == "village_gate"
+        });
+
+    super::live_tide::relocate_actor_with_local_witness(
+        doc,
+        delta,
+        clock,
+        aid,
+        &from_nid,
+        &dst_node.id,
+        dst_node.cell_id,
+        knows_dst_state,
+    );
+
+    let Some(a) = delta.actors.get_mut(aid) else {
+        return;
+    };
+    a.ongoing_activity = None;
+    let carry_weight: u32 = a
+        .backpack
+        .iter()
+        .map(|i| u32::from(i.weight_units) * i.count)
+        .sum();
+    let base_cost: u8 = if dst_node.kind == "wild" {
+        if carry_weight >= 8 { 5 } else { 3 }
+    } else if carry_weight >= 8 {
+        3
+    } else {
+        2
+    };
+    let boot_save = super::body_gear_craft::feet_fatigue_reduction(a, false);
+    a.fatigue = a
+        .fatigue
+        .saturating_add(base_cost.saturating_sub(boot_save).max(1))
+        .min(95);
+
+    let mut suffix = String::new();
+    if flood_crossing {
+        let flood_save = super::body_gear_craft::feet_fatigue_reduction(a, true);
+        a.fatigue = a
+            .fatigue
+            .saturating_add(6u8.saturating_sub(flood_save).max(2))
+            .min(95);
+        if a.body_gear.feet.is_some() {
+            let boots_name = a
+                .body_gear
+                .feet
+                .as_ref()
+                .map_or_else(String::new, |b| b.name.clone());
+            let wear_warn = super::body_gear_craft::degrade_body_gear_wear(a, "feet");
+            if flood_save > 0 {
+                suffix.push_str(&format!(
+                    " 途中木橋沖斷，腳下【{boots_name}】穩穩抓緊卵石河床，省下不少涉水氣力。"
+                ));
+            } else {
+                suffix.push_str(&format!(
+                    " 途中木橋沖斷，腳下【{boots_name}】早已損裂進水，只能踩著齊膝濁水艱難涉過。"
+                ));
+            }
+            if let Some(wn) = wear_warn {
+                suffix.push_str(&format!(" {wn}"));
+            }
+        } else {
+            suffix.push_str(" 途中木橋受汛沖斷，你踩著齊膝濁水艱難涉過淺灘。");
+        }
+    }
+    let td = derive_tide_clock_details(clock);
+    push_breath(
+        a,
+        format!(
+            "〔{:02}:{:02}〕一番跋涉後，你抵達了【{}】。{}",
+            td.hour, td.minute, dst_node.name, suffix
+        ),
+    );
+    a.mark_mutated();
 }
 
 /// 四處官道避雨茶棚：0 秒熱茶（零鎖死計時器！）、花 1 枚銅幣消解風寒輕微疲勞並聽取當下真實商路情報

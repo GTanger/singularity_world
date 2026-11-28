@@ -441,32 +441,98 @@ button, input, select {
 .oi-chip-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
-.oi-presence-people,
+.oi-presence-people {
+  margin-top: 10px;
+}
+
 .oi-presence-objects {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
+/* 實物／告示／地景互動：輕透單行文字標籤（點擊展開抽屜，拒絕滿屏大黑磚） */
 .oi-object-btn {
-  min-height: 44px;
-  padding: 7px 12px;
-  border-radius: 10px;
-  border: 1px dashed var(--border-line);
-  border-left: 3px solid var(--accent-gold);
-  background: var(--bg-elevated);
+  min-height: 34px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in srgb, var(--accent-gold) 45%, var(--border-line));
+  background: color-mix(in srgb, var(--bg-surface) 58%, transparent);
+  color: var(--ink-main);
+  font-size: 0.84rem;
+  font-weight: 600;
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: center;
+  gap: 5px;
   cursor: pointer;
-  text-align: left;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.oi-object-btn.is-notice {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--border-line) 78%, transparent);
+  color: var(--ink-sub);
+  background: transparent;
 }
 
 .oi-object-btn:hover {
   background: var(--bg-chip);
   border-color: var(--accent-gold);
+  color: var(--ink-main);
+}
+
+.oi-obj-lbl {
+  line-height: 1.2;
+}
+
+/* 跨地塊徒步行旅精簡橫條 */
+.oi-overland-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent-jade) 55%, var(--border-line));
+  border-left: 3px solid var(--accent-jade);
+  background: color-mix(in srgb, var(--bg-surface) 84%, transparent);
+}
+
+.oi-overland-info {
+  min-width: 0;
+}
+
+.oi-overland-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink-main);
+}
+
+.oi-overland-cue {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--ink-sub);
+}
+
+.oi-overland-cancel {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border-line);
+  background: var(--bg-chip);
+  color: var(--ink-main);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.oi-overland-cancel:hover {
+  background: var(--bg-chip-hover);
+  border-color: var(--accent-main);
 }
 
 .oi-counter-deeds {
@@ -486,29 +552,62 @@ button, input, select {
   justify-content: flex-end;
 }
 
+/* 在場人物：緊湊單行名牌膠囊（點色標 ＋ 名字 ＋ 短職稱，與實物一眼分流） */
 .oi-person-btn {
-  min-height: 44px;
-  padding: 7px 12px;
-  border-radius: 10px;
+  min-height: 36px;
+  padding: 5px 11px;
+  border-radius: 999px;
   border: 1px solid var(--border-line);
-  border-left: 3px solid var(--accent-main);
   background: var(--bg-surface);
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
   text-align: left;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.oi-person-btn.is-stranger {
+  background: color-mix(in srgb, var(--bg-surface) 64%, transparent);
+  color: var(--ink-sub);
+}
+
+.oi-person-btn.is-more {
+  border-style: dashed;
+  background: transparent;
+  color: var(--ink-muted);
 }
 
 .oi-person-btn:hover {
   background: var(--bg-chip);
   border-color: var(--accent-main);
+  color: var(--ink-main);
+}
+
+.oi-person-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-main);
+  flex-shrink: 0;
+}
+
+.oi-person-btn.is-stranger .oi-person-dot {
+  background: var(--ink-muted);
 }
 
 .oi-person-top {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 700;
+  line-height: 1.2;
+}
+
+.oi-person-tag {
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  padding-left: 4px;
+  border-left: 1px solid var(--border-line);
+  line-height: 1.2;
 }
 
 .oi-person-sub {
@@ -1556,14 +1655,22 @@ button, input, select {
 .oi-snm-node.is-reachable.is-leave {
   border-style: dashed;
   border-color: rgba(45, 106, 86, 0.72);
-  background: rgba(235, 245, 238, 0.88);
+  background: rgba(235, 245, 238, 0.86);
   color: #174636;
 }
 
 .oi-snm-viewport.is-night .oi-snm-node.is-reachable.is-leave {
   border-color: rgba(114, 206, 174, 0.65);
-  background: rgba(20, 44, 38, 0.82);
+  background: rgba(20, 44, 38, 0.80);
   color: #d4f7ea;
+}
+
+.oi-snm-node.is-reachable.is-subtrail {
+  font-size: 10.5px;
+  font-weight: 600;
+  min-height: 22px;
+  padding: 2px 7px;
+  opacity: 0.74;
 }
 
 /* 全島總覽標記（純辨位、不觸發移動） */

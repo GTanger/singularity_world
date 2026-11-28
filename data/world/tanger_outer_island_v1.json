@@ -4765,7 +4765,7 @@
       "flux": 30,
       "is_coast": true,
       "kind": "wilderness",
-      "title": "雷橋林谷・潮間貝礁灣（雷橋莊南）",
+      "title": "雷橋林谷・雷橋南礁灣",
       "desc": "雷橋莊南側、艾森河集南向並遙望達利莊的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "neighbors_f6": [
         5008,
@@ -4822,7 +4822,7 @@
       "flux": 39,
       "is_coast": true,
       "kind": "wilderness",
-      "title": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津",
+      "title": "雷橋林谷・古加西岬灣",
       "desc": "雷橋莊南側、古加津南向並遙望達利莊的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "neighbors_f6": [
         5008,
@@ -4867,7 +4867,7 @@
       "flux": 39,
       "is_coast": true,
       "kind": "wilderness",
-      "title": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津（望艾森河集）",
+      "title": "雷橋林谷・古加南礁灘",
       "desc": "雷橋莊南側、古加津南向並遙望艾森河集的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "neighbors_f6": [
         5006,
@@ -4916,7 +4916,7 @@
       "flux": 22,
       "is_coast": true,
       "kind": "wilderness",
-      "title": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集",
+      "title": "雷橋林谷・艾森南礁灣",
       "desc": "雷橋莊南側、艾森河集南向並遙望達利莊的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。 地界旁留有一處野莓灌叢與通往達利莊方向的舊日路標。",
       "neighbors_f6": [
         4852,
@@ -4966,7 +4966,7 @@
       "flux": 22,
       "is_coast": true,
       "kind": "wilderness",
-      "title": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集（望古加津）",
+      "title": "雷橋林谷・吞潮前岬灣",
       "desc": "雷橋莊南側、艾森河集南向並遙望古加津的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "neighbors_f6": [
         5006,
@@ -12113,7 +12113,7 @@
         },
         {
           "to": "oi:cell4617:approach_a",
-          "dir": "南",
+          "dir": "西南",
           "to_name": "博昂鄉鎮白鷗港南・臨海碎石坡頭",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港9步"
@@ -14997,7 +14997,7 @@
         },
         {
           "to": "oi:cell4195:skirt_b",
-          "dir": "北",
+          "dir": "西北",
           "to_name": "博泉村・村後界石林徑",
           "kind": "highway"
         },
@@ -16245,6 +16245,12 @@
           "to_name": "黑煤溪寮・村後界石林徑",
           "kind": "highway",
           "milestone_zh": "往灰松林驛6步"
+        },
+        {
+          "to": "oi:cell4612:approach_b",
+          "dir": "西北",
+          "to_name": "克頓鄉鎮黑煤溪寮西・望潮里程石亭",
+          "kind": "road"
         }
       ]
     },
@@ -16269,7 +16275,7 @@
         },
         {
           "to": "oi:cell4693:approach_a",
-          "dir": "南",
+          "dir": "東",
           "to_name": "博昂鄉鎮鷗尾漁港東・封鎖古道北界碑",
           "kind": "highway",
           "milestone_zh": "往灰松林驛6步"
@@ -18366,20 +18372,20 @@
         },
         {
           "to": "oi:cell4523:far",
-          "dir": "南",
+          "dir": "西南",
           "to_name": "克頓鄉鎮灰松林驛西南・岬灣折角石脊口",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口11步"
         },
         {
           "to": "oi:cell4524:0",
-          "dir": "西南",
+          "dir": "南",
           "to_name": "克頓鄉鎮・潮間貝礁灣（灰松林驛南）",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4612:approach_a",
-          "dir": "東南（臨海碎石坡頭）",
+          "dir": "東南",
           "to_name": "克頓鄉鎮黑煤溪寮西・臨海碎石坡頭",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港7步"
@@ -19475,7 +19481,7 @@
         },
         {
           "to": "oi:cell4072:skirt_b",
-          "dir": "北",
+          "dir": "西",
           "to_name": "黑煤谷村・村後界石林徑",
           "kind": "highway",
           "milestone_zh": "往西峽渡口16步"
@@ -19503,13 +19509,13 @@
         },
         {
           "to": "oi:cell4074:0",
-          "dir": "南",
+          "dir": "東",
           "to_name": "柳泉林谷・潮間貝礁灣（北岬燈塔東）",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4201:skirt_a",
-          "dir": "西南",
+          "dir": "南",
           "to_name": "柳泉谷村・外郊黑麥田壟坡",
           "kind": "highway",
           "milestone_zh": "往灰松林驛9步"
@@ -21570,13 +21576,6 @@
           "to_name": "北灣巨鰲暗礁望潮頂",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4199:approach_a",
-          "dir": "西南",
-          "to_name": "雷原林谷雷原石寨東・盤山石階坡口",
-          "kind": "wild_trail",
-          "milestone_zh": "往北岬燈塔8步"
         }
       ],
       "map_xy": [
@@ -21693,6 +21692,12 @@
           "to_name": "白梣炭寮・外郊伐薪林緣坡",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔8步"
+        },
+        {
+          "to": "oi:cell4199:approach_a",
+          "dir": "東南",
+          "to_name": "雷原林谷雷原石寨東・盤山石階坡口",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -22053,7 +22058,7 @@
         },
         {
           "to": "oi:north_cape_beacon:south_gate",
-          "dir": "北",
+          "dir": "西",
           "to_name": "北岬燈塔・南哨柵口",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔2步"
@@ -22144,13 +22149,6 @@
           "to_name": "北岬東極望日斷崖",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4201:skirt_a",
-          "dir": "南",
-          "to_name": "柳泉谷村・外郊黑麥田壟坡",
-          "kind": "wild_trail",
-          "milestone_zh": "往北岬燈塔3步"
         }
       ],
       "map_xy": [
@@ -22268,10 +22266,16 @@
         },
         {
           "to": "oi:cell4076:approach_a",
-          "dir": "東南",
+          "dir": "南",
           "to_name": "柳泉林谷艾爾灣村西・林緣青石坡口",
           "kind": "wild_trail",
           "milestone_zh": "往白鷗港17步"
+        },
+        {
+          "to": "oi:cell4201:skirt_a",
+          "dir": "東南",
+          "to_name": "柳泉谷村・外郊黑麥田壟坡",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -22399,13 +22403,6 @@
           "to_name": "柳泉林谷艾爾灣村西・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4076:approach_a",
-          "dir": "南",
-          "to_name": "柳泉林谷艾爾灣村西・林緣青石坡口",
-          "kind": "wild_trail",
-          "milestone_zh": "往北岬燈塔5步"
         }
       ],
       "map_xy": [
@@ -22519,6 +22516,12 @@
           "to_name": "艾爾灣村・外郊黑麥田壟坡",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔6步"
+        },
+        {
+          "to": "oi:cell4076:approach_a",
+          "dir": "西南",
+          "to_name": "柳泉林谷艾爾灣村西・林緣青石坡口",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -22548,14 +22551,14 @@
         },
         {
           "to": "oi:cell4074:far",
-          "dir": "西北",
+          "dir": "北",
           "to_name": "柳泉林谷北岬燈塔東・岬灣折角石脊口",
           "kind": "wild_trail"
         },
         {
-          "to": "oi:cell4075:high",
-          "dir": "北",
-          "to_name": "柳泉林谷艾爾灣村西・海蝕崖頂藤蔓徑",
+          "to": "oi:cell4075:far",
+          "dir": "東北",
+          "to_name": "柳泉林谷艾爾灣村西・岬灣折角石脊口",
           "kind": "wild_trail"
         }
       ],
@@ -22604,7 +22607,7 @@
         },
         {
           "to": "oi:cell4201:skirt_a",
-          "dir": "西",
+          "dir": "西南",
           "to_name": "柳泉谷村・外郊黑麥田壟坡",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔3步"
@@ -23521,7 +23524,7 @@
         },
         {
           "to": "oi:cell4207:approach_a",
-          "dir": "西南（臨海碎石坡頭）",
+          "dir": "西南",
           "to_name": "萊林林谷萊林坡南・臨海碎石坡頭",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔17步"
@@ -24414,6 +24417,12 @@
           "dir": "東北",
           "to_name": "泰原塢・村後界石林徑",
           "kind": "wild_trail"
+        },
+        {
+          "to": "oi:cell4194:skirt_b",
+          "dir": "西北",
+          "to_name": "格伯橋集・村後界石林徑",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -24501,19 +24510,6 @@
           "to_name": "西峽鄉鎮泰原塢南・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4194:skirt_b",
-          "dir": "西北",
-          "to_name": "格伯橋集・村後界石林徑",
-          "kind": "wild_trail"
-        },
-        {
-          "to": "oi:cell4323:0",
-          "dir": "西南",
-          "to_name": "琥珀林谷・幽林獵場（古橡坡西）",
-          "kind": "wild_trail",
-          "milestone_zh": "往西峽渡口3步"
         }
       ],
       "map_xy": [
@@ -24635,6 +24631,12 @@
           "to_name": "西峽渡口・北哨柵口",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口2步"
+        },
+        {
+          "to": "oi:cell4323:0",
+          "dir": "南",
+          "to_name": "琥珀林谷・幽林獵場（古橡坡西）",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -24835,14 +24837,14 @@
           "milestone_zh": "往灰松林驛9步"
         },
         {
-          "to": "oi:cell4070:high",
-          "dir": "東北",
-          "to_name": "雷原林谷北灣巨鰲・海蝕崖頂藤蔓徑",
+          "to": "oi:cell4070:far",
+          "dir": "西北",
+          "to_name": "雷原林谷北灣巨鰲・岬灣折角石脊口",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4071:0",
-          "dir": "北（村口石牌）",
+          "dir": "北",
           "to_name": "白梣炭寮・村口石牌",
           "kind": "highway",
           "milestone_zh": "往北岬燈塔7步"
@@ -26475,26 +26477,26 @@
         },
         {
           "to": "oi:cell4069:skirt_b",
-          "dir": "北",
+          "dir": "東北",
           "to_name": "柳泉石寮・村後界石林徑",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔16步"
         },
         {
           "to": "oi:cell4196:0",
-          "dir": "西北（村口石牌）",
+          "dir": "西北",
           "to_name": "泰原塢・村口石牌",
           "kind": "wild_trail"
         },
         {
-          "to": "oi:cell4197:high",
-          "dir": "東北",
-          "to_name": "西峽鄉鎮泰原塢南・古木山腰向陽徑",
+          "to": "oi:cell4197:far",
+          "dir": "北",
+          "to_name": "西峽鄉鎮泰原塢南・深林界溪出口",
           "kind": "wild_trail"
         },
         {
           "to": "oi:west_strait_ferry:north_gate",
-          "dir": "西（北哨柵口）",
+          "dir": "西",
           "to_name": "西峽渡口・北哨柵口",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口2步"
@@ -26839,6 +26841,12 @@
           "to_name": "古橡坡・外郊伐薪林緣坡",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口8步"
+        },
+        {
+          "to": "oi:cell4200:skirt_b",
+          "dir": "東北",
+          "to_name": "青苔溪集・村後界石林徑",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -26926,13 +26934,6 @@
           "to_name": "科曼鄉鎮青苔溪集西・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4428:skirt_a",
-          "dir": "西南",
-          "to_name": "乳酪牧坡・外郊山羊牧草坡",
-          "kind": "wild_trail",
-          "milestone_zh": "往灰松林驛4步"
         }
       ],
       "map_xy": [
@@ -27049,6 +27050,12 @@
           "to_name": "灰松石堡・石牆門口",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛4步"
+        },
+        {
+          "to": "oi:cell4428:skirt_a",
+          "dir": "西南",
+          "to_name": "乳酪牧坡・外郊山羊牧草坡",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -27100,7 +27107,7 @@
         },
         {
           "to": "oi:cell4429:skirt_a",
-          "dir": "西南（外郊伐薪林緣坡）",
+          "dir": "西",
           "to_name": "灰松石堡・外郊伐薪林緣坡",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛5步"
@@ -27307,6 +27314,12 @@
           "to_name": "深林鄉鎮深林村南・古松三岔路標",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛6步"
+        },
+        {
+          "to": "oi:cell4430:0",
+          "dir": "西南",
+          "to_name": "克頓鄉鎮・高脊礦岩坡（灰松石堡東）",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -27590,7 +27603,7 @@
         },
         {
           "to": "oi:cell4329:approach_a",
-          "dir": "東南（臨海碎石坡頭）",
+          "dir": "東南",
           "to_name": "深林鄉鎮哈倫灣南・臨海碎石坡頭",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛9步"
@@ -27855,7 +27868,7 @@
         },
         {
           "to": "oi:cell4431:approach_a",
-          "dir": "西（林緣青石坡口）",
+          "dir": "西",
           "to_name": "深林鄉鎮深林村南・林緣青石坡口",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛8步"
@@ -27934,7 +27947,7 @@
         },
         {
           "to": "oi:cell4433:skirt_a",
-          "dir": "東南（外郊曬鹽礫石灣）",
+          "dir": "東南",
           "to_name": "韋斯塢・外郊曬鹽礫石灣",
           "kind": "highway"
         }
@@ -28128,6 +28141,12 @@
           "to_name": "拉登濱莊・村後界石林徑",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口8步"
+        },
+        {
+          "to": "oi:cell4427:skirt_b",
+          "dir": "東北",
+          "to_name": "琥珀橋村・村後界石林徑",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -28214,13 +28233,6 @@
           "to_name": "琥珀林谷拉登濱莊南・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4427:skirt_b",
-          "dir": "東北",
-          "to_name": "琥珀橋村・村後界石林徑",
-          "kind": "wild_trail",
-          "milestone_zh": "往西峽渡口7步"
         }
       ],
       "map_xy": [
@@ -28930,10 +28942,16 @@
         },
         {
           "to": "oi:cell4429:skirt_a",
-          "dir": "西",
+          "dir": "西北",
           "to_name": "灰松石堡・外郊伐薪林緣坡",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛5步"
+        },
+        {
+          "to": "oi:cell4326:far",
+          "dir": "東北",
+          "to_name": "深林鄉鎮禁林古鹿・深林界溪出口",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -29127,6 +29145,12 @@
           "to_name": "雷原分水絕頂觀日台",
           "kind": "trail",
           "env_gate": "climb_ridge"
+        },
+        {
+          "to": "oi:cell4526:0",
+          "dir": "東南",
+          "to_name": "克頓鄉鎮・幽林獵場（灰松林驛東）",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -29655,7 +29679,7 @@
         },
         {
           "to": "oi:cell4530:skirt_a",
-          "dir": "東南（外郊黑麥田壟坡）",
+          "dir": "東南",
           "to_name": "佩克崖莊・外郊黑麥田壟坡",
           "kind": "highway"
         }
@@ -29726,7 +29750,7 @@
         },
         {
           "to": "oi:cell4427:skirt_b",
-          "dir": "西（村後界石林徑）",
+          "dir": "北",
           "to_name": "琥珀橋村・村後界石林徑",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口7步"
@@ -29969,7 +29993,7 @@
         },
         {
           "to": "oi:cell4427:skirt_b",
-          "dir": "北",
+          "dir": "西北",
           "to_name": "琥珀橋村・村後界石林徑",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口7步"
@@ -30433,7 +30457,7 @@
         },
         {
           "to": "oi:greypine_post:south_gate",
-          "dir": "北",
+          "dir": "東北",
           "to_name": "灰松林驛・南哨柵口",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛2步"
@@ -30480,7 +30504,7 @@
         },
         {
           "to": "oi:greypine_post:south_gate",
-          "dir": "東北",
+          "dir": "北",
           "to_name": "灰松林驛・南哨柵口",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛2步"
@@ -30689,7 +30713,7 @@
         },
         {
           "to": "oi:cell4612:approach_a",
-          "dir": "東北（臨海碎石坡頭）",
+          "dir": "東",
           "to_name": "克頓鄉鎮黑煤溪寮西・臨海碎石坡頭",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛3步"
@@ -30735,6 +30759,12 @@
           "to_name": "深林鄉鎮深林村南・古松三岔路標",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港7步"
+        },
+        {
+          "to": "oi:cell4430:far",
+          "dir": "西北",
+          "to_name": "克頓鄉鎮灰松石堡東・嶺後鞍部山口",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -30953,7 +30983,7 @@
         },
         {
           "to": "oi:cell4614:skirt_a",
-          "dir": "東（外郊運煤碎石溪橋）",
+          "dir": "西南",
           "to_name": "黑煤溪寮・外郊運煤碎石溪橋",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港5步"
@@ -31079,14 +31109,14 @@
         },
         {
           "to": "oi:cell4614:skirt_a",
-          "dir": "西南",
+          "dir": "西",
           "to_name": "黑煤溪寮・外郊運煤碎石溪橋",
           "kind": "highway",
           "milestone_zh": "往灰松林驛4步"
         },
         {
           "to": "oi:cell4693:approach_a",
-          "dir": "東南",
+          "dir": "南",
           "to_name": "博昂鄉鎮鷗尾漁港東・封鎖古道北界碑",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港3步"
@@ -31157,6 +31187,12 @@
           "to_name": "古加坡・村後界石林徑",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛7步"
+        },
+        {
+          "to": "oi:cell4529:0",
+          "dir": "東",
+          "to_name": "黑煤鎮舊址・斷橋塌陷坑",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -31243,13 +31279,6 @@
           "to_name": "博昂鄉鎮古加坡淺・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4529:0",
-          "dir": "東",
-          "to_name": "黑煤鎮舊址・斷橋塌陷坑",
-          "kind": "wild_trail",
-          "milestone_zh": "往白鷗港5步"
         }
       ],
       "map_xy": [
@@ -31401,9 +31430,9 @@
           "milestone_zh": "往白鷗港4步"
         },
         {
-          "to": "oi:cell4528:high",
+          "to": "oi:cell4528:0",
           "dir": "西",
-          "to_name": "澤昂河・高岸岩壁古棧道",
+          "to_name": "澤昂河・古加坡淺水卵石渡",
           "kind": "wild_trail"
         }
       ],
@@ -31783,7 +31812,7 @@
         },
         {
           "to": "oi:cell4612:approach_a",
-          "dir": "東",
+          "dir": "東北",
           "to_name": "克頓鄉鎮黑煤溪寮西・臨海碎石坡頭",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛3步"
@@ -31816,7 +31845,7 @@
         },
         {
           "to": "oi:cell4524:far",
-          "dir": "西南",
+          "dir": "西",
           "to_name": "克頓鄉鎮灰松林驛南・岬灣折角石脊口",
           "kind": "wild_trail"
         },
@@ -31829,7 +31858,7 @@
         },
         {
           "to": "oi:cell4611:far",
-          "dir": "西（岬灣折角石脊口）",
+          "dir": "西南",
           "to_name": "克頓鄉鎮鷗尾漁港西・岬灣折角石脊口",
           "kind": "wild_trail"
         }
@@ -31910,6 +31939,12 @@
           "to_name": "黑煤溪寮・村口石牌",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港4步"
+        },
+        {
+          "to": "oi:gull_tail_port:north_gate",
+          "dir": "東南",
+          "to_name": "鷗尾漁港・北城門",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -32281,20 +32316,20 @@
         },
         {
           "to": "oi:cell4617:0",
-          "dir": "東",
+          "dir": "東南",
           "to_name": "博昂鄉鎮・望海驛道（白鷗港南）",
           "kind": "wild_trail",
           "milestone_zh": "往白鷗港6步"
         },
         {
-          "to": "oi:cell4696:high",
+          "to": "oi:cell4696:0",
           "dir": "南",
-          "to_name": "乳酪林谷乳酪坡北・古木山腰向陽徑",
+          "to_name": "乳酪林谷・幽林獵場（乳酪坡北）",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4697:approach_a",
-          "dir": "東南（臨海碎石坡頭）",
+          "dir": "東",
           "to_name": "乳酪林谷乳酪坡北・臨海碎石坡頭",
           "kind": "wild_trail"
         }
@@ -32332,7 +32367,7 @@
         },
         {
           "to": "oi:white_gull_harbor:south_gate",
-          "dir": "北",
+          "dir": "東北",
           "to_name": "白鷗港・南城門",
           "kind": "highway",
           "milestone_zh": "往白鷗港4步"
@@ -32377,7 +32412,7 @@
         },
         {
           "to": "oi:cell4615:far",
-          "dir": "西",
+          "dir": "西北",
           "to_name": "博昂鄉鎮黑煤溪寮東・深林界溪出口",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港7步"
@@ -32469,21 +32504,21 @@
         },
         {
           "to": "oi:cell4527:approach_b",
-          "dir": "西北",
+          "dir": "北",
           "to_name": "博昂鄉鎮黑煤溪寮東・古松三岔路標",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛5步"
         },
         {
           "to": "oi:gull_tail_port:south_gate",
-          "dir": "北",
+          "dir": "西",
           "to_name": "鷗尾漁港・南城門",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港2步"
         },
         {
           "to": "oi:cell4614:skirt_b",
-          "dir": "東北（村後界石林徑）",
+          "dir": "西北",
           "to_name": "黑煤溪寮・村後界石林徑",
           "kind": "wild_trail"
         }
@@ -32559,9 +32594,9 @@
           "milestone_zh": "往鷗尾漁港4步"
         },
         {
-          "to": "oi:cell4694:high",
+          "to": "oi:cell4694:0",
           "dir": "東南",
-          "to_name": "乳酪林谷風語橋哨東・古木山腰向陽徑",
+          "to_name": "乳酪林谷・幽林獵場（風語橋哨東）",
           "kind": "wild_trail"
         },
         {
@@ -32650,6 +32685,12 @@
           "dir": "南",
           "to_name": "索昂林莊・村後界石林徑",
           "kind": "wild_trail"
+        },
+        {
+          "to": "oi:cell4693:approach_b",
+          "dir": "西北",
+          "to_name": "博昂鄉鎮鷗尾漁港東・苦艾石欄轉折坡",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -32737,13 +32778,6 @@
           "to_name": "乳酪林谷風語橋哨東・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4693:approach_b",
-          "dir": "西北",
-          "to_name": "博昂鄉鎮鷗尾漁港東・苦艾石欄轉折坡",
-          "kind": "wild_trail",
-          "milestone_zh": "往鷗尾漁港5步"
         }
       ],
       "map_xy": [
@@ -33083,6 +33117,12 @@
           "dir": "西南",
           "to_name": "乳酪林谷風語橋哨東・深林界溪出口",
           "kind": "wild_trail"
+        },
+        {
+          "to": "oi:cell4615:far",
+          "dir": "北",
+          "to_name": "博昂鄉鎮黑煤溪寮東・深林界溪出口",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -33170,13 +33210,6 @@
           "to_name": "乳酪林谷乳酪坡北・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4615:far",
-          "dir": "北",
-          "to_name": "博昂鄉鎮黑煤溪寮東・深林界溪出口",
-          "kind": "wild_trail",
-          "milestone_zh": "往白鷗港7步"
         }
       ],
       "map_xy": [
@@ -33325,7 +33358,7 @@
         },
         {
           "to": "oi:cell4615:far",
-          "dir": "西北",
+          "dir": "西",
           "to_name": "博昂鄉鎮黑煤溪寮東・深林界溪出口",
           "kind": "wild_trail",
           "milestone_zh": "往白鷗港7步"
@@ -33569,7 +33602,7 @@
         },
         {
           "to": "oi:cell4850:approach_a",
-          "dir": "南（封鎖古道北界碑）",
+          "dir": "南",
           "to_name": "古加林谷達利莊西・封鎖古道北界碑",
           "kind": "wild_trail"
         }
@@ -33881,7 +33914,7 @@
         },
         {
           "to": "oi:cell4850:approach_a",
-          "dir": "東南（封鎖古道北界碑）",
+          "dir": "東南",
           "to_name": "古加林谷達利莊西・封鎖古道北界碑",
           "kind": "wild_trail"
         }
@@ -34203,7 +34236,7 @@
         },
         {
           "to": "oi:cell4781:approach_a",
-          "dir": "南（封鎖古道北界碑）",
+          "dir": "南",
           "to_name": "索昂林谷維爾崖西・封鎖古道北界碑",
           "kind": "wild_trail"
         }
@@ -34337,7 +34370,7 @@
         },
         {
           "to": "oi:cell4779:approach_b",
-          "dir": "北（苦艾石欄轉折坡）",
+          "dir": "北",
           "to_name": "乳酪林谷索昂林莊東・苦艾石欄轉折坡",
           "kind": "wild_trail",
           "milestone_zh": "往白鷗港13步"
@@ -34856,7 +34889,7 @@
         },
         {
           "to": "oi:cell4849:0",
-          "dir": "東（封村界碑口）",
+          "dir": "東",
           "to_name": "古加津・封村界碑口",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港11步"
@@ -35002,7 +35035,7 @@
         },
         {
           "to": "oi:cell4849:0",
-          "dir": "西（封村界碑口）",
+          "dir": "西",
           "to_name": "古加津・封村界碑口",
           "kind": "highway"
         }
@@ -35075,6 +35108,12 @@
           "dir": "東南",
           "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊西）",
           "kind": "wild_trail"
+        },
+        {
+          "to": "oi:cell4851:0",
+          "dir": "東",
+          "to_name": "雷橋林谷・幽林獵場（達利莊南）",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -35143,7 +35182,7 @@
         },
         {
           "to": "oi:cell4781:approach_b",
-          "dir": "北（苦艾石欄轉折坡）",
+          "dir": "北",
           "to_name": "索昂林谷維爾崖西・苦艾石欄轉折坡",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港11步"
@@ -35154,6 +35193,12 @@
           "to_name": "艾森河集・村口石牌",
           "kind": "wild_trail",
           "milestone_zh": "往白鷗港16步"
+        },
+        {
+          "to": "oi:cell4850:approach_b",
+          "dir": "西",
+          "to_name": "古加林谷達利莊西・苦艾石欄轉折坡",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -35354,6 +35399,12 @@
           "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊西）",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港13步"
+        },
+        {
+          "to": "oi:cell4926:skirt_a",
+          "dir": "東南",
+          "to_name": "雷橋莊・外郊黑麥田壟坡",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -35397,7 +35448,7 @@
         },
         {
           "to": "oi:cell4851:far",
-          "dir": "北（深林界溪出口）",
+          "dir": "北",
           "to_name": "雷橋林谷達利莊南・深林界溪出口",
           "kind": "wild_trail"
         },
@@ -35601,15 +35652,15 @@
           "env_gate": "climb_ridge"
         },
         {
-          "to": "oi:cell4927:high",
+          "to": "oi:cell4927:0",
           "dir": "東南",
-          "to_name": "雷橋林谷雷橋莊南・海蝕崖頂藤蔓徑",
+          "to_name": "雷橋林谷・雷橋南礁灣",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell5008:0",
           "dir": "南",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集",
+          "to_name": "雷橋林谷・艾森南礁灣",
           "kind": "wild_trail"
         }
       ],
@@ -36078,7 +36129,7 @@
     "oi:cell4927:0": {
       "id": "oi:cell4927:0",
       "cell_id": 4927,
-      "name": "雷橋林谷・潮間貝礁灣（雷橋莊南）",
+      "name": "雷橋林谷・雷橋南礁灣",
       "kind": "wild",
       "desc": "雷橋莊南側、艾森河集南向並遙望達利莊的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "pos": [
@@ -36091,14 +36142,14 @@
         {
           "to": "oi:cell4927:low",
           "dir": "切低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南・潮間裸露貝礁灘",
+          "to_name": "雷橋南礁灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell4927:high",
           "dir": "攀高處山徑",
-          "to_name": "雷橋林谷雷橋莊南・海蝕崖頂藤蔓徑",
+          "to_name": "雷橋南礁灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
@@ -36108,6 +36159,12 @@
           "to_name": "雷橋莊・村後界石林徑",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港14步"
+        },
+        {
+          "to": "oi:cell4852:far",
+          "dir": "西北",
+          "to_name": "雷橋林谷雷橋莊西・岬灣折角石脊口",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -36118,7 +36175,7 @@
     "oi:cell4927:low": {
       "id": "oi:cell4927:low",
       "cell_id": 4927,
-      "name": "雷橋林谷雷橋莊南・潮間裸露貝礁灘",
+      "name": "雷橋南礁灣・潮間裸露貝礁灘",
       "kind": "wild",
       "desc": "唯有退潮與平水時段才露出海面的寬平玄武岩礁盤，撬貝趕路最為捷近；大漲潮時海浪翻湧淹沒礁面。",
       "pos": [
@@ -36131,21 +36188,21 @@
         {
           "to": "oi:cell4927:0",
           "dir": "退回坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）",
+          "to_name": "雷橋林谷・雷橋南礁灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港15步"
         },
         {
           "to": "oi:cell4927:far",
           "dir": "順捷徑穿出",
-          "to_name": "雷橋林谷雷橋莊南・岬灣折角石脊口",
+          "to_name": "雷橋南礁灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell4927:camp",
           "dir": "轉入背風火塘",
-          "to_name": "雷橋林谷雷橋莊南・避風海岩火塘凹",
+          "to_name": "雷橋南礁灣・避風海岩火塘凹",
           "kind": "trail"
         }
       ],
@@ -36157,7 +36214,7 @@
     "oi:cell4927:high": {
       "id": "oi:cell4927:high",
       "cell_id": 4927,
-      "name": "雷橋林谷雷橋莊南・海蝕崖頂藤蔓徑",
+      "name": "雷橋南礁灣・海蝕崖頂藤蔓徑",
       "kind": "wild",
       "desc": "高出滿潮線數丈的峭壁崖頂山徑，老樹盤根與粗藤可供借力攀援，風浪再大也全天候穩固可通，唯徒手攀爬頗費氣力。",
       "pos": [
@@ -36170,36 +36227,29 @@
         {
           "to": "oi:cell4927:0",
           "dir": "下返坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）",
+          "to_name": "雷橋林谷・雷橋南礁灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港15步"
         },
         {
           "to": "oi:cell4927:far",
           "dir": "沿高徑穿出",
-          "to_name": "雷橋林谷雷橋莊南・岬灣折角石脊口",
+          "to_name": "雷橋南礁灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell4927:camp",
           "dir": "下切背風火塘",
-          "to_name": "雷橋林谷雷橋莊南・避風海岩火塘凹",
+          "to_name": "雷橋南礁灣・避風海岩火塘凹",
           "kind": "trail"
         },
         {
           "to": "oi:cell4927:vantage",
           "dir": "登頂瞭望岩",
-          "to_name": "雷橋林谷雷橋莊南・望山風標瞭望岩",
+          "to_name": "雷橋南礁灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell4852:far",
-          "dir": "西北",
-          "to_name": "雷橋林谷雷橋莊西・岬灣折角石脊口",
-          "kind": "wild_trail",
-          "milestone_zh": "往鷗尾漁港15步"
         }
       ],
       "map_xy": [
@@ -36210,7 +36260,7 @@
     "oi:cell4927:camp": {
       "id": "oi:cell4927:camp",
       "cell_id": 4927,
-      "name": "雷橋林谷雷橋莊南・避風海岩火塘凹",
+      "name": "雷橋南礁灣・避風海岩火塘凹",
       "kind": "campfire_nook",
       "desc": "巨型海蝕岩背風面天然凹入的乾燥石窩，前人用扁石圍出火塘並留有乾柴，海風吹不進來，正宜生火烤食回氣。",
       "pos": [
@@ -36223,14 +36273,14 @@
         {
           "to": "oi:cell4927:low",
           "dir": "下往低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南・潮間裸露貝礁灘",
+          "to_name": "雷橋南礁灣・潮間裸露貝礁灘",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港16步"
         },
         {
           "to": "oi:cell4927:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷雷橋莊南・海蝕崖頂藤蔓徑",
+          "to_name": "雷橋南礁灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港16步"
@@ -36244,7 +36294,7 @@
     "oi:cell4927:vantage": {
       "id": "oi:cell4927:vantage",
       "cell_id": 4927,
-      "name": "雷橋林谷雷橋莊南・望山風標瞭望岩",
+      "name": "雷橋南礁灣・望山風標瞭望岩",
       "kind": "summit_outlook",
       "desc": "高居【潮間貝礁灣（雷橋莊南）】之上的裸露瞭望岩台，山海走勢一覽無遺；破曉可迎晨光採霜露、入夜可觀星象辨識秘徑。",
       "pos": [
@@ -36257,14 +36307,14 @@
         {
           "to": "oi:cell4927:high",
           "dir": "下返高處山徑",
-          "to_name": "雷橋林谷雷橋莊南・海蝕崖頂藤蔓徑",
+          "to_name": "雷橋南礁灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港16步"
         },
         {
           "to": "oi:cell4927:far",
           "dir": "順稜線下切出口",
-          "to_name": "雷橋林谷雷橋莊南・岬灣折角石脊口",
+          "to_name": "雷橋南礁灣・岬灣折角石脊口",
           "kind": "trail"
         }
       ],
@@ -36276,7 +36326,7 @@
     "oi:cell4927:far": {
       "id": "oi:cell4927:far",
       "cell_id": 4927,
-      "name": "雷橋林谷雷橋莊南・岬灣折角石脊口",
+      "name": "雷橋南礁灣・岬灣折角石脊口",
       "kind": "wild",
       "desc": "繞過海灣深處折角、銜接鄰境山海走廊的碎石坡口，潮聲與林風在此交會。",
       "pos": [
@@ -36289,7 +36339,7 @@
         {
           "to": "oi:cell4927:low",
           "dir": "折入低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南・潮間裸露貝礁灘",
+          "to_name": "雷橋南礁灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide",
           "milestone_zh": "往鷗尾漁港16步"
@@ -36297,7 +36347,7 @@
         {
           "to": "oi:cell4927:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷雷橋莊南・海蝕崖頂藤蔓徑",
+          "to_name": "雷橋南礁灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港16步"
@@ -36305,14 +36355,14 @@
         {
           "to": "oi:cell4927:vantage",
           "dir": "仰攀瞭望岩頂",
-          "to_name": "雷橋林谷雷橋莊南・望山風標瞭望岩",
+          "to_name": "雷橋南礁灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5008:0",
           "dir": "西南",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集",
+          "to_name": "雷橋林谷・艾森南礁灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港16步"
         }
@@ -36325,7 +36375,7 @@
     "oi:cell5006:0": {
       "id": "oi:cell5006:0",
       "cell_id": 5006,
-      "name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津",
+      "name": "雷橋林谷・古加西岬灣",
       "kind": "wild",
       "desc": "雷橋莊南側、古加津南向並遙望達利莊的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "pos": [
@@ -36338,27 +36388,27 @@
         {
           "to": "oi:cell5006:low",
           "dir": "切低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・潮間裸露貝礁灘",
+          "to_name": "古加西岬灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5006:high",
           "dir": "攀高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・海蝕崖頂藤蔓徑",
+          "to_name": "古加西岬灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5007:0",
           "dir": "東南",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津（望艾森河集）",
+          "to_name": "雷橋林谷・古加南礁灘",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell5009:0",
           "dir": "東",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集（望古加津）",
+          "to_name": "雷橋林谷・吞潮前岬灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港19步"
         }
@@ -36371,7 +36421,7 @@
     "oi:cell5006:low": {
       "id": "oi:cell5006:low",
       "cell_id": 5006,
-      "name": "雷橋林谷雷橋莊南）・近古加津・潮間裸露貝礁灘",
+      "name": "古加西岬灣・潮間裸露貝礁灘",
       "kind": "wild",
       "desc": "唯有退潮與平水時段才露出海面的寬平玄武岩礁盤，撬貝趕路最為捷近；大漲潮時海浪翻湧淹沒礁面。",
       "pos": [
@@ -36384,13 +36434,13 @@
         {
           "to": "oi:cell5006:0",
           "dir": "退回坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津",
+          "to_name": "雷橋林谷・古加西岬灣",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell5006:far",
           "dir": "順捷徑穿出",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・岬灣折角石脊口",
+          "to_name": "古加西岬灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "low_tide",
           "milestone_zh": "往鷗尾漁港19步"
@@ -36398,7 +36448,7 @@
         {
           "to": "oi:cell5006:camp",
           "dir": "轉入背風火塘",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・避風海岩火塘凹",
+          "to_name": "古加西岬灣・避風海岩火塘凹",
           "kind": "trail"
         }
       ],
@@ -36410,7 +36460,7 @@
     "oi:cell5006:high": {
       "id": "oi:cell5006:high",
       "cell_id": 5006,
-      "name": "雷橋林谷雷橋莊南）・近古加津・海蝕崖頂藤蔓徑",
+      "name": "古加西岬灣・海蝕崖頂藤蔓徑",
       "kind": "wild",
       "desc": "高出滿潮線數丈的峭壁崖頂山徑，老樹盤根與粗藤可供借力攀援，風浪再大也全天候穩固可通，唯徒手攀爬頗費氣力。",
       "pos": [
@@ -36423,13 +36473,13 @@
         {
           "to": "oi:cell5006:0",
           "dir": "下返坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津",
+          "to_name": "雷橋林谷・古加西岬灣",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell5006:far",
           "dir": "沿高徑穿出",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・岬灣折角石脊口",
+          "to_name": "古加西岬灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港19步"
@@ -36437,13 +36487,13 @@
         {
           "to": "oi:cell5006:camp",
           "dir": "下切背風火塘",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・避風海岩火塘凹",
+          "to_name": "古加西岬灣・避風海岩火塘凹",
           "kind": "trail"
         },
         {
           "to": "oi:cell5006:vantage",
           "dir": "登頂瞭望岩",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・望山風標瞭望岩",
+          "to_name": "古加西岬灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         }
@@ -36456,7 +36506,7 @@
     "oi:cell5006:camp": {
       "id": "oi:cell5006:camp",
       "cell_id": 5006,
-      "name": "雷橋林谷雷橋莊南）・近古加津・避風海岩火塘凹",
+      "name": "古加西岬灣・避風海岩火塘凹",
       "kind": "campfire_nook",
       "desc": "巨型海蝕岩背風面天然凹入的乾燥石窩，前人用扁石圍出火塘並留有乾柴，海風吹不進來，正宜生火烤食回氣。",
       "pos": [
@@ -36469,14 +36519,14 @@
         {
           "to": "oi:cell5006:low",
           "dir": "下往低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・潮間裸露貝礁灘",
+          "to_name": "古加西岬灣・潮間裸露貝礁灘",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港20步"
         },
         {
           "to": "oi:cell5006:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・海蝕崖頂藤蔓徑",
+          "to_name": "古加西岬灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港20步"
@@ -36490,7 +36540,7 @@
     "oi:cell5006:vantage": {
       "id": "oi:cell5006:vantage",
       "cell_id": 5006,
-      "name": "雷橋林谷雷橋莊南）・近古加津・望山風標瞭望岩",
+      "name": "古加西岬灣・望山風標瞭望岩",
       "kind": "summit_outlook",
       "desc": "高居【近古加津】之上的裸露瞭望岩台，山海走勢一覽無遺；破曉可迎晨光採霜露、入夜可觀星象辨識秘徑。",
       "pos": [
@@ -36503,13 +36553,13 @@
         {
           "to": "oi:cell5006:high",
           "dir": "下返高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・海蝕崖頂藤蔓徑",
+          "to_name": "古加西岬灣・海蝕崖頂藤蔓徑",
           "kind": "trail"
         },
         {
           "to": "oi:cell5006:far",
           "dir": "順稜線下切出口",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・岬灣折角石脊口",
+          "to_name": "古加西岬灣・岬灣折角石脊口",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港19步"
         }
@@ -36522,7 +36572,7 @@
     "oi:cell5006:far": {
       "id": "oi:cell5006:far",
       "cell_id": 5006,
-      "name": "雷橋林谷雷橋莊南）・近古加津・岬灣折角石脊口",
+      "name": "古加西岬灣・岬灣折角石脊口",
       "kind": "wild",
       "desc": "繞過海灣深處折角、銜接鄰境山海走廊的碎石坡口，潮聲與林風在此交會。",
       "pos": [
@@ -36535,28 +36585,28 @@
         {
           "to": "oi:cell5006:low",
           "dir": "折入低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・潮間裸露貝礁灘",
+          "to_name": "古加西岬灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5006:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・海蝕崖頂藤蔓徑",
+          "to_name": "古加西岬灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5006:vantage",
           "dir": "仰攀瞭望岩頂",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・望山風標瞭望岩",
+          "to_name": "古加西岬灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5008:far",
           "dir": "東北",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・岬灣折角石脊口",
+          "to_name": "艾森南礁灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港18步"
         }
@@ -36569,7 +36619,7 @@
     "oi:cell5007:0": {
       "id": "oi:cell5007:0",
       "cell_id": 5007,
-      "name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津（望艾森河集）",
+      "name": "雷橋林谷・古加南礁灘",
       "kind": "wild",
       "desc": "雷橋莊南側、古加津南向並遙望艾森河集的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "pos": [
@@ -36582,23 +36632,29 @@
         {
           "to": "oi:cell5007:low",
           "dir": "切低處捷徑",
-          "to_name": "雷橋林谷望艾森河集・潮間裸露貝礁灘",
+          "to_name": "古加南礁灘・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5007:high",
           "dir": "攀高處山徑",
-          "to_name": "雷橋林谷望艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "古加南礁灘・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5006:0",
           "dir": "西北",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津",
+          "to_name": "雷橋林谷・古加西岬灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港20步"
+        },
+        {
+          "to": "oi:cell5009:far",
+          "dir": "東北",
+          "to_name": "吞潮前岬灣・岬灣折角石脊口",
+          "kind": "wild_trail"
         }
       ],
       "map_xy": [
@@ -36609,7 +36665,7 @@
     "oi:cell5007:low": {
       "id": "oi:cell5007:low",
       "cell_id": 5007,
-      "name": "雷橋林谷望艾森河集・潮間裸露貝礁灘",
+      "name": "古加南礁灘・潮間裸露貝礁灘",
       "kind": "wild",
       "desc": "唯有退潮與平水時段才露出海面的寬平玄武岩礁盤，撬貝趕路最為捷近；大漲潮時海浪翻湧淹沒礁面。",
       "pos": [
@@ -36622,21 +36678,21 @@
         {
           "to": "oi:cell5007:0",
           "dir": "退回坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津（望艾森河集）",
+          "to_name": "雷橋林谷・古加南礁灘",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港21步"
         },
         {
           "to": "oi:cell5007:far",
           "dir": "順捷徑穿出",
-          "to_name": "雷橋林谷望艾森河集・岬灣折角石脊口",
+          "to_name": "古加南礁灘・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5007:camp",
           "dir": "轉入背風火塘",
-          "to_name": "雷橋林谷望艾森河集・避風海岩火塘凹",
+          "to_name": "古加南礁灘・避風海岩火塘凹",
           "kind": "trail"
         }
       ],
@@ -36648,7 +36704,7 @@
     "oi:cell5007:high": {
       "id": "oi:cell5007:high",
       "cell_id": 5007,
-      "name": "雷橋林谷望艾森河集・海蝕崖頂藤蔓徑",
+      "name": "古加南礁灘・海蝕崖頂藤蔓徑",
       "kind": "wild",
       "desc": "高出滿潮線數丈的峭壁崖頂山徑，老樹盤根與粗藤可供借力攀援，風浪再大也全天候穩固可通，唯徒手攀爬頗費氣力。",
       "pos": [
@@ -36661,36 +36717,29 @@
         {
           "to": "oi:cell5007:0",
           "dir": "下返坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津（望艾森河集）",
+          "to_name": "雷橋林谷・古加南礁灘",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港21步"
         },
         {
           "to": "oi:cell5007:far",
           "dir": "沿高徑穿出",
-          "to_name": "雷橋林谷望艾森河集・岬灣折角石脊口",
+          "to_name": "古加南礁灘・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5007:camp",
           "dir": "下切背風火塘",
-          "to_name": "雷橋林谷望艾森河集・避風海岩火塘凹",
+          "to_name": "古加南礁灘・避風海岩火塘凹",
           "kind": "trail"
         },
         {
           "to": "oi:cell5007:vantage",
           "dir": "登頂瞭望岩",
-          "to_name": "雷橋林谷望艾森河集・望山風標瞭望岩",
+          "to_name": "古加南礁灘・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
-        },
-        {
-          "to": "oi:cell5009:far",
-          "dir": "東北",
-          "to_name": "雷橋林谷望古加津・岬灣折角石脊口",
-          "kind": "wild_trail",
-          "milestone_zh": "往鷗尾漁港21步"
         }
       ],
       "map_xy": [
@@ -36701,7 +36750,7 @@
     "oi:cell5007:camp": {
       "id": "oi:cell5007:camp",
       "cell_id": 5007,
-      "name": "雷橋林谷望艾森河集・避風海岩火塘凹",
+      "name": "古加南礁灘・避風海岩火塘凹",
       "kind": "campfire_nook",
       "desc": "巨型海蝕岩背風面天然凹入的乾燥石窩，前人用扁石圍出火塘並留有乾柴，海風吹不進來，正宜生火烤食回氣。",
       "pos": [
@@ -36714,14 +36763,14 @@
         {
           "to": "oi:cell5007:low",
           "dir": "下往低處捷徑",
-          "to_name": "雷橋林谷望艾森河集・潮間裸露貝礁灘",
+          "to_name": "古加南礁灘・潮間裸露貝礁灘",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港22步"
         },
         {
           "to": "oi:cell5007:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷望艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "古加南礁灘・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港22步"
@@ -36735,7 +36784,7 @@
     "oi:cell5007:vantage": {
       "id": "oi:cell5007:vantage",
       "cell_id": 5007,
-      "name": "雷橋林谷望艾森河集・望山風標瞭望岩",
+      "name": "古加南礁灘・望山風標瞭望岩",
       "kind": "summit_outlook",
       "desc": "高居【近古加津（望艾森河集）】之上的裸露瞭望岩台，山海走勢一覽無遺；破曉可迎晨光採霜露、入夜可觀星象辨識秘徑。",
       "pos": [
@@ -36748,14 +36797,14 @@
         {
           "to": "oi:cell5007:high",
           "dir": "下返高處山徑",
-          "to_name": "雷橋林谷望艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "古加南礁灘・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港22步"
         },
         {
           "to": "oi:cell5007:far",
           "dir": "順稜線下切出口",
-          "to_name": "雷橋林谷望艾森河集・岬灣折角石脊口",
+          "to_name": "古加南礁灘・岬灣折角石脊口",
           "kind": "trail"
         }
       ],
@@ -36767,7 +36816,7 @@
     "oi:cell5007:far": {
       "id": "oi:cell5007:far",
       "cell_id": 5007,
-      "name": "雷橋林谷望艾森河集・岬灣折角石脊口",
+      "name": "古加南礁灘・岬灣折角石脊口",
       "kind": "wild",
       "desc": "繞過海灣深處折角、銜接鄰境山海走廊的碎石坡口，潮聲與林風在此交會。",
       "pos": [
@@ -36780,7 +36829,7 @@
         {
           "to": "oi:cell5007:low",
           "dir": "折入低處捷徑",
-          "to_name": "雷橋林谷望艾森河集・潮間裸露貝礁灘",
+          "to_name": "古加南礁灘・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide",
           "milestone_zh": "往鷗尾漁港22步"
@@ -36788,7 +36837,7 @@
         {
           "to": "oi:cell5007:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷望艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "古加南礁灘・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港22步"
@@ -36796,7 +36845,7 @@
         {
           "to": "oi:cell5007:vantage",
           "dir": "仰攀瞭望岩頂",
-          "to_name": "雷橋林谷望艾森河集・望山風標瞭望岩",
+          "to_name": "古加南礁灘・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         },
@@ -36815,7 +36864,7 @@
     "oi:cell5008:0": {
       "id": "oi:cell5008:0",
       "cell_id": 5008,
-      "name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集",
+      "name": "雷橋林谷・艾森南礁灣",
       "kind": "wild",
       "desc": "雷橋莊南側、艾森河集南向並遙望達利莊的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。 地界旁留有一處野莓灌叢與通往達利莊方向的舊日路標。",
       "pos": [
@@ -36828,14 +36877,14 @@
         {
           "to": "oi:cell5008:low",
           "dir": "切低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・潮間裸露貝礁灘",
+          "to_name": "艾森南礁灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5008:high",
           "dir": "攀高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "艾森南礁灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
@@ -36848,8 +36897,8 @@
         },
         {
           "to": "oi:cell4927:far",
-          "dir": "東北（岬灣折角石脊口）",
-          "to_name": "雷橋林谷雷橋莊南・岬灣折角石脊口",
+          "dir": "東北",
+          "to_name": "雷橋南礁灣・岬灣折角石脊口",
           "kind": "wild_trail"
         }
       ],
@@ -36861,7 +36910,7 @@
     "oi:cell5008:low": {
       "id": "oi:cell5008:low",
       "cell_id": 5008,
-      "name": "雷橋林谷雷橋莊南）・近艾森河集・潮間裸露貝礁灘",
+      "name": "艾森南礁灣・潮間裸露貝礁灘",
       "kind": "wild",
       "desc": "唯有退潮與平水時段才露出海面的寬平玄武岩礁盤，撬貝趕路最為捷近；大漲潮時海浪翻湧淹沒礁面。",
       "pos": [
@@ -36874,21 +36923,21 @@
         {
           "to": "oi:cell5008:0",
           "dir": "退回坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集",
+          "to_name": "雷橋林谷・艾森南礁灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港16步"
         },
         {
           "to": "oi:cell5008:far",
           "dir": "順捷徑穿出",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・岬灣折角石脊口",
+          "to_name": "艾森南礁灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5008:camp",
           "dir": "轉入背風火塘",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・避風海岩火塘凹",
+          "to_name": "艾森南礁灣・避風海岩火塘凹",
           "kind": "trail"
         }
       ],
@@ -36900,7 +36949,7 @@
     "oi:cell5008:high": {
       "id": "oi:cell5008:high",
       "cell_id": 5008,
-      "name": "雷橋林谷雷橋莊南）・近艾森河集・海蝕崖頂藤蔓徑",
+      "name": "艾森南礁灣・海蝕崖頂藤蔓徑",
       "kind": "wild",
       "desc": "高出滿潮線數丈的峭壁崖頂山徑，老樹盤根與粗藤可供借力攀援，風浪再大也全天候穩固可通，唯徒手攀爬頗費氣力。",
       "pos": [
@@ -36913,27 +36962,27 @@
         {
           "to": "oi:cell5008:0",
           "dir": "下返坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集",
+          "to_name": "雷橋林谷・艾森南礁灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港16步"
         },
         {
           "to": "oi:cell5008:far",
           "dir": "沿高徑穿出",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・岬灣折角石脊口",
+          "to_name": "艾森南礁灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5008:camp",
           "dir": "下切背風火塘",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・避風海岩火塘凹",
+          "to_name": "艾森南礁灣・避風海岩火塘凹",
           "kind": "trail"
         },
         {
           "to": "oi:cell5008:vantage",
           "dir": "登頂瞭望岩",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・望山風標瞭望岩",
+          "to_name": "艾森南礁灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         }
@@ -36946,7 +36995,7 @@
     "oi:cell5008:camp": {
       "id": "oi:cell5008:camp",
       "cell_id": 5008,
-      "name": "雷橋林谷雷橋莊南）・近艾森河集・避風海岩火塘凹",
+      "name": "艾森南礁灣・避風海岩火塘凹",
       "kind": "campfire_nook",
       "desc": "巨型海蝕岩背風面天然凹入的乾燥石窩，前人用扁石圍出火塘並留有乾柴，海風吹不進來，正宜生火烤食回氣。",
       "pos": [
@@ -36959,14 +37008,14 @@
         {
           "to": "oi:cell5008:low",
           "dir": "下往低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・潮間裸露貝礁灘",
+          "to_name": "艾森南礁灣・潮間裸露貝礁灘",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港17步"
         },
         {
           "to": "oi:cell5008:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "艾森南礁灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港17步"
@@ -36980,7 +37029,7 @@
     "oi:cell5008:vantage": {
       "id": "oi:cell5008:vantage",
       "cell_id": 5008,
-      "name": "雷橋林谷雷橋莊南）・近艾森河集・望山風標瞭望岩",
+      "name": "艾森南礁灣・望山風標瞭望岩",
       "kind": "summit_outlook",
       "desc": "高居【近艾森河集】之上的裸露瞭望岩台，山海走勢一覽無遺；破曉可迎晨光採霜露、入夜可觀星象辨識秘徑。",
       "pos": [
@@ -36993,14 +37042,14 @@
         {
           "to": "oi:cell5008:high",
           "dir": "下返高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "艾森南礁灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港17步"
         },
         {
           "to": "oi:cell5008:far",
           "dir": "順稜線下切出口",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・岬灣折角石脊口",
+          "to_name": "艾森南礁灣・岬灣折角石脊口",
           "kind": "trail"
         }
       ],
@@ -37012,7 +37061,7 @@
     "oi:cell5008:far": {
       "id": "oi:cell5008:far",
       "cell_id": 5008,
-      "name": "雷橋林谷雷橋莊南）・近艾森河集・岬灣折角石脊口",
+      "name": "艾森南礁灣・岬灣折角石脊口",
       "kind": "wild",
       "desc": "繞過海灣深處折角、銜接鄰境山海走廊的碎石坡口，潮聲與林風在此交會。",
       "pos": [
@@ -37025,7 +37074,7 @@
         {
           "to": "oi:cell5008:low",
           "dir": "折入低處捷徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・潮間裸露貝礁灘",
+          "to_name": "艾森南礁灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide",
           "milestone_zh": "往鷗尾漁港17步"
@@ -37033,7 +37082,7 @@
         {
           "to": "oi:cell5008:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "艾森南礁灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港17步"
@@ -37041,20 +37090,20 @@
         {
           "to": "oi:cell5008:vantage",
           "dir": "仰攀瞭望岩頂",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・望山風標瞭望岩",
+          "to_name": "艾森南礁灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5006:far",
           "dir": "西南",
-          "to_name": "雷橋林谷雷橋莊南）・近古加津・岬灣折角石脊口",
+          "to_name": "古加西岬灣・岬灣折角石脊口",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell5009:0",
           "dir": "南",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集（望古加津）",
+          "to_name": "雷橋林谷・吞潮前岬灣",
           "kind": "wild_trail"
         }
       ],
@@ -37066,7 +37115,7 @@
     "oi:cell5009:0": {
       "id": "oi:cell5009:0",
       "cell_id": 5009,
-      "name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集（望古加津）",
+      "name": "雷橋林谷・吞潮前岬灣",
       "kind": "wild",
       "desc": "雷橋莊南側、艾森河集南向並遙望古加津的起伏林間台地（海拔約20丈）無官道經過的天然礁岩海灣，唯有退潮時段暗礁裸露方能下灘撬取肥美海貝與海帶；漲潮時白浪拍岸。",
       "pos": [
@@ -37079,27 +37128,27 @@
         {
           "to": "oi:cell5009:low",
           "dir": "切低處捷徑",
-          "to_name": "雷橋林谷望古加津・潮間裸露貝礁灘",
+          "to_name": "吞潮前岬灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5009:high",
           "dir": "攀高處山徑",
-          "to_name": "雷橋林谷望古加津・海蝕崖頂藤蔓徑",
+          "to_name": "吞潮前岬灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5006:0",
           "dir": "西",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近古加津",
+          "to_name": "雷橋林谷・古加西岬灣",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell5008:far",
           "dir": "北",
-          "to_name": "雷橋林谷雷橋莊南）・近艾森河集・岬灣折角石脊口",
+          "to_name": "艾森南礁灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港18步"
         }
@@ -37112,7 +37161,7 @@
     "oi:cell5009:low": {
       "id": "oi:cell5009:low",
       "cell_id": 5009,
-      "name": "雷橋林谷望古加津・潮間裸露貝礁灘",
+      "name": "吞潮前岬灣・潮間裸露貝礁灘",
       "kind": "wild",
       "desc": "唯有退潮與平水時段才露出海面的寬平玄武岩礁盤，撬貝趕路最為捷近；大漲潮時海浪翻湧淹沒礁面。",
       "pos": [
@@ -37125,21 +37174,21 @@
         {
           "to": "oi:cell5009:0",
           "dir": "退回坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集（望古加津）",
+          "to_name": "雷橋林谷・吞潮前岬灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港19步"
         },
         {
           "to": "oi:cell5009:far",
           "dir": "順捷徑穿出",
-          "to_name": "雷橋林谷望古加津・岬灣折角石脊口",
+          "to_name": "吞潮前岬灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "low_tide"
         },
         {
           "to": "oi:cell5009:camp",
           "dir": "轉入背風火塘",
-          "to_name": "雷橋林谷望古加津・避風海岩火塘凹",
+          "to_name": "吞潮前岬灣・避風海岩火塘凹",
           "kind": "trail"
         }
       ],
@@ -37151,7 +37200,7 @@
     "oi:cell5009:high": {
       "id": "oi:cell5009:high",
       "cell_id": 5009,
-      "name": "雷橋林谷望古加津・海蝕崖頂藤蔓徑",
+      "name": "吞潮前岬灣・海蝕崖頂藤蔓徑",
       "kind": "wild",
       "desc": "高出滿潮線數丈的峭壁崖頂山徑，老樹盤根與粗藤可供借力攀援，風浪再大也全天候穩固可通，唯徒手攀爬頗費氣力。",
       "pos": [
@@ -37164,27 +37213,27 @@
         {
           "to": "oi:cell5009:0",
           "dir": "下返坡口",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）・近艾森河集（望古加津）",
+          "to_name": "雷橋林谷・吞潮前岬灣",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港19步"
         },
         {
           "to": "oi:cell5009:far",
           "dir": "沿高徑穿出",
-          "to_name": "雷橋林谷望古加津・岬灣折角石脊口",
+          "to_name": "吞潮前岬灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "env_gate": "climb_ridge"
         },
         {
           "to": "oi:cell5009:camp",
           "dir": "下切背風火塘",
-          "to_name": "雷橋林谷望古加津・避風海岩火塘凹",
+          "to_name": "吞潮前岬灣・避風海岩火塘凹",
           "kind": "trail"
         },
         {
           "to": "oi:cell5009:vantage",
           "dir": "登頂瞭望岩",
-          "to_name": "雷橋林谷望古加津・望山風標瞭望岩",
+          "to_name": "吞潮前岬灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         }
@@ -37197,7 +37246,7 @@
     "oi:cell5009:camp": {
       "id": "oi:cell5009:camp",
       "cell_id": 5009,
-      "name": "雷橋林谷望古加津・避風海岩火塘凹",
+      "name": "吞潮前岬灣・避風海岩火塘凹",
       "kind": "campfire_nook",
       "desc": "巨型海蝕岩背風面天然凹入的乾燥石窩，前人用扁石圍出火塘並留有乾柴，海風吹不進來，正宜生火烤食回氣。",
       "pos": [
@@ -37210,14 +37259,14 @@
         {
           "to": "oi:cell5009:low",
           "dir": "下往低處捷徑",
-          "to_name": "雷橋林谷望古加津・潮間裸露貝礁灘",
+          "to_name": "吞潮前岬灣・潮間裸露貝礁灘",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港20步"
         },
         {
           "to": "oi:cell5009:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷望古加津・海蝕崖頂藤蔓徑",
+          "to_name": "吞潮前岬灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港20步"
@@ -37231,7 +37280,7 @@
     "oi:cell5009:vantage": {
       "id": "oi:cell5009:vantage",
       "cell_id": 5009,
-      "name": "雷橋林谷望古加津・望山風標瞭望岩",
+      "name": "吞潮前岬灣・望山風標瞭望岩",
       "kind": "summit_outlook",
       "desc": "高居【近艾森河集（望古加津）】之上的裸露瞭望岩台，山海走勢一覽無遺；破曉可迎晨光採霜露、入夜可觀星象辨識秘徑。",
       "pos": [
@@ -37244,14 +37293,14 @@
         {
           "to": "oi:cell5009:high",
           "dir": "下返高處山徑",
-          "to_name": "雷橋林谷望古加津・海蝕崖頂藤蔓徑",
+          "to_name": "吞潮前岬灣・海蝕崖頂藤蔓徑",
           "kind": "trail",
           "milestone_zh": "往鷗尾漁港20步"
         },
         {
           "to": "oi:cell5009:far",
           "dir": "順稜線下切出口",
-          "to_name": "雷橋林谷望古加津・岬灣折角石脊口",
+          "to_name": "吞潮前岬灣・岬灣折角石脊口",
           "kind": "trail"
         }
       ],
@@ -37263,7 +37312,7 @@
     "oi:cell5009:far": {
       "id": "oi:cell5009:far",
       "cell_id": 5009,
-      "name": "雷橋林谷望古加津・岬灣折角石脊口",
+      "name": "吞潮前岬灣・岬灣折角石脊口",
       "kind": "wild",
       "desc": "繞過海灣深處折角、銜接鄰境山海走廊的碎石坡口，潮聲與林風在此交會。",
       "pos": [
@@ -37276,7 +37325,7 @@
         {
           "to": "oi:cell5009:low",
           "dir": "折入低處捷徑",
-          "to_name": "雷橋林谷望古加津・潮間裸露貝礁灘",
+          "to_name": "吞潮前岬灣・潮間裸露貝礁灘",
           "kind": "wild_trail",
           "env_gate": "low_tide",
           "milestone_zh": "往鷗尾漁港20步"
@@ -37284,7 +37333,7 @@
         {
           "to": "oi:cell5009:high",
           "dir": "攀回高處山徑",
-          "to_name": "雷橋林谷望古加津・海蝕崖頂藤蔓徑",
+          "to_name": "吞潮前岬灣・海蝕崖頂藤蔓徑",
           "kind": "wild_trail",
           "env_gate": "climb_ridge",
           "milestone_zh": "往鷗尾漁港20步"
@@ -37292,14 +37341,14 @@
         {
           "to": "oi:cell5009:vantage",
           "dir": "仰攀瞭望岩頂",
-          "to_name": "雷橋林谷望古加津・望山風標瞭望岩",
+          "to_name": "吞潮前岬灣・望山風標瞭望岩",
           "kind": "trail",
           "env_gate": "climb_ridge"
         },
         {
-          "to": "oi:cell5007:high",
+          "to": "oi:cell5007:0",
           "dir": "西南",
-          "to_name": "雷橋林谷望艾森河集・海蝕崖頂藤蔓徑",
+          "to_name": "雷橋林谷・古加南礁灘",
           "kind": "wild_trail"
         },
         {
@@ -37346,7 +37395,7 @@
         {
           "to": "oi:cell5007:far",
           "dir": "西北",
-          "to_name": "雷橋林谷望艾森河集・岬灣折角石脊口",
+          "to_name": "古加南礁灘・岬灣折角石脊口",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港23步"
         }
@@ -37544,7 +37593,7 @@
         {
           "to": "oi:cell5009:far",
           "dir": "北",
-          "to_name": "雷橋林谷望古加津・岬灣折角石脊口",
+          "to_name": "吞潮前岬灣・岬灣折角石脊口",
           "kind": "wild_trail",
           "milestone_zh": "往鷗尾漁港21步"
         }
@@ -37583,7 +37632,7 @@
         },
         {
           "to": "oi:cell4198:skirt_a",
-          "dir": "東南（外郊採石滑道坡）",
+          "dir": "東南",
           "to_name": "雷原石寨・外郊採石滑道坡",
           "kind": "highway",
           "milestone_zh": "往灰松林驛10步"
@@ -37616,13 +37665,13 @@
         },
         {
           "to": "oi:cell4196:skirt_a",
-          "dir": "西南",
+          "dir": "西",
           "to_name": "泰原塢・外郊曬鹽礫石灣",
           "kind": "highway"
         },
         {
           "to": "oi:cell4323:0",
-          "dir": "南",
+          "dir": "西南",
           "to_name": "琥珀林谷・幽林獵場（古橡坡西）",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口3步"
@@ -37754,7 +37803,7 @@
         },
         {
           "to": "oi:north_cape_beacon:north_gate",
-          "dir": "南",
+          "dir": "東",
           "to_name": "北岬燈塔・北哨柵口",
           "kind": "highway",
           "milestone_zh": "往北岬燈塔2步"
@@ -37857,7 +37906,7 @@
         },
         {
           "to": "oi:cell4084:far",
-          "dir": "東南（岬灣折角石脊口）",
+          "dir": "東南",
           "to_name": "拉橋林谷萊林坡東・岬灣折角石脊口",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔18步"
@@ -38030,9 +38079,9 @@
           "kind": "highway"
         },
         {
-          "to": "oi:cell4197:high",
-          "dir": "東南（古木山腰向陽徑）",
-          "to_name": "西峽鄉鎮泰原塢南・古木山腰向陽徑",
+          "to": "oi:cell4197:0",
+          "dir": "東南",
+          "to_name": "西峽鄉鎮・幽林獵場（泰原塢南）",
           "kind": "wild_trail",
           "milestone_zh": "往西峽渡口4步"
         }
@@ -38101,7 +38150,7 @@
         },
         {
           "to": "oi:west_strait_ferry:north_gate",
-          "dir": "南（北哨柵口）",
+          "dir": "東南",
           "to_name": "西峽渡口・北哨柵口",
           "kind": "highway",
           "milestone_zh": "往西峽渡口2步"
@@ -38134,7 +38183,7 @@
         },
         {
           "to": "oi:cell4069:skirt_b",
-          "dir": "東北",
+          "dir": "東",
           "to_name": "柳泉石寮・村後界石林徑",
           "kind": "highway",
           "milestone_zh": "往西峽渡口4步"
@@ -38321,6 +38370,12 @@
           "to_name": "灰松石堡・外郊伐薪林緣坡",
           "kind": "highway",
           "milestone_zh": "往灰松林驛5步"
+        },
+        {
+          "to": "oi:cell4325:0",
+          "dir": "西南",
+          "to_name": "科曼鄉鎮・幽林獵場（青苔溪集西）",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -38350,20 +38405,20 @@
         },
         {
           "to": "oi:north_cape_beacon:south_gate",
-          "dir": "東北",
+          "dir": "北",
           "to_name": "北岬燈塔・南哨柵口",
           "kind": "highway",
           "milestone_zh": "往北岬燈塔2步"
         },
         {
-          "to": "oi:cell4074:high",
-          "dir": "北（海蝕崖頂藤蔓徑）",
-          "to_name": "柳泉林谷北岬燈塔東・海蝕崖頂藤蔓徑",
+          "to": "oi:cell4074:far",
+          "dir": "西北",
+          "to_name": "柳泉林谷北岬燈塔東・岬灣折角石脊口",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4076:0",
-          "dir": "東",
+          "dir": "東北",
           "to_name": "柳泉林谷・林蔭官道（艾爾灣村西）",
           "kind": "wild_trail"
         }
@@ -38518,7 +38573,7 @@
         },
         {
           "to": "oi:cell4205:approach_a",
-          "dir": "東北（臨海碎石坡頭）",
+          "dir": "東北",
           "to_name": "哈倫林谷錨灣塢東・臨海碎石坡頭",
           "kind": "wild_trail"
         }
@@ -38588,7 +38643,7 @@
         },
         {
           "to": "oi:cell4199:approach_b",
-          "dir": "東北（山脊風口界石）",
+          "dir": "東北",
           "to_name": "雷原林谷雷原石寨東・山脊風口界石",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔10步"
@@ -38819,7 +38874,7 @@
         },
         {
           "to": "oi:cell4324:skirt_b",
-          "dir": "北（村後界石林徑）",
+          "dir": "北",
           "to_name": "古橡坡・村後界石林徑",
           "kind": "highway",
           "milestone_zh": "往北岬燈塔13步"
@@ -38857,20 +38912,20 @@
           "kind": "highway"
         },
         {
-          "to": "oi:cell4426:high",
+          "to": "oi:cell4426:0",
           "dir": "西南",
-          "to_name": "琥珀林谷拉登濱莊南・海蝕崖頂藤蔓徑",
+          "to_name": "琥珀林谷・潮間貝礁灣（拉登濱莊南）",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4521:0",
-          "dir": "東",
+          "dir": "南",
           "to_name": "琥珀林谷・潮間貝礁灣（琥珀橋村南）",
           "kind": "wild_trail"
         },
         {
           "to": "oi:cell4522:0",
-          "dir": "南（潮間貝礁灣（灰松林驛西））",
+          "dir": "東南",
           "to_name": "琥珀林谷・潮間貝礁灣（灰松林驛西）",
           "kind": "wild_trail"
         }
@@ -38901,9 +38956,9 @@
           "milestone_zh": "往西峽渡口8步"
         },
         {
-          "to": "oi:cell4325:high",
+          "to": "oi:cell4325:far",
           "dir": "東北",
-          "to_name": "科曼鄉鎮青苔溪集西・向陽分水岩脊線",
+          "to_name": "科曼鄉鎮青苔溪集西・嶺後鞍部山口",
           "kind": "wild_trail"
         },
         {
@@ -38986,14 +39041,14 @@
         },
         {
           "to": "oi:cell4326:0",
-          "dir": "東北",
+          "dir": "東",
           "to_name": "深林鄉鎮・禁林古鹿幽谷",
           "kind": "wild_trail",
           "milestone_zh": "往北岬燈塔6步"
         },
         {
           "to": "oi:cell4430:0",
-          "dir": "東（高脊礦岩坡（灰松石堡東））",
+          "dir": "東南",
           "to_name": "克頓鄉鎮・高脊礦岩坡（灰松石堡東）",
           "kind": "wild_trail"
         }
@@ -39110,7 +39165,7 @@
         },
         {
           "to": "oi:cell4529:skirt_a",
-          "dir": "東南（外郊運煤碎石溪橋）",
+          "dir": "東南",
           "to_name": "黑煤鎮舊址・外郊運煤碎石溪橋",
           "kind": "highway",
           "milestone_zh": "往白鷗港6步"
@@ -39220,7 +39275,7 @@
         },
         {
           "to": "oi:cell4530:skirt_b",
-          "dir": "東北（村後界石林徑）",
+          "dir": "東北",
           "to_name": "佩克崖莊・村後界石林徑",
           "kind": "highway"
         }
@@ -39349,14 +39404,14 @@
         },
         {
           "to": "oi:cell4526:far",
-          "dir": "西",
+          "dir": "東北",
           "to_name": "克頓鄉鎮灰松林驛東・深林界溪出口",
           "kind": "wild_trail",
           "milestone_zh": "往灰松林驛3步"
         },
         {
           "to": "oi:cell4527:approach_b",
-          "dir": "東北",
+          "dir": "東",
           "to_name": "博昂鄉鎮黑煤溪寮東・古松三岔路標",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港4步"
@@ -39396,7 +39451,7 @@
         },
         {
           "to": "oi:cell4693:approach_a",
-          "dir": "西南（封鎖古道北界碑）",
+          "dir": "東南",
           "to_name": "博昂鄉鎮鷗尾漁港東・封鎖古道北界碑",
           "kind": "wild_trail",
           "milestone_zh": "往白鷗港11步"
@@ -39599,7 +39654,7 @@
         },
         {
           "to": "oi:cell4776:skirt_a",
-          "dir": "北（外郊苦艾警戒坡）",
+          "dir": "北",
           "to_name": "索昂林莊・外郊苦艾警戒坡",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港9步"
@@ -39744,6 +39799,12 @@
           "to_name": "艾森河集・村後界石林徑",
           "kind": "highway",
           "milestone_zh": "往鷗尾漁港13步"
+        },
+        {
+          "to": "oi:cell4851:far",
+          "dir": "西北",
+          "to_name": "雷橋林谷達利莊南・深林界溪出口",
+          "kind": "road"
         }
       ],
       "map_xy": [
@@ -39780,7 +39841,7 @@
         {
           "to": "oi:cell4927:0",
           "dir": "西南",
-          "to_name": "雷橋林谷・潮間貝礁灣（雷橋莊南）",
+          "to_name": "雷橋林谷・雷橋南礁灣",
           "kind": "wild_trail"
         }
       ],

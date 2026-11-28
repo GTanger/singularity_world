@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r9：修復野外同地塊非方位山徑／捷徑／村口於地圖消失致鬼打牆缺陷，869 節點地圖全圖強連通）
-const CACHE = 'sw-shell-v20261128r9';
+// PWA Service Worker（v20261128r10：全島拓撲地名校直×跨地塊真實徒步行旅尺度×去方塊雜亂清爽野誌排版）
+const CACHE = 'sw-shell-v20261128r10';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r9',
-  '/town-basemaps.js?v=20261128r9',
-  '/static-node-map.js?v=20261128r9',
-  '/island-ui.js?v=20261128r9',
+  '/island-ui.css?v=20261128r10',
+  '/town-basemaps.js?v=20261128r10',
+  '/static-node-map.js?v=20261128r10',
+  '/island-ui.js?v=20261128r10',
   '/map-stamps.json?v=20261128r8',
   '/icon.svg',
   '/manifest.webmanifest'

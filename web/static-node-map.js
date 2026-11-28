@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  var VER = '20261128r9';
+  var VER = '20261128r10';
   var ISLAND_TERRAIN_URL = '/maps/island_terrain_base.webp?v=' + VER;
   var STAMPS_MANIFEST_URL = '/map-stamps.json?v=' + VER;
   var ISLAND_BOUNDS = { minX: 1357.71, maxX: 1507.06, minY: 627.98, maxY: 793.21 };
@@ -415,6 +415,7 @@
         isCurrent: false,
         isSecret: ex.kind === 'secret',
         isLeaveCell: isCross,
+        isSubTrail: !card && !isCross,
         kind: ex.to_kind || ex.kind || 'exit',
         title: ex.ambient_cue || ex.to_cell_title || ex.to_name || label
       });
@@ -707,6 +708,7 @@
       var cls = 'oi-snm-node ' + (b.isCurrent ? 'is-current' : 'is-reachable');
       if (b.isSecret) cls += ' is-secret';
       if (b.isLeaveCell) cls += ' is-leave';
+      if (b.isSubTrail) cls += ' is-subtrail';
       var posStyle = 'left:' + it.px + 'px;top:' + it.py + 'px;';
       if (b.isCurrent) {
         return '<div class="' + cls + '" style="' + posStyle + '" aria-current="location" title="' + esc(b.title) + '">' +
@@ -826,7 +828,8 @@
     var scene = view.scene;
     var sm = scene.static_map || {};
     var isNight = !!(opts && opts.isNight);
-    var isBlocked = !!(view.skirmish || view.transit);
+    var ow = view.overland_walk || null;
+    var isBlocked = !!(view.skirmish || view.transit || ow);
     var townMap = sm.town_slug && window.TOWN_ILLUSTRATED_MAPS && window.TOWN_ILLUSTRATED_MAPS[sm.town_slug];
 
     var imgUrl = '';
@@ -840,7 +843,46 @@
     var frameMode = 'island_local';
     var showStamps = false;
 
-    if (scene.dungeon && sm.dungeon_room && sm.dungeon_room.room_url) {
+    if (ow && Array.isArray(ow.from_center) && Array.isArray(ow.to_center)) {
+      // 跨地塊真實徒步行旅中：切換至全島水彩底圖＋貼圖，紅點依真實進度平滑滑向目的地！
+      imgUrl = sm.island_master_url || ISLAND_TERRAIN_URL;
+      stageW = 1024;
+      stageH = 1024;
+      bgCol = isNight ? '#15242d' : '#65a2b6';
+      var pFrom = projectIslandPercent(ow.from_center);
+      var pTo = projectIslandPercent(ow.to_center);
+      var prog = clamp(typeof ow.progress === 'number' ? ow.progress : 0.2, 0.05, 0.96);
+      var curXp = pFrom[0] + (pTo[0] - pFrom[0]) * prog;
+      var curYp = pFrom[1] + (pTo[1] - pFrom[1]) * prog;
+      var dstShort = formatRegionShort(ow.target_cell_title, ow.target_name) || '目的地';
+      built = {
+        buttons: [
+          {
+            nid: scene.node_id,
+            label: '行旅中',
+            xp: curXp,
+            yp: curYp,
+            isCurrent: true,
+            kind: 'walking',
+            title: ow.pace_cue || '徒步行旅中'
+          },
+          {
+            nid: ow.target_node || '',
+            label: (ow.dir ? (ow.dir + ' · ') : '') + dstShort,
+            xp: pTo[0],
+            yp: pTo[1],
+            isCurrent: false,
+            isLeaveCell: true,
+            kind: 'dest',
+            title: dstShort
+          }
+        ],
+        mappedExitIds: {}
+      };
+      layerBadge = '行旅途中';
+      frameMode = 'island_local';
+      showStamps = true;
+    } else if (scene.dungeon && sm.dungeon_room && sm.dungeon_room.room_url) {
       imgUrl = sm.dungeon_room.room_url;
       stageW = 1024;
       stageH = 1024;
