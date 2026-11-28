@@ -73,6 +73,9 @@ pub mod map_memory_pack;
 mod map_memory_tests;
 pub mod map_walk;
 pub mod map_walk_plan;
+pub mod martial_art_and_manuals;
+#[cfg(test)]
+mod martial_art_tests;
 pub mod mesh_expedition;
 pub mod mind;
 pub mod movement;

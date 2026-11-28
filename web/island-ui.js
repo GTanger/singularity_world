@@ -1079,13 +1079,13 @@
       var sk = view.skirmish;
       var allMoves = sk.moves || [];
       var mainMovesHtml = allMoves.filter(function (mv) { return mv.id !== 'skirmish_retreat'; }).map(function (mv) {
-        return '<button type="button" class="oi-deed-btn" data-act="' + esc(mv.id) + '">' +
+        return '<button type="button" class="oi-deed-btn" data-act="' + esc(mv.id) + '" data-param="' + esc(mv.param || '') + '">' +
           '<strong>' + esc(mv.label) + '</strong>' +
           '<small>' + esc(mv.hint || '') + '</small></button>';
       }).join('');
       var retreatMv = allMoves.find(function (mv) { return mv.id === 'skirmish_retreat'; });
       var retreatHtml = retreatMv
-        ? ('<div class="oi-retreat-row"><button type="button" class="oi-deed-btn" data-act="skirmish_retreat"><strong>' + esc(retreatMv.label) + '</strong><small>' + esc(retreatMv.hint || '') + '</small></button></div>')
+        ? ('<div class="oi-retreat-row"><button type="button" class="oi-deed-btn" data-act="skirmish_retreat" data-param=""><strong>' + esc(retreatMv.label) + '</strong><small>' + esc(retreatMv.hint || '') + '</small></button></div>')
         : '';
       skWrap.hidden = false;
       setHtmlIfChanged(
@@ -1093,7 +1093,7 @@
         '<div class="oi-skirmish-card">' +
         '<h3 class="oi-skirmish-title">短兵相接：' + esc(sk.foe_name) + '</h3>' +
         '<div style="font-size:0.9rem;color:var(--ink-sub);">掌中器物：' + esc(p.weapon && p.weapon.name) +
-        (sk.staggered ? ' ｜ 對方重心已晃，正可搶攻！' : ' ｜ 留意對方前撲手腕與呼吸空檔') + '</div>' +
+        (sk.staggered ? ' ｜ 換氣對峙空檔：對方氣息浮動，正可擇策定局' : ' ｜ 擇定田忌起手策，後台依個人四武相全自動連續演繹') + '</div>' +
         '<div class="oi-skirmish-grid">' + mainMovesHtml + '</div>' +
         retreatHtml +
         '</div>'
@@ -1474,6 +1474,38 @@
         })() +
         (p.mastery ? '<div style="margin-top:6px;font-size:0.86rem;color:var(--accent-jade);">歷練成相：' + esc(p.mastery) + '</div>' : '') +
         '</div>' +
+        (function () {
+          var ep = p.eight_phases || {};
+          var mList = ep.martial || [];
+          var cList = ep.craft || [];
+          if (!mList.length && !cList.length) return '';
+          var mHtml = mList.map(function (r) {
+            var writeBtn = ep.can_author_manual
+              ? '<button type="button" class="oi-icon-btn" data-sheet-act="write_martial_manual" data-sheet-param="' + esc(r.slot_code) + '" style="flex:0 0 auto;">著譜手札</button>'
+              : '';
+            return '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border-line);">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+              '<div style="font-size:0.88rem;"><b>' + esc(r.slot_label) + '・【' + esc(r.formal_name) + '】</b></div>' +
+              writeBtn +
+              '</div>' +
+              '<div style="font-size:0.78rem;color:var(--accent-jade);margin-top:2px;">' + esc(r.specialty) + ' ｜ ' + esc(r.comp_note) + '</div>' +
+              '<div style="font-size:0.78rem;color:var(--ink-sub);margin-top:2px;">碎招：' + esc(r.chain) + '（' + esc(r.turn_branch) + '）</div>' +
+              '</div>';
+          }).join('');
+          var cHtml = cList.map(function (r) {
+            return '<div style="margin-top:5px;font-size:0.82rem;color:var(--ink-sub);"><b>' + esc(r.slot_label) + '・【' + esc(r.formal_name) + '】</b> — ' + esc(r.chain) + '</div>';
+          }).join('');
+          var studied = ep.studied_manuals || [];
+          var studiedHtml = studied.length
+            ? ('<div style="margin-top:6px;font-size:0.8rem;color:var(--accent-main);">已參悟手札：' + esc(studied.join('、')) + '</div>')
+            : '';
+          return '<div class="oi-kv-card"><strong>個人之相與自然成相（臨陣四武相 × 百工四藝相）</strong>' +
+            (ep.bone_sense ? '<div style="margin-top:4px;font-size:0.82rem;color:var(--ink-sub);">先天骨相：' + esc(ep.bone_sense) + '</div>' : '') +
+            studiedHtml +
+            mHtml +
+            '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border-line);"><b style="font-size:0.84rem;">百工四藝相（採獵・鍛造・庖廚・行旅）</b>' + cHtml + '</div>' +
+            '</div>';
+        })() +
         '<div class="oi-kv-card"><strong>住宿與契約</strong><div style="margin-top:4px;font-size:0.88rem;color:var(--ink-sub);">' +
         '二樓宿房剩餘：' + esc(p.inn_nights_left || 0) + ' 宿 ｜ 逾時搜救契：' + (p.rescue_pact ? '已登記生效' : '未登記') +
         (p.owned_house_node ? ' ｜ 已置辦自有屋舍' : '') + '</div></div>' +
@@ -1512,11 +1544,13 @@
               ? '<button type="button" class="oi-icon-btn" data-equip-slug="' + esc(it.slug) + '" style="margin-right:4px;">換握上手</button>'
               : (it.is_gear
                 ? '<button type="button" class="oi-icon-btn" data-sheet-act="equip_body_gear" data-sheet-param="' + esc(it.slug) + '" style="margin-right:4px;">穿戴上身</button>'
-                : '');
+                : (it.is_manual
+                  ? '<button type="button" class="oi-icon-btn" data-sheet-act="study_martial_manual" data-sheet-param="' + esc(it.slug) + '" style="margin-right:4px;">研讀參悟</button>'
+                  : ''));
             var lockBtn = (canUseLocker && !it.is_voucher)
               ? '<button type="button" class="oi-icon-btn" data-store-slug="' + esc(it.slug) + '">鎖入木箱</button>'
               : '';
-            var tag = it.is_voucher ? '（隨身憑據）' : (it.is_unclaimed ? '（拾遺未報備）' : (it.is_vessel ? '（落款器物）' : (it.is_gear ? '（多部位裝備）' : '')));
+            var tag = it.is_voucher ? '（隨身憑據）' : (it.is_unclaimed ? '（拾遺未報備）' : (it.is_vessel ? '（落款器物）' : (it.is_gear ? '（多部位裝備）' : (it.is_manual ? '（功法手札）' : ''))));
             return '<div class="oi-item-row"><span>' + esc(it.name) + ' × ' + esc(it.count) + ' <small style="color:var(--ink-muted);">' + esc(tag) + '</small></span><span>' + eatBtn + dropCrateBtn + equipBtn + lockBtn + '</span></div>';
           }).join('')
         : '<div style="color:var(--ink-muted);font-size:0.9rem;padding:6px 0;">背囊裡目前空空如也。</div>';

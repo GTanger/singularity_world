@@ -68,6 +68,11 @@ pub fn apply_world_action(
         return Err("請先在港務登岸木冊留下你的名號與來歷。".to_string());
     }
 
+    if action == "skirmish_auto_clash" {
+        return super::martial_art_and_manuals::resolve_auto_tianji_clash(
+            doc, delta, clock, &aid, param,
+        );
+    }
     if action.starts_with("skirmish_") {
         return resolve_skirmish_turn(doc, delta, clock, &aid, action);
     }
@@ -1056,6 +1061,16 @@ pub fn apply_world_action(
             }
             if action == "unequip_body_gear" {
                 return super::body_gear_craft::apply_unequip_body_gear(delta, clock, &aid, param);
+            }
+            if action == "write_martial_manual" {
+                return super::martial_art_and_manuals::apply_write_martial_manual(
+                    doc, delta, clock, &aid, param,
+                );
+            }
+            if action == "study_martial_manual" {
+                return super::martial_art_and_manuals::apply_study_martial_manual(
+                    delta, clock, &aid, param,
+                );
             }
             if let Some(res) = super::ongoing_activity::try_dispatch_embodied_action(
                 doc,

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VER = '20261128r2';
+  var VER = '20261128r3';
 
   window.TOWN_ILLUSTRATED_MAPS = {
     // 1. 白鷗港：五區滿版 Qwen-Image-2512 20B 簡約暖陽水彩繪本街區圖（跨區換圖、零拼接，對齊七步四迴路正典動線）

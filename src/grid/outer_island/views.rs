@@ -185,23 +185,41 @@ pub fn build_view_json(
 
     let skirmish_json = viewer.active_skirmish.as_ref().map(|sk| {
         let mut moves = vec![
-            json!({ "id": "skirmish_wrist", "label": "專攻持刃手腕", "hint": "穩健削減對方架勢" }),
-            json!({ "id": "skirmish_guard", "label": "沉肩守勢護腕", "hint": "格擋猛撲並穩住陣腳" }),
-            json!({ "id": "skirmish_heavy", "label": "踏步重錘猛擊", "hint": "傾力破甲，帶傷力竭時慎用" }),
+            json!({
+                "id": "skirmish_auto_clash",
+                "param": "yield_then_strike",
+                "label": "後發制人（下馬兌上馬）",
+                "hint": "守勢卸銳→中盤拆招→破綻成相，自動連續演繹至換氣空檔"
+            }),
+            json!({
+                "id": "skirmish_auto_clash",
+                "param": "press_burst",
+                "label": "搶勢壓制（一力降十會）",
+                "hint": "起手搶攻→重勢壓架→連攜收勢，正面轟散對手架勢"
+            }),
+            json!({
+                "id": "skirmish_auto_clash",
+                "param": "seam_harvest",
+                "label": "入微尋縫（庖丁解牛）",
+                "hint": "游鬥誘隙→卸力貼近→切入甲縫，最宜對付重甲巨獸"
+            }),
         ];
         if sk.foe_slug == "grey_ear_goblin" {
             moves.push(json!({
                 "id": "skirmish_parley",
+                "param": "",
                 "label": "拋出乾糧喝止",
                 "hint": if sk.can_speak_goblin { "以部族短詞換路免戰" } else { "尚未聽懂部族語" }
             }));
         }
-        moves.push(
-            json!({ "id": "skirmish_retreat", "label": "虛晃抽身退回", "hint": "保住隨身行囊脫離戰圈" }),
-        );
+        moves.push(json!({
+            "id": "skirmish_retreat",
+            "param": "",
+            "label": "虛晃抽身退回",
+            "hint": "保住隨身行囊脫離戰圈"
+        }));
         json!({
             "foe_name": sk.foe_name,
-            "round": sk.round_idx,
             "guarding": sk.player_guard,
             "staggered": sk.foe_stagger > 0,
             "moves": moves,
@@ -383,6 +401,7 @@ pub fn build_view_json(
                 "rune": viewer.bound_weapon.rune_mark,
             },
             "body_gear": super::body_gear_craft::build_body_gear_view_json(viewer),
+            "eight_phases": super::martial_art_and_manuals::build_eight_phases_view_json(viewer),
             "backpack": viewer.backpack.iter().map(|it| json!({
                 "slug": it.slug,
                 "name": it.name,
@@ -392,6 +411,7 @@ pub fn build_view_json(
                 "is_unclaimed": it.stolen_from.is_some(),
                 "is_vessel": it.vessel_meta.is_some(),
                 "is_gear": it.gear_meta.is_some(),
+                "is_manual": it.slug.starts_with("manual_"),
                 "gear_slot": it.gear_meta.as_ref().map(|g| g.slot.as_str()),
             })).collect::<Vec<_>>(),
             "inn_locker": viewer.inn_lockers.get(&node.id).unwrap_or(&viewer.inn_locker).iter().map(|it| json!({
