@@ -1567,11 +1567,13 @@
                 ? '<button type="button" class="oi-icon-btn" data-sheet-act="equip_body_gear" data-sheet-param="' + esc(it.slug) + '" style="margin-right:4px;">穿戴上身</button>'
                 : (it.is_manual
                   ? '<button type="button" class="oi-icon-btn" data-sheet-act="study_martial_manual" data-sheet-param="' + esc(it.slug) + '" style="margin-right:4px;">研讀參悟</button>'
-                  : ''));
+                  : (it.is_outfit
+                    ? '<button type="button" class="oi-icon-btn" data-sheet-act="change_outfit" data-sheet-param="' + esc(it.slug) + '" style="margin-right:4px;">換穿上身</button>'
+                    : '')));
             var lockBtn = (canUseLocker && !it.is_voucher)
               ? '<button type="button" class="oi-icon-btn" data-store-slug="' + esc(it.slug) + '">鎖入木箱</button>'
               : '';
-            var tag = it.is_voucher ? '（隨身憑據）' : (it.is_unclaimed ? '（拾遺未報備）' : (it.is_vessel ? '（落款器物）' : (it.is_gear ? '（多部位裝備）' : (it.is_manual ? '（功法手札）' : ''))));
+            var tag = it.is_voucher ? '（隨身憑據）' : (it.is_unclaimed ? '（拾遺未報備）' : (it.is_vessel ? '（落款器物）' : (it.is_gear ? '（多部位裝備）' : (it.is_manual ? '（功法手札）' : (it.is_outfit ? '（隨身成衣）' : '')))));
             return '<div class="oi-item-row"><span>' + esc(it.name) + ' × ' + esc(it.count) + ' <small style="color:var(--ink-muted);">' + esc(tag) + '</small></span><span>' + eatBtn + dropCrateBtn + equipBtn + lockBtn + '</span></div>';
           }).join('')
         : '<div style="color:var(--ink-muted);font-size:0.9rem;padding:6px 0;">背囊裡目前空空如也。</div>';

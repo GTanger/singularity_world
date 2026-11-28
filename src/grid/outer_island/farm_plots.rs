@@ -1,5 +1,5 @@
 //! 農田與藥圃閉環（拆自 `living_sim_and_farm.rs` 守住單檔體積預算）：
-//! 1. 播種必耗真實種苗（`wheat_grain`／`herb_bundle`／`quarantine_wormwood`／`plant_fiber`），嚴禁無中生有；
+//! 1. 播種必耗真實種苗（`wheat_grain`／`herb_bundle`／`quarantine_wormwood`／`tough_vine`），嚴禁無中生有；
 //! 2. 播種同步呼叫 `reclaim_arable_tiles_at_actor` 寫入 `delta.tile_diffs` 改寫真實地圖地貌，並經 `WorldExtrasBlob.farm_plots` 持久化；
 //! 3. 播種／照料／收割皆觸發百工「山林採獵」藝相實算減耗，且玩家與 994 名 NPC 共用同一入口。
 
@@ -72,7 +72,7 @@ const CROP_CATALOG: &[CropSpec] = &[
     CropSpec {
         kind: "herb_garden",
         name_zh: "山林止血藥圃",
-        seed_slugs: &["herb_bundle", "plant_fiber"],
+        seed_slugs: &["herb_bundle", "tough_vine"],
         seed_hint_zh: "止血草束或韌藤草根 1 份作苗",
         yield_slug: "herb_bundle",
         yield_name_zh: "山林止血草束",
@@ -191,8 +191,9 @@ pub fn apply_sow_farm_plot(
 
     let sub = compiled_island_substrate(doc);
     super::map_walk::ensure_single_actor_grid_seeded(doc, sub, delta, aid);
+    let mut carved_tiles = 0usize;
     if let Some((actor_gx, actor_gy)) = resolve_actor_standing_xy(delta, aid) {
-        let _ = reclaim_arable_tiles_at_actor(sub, delta, actor_gx, actor_gy, clock.game_days);
+        carved_tiles = reclaim_arable_tiles_at_actor(sub, delta, actor_gx, actor_gy, clock.game_days);
         super::map_memory::record_local_witness_at_tile(
             doc,
             delta,
@@ -245,8 +246,13 @@ pub fn apply_sow_farm_plot(
     a.fatigue = a.fatigue.saturating_add(fat_cost).min(95);
     a.mind.stm.today_goal_progressed = true;
     a.mark_mutated();
+    let land_tail = if carved_tiles > 0 {
+        "腳下坡地已實地翻出新墾熟田"
+    } else {
+        "順著坡畔既有熟土起妥新壟"
+    };
     let msg = format!(
-        "你在【{}】翻鬆表土起出田壟（{craft_prose}），灑下隨身【{seed_name}】播成一片【{}】，腳下坡地已成新墾熟田。",
+        "你在【{}】翻鬆表土起出田壟（{craft_prose}），灑下隨身【{seed_name}】播成一片【{}】，{land_tail}。",
         node.name, spec.name_zh
     );
     push_breath(a, msg.clone());

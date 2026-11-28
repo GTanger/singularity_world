@@ -985,7 +985,7 @@ pub fn append_gear_and_forage_scene_objects<F>(
             "object_id": "obj:craft_anvil_bench",
             "name": "百工鍛造砧台",
             "cue": cue,
-            "desc": "工坊的厚重鍛砧與配料架：形制決定用途插座，主材決定硬度、韌性、重量與導能手感，無職業限制。",
+            "desc": "工坊的厚重鍛砧與配料架：依所需打造合手器物與護具，所選主材決定硬度、韌性與分量，人人皆可量材開爐。",
             "direct_action": Value::Null,
             "options": craft_opts,
         }));

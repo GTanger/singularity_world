@@ -845,6 +845,13 @@ pub fn appraise_item_fair_copper(item: &CarryItem) -> i64 {
         };
         let wear_pen = i64::from(vm.wear_stage) * 3;
         (base - wear_pen).max(6)
+    } else if item.manual_meta.is_some() || item.slug.starts_with("manual_") {
+        10
+    } else if let Some(ref gm) = item.gear_meta {
+        let score = i64::from(gm.physics.hardness) + i64::from(gm.physics.toughness);
+        (6 + score / 20).clamp(6, 16)
+    } else if item.slug.starts_with("outfit_") {
+        7
     } else {
         match item.slug.as_str() {
             "rune_stone" => 15,

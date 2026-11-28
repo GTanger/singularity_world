@@ -585,6 +585,13 @@ pub fn build_live_scene_happenings(
                         && infer_shop_kind(nd) == "smithy"
                         && super::live_commodities::is_smithy_forge_cold(delta, &nd.id)
                 });
+            let prior_real_chat = a
+                .mind
+                .stm
+                .recent_talks
+                .iter()
+                .rev()
+                .find(|t| t.partner_id == b.actor_id);
             let banter = if let Some(sm_nd) = cold_smithy {
                 format!(
                     "{}正跟身旁的{}低聲議論：「聽說{}的鍛爐缺精煤熄火了，這會兒誰背炭過去肯定能賣個好價錢。」{}點點頭：「北林那頭炭脈多，就是得留神野獸跟灰耳斥候。」",
@@ -594,6 +601,11 @@ pub fn build_live_scene_happenings(
                 format!(
                     "{}壓低聲音對{}說：「這季雨水急，官道河橋有處被沖鬆了，商隊貨車都得慢下來等木料修繕。」{}嘆口氣：「貨一慢，酒館乾糧跟鐵料八成又要漲價。」",
                     a.display_name, b.display_name, b.display_name
+                )
+            } else if let Some(rt) = prior_real_chat {
+                format!(
+                    "{}正接著方才與{}的話頭低聲聊著：「{}」{}點頭應道：「{}」",
+                    a.display_name, b.display_name, rt.self_replied, b.display_name, rt.partner_said
                 )
             } else {
                 let topic_anchor = a

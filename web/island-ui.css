@@ -55,6 +55,8 @@ html, body {
   background: var(--bg-page);
   color: var(--ink-main);
   font-family: var(--font-serif);
+  text-spacing-trim: space-all;
+  font-feature-settings: "chws" 0;
   -webkit-font-smoothing: antialiased;
   touch-action: manipulation;
 }

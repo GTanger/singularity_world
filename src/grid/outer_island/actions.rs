@@ -600,6 +600,11 @@ pub fn apply_world_action(
                 a.inn_nights_left -= 1;
             }
             a.fatigue = 0;
+            let has_warm_home = !a.lifestyle.home_furnishings.is_empty();
+            if has_warm_home {
+                a.mind.stm.affect.anger = a.mind.stm.affect.anger.saturating_sub(18);
+                a.mind.stm.affect.fear = a.mind.stm.affect.fear.saturating_sub(18);
+            }
             let innate = derive_innate_persona(a.soul_seed.max(1));
             let cash_short = a.copper < 3;
             a.mind
@@ -607,9 +612,17 @@ pub fn apply_world_action(
             let _ =
                 super::world_weave_bio::refresh_actor_biography_if_needed(doc, a, clock.game_days);
             a.mark_mutated();
-            let msg =
+            let msg = if has_warm_home {
+                let furn_sample = super::living_sim_and_farm::furnishing_display_name(
+                    &a.lifestyle.home_furnishings[0],
+                );
+                format!(
+                    "屋裡【{furn_sample}】透著暖意，你在乾燥木床上沉沉睡了一覺，白日見聞與煩憂在夢裡盡數沉澱消散。"
+                )
+            } else {
                 "你在乾燥溫暖的木床上沉沉睡了一覺，白日見聞在夢裡沉澱清晰，渾身疲乏盡數消散。"
-                    .to_string();
+                    .to_string()
+            };
             push_breath(a, msg.clone());
             Ok(msg)
         }

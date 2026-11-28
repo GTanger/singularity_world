@@ -15,7 +15,6 @@ use super::live_commodities::{
     count_smithy_fuel, is_smithy_forge_cold, quote_specialty_buyback_copper, restore_shop_stock_one,
 };
 use super::live_land::ensure_live_land_seeded;
-use super::live_tide::{dock_shift_window_key, is_dock_cargo_tide_open};
 use super::martial_art_and_manuals::invoke_craft_phase_effect;
 use super::mind::EventPublicity;
 use super::movement::{push_breath, shortest_node_path, take_clean_carry_items};
@@ -231,25 +230,7 @@ pub fn build_active_town_events(
 ) -> Vec<ActiveTownCrisisSpec> {
     let mut out: Vec<ActiveTownCrisisSpec> = Vec::new();
 
-    // 危機 A：僅於真實白晝開潮且本班尚未搶卸過時浮現（殘夜絕不出現！）
-    if node.kind == "dock"
-        && !clock.is_night
-        && is_dock_cargo_tide_open(clock)
-        && !viewer
-            .explored_windows
-            .contains(&dock_shift_window_key(clock.game_days, clock.bell_index))
-    {
-        out.push(ActiveTownCrisisSpec {
-            kind: "harbor_tide_salvage",
-            title_zh: "開潮靠岸・急卸鹽貨木箱",
-            cue_zh: "當班潮水正湧上跳板，水手長急呼搭手搶卸船貨".to_string(),
-            desc_zh: "商船正趁當班潮水靠妥棧橋卸貨，趁浪頭還沒拍濕貨箱前搭手搬運即可照港務定例領工錢。".to_string(),
-            action_label_zh: "搭手搶卸當班潮船貨箱 · 4 枚銅幣",
-            action_sub_zh: "協助港務水手保住當班鹽貨",
-        });
-    }
-
-    // 危機 B：僅於全島真實有受損斷橋（integrity < 90）且玩家自備原木／漂流木時才出現（修完即消失，絕不每日重置！）
+    // 危機 A：僅於全島真實有受損斷橋（integrity < 90）時才出現（修完即消失，絕不每日重置！）
     if matches!(node.kind.as_str(), "plaza" | "civic" | "gate" | "bridge")
         && let Some(cid) = find_damaged_bridge_cell(delta)
     {
@@ -312,44 +293,6 @@ pub fn apply_resolve_town_event(
     let kind = event_kind.trim();
 
     let (msg, witness_line) = match kind {
-        "harbor_tide_salvage" => {
-            if node.kind != "dock" {
-                return Err("需站在港務棧橋邊才能搭手搶卸潮船貨箱。".to_string());
-            }
-            if clock.is_night || !is_dock_cargo_tide_open(clock) {
-                return Err("此刻並非商船開潮靠岸時段，棧橋邊並無急卸貨箱。".to_string());
-            }
-            let shift_key = dock_shift_window_key(clock.game_days, clock.bell_index);
-            if delta
-                .actors
-                .get(aid)
-                .is_some_and(|a| a.explored_windows.contains(&shift_key))
-            {
-                return Ok("這班潮汐的靠岸船貨你已搭過手，待下班潮水再看吧。".to_string());
-            }
-            let paid = delta.transfer_copper(
-                clock.game_days,
-                clock.bell_index,
-                "town_event_harbor",
-                "municipal_treasury",
-                aid,
-                4,
-                "開潮搶卸靠岸船貨工錢".to_string(),
-            );
-            let a = delta.actors.get_mut(aid).ok_or("找不到旅人行蹤")?;
-            a.fatigue = a.fatigue.saturating_add(9).min(95);
-            a.explored_windows.insert(shift_key);
-            a.mind.stm.today_goal_progressed = true;
-            a.mark_mutated();
-            let pay_note = if paid {
-                "港務記籌依例數了 4 枚銅幣工錢給你"
-            } else {
-                "水手長記下了你的情分，連聲致謝"
-            };
-            let m = format!("你趁浪頭拍上跳板前與水手合力把鹽漬貨箱搶搬上高臺；{pay_note}。");
-            push_breath(a, m.clone());
-            (m, "趁開潮搶卸了靠岸船貨".to_string())
-        }
         "bridge_relief_drive" => {
             if !matches!(node.kind.as_str(), "plaza" | "civic" | "gate" | "bridge") {
                 return Err("需在廣場、市政廳、城門或橋頭繳交修橋木料。".to_string());

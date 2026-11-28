@@ -253,13 +253,48 @@ fn real_crisis_events_only_fire_on_true_world_crises_and_zero_atm() {
     let mut clock = solar_clock_at(1_764_300_000);
     let aid = delta.resolve_actor_id("w4_hunt").expect("aid");
 
-    // 1. 殘夜不得觸發開潮搶貨（消除殘夜與搶貨自相矛盾！）
-    clock.is_night = true;
+    // 1. 驗證重複碼頭事件已拔除、且鍛爐助燃在未冷爐時拒絕，真冷爐交煤才補回燃料重燃！
     assert!(
         apply_world_action(&doc, &mut delta, &clock, "w4_hunt", "resolve_town_event", "harbor_tide_salvage")
             .is_err(),
-        "harbor tide salvage must NOT fire at night"
+        "duplicate harbor_tide_salvage must be removed"
     );
+    let smithy_nd = doc
+        .nodes
+        .get("oi:white_gull_harbor:bal_forge")
+        .expect("bal_forge");
+    delta.relocate_actor(&aid, &smithy_nd.id, smithy_nd.cell_id, true);
+    spawn_npc_at(&mut delta, "npc:bal_smith", "鐵砧巴爾", "鍛鐵匠", &smithy_nd.id, 30);
+    delta.live_commodities.shop_stocks_seeded = true;
+    // 爐倉無煤（冷爐）→ 交入 1 塊精煤塊應真正補進巴爾店倉並重燃！
+    assert!(super::live_commodities::is_smithy_forge_cold(&delta, &smithy_nd.id));
+    if let Some(a) = delta.actors.get_mut(&aid) {
+        add_carry_item(
+            &mut a.backpack,
+            CarryItem {
+                slug: "black_coal".to_string(),
+                name: "北林精煤塊".to_string(),
+                count: 1,
+                weight_units: 4,
+                ..CarryItem::default()
+            },
+        );
+    }
+    let relight_msg = apply_world_action(
+        &doc,
+        &mut delta,
+        &clock,
+        "w4_hunt",
+        "resolve_town_event",
+        "forge_ember_relay",
+    )
+    .expect("cold forge coal relay ok");
+    assert!(relight_msg.contains("重燃爐火"));
+    assert!(
+        !super::live_commodities::is_smithy_forge_cold(&delta, &smithy_nd.id),
+        "smithy forge must genuinely relight after coal delivery"
+    );
+    assert_eq!(delta.conservation_diff(&doc), 0);
 
     // 2. 市集廣場：橋全完好時拒發修橋賞銀；真實橋損＋繳真原木才修回 100！
     clock.is_night = false;

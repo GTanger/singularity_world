@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r5：四刀拆骨補實版—零無中生有×農田持久化與地圖演變×手札真內文×四藝相實算×NPC同構主迴圈）
-const CACHE = 'sw-shell-v20261128r5';
+// PWA Service Worker（v20261128r6：二輪紅隊清創—修復韌藤slug斷鏈×拔除碼頭重複卡×行囊成衣換穿×屋內陳設投影×背景談話接入群戲）
+const CACHE = 'sw-shell-v20261128r6';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r5',
-  '/town-basemaps.js?v=20261128r5',
-  '/static-node-map.js?v=20261128r5',
-  '/island-ui.js?v=20261128r5',
+  '/island-ui.css?v=20261128r6',
+  '/town-basemaps.js?v=20261128r6',
+  '/static-node-map.js?v=20261128r6',
+  '/island-ui.js?v=20261128r6',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

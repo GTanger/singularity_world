@@ -280,6 +280,21 @@ pub fn build_view_json(
             homestead_labels.join("】、【")
         ));
     }
+    if (viewer.owned_house_node.as_deref() == Some(node.id.as_str())
+        || (node.kind == "inn_room" && viewer.inn_nights_left > 0))
+        && !viewer.lifestyle.home_furnishings.is_empty()
+    {
+        let furn_list: Vec<&str> = viewer
+            .lifestyle
+            .home_furnishings
+            .iter()
+            .map(|s| super::living_sim_and_farm::furnishing_display_name(s))
+            .collect();
+        scene_desc.push_str(&format!(
+            " 屋內擺設著【{}】，更添幾分溫馨安穩氣息。",
+            furn_list.join("】、【")
+        ));
+    }
     scene_desc.push_str(&super::live_land::live_land_scene_prose_suffix(
         doc, delta, node,
     ));
@@ -336,6 +351,7 @@ pub fn build_view_json(
                 "is_vessel": it.vessel_meta.is_some(),
                 "is_gear": it.gear_meta.is_some(),
                 "is_manual": it.slug.starts_with("manual_"),
+                "is_outfit": it.slug.starts_with("outfit_"),
                 "gear_slot": it.gear_meta.as_ref().map(|g| g.slot.as_str()),
             })
         })
