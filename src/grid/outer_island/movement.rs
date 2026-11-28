@@ -755,14 +755,25 @@ pub fn apply_move_step(
             .iter()
             .map(|i| u32::from(i.weight_units) * i.count)
             .sum();
-        let step_cost = if carry_weight >= 8 { 4 } else { 2 };
+        let base_cost: u8 = if carry_weight >= 8 { 4 } else { 2 };
+        let boot_save = super::body_gear_craft::feet_fatigue_reduction(a, false);
+        let step_cost = base_cost.saturating_sub(boot_save).max(1);
         a.fatigue = a.fatigue.saturating_add(step_cost).min(95);
     } else if a.fatigue > 0 && dst_node.kind == "plaza" {
         a.fatigue = a.fatigue.saturating_sub(1);
     }
     if flood_crossing {
-        a.fatigue = a.fatigue.saturating_add(6).min(95);
-        env_flavor_suffix.push_str(" 前方木橋受汛沖斷，你踩著齊膝濁水艱難涉過淺灘。");
+        let flood_save = super::body_gear_craft::feet_fatigue_reduction(a, true);
+        let flood_cost = 6u8.saturating_sub(flood_save).max(2);
+        a.fatigue = a.fatigue.saturating_add(flood_cost).min(95);
+        if let Some(ref boots) = a.body_gear.feet {
+            env_flavor_suffix.push_str(&format!(
+                " 前方木橋受汛沖斷，腳下【{}】穩穩抓緊卵石河床，幫你省下不少涉水氣力。",
+                boots.name
+            ));
+        } else {
+            env_flavor_suffix.push_str(" 前方木橋受汛沖斷，你踩著齊膝濁水艱難涉過淺灘。");
+        }
     }
 
     let clean_dir = dir_label.split('（').next().unwrap_or(&dir_label);

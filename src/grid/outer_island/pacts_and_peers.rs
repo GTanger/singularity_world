@@ -342,6 +342,7 @@ pub fn accept_escrow_pact(
                     stolen_from: None,
                     weight_units: 1,
                     vessel_meta: None,
+                    gear_meta: None,
                 },
             );
             con.mark_mutated();

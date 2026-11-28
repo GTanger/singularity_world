@@ -74,10 +74,11 @@ pub fn check_bulk_overland_move(
         );
     }
     let bulk_total = count_backpack_bulk_units(&actor.backpack);
-    if bulk_total > 2 {
+    let max_bulk = super::body_gear_craft::effective_overland_bulk_cap(actor);
+    if bulk_total > max_bulk {
         return Err(format!(
-            "背囊內裝有 {} 件大宗重貨（超過隨身樣品上限 2 件），單人無法徒步翻越城間長路；請就近搭乘驛馬篷車、沿岸貨駁隨行託運，或先存入木箱分批攜帶樣品。",
-            bulk_total
+            "背囊內裝有 {} 件大宗重貨（超過當前隨身負重上限 {} 件），單人無法徒步翻越城間長路；請就近搭乘驛馬篷車、沿岸貨駁隨行託運，或先穿戴採集背架、存入木箱分批攜帶。",
+            bulk_total, max_bulk
         ));
     }
     Ok(())

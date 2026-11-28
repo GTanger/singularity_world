@@ -695,6 +695,7 @@ pub fn forge_living_vessel(
                 stolen_from: None,
                 weight_units: w_units,
                 vessel_meta: Some(meta),
+                gear_meta: None,
             },
         );
         a.fatigue = (a.fatigue + 16).min(95);
@@ -811,6 +812,7 @@ pub fn equip_living_vessel(
             stolen_from: None,
             weight_units: 2,
             vessel_meta: Some(old_tool),
+            gear_meta: None,
         },
     );
     a.mark_mutated();

@@ -510,6 +510,7 @@ pub fn resolve_skirmish_turn(
                                 stolen_from: None,
                                 weight_units: loot_w,
                                 vessel_meta: None,
+                                gear_meta: None,
                             },
                         );
                         (a.display_name.clone(), a.bound_weapon.name.clone())
@@ -604,8 +605,10 @@ pub fn resolve_skirmish_turn(
             }
 
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-            a.fatigue = (a.fatigue + 12).min(95);
-            if !sk.player_guard && is_spider {
+            let arms_shielded = super::body_gear_craft::arms_absorbs_wrist_recoil(a);
+            let recoil_fat: u8 = if arms_shielded { 8 } else { 12 };
+            a.fatigue = (a.fatigue + recoil_fat).min(95);
+            if !sk.player_guard && is_spider && !arms_shielded {
                 a.wound_part = Some("左腕瘀腫".to_string());
             }
             if let Some(ref mut s) = a.active_skirmish {
@@ -614,9 +617,16 @@ pub fn resolve_skirmish_turn(
                 s.round_idx = s.round_idx.saturating_add(1);
             }
             a.mark_mutated();
+            let arm_note = if arms_shielded
+                && let Some(ref arm_g) = a.body_gear.arms
+            {
+                format!("，雙臂【{}】穩穩卸去大半反震力道、護住手腕未傷", arm_g.name)
+            } else {
+                "，震得虎口發麻".to_string()
+            };
             let msg = format!(
-                "你的【{}】重重砸在【{}】甲殼上濺起火星，震得虎口發麻，但已逼得對方連退半步——再補一記精準打擊即可破敵！",
-                a.bound_weapon.name, sk.foe_name
+                "你的【{}】重重砸在【{}】甲殼上濺起火星{}，已逼得對方連退半步——再補一記精準打擊即可破敵！",
+                a.bound_weapon.name, sk.foe_name, arm_note
             );
             push_breath(a, msg.clone());
             Ok(msg)

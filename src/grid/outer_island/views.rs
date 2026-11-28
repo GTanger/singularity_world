@@ -382,6 +382,7 @@ pub fn build_view_json(
                 "grip": grip_text,
                 "rune": viewer.bound_weapon.rune_mark,
             },
+            "body_gear": super::body_gear_craft::build_body_gear_view_json(viewer),
             "backpack": viewer.backpack.iter().map(|it| json!({
                 "slug": it.slug,
                 "name": it.name,
@@ -390,6 +391,8 @@ pub fn build_view_json(
                 "is_voucher": it.bound_owner.is_some(),
                 "is_unclaimed": it.stolen_from.is_some(),
                 "is_vessel": it.vessel_meta.is_some(),
+                "is_gear": it.gear_meta.is_some(),
+                "gear_slot": it.gear_meta.as_ref().map(|g| g.slot.as_str()),
             })).collect::<Vec<_>>(),
             "inn_locker": viewer.inn_lockers.get(&node.id).unwrap_or(&viewer.inn_locker).iter().map(|it| json!({
                 "slug": it.slug,

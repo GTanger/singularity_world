@@ -208,6 +208,8 @@ pub struct CarryItem {
     pub weight_units: u16,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vessel_meta: Option<BoundTool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gear_meta: Option<super::body_gear_craft::BodyGearPiece>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -345,6 +347,8 @@ pub struct UnifiedMindBody {
     pub wound_part: Option<String>,
     pub severe_wrist_warning: bool,
     pub bound_weapon: BoundTool,
+    #[serde(default)]
+    pub body_gear: super::body_gear_craft::BodyGearRig,
     pub backpack: Vec<CarryItem>,
     pub inn_locker: Vec<CarryItem>,
     pub inn_lockers: BTreeMap<String, Vec<CarryItem>>,
@@ -432,6 +436,7 @@ impl Default for UnifiedMindBody {
                 grip_familiarity: 8,
                 rune_mark: None,
             },
+            body_gear: super::body_gear_craft::BodyGearRig::default(),
             backpack: Vec::new(),
             inn_locker: Vec::new(),
             inn_lockers: BTreeMap::new(),

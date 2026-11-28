@@ -960,6 +960,15 @@ pub fn build_scene_presence_sockets(
         &mut objects,
         &mut push_audit,
     );
+    super::body_gear_craft::append_gear_and_forage_scene_objects(
+        doc,
+        delta,
+        viewer,
+        node,
+        clock,
+        &mut objects,
+        &mut push_audit,
+    );
 
     (objects, body_cues, audit_actions)
 }

@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r1：第一刀人物真活外顯＋現場群戲插話＋對話世界後果＋離線託管方針）
-const CACHE = 'sw-shell-v20261128r1';
+// PWA Service Worker（v20261128r2：4B 實路鎖定＋第二刀全身多部位裝備＝工具×零門檻拾材綁製×百工自由造物）
+const CACHE = 'sw-shell-v20261128r2';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r1',
-  '/town-basemaps.js?v=20261128r1',
-  '/static-node-map.js?v=20261128r1',
-  '/island-ui.js?v=20261128r1',
+  '/island-ui.css?v=20261128r2',
+  '/town-basemaps.js?v=20261128r2',
+  '/static-node-map.js?v=20261128r2',
+  '/island-ui.js?v=20261128r2',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

@@ -5,6 +5,9 @@ pub mod actor_map;
 pub mod appraisal;
 mod atlas_live_pulse;
 pub mod atlas_observatory;
+pub mod body_gear_craft;
+#[cfg(test)]
+mod body_gear_tests;
 pub mod causal_arc_catalog;
 pub mod causal_arcs;
 pub mod cell_maps;

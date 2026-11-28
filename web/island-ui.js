@@ -1448,11 +1448,31 @@
         (p.temper_cue ? '<div style="margin-top:4px;font-size:0.86rem;color:var(--ink-sub);">' + esc(p.temper_cue) + '</div>' : '') +
         (p.wound ? '<div style="margin-top:6px;color:var(--danger-ink);">傷勢：' + esc(p.wound) + '</div>' : '') +
         '</div>' +
-        '<div class="oi-kv-card"><strong>隨身兵刃：' + esc(w.name) + '</strong>' +
-        '<div style="margin-top:4px;font-size:0.88rem;color:var(--ink-sub);">' + esc(w.provenance) + '</div>' +
-        '<div style="margin-top:6px;font-size:0.88rem;">器況：' + esc(w.wear) + ' ｜ 手感：' + esc(w.grip) +
-        (w.rune ? ' ｜ 已鑲【' + esc(w.rune) + '】' : '') + '</div>' +
-        (p.mastery ? '<div style="margin-top:4px;font-size:0.86rem;color:var(--accent-jade);">歷練成相：' + esc(p.mastery) + '</div>' : '') +
+        '<div class="oi-kv-card"><strong>隨身兵刃與全身多部位工具</strong>' +
+        '<div style="margin-top:6px;font-size:0.9rem;"><b>雙手所持：</b>' + esc(w.name) +
+        (w.rune ? '（已鑲【' + esc(w.rune) + '】）' : '') + '</div>' +
+        '<div style="margin-top:2px;font-size:0.84rem;color:var(--ink-sub);">' + esc(w.provenance) + ' ｜ 器況：' + esc(w.wear) + ' ｜ 手感：' + esc(w.grip) + '</div>' +
+        (function () {
+          var bg = p.body_gear || {};
+          var slotDefs = [
+            { key: 'arms', label: '雙臂護具', empty: '未穿戴（硬撼重甲時手腕易受反震）' },
+            { key: 'feet', label: '足腿靴履', empty: '未穿戴（野外山路與涉水耗力較重）' },
+            { key: 'torso', label: '軀幹背負', empty: '未背負採集背架（跨城僅宜帶樣品）' }
+          ];
+          return slotDefs.map(function (sd) {
+            var pc = bg[sd.key];
+            if (!pc) {
+              return '<div style="margin-top:6px;font-size:0.85rem;color:var(--ink-muted);"><b>' + sd.label + '：</b>' + sd.empty + '</div>';
+            }
+            return '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border-line);display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
+              '<div style="font-size:0.85rem;"><b>' + sd.label + '：</b>' + esc(pc.name) +
+              '<div style="font-size:0.79rem;color:var(--ink-sub);margin-top:2px;">' + esc(pc.sense) + '</div></div>' +
+              '<button type="button" class="oi-icon-btn" data-sheet-act="unequip_body_gear" data-sheet-param="' + sd.key + '" style="flex:0 0 auto;">卸下</button>' +
+              '</div>';
+          }).join('') +
+          (bg.bulk_sense ? '<div style="margin-top:6px;font-size:0.8rem;color:var(--ink-sub);">負重體感：' + esc(bg.bulk_sense) + '</div>' : '');
+        })() +
+        (p.mastery ? '<div style="margin-top:6px;font-size:0.86rem;color:var(--accent-jade);">歷練成相：' + esc(p.mastery) + '</div>' : '') +
         '</div>' +
         '<div class="oi-kv-card"><strong>住宿與契約</strong><div style="margin-top:4px;font-size:0.88rem;color:var(--ink-sub);">' +
         '二樓宿房剩餘：' + esc(p.inn_nights_left || 0) + ' 宿 ｜ 逾時搜救契：' + (p.rescue_pact ? '已登記生效' : '未登記') +
@@ -1490,11 +1510,13 @@
               : '';
             var equipBtn = it.is_vessel
               ? '<button type="button" class="oi-icon-btn" data-equip-slug="' + esc(it.slug) + '" style="margin-right:4px;">換握上手</button>'
-              : '';
+              : (it.is_gear
+                ? '<button type="button" class="oi-icon-btn" data-sheet-act="equip_body_gear" data-sheet-param="' + esc(it.slug) + '" style="margin-right:4px;">穿戴上身</button>'
+                : '');
             var lockBtn = (canUseLocker && !it.is_voucher)
               ? '<button type="button" class="oi-icon-btn" data-store-slug="' + esc(it.slug) + '">鎖入木箱</button>'
               : '';
-            var tag = it.is_voucher ? '（隨身憑據）' : (it.is_unclaimed ? '（拾遺未報備）' : (it.is_vessel ? '（落款器物）' : ''));
+            var tag = it.is_voucher ? '（隨身憑據）' : (it.is_unclaimed ? '（拾遺未報備）' : (it.is_vessel ? '（落款器物）' : (it.is_gear ? '（多部位裝備）' : '')));
             return '<div class="oi-item-row"><span>' + esc(it.name) + ' × ' + esc(it.count) + ' <small style="color:var(--ink-muted);">' + esc(tag) + '</small></span><span>' + eatBtn + dropCrateBtn + equipBtn + lockBtn + '</span></div>';
           }).join('')
         : '<div style="color:var(--ink-muted);font-size:0.9rem;padding:6px 0;">背囊裡目前空空如也。</div>';
@@ -1509,11 +1531,25 @@
           }).join('')
         : '<div style="color:var(--ink-muted);font-size:0.9rem;padding:6px 0;">床頭厚木箱目前沒有存放貨品。</div>';
 
+      var fieldRecipes = (p.body_gear && p.body_gear.field_recipes) || [];
+      var fieldCraftHtml = fieldRecipes.length
+        ? ('<div class="oi-kv-card"><strong>就地綁製初階工具與護具（零工坊門檻）</strong>' +
+          '<div style="font-size:0.8rem;color:var(--ink-sub);margin:4px 0 8px;">城外河灘林緣可徒手拾撿硬石、枯枝與韌藤，隨手綁成生存工具與護具。</div>' +
+          '<div class="oi-policy-grid">' +
+          fieldRecipes.map(function (rc) {
+            return '<button type="button" class="oi-policy-btn' + (rc.ready ? ' active' : '') + '" data-sheet-act="field_bind_craft" data-sheet-param="' + esc(rc.id) + '">' +
+              '<strong>' + esc(rc.name) + ' <small style="display:inline;font-weight:400;">(' + esc(rc.slot) + ')</small></strong>' +
+              '<small>' + (rc.ready ? '料齊・點擊就地綁製' : ('需：' + esc(rc.need))) + '</small></button>';
+          }).join('') +
+          '</div></div>')
+        : '';
+
       bodyEl.innerHTML =
         '<div class="oi-kv-list">' +
         '<div class="oi-kv-card"><strong>懷中錢袋：' + esc(p.copper || 0) + ' 枚銅幣</strong>' +
         '<div style="font-size:0.83rem;color:var(--ink-sub);margin-top:4px;">重要採集貨品可在進入深山前鎖入二樓宿房厚木箱保管。</div></div>' +
         '<div class="oi-kv-card"><strong>肩上背囊</strong>' + bagHtml + '</div>' +
+        fieldCraftHtml +
         '<div class="oi-kv-card"><strong>宿房床頭厚木箱' + (canUseLocker ? '（可存取）' : '（回二樓宿房可開啟）') + '</strong>' + lockerHtml + '</div>' +
         '</div>';
       return;

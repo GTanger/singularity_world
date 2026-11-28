@@ -793,15 +793,42 @@ impl IslandEngine {
             );
         }
 
-        let known_local_landmarks_zh: Vec<String> = target
+        let adjacent_exits_zh: Vec<String> = node
+            .exits
+            .iter()
+            .filter_map(|ex| {
+                let dst = self.doc.nodes.get(&ex.to)?;
+                if dst.dungeon && !target.mind.ltm.known_nodes.contains(&ex.to) {
+                    return None;
+                }
+                let short_to = ex.to_name.split('・').next_back().unwrap_or(&ex.to_name);
+                Some(format!("{}往「{}」", ex.dir, short_to))
+            })
+            .take(8)
+            .collect();
+
+        let mut known_same_cell: Vec<String> = target
             .mind
             .ltm
             .known_nodes
             .iter()
             .filter_map(|nid| self.doc.nodes.get(nid))
+            .filter(|nd| nd.cell_id == node.cell_id && !nd.dungeon)
             .map(|nd| nd.name.clone())
-            .take(10)
             .collect();
+        let mut known_other_cells: Vec<String> = target
+            .mind
+            .ltm
+            .known_nodes
+            .iter()
+            .filter_map(|nid| self.doc.nodes.get(nid))
+            .filter(|nd| nd.cell_id != node.cell_id && !nd.dungeon)
+            .map(|nd| nd.name.clone())
+            .collect();
+        known_same_cell.truncate(8);
+        known_other_cells.truncate(4);
+        known_same_cell.extend(known_other_cells);
+        let known_local_landmarks_zh = known_same_cell;
 
         let public_pid = sp
             .controller_id
@@ -839,6 +866,7 @@ impl IslandEngine {
             stance_verdict,
             recent_talks_with_player,
             relevant_memories_zh,
+            adjacent_exits_zh,
             known_local_landmarks_zh,
             used_pressure_tactic,
             topic: topic.trim().to_string(),

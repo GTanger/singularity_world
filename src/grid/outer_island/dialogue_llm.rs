@@ -99,6 +99,7 @@ pub struct NpcDialogueInput {
     pub stance_verdict: StanceVerdict,
     pub recent_talks_with_player: Vec<(String, String)>,
     pub relevant_memories_zh: Vec<String>,
+    pub adjacent_exits_zh: Vec<String>,
     pub known_local_landmarks_zh: Vec<String>,
     pub used_pressure_tactic: bool,
     pub topic: String,
@@ -302,6 +303,11 @@ pub fn generate_npc_dialogue(input: &NpcDialogueInput) -> NpcDialogueOutcome {
     } else {
         mem_lines.join("；")
     };
+    let exits_block = if input.adjacent_exits_zh.is_empty() {
+        "（暫無相連路口）".to_string()
+    } else {
+        input.adjacent_exits_zh.join("、")
+    };
     let map_scope_block = if input.known_local_landmarks_zh.is_empty() {
         input.node_name.clone()
     } else {
@@ -316,18 +322,20 @@ pub fn generate_npc_dialogue(input: &NpcDialogueInput) -> NpcDialogueOutcome {
         format!("初見面的{}旅人", input.player_race)
     };
 
-    // 零性格形容詞提示（禁止餵「暴躁/傲嬌」標籤，改注入純 Rust 預判立場、語用約束、個人記憶與已知地圖迷霧邊界）
+    // 零性格形容詞提示（禁止餵「暴躁/傲嬌」標籤，改注入純 Rust 預判立場、語用約束、個人記憶與真實路口地界鎖定）
     let system_prompt = format!(
         "你是銀鷗島上的真實居民「{}」（種族：{}，日常營生：{}，隨身器物：{}）。\n\
          所在位置：{}（{}・{}），當下神態：{}。\n\
          你手頭現有 {} 枚銅幣；面前搭話者是{}。\n\
          【當下處事定見與說話方式】：{}\n\
          【你腦中記得的家族往事、器物來歷與街坊紀錄】：{}（請站在自家立場說話，不必假裝中立）。\n\
+         【此處眼前真實相連的去路】：{}\n\
          【你曾親自踏足知曉的地界】：{}（未列出的陌生荒野或地底深處你並未去過，絕不可裝熟指路）。\n\
          嚴格守則：\n\
          1. 只用台灣正體中文與口語化世界內對白回答（不超過 90 字），禁止加引號外旁白或舞台腔。\n\
          2. 報價與時刻一律說具體銅幣數與鐘響，絕不可違背上方【當下處事定見】私自降價、白送財物或無憑賒帳。\n\
-         3. 絕對禁止出現任何現代詞彙、設定詞彙，也不可替不懂異族語言的人翻譯未學會的語言。",
+         3. 絕對禁止出現任何現代詞彙、設定詞彙，也不可替不懂異族語言的人翻譯未學會的語言。\n\
+         4. 指路時只能說出上方【此處眼前真實相連的去路】與【你曾親自踏足知曉的地界】中真實存在的地名，嚴禁憑空編造不存在的街道名、路名或里數。",
         input.npc.name,
         input.npc.race,
         input.npc.role,
@@ -340,6 +348,7 @@ pub fn generate_npc_dialogue(input: &NpcDialogueInput) -> NpcDialogueOutcome {
         relation_hint,
         input.stance_verdict.speech_rule_zh,
         memory_block,
+        exits_block,
         map_scope_block,
     );
 

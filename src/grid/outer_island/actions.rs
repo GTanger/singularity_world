@@ -1040,6 +1040,23 @@ pub fn apply_world_action(
             if action == "dismiss_offline_recap" {
                 return super::offline_autonomy::dismiss_player_offline_recap(delta, &aid);
             }
+            if action == "gather_wild_raw" {
+                return super::body_gear_craft::apply_gather_wild_raw(doc, delta, clock, &aid);
+            }
+            if action == "field_bind_craft" {
+                return super::body_gear_craft::apply_field_bind_craft(delta, clock, &aid, param);
+            }
+            if action == "craft_custom_gear" {
+                return super::body_gear_craft::apply_craft_custom_gear(
+                    doc, delta, clock, &aid, param,
+                );
+            }
+            if action == "equip_body_gear" {
+                return super::body_gear_craft::apply_equip_body_gear(delta, clock, &aid, param);
+            }
+            if action == "unequip_body_gear" {
+                return super::body_gear_craft::apply_unequip_body_gear(delta, clock, &aid, param);
+            }
             if let Some(res) = super::ongoing_activity::try_dispatch_embodied_action(
                 doc,
                 delta,
