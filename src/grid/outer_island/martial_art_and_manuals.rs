@@ -1,11 +1,11 @@
-//! 第三刀核心器官：個人之相（4 武相＋4 藝相自動自然生成）× 《功法手札》著譜傳授 × 全自動田忌賽馬連續文字交鋒。
+//! 第三刀（拆骨補實版）：個人之相（4 武相＋4 藝相實算施展）× 實體內文《功法手札》（真同法不同相）× 獨立三相連續交鋒結算。
 //!
-//! 嚴守 `DESIGN_KEYWORDS.md` L133-135 / L167 / L183-184 / L190-206：
-//! 1. 後台直用 `crate::combat::human_phase` 五大數理模組（先天骨相雙層守恆、Viterbi 同法不同相、
-//!    連貫性×變化性自然成相、一力降十會／專克拆招／庖丁解牛三相判準、2-Step Residual OMP 幕後定名）；
-//! 2. 前台絕不外露回合數與數值加減，只呈現真實碎招起承轉合、成相顯化／潰散與換氣對峙空檔；
-//! 3. 支援將個人武相著譜為實體《功法手札》供交易與傳授，他人研讀後仍依自身骨相演化出「同法不同相」的個人套路。
+//! 嚴守正典與關鍵字鐵律：
+//! 1. 4 臨陣武相於交鋒自動施展；4 百工藝相（採獵／鍛造／庖廚／行旅）透過 `invoke_craft_phase_effect` 於真實生產採作時實際參與減耗與敘事；
+//! 2. 《功法手札》在 `CarryItem.manual_meta` 永久保存作者、載體、槽位、五常動作序列與變招分支；研讀時依該原譜槽位與研讀者自身骨相重算 Viterbi 代償（真「同法不同相」）；
+//! 3. 連續交鋒勝出直走共用 `settle_skirmish_victory`，絕不借殼舊猜拳 `skirmish_wrist`，且前台徹底禁絕任何幕後設計黑話。
 
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::combat::human_phase::{
@@ -21,6 +21,39 @@ use super::persona::ValueAxis;
 use super::phase_and_vessels::{actor_bone_phase, tool_carrier_of};
 use super::sim_tick::broadcast_scene_event;
 use super::types::{CarryItem, IslandWorldDelta, UnifiedMindBody, WorldStaticDoc};
+
+/// 存於實體《功法手札》物件上之不可變原譜內文，讓任何研讀者皆可依原譜槽位與自身骨相走出「同法不同相」。
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct MartialManualMeta {
+    pub author_name: String,
+    pub slot_code: String,
+    pub carrier_zh: String,
+    pub formal_name: String,
+    pub motions: Vec<String>,
+    pub turn_branch_zh: String,
+    pub origin_seed: u64,
+}
+
+fn slot_from_code(code: &str) -> TacticalSlot {
+    match code.trim() {
+        "opening" => TacticalSlot::Opening,
+        "finisher" => TacticalSlot::Finisher,
+        "defense" => TacticalSlot::Defense,
+        _ => TacticalSlot::Midgame,
+    }
+}
+
+fn carrier_label_zh(c: CarrierAffinity) -> &'static str {
+    match c {
+        CarrierAffinity::Blade => "刃具",
+        CarrierAffinity::Blunt => "重錘",
+        CarrierAffinity::Pole => "長柄",
+        CarrierAffinity::Shield => "盾牌護具",
+        CarrierAffinity::Footwork => "步法身法",
+        CarrierAffinity::Unarmed => "徒手身法",
+    }
+}
 
 /// 將先天骨相三軸 `(alpha, beta, gamma)` 轉譯為純去數值體感敘述
 pub fn describe_bone_phase_zh(bone: &InnateBonePhase) -> String {
@@ -54,7 +87,39 @@ pub fn actor_learned_bonus(a: &UnifiedMindBody) -> f64 {
     }
 }
 
-/// 自然生成角色背板「4 臨陣武相」與「4 百工藝相」（完全由骨相×所學×所熟×手持器物決定，零手動自訂）
+/// 在真實採獵／鍛造／庖廚／行旅時自動施展角色專屬百工藝相，回傳 `(白話施展句, 實算省力減耗)`！
+pub fn invoke_craft_phase_effect(a: &UnifiedMindBody, craft_code: &str) -> (String, u8) {
+    let bone = actor_bone_phase(a);
+    let carrier = tool_carrier_of(&a.bound_weapon.slug, &a.bound_weapon.name);
+    let craft_fam = u32::from(a.mind.ltm.mastery.craft_works)
+        + u32::from(a.bound_weapon.grip_familiarity / 3);
+    let anatomy_fam = u32::try_from(a.mind.ltm.mastery.distinct_foes.len()).unwrap_or(0) * 3
+        + u32::from(a.mind.ltm.mastery.wayfare_crossings / 2);
+    let r = derive_personal_craft_routine(
+        &bone,
+        craft_code,
+        carrier,
+        &a.bound_weapon.name,
+        craft_fam,
+        anatomy_fam,
+        WordRegistry::global(),
+    );
+    let save: u8 = if craft_fam >= 12 {
+        3
+    } else if craft_fam >= 4 {
+        2
+    } else {
+        1
+    };
+    let lead = r.main_motions.first().map_or("順手運勁", String::as_str);
+    let close = r.main_motions.last().map_or("收勢落定", String::as_str);
+    (
+        format!("順手使出【{}】（{lead}→{close}）", r.formal_name),
+        save,
+    )
+}
+
+/// 自然生成角色背板「4 臨陣武相」與「4 百工藝相」（完全由骨相×所學×所熟×手持器物決定）
 pub fn derive_actor_eight_phases(
     a: &UnifiedMindBody,
 ) -> (Vec<EmergentRoutine>, Vec<EmergentRoutine>) {
@@ -138,7 +203,7 @@ pub fn build_eight_phases_view_json(viewer: &UnifiedMindBody) -> Value {
     })
 }
 
-/// 將自身一式武相著譜成實體《功法手札》（物理守恆物件，可供交易、贈與或留存傳徒）
+/// 將自身一式武相著譜成實體《功法手札》（內含真實原譜招式序列 `manual_meta`，可供交易傳授）
 pub fn apply_write_martial_manual(
     doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
@@ -157,7 +222,7 @@ pub fn apply_write_martial_manual(
         _ => return Err("請選擇欲著譜的武相部位（起手／連攜／破綻／守勢）。".to_string()),
     };
 
-    let (node_id, author_name, routine) = {
+    let (node_id, author_name, origin_seed, carrier_zh, routine) = {
         let a = delta.actors.get(&aid).ok_or("找不到旅人行蹤")?;
         if a.fatigue >= 85 {
             return Err("此刻氣力已近枯竭，無力靜心凝神著譜，先歇息緩氣再動筆吧。".to_string());
@@ -179,11 +244,29 @@ pub fn apply_write_martial_manual(
             prac,
             WordRegistry::global(),
         );
-        (a.node_id.clone(), a.display_name.clone(), r)
+        (
+            a.node_id.clone(),
+            a.display_name.clone(),
+            a.soul_seed,
+            carrier_label_zh(carrier),
+            r,
+        )
     };
 
     let book_name = format!("《{}・手札》", routine.formal_name);
-    let slug = {
+    let meta = MartialManualMeta {
+        author_name: author_name.clone(),
+        slot_code: slot_code.trim().to_string(),
+        carrier_zh: carrier_zh.to_string(),
+        formal_name: routine.formal_name.clone(),
+        motions: routine.main_motions.to_vec(),
+        turn_branch_zh: format!(
+            "遇{}則轉「{}」",
+            routine.turn_counter_target_zh, routine.turn_branch_motion
+        ),
+        origin_seed,
+    };
+    {
         let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
         a.mind.ltm.mastery.vessel_serial = a.mind.ltm.mastery.vessel_serial.saturating_add(1);
         let s = format!("manual_{}_{}", slot_code.trim(), a.mind.ltm.mastery.vessel_serial);
@@ -192,10 +275,11 @@ pub fn apply_write_martial_manual(
         add_carry_item(
             &mut a.backpack,
             CarryItem {
-                slug: s.clone(),
+                slug: s,
                 name: book_name.clone(),
                 count: 1,
                 weight_units: 1,
+                manual_meta: Some(meta),
                 ..CarryItem::default()
             },
         );
@@ -209,8 +293,7 @@ pub fn apply_write_martial_manual(
         );
         push_breath(a, msg);
         a.mark_mutated();
-        s
-    };
+    }
 
     broadcast_scene_event(
         doc,
@@ -227,7 +310,6 @@ pub fn apply_write_martial_manual(
         "write_manual",
         &format!("{author_name}凝神著成一冊{book_name}"),
     );
-    let _ = slug;
     Ok(format!(
         "你已著成實體{}收入行囊（五常碎招：{}），他人研讀後亦會依自身骨相走出同法不同相的新路。",
         book_name,
@@ -235,7 +317,7 @@ pub fn apply_write_martial_manual(
     ))
 }
 
-/// 研讀行囊內之實體《功法手札》（不銷毀書冊，提升個人所學並依自身骨相走出「同法不同相」！）
+/// 研讀行囊內之實體《功法手札》（讀取手札真實 `manual_meta` 原譜槽位與動作，依研讀者骨相走出真「同法不同相」，且書冊完好不毀！）
 pub fn apply_study_martial_manual(
     delta: &mut IslandWorldDelta,
     clock: &SolarClockSnapshot,
@@ -246,51 +328,96 @@ pub fn apply_study_martial_manual(
         .resolve_actor_id(actor_key)
         .ok_or("請先向港務官核對通行身分。")?;
     let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-    let book_name = a
+    let (book_name, meta_opt) = a
         .backpack
         .iter()
         .find(|i| i.slug == slug && i.count > 0 && i.slug.starts_with("manual_"))
-        .map(|i| i.name.clone())
+        .map(|i| (i.name.clone(), i.manual_meta.clone()))
         .ok_or("行囊裡找不到這冊功法手札。")?;
     if a.mind.ltm.mastery.studied_manuals.contains(&book_name) {
         return Ok(format!(
             "你重新翻閱了一遍{book_name}，其中的起承轉合要訣早已融進你的身法裡；此冊仍完好留在行囊，可轉贈或售予他人。"
         ));
     }
+
+    // 防止原地重複讀自己寫的手札白刷熟悉度（須實戰歷練或跨人交流方得最大增益）
+    let is_self_authored = meta_opt
+        .as_ref()
+        .is_some_and(|m| m.origin_seed != 0 && m.origin_seed == a.soul_seed);
     if a.mind.ltm.mastery.studied_manuals.len() < 8 {
         a.mind.ltm.mastery.studied_manuals.push(book_name.clone());
     }
-    a.bound_weapon.grip_familiarity = a.bound_weapon.grip_familiarity.saturating_add(4);
+    if !is_self_authored {
+        a.bound_weapon.grip_familiarity =
+            a.bound_weapon.grip_familiarity.saturating_add(3).min(40);
+    }
     a.fatigue = (a.fatigue + 6).min(95);
     a.last_active_unix = clock.real_unix;
 
-    // 依本人骨相立即重算演化後的個人連攜武相，展現「同法不同相」
+    let target_slot = meta_opt
+        .as_ref()
+        .map_or(TacticalSlot::Midgame, |m| slot_from_code(&m.slot_code));
     let bone = actor_bone_phase(a);
     let carrier = tool_carrier_of(&a.bound_weapon.slug, &a.bound_weapon.name);
     let prac = u32::from(a.mind.ltm.mastery.martial_bouts)
         + u32::from(a.bound_weapon.grip_familiarity / 2);
     let evolved = derive_personal_martial_routine(
         &bone,
-        TacticalSlot::Midgame,
+        target_slot,
         carrier,
         &a.bound_weapon.name,
         actor_learned_bonus(a),
         prac,
         WordRegistry::global(),
     );
-    let msg = format!(
-        "你依著{book_name}反覆比劃呼吸與重心，順著自身骨相自然代償消化，掌中【{}】漸漸流轉出屬於你自己的「{}」（{}）；書冊仍完好留在行囊。",
-        a.bound_weapon.name,
-        evolved.formal_name,
-        evolved.main_motions.join("→")
-    );
+
+    let contrast_note = if let Some(ref m) = meta_opt
+        && !m.motions.is_empty()
+    {
+        if is_self_authored {
+            format!(
+                "對照自己落筆的「{}」，再順一遍呼吸與重心，手路愈發清晰",
+                m.motions.join("→")
+            )
+        } else {
+            format!(
+                "原譜載{}以{}行「{}」，經你依自身骨相代償化用，掌中【{}】走出屬於你自己的「{}」（{}）",
+                m.author_name,
+                m.carrier_zh,
+                m.motions.join("→"),
+                a.bound_weapon.name,
+                evolved.formal_name,
+                evolved.main_motions.join("→")
+            )
+        }
+    } else {
+        format!(
+            "順著自身骨相自然代償消化，掌中【{}】流轉出「{}」（{}）",
+            a.bound_weapon.name,
+            evolved.formal_name,
+            evolved.main_motions.join("→")
+        )
+    };
+    let msg = format!("你展讀{book_name}反覆比劃呼吸重心：{contrast_note}；書冊仍完好留在行囊。");
     push_breath(a, msg.clone());
     a.mark_mutated();
     Ok(msg)
 }
 
-/// 推算敵手物理模型（骨相種子、載體、硬度與起手傾向，供 `evaluate_three_phase_bout_ext` 統一演算）
-fn foe_combat_profile(foe_slug: &str) -> (i64, CarrierAffinity, f64, u32) {
+/// 推算敵手物理模型（對實有 NPC / 玩家直接取其真實 `soul_seed` 與器物；對荒野魔物取其棲位骨相）
+fn foe_combat_profile(
+    delta: &IslandWorldDelta,
+    foe_slug: &str,
+) -> (i64, CarrierAffinity, f64, u32) {
+    if let Some(real_actor) = delta.actors.get(foe_slug) {
+        let carrier = tool_carrier_of(&real_actor.bound_weapon.slug, &real_actor.bound_weapon.name);
+        let prac = u32::from(real_actor.mind.ltm.mastery.martial_bouts)
+            + u32::from(real_actor.bound_weapon.grip_familiarity / 2);
+        let power = 62.0
+            + if real_actor.bound_weapon.rune_mark.is_some() { 8.0 } else { 0.0 }
+            + if super::body_gear_craft::arms_absorbs_wrist_recoil(real_actor) { 4.0 } else { 0.0 };
+        return ((real_actor.soul_seed & 0x7FFF_FFFF) as i64, carrier, power, prac);
+    }
     if foe_slug == "stone_spider" {
         (9_107_421, CarrierAffinity::Blunt, 74.0, 18)
     } else if foe_slug.starts_with("mutated_boss:") {
@@ -302,17 +429,11 @@ fn foe_combat_profile(foe_slug: &str) -> (i64, CarrierAffinity, f64, u32) {
     } else if foe_slug == "cave_lizard" {
         (5_219_881, CarrierAffinity::Blunt, 66.0, 12)
     } else {
-        // grey_ear_goblin / squatter / bandit
         (4_112_773, CarrierAffinity::Blade, 56.0, 8)
     }
 }
 
-/// 全自動田忌賽馬三段連續演繹（單次下令 → 連續演算起手／中盤／決勝三相物理，直抵勝負或換氣對峙空檔！）
-///
-/// `plan` 三策：
-/// - `"yield_then_strike"`（下馬兌上馬・後發制人）：守勢 → 連攜 → 破綻
-/// - `"press_burst"`（上馬壓中馬・一力降十會）：起手 → 破綻 → 連攜
-/// - `"seam_harvest"`（中馬尋細縫・庖丁解牛）：連攜 → 守勢 → 破綻
+/// 連續三段臨陣交鋒演繹（直走 `evaluate_three_phase_bout_ext` 與獨立 `settle_skirmish_victory`，零舊猜拳借殼與設計黑話）
 pub fn resolve_auto_tianji_clash(
     doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
@@ -331,15 +452,15 @@ pub fn resolve_auto_tianji_clash(
         let (slots, title) = match plan.trim() {
             "yield_then_strike" => (
                 [TacticalSlot::Defense, TacticalSlot::Midgame, TacticalSlot::Finisher],
-                "後發制人（守勢卸銳→中盤截隙→破綻定局）",
+                "後發制人・守勢卸銳",
             ),
             "seam_harvest" => (
                 [TacticalSlot::Midgame, TacticalSlot::Defense, TacticalSlot::Finisher],
-                "入微尋縫（周旋誘隙→卸力貼近→穿縫破甲）",
+                "入微尋縫・避實擊虛",
             ),
             _ => (
                 [TacticalSlot::Opening, TacticalSlot::Finisher, TacticalSlot::Midgame],
-                "搶勢壓制（起手先聲→重勢壓架→連攜收勢）",
+                "搶勢壓制・正面破架",
             ),
         };
         (sk, a.node_id.clone(), slots, title)
@@ -349,6 +470,7 @@ pub fn resolve_auto_tianji_clash(
         a_bone,
         a_carrier,
         a_weapon_name,
+        a_has_rune,
         a_learned,
         a_prac,
         a_foes_cnt,
@@ -365,7 +487,8 @@ pub fn resolve_auto_tianji_clash(
         let prac = u32::from(a.mind.ltm.mastery.martial_bouts)
             + u32::from(a.bound_weapon.grip_familiarity / 2);
         let foes_cnt = u32::try_from(a.mind.ltm.mastery.distinct_foes.len()).unwrap_or(0);
-        let rune_bonus = if a.bound_weapon.rune_mark.is_some() { 8.0 } else { 0.0 };
+        let has_rune = a.bound_weapon.rune_mark.is_some();
+        let rune_bonus = if has_rune { 8.0 } else { 0.0 };
         let arms_ok = super::body_gear_craft::arms_absorbs_wrist_recoil(a);
         let feet_ok = super::body_gear_craft::feet_fatigue_reduction(a, false) > 0;
         let gear_pow = 62.0
@@ -392,6 +515,7 @@ pub fn resolve_auto_tianji_clash(
             bone,
             carrier,
             a.bound_weapon.name.clone(),
+            has_rune,
             learned,
             prac,
             foes_cnt,
@@ -403,7 +527,7 @@ pub fn resolve_auto_tianji_clash(
         )
     };
 
-    let (foe_seed, foe_carrier, foe_power, foe_prac) = foe_combat_profile(&sk.foe_slug);
+    let (foe_seed, foe_carrier, foe_power, foe_prac) = foe_combat_profile(delta, &sk.foe_slug);
     let foe_bone = InnateBonePhase::from_seed(foe_seed);
 
     let mut post_a = if a_scar >= 0.45 {
@@ -421,11 +545,11 @@ pub fn resolve_auto_tianji_clash(
     let mut total_b = 0.0f64;
     let mut narr_segments: Vec<String> = Vec::new();
     let mut manifested_any_skill = false;
+    let mut wound_candidate = "左腕瘀腫";
 
     for idx in 0..3 {
         let slot = plan_slots[idx];
         let r = &routines[idx];
-        // 田忌賽馬時序加成：後發制人首段穩守、入微尋縫末段穿隙、搶勢壓制首段搶攻
         let tactic_bonus = match (plan.trim(), idx) {
             ("yield_then_strike", 0) => 5.0,
             ("yield_then_strike", 2) => 4.0,
@@ -469,27 +593,28 @@ pub fn resolve_auto_tianji_clash(
                 r.formal_name
             )
         } else {
-            format!(
-                "起手「{motion_lead}」欲連「{motion_turn}」，中途受對手鋒芒壓逼潰散為碎招"
-            )
+            format!("起手「{motion_lead}」欲連「{motion_turn}」，中途受對手鋒芒壓逼潰散為碎招")
         };
         let verdict_phrase = match res.verdict {
             ThreePhaseVerdict::Phase1ImpulseCrush { winner_is_a: true, .. } => {
                 format!("以一力降十會之勢正面壓退【{}】", sk.foe_name)
             }
             ThreePhaseVerdict::Phase1ImpulseCrush { winner_is_a: false, .. } => {
+                wound_candidate = "肋側震痛";
                 format!("被【{}】憑絕對蠻力硬生生震開半步", sk.foe_name)
             }
             ThreePhaseVerdict::Phase2KinematicIntercept { interceptor_is_a: true, .. } => {
-                format!("精準搶入【{}】換氣空檔，當場拆斷對方後續來勢", sk.foe_name)
+                format!("精準搶入【{}】換氣空檔，當場拆斷對方來勢", sk.foe_name)
             }
             ThreePhaseVerdict::Phase2KinematicIntercept { interceptor_is_a: false, .. } => {
+                wound_candidate = "右肩挫傷";
                 format!("被【{}】抓到換招空隙搶攻逼退", sk.foe_name)
             }
             ThreePhaseVerdict::Phase3SeamThreading { threader_is_a: true, .. } => {
-                format!("順著關節甲縫游刃切入（庖丁解牛），避開硬殼重創要害")
+                "順著關節甲縫游刃切入（庖丁解牛），避開硬殼重創要害".to_string()
             }
             ThreePhaseVerdict::Phase3SeamThreading { threader_is_a: false, .. } => {
+                wound_candidate = "小腿拉傷";
                 format!("被【{}】刁鑽尋隙擦過護身門戶", sk.foe_name)
             }
             ThreePhaseVerdict::StandardExchange => {
@@ -512,33 +637,24 @@ pub fn resolve_auto_tianji_clash(
     } else {
         ""
     };
-    let auto_prose = format!(
-        "〔{}〕{}{}",
-        plan_title,
-        narr_segments.join(""),
-        gear_tail
-    );
+    let auto_prose = format!("〔{}〕{}{}", plan_title, narr_segments.join(""), gear_tail);
 
     let is_tough_boss = matches!(sk.foe_slug.as_str(), "stone_spider" | "cave_lizard")
         || sk.foe_slug.starts_with("apex:")
         || sk.foe_slug.starts_with("goblin_camp_chief:")
         || sk.foe_slug.starts_with("mutated_boss:");
 
-    // 結算勝負或拉開換氣對峙空檔：完全複用現有守恆／戰利品／成相／落敗管線！
+    // 勝出：直接呼叫獨立 `settle_skirmish_victory`，絕不借殼舊猜拳 `skirmish_wrist`！
     if total_a + 1.5 >= total_b && (!is_tough_boss || sk.foe_stagger >= 1 || manifested_any_skill) {
         if let Some(a) = delta.actors.get_mut(&aid) {
             push_breath(a, auto_prose.clone());
-            if let Some(ref mut s) = a.active_skirmish {
-                s.foe_stagger = s.foe_stagger.max(2);
-                s.player_guard = true;
-            }
         }
-        let settle_msg =
-            super::explore_and_combat::resolve_skirmish_turn(doc, delta, clock, &aid, "skirmish_wrist")?;
+        let settle_msg = super::explore_and_combat::settle_skirmish_victory(
+            doc, delta, clock, &aid, &node_id, &sk, a_has_rune, false,
+        )?;
         return Ok(format!("{auto_prose}\n{settle_msg}"));
     }
 
-    // 明顯落於下風且已重傷／力竭：觸發真實非致死落敗救回閉環
     let critical_state = delta.actors.get(&aid).is_some_and(|a| {
         (a.wound_part.is_some() && a.fatigue >= 72) || (total_b > total_a + 12.0 && a.fatigue >= 80)
     });
@@ -558,19 +674,18 @@ pub fn resolve_auto_tianji_clash(
         return Ok(format!("{auto_prose}\n{def_msg}"));
     }
 
-    // 雙方拉開「換氣對峙空檔」：更新重心破綻與疲勞，讓玩家做關鍵戰術轉折（零回合數、零勞作連點！）
     let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
     let fat_add: u8 = if arms_shielded { 7 } else { 11 };
     a.fatigue = (a.fatigue + fat_add).min(95);
     if is_tough_boss && !arms_shielded && total_b > total_a {
-        a.wound_part = Some("左腕瘀腫".to_string());
+        a.wound_part = Some(wound_candidate.to_string());
     }
     if let Some(ref mut s) = a.active_skirmish {
         s.foe_stagger = s.foe_stagger.saturating_add(1);
         s.player_guard = plan.trim() == "yield_then_strike";
     }
     let pause_msg = format!(
-        "{auto_prose} 雙方一陣疾風驟雨般交錯後各自退開兩步，進入換氣對峙空檔——【{}】氣息已顯浮動，正是調整田忌策或抽身退走的時機。",
+        "{auto_prose} 雙方急驟交錯後各自退開兩步，拉開換氣對峙空檔——【{}】氣息已顯浮動，正是變換步調或抽身退走的時機。",
         sk.foe_name
     );
     push_breath(a, pause_msg.clone());

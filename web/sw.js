@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r4：第四刀模擬人生生活感×農田藥圃開墾收成×野外巨獸追獵與城鎮活事件鏈）
-const CACHE = 'sw-shell-v20261128r4';
+// PWA Service Worker（v20261128r5：四刀拆骨補實版—零無中生有×農田持久化與地圖演變×手札真內文×四藝相實算×NPC同構主迴圈）
+const CACHE = 'sw-shell-v20261128r5';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r4',
-  '/town-basemaps.js?v=20261128r4',
-  '/static-node-map.js?v=20261128r4',
-  '/island-ui.js?v=20261128r4',
+  '/island-ui.css?v=20261128r5',
+  '/town-basemaps.js?v=20261128r5',
+  '/static-node-map.js?v=20261128r5',
+  '/island-ui.js?v=20261128r5',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

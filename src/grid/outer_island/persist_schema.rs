@@ -117,6 +117,8 @@ pub(crate) struct WorldExtrasBlob {
     pub(crate) shop_leases: BTreeMap<String, super::shop_leases::ShopLeaseRecord>,
     #[serde(default)]
     pub(crate) place_registry: BTreeMap<String, super::place_registry::DynamicPlaceRecord>,
+    #[serde(default)]
+    pub(crate) farm_plots: BTreeMap<String, super::farm_plots::FarmPlotRecord>,
     pub(crate) live_land: super::live_land::LiveLandState,
     pub(crate) live_commodities: super::live_commodities::LiveCommoditiesState,
     pub(crate) goblin_hoard_copper: i64,

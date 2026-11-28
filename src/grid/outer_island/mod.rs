@@ -24,6 +24,7 @@ mod diegetic_surface_tests;
 mod emotion_mind_tests;
 pub mod engine;
 pub mod explore_and_combat;
+pub mod farm_plots;
 pub mod gazetteer;
 pub mod gazetteer_wars;
 pub mod harbor_history;

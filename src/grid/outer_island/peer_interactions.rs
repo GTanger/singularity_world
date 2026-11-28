@@ -640,6 +640,7 @@ pub fn apply_peer_assist_skirmish(
                     weight_units: l_w,
                     vessel_meta: None,
                     gear_meta: None,
+                    manual_meta: None,
                 },
             );
         }

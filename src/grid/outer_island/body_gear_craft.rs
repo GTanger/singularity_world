@@ -342,9 +342,12 @@ pub fn apply_gather_wild_raw(
             },
         );
     }
-    a.fatigue = (a.fatigue + 6).min(95);
+    let (craft_prose, craft_save) = super::martial_art_and_manuals::invoke_craft_phase_effect(a, "harvest");
+    a.fatigue = a.fatigue.saturating_add(6u8.saturating_sub(craft_save).max(3)).min(95);
     a.last_active_unix = clock.real_unix;
-    let msg = "你沿著路畔坡腳與碎石灘彎腰挑揀，徒手收起【河灘硬石】、【枯枝木桿】與【韌藤纖維】各一份，隨時可在行囊裡就地綁製初階工具與護具。".to_string();
+    let msg = format!(
+        "你沿著路畔坡腳與碎石灘彎腰挑揀（{craft_prose}），徒手收起【河灘硬石】、【枯枝木桿】與【韌藤纖維】各一份，隨時可在行囊裡就地綁製初階工具與護具。"
+    );
     push_breath(a, msg.clone());
     a.mark_mutated();
     Ok(msg)
@@ -686,7 +689,9 @@ pub fn apply_craft_custom_gear(
                 },
             );
         }
-        a.fatigue = (a.fatigue + 12).min(95);
+        let (forge_prose, forge_save) =
+            super::martial_art_and_manuals::invoke_craft_phase_effect(a, "forge");
+        a.fatigue = a.fatigue.saturating_add(12u8.saturating_sub(forge_save).max(6)).min(95);
         a.last_active_unix = clock.real_unix;
         let fee_note = if fee > 0 {
             format!("（付妥 {fee} 枚銅幣爐炭費）")
@@ -694,7 +699,7 @@ pub fn apply_craft_custom_gear(
             "（自家工坊免付借爐費）".to_string()
         };
         let m = format!(
-            "爐火驟旺、鐵錘起落間，你以【{}】打造出一件【{}】{}——{}，已收入行囊。",
+            "爐火驟旺、鐵錘起落間（{forge_prose}），你以【{}】打造出一件【{}】{}——{}，已收入行囊。",
             mat.name_zh, full_name, fee_note, sense_desc
         );
         push_breath(a, m.clone());

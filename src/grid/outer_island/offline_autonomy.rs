@@ -26,8 +26,8 @@ pub const VALID_OFFLINE_POLICIES: &[(&str, &str, &str)] = &[
     ),
     (
         "forage_patrol",
-        "林緣巡採備料",
-        "沿已知安全荒野與海灘採集草藥、漂流木或粗礦，入夜前折返城內",
+        "照料田壟與林緣巡採",
+        "優先照料收割名下田壟藥圃；若無田產則沿已知安全林緣採集實物備料",
     ),
     (
         "social_tavern",
@@ -239,6 +239,18 @@ pub fn tick_offline_player_day_autonomy(
                     ),
                 )
             };
+            // 嚴格遵守真實開潮與爐火耗料（杜絕無中生有離線刷錢）
+            if work_kind == "dock" && !super::live_tide::is_dock_cargo_tide_open(clock) {
+                return;
+            }
+            let used_fuel = if work_kind == "shop" {
+                super::live_commodities::consume_smithy_fuel_one(delta, payer_opt.as_deref(), &work_nid)
+            } else {
+                None
+            };
+            if work_kind == "shop" && used_fuel.is_none() {
+                return;
+            }
             if let Some(payer) = payer_opt
                 && delta.transfer_copper(
                     clock.game_days,
@@ -252,11 +264,40 @@ pub fn tick_offline_player_day_autonomy(
                 && let Some(a) = delta.actors.get_mut(aid)
             {
                 a.fatigue = (a.fatigue + 12).min(92);
-                a.bound_weapon.grip_familiarity = a.bound_weapon.grip_familiarity.saturating_add(2);
+                a.bound_weapon.grip_familiarity = a.bound_weapon.grip_familiarity.saturating_add(1).min(36);
                 push_offline_diary(a, clock, diary_zh);
+            } else if let Some((holder, item)) = used_fuel {
+                super::live_commodities::restore_shop_stock_one(delta, &holder, &work_nid, item);
             }
         }
         "forage_patrol" => {
+            // A+B 合流：優先照料或收割名下實有田壟藥圃（絕非無中生有掛機刷資源！）
+            if let Some(plot) = delta
+                .farm_plots
+                .values()
+                .find(|p| p.owner_id == aid)
+                .cloned()
+            {
+                if node_id != plot.node_id {
+                    route_offline_actor_to(doc, delta, aid, &node_id, &plot.node_id, "離線前往照料名下田壟", abs_bell);
+                    return;
+                }
+                if let Some(nd) = doc.nodes.get(&plot.node_id) {
+                    let res = if clock.game_days >= plot.mature_day {
+                        super::living_sim_and_farm::apply_harvest_farm_plot(doc, delta, clock, aid, nd, &plot.plot_id)
+                    } else if plot.tended_day != clock.game_days {
+                        super::living_sim_and_farm::apply_tend_farm_plot(delta, clock, aid, nd, &plot.plot_id)
+                    } else {
+                        Err(String::new())
+                    };
+                    if let Ok(note) = res
+                        && let Some(a) = delta.actors.get_mut(aid)
+                    {
+                        push_offline_diary(a, clock, note);
+                    }
+                    return;
+                }
+            }
             // 尋找已知安全野外鄰格採集（不進入地城）
             let cur_is_wild = doc
                 .nodes

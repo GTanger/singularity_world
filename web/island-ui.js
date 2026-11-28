@@ -1093,7 +1093,7 @@
         '<div class="oi-skirmish-card">' +
         '<h3 class="oi-skirmish-title">短兵相接：' + esc(sk.foe_name) + '</h3>' +
         '<div style="font-size:0.9rem;color:var(--ink-sub);">掌中器物：' + esc(p.weapon && p.weapon.name) +
-        (sk.staggered ? ' ｜ 換氣對峙空檔：對方氣息浮動，正可擇策定局' : ' ｜ 擇定田忌起手策，後台依個人四武相全自動連續演繹') + '</div>' +
+        (sk.staggered ? ' ｜ 換氣對峙空檔：對方氣息浮動，正可順勢定局' : ' ｜ 短兵相接：擇定臨陣步調迎敵') + '</div>' +
         '<div class="oi-skirmish-grid">' + mainMovesHtml + '</div>' +
         retreatHtml +
         '</div>'

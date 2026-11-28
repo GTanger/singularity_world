@@ -854,6 +854,9 @@ pub fn tick_outer_island_world(
             super::offline_autonomy::tick_offline_player_day_autonomy(
                 doc, delta, clock, aid, abs_bell,
             );
+            super::wild_hunt_and_events::tick_npc_unified_world_habits(
+                doc, delta, clock, aid, abs_bell,
+            );
         }
 
         if night_eat_home {

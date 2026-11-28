@@ -210,6 +210,8 @@ pub struct CarryItem {
     pub vessel_meta: Option<BoundTool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gear_meta: Option<super::body_gear_craft::BodyGearPiece>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub manual_meta: Option<super::martial_art_and_manuals::MartialManualMeta>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -618,7 +620,7 @@ pub struct IslandWorldDelta {
     #[serde(default)]
     pub place_registry: BTreeMap<String, super::place_registry::DynamicPlaceRecord>,
     #[serde(default)]
-    pub farm_plots: BTreeMap<String, super::living_sim_and_farm::FarmPlotRecord>,
+    pub farm_plots: BTreeMap<String, super::farm_plots::FarmPlotRecord>,
     pub live_land: super::live_land::LiveLandState,
     pub live_commodities: super::live_commodities::LiveCommoditiesState,
     pub live_wilds: super::live_wilds::LiveWildsState,

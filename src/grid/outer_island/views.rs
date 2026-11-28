@@ -188,20 +188,20 @@ pub fn build_view_json(
             json!({
                 "id": "skirmish_auto_clash",
                 "param": "yield_then_strike",
-                "label": "後發制人（下馬兌上馬）",
-                "hint": "守勢卸銳→中盤拆招→破綻成相，自動連續演繹至換氣空檔"
+                "label": "後發制人・守勢卸銳",
+                "hint": "先穩架卸去對手鋒芒，再搶入中盤空檔反制"
             }),
             json!({
                 "id": "skirmish_auto_clash",
                 "param": "press_burst",
-                "label": "搶勢壓制（一力降十會）",
-                "hint": "起手搶攻→重勢壓架→連攜收勢，正面轟散對手架勢"
+                "label": "搶勢壓制・正面破架",
+                "hint": "起手先聲奪人，以沉重勁道正面逼退對手"
             }),
             json!({
                 "id": "skirmish_auto_clash",
                 "param": "seam_harvest",
-                "label": "入微尋縫（庖丁解牛）",
-                "hint": "游鬥誘隙→卸力貼近→切入甲縫，最宜對付重甲巨獸"
+                "label": "入微尋縫・避實擊虛",
+                "hint": "游鬥引出空隙，專切硬甲與關節薄弱處"
             }),
         ];
         if sk.foe_slug == "grey_ear_goblin" {

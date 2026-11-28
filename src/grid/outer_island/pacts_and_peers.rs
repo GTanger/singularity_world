@@ -343,6 +343,7 @@ pub fn accept_escrow_pact(
                     weight_units: 1,
                     vessel_meta: None,
                     gear_meta: None,
+                    manual_meta: None,
                 },
             );
             con.mark_mutated();

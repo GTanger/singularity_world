@@ -698,6 +698,7 @@ pub fn forge_living_vessel(
                 weight_units: w_units,
                 vessel_meta: Some(meta),
                 gear_meta: None,
+                manual_meta: None,
             },
         );
         a.fatigue = (a.fatigue + 16).min(95);
@@ -815,6 +816,7 @@ pub fn equip_living_vessel(
             weight_units: 2,
             vessel_meta: Some(old_tool),
             gear_meta: None,
+            manual_meta: None,
         },
     );
     a.mark_mutated();
@@ -872,10 +874,17 @@ pub fn format_mastery_status_zh(a: &UnifiedMindBody) -> String {
         parts.push(format!("私下揣摩手路【{}】（尚無旁人目擊公認）", pc));
     }
     if parts.is_empty() {
-        format!(
-            "碎招磨合中（實戰 {} 合・百工 {} 件）",
-            m.martial_bouts, m.craft_works
-        )
+        let martial_sense = match m.martial_bouts {
+            0 => "初歷風塵",
+            1..=2 => "略經交手",
+            _ => "臨陣漸熟",
+        };
+        let craft_sense = match m.craft_works {
+            0 => "手藝初開",
+            1..=3 => "百工初諳",
+            _ => "工活熟稔",
+        };
+        format!("碎招磨合中（{martial_sense}・{craft_sense}）")
     } else {
         parts.join("｜")
     }

@@ -274,6 +274,211 @@ pub fn apply_explore(
     super::cell_resources::apply_cell_ecology_explore(doc, delta, clock, &aid, node, win_key)
 }
 
+/// 統一交鋒勝出結算（供舊招式測試與全自動三相連續交鋒共用，徹底消除跨系統文案借殼！）
+#[expect(clippy::too_many_arguments, reason = "explicit unified victory settlement context")]
+pub(crate) fn settle_skirmish_victory(
+    doc: &WorldStaticDoc,
+    delta: &mut IslandWorldDelta,
+    clock: &SolarClockSnapshot,
+    aid: &str,
+    node_id: &str,
+    sk: &SkirmishState,
+    has_rune: bool,
+    legacy_wrist_prose: bool,
+) -> Result<String, String> {
+    let is_primordial_spider = sk.foe_slug == "stone_spider";
+    let is_spider = is_primordial_spider || sk.foe_slug == "cave_lizard";
+    let is_apex = super::cell_resources::is_apex_beast_slug(&sk.foe_slug);
+
+    if is_spider {
+        let vac_days = if is_primordial_spider { 8 } else { 6 };
+        delta
+            .cleared_nests_until_day
+            .insert(node_id.to_string(), clock.game_days + vac_days);
+    }
+    let mut rune_loosened = false;
+    {
+        let a = delta.actors.get_mut(aid).ok_or("找不到旅人行蹤")?;
+        a.active_skirmish = None;
+        a.fatigue = (a.fatigue + 10).min(95);
+        a.bound_weapon.grip_familiarity = a.bound_weapon.grip_familiarity.saturating_add(3);
+        if a.bound_weapon.wear_stage < 2 && !has_rune {
+            a.bound_weapon.wear_stage += 1;
+        } else if has_rune && is_spider && a.mind.ltm.mastery.martial_bouts % 4 == 3 {
+            a.bound_weapon.wear_stage = (a.bound_weapon.wear_stage + 1).min(3);
+            if a.bound_weapon.wear_stage >= 3 {
+                let was_true_rune = a.bound_weapon.rune_mark.as_deref() == Some("穩固鐵紋");
+                a.bound_weapon.rune_mark = None;
+                rune_loosened = was_true_rune;
+            }
+        }
+        a.mind.stm.today_goal_progressed = true;
+        a.mark_mutated();
+    }
+    if rune_loosened {
+        delta.chaos_rune_pool = (delta.chaos_rune_pool + 1).min(12);
+    }
+    let _ = super::phase_and_vessels::record_martial_victory_and_check_phase(
+        doc,
+        delta,
+        clock,
+        aid,
+        &sk.foe_slug,
+        &sk.foe_name,
+        node_id,
+        is_primordial_spider,
+    );
+
+    if let Some(wilds_res) = super::live_wilds::try_settle_wilds_skirmish_victory(
+        doc,
+        delta,
+        clock,
+        aid,
+        node_id,
+        &sk.foe_slug,
+        &sk.foe_name,
+    ) {
+        if wilds_res.is_ok() {
+            super::map_memory::record_local_witness_at_cur_node(doc, delta, aid, clock.game_days);
+        }
+        return wilds_res;
+    }
+
+    if is_apex
+        && let Some(apex_msg) = super::cell_resources::record_apex_beast_slain(
+            doc,
+            delta,
+            clock,
+            aid,
+            node_id,
+            &sk.foe_name,
+        )
+    {
+        if let Some(a) = delta.actors.get_mut(aid) {
+            push_breath(a, apex_msg.clone());
+        }
+        return Ok(apex_msg);
+    }
+
+    if is_spider {
+        let (loot_slug, loot_name, loot_w) = if is_primordial_spider {
+            ("spider_carapace", "吞石巨蛛厚甲殼", 3u16)
+        } else {
+            ("lizard_scale", "嗜石岩蜥厚鱗皮", 2u16)
+        };
+        let (pname, wname) = {
+            let a = delta.actors.get_mut(aid).ok_or("找不到旅人行蹤")?;
+            add_carry_item(
+                &mut a.backpack,
+                CarryItem {
+                    slug: loot_slug.to_string(),
+                    name: loot_name.to_string(),
+                    count: 1,
+                    bound_owner: None,
+                    stolen_from: None,
+                    weight_units: loot_w,
+                    vessel_meta: None,
+                    gear_meta: None,
+                    manual_meta: None,
+                },
+            );
+            (a.display_name.clone(), a.bound_weapon.name.clone())
+        };
+        let (ev_key, ev_zh, msg) = if is_primordial_spider {
+            delta.first_spider_slain = Some((aid.to_string(), pname.clone(), clock.game_days));
+            super::living_chronicler::record_primordial_spider_slain(
+                doc, delta, clock, aid, None, node_id, &wname,
+            );
+            (
+                "slay_stone_spider",
+                format!("{}在灰松試煉坑底擊潰吞石巨蛛並撬下厚甲殼", pname),
+                format!(
+                    "你趁巨蛛破綻大開踏步壓進，【{}】應聲碎裂重甲！巨蛛嘶鳴潰逃入岩縫，地上留下一片值錢的【吞石巨蛛厚甲殼】，南面通往地脈凝石台的道路已暢行無阻！",
+                    wname
+                ),
+            )
+        } else {
+            (
+                "repel_cave_lizard",
+                format!("{}在舊蛛巢擊退空巢易主的{}並剝下厚鱗皮", pname, sk.foe_name),
+                format!(
+                    "你沉腰揮動【{}】劈開【{}】背脊硬鱗！異獸吃痛鑽回深澗，留下一片堅韌的【嗜石岩蜥厚鱗皮】，通往深處石台的去路重歸暢通！",
+                    wname, sk.foe_name
+                ),
+            )
+        };
+        broadcast_scene_event(
+            doc,
+            delta,
+            clock,
+            node_id,
+            aid,
+            &pname,
+            EventPublicity::PublicLoud,
+            None,
+            88,
+            65,
+            ValueAxis::CraftPride,
+            ev_key,
+            &ev_zh,
+        );
+        if let Some(a) = delta.actors.get_mut(aid) {
+            push_breath(a, msg.clone());
+        }
+        return Ok(msg);
+    }
+
+    let got_bounty = delta.transfer_copper(
+        clock.game_days,
+        clock.bell_index,
+        "goblin_loot",
+        "municipal_treasury",
+        aid,
+        3,
+        format!("擊退{}奪回散落銅幣", sk.foe_name),
+    );
+    let pname = delta
+        .actors
+        .get(aid)
+        .map_or("旅人", |a| a.display_name.as_str())
+        .to_string();
+    broadcast_scene_event(
+        doc,
+        delta,
+        clock,
+        node_id,
+        aid,
+        &pname,
+        EventPublicity::PublicLoud,
+        None,
+        64,
+        45,
+        ValueAxis::SurvivalSafety,
+        "repel_goblin",
+        &format!("{}在山徑親手擊退【{}】", pname, sk.foe_name),
+    );
+    let coin_clause = if got_bounty {
+        "，地上還滾落對方搜刮來的 3 枚銅幣被你拾起"
+    } else {
+        ""
+    };
+    let msg = if legacy_wrist_prose {
+        format!(
+            "你瞅準空檔精準敲中【{}】持刃手腕，對方吃痛棄戰竄入密林{}！",
+            sk.foe_name, coin_clause
+        )
+    } else {
+        format!(
+            "【{}】架勢徹底潰散，踉蹌棄戰竄入林影深處{}！",
+            sk.foe_name, coin_clause
+        )
+    };
+    if let Some(a) = delta.actors.get_mut(aid) {
+        push_breath(a, msg.clone());
+    }
+    Ok(msg)
+}
+
 pub fn resolve_skirmish_turn(
     doc: &WorldStaticDoc,
     delta: &mut IslandWorldDelta,
@@ -375,8 +580,6 @@ pub fn resolve_skirmish_turn(
             let is_spider = matches!(sk.foe_slug.as_str(), "stone_spider" | "cave_lizard");
             let is_heavy_boss = sk.foe_slug.starts_with("goblin_camp_chief:")
                 || sk.foe_slug.starts_with("mutated_boss:");
-            let is_primordial_spider =
-                sk.foe_slug == "stone_spider" && delta.first_spider_slain.is_none();
             let reckless_defeat = action == "skirmish_heavy"
                 && !sk.player_guard
                 && (((is_spider || is_apex || is_heavy_boss)
@@ -415,193 +618,16 @@ pub fn resolve_skirmish_turn(
             };
 
             if next_stagger >= win_threshold {
-                if is_spider {
-                    let vac_days = if is_primordial_spider { 8 } else { 6 };
-                    delta
-                        .cleared_nests_until_day
-                        .insert(node_id.clone(), clock.game_days + vac_days);
-                }
-                let mut rune_loosened = false;
-                {
-                    let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-                    a.active_skirmish = None;
-                    a.fatigue = (a.fatigue + 10).min(95);
-                    a.bound_weapon.grip_familiarity =
-                        a.bound_weapon.grip_familiarity.saturating_add(3);
-                    if a.bound_weapon.wear_stage < 2 && !has_rune {
-                        a.bound_weapon.wear_stage += 1;
-                    } else if has_rune && is_spider && a.mind.ltm.mastery.martial_bouts % 4 == 3 {
-                        a.bound_weapon.wear_stage = (a.bound_weapon.wear_stage + 1).min(3);
-                        if a.bound_weapon.wear_stage >= 3 {
-                            let was_true_rune =
-                                a.bound_weapon.rune_mark.as_deref() == Some("穩固鐵紋");
-                            a.bound_weapon.rune_mark = None;
-                            rune_loosened = was_true_rune;
-                        }
-                    }
-                    a.mind.stm.today_goal_progressed = true;
-                    a.mark_mutated();
-                }
-                if rune_loosened {
-                    delta.chaos_rune_pool = (delta.chaos_rune_pool + 1).min(12);
-                }
-                let _ = super::phase_and_vessels::record_martial_victory_and_check_phase(
-                    doc,
-                    delta,
-                    clock,
-                    &aid,
-                    &sk.foe_slug,
-                    &sk.foe_name,
-                    &node_id,
-                    is_primordial_spider,
-                );
-
-                if let Some(wilds_res) = super::live_wilds::try_settle_wilds_skirmish_victory(
+                return settle_skirmish_victory(
                     doc,
                     delta,
                     clock,
                     &aid,
                     &node_id,
-                    &sk.foe_slug,
-                    &sk.foe_name,
-                ) {
-                    if wilds_res.is_ok() {
-                        super::map_memory::record_local_witness_at_cur_node(
-                            doc,
-                            delta,
-                            &aid,
-                            clock.game_days,
-                        );
-                    }
-                    return wilds_res;
-                }
-
-                if is_apex
-                    && let Some(apex_msg) = super::cell_resources::record_apex_beast_slain(
-                        doc,
-                        delta,
-                        clock,
-                        &aid,
-                        &node_id,
-                        &sk.foe_name,
-                    )
-                {
-                    if let Some(a) = delta.actors.get_mut(&aid) {
-                        push_breath(a, apex_msg.clone());
-                    }
-                    return Ok(apex_msg);
-                }
-
-                if is_spider {
-                    let (loot_slug, loot_name, loot_w) = if is_primordial_spider {
-                        ("spider_carapace", "吞石巨蛛厚甲殼", 3u16)
-                    } else {
-                        ("lizard_scale", "嗜石岩蜥厚鱗皮", 2u16)
-                    };
-                    let (pname, wname) = {
-                        let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
-                        add_carry_item(
-                            &mut a.backpack,
-                            CarryItem {
-                                slug: loot_slug.to_string(),
-                                name: loot_name.to_string(),
-                                count: 1,
-                                bound_owner: None,
-                                stolen_from: None,
-                                weight_units: loot_w,
-                                vessel_meta: None,
-                                gear_meta: None,
-                            },
-                        );
-                        (a.display_name.clone(), a.bound_weapon.name.clone())
-                    };
-                    let (ev_key, ev_zh, msg) = if is_primordial_spider {
-                        delta.first_spider_slain =
-                            Some((aid.clone(), pname.clone(), clock.game_days));
-                        super::living_chronicler::record_primordial_spider_slain(
-                            doc, delta, clock, &aid, None, &node_id, &wname,
-                        );
-                        (
-                            "slay_stone_spider",
-                            format!("{}在灰松試煉坑底擊潰吞石巨蛛並撬下厚甲殼", pname),
-                            format!(
-                                "你趁巨蛛前螯彈開的空檔踏步猛擊關節，【{}】應聲碎裂重甲！巨蛛嘶鳴潰逃入岩縫，地上留下一片值錢的【吞石巨蛛厚甲殼】，南面通往地脈凝石台的道路已暢行無阻！",
-                                wname
-                            ),
-                        )
-                    } else {
-                        (
-                            "repel_cave_lizard",
-                            format!("{}在舊蛛巢擊退空巢易主的{}並剝下厚鱗皮", pname, sk.foe_name),
-                            format!(
-                                "你沉腰揮動【{}】重重劈開【{}】背脊硬鱗！異獸吃痛鑽回深澗，留下一片堅韌的【嗜石岩蜥厚鱗皮】，通往深處石台的去路重歸暢通！",
-                                wname, sk.foe_name
-                            ),
-                        )
-                    };
-                    broadcast_scene_event(
-                        doc,
-                        delta,
-                        clock,
-                        &node_id,
-                        &aid,
-                        &pname,
-                        EventPublicity::PublicLoud,
-                        None,
-                        88,
-                        65,
-                        ValueAxis::CraftPride,
-                        ev_key,
-                        &ev_zh,
-                    );
-                    if let Some(a) = delta.actors.get_mut(&aid) {
-                        push_breath(a, msg.clone());
-                    }
-                    return Ok(msg);
-                }
-
-                let got_bounty = delta.transfer_copper(
-                    clock.game_days,
-                    clock.bell_index,
-                    "goblin_loot",
-                    "municipal_treasury",
-                    &aid,
-                    3,
-                    format!("擊退{}奪回散落銅幣", sk.foe_name),
+                    &sk,
+                    has_rune,
+                    true,
                 );
-                let pname = delta
-                    .actors
-                    .get(&aid)
-                    .map_or("旅人", |a| a.display_name.as_str())
-                    .to_string();
-                broadcast_scene_event(
-                    doc,
-                    delta,
-                    clock,
-                    &node_id,
-                    &aid,
-                    &pname,
-                    EventPublicity::PublicLoud,
-                    None,
-                    64,
-                    45,
-                    ValueAxis::SurvivalSafety,
-                    "repel_goblin",
-                    &format!("{}在山徑親手擊退【{}】", pname, sk.foe_name),
-                );
-                let coin_clause = if got_bounty {
-                    "，地上還滾落對方搜刮來的 3 枚銅幣被你拾起"
-                } else {
-                    ""
-                };
-                let msg = format!(
-                    "你瞅準空檔精準敲中【{}】持刃手腕，對方吃痛棄戰竄入密林{}！",
-                    sk.foe_name, coin_clause
-                );
-                if let Some(a) = delta.actors.get_mut(&aid) {
-                    push_breath(a, msg.clone());
-                }
-                return Ok(msg);
             }
 
             let a = delta.actors.get_mut(&aid).ok_or("找不到旅人行蹤")?;
