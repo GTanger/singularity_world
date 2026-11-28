@@ -10,8 +10,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23efe8d8' rx='6' width='32' height='32'/><circle cx='16' cy='16' r='13' fill='%23f8f3e7' stroke='%23261d14' stroke-width='1.5'/><text x='16' y='22' font-size='17' font-weight='700' fill='%23261d14' text-anchor='middle' font-family='serif'>奇</text></svg>">
   <link rel="apple-touch-icon" href="/icon.svg">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=20261128r7" disabled>
-  <link rel="stylesheet" href="island-ui.css?v=20261128r7">
+  <link rel="stylesheet" href="style.css?v=20261128r8" disabled>
+  <link rel="stylesheet" href="island-ui.css?v=20261128r8">
 </head>
 <body>
   <!-- 輕量提示條 -->
@@ -119,7 +119,10 @@
       <main class="oi-scene-scroll" aria-label="眼前風物與人物交會">
         <div class="oi-scene-inner">
           <div class="oi-scene-header">
-            <h1 id="oi-scene-title" class="oi-scene-title">白鷗港・港務碼頭</h1>
+            <div class="oi-scene-title-wrap">
+              <div id="oi-region-crumb" class="oi-region-crumb" hidden></div>
+              <h1 id="oi-scene-title" class="oi-scene-title">白鷗港・港務碼頭</h1>
+            </div>
           </div>
 
           <div id="oi-body-cues" class="oi-body-cues" hidden></div>
@@ -137,8 +140,9 @@
         </div>
       </main>
 
-      <!-- 常駐固定框架手繪靜態地圖（緊貼自身／行囊／搜巡／近事／輿圖上方，只顯示相連可走按鈕） -->
+      <!-- 常駐固定框架手繪靜態地圖（進室內自動收合為單行出門條，讓文字區滿屏閱讀） -->
       <aside id="oi-map-aside" class="oi-desktop-aside" aria-label="手繪靜態地圖">
+        <div id="oi-indoor-bar" class="oi-indoor-bar" hidden></div>
         <div id="oi-mini-map-frame" class="oi-mini-map-frame"></div>
       </aside>
     </div>
@@ -184,22 +188,22 @@
     </div>
   </div>
 
-  <script src="town-basemaps.js?v=20261128r7"></script>
-  <script src="static-node-map.js?v=20261128r7"></script>
-  <script src="island-ui.js?v=20261128r7"></script>
+  <script src="town-basemaps.js?v=20261128r8"></script>
+  <script src="static-node-map.js?v=20261128r8"></script>
+  <script src="island-ui.js?v=20261128r8"></script>
   <script>
     if ('serviceWorker' in navigator) {
       var hadCtrl = !!navigator.serviceWorker.controller;
       var reloadingSw = false;
       navigator.serviceWorker.addEventListener('controllerchange', function () {
         if (!hadCtrl || reloadingSw) return;
-        if (sessionStorage.getItem('sw_reloaded_v20261128r7')) return;
-        sessionStorage.setItem('sw_reloaded_v20261128r7', '1');
+        if (sessionStorage.getItem('sw_reloaded_v20261128r8')) return;
+        sessionStorage.setItem('sw_reloaded_v20261128r8', '1');
         reloadingSw = true;
         window.location.reload();
       });
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js?v=20261128r7', { updateViaCache: 'none' }).catch(function () {});
+        navigator.serviceWorker.register('/sw.js?v=20261128r8', { updateViaCache: 'none' }).catch(function () {});
       });
     }
   </script>

@@ -995,9 +995,42 @@
     tickLocalIslandClock();
   }
 
+  function deriveRegionBreadcrumb(sc) {
+    if (!sc) return '';
+    if (sc.dungeon) return '銀鷗東岸 › 黑水斷橋坑道';
+    var sm = sc.static_map || {};
+    var pos = sm.cell_center || sc.pos;
+    var sector = '銀鷗海領';
+    if (Array.isArray(pos) && pos.length >= 2) {
+      var x = pos[0], y = pos[1];
+      if (y < 660) sector = '銀鷗北岸';
+      else if (y > 728) sector = '銀鷗南境';
+      else if (x < 1405) sector = '銀鷗西岸';
+      else if (x > 1452) sector = '銀鷗東岸';
+      else sector = '銀鷗島心';
+    }
+    var ct = String(sm.cell_title || '').trim();
+    if (!ct) return sector;
+    var cleanCt = ct.replace(/（[^）]*）/g, '').trim();
+    if (sc.name && String(sc.name).indexOf(cleanCt) === 0 && !sc.indoor) {
+      return sector;
+    }
+    return sector + ' › ' + cleanCt;
+  }
+
   function renderSceneStage(view) {
     var sc = view.scene || {};
     var p = view.player || {};
+    var crumbEl = byId('oi-region-crumb');
+    if (crumbEl) {
+      var crumb = deriveRegionBreadcrumb(sc);
+      if (crumb) {
+        crumbEl.hidden = false;
+        setTextIfChanged(crumbEl, crumb);
+      } else {
+        crumbEl.hidden = true;
+      }
+    }
     setTextIfChanged(byId('oi-scene-title'), sc.name || '');
 
     var cuesEl = byId('oi-body-cues');
@@ -1773,11 +1806,16 @@
     var shell = byId('oi-shell');
     if (shell && shell.hidden) return;
     var wrap = byId('oi-mini-map-frame');
+    var indoorBar = byId('oi-indoor-bar');
     var v = appState.view;
     if (!wrap || !v || !v.scene || !window.StaticNodeMap) return;
     var aside = byId('oi-map-aside');
+    var sc = v.scene;
+    var isIndoorCollapse = !!(sc.indoor && !sc.dungeon && appState.asideMode !== 'island');
+
     if (aside) {
       aside.classList.toggle('is-collapsed', !!appState.mobileMapCollapsed);
+      aside.classList.toggle('is-indoor-collapsed', isIndoorCollapse);
     }
     var toggleBtn = byId('oi-btn-toggle-map');
     if (toggleBtn) {
@@ -1787,6 +1825,33 @@
       btn.classList.toggle('active', btn.getAttribute('data-aside-mode') === appState.asideMode);
     });
     if (appState.mobileMapCollapsed && window.innerWidth < 960) return;
+
+    if (isIndoorCollapse && indoorBar) {
+      wrap.hidden = true;
+      indoorBar.hidden = false;
+      var exits = Array.isArray(sc.exits) ? sc.exits : [];
+      var mappedIndoor = {};
+      var isBlocked = !!(v.skirmish || v.transit);
+      var btnsHtml = exits.filter(function (ex) {
+        return ex && ex.to && ex.to_kind !== 'inn_room';
+      }).slice(0, 3).map(function (ex) {
+        mappedIndoor[ex.to] = true;
+        var lbl = cleanExitPillLabel(ex);
+        return '<button type="button" class="oi-indoor-exit-btn" data-move-to="' + esc(ex.to) + '"' +
+          (isBlocked ? ' disabled' : '') + '>' + esc(lbl) + '</button>';
+      }).join('');
+      var placeShort = String(sc.name || '').split('・').pop() || '室內';
+      setHtmlIfChanged(
+        indoorBar,
+        '<div class="oi-indoor-meta"><span class="oi-indoor-tag">室內</span><span class="oi-indoor-place">' + esc(placeShort) + '</span></div>' +
+        '<div class="oi-indoor-actions">' + btnsHtml + '</div>'
+      );
+      appState.mappedExitIds = mappedIndoor;
+      return;
+    }
+
+    if (indoorBar) indoorBar.hidden = true;
+    wrap.hidden = false;
 
     var opts = { isNight: document.body.classList.contains('sw-night') };
     if (appState.asideMode === 'island') {

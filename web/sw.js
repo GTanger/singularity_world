@@ -1,12 +1,13 @@
-// PWA Service Worker（v20261128r7：三輪清創與系統補完—護具磨損修補×鍛造高階排序×手札實料與槽位引導×真話題背景社交×實體推擠碰撞×完整遺澤繼承）
-const CACHE = 'sw-shell-v20261128r7';
+// PWA Service Worker（v20261128r8：純自然水彩底圖×12枚透明手繪貼圖×正北白鷗港全城圖×真八向零重覆方向拓撲×室內單行收合）
+const CACHE = 'sw-shell-v20261128r8';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r7',
-  '/town-basemaps.js?v=20261128r7',
-  '/static-node-map.js?v=20261128r7',
-  '/island-ui.js?v=20261128r7',
+  '/island-ui.css?v=20261128r8',
+  '/town-basemaps.js?v=20261128r8',
+  '/static-node-map.js?v=20261128r8',
+  '/island-ui.js?v=20261128r8',
+  '/map-stamps.json?v=20261128r8',
   '/icon.svg',
   '/manifest.webmanifest'
 ];

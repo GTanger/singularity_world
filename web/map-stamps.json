@@ -1,0 +1,473 @@
+{
+  "version": "20261128r8",
+  "baseUrl": "/maps/island_terrain_base.webp?v=20261128r8",
+  "bounds": {
+    "minX": 1357.71,
+    "maxX": 1507.06,
+    "minY": 627.98,
+    "maxY": 793.21
+  },
+  "stamps": {
+    "wgh": {
+      "url": "/maps/stamps/wgh.webp?v=20261128r8",
+      "w": 369,
+      "h": 291,
+      "anchorY": 0.56
+    },
+    "fishing": {
+      "url": "/maps/stamps/fishing.webp?v=20261128r8",
+      "w": 354,
+      "h": 236,
+      "anchorY": 0.56
+    },
+    "hamlet": {
+      "url": "/maps/stamps/hamlet.webp?v=20261128r8",
+      "w": 309,
+      "h": 303,
+      "anchorY": 0.56
+    },
+    "pit": {
+      "url": "/maps/stamps/pit.webp?v=20261128r8",
+      "w": 355,
+      "h": 260,
+      "anchorY": 0.62
+    },
+    "lighthouse": {
+      "url": "/maps/stamps/lighthouse.webp?v=20261128r8",
+      "w": 224,
+      "h": 337,
+      "anchorY": 0.62
+    },
+    "beast": {
+      "url": "/maps/stamps/beast.webp?v=20261128r8",
+      "w": 354,
+      "h": 276,
+      "anchorY": 0.62
+    },
+    "ferry": {
+      "url": "/maps/stamps/ferry.webp?v=20261128r8",
+      "w": 374,
+      "h": 273,
+      "anchorY": 0.56
+    },
+    "ruin": {
+      "url": "/maps/stamps/ruin.webp?v=20261128r8",
+      "w": 348,
+      "h": 273,
+      "anchorY": 0.56
+    },
+    "farm": {
+      "url": "/maps/stamps/farm.webp?v=20261128r8",
+      "w": 379,
+      "h": 241,
+      "anchorY": 0.56
+    },
+    "watchtower": {
+      "url": "/maps/stamps/watchtower.webp?v=20261128r8",
+      "w": 245,
+      "h": 329,
+      "anchorY": 0.62
+    },
+    "stele": {
+      "url": "/maps/stamps/stele.webp?v=20261128r8",
+      "w": 279,
+      "h": 290,
+      "anchorY": 0.62
+    },
+    "camp": {
+      "url": "/maps/stamps/camp.webp?v=20261128r8",
+      "w": 318,
+      "h": 226,
+      "anchorY": 0.62
+    }
+  },
+  "placements": [
+    {
+      "cell_id": 4070,
+      "stamp": "beast",
+      "xPct": 34.56,
+      "yPct": 10.41,
+      "wPct": 3.3,
+      "tier": "special",
+      "label": "北灣巨鰲暗礁灣"
+    },
+    {
+      "cell_id": 4071,
+      "stamp": "fishing",
+      "xPct": 37.98,
+      "yPct": 10.71,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "白梣炭寮"
+    },
+    {
+      "cell_id": 4072,
+      "stamp": "fishing",
+      "xPct": 41.4,
+      "yPct": 10.96,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "黑煤谷村"
+    },
+    {
+      "cell_id": 4073,
+      "stamp": "lighthouse",
+      "xPct": 46.16,
+      "yPct": 11.54,
+      "wPct": 3.0,
+      "tier": "major",
+      "label": "北岬燈塔"
+    },
+    {
+      "cell_id": 4083,
+      "stamp": "fishing",
+      "xPct": 84.65,
+      "yPct": 12.78,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "拉橋村"
+    },
+    {
+      "cell_id": 4081,
+      "stamp": "fishing",
+      "xPct": 75.37,
+      "yPct": 12.96,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "萊林坡"
+    },
+    {
+      "cell_id": 4077,
+      "stamp": "fishing",
+      "xPct": 58.41,
+      "yPct": 13.25,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "艾爾灣村"
+    },
+    {
+      "cell_id": 4069,
+      "stamp": "fishing",
+      "xPct": 26.64,
+      "yPct": 16.28,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "柳泉石寮"
+    },
+    {
+      "cell_id": 4196,
+      "stamp": "fishing",
+      "xPct": 23.79,
+      "yPct": 18.35,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "泰原塢"
+    },
+    {
+      "cell_id": 4198,
+      "stamp": "hamlet",
+      "xPct": 31.27,
+      "yPct": 19.12,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "雷原石寨"
+    },
+    {
+      "cell_id": 4194,
+      "stamp": "fishing",
+      "xPct": 18.88,
+      "yPct": 19.4,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "格伯橋集"
+    },
+    {
+      "cell_id": 4201,
+      "stamp": "hamlet",
+      "xPct": 48.2,
+      "yPct": 20.3,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "柳泉谷村"
+    },
+    {
+      "cell_id": 4204,
+      "stamp": "fishing",
+      "xPct": 66.47,
+      "yPct": 21.13,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "錨灣塢"
+    },
+    {
+      "cell_id": 4200,
+      "stamp": "hamlet",
+      "xPct": 43.78,
+      "yPct": 22.51,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "青苔溪集"
+    },
+    {
+      "cell_id": 4195,
+      "stamp": "fishing",
+      "xPct": 17.27,
+      "yPct": 22.83,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "博泉村"
+    },
+    {
+      "cell_id": 4327,
+      "stamp": "hamlet",
+      "xPct": 55.26,
+      "yPct": 24.2,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "深林村"
+    },
+    {
+      "cell_id": 4206,
+      "stamp": "fishing",
+      "xPct": 67.03,
+      "yPct": 24.5,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "哈倫灣"
+    },
+    {
+      "cell_id": 4324,
+      "stamp": "hamlet",
+      "xPct": 32.89,
+      "yPct": 24.62,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "古橡坡"
+    },
+    {
+      "cell_id": 4321,
+      "stamp": "ferry",
+      "xPct": 20.61,
+      "yPct": 25.13,
+      "wPct": 4.3,
+      "tier": "major",
+      "label": "西峽渡口"
+    },
+    {
+      "cell_id": 4326,
+      "stamp": "beast",
+      "xPct": 50.64,
+      "yPct": 28.32,
+      "wPct": 3.3,
+      "tier": "special",
+      "label": "禁林古鹿幽谷"
+    },
+    {
+      "cell_id": 4433,
+      "stamp": "fishing",
+      "xPct": 69.83,
+      "yPct": 30.95,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "韋斯塢"
+    },
+    {
+      "cell_id": 4429,
+      "stamp": "hamlet",
+      "xPct": 42.16,
+      "yPct": 31.19,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "灰松石堡"
+    },
+    {
+      "cell_id": 4427,
+      "stamp": "hamlet",
+      "xPct": 30.44,
+      "yPct": 31.31,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "琥珀橋村"
+    },
+    {
+      "cell_id": 4425,
+      "stamp": "fishing",
+      "xPct": 21.95,
+      "yPct": 32.11,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "拉登濱莊"
+    },
+    {
+      "cell_id": 4428,
+      "stamp": "hamlet",
+      "xPct": 36.76,
+      "yPct": 32.35,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "乳酪牧坡"
+    },
+    {
+      "cell_id": 4432,
+      "stamp": "hamlet",
+      "xPct": 63.89,
+      "yPct": 35.79,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "古加坡"
+    },
+    {
+      "cell_id": 4530,
+      "stamp": "fishing",
+      "xPct": 73.66,
+      "yPct": 37.73,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "佩克崖莊"
+    },
+    {
+      "cell_id": 4525,
+      "stamp": "hamlet",
+      "xPct": 41.96,
+      "yPct": 38.13,
+      "wPct": 4.0,
+      "tier": "major",
+      "label": "灰松林驛"
+    },
+    {
+      "cell_id": 4529,
+      "stamp": "pit",
+      "xPct": 72.06,
+      "yPct": 39.93,
+      "wPct": 3.8,
+      "tier": "special",
+      "label": "黑水斷橋坑口"
+    },
+    {
+      "cell_id": 4616,
+      "stamp": "wgh",
+      "xPct": 71.05,
+      "yPct": 44.79,
+      "wPct": 5.8,
+      "tier": "major",
+      "label": "白鷗港"
+    },
+    {
+      "cell_id": 4614,
+      "stamp": "hamlet",
+      "xPct": 52.65,
+      "yPct": 46.61,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "黑煤溪寮"
+    },
+    {
+      "cell_id": 4613,
+      "stamp": "fishing",
+      "xPct": 52.3,
+      "yPct": 50.21,
+      "wPct": 4.1,
+      "tier": "major",
+      "label": "鷗尾漁港"
+    },
+    {
+      "cell_id": 4698,
+      "stamp": "ruin",
+      "xPct": 65.26,
+      "yPct": 56.72,
+      "wPct": 2.7,
+      "tier": "ruin",
+      "label": "乳酪坡"
+    },
+    {
+      "cell_id": 4695,
+      "stamp": "fishing",
+      "xPct": 55.94,
+      "yPct": 58.23,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "風語橋哨"
+    },
+    {
+      "cell_id": 4776,
+      "stamp": "hamlet",
+      "xPct": 60.16,
+      "yPct": 62.55,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "索昂林莊"
+    },
+    {
+      "cell_id": 4775,
+      "stamp": "ruin",
+      "xPct": 56.84,
+      "yPct": 63.94,
+      "wPct": 2.7,
+      "tier": "ruin",
+      "label": "雷恩岬"
+    },
+    {
+      "cell_id": 4780,
+      "stamp": "ruin",
+      "xPct": 65.36,
+      "yPct": 65.2,
+      "wPct": 2.7,
+      "tier": "ruin",
+      "label": "維爾崖"
+    },
+    {
+      "cell_id": 4777,
+      "stamp": "hamlet",
+      "xPct": 59.17,
+      "yPct": 66.97,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "達利莊"
+    },
+    {
+      "cell_id": 4849,
+      "stamp": "ruin",
+      "xPct": 53.65,
+      "yPct": 68.22,
+      "wPct": 2.7,
+      "tier": "ruin",
+      "label": "古加津"
+    },
+    {
+      "cell_id": 4847,
+      "stamp": "ruin",
+      "xPct": 45.79,
+      "yPct": 68.53,
+      "wPct": 2.7,
+      "tier": "ruin",
+      "label": "蕨溪谷"
+    },
+    {
+      "cell_id": 4853,
+      "stamp": "fishing",
+      "xPct": 67.28,
+      "yPct": 69.32,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "艾森河集"
+    },
+    {
+      "cell_id": 4926,
+      "stamp": "fishing",
+      "xPct": 65.07,
+      "yPct": 74.01,
+      "wPct": 2.6,
+      "tier": "village",
+      "label": "雷橋莊"
+    },
+    {
+      "cell_id": 5079,
+      "stamp": "beast",
+      "xPct": 60.99,
+      "yPct": 91.37,
+      "wPct": 3.3,
+      "tier": "special",
+      "label": "極南吞潮斷崖"
+    }
+  ]
+}

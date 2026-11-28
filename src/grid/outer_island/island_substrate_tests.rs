@@ -280,8 +280,8 @@ fn viewer_substrate_enforces_fog_low_tide_and_dynamic_houses_with_zero_webp() {
     assert!(
         map_pkt["island_master_url"]
             .as_str()
-            .is_some_and(|u| u.contains("master_island_2k.webp")),
-        "map packet must include master_island_2k overview url"
+            .is_some_and(|u| u.contains("island_terrain_base.webp")),
+        "map packet must include island_terrain_base overview url"
     );
 
     let sub_low = &map_pkt["substrate"];

@@ -107,6 +107,7 @@ pub fn build_view_json(
                 } else {
                     ex.to_name.clone()
                 };
+            let dst_cell_opt = dst_opt.and_then(|d| doc.cells.get(&d.cell_id.to_string()));
             json!({
                 "dir": ex.dir,
                 "to": ex.to,
@@ -116,6 +117,8 @@ pub fn build_view_json(
                 "ambient_cue": ambient_cue,
                 "to_pos": dst_opt.map(|d| d.pos),
                 "to_cell_id": dst_opt.map(|d| d.cell_id),
+                "to_cell_title": dst_cell_opt.map(|c| c.title.as_str()),
+                "to_cell_center": dst_cell_opt.map(|c| c.center),
                 "to_indoor": dst_opt.is_some_and(|d| d.indoor),
                 "to_kind": dst_opt.map(|d| d.kind.as_str()),
             })
@@ -453,7 +456,12 @@ pub fn build_view_json(
                 "town_slug": major_town_slug,
                 "cell_map": cell_map_json,
                 "dungeon_room": dungeon_room_json,
-                "island_master_url": "/maps/seam_lab/master_island_2k.webp?v=20261127r1",
+                "island_master_url": "/maps/island_terrain_base.webp?v=20261128r8",
+                "active_farm_cells": delta
+                    .farm_plots
+                    .values()
+                    .map(|p| p.cell_id)
+                    .collect::<std::collections::BTreeSet<u32>>(),
             },
         },
         "player": player_json,
@@ -802,7 +810,7 @@ pub fn build_filtered_map_json(
         "sea_corridors": visible_sea,
         "town_micro_maps": visited_towns,
         "current_cell_map": cur_cell_map_json,
-        "island_master_url": "/maps/seam_lab/master_island_2k.webp?v=20261127r1",
+        "island_master_url": "/maps/island_terrain_base.webp?v=20261128r8",
         "dungeon_local": dungeon_local,
         "substrate": substrate,
     })

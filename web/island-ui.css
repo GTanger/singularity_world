@@ -353,7 +353,21 @@ button, input, select {
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.oi-scene-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.oi-region-crumb {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
 }
 
 .oi-scene-title {
@@ -536,11 +550,11 @@ button, input, select {
 }
 
 .oi-happening-card {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border-line);
+  padding: 9px 12px;
+  border-radius: 0 9px 9px 0;
+  border: none;
   border-left: 3px solid var(--accent-main);
-  background: var(--bg-elevated);
+  background: color-mix(in srgb, var(--bg-surface) 76%, transparent);
 }
 
 .oi-happening-card.is-tension {
@@ -1281,7 +1295,7 @@ button, input, select {
   position: absolute;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 186, 86, 0.42) 0%, rgba(255, 146, 48, 0.13) 55%, rgba(255, 146, 48, 0) 100%);
+  background: radial-gradient(circle, rgba(255, 196, 108, 0.24) 0%, rgba(255, 152, 62, 0.08) 46%, rgba(255, 146, 48, 0) 76%);
   pointer-events: none;
 }
 
@@ -1289,6 +1303,138 @@ button, input, select {
   position: absolute;
   inset: 0;
   z-index: 3;
+}
+
+/* 模組化手繪水彩透明貼圖層（無外框、無連線、自然融入水彩底圖） */
+.oi-snm-stamps-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.oi-snm-stamp {
+  position: absolute;
+  display: block;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(42, 30, 18, 0.22));
+}
+
+.oi-snm-viewport.is-night .oi-snm-stamp {
+  filter: brightness(0.84) contrast(1.06) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.48));
+}
+
+/* 左上角極簡正北指北徽記 */
+.oi-snm-compass {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  z-index: 7;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(247, 240, 224, 0.84);
+  border: 1px solid rgba(118, 88, 56, 0.36);
+  color: #3a2716;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(32, 22, 12, 0.16);
+}
+
+.oi-snm-compass-arrow {
+  color: #a6341c;
+  font-size: 9px;
+}
+
+.oi-snm-viewport.is-night .oi-snm-compass {
+  background: rgba(22, 18, 14, 0.78);
+  border-color: rgba(225, 200, 152, 0.36);
+  color: #f3e6cc;
+}
+
+.oi-snm-viewport.is-night .oi-snm-compass-arrow {
+  color: #f49b6e;
+}
+
+.oi-map-modal .oi-snm-compass {
+  top: 12px;
+  left: auto;
+  right: 12px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* 室內單行出門條（進入屋舍／酒館／店鋪時收合底部地圖，將視口空間還給對話與實物） */
+.oi-indoor-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-line);
+}
+
+.oi-indoor-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.oi-indoor-tag {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--bg-chip);
+  color: var(--ink-sub);
+}
+
+.oi-indoor-place {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oi-indoor-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.oi-indoor-exit-btn {
+  min-height: 34px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-main);
+  background: var(--accent-main);
+  color: var(--accent-main-ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.oi-indoor-exit-btn:hover {
+  filter: brightness(1.06);
+}
+
+.oi-desktop-aside.is-indoor-collapsed {
+  justify-content: flex-start;
 }
 
 .oi-snm-node {
@@ -1409,6 +1555,15 @@ button, input, select {
 
 .oi-snm-node.is-reachable.is-leave {
   border-style: dashed;
+  border-color: rgba(45, 106, 86, 0.72);
+  background: rgba(235, 245, 238, 0.88);
+  color: #174636;
+}
+
+.oi-snm-viewport.is-night .oi-snm-node.is-reachable.is-leave {
+  border-color: rgba(114, 206, 174, 0.65);
+  background: rgba(20, 44, 38, 0.82);
+  color: #d4f7ea;
 }
 
 /* 全島總覽標記（純辨位、不觸發移動） */
@@ -1472,6 +1627,10 @@ button, input, select {
     border-left: none;
     border-top: 1px solid var(--border-line);
     border-bottom: none;
+  }
+  .oi-desktop-aside.is-indoor-collapsed {
+    height: auto;
+    padding: 6px 10px;
   }
   .oi-mini-map-frame {
     min-height: 0;
