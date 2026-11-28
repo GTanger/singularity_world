@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  var VER = '20261128r8';
+  var VER = '20261128r9';
   var ISLAND_TERRAIN_URL = '/maps/island_terrain_base.webp?v=' + VER;
   var STAMPS_MANIFEST_URL = '/map-stamps.json?v=' + VER;
   var ISLAND_BOUNDS = { minX: 1357.71, maxX: 1507.06, minY: 627.98, maxY: 793.21 };
@@ -242,11 +242,14 @@
         var regionDest = formatRegionShort(ex.to_cell_title, ex.to_name);
         label = (dWord ? ('出城向' + dWord + ' · ') : '出城 · ') + regionDest;
       } else {
-        if (!card && !dirToVector(ex.dir)) {
-          // 非方位局部進屋／支線留給文字區「此處門戶」
-          continue;
+        var vLoc = dirToVector(ex.dir);
+        if (!vLoc && Array.isArray(scene.pos) && Array.isArray(ex.to_pos)) {
+          var ldx = ex.to_pos[0] - scene.pos[0];
+          var ldy = ex.to_pos[1] - scene.pos[1];
+          var lln = Math.hypot(ldx, ldy);
+          if (lln > 0.001) vLoc = [ldx / lln, ldy / lln];
         }
-        var vLoc = dirToVector(ex.dir) || [0, 1];
+        vLoc = vLoc || [0, -1];
         xp = clamp(buttons[0].xp + vLoc[0] * 15, 10, 90);
         yp = clamp(buttons[0].yp + vLoc[1] * 11, 8, 92);
         label = (dWord && dWord !== shortDest ? (dWord + ' · ') : '') + shortDest;
@@ -310,7 +313,7 @@
     return [clamp(curPt[0] + offX, 6, 94), clamp(curPt[1] + offY, 6, 94)];
   }
 
-  // 野外統一銀鷗島水彩底圖節點建構：真座標定位 ＋ 跨區顯示實地名 ＋ 非方位動作分流至「此處門戶」
+  // 野外統一銀鷗島水彩底圖節點建構：真座標定位 ＋ 跨區顯示實地名 ＋ 保留全部同地塊山徑／捷徑／村口（絕不漏掉出路）
   function buildIslandLocalButtons(scene, sm) {
     var curNid = scene.node_id;
     var curCellId = scene.cell_id;
@@ -333,34 +336,44 @@
 
     var used = {};
     used[curNid] = true;
+    var fallbackIdx = 0;
 
     for (var i = 0; i < exits.length; i++) {
       var ex = exits[i];
       if (!ex || !ex.to || used[ex.to]) continue;
+      // 僅把民宅屋舍留在文字區「此處門戶」；所有野外山徑、捷徑、坡口、村口、官道一律直接顯示於地圖上！
       if (ex.to_kind === 'house' || ex.to_kind === 'house_vacant') continue;
 
       var isCross = !!(ex.to_cell_id && ex.to_cell_id !== curCellId);
       var card = parseCardinalDir(ex.dir);
 
-      // 野外非方位支線（例如「登望海台」、「探看舊堂」、「進門」、「切低處捷徑」）交給「此處門戶」，不塞進八向方位盤！
-      if (!card && !isCross) {
-        continue;
-      }
-
       used[ex.to] = true;
       mappedExitIds[ex.to] = true;
 
-      var vec = card ? card.vec : null;
-      if (!vec && Array.isArray(ex.to_cell_center)) {
+      // 優先採真實 2D 座標向量（特別是同地塊內 0 / low / high / far / camp / vantage 具精確相對座標！）
+      var vec = null;
+      if (card) {
+        vec = card.vec;
+      } else if (Array.isArray(scene.pos) && Array.isArray(ex.to_pos)) {
+        var pdx = ex.to_pos[0] - scene.pos[0];
+        var pdy = ex.to_pos[1] - scene.pos[1];
+        var pln = Math.hypot(pdx, pdy);
+        if (pln > 0.001) vec = [pdx / pln, pdy / pln];
+      }
+      if (!vec && isCross && Array.isArray(ex.to_cell_center)) {
         var tPt0 = projectIslandPercent(ex.to_cell_center);
         var dx0 = tPt0[0] - curPt[0];
         var dy0 = tPt0[1] - curPt[1];
         var ln0 = Math.hypot(dx0, dy0);
         if (ln0 > 0.05) vec = [dx0 / ln0, dy0 / ln0];
       }
-      if (!vec) vec = dirToVector(ex.dir) || [0, -1];
+      if (!vec) vec = dirToVector(ex.dir);
+      if (!vec) {
+        var ang = (fallbackIdx++ / Math.max(1, exits.length)) * Math.PI * 2 - Math.PI * 0.5;
+        vec = [Math.cos(ang), Math.sin(ang)];
+      }
 
-      // 計算與玩家在 1024×1024 全島座標的按鈕位置（跨區沿真實鄰塊方向，同區微距展開，保持在放大鏡頭內）
+      // 計算按鈕於 1024×1024 全島座標位置（跨區沿真實鄰塊方向，同區沿真實子節點方向展開）
       var xp, yp;
       if (isCross && Array.isArray(ex.to_cell_center)) {
         var realPt = projectIslandPercent(ex.to_cell_center);
@@ -376,7 +389,7 @@
           yp = curPt[1] + vec[1] * 6.0;
         }
       } else {
-        var localR = isCross ? 6.4 : 4.6;
+        var localR = isCross ? 6.4 : 4.8;
         xp = curPt[0] + vec[0] * localR;
         yp = curPt[1] + vec[1] * localR;
       }
@@ -385,7 +398,13 @@
         ? formatRegionShort(ex.to_cell_title, ex.to_name)
         : shortPlaceName(ex.to_name);
       var dWord = card ? card.label : cleanDirWord(ex.dir);
-      var label = (dWord && dWord !== shortDest) ? (dWord + ' · ' + shortDest) : shortDest;
+      var label;
+      if (!card && !isCross && dWord && dWord.length >= 2) {
+        // 同地塊動作型路徑（如「攀回高處山徑」「折入低處捷徑」「下返坡口」「出村口」「回官道」）直接用簡潔動線詞，清楚不截斷
+        label = dWord;
+      } else {
+        label = (dWord && dWord !== shortDest) ? (dWord + ' · ' + shortDest) : shortDest;
+      }
 
       buttons.push({
         nid: ex.to,
@@ -421,13 +440,17 @@
     var exits = Array.isArray(scene.exits) ? scene.exits : [];
     var used = {};
     used[curNid] = true;
+    var dFallback = 0;
 
     for (var i = 0; i < exits.length; i++) {
       var ex = exits[i];
       if (!ex || !ex.to || used[ex.to]) continue;
       var card = parseCardinalDir(ex.dir);
       var vec = card ? card.vec : dirToVector(ex.dir);
-      if (!vec) continue;
+      if (!vec) {
+        var dang = (dFallback++ / Math.max(1, exits.length)) * Math.PI * 2 - Math.PI * 0.5;
+        vec = [Math.cos(dang), Math.sin(dang)];
+      }
       used[ex.to] = true;
       mappedExitIds[ex.to] = true;
 

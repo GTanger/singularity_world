@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r8：純自然水彩底圖×12枚透明手繪貼圖×正北白鷗港全城圖×真八向零重覆方向拓撲×室內單行收合）
-const CACHE = 'sw-shell-v20261128r8';
+// PWA Service Worker（v20261128r9：修復野外同地塊非方位山徑／捷徑／村口於地圖消失致鬼打牆缺陷，869 節點地圖全圖強連通）
+const CACHE = 'sw-shell-v20261128r9';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r8',
-  '/town-basemaps.js?v=20261128r8',
-  '/static-node-map.js?v=20261128r8',
-  '/island-ui.js?v=20261128r8',
+  '/island-ui.css?v=20261128r9',
+  '/town-basemaps.js?v=20261128r9',
+  '/static-node-map.js?v=20261128r9',
+  '/island-ui.js?v=20261128r9',
   '/map-stamps.json?v=20261128r8',
   '/icon.svg',
   '/manifest.webmanifest'
