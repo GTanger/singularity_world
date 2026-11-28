@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  var VER = '20261128r10';
+  var VER = '20261128r11';
   var ISLAND_TERRAIN_URL = '/maps/island_terrain_base.webp?v=' + VER;
   var STAMPS_MANIFEST_URL = '/map-stamps.json?v=' + VER;
   var ISLAND_BOUNDS = { minX: 1357.71, maxX: 1507.06, minY: 627.98, maxY: 793.21 };
@@ -217,7 +217,7 @@
       var shortDest = shortPlaceName(ex.to_name);
       var card = parseCardinalDir(ex.dir);
       var dWord = card ? card.label : cleanDirWord(ex.dir);
-      var isLeave = !!(ex.to_cell_id && ex.to_cell_id !== curCellId);
+      var isLeave = !!((ex.to_cell_id && ex.to_cell_id !== curCellId) || String(ex.to || '').indexOf('oi:way_') === 0);
 
       if (anc && anc.exact) {
         xp = (anc.x / refW) * 100;
@@ -313,14 +313,15 @@
     return [clamp(curPt[0] + offX, 6, 94), clamp(curPt[1] + offY, 6, 94)];
   }
 
-  // 野外統一銀鷗島水彩底圖節點建構：真座標定位 ＋ 跨區顯示實地名 ＋ 保留全部同地塊山徑／捷徑／村口（絕不漏掉出路）
+  // 野外統一銀鷗島水彩底圖節點建構：採用節點真實世界座標（scene.pos / ex.to_pos），每步皆於水彩底圖上平滑推進零等待
   function buildIslandLocalButtons(scene, sm) {
     var curNid = scene.node_id;
     var curCellId = scene.cell_id;
     var exits = Array.isArray(scene.exits) ? scene.exits : [];
-    var rawCenter = sm.cell_center || scene.pos || [1472.82, 700.58];
-    var basePt = projectIslandPercent(rawCenter);
-    var curPt = computeSubNodeOffset(scene, basePt, exits);
+    var rawPos = (Array.isArray(scene.pos) && scene.pos.length >= 2)
+      ? scene.pos
+      : (sm.cell_center || [1472.82, 700.58]);
+    var curPt = projectIslandPercent(rawPos);
     var curLabel = shortPlaceName(scene.name) || formatRegionShort(sm.cell_title, '此處');
 
     var mappedExitIds = {};
@@ -341,25 +342,25 @@
     for (var i = 0; i < exits.length; i++) {
       var ex = exits[i];
       if (!ex || !ex.to || used[ex.to]) continue;
-      // 僅把民宅屋舍留在文字區「此處門戶」；所有野外山徑、捷徑、坡口、村口、官道一律直接顯示於地圖上！
+      // 僅把民宅屋舍留在文字區「此處門戶」；所有野外山徑、捷徑、坡口、路標、村口一律直接顯示於地圖上！
       if (ex.to_kind === 'house' || ex.to_kind === 'house_vacant') continue;
 
       var isCross = !!(ex.to_cell_id && ex.to_cell_id !== curCellId);
+      var isWay = String(ex.to || '').indexOf('oi:way_') === 0;
       var card = parseCardinalDir(ex.dir);
 
       used[ex.to] = true;
       mappedExitIds[ex.to] = true;
 
-      // 優先採真實 2D 座標向量（特別是同地塊內 0 / low / high / far / camp / vantage 具精確相對座標！）
+      // 優先採真實 2D 座標向量（scene.pos -> ex.to_pos）
       var vec = null;
-      if (card) {
-        vec = card.vec;
-      } else if (Array.isArray(scene.pos) && Array.isArray(ex.to_pos)) {
+      if (Array.isArray(scene.pos) && Array.isArray(ex.to_pos)) {
         var pdx = ex.to_pos[0] - scene.pos[0];
         var pdy = ex.to_pos[1] - scene.pos[1];
         var pln = Math.hypot(pdx, pdy);
         if (pln > 0.001) vec = [pdx / pln, pdy / pln];
       }
+      if (!vec && card) vec = card.vec;
       if (!vec && isCross && Array.isArray(ex.to_cell_center)) {
         var tPt0 = projectIslandPercent(ex.to_cell_center);
         var dx0 = tPt0[0] - curPt[0];
@@ -373,34 +374,34 @@
         vec = [Math.cos(ang), Math.sin(ang)];
       }
 
-      // 計算按鈕於 1024×1024 全島座標位置（跨區沿真實鄰塊方向，同區沿真實子節點方向展開）
+      // 以真實座標投影為基準，適度保底最小間距（確保緊鄰按鈕好點且方向完全忠於地形）
       var xp, yp;
-      if (isCross && Array.isArray(ex.to_cell_center)) {
-        var realPt = projectIslandPercent(ex.to_cell_center);
+      var dstRaw = (Array.isArray(ex.to_pos) && ex.to_pos.length >= 2) ? ex.to_pos : ex.to_cell_center;
+      if (Array.isArray(dstRaw) && dstRaw.length >= 2) {
+        var realPt = projectIslandPercent(dstRaw);
         var rdx = realPt[0] - curPt[0];
         var rdy = realPt[1] - curPt[1];
         var rDist = Math.hypot(rdx, rdy);
-        if (rDist > 0.2) {
-          var clampedR = clamp(rDist, 4.6, 8.2);
+        if (rDist > 0.12) {
+          var clampedR = clamp(rDist, 4.4, 7.8);
           xp = curPt[0] + (rdx / rDist) * clampedR;
           yp = curPt[1] + (rdy / rDist) * clampedR;
         } else {
-          xp = curPt[0] + vec[0] * 6.0;
-          yp = curPt[1] + vec[1] * 6.0;
+          xp = curPt[0] + vec[0] * 4.8;
+          yp = curPt[1] + vec[1] * 4.8;
         }
       } else {
-        var localR = isCross ? 6.4 : 4.8;
+        var localR = (isCross || isWay) ? 5.6 : 4.6;
         xp = curPt[0] + vec[0] * localR;
         yp = curPt[1] + vec[1] * localR;
       }
 
-      var shortDest = isCross
+      var shortDest = (isCross && !isWay)
         ? formatRegionShort(ex.to_cell_title, ex.to_name)
         : shortPlaceName(ex.to_name);
       var dWord = card ? card.label : cleanDirWord(ex.dir);
       var label;
-      if (!card && !isCross && dWord && dWord.length >= 2) {
-        // 同地塊動作型路徑（如「攀回高處山徑」「折入低處捷徑」「下返坡口」「出村口」「回官道」）直接用簡潔動線詞，清楚不截斷
+      if (!card && !isCross && !isWay && dWord && dWord.length >= 2) {
         label = dWord;
       } else {
         label = (dWord && dWord !== shortDest) ? (dWord + ' · ' + shortDest) : shortDest;
@@ -411,11 +412,11 @@
         label: label,
         xp: clamp(xp, 4, 96),
         yp: clamp(yp, 4, 96),
-        dirVec: vec,
+        dirVec: card ? card.vec : vec,
         isCurrent: false,
         isSecret: ex.kind === 'secret',
-        isLeaveCell: isCross,
-        isSubTrail: !card && !isCross,
+        isLeaveCell: isCross || isWay,
+        isSubTrail: !card && !isCross && !isWay,
         kind: ex.to_kind || ex.kind || 'exit',
         title: ex.ambient_cue || ex.to_cell_title || ex.to_name || label
       });
@@ -828,8 +829,7 @@
     var scene = view.scene;
     var sm = scene.static_map || {};
     var isNight = !!(opts && opts.isNight);
-    var ow = view.overland_walk || null;
-    var isBlocked = !!(view.skirmish || view.transit || ow);
+    var isBlocked = !!(view.skirmish || view.transit);
     var townMap = sm.town_slug && window.TOWN_ILLUSTRATED_MAPS && window.TOWN_ILLUSTRATED_MAPS[sm.town_slug];
 
     var imgUrl = '';
@@ -843,46 +843,7 @@
     var frameMode = 'island_local';
     var showStamps = false;
 
-    if (ow && Array.isArray(ow.from_center) && Array.isArray(ow.to_center)) {
-      // 跨地塊真實徒步行旅中：切換至全島水彩底圖＋貼圖，紅點依真實進度平滑滑向目的地！
-      imgUrl = sm.island_master_url || ISLAND_TERRAIN_URL;
-      stageW = 1024;
-      stageH = 1024;
-      bgCol = isNight ? '#15242d' : '#65a2b6';
-      var pFrom = projectIslandPercent(ow.from_center);
-      var pTo = projectIslandPercent(ow.to_center);
-      var prog = clamp(typeof ow.progress === 'number' ? ow.progress : 0.2, 0.05, 0.96);
-      var curXp = pFrom[0] + (pTo[0] - pFrom[0]) * prog;
-      var curYp = pFrom[1] + (pTo[1] - pFrom[1]) * prog;
-      var dstShort = formatRegionShort(ow.target_cell_title, ow.target_name) || '目的地';
-      built = {
-        buttons: [
-          {
-            nid: scene.node_id,
-            label: '行旅中',
-            xp: curXp,
-            yp: curYp,
-            isCurrent: true,
-            kind: 'walking',
-            title: ow.pace_cue || '徒步行旅中'
-          },
-          {
-            nid: ow.target_node || '',
-            label: (ow.dir ? (ow.dir + ' · ') : '') + dstShort,
-            xp: pTo[0],
-            yp: pTo[1],
-            isCurrent: false,
-            isLeaveCell: true,
-            kind: 'dest',
-            title: dstShort
-          }
-        ],
-        mappedExitIds: {}
-      };
-      layerBadge = '行旅途中';
-      frameMode = 'island_local';
-      showStamps = true;
-    } else if (scene.dungeon && sm.dungeon_room && sm.dungeon_room.room_url) {
+    if (scene.dungeon && sm.dungeon_room && sm.dungeon_room.room_url) {
       imgUrl = sm.dungeon_room.room_url;
       stageW = 1024;
       stageH = 1024;
@@ -988,7 +949,7 @@
     var isNight = !!(opts && opts.isNight);
     var imgUrl = (mapData && mapData.island_master_url) || sm.island_master_url || ISLAND_TERRAIN_URL;
 
-    var curPos = sm.cell_center || scene.pos || [1472.82, 700.58];
+    var curPos = (Array.isArray(scene.pos) && scene.pos.length >= 2) ? scene.pos : (sm.cell_center || [1472.82, 700.58]);
     var curPt = projectIslandPercent(curPos);
 
     var visitedMap = {};

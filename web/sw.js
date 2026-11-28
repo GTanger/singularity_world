@@ -1,12 +1,12 @@
-// PWA Service Worker（v20261128r10：全島拓撲地名校直×跨地塊真實徒步行旅尺度×去方塊雜亂清爽野誌排版）
-const CACHE = 'sw-shell-v20261128r10';
+// PWA Service Worker（v20261128r11：取消跨區讀秒等待，改以156處真實插值沿途路標＋逐點真座標平滑推進拉出大島尺度）
+const CACHE = 'sw-shell-v20261128r11';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/island-ui.css?v=20261128r10',
-  '/town-basemaps.js?v=20261128r10',
-  '/static-node-map.js?v=20261128r10',
-  '/island-ui.js?v=20261128r10',
+  '/island-ui.css?v=20261128r11',
+  '/town-basemaps.js?v=20261128r11',
+  '/static-node-map.js?v=20261128r11',
+  '/island-ui.js?v=20261128r11',
   '/map-stamps.json?v=20261128r8',
   '/icon.svg',
   '/manifest.webmanifest'

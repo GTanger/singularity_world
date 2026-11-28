@@ -238,43 +238,6 @@ pub fn build_view_json(
         })
     });
 
-    let overland_walk_json = viewer
-        .ongoing_activity
-        .as_ref()
-        .filter(|act| act.kind == "overland_walk")
-        .map(|act| {
-            let mut parts = act.payer_id.splitn(2, '|');
-            let total_ticks: f64 = parts
-                .next()
-                .and_then(|s| s.parse::<u8>().ok())
-                .unwrap_or(act.ticks_remaining.max(1))
-                .max(1) as f64;
-            let dir_word = parts.next().unwrap_or("");
-            let done = (total_ticks - f64::from(act.ticks_remaining)).max(0.0);
-            let progress = (done / total_ticks).clamp(0.06, 0.96);
-            let pace_cue = if progress < 0.34 {
-                "才剛邁步離開原處，腳下路程正展開"
-            } else if progress < 0.72 {
-                "正沿山海路途穩步前行，四周風物漸換"
-            } else {
-                "前方地界輪廓已隱約在望，轉眼將至"
-            };
-            let dst_node_opt = doc.nodes.get(&act.target_node);
-            let dst_cell_opt =
-                dst_node_opt.and_then(|dn| doc.cells.get(&dn.cell_id.to_string()));
-            let src_cell_opt = doc.cells.get(&node.cell_id.to_string());
-            json!({
-                "target_node": act.target_node,
-                "target_name": dst_node_opt.map(|n| n.name.as_str()).unwrap_or(""),
-                "target_cell_title": dst_cell_opt.map(|c| c.title.as_str()).unwrap_or(""),
-                "from_center": src_cell_opt.map(|c| c.center),
-                "to_center": dst_cell_opt.map(|c| c.center),
-                "dir": dir_word,
-                "progress": progress,
-                "pace_cue": pace_cue,
-            })
-        });
-
     let v_innate = derive_innate_persona(viewer.soul_seed.max(1));
     let v_motive_cue = format!(
         "心頭看重「{}」",
@@ -504,7 +467,6 @@ pub fn build_view_json(
         "player": player_json,
         "skirmish": skirmish_json,
         "transit": transit_json,
-        "overland_walk": overland_walk_json,
     })
 }
 

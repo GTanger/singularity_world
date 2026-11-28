@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var VER = '20261128r10';
+  var VER = '20261128r11';
 
   window.TOWN_ILLUSTRATED_MAPS = {
     // 1. 白鷗港：單張嚴格正北朝上手繪水彩全城輿圖（與銀鷗島底圖及貼圖同畫風，取消五區跳圖，31 處地標精準對位）

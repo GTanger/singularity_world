@@ -564,14 +564,6 @@ pub fn apply_move_step(
         if a.active_transit.is_some() {
             return Err("你正坐在車船座艙內趕路，若要改走山徑請先拍板中途下車。".to_string());
         }
-        if let Some(ref act) = a.ongoing_activity
-            && act.kind == "overland_walk"
-        {
-            return Err(format!(
-                "你正{}，可靜待抵達或點「停步折返」退回原地。",
-                act.label_zh
-            ));
-        }
         if now_ms > 0 && a.last_step_unix_ms > 0 && now_ms.saturating_sub(a.last_step_unix_ms) < 180
         {
             return Err("腳步太急，先穩住氣息再邁步。".to_string());
@@ -710,56 +702,11 @@ pub fn apply_move_step(
     if let (Some(actor_ro), Some(src_nd)) = (delta.actors.get(&aid), doc.nodes.get(&from_nid)) {
         super::transit_and_cargo::check_bulk_overland_move(doc, delta, actor_ro, src_nd, dst_node)?;
     }
-
-    // 跨地塊真實徒步行旅：線上玩家跨出不同地塊時依真實距離／地形／鞋履／負重推進（城內與同區仍點按即達）
-    let is_live_human_overland = now_ms > 0
-        && src_cell_id != dst_node.cell_id
-        && !cur_node.dungeon
-        && !dst_node.dungeon
-        && delta
-            .actors
-            .get(&aid)
-            .is_some_and(|a| a.controller_id.is_some());
-    if is_live_human_overland {
-        let flood_crossing =
-            super::live_land::is_river_crossing_impassable_for_wheels(delta, dst_node.cell_id);
-        let walk_ticks = delta.actors.get(&aid).map_or(5, |a| {
-            super::ongoing_activity::compute_overland_walk_ticks(
-                doc,
-                a,
-                src_cell_id,
-                dst_node,
-                flood_crossing,
-            )
-        });
-        let clean_dir = dir_label.split('（').next().unwrap_or(&dir_label);
-        let dst_cell_short = doc
-            .cells
-            .get(&dst_node.cell_id.to_string())
-            .map_or(dst_node.name.as_str(), |c| c.title.as_str());
-        let label_zh = format!("徒步前往【{}】", dst_cell_short);
-        if let Some(a) = delta.actors.get_mut(&aid) {
-            a.last_step_unix_ms = now_ms;
-            a.last_active_unix = clock.real_unix;
-            a.ongoing_activity = Some(super::types::OngoingActivityState {
-                kind: "overland_walk".to_string(),
-                label_zh: label_zh.clone(),
-                started_node: from_nid.clone(),
-                target_node: target_node.to_string(),
-                ticks_remaining: walk_ticks,
-                cargo_item: None,
-                payer_id: format!("{}|{}", walk_ticks, clean_dir),
-                wage_copper: 0,
-            });
-            let td = super::live_tide::derive_tide_clock_details(clock);
-            let msg = format!(
-                "你整頓行裝，往{}踏上前往【{}】的路途。",
-                clean_dir, dst_cell_short
-            );
-            push_breath(a, format!("〔{:02}:{:02}〕{msg}", td.hour, td.minute));
-            a.mark_mutated();
-            return Ok(msg);
-        }
+    // 若角色仍殘留舊版 overland_walk 狀態，邁步時直接清零零等待
+    if let Some(a) = delta.actors.get_mut(&aid)
+        && a.ongoing_activity.as_ref().is_some_and(|st| st.kind == "overland_walk")
+    {
+        a.ongoing_activity = None;
     }
 
     let knows_dst_state = doc
